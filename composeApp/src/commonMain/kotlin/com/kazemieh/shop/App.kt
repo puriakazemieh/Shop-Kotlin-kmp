@@ -1,10 +1,10 @@
 package com.kazemieh.shop
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import com.kazemieh.designsystem.AppTheme
 
 @Composable
 fun App() {
-    MaterialTheme {
+    AppTheme {
     }
 }

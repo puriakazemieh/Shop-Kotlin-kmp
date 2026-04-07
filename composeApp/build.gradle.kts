@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -18,7 +17,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -28,20 +27,14 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm()
-    
+
     js {
         browser()
         binaries.executable()
     }
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -57,6 +50,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
+            implementation(projects.core.designSystem)
 
             implementation(libs.kotlinx.serialization.json)
             implementation("com.arkivanov.decompose:decompose:3.4.0")
