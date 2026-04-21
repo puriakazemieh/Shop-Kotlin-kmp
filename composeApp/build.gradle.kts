@@ -53,8 +53,10 @@ kotlin {
             implementation(projects.core.designSystem)
 
             implementation(libs.kotlinx.serialization.json)
-            implementation("com.arkivanov.decompose:decompose:3.4.0")
-            implementation("com.arkivanov.decompose:extensions-compose:3.4.0")
+
+
+            implementation(project(":core:designSystem"))
+            implementation(project(":feature:auth"))
         }
 
         jvmMain.dependencies {
