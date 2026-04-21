@@ -5,27 +5,16 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
-
     androidLibrary {
-        namespace = "com.kazemieh.designsystem"
+        namespace = "com.kazemieh.auth"
         compileSdk = 36
         minSdk = 24
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
     }
 
-    val xcfName = "core:designSystemKit"
+    val xcfName = "feature:auth"
 
     iosX64 {
         binaries.framework {
@@ -45,15 +34,13 @@ kotlin {
         }
     }
 
-    jvm()
-
     js {
         browser()
-        binaries.executable()
     }
 
-    sourceSets {
+    jvm()
 
+    sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
@@ -61,12 +48,21 @@ kotlin {
                 implementation(libs.compose.foundation)
                 implementation(libs.compose.material3)
                 implementation(libs.compose.ui)
+//                implementation(libs.compose.material.icons.core)
+//                implementation(libs.compose.material.icons.extended)
                 implementation(libs.compose.components.resources)
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
-                implementation(libs.kotlinx.serialization.json)
+                implementation(compose.components.resources)
+
+                implementation(libs.androidx.lifecycle.viewmodel)
+
+//                implementation(libs.messagebar.kmp)
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
             }
         }
+
 
         androidMain {
             dependencies {
@@ -74,6 +70,16 @@ kotlin {
         }
 
         iosMain {
+            dependencies {
+            }
+        }
+
+        jsMain {
+            dependencies {
+            }
+        }
+
+        jvmMain {
             dependencies {
             }
         }
