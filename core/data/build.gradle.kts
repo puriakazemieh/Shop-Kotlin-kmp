@@ -7,12 +7,12 @@ plugins {
 
 kotlin {
     androidLibrary {
-        namespace = "com.kazemieh.domain"
-        compileSdk =36
+        namespace = "com.kazemieh.data"
+        compileSdk = 36
         minSdk = 24
     }
 
-    val xcfName = "core:domainKit"
+    val xcfName = "core:dataKit"
 
     iosX64 {
         binaries.framework {
@@ -41,7 +41,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.serialization)
+                implementation(libs.koin.core)
+                implementation(project(":core:domain"))
+                implementation(project(":core:network"))
+
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
             }
         }

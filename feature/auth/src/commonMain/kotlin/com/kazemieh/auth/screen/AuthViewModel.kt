@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kazemieh.domain.common.doOnError
+import com.kazemieh.domain.common.doOnSuccess
 import com.kazemieh.domain.usecase.ForgotPasswordUseCase
 import com.kazemieh.domain.usecase.LoginUseCase
 import com.kazemieh.domain.usecase.RegisterUseCase
@@ -69,18 +71,13 @@ class AuthViewModel(
 
             val result = loginUseCase(state.email, state.password)
 
-            result.fold(
-                onSuccess = {
-                    state = state.copy(isLoading = false)
-                    _event.emit(UiEvent.NavigateToHome)
-                },
-                onFailure = {
-                    state = state.copy(
-                        isLoading = false,
-                        errorMessage = it.message
-                    )
-                }
-            )
+            result.doOnSuccess {
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.NavigateToHome)
+            }.doOnError {
+                state = state.copy(isLoading = false, errorMessage = it)
+            }
+
         }
     }
 
@@ -101,15 +98,12 @@ class AuthViewModel(
 
             val result = registerUseCase(state.email, state.password)
 
-           result.fold(
-                onSuccess = {
-                    state =     state.copy(isLoading = false)
-                    _event.emit(UiEvent.NavigateToHome)
-                },
-                onFailure = {
-                    state =  state.copy(isLoading = false, errorMessage = it.message)
-                }
-            )
+            result.doOnSuccess {
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.NavigateToHome)
+            }.doOnError {
+                state = state.copy(isLoading = false, errorMessage = it)
+            }
         }
     }
 
@@ -126,14 +120,13 @@ class AuthViewModel(
 
             val result = forgotPasswordUseCase(state.email)
 
-            state = result.fold(
-                onSuccess = {
-                    state.copy(isLoading = false, isSuccess = true)
-                },
-                onFailure = {
-                    state.copy(isLoading = false, errorMessage = it.message)
-                }
-            )
+            result.doOnSuccess {
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.NavigateToHome)
+            }.doOnError {
+                state = state.copy(isLoading = false, errorMessage = it)
+            }
+
         }
     }
 }
@@ -146,10 +139,10 @@ data class AuthState(
     val passwordError: String? = null,
 
     val isLoading: Boolean = false,
-    val isSuccess: Boolean = false,
 
     val errorMessage: String? = null
 )
+
 sealed class AuthEvent {
     data class OnEmailChange(val value: String) : AuthEvent()
     data class OnPasswordChange(val value: String) : AuthEvent()
@@ -158,6 +151,7 @@ sealed class AuthEvent {
     object SubmitRegister : AuthEvent()
     object SubmitForgotPassword : AuthEvent()
 }
+
 sealed class UiEvent {
     object NavigateToHome : UiEvent()
     data class ShowError(val message: String) : UiEvent()
