@@ -53,7 +53,7 @@ kotlin {
             implementation(projects.core.designSystem)
 
             implementation(libs.kotlinx.serialization.json)
-
+            implementation(libs.koin.core)
 
             implementation(project(":core:designSystem"))
             implementation(project(":feature:auth"))

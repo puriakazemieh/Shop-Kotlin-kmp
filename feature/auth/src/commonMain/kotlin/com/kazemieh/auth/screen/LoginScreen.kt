@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -21,16 +22,15 @@ import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    onLogin: (String, String) -> Unit,
+    viewModel: AuthViewModel,
     onNavigateRegister: () -> Unit,
     onNavigateForgot: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
+    val state = viewModel.state
     val colors = AppTheme.colors
 
     Column(
@@ -44,14 +44,46 @@ fun LoginScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        AuthTextField(email, { email = it }, "Email")
+        AuthTextField(
+            value = state.email,
+            onValueChange = {
+                viewModel.onEvent(AuthEvent.OnEmailChange(it))
+            },
+            hint = "Email"
+        )
+
+        state.emailError?.let {
+            Text(it, color = colors.error)
+        }
+
         Spacer(Modifier.height(12.dp))
-        AuthTextField(password, { password = it }, "Password", true)
+
+        AuthTextField(
+            value = state.password,
+            onValueChange = {
+                viewModel.onEvent(AuthEvent.OnPasswordChange(it))
+            },
+            hint = "Password",
+            isPassword = true
+        )
+
+        state.passwordError?.let {
+            Text(it, color = colors.error)
+        }
 
         Spacer(Modifier.height(24.dp))
 
         AuthButton("Login") {
-            onLogin(email, password)
+            viewModel.onEvent(AuthEvent.SubmitLogin)
+        }
+
+        if (state.isLoading) {
+            Spacer(Modifier.height(12.dp))
+            CircularProgressIndicator()
+        }
+
+        state.errorMessage?.let {
+            Text(it, color = colors.error)
         }
 
         Spacer(Modifier.height(16.dp))

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,11 +25,10 @@ import com.kazemieh.designsystem.FontSize
 
 @Composable
 fun ForgotPasswordScreen(
-    onSubmit: (String) -> Unit,
+    viewModel: AuthViewModel,
     onBack: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-
+    val state = viewModel.state
     val colors = AppTheme.colors
 
     Column(
@@ -42,12 +42,30 @@ fun ForgotPasswordScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        AuthTextField(email, { email = it }, "Email")
+        AuthTextField(
+            value = state.email,
+            onValueChange = {
+                viewModel.onEvent(AuthEvent.OnEmailChange(it))
+            },
+            hint = "Email"
+        )
+
+        state.emailError?.let {
+            Text(it, color = colors.error)
+        }
 
         Spacer(Modifier.height(24.dp))
 
         AuthButton("Send Reset Link") {
-            onSubmit(email)
+            viewModel.onEvent(AuthEvent.SubmitForgotPassword)
+        }
+
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        }
+
+        state.errorMessage?.let {
+            Text(it, color = colors.error)
         }
 
         Spacer(Modifier.height(16.dp))
