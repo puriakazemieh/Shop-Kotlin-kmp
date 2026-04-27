@@ -6,13 +6,14 @@ plugins {
 }
 
 kotlin {
+
     androidLibrary {
-        namespace = "com.kazemieh.domain"
+        namespace = "com.kazemieh.common"
         compileSdk = 36
         minSdk = 24
     }
 
-    val xcfName = "core:domainKit"
+    val xcfName = "core:commonKit"
 
     iosX64 {
         binaries.framework {
@@ -32,21 +33,24 @@ kotlin {
         }
     }
 
-    js {
-        browser()
-    }
-
     jvm()
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
+
         commonMain {
             dependencies {
-                implementation(libs.kotlinx.serialization)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-                implementation(project(":core:common"))
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.serialization.json)
+
+
+
             }
         }
-
 
         androidMain {
             dependencies {
@@ -54,16 +58,6 @@ kotlin {
         }
 
         iosMain {
-            dependencies {
-            }
-        }
-
-        jsMain {
-            dependencies {
-            }
-        }
-
-        jvmMain {
             dependencies {
             }
         }

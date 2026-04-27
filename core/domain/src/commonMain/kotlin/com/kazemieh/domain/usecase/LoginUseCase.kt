@@ -1,7 +1,7 @@
 package com.kazemieh.domain.usecase
 
+import com.kazemieh.common.AppResult
 import com.kazemieh.domain.AuthRepository
-import com.kazemieh.domain.common.AppResult
 import com.kazemieh.domain.model.User
 
 class LoginUseCase(

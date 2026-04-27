@@ -7,22 +7,16 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinxSerialization)
 }
-
+compose.resources {
+    publicResClass = true
+}
 kotlin {
 
     androidLibrary {
         namespace = "com.kazemieh.designsystem"
         compileSdk = 36
         minSdk = 24
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
+        androidResources.enable = true
     }
 
     val xcfName = "core:designSystemKit"
@@ -65,7 +59,6 @@ kotlin {
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.kotlinx.serialization.json)
-                implementation(compose.components.resources)
 
                 implementation(libs.compose.material.icons.core)
                 implementation(libs.compose.material.icons.extended)
@@ -74,6 +67,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation(libs.androidx.core.ktx)
             }
         }
 

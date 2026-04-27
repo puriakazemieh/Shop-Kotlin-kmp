@@ -46,6 +46,7 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(project(":core:domain"))
                 implementation(project(":core:network"))
+                implementation(project(":core:common"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
             }

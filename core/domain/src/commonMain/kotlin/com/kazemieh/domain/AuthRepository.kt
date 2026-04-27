@@ -1,6 +1,6 @@
 package com.kazemieh.domain
 
-import com.kazemieh.domain.common.AppResult
+import com.kazemieh.common.AppResult
 import com.kazemieh.domain.model.User
 
 interface AuthRepository {

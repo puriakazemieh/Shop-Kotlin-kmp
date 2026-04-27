@@ -1,8 +1,8 @@
 package com.kazemieh.data
 
 import com.kazemieh.data.mapper.toDomain
-import com.kazemieh.domain.common.AppResult
-import com.kazemieh.domain.common.safeApiCall
+import com.kazemieh.common.AppResult
+import com.kazemieh.common.safeApiCall
 import com.kazemieh.domain.model.User
 import com.kazemieh.network.AuthApi
 import com.kazemieh.network.dto.request.LoginRequest

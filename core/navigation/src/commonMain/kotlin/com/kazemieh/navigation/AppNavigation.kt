@@ -7,17 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.serialization.Serializable
+import com.kazemieh.common.Screen
+import com.kazemieh.home.HomeGraphScreen
 import org.koin.compose.viewmodel.koinViewModel
-
-@Serializable
-object Splash
 
 @Composable
 fun AppNavHost(
-//    navController: NavHostController,
-    startDestination: Any = AuthGraph,
+    startDestination: Any = Screen.HomeGraph,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -26,19 +24,34 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-//        composable<Splash> {
-//            SplashRoute {
-//                navController.navigate(Home) {
-//                    popUpTo(Splash) { inclusive = true }
-//                }
-//            }
-//        }
 
-        authNavGraph(navController) {
+        authNavGraph(navController)
 
+        composable<Screen.HomeGraph> {
+
+            HomeGraphScreen(
+                navigateToAuth = {
+//                    navController.navigate(Screen.Auth) {
+//                        popUpTo<Screen.HomeGraph> { inclusive = true }
+//                    }
+                },
+                navigateToProfile = {
+//                    navController.navigate(Screen.Profile)
+                },
+                navigateToAdminPanel = {
+//                    navController.navigate(Screen.AdminPanel)
+                },
+                navigateToDetails = { productId ->
+//                    navController.navigate(Screen.Details(id = productId))
+                },
+                navigateToCategorySearch = { categoryName ->
+//                    navController.navigate(Screen.CategorySearch(categoryName))
+                },
+                navigateToCheckout = { totalAmount ->
+//                    navController.navigate(Screen.Checkout(totalAmount))
+                },
+            )
         }
-
-
     }
 }
 

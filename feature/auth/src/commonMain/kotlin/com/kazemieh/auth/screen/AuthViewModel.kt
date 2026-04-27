@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kazemieh.domain.common.doOnError
-import com.kazemieh.domain.common.doOnSuccess
+import com.kazemieh.common.doOnError
+import com.kazemieh.common.doOnSuccess
 import com.kazemieh.domain.usecase.ForgotPasswordUseCase
 import com.kazemieh.domain.usecase.LoginUseCase
 import com.kazemieh.domain.usecase.RegisterUseCase

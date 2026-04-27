@@ -8,64 +8,51 @@ import com.kazemieh.auth.screen.AuthViewModel
 import com.kazemieh.auth.screen.ForgotPasswordScreen
 import com.kazemieh.auth.screen.LoginScreen
 import com.kazemieh.auth.screen.RegisterScreen
-import kotlinx.serialization.Serializable
-
-@Serializable
-object AuthGraph
-
-@Serializable
-object Login
-
-@Serializable
-object Register
-
-@Serializable
-object ForgotPassword
+import com.kazemieh.common.Screen
 
 
 fun NavGraphBuilder.authNavGraph(
-    navController: NavHostController,
-    onBackPressed: () -> Unit
+    navController: NavHostController
 ) {
-    navigation<AuthGraph>(startDestination = Login) {
+    navigation<Screen.AuthGraph>(startDestination = Screen.Login) {
 
-        composable<Login> { backStackEntry ->
+        composable<Screen.Login> { backStackEntry ->
 
             val viewModel: AuthViewModel = sharedViewModel(
                 navController = navController,
                 backStackEntry = backStackEntry,
-                navGraph = AuthGraph
+                navGraph = Screen.AuthGraph
             )
             LoginScreen(
                 viewModel = viewModel,
                 onNavigateRegister = {
-                    navController.navigate(Register)
+                    navController.navigate(Screen.Register)
                 },
                 onNavigateForgot = {
-                    navController.navigate(ForgotPassword)
+                    navController.navigate(Screen.ForgotPassword)
                 })
         }
 
-        composable<Register> { backStackEntry ->
+        composable<Screen.Register> { backStackEntry ->
 
             val viewModel: AuthViewModel = sharedViewModel(
                 navController = navController,
                 backStackEntry = backStackEntry,
-                navGraph = AuthGraph
+                navGraph = Screen.AuthGraph
             )
             RegisterScreen(
                 viewModel = viewModel,
                 onNavigateLogin = {
-                    navController.navigate(Login)
+                    navController.navigate(Screen.Login)
                 })
         }
 
-        composable<ForgotPassword> { backStackEntry ->
+        composable<Screen.ForgotPassword> { backStackEntry ->
 
             val viewModel: AuthViewModel = sharedViewModel(
                 navController = navController,
                 backStackEntry = backStackEntry,
-                navGraph = AuthGraph
+                navGraph = Screen.AuthGraph
             )
             ForgotPasswordScreen(
                 viewModel = viewModel,

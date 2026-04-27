@@ -1,4 +1,4 @@
-package com.kazemieh.domain.common
+package com.kazemieh.common
 
 
 sealed class AppResult<out T> {
