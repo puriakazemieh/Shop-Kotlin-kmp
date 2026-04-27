@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(project(":core:designSystem"))
+            implementation(project(":core:navigation"))
             implementation(project(":core:network"))
             implementation(project(":core:data"))
             implementation(project(":feature:auth"))

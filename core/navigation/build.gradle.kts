@@ -1,0 +1,82 @@
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.androidLint)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinxSerialization)
+}
+
+kotlin {
+
+    androidLibrary {
+        namespace = "com.kazemieh.navigation"
+        compileSdk = 36
+        minSdk = 24
+    }
+
+    val xcfName = "core:dnavigationKit"
+
+    iosX64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    iosArm64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    iosSimulatorArm64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    jvm()
+
+    js {
+        browser()
+        binaries.executable()
+    }
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compose.uiToolingPreview)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(compose.components.resources)
+
+                implementation(libs.compose.navigation)
+                implementation(project(":feature:auth"))
+
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
+
+
+            }
+        }
+
+        androidMain {
+            dependencies {
+            }
+        }
+
+        iosMain {
+            dependencies {
+            }
+        }
+    }
+
+}
