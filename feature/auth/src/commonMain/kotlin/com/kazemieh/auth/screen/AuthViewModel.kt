@@ -75,7 +75,8 @@ class AuthViewModel(
                 state = state.copy(isLoading = false)
                 _event.emit(UiEvent.NavigateToHome)
             }.doOnError {
-                state = state.copy(isLoading = false, errorMessage = it)
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.ShowError(it))
             }
 
         }
@@ -102,7 +103,8 @@ class AuthViewModel(
                 state = state.copy(isLoading = false)
                 _event.emit(UiEvent.NavigateToHome)
             }.doOnError {
-                state = state.copy(isLoading = false, errorMessage = it)
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.ShowError(it))
             }
         }
     }
@@ -124,7 +126,8 @@ class AuthViewModel(
                 state = state.copy(isLoading = false)
                 _event.emit(UiEvent.NavigateToHome)
             }.doOnError {
-                state = state.copy(isLoading = false, errorMessage = it)
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.ShowError(it))
             }
 
         }
@@ -139,8 +142,6 @@ data class AuthState(
     val passwordError: String? = null,
 
     val isLoading: Boolean = false,
-
-    val errorMessage: String? = null
 )
 
 sealed class AuthEvent {
@@ -154,5 +155,5 @@ sealed class AuthEvent {
 
 sealed class UiEvent {
     object NavigateToHome : UiEvent()
-    data class ShowError(val message: String) : UiEvent()
+    data class ShowError(val message: String?) : UiEvent()
 }

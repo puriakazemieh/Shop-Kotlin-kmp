@@ -65,6 +65,10 @@ kotlin {
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(compose.components.resources)
+
+                implementation(libs.compose.material.icons.core)
+                implementation(libs.compose.material.icons.extended)
             }
         }
 

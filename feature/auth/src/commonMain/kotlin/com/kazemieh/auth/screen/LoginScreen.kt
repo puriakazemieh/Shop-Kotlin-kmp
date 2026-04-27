@@ -82,10 +82,6 @@ fun LoginScreen(
             CircularProgressIndicator()
         }
 
-        state.errorMessage?.let {
-            Text(it, color = colors.error)
-        }
-
         Spacer(Modifier.height(16.dp))
 
         TextButton(onClick = onNavigateForgot) {
