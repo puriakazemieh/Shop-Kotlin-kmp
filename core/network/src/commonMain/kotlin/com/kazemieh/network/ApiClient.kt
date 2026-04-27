@@ -10,17 +10,14 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class ApiClient(
-    val httpClient: HttpClient,
-    val baseUrl: String
-) {
+class ApiClient(val httpClient: HttpClient) {
 
     suspend inline fun <reified T> get(
         endpoint: String,
         headers: Map<String, String> = emptyMap(),
         query: Map<String, String> = emptyMap()
     ): T {
-        return httpClient.get("$baseUrl/$endpoint") {
+        return httpClient.get(endpoint) {
             headers.forEach { (k, v) -> header(k, v) }
 
             url {
@@ -36,7 +33,7 @@ class ApiClient(
         body: B,
         headers: Map<String, String> = emptyMap()
     ): R {
-        return httpClient.post("$baseUrl/$endpoint") {
+        return httpClient.post(endpoint) {
             headers.forEach { (k, v) -> header(k, v) }
             contentType(ContentType.Application.Json)
             setBody(body)
@@ -46,6 +43,6 @@ class ApiClient(
     suspend inline fun <reified T> delete(
         endpoint: String
     ): T {
-        return httpClient.delete("$baseUrl/$endpoint").body()
+        return httpClient.delete(endpoint).body()
     }
 }

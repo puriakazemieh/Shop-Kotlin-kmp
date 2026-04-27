@@ -7,6 +7,7 @@ import com.kazemieh.domain.model.User
 import com.kazemieh.network.ApiClient
 import com.kazemieh.network.ApiRoutes
 import com.kazemieh.network.dto.request.LoginRequest
+import com.kazemieh.network.dto.request.RegisterRequest
 import com.kazemieh.network.dto.response.UserResponse
 
 class RemoteDataSourceImpl(
@@ -34,7 +35,7 @@ class RemoteDataSourceImpl(
         return safeApiCall {
             val dto: UserResponse = client.post(
                 ApiRoutes.REGISTER,
-                LoginRequest(email, password)
+                RegisterRequest(email, password)
             )
 
             dto.toDomain()

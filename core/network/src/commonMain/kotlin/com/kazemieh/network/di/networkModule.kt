@@ -13,10 +13,7 @@ val networkModule = module {
 
     // ApiClient
     single {
-        ApiClient(
-            httpClient = get(),
-            baseUrl = "https://api.yourshop.com"
-        )
+        ApiClient(httpClient = get())
     }
 
 }
