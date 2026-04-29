@@ -49,10 +49,9 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(projects.shared)
             implementation(projects.core.designSystem)
 
-            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.serialization)
             implementation(libs.koin.core)
 
             implementation(project(":core:designSystem"))

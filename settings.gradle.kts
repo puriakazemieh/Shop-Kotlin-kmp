@@ -35,8 +35,6 @@ plugins {
 }
 
 include(":composeApp")
-include(":server")
-include(":shared")
 include(":core:designSystem")
 include(":feature:auth")
 include(":core:domain")

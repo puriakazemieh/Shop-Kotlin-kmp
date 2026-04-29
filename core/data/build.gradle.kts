@@ -41,14 +41,13 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.koin.core)
                 implementation(project(":core:domain"))
                 implementation(project(":core:network"))
                 implementation(project(":core:common"))
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
             }
         }
 
