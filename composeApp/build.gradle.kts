@@ -56,8 +56,8 @@ kotlin {
             implementation(project(":core:navigation"))
             implementation(project(":feature:auth"))
 
-//            implementation(project(":core:network"))
-//            implementation(project(":core:data"))
+            implementation(project(":core:network"))
+            implementation(project(":core:data"))
         }
 
         jvmMain.dependencies {
