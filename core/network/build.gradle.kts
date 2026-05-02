@@ -51,7 +51,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-auth:3.3.3")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-                implementation("io.arrow-kt:arrow-core:2.2.2.1")
+//                implementation("io.arrow-kt:arrow-core:2.2.2.1")
 
             }
         }

@@ -37,7 +37,6 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
@@ -46,7 +45,6 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
-            implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.core.designSystem)
@@ -56,14 +54,20 @@ kotlin {
 
             implementation(project(":core:designSystem"))
             implementation(project(":core:navigation"))
-            implementation(project(":core:network"))
-            implementation(project(":core:data"))
             implementation(project(":feature:auth"))
+
+//            implementation(project(":core:network"))
+//            implementation(project(":core:data"))
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+
+        jsMain {
+            dependencies {
+            }
         }
     }
 }
