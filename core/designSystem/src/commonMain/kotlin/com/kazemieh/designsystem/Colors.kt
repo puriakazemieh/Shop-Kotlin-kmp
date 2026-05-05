@@ -25,6 +25,12 @@ val CategoryGreen = Color(0xFF19D109)
 val CategoryPurple = Color(0xFF8E5EFF)
 val CategoryRed = Color(0xFFFF5E60)
 
+//TextPrimary -> MaterialTheme.colorScheme.onPrimaryContainer
+//IconPrimary -> MaterialTheme.colorScheme.onPrimaryContainer
+//SurfaceError -> MaterialTheme.colorScheme.error
+//TextWhite -> MaterialTheme.colorScheme.primaryContainer
+//SurfaceBrand -> MaterialTheme.colorScheme.primary
+
 // --- پالت لایت ---
 val LightAppColorScheme = lightColorScheme(
     primary = Yellowish,       // رنگ اصلی دکمه‌ها، هدرها و ...

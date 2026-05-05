@@ -26,6 +26,7 @@ class AuthViewModel(
 
     var state by mutableStateOf(AuthState())
         private set
+
     private val _event = MutableSharedFlow<UiEvent>()
     val event = _event.asSharedFlow()
 

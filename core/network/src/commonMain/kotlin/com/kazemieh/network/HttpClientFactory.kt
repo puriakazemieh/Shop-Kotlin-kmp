@@ -4,16 +4,20 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object HttpClientFactory {
 
-    fun create(): HttpClient {
+    fun create(tokenProvider: TokenProvider): HttpClient {
         return HttpClient(httpClientEngine()) {
 
             install(ContentNegotiation) {
@@ -25,6 +29,7 @@ object HttpClientFactory {
             }
 
             install(Logging) {
+                logger = Logger.DEFAULT
                 level = LogLevel.ALL
             }
 
@@ -39,6 +44,9 @@ object HttpClientFactory {
             install(DefaultRequest) {
                 url("http://10.0.2.2:8080/")
                 contentType(ContentType.Application.Json)
+                tokenProvider.getAccessToken()?.let { token ->
+                    header(HttpHeaders.Authorization, "Bearer $token")
+                }
             }
 
         }

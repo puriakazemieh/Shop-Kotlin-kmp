@@ -185,7 +185,7 @@ fun HomeGraphScreen(
 //                                        Icon(
 //                                            painter = painterResource(Resources.Icon.RightArrow),
 //                                            contentDescription = "Right icon",
-//                                            tint = IconPrimary
+//                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
 //                                        )
 //                                    }
 //                                }

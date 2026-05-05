@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kazemieh.common.Screen
 import com.kazemieh.home.HomeGraphScreen
+import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -36,7 +37,7 @@ fun AppNavHost(
 //                    }
                 },
                 navigateToProfile = {
-//                    navController.navigate(Screen.Profile)
+                    navController.navigate(Screen.Profile)
                 },
                 navigateToAdminPanel = {
 //                    navController.navigate(Screen.AdminPanel)
@@ -52,6 +53,14 @@ fun AppNavHost(
                 },
             )
         }
+
+        composable<Screen.Profile> {
+            ProfileScreen{
+                navController.navigateUp()
+            }
+        }
+
+
     }
 }
 

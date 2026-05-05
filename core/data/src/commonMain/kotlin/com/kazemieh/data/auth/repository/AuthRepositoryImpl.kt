@@ -1,0 +1,51 @@
+package com.kazemieh.data.auth.repository
+
+import com.kazemieh.common.AppResult
+import com.kazemieh.common.doOnSuccess
+import com.kazemieh.common.map
+import com.kazemieh.data.auth.datasource.AuthDataSource
+import com.kazemieh.data.local.TokenManager
+import com.kazemieh.data.local.ProfileLocalDataSource
+import com.kazemieh.domain.repository.AuthRepository
+
+class AuthRepositoryImpl(
+    private val authDataSource: AuthDataSource,
+    private val tokenManager: TokenManager,
+    private val profileLocalDataSource: ProfileLocalDataSource,
+) : AuthRepository {
+
+    override suspend fun login(
+        email: String,
+        password: String
+    ): AppResult<Unit> {
+        return authDataSource.login(email, password)
+            .doOnSuccess { auth ->
+                tokenManager.saveTokens(
+                    accessToken = auth.accessToken,
+                    refreshToken = auth.refreshToken
+                )
+                profileLocalDataSource.saveProfile(auth.profile)
+            }
+            .map { }
+    }
+
+    override suspend fun register(
+        email: String,
+        password: String
+    ): AppResult<Unit> {
+        return authDataSource.login(email, password)
+            .doOnSuccess { auth ->
+                tokenManager.saveTokens(
+                    accessToken = auth.accessToken,
+                    refreshToken = auth.refreshToken
+                )
+                profileLocalDataSource.saveProfile(auth.profile)
+            }
+            .map { }
+    }
+
+    override suspend fun forgotPassword(email: String): AppResult<Unit> {
+        return authDataSource.forgotPassword(email)
+    }
+
+}

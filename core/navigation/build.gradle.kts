@@ -57,6 +57,7 @@ kotlin {
                 implementation(libs.compose.navigation)
                 implementation(project(":feature:auth"))
                 implementation(project(":feature:home"))
+                implementation(project(":feature:profile"))
                 implementation(project(":core:common"))
 
                 implementation(libs.koin.compose)

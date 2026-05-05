@@ -42,6 +42,14 @@ val <T> AppResult<T>.isSuccessful: Boolean
         return this is AppResult.Success
     }
 
+inline fun <T, R> AppResult<T>.map(transform: (T) -> R): AppResult<R> {
+    return when (this) {
+        is AppResult.Success -> AppResult.Success(transform(data))
+        is AppResult.Error -> this
+        is AppResult.Loading -> this
+    }
+}
+
 
 suspend fun <T> safeApiCall(
     apiCall: suspend () -> T

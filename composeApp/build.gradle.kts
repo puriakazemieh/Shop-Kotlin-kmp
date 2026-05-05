@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -38,6 +39,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -55,6 +57,7 @@ kotlin {
             implementation(project(":core:designSystem"))
             implementation(project(":core:navigation"))
             implementation(project(":feature:auth"))
+            implementation(project(":feature:profile"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))

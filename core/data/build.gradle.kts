@@ -48,6 +48,8 @@ kotlin {
                 implementation(project(":core:common"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation(libs.multiplatform.settings)
+                implementation(libs.multiplatform.settings.coroutines)
             }
         }
 

@@ -1,22 +1,22 @@
-package com.kazemieh.data
+package com.kazemieh.data.auth.datasource
 
-import com.kazemieh.data.mapper.toDomain
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.safeApiCall
-import com.kazemieh.domain.model.User
+import com.kazemieh.data.auth.mapper.toDomain
+import com.kazemieh.domain.model.Auth
 import com.kazemieh.network.AuthApi
 import com.kazemieh.network.dto.request.LoginRequest
 import com.kazemieh.network.dto.request.RegisterRequest
 
-class RemoteDataSourceImpl(
+class AuthDataSourceImpl(
     private val authApi: AuthApi
-) : RemoteDataSource {
+) : AuthDataSource {
 
-    override suspend fun login(email: String, password: String): AppResult<User> = safeApiCall {
+    override suspend fun login(email: String, password: String): AppResult<Auth> = safeApiCall {
         authApi.login(LoginRequest(email, password)).toDomain()
     }
 
-    override suspend fun register(email: String, password: String): AppResult<User> = safeApiCall {
+    override suspend fun register(email: String, password: String): AppResult<Auth> = safeApiCall {
         authApi.register(RegisterRequest(email, password)).toDomain()
     }
 

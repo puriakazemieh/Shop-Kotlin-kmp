@@ -4,8 +4,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import java.awt.Dimension
 
 fun main() = application {
+    initKoin()
     Window(
         onCloseRequest = ::exitApplication,
         state = rememberWindowState(
@@ -13,7 +15,7 @@ fun main() = application {
             height = 700.dp
         )
     ) {
-        window.minimumSize = java.awt.Dimension(800, 600)
+        window.minimumSize = Dimension(800, 600)
         App()
     }
 }
