@@ -11,7 +11,9 @@ class TokenManager(private val settings: Settings) : TokenProvider {
         private const val KEY_REFRESH_TOKEN = "refresh_token"
     }
 
-    fun saveTokens(accessToken: String, refreshToken: String) {
+    private var onTokenExpiredListener: (() -> Unit)? = null
+
+    override fun saveTokens(accessToken: String, refreshToken: String) {
         settings[KEY_ACCESS_TOKEN] = accessToken
         settings[KEY_REFRESH_TOKEN] = refreshToken
     }
@@ -24,9 +26,17 @@ class TokenManager(private val settings: Settings) : TokenProvider {
         return settings.getStringOrNull(KEY_REFRESH_TOKEN)
     }
 
-    fun clearTokens() {
+    override fun clearTokens() {
         settings.remove(KEY_ACCESS_TOKEN)
         settings.remove(KEY_REFRESH_TOKEN)
+    }
+
+    override fun setOnTokenExpiredListener(listener: () -> Unit) {
+        onTokenExpiredListener = listener
+    }
+
+    override fun notifyTokenExpired() {
+        onTokenExpiredListener?.invoke()
     }
 
     fun hasValidToken(): Boolean {

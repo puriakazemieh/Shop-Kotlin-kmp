@@ -1,6 +1,7 @@
 package com.kazemieh.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kazemieh.common.AuthState
 import com.kazemieh.common.Screen
+import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.home.HomeGraphScreen
 import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -20,11 +23,21 @@ fun AppNavHost(
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
+
+    LaunchedEffect(true) {
+        TokenExpiredEventBus.events.collect { authState ->
+            if (authState is AuthState.Unauthenticated) {
+                navController.navigate(Screen.AuthGraph)
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
+
 
         authNavGraph(navController)
 
@@ -53,7 +66,7 @@ fun AppNavHost(
         }
 
         composable<Screen.Profile> {
-            ProfileScreen{
+            ProfileScreen {
                 navController.navigateUp()
             }
         }

@@ -119,7 +119,6 @@ fun HomeGraphScreen(
         targetValue = if (drawerState.isOpened()) 20.dp else 0.dp
     )
 
-//    val viewModel = koinViewModel<HomeGraphViewModel>()
 //    val customer by viewModel.customer.collectAsState()
 //    val totalAmount by viewModel.totalAmountFlow.collectAsState(RequestState.Loading)
     val messageBarState = rememberMessageBarState()

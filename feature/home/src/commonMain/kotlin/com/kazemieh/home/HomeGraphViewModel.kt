@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
+import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeGraphViewModel(
+    observeAuthStateUseCase: ObserveAuthStateUseCase,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val signOutUseCase: SignOutUseCase,
 ) : ViewModel() {
@@ -26,6 +28,13 @@ class HomeGraphViewModel(
 
     init {
         handleIntent(HomeIntent.RefreshAuthState)
+//        viewModelScope.launch {
+//            observeAuthStateUseCase().collect { authState ->
+//                if (authState is AuthState.Unauthenticated) {
+//                    _effect.send(HomeEffect.NavigateToAuth)
+//                }
+//            }
+//        }
     }
 
     fun handleIntent(intent: HomeIntent) {
@@ -44,7 +53,6 @@ class HomeGraphViewModel(
     }
 
 
-
     private fun signOut() {
         viewModelScope.launch {
             when (val result = signOutUseCase()) {
@@ -52,6 +60,7 @@ class HomeGraphViewModel(
                     _state.update { it.copy(isLoggedIn = false) }
 //                    _effect.send(HomeEffect.NavigateToAuth)
                 }
+
                 is AppResult.Error -> {
                     _effect.send(HomeEffect.ShowError(result.message))
                 }

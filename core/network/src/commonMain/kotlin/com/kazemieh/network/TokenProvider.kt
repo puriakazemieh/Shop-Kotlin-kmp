@@ -1,6 +1,10 @@
 package com.kazemieh.network
 
 interface TokenProvider {
+    fun saveTokens(accessToken: String, refreshToken: String)
     fun getAccessToken(): String?
     fun getRefreshToken(): String?
+    fun clearTokens()
+    fun setOnTokenExpiredListener(listener: () -> Unit)
+    fun notifyTokenExpired()
 }
