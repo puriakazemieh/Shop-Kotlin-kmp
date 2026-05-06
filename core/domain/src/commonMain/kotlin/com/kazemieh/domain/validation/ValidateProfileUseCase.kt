@@ -1,4 +1,4 @@
-package com.kazemieh.domain.usecase
+package com.kazemieh.domain.validation
 
 import com.kazemieh.domain.model.Profile
 

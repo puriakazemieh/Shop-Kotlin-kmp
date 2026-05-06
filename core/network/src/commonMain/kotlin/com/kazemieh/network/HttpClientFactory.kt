@@ -1,5 +1,6 @@
 package com.kazemieh.network
 
+import com.kazemieh.common.ld
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
@@ -29,7 +30,11 @@ object HttpClientFactory {
             }
 
             install(Logging) {
-                logger = Logger.DEFAULT
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        message.ld("ktor ")
+                    }
+                }
                 level = LogLevel.ALL
             }
 

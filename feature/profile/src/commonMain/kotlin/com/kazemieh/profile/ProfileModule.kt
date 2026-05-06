@@ -3,7 +3,7 @@ package com.kazemieh.profile
 import com.kazemieh.domain.usecase.GetProfileUseCase
 import com.kazemieh.domain.usecase.ObserveProfileUseCase
 import com.kazemieh.domain.usecase.UpdateProfileUseCase
-import com.kazemieh.domain.usecase.ValidateProfileUseCase
+import com.kazemieh.domain.validation.ValidateProfileUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

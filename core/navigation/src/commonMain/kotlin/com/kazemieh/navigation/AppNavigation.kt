@@ -32,9 +32,7 @@ fun AppNavHost(
 
             HomeGraphScreen(
                 navigateToAuth = {
-//                    navController.navigate(Screen.Auth) {
-//                        popUpTo<Screen.HomeGraph> { inclusive = true }
-//                    }
+                    navController.navigate(Screen.AuthGraph)
                 },
                 navigateToProfile = {
                     navController.navigate(Screen.Profile)

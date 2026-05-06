@@ -22,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,11 +57,15 @@ import com.kazemieh.home.component.CustomDrawer
 import com.kazemieh.home.component.CustomDrawerState
 import com.kazemieh.home.component.isOpened
 import com.kazemieh.home.component.opposite
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun HomeGraphScreen(
+    viewModel: HomeGraphViewModel = koinViewModel(),
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToAdminPanel: () -> Unit,
@@ -67,6 +73,7 @@ fun HomeGraphScreen(
     navigateToCategorySearch: (String) -> Unit,
     navigateToCheckout: (String) -> Unit,
 ) {
+    val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
     val selectedDestination by remember {
@@ -117,6 +124,17 @@ fun HomeGraphScreen(
 //    val totalAmount by viewModel.totalAmountFlow.collectAsState(RequestState.Loading)
     val messageBarState = rememberMessageBarState()
 
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is HomeEffect.NavigateToAuth -> navigateToAuth()
+                is HomeEffect.ShowError -> {
+                    effect.message.let { messageBarState.addError(it) }
+                }
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -133,7 +151,9 @@ fun HomeGraphScreen(
 //                    onError = { message -> messageBarState.addError(message) }
 //                )
             },
-            onAdminPanelClick = navigateToAdminPanel
+            onAdminPanelClick = navigateToAdminPanel,
+            isLoggedIn = state.isLoggedIn,
+            onLoginClick = navigateToAuth
         )
         Box(
             modifier = Modifier

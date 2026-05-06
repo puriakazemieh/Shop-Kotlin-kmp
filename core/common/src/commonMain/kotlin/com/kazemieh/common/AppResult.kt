@@ -49,15 +49,3 @@ inline fun <T, R> AppResult<T>.map(transform: (T) -> R): AppResult<R> {
         is AppResult.Loading -> this
     }
 }
-
-
-suspend fun <T> safeApiCall(
-    apiCall: suspend () -> T
-): AppResult<T> {
-    return try {
-        AppResult.Success(apiCall())
-    } catch (e: Exception) {
-        AppResult.Error(e.message ?: "error")
-    }
-}
-

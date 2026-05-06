@@ -7,6 +7,8 @@ import com.kazemieh.data.auth.datasource.AuthDataSource
 import com.kazemieh.data.local.TokenManager
 import com.kazemieh.data.local.ProfileLocalDataSource
 import com.kazemieh.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthDataSource,
@@ -33,7 +35,7 @@ class AuthRepositoryImpl(
         email: String,
         password: String
     ): AppResult<Unit> {
-        return authDataSource.login(email, password)
+        return authDataSource.register(email, password)
             .doOnSuccess { auth ->
                 tokenManager.saveTokens(
                     accessToken = auth.accessToken,
@@ -46,6 +48,19 @@ class AuthRepositoryImpl(
 
     override suspend fun forgotPassword(email: String): AppResult<Unit> {
         return authDataSource.forgotPassword(email)
+    }
+
+    override suspend fun signOut(): AppResult<Unit> {
+        return try {
+            tokenManager.clearTokens()
+            AppResult.Success(Unit)
+        } catch (e: Exception) {
+            AppResult.Error(e.message ?: "Unknown error")
+        }
+    }
+
+    override fun isLoggedIn(): Flow<Boolean> = flow {
+        emit(tokenManager.getAccessToken() != null)
     }
 
 }

@@ -17,7 +17,9 @@ import com.kazemieh.designsystem.FontSize
 
 @Composable
 fun CustomDrawer(
+    isLoggedIn: Boolean,
 //    customer: RequestState<Customer>,
+    onLoginClick: () -> Unit,
     onProfileClick: () -> Unit,
     onContactUsClick: () -> Unit,
     onSignOutClick: () -> Unit,
@@ -46,12 +48,32 @@ fun CustomDrawer(
             fontSize = FontSize.REGULAR
         )
         Spacer(modifier = Modifier.height(50.dp))
-        DrawerItem.entries.take(5).forEach { item ->
+        if (isLoggedIn) {
+            DrawerItemCard(
+                drawerItem = DrawerItem.Profile,
+                onClick = onProfileClick
+            )
+        } else {
+            DrawerItemCard(
+                drawerItem = DrawerItem.Login,
+                onClick = onLoginClick
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        DrawerItem.entries.take(5)
+            .filter { item ->
+                when (item) {
+                    DrawerItem.Profile -> false
+                    DrawerItem.Login -> false
+                    DrawerItem.SignOut -> isLoggedIn
+                    else -> true
+                }
+            }
+            .forEach { item ->
             DrawerItemCard(
                 drawerItem = item,
                 onClick = {
                     when (item) {
-                        DrawerItem.Profile -> onProfileClick()
                         DrawerItem.Contact -> onContactUsClick()
                         DrawerItem.SignOut -> onSignOutClick()
                         else -> {}

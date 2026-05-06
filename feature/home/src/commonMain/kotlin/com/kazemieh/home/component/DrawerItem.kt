@@ -7,6 +7,10 @@ enum class DrawerItem(
     val title: String,
     val icon: DrawableResource
 ) {
+    Login(
+        "login/register",
+        Resources.Icon.SignOut // todo change by login icon
+    ),
     Profile(
         title = "Profile",
         icon = Resources.Icon.Person

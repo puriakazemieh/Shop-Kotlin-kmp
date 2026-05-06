@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -54,13 +53,16 @@ kotlin {
             implementation(libs.kotlinx.serialization)
             implementation(libs.koin.core)
 
-            implementation(project(":core:designSystem"))
-            implementation(project(":core:navigation"))
             implementation(project(":feature:auth"))
             implementation(project(":feature:profile"))
+            implementation(project(":feature:home"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))
+            implementation(project(":core:designSystem"))
+            implementation(project(":core:navigation"))
+
+
         }
 
         jvmMain.dependencies {

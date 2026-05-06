@@ -12,5 +12,5 @@ data class UserResponse(
     val postalCode: Int?,
     val phone: String?,
     val role: String,
-    val isActive: Boolean,
+    val isActive: Boolean? = true,
 )

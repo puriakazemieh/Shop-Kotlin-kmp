@@ -7,7 +7,7 @@ import com.kazemieh.domain.model.Profile
 import com.kazemieh.domain.usecase.GetProfileUseCase
 import com.kazemieh.domain.usecase.ObserveProfileUseCase
 import com.kazemieh.domain.usecase.UpdateProfileUseCase
-import com.kazemieh.domain.usecase.ValidateProfileUseCase
+import com.kazemieh.domain.validation.ValidateProfileUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

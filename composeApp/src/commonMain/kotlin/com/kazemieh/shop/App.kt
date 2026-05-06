@@ -5,6 +5,7 @@ import com.kazemieh.auth.authModule
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.home.homeModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
 import com.kazemieh.profile.profileModule
@@ -20,13 +21,15 @@ fun App() {
 
 fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
+        printLogger()
         config?.invoke(this)
         modules(
-            dataModule,
+            platformModule(),
             networkModule,
+            dataModule,
+            homeModule,
             authModule,
-            profileModule,
-            platformModule()
+            profileModule
         )
     }
 }

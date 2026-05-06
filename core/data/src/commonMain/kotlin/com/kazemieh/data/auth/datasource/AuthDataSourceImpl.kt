@@ -1,12 +1,12 @@
 package com.kazemieh.data.auth.datasource
 
 import com.kazemieh.common.AppResult
-import com.kazemieh.common.safeApiCall
 import com.kazemieh.data.auth.mapper.toDomain
 import com.kazemieh.domain.model.Auth
 import com.kazemieh.network.AuthApi
 import com.kazemieh.network.dto.request.LoginRequest
 import com.kazemieh.network.dto.request.RegisterRequest
+import com.kazemieh.network.safeApiCall
 
 class AuthDataSourceImpl(
     private val authApi: AuthApi
