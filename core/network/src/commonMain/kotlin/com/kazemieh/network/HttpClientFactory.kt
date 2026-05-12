@@ -77,7 +77,7 @@ object HttpClientFactory {
                         try {
                             // درخواست refresh token
                             val response: RefreshTokenResponse =
-                                client.post("http://10.0.2.2:8080/api/auth/refresh") {
+                                client.post("${PlatformConfig.baseUrl}api/auth/refresh") {
                                     markAsRefreshTokenRequest()
                                     setBody(RefreshTokenRequest(refreshToken))
                                 }.body()
@@ -102,7 +102,7 @@ object HttpClientFactory {
                 }
             }
             install(DefaultRequest) {
-                url("http://10.0.2.2:8080/")
+                url(PlatformConfig.baseUrl)
                 contentType(ContentType.Application.Json)
                 tokenProvider.getAccessToken()?.let { token ->
                     header(HttpHeaders.Authorization, "Bearer $token")
