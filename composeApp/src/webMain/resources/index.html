@@ -16,5 +16,11 @@
     </circle>
 </svg>
 <script type="application/javascript" src="composeApp.js"></script>
+<script>
+    console.log("HTML loaded");
+    window.addEventListener('error', (e) => {
+        console.error('Global error:', e.error);
+    });
+</script>
 </body>
 </html>

@@ -59,7 +59,6 @@ import com.kazemieh.home.component.isOpened
 import com.kazemieh.home.component.opposite
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)

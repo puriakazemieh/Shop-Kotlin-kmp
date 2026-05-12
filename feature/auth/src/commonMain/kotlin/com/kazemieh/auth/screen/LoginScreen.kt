@@ -26,7 +26,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: AuthViewModel,
+    viewModel: AuthViewModel= koinViewModel(),
     onNavigateRegister: () -> Unit,
     onNavigateForgot: () -> Unit
 ) {

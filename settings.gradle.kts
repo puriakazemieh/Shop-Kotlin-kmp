@@ -4,29 +4,39 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
         maven {url = uri("https://maven.myket.ir") }
-//        google {
-//            mavenContent {
-//                includeGroupAndSubgroups("androidx")
-//                includeGroupAndSubgroups("com.android")
-//                includeGroupAndSubgroups("com.google")
-//            }
-//        }
-//        mavenCentral()
-//        gradlePluginPortal()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
         maven {url = uri("https://maven.myket.ir") }
-//        google {
-//            mavenContent {
-//                includeGroupAndSubgroups("androidx")
-//                includeGroupAndSubgroups("com.android")
-//                includeGroupAndSubgroups("com.google")
-//            }
-//        }
-//        mavenCentral()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+        ivy {
+            name = "Node Distributions"
+            url = uri("https://nodejs.org/dist")
+            patternLayout {
+                artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]")
+            }
+            metadataSources { artifact() }
+            content { includeModule("org.nodejs", "node") }
+        }
     }
 }
 

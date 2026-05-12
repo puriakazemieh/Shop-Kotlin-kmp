@@ -12,20 +12,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ForgotPasswordScreen(
-    viewModel: AuthViewModel,
+    viewModel: AuthViewModel = koinViewModel(),
     onBack: () -> Unit
 ) {
     val state = viewModel.state

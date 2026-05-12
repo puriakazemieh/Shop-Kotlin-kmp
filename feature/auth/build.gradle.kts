@@ -50,7 +50,6 @@ kotlin {
                 implementation(libs.compose.components.resources)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
 
-                implementation(libs.androidx.lifecycle.viewmodel)
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
