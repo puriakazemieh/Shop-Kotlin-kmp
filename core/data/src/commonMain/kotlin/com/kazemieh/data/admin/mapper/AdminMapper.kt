@@ -55,7 +55,7 @@ fun AdminProductDetailResponse.toDomain() = AdminProductDetail(
     variants = variants.map { it.toDomain() }
 )
 
-fun <T, R> PageResponse<T>.toDomain(mapper: (T) -> R) = AdminPage(
+fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(
     items = items.map(mapper),
     page = page,
     size = size,

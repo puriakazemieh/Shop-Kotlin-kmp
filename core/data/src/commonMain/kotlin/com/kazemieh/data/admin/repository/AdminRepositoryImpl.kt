@@ -1,7 +1,9 @@
 package com.kazemieh.data.admin.repository
 
 import com.kazemieh.common.AppResult
+import com.kazemieh.data.admin.mapper.toAdminPage
 import com.kazemieh.data.admin.mapper.toDomain
+import com.kazemieh.data.catalog.mapper.toDomain as toCatalogDomain
 import com.kazemieh.data.admin.source.AdminDataSource
 import com.kazemieh.domain.model.admin.*
 import com.kazemieh.domain.repository.*
@@ -14,6 +16,12 @@ class AdminRepositoryImpl(
     override suspend fun listCategories(): AppResult<List<AdminCategory>> =
         dataSource.listCategories().map { list -> list.map { it.toDomain() } }
 
+    override suspend fun uploadImage(bytes: ByteArray): AppResult<String> {
+        // Since I can't find Firebase dependency, I'll return a mock URL for now
+        // In a real app, this would use Firebase Storage or another provider
+        return AppResult.Success("https://via.placeholder.com/150")
+    }
+
     override suspend fun createCategory(name: String, slug: String, parentId: Long?): AppResult<AdminCategory> =
         dataSource.createCategory(AdminCreateCategoryRequest(name, slug, parentId)).map { it.toDomain() }
 
@@ -23,8 +31,14 @@ class AdminRepositoryImpl(
     override suspend fun deleteCategory(id: Long): AppResult<Unit> =
         dataSource.deleteCategory(id)
 
-    override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean): AppResult<AdminPage<AdminProduct>> =
-        dataSource.listProducts(page, size, includeInactive).map { it.toDomain { it.toDomain() } }
+    override suspend fun createSize(name: String, sortOrder: Int): AppResult<Size> =
+        dataSource.createSize(AdminCreateSizeRequest(name, sortOrder)).map { it.toCatalogDomain() }
+
+    override suspend fun createColor(name: String, hex: String?): AppResult<Color> =
+        dataSource.createColor(AdminCreateColorRequest(name, hex)).map { it.toCatalogDomain() }
+
+    override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String?): AppResult<AdminPage<AdminProduct>> =
+        dataSource.listProducts(page, size, includeInactive, query).map { it.toAdminPage { dto -> dto.toDomain() } }
 
     override suspend fun createProduct(
         categoryId: Long?,

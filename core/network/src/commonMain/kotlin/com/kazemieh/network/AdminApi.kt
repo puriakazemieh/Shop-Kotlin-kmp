@@ -3,6 +3,8 @@ package com.kazemieh.network
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.request.*
 import com.kazemieh.network.dto.admin.response.*
+import com.kazemieh.network.dto.catalog.response.ColorResponse
+import com.kazemieh.network.dto.catalog.response.SizeResponse
 
 interface AdminApi {
 
@@ -12,8 +14,12 @@ interface AdminApi {
     suspend fun updateCategory(id: Long, request: AdminUpdateCategoryRequest): AdminCategoryResponse
     suspend fun deleteCategory(id: Long)
 
+    // ---------- Sizes & Colors ----------
+    suspend fun createSize(request: AdminCreateSizeRequest): SizeResponse
+    suspend fun createColor(request: AdminCreateColorRequest): ColorResponse
+
     // ---------- Products ----------
-    suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean): PageResponse<AdminProductResponse>
+    suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): PageResponse<AdminProductResponse>
     suspend fun createProduct(request: AdminCreateProductRequest): AdminProductResponse
     suspend fun getProductDetail(id: Long): AdminProductDetailResponse
     suspend fun updateProduct(id: Long, request: AdminUpdateProductRequest): AdminProductResponse

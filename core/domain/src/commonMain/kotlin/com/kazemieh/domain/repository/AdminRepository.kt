@@ -10,14 +10,18 @@ interface AdminRepository {
     suspend fun updateCategory(id: Long, name: String?, slug: String?, parentId: Long?): AppResult<AdminCategory>
     suspend fun deleteCategory(id: Long): AppResult<Unit>
 
+    suspend fun createSize(name: String, sortOrder: Int): AppResult<Size>
+    suspend fun createColor(name: String, hex: String?): AppResult<Color>
+
     // Products
-    suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean): AppResult<AdminPage<AdminProduct>>
+    suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): AppResult<AdminPage<AdminProduct>>
     suspend fun createProduct(categoryId: Long?, title: String, slug: String, description: String?, basePrice: Double?, isActive: Boolean): AppResult<AdminProduct>
     suspend fun getProductDetail(id: Long): AppResult<AdminProductDetail>
     suspend fun updateProduct(id: Long, categoryId: Long?, title: String?, slug: String?, description: String?, basePrice: Double?, isActive: Boolean?): AppResult<AdminProduct>
     suspend fun deleteProduct(id: Long): AppResult<Unit>
 
     // Images
+    suspend fun uploadImage(bytes: ByteArray): AppResult<String>
     suspend fun addImage(productId: Long, url: String, sortOrder: Int?): AppResult<AdminProductImage>
     suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit>
 

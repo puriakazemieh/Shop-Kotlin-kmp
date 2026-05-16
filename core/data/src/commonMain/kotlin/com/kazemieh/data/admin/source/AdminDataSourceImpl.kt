@@ -5,6 +5,8 @@ import com.kazemieh.network.AdminApi
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.request.*
 import com.kazemieh.network.dto.admin.response.*
+import com.kazemieh.network.dto.catalog.response.ColorResponse
+import com.kazemieh.network.dto.catalog.response.SizeResponse
 import com.kazemieh.network.safeApiCall
 
 class AdminDataSourceImpl(
@@ -27,8 +29,16 @@ class AdminDataSourceImpl(
         api.deleteCategory(id)
     }
 
-    override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean): AppResult<PageResponse<AdminProductResponse>> = safeApiCall {
-        api.listProducts(page, size, includeInactive)
+    override suspend fun createSize(request: AdminCreateSizeRequest): AppResult<SizeResponse> = safeApiCall {
+        api.createSize(request)
+    }
+
+    override suspend fun createColor(request: AdminCreateColorRequest): AppResult<ColorResponse> = safeApiCall {
+        api.createColor(request)
+    }
+
+    override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String?): AppResult<PageResponse<AdminProductResponse>> = safeApiCall {
+        api.listProducts(page, size, includeInactive, query)
     }
 
     override suspend fun createProduct(request: AdminCreateProductRequest): AppResult<AdminProductResponse> = safeApiCall {

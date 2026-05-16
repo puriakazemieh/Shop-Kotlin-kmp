@@ -1,6 +1,7 @@
 package com.kazemieh.admin_panel
 
 import com.kazemieh.admin_panel.manage_product.ManageProductViewModel
+import com.kazemieh.admin_panel.manage_product.PhotoPicker
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.usecase.catalog.GetColorsUseCase
@@ -24,6 +25,11 @@ val adminPanelModule = module {
             updateAdminProductUseCase = get(),
             deleteAdminProductUseCase = get(),
             createProductVariantUseCase = get(),
+            createAdminCategoryUseCase = get(),
+            createSizeUseCase = get(),
+            createColorUseCase = get(),
+            uploadImageUseCase = get(),
+            addProductImageUseCase = get(),
             getCategoriesUseCase = get(),
             getSizesUseCase = get(),
             getColorsUseCase = get(),
@@ -38,8 +44,15 @@ val adminPanelModule = module {
     factory { UpdateAdminProductUseCase(get()) }
     factory { DeleteAdminProductUseCase(get()) }
     factory { CreateProductVariantUseCase(get()) }
+    factory { CreateAdminCategoryUseCase(get()) }
+    factory { CreateSizeUseCase(get()) }
+    factory { CreateColorUseCase(get()) }
+    factory { UploadImageUseCase(get()) }
+    factory { AddProductImageUseCase(get()) }
 
     factory { GetCategoriesUseCase(get()) }
     factory { GetSizesUseCase(get()) }
     factory { GetColorsUseCase(get()) }
+
+    single { PhotoPicker() }
 }

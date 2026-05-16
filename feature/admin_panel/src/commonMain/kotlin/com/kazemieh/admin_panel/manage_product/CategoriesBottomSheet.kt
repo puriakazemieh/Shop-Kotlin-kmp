@@ -15,6 +15,7 @@ import com.kazemieh.domain.model.Category
 fun CategoriesBottomSheet(
     categories: List<Category>,
     onCategorySelected: (Category) -> Unit,
+    onCreateCategoryClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
@@ -26,11 +27,19 @@ fun CategoriesBottomSheet(
                 .padding(16.dp)
         ) {
             item {
-                Text(
-                    text = "Select Category",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Select Category",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    TextButton(onClick = onCreateCategoryClick) {
+                        Text("Add New")
+                    }
+                }
             }
             items(categories) { category ->
                 CategoryItem(

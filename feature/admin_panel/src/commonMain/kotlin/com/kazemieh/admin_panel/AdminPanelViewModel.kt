@@ -8,6 +8,11 @@ import com.kazemieh.domain.repository.AdminPage
 import com.kazemieh.domain.usecase.admin.GetAdminProductsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -19,20 +24,32 @@ class AdminPanelViewModel(
     val state = _state.asStateFlow()
 
     init {
-        handleIntent(AdminPanelIntent.LoadProducts)
+        // Initial load
+        loadProducts()
+
+        _state
+            .map { it.searchQuery }
+            .distinctUntilChanged()
+            .debounce(500)
+            .onEach { query ->
+                loadProducts(query)
+            }
+            .launchIn(viewModelScope)
     }
 
     fun handleIntent(intent: AdminPanelIntent) {
         when (intent) {
-            is AdminPanelIntent.LoadProducts -> loadProducts()
-            is AdminPanelIntent.SearchProducts -> _state.update { it.copy(searchQuery = intent.query) }
+            is AdminPanelIntent.LoadProducts -> loadProducts(_state.value.searchQuery)
+            is AdminPanelIntent.SearchProducts -> {
+                _state.update { it.copy(searchQuery = intent.query) }
+            }
         }
     }
 
-    private fun loadProducts() {
+    private fun loadProducts(query: String? = null) {
         viewModelScope.launch {
             _state.update { it.copy(productsState = AppResult.Loading) }
-            val result = getAdminProductsUseCase(page = 0, size = 100, includeInactive = true)
+            val result = getAdminProductsUseCase(page = 0, size = 100, includeInactive = true, query = query)
             _state.update { it.copy(productsState = result) }
         }
     }

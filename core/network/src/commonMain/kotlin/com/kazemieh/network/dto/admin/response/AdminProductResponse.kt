@@ -1,14 +1,17 @@
 package com.kazemieh.network.dto.admin.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class AdminProductResponse(
     val id: Long,
-    val categoryId: Long?,
-    val title: String,
-    val slug: String,
-    val description: String?,
-    val basePrice: Double?,
-    val isActive: Boolean
+    val categoryId: Long? = null,
+    val title: String = "",
+    val slug: String = "",
+    val description: String? = null,
+    val basePrice: Double? = null,
+    val createdAt: String? = null,
+    val updatedAt: String? = null,
+    @SerialName("active") val isActive: Boolean = true
 )

@@ -38,8 +38,20 @@ fun ManageProductScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<ManageProductViewModel>()
     val state by viewModel.state.collectAsState()
+    val photoPicker = remember { PhotoPicker() }
+    
+    photoPicker.InitializePhotoPicker(
+        onImageSelect = { bytes ->
+            viewModel.handleIntent(ManageProductIntent.UploadImage(bytes))
+        }
+    )
     var showCategoriesBottomSheet by remember { mutableStateOf(false) }
+    var showSizesBottomSheet by remember { mutableStateOf(false) }
+    var showColorsBottomSheet by remember { mutableStateOf(false) }
     var showAddVariantDialog by remember { mutableStateOf(false) }
+    var showCreateCategoryDialog by remember { mutableStateOf(false) }
+    var showCreateSizeDialog by remember { mutableStateOf(false) }
+    var showCreateColorDialog by remember { mutableStateOf(false) }
     var dropdownMenuOpened by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -56,18 +68,80 @@ fun ManageProductScreen(
         CategoriesBottomSheet(
             categories = state.categories,
             onCategorySelected = { viewModel.handleIntent(ManageProductIntent.UpdateCategory(it)) },
+            onCreateCategoryClick = {
+                showCreateCategoryDialog = true
+                showCategoriesBottomSheet = false
+            },
             onDismiss = { showCategoriesBottomSheet = false }
+        )
+    }
+
+    if (showCreateCategoryDialog) {
+        CreateCategoryDialog(
+            onDismiss = { showCreateCategoryDialog = false },
+            onConfirm = { name, slug ->
+                viewModel.handleIntent(ManageProductIntent.CreateCategory(name, slug, null))
+                showCreateCategoryDialog = false
+            }
+        )
+    }
+
+    if (showSizesBottomSheet) {
+        SizesBottomSheet(
+            sizes = state.sizes,
+            onSizeSelected = { viewModel.handleIntent(ManageProductIntent.UpdateSize(it)) },
+            onCreateSizeClick = {
+                showCreateSizeDialog = true
+                showSizesBottomSheet = false
+            },
+            onDismiss = { showSizesBottomSheet = false }
+        )
+    }
+
+    if (showCreateSizeDialog) {
+        CreateSizeDialog(
+            onDismiss = { showCreateSizeDialog = false },
+            onConfirm = { name, sortOrder ->
+                viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
+                showCreateSizeDialog = false
+            }
+        )
+    }
+
+    if (showColorsBottomSheet) {
+        ColorsBottomSheet(
+            colors = state.colors,
+            onColorSelected = { viewModel.handleIntent(ManageProductIntent.UpdateColor(it)) },
+            onCreateColorClick = {
+                showCreateColorDialog = true
+                showColorsBottomSheet = false
+            },
+            onDismiss = { showColorsBottomSheet = false }
+        )
+    }
+
+    if (showCreateColorDialog) {
+        CreateColorDialog(
+            onDismiss = { showCreateColorDialog = false },
+            onConfirm = { name, hex ->
+                viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
+                showCreateColorDialog = false
+            }
         )
     }
 
     if (showAddVariantDialog) {
         AddVariantDialog(
-            sizes = state.sizes,
-            colors = state.colors,
             onDismiss = { showAddVariantDialog = false },
-            onConfirm = { sizeId, colorId, sku, price, initialOnHand ->
+            onConfirm = { sku, price, initialOnHand ->
                 viewModel.handleIntent(
-                    ManageProductIntent.AddVariant(sizeId, colorId, sku, price, initialOnHand)
+                    ManageProductIntent.AddVariant(
+                        sizeId = state.selectedSize?.id ?: 0L,
+                        colorId = state.selectedColor?.id ?: 0L,
+                        sku = sku,
+                        price = price,
+                        initialOnHand = initialOnHand
+                    )
                 )
                 showAddVariantDialog = false
             }
@@ -188,6 +262,28 @@ fun ManageProductScreen(
                         onClick = { showCategoriesBottomSheet = true }
                     )
 
+                    // I will add another row for managing sizes and colors if needed here, 
+                    // but they are already manageable within AddVariantDialog.
+                    // To follow "next to category", I'll add them as buttons or fields.
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedCard(
+                            modifier = Modifier.weight(1f).clickable { showSizesBottomSheet = true },
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            Text(state.selectedSize?.name ?: "Manage Sizes", modifier = Modifier.padding(16.dp), fontSize = FontSize.SMALL)
+                        }
+                        OutlinedCard(
+                            modifier = Modifier.weight(1f).clickable { showColorsBottomSheet = true },
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            Text(state.selectedColor?.name ?: "Manage Colors", modifier = Modifier.padding(16.dp), fontSize = FontSize.SMALL)
+                        }
+                    }
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -261,13 +357,17 @@ fun ManageProductScreen(
                                         MaterialTheme.colorScheme.outline,
                                         RoundedCornerShape(8.dp)
                                     )
-                                    .clickable { /* Photo Picker */ },
+                                    .clickable { photoPicker.open() },
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    painterResource(Resources.Icon.Plus),
-                                    contentDescription = null
-                                )
+                                if (state.isSaving) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                } else {
+                                    Icon(
+                                        painterResource(Resources.Icon.Plus),
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
                     }

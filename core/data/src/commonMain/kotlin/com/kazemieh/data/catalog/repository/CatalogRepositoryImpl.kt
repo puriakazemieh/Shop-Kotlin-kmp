@@ -1,8 +1,8 @@
 package com.kazemieh.data.catalog.repository
 
 import com.kazemieh.common.AppResult
-import com.kazemieh.data.admin.mapper.toDomain
 import com.kazemieh.data.admin.repository.map
+import com.kazemieh.data.admin.mapper.toAdminPage
 import com.kazemieh.data.catalog.mapper.toDomain
 import com.kazemieh.data.catalog.source.CatalogDataSource
 import com.kazemieh.domain.model.*
@@ -13,10 +13,10 @@ class CatalogRepositoryImpl(
 ) : CatalogRepository {
 
     override suspend fun getCategories(): AppResult<List<Category>> =
-        dataSource.getCategories().map { list -> list.map { it.toDomain() } }
+        dataSource.getCategories().map { it.map { it.toDomain() } }
 
     override suspend fun getSizes(): AppResult<List<Size>> =
-        dataSource.getSizes().map { list -> list.map { it.toDomain() } }
+        dataSource.getSizes().map { it.map { it.toDomain() } }
 
     override suspend fun getColors(): AppResult<List<Color>> =
         dataSource.getColors().map { list -> list.map { it.toDomain() } }
@@ -34,7 +34,7 @@ class CatalogRepositoryImpl(
         sort: String?
     ): AppResult<AdminPage<ProductSummary>> =
         dataSource.getProducts(query, categoryId, sizeId, colorId, minPrice, maxPrice, inStock, page, size, sort)
-            .map { it.toDomain { it.toDomain() } }
+            .map { it.toAdminPage { dto -> dto.toDomain() } }
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetail> =
         dataSource.getProductDetail(slug).map { it.toDomain() }

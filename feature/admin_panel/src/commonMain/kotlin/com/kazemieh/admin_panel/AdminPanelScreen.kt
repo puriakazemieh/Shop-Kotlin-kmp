@@ -27,6 +27,10 @@ fun AdminPanelScreen(
     val state by viewModel.state.collectAsState()
     var searchBarVisible by mutableStateOf(false)
 
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(AdminPanelIntent.LoadProducts)
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {

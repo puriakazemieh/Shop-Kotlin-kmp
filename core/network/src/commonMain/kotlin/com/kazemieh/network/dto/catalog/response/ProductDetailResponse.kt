@@ -12,5 +12,6 @@ data class ProductDetailResponse(
     val categoryName: String?,
     val images: List<ProductImageResponse>,
     val variants: List<ProductVariantResponse>,
-    val createdAt: String
+    val createdAt: String,
+    var basePrice: Long? = null,
 )

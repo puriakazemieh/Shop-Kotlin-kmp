@@ -3,13 +3,7 @@ package com.kazemieh.admin_panel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,11 +34,6 @@ fun AdminProductCard(
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onClick() }
     ) {
-        // Since AdminProduct might not have a thumbnail in the summary (based on the DTO)
-        // I'll use a placeholder or check if I can get one.
-        // Actually AdminProductResponse in DTO doesn't have thumbnail.
-        // But the server code for listProducts returns AdminProductResponse.
-
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -57,10 +46,19 @@ fun AdminProductCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            product.description?.let { description ->
+                Text(
+                    text = description,
+                    fontSize = FontSize.SMALL,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             Text(
-                text = "ID: ${product.id}",
-                fontSize = FontSize.SMALL,
-                color = MaterialTheme.colorScheme.secondary,
+                text = "ID: ${product.id} | ${if (product.isActive) "Active" else "Inactive"}",
+                fontSize = FontSize.EXTRA_SMALL,
+                color = if (product.isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -70,15 +68,6 @@ fun AdminProductCard(
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
-            )
-        }
-
-        if (!product.isActive) {
-            Text(
-                text = "Inactive",
-                modifier = Modifier.padding(12.dp),
-                color = MaterialTheme.colorScheme.error,
-                fontSize = FontSize.SMALL
             )
         }
     }

@@ -42,6 +42,9 @@ suspend inline fun <reified T> safeApiCallRaw(
         val bodyText = response.bodyAsText()
 
         if (response.status.isSuccess()) {
+            if (T::class == Unit::class) {
+                return Unit as T
+            }
             try {
                 json.decodeFromString<T>(bodyText)
             } catch (e: SerializationException) {
