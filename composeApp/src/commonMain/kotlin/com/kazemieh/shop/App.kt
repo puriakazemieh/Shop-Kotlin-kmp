@@ -1,6 +1,7 @@
 package com.kazemieh.shop
 
 import androidx.compose.runtime.Composable
+import com.kazemieh.admin_panel.adminPanelModule
 import com.kazemieh.auth.authModule
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
@@ -29,7 +30,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             dataModule,
             homeModule,
             authModule,
-            profileModule
+            profileModule,
+            adminPanelModule
         )
     }
 }

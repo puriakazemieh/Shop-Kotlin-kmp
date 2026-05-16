@@ -1,5 +1,6 @@
 package com.kazemieh.home.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +19,7 @@ import com.kazemieh.designsystem.FontSize
 @Composable
 fun CustomDrawer(
     isLoggedIn: Boolean,
+    isAdmin: Boolean = false,
 //    customer: RequestState<Customer>,
     onLoginClick: () -> Unit,
     onProfileClick: () -> Unit,
@@ -60,11 +62,13 @@ fun CustomDrawer(
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
-        DrawerItem.entries.take(5)
+
+        DrawerItem.entries
             .filter { item ->
                 when (item) {
                     DrawerItem.Profile -> false
                     DrawerItem.Login -> false
+                    DrawerItem.Admin -> false
                     DrawerItem.SignOut -> isLoggedIn
                     else -> true
                 }
@@ -83,14 +87,15 @@ fun CustomDrawer(
             Spacer(modifier = Modifier.height(12.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
-//        AnimatedContent(targetState = customer) { customerState ->
-//            if (customerState.isSuccess() && customerState.getSuccessData().isAdmin) {
-//                DrawerItemCard(
-//                    drawerItem = DrawerItem.Admin,
-//                    onClick = onAdminPanelClick
-//                )
-//            }
-//        }
+        AnimatedContent(targetState = isAdmin) { isAdmin ->
+            if (isAdmin) {
+                DrawerItemCard(
+                    drawerItem = DrawerItem.Admin,
+                    onClick = onAdminPanelClick
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+        }
         Spacer(modifier = Modifier.height(24.dp))
     }
 }

@@ -3,7 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
-        maven {url = uri("https://maven.myket.ir") }
+//        maven {url = uri("https://maven.myket.ir") }
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -19,7 +19,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
-        maven {url = uri("https://maven.myket.ir") }
+//        maven {url = uri("https://maven.myket.ir") }
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -54,3 +54,4 @@ include(":core:navigation")
 include(":feature:home")
 include(":core:common")
 include(":feature:profile")
+include(":feature:admin_panel")

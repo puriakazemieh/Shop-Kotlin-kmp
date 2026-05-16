@@ -5,19 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
+import com.kazemieh.domain.usecase.ObserveProfileUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeGraphViewModel(
     observeAuthStateUseCase: ObserveAuthStateUseCase,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val signOutUseCase: SignOutUseCase,
+    private val observeProfileUseCase: ObserveProfileUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
@@ -28,19 +26,23 @@ class HomeGraphViewModel(
 
     init {
         handleIntent(HomeIntent.RefreshAuthState)
-//        viewModelScope.launch {
-//            observeAuthStateUseCase().collect { authState ->
-//                if (authState is AuthState.Unauthenticated) {
-//                    _effect.send(HomeEffect.NavigateToAuth)
-//                }
-//            }
-//        }
+        observeProfile()
     }
 
     fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.SignOut -> signOut()
             is HomeIntent.RefreshAuthState -> checkAuthState()
+        }
+    }
+
+    private fun observeProfile() {
+        viewModelScope.launch {
+            observeProfileUseCase().collect { result ->
+                if (result is AppResult.Success) {
+                    _state.update { it.copy(isAdmin = result.data.role == "ADMIN") }
+                }
+            }
         }
     }
 
@@ -80,6 +82,7 @@ sealed interface HomeIntent {
 data class HomeState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
+    val isAdmin: Boolean = false,
     val error: String? = null
 )
 

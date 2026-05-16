@@ -55,6 +55,7 @@ kotlin {
             implementation(project(":feature:auth"))
             implementation(project(":feature:profile"))
             implementation(project(":feature:home"))
+            implementation(project(":feature:admin_panel"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))

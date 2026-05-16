@@ -151,6 +151,7 @@ fun HomeGraphScreen(
             },
             onAdminPanelClick = navigateToAdminPanel,
             isLoggedIn = state.isLoggedIn,
+            isAdmin = state.isAdmin,
             onLoginClick = navigateToAuth
         )
         Box(

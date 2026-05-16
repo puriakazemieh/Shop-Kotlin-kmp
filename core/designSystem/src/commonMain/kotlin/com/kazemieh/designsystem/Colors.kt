@@ -30,6 +30,12 @@ val CategoryRed = Color(0xFFFF5E60)
 //SurfaceError -> MaterialTheme.colorScheme.error
 //TextWhite -> MaterialTheme.colorScheme.primaryContainer
 //SurfaceBrand -> MaterialTheme.colorScheme.primary
+//Surface -> MaterialTheme.colorScheme.background
+//SurfaceLighter -> MaterialTheme.colorScheme.primaryContainer
+//BorderIdle -> MaterialTheme.colorScheme.outline
+//ButtonPrimary -> MaterialTheme.colorScheme.primary
+//SurfaceSecondary -> MaterialTheme.colorScheme.secondary
+//SurfaceDarker -> MaterialTheme.colorScheme.secondaryContainer
 
 // --- پالت لایت ---
 val LightAppColorScheme = lightColorScheme(

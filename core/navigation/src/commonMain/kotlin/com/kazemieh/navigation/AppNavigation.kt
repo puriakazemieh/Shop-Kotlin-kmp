@@ -10,6 +10,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.kazemieh.admin_panel.AdminPanelScreen
+import com.kazemieh.admin_panel.manage_product.ManageProductScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
@@ -51,7 +54,7 @@ fun AppNavHost(
                     navController.navigate(Screen.Profile)
                 },
                 navigateToAdminPanel = {
-//                    navController.navigate(Screen.AdminPanel)
+                    navController.navigate(Screen.AdminPanel)
                 },
                 navigateToDetails = { productId ->
 //                    navController.navigate(Screen.Details(id = productId))
@@ -69,6 +72,23 @@ fun AppNavHost(
             ProfileScreen {
                 navController.navigateUp()
             }
+        }
+
+        composable<Screen.AdminPanel> {
+            AdminPanelScreen(
+                navigateBack = { navController.navigateUp() },
+                navigateToManageProduct = { id ->
+                    navController.navigate(Screen.ManageProduct(id))
+                }
+            )
+        }
+
+        composable<Screen.ManageProduct> {
+            val args = it.toRoute<Screen.ManageProduct>()
+            ManageProductScreen(
+                id = args.id,
+                navigateBack = { navController.navigateUp() }
+            )
         }
 
 
