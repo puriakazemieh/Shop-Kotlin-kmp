@@ -10,7 +10,6 @@ import com.kazemieh.domain.repository.Color
 import com.kazemieh.domain.repository.Size
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
-import com.kazemieh.domain.usecase.catalog.GetSizesUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +23,8 @@ class ManageProductViewModel(
     private val updateAdminProductUseCase: UpdateAdminProductUseCase,
     private val deleteAdminProductUseCase: DeleteAdminProductUseCase,
     private val createProductVariantUseCase: CreateProductVariantUseCase,
+    private val updateProductVariantUseCase: UpdateProductVariantUseCase,
+    private val deleteProductVariantUseCase: DeleteProductVariantUseCase,
     private val createAdminCategoryUseCase: CreateAdminCategoryUseCase,
     private val createSizeUseCase: CreateSizeUseCase,
     private val updateSizeUseCase: UpdateSizeUseCase,
@@ -63,6 +64,8 @@ class ManageProductViewModel(
             is ManageProductIntent.DeleteProduct -> deleteProduct()
             is ManageProductIntent.DeleteImage -> deleteImage(intent.imageId)
             is ManageProductIntent.AddVariant -> addVariant(intent)
+            is ManageProductIntent.UpdateVariantInfo -> updateVariant(intent.id, intent.sku, intent.price, intent.isActive)
+            is ManageProductIntent.DeleteVariant -> deleteVariant(intent.variantId)
             is ManageProductIntent.CreateCategory -> createCategory(intent.name, intent.slug, intent.parentId)
             is ManageProductIntent.CreateSize -> createSize(intent.name, intent.sortOrder)
             is ManageProductIntent.UpdateSizeInfo -> updateSize(intent.id, intent.name, intent.sortOrder)
@@ -229,6 +232,32 @@ class ManageProductViewModel(
         }
     }
 
+    private fun updateVariant(id: Long, sku: String?, price: Double?, isActive: Boolean?) {
+        viewModelScope.launch {
+            when (val result = updateProductVariantUseCase(id, sku, price, null, isActive)) {
+                is AppResult.Success<*> -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Variant updated"))
+                    loadProductDetail()
+                }
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun deleteVariant(variantId: Long) {
+        viewModelScope.launch {
+            when (val result = deleteProductVariantUseCase(variantId)) {
+                is AppResult.Success<*> -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Variant deleted"))
+                    loadProductDetail()
+                }
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
     private fun createCategory(name: String, slug: String, parentId: Long?) {
         viewModelScope.launch {
             when (val result = createAdminCategoryUseCase(name, slug, parentId)) {
@@ -382,6 +411,13 @@ sealed interface ManageProductIntent {
         val price: Double,
         val initialOnHand: Int
     ) : ManageProductIntent
+    data class UpdateVariantInfo(
+        val id: Long,
+        val sku: String?,
+        val price: Double?,
+        val isActive: Boolean?
+    ) : ManageProductIntent
+    data class DeleteVariant(val variantId: Long) : ManageProductIntent
 
     data class CreateCategory(
         val name: String,

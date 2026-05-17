@@ -99,6 +99,10 @@ class AdminDataSourceImpl(
         api.updateVariant(variantId, request)
     }
 
+    override suspend fun deleteVariant(variantId: Long): AppResult<Unit> = safeApiCall {
+        api.deleteVariant(variantId)
+    }
+
     override suspend fun getInventory(variantId: Long): AppResult<AdminInventoryResponse> = safeApiCall {
         api.getInventory(variantId)
     }

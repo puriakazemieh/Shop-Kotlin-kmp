@@ -37,6 +37,7 @@ interface AdminRepository {
     // Variants
     suspend fun createVariant(productId: Long, sizeId: Long, colorId: Long, sku: String, price: Double, compareAtPrice: Double?, isActive: Boolean, initialOnHand: Int): AppResult<AdminVariant>
     suspend fun updateVariant(variantId: Long, sku: String?, price: Double?, compareAtPrice: Double?, isActive: Boolean?): AppResult<AdminVariant>
+    suspend fun deleteVariant(variantId: Long): AppResult<Unit>
 
     // Inventory
     suspend fun getInventory(variantId: Long): AppResult<AdminInventory>

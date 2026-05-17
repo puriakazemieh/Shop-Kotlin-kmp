@@ -4,8 +4,8 @@ import com.kazemieh.admin_panel.manage_product.ManageProductViewModel
 import com.kazemieh.admin_panel.manage_product.PhotoPicker
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
-import com.kazemieh.domain.usecase.catalog.GetColorsUseCase
 import com.kazemieh.domain.usecase.catalog.GetSizesUseCase
+import com.kazemieh.domain.usecase.catalog.GetColorsUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -25,6 +25,8 @@ val adminPanelModule = module {
             updateAdminProductUseCase = get(),
             deleteAdminProductUseCase = get(),
             createProductVariantUseCase = get(),
+            updateProductVariantUseCase = get(),
+            deleteProductVariantUseCase = get(),
             createAdminCategoryUseCase = get(),
             createSizeUseCase = get(),
             updateSizeUseCase = get(),
@@ -47,6 +49,8 @@ val adminPanelModule = module {
     factory { UpdateAdminProductUseCase(get()) }
     factory { DeleteAdminProductUseCase(get()) }
     factory { CreateProductVariantUseCase(get()) }
+    factory { UpdateProductVariantUseCase(get()) }
+    factory { DeleteProductVariantUseCase(get()) }
     factory { CreateAdminCategoryUseCase(get()) }
     factory { CreateSizeUseCase(get()) }
     factory { CreateColorUseCase(get()) }

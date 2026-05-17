@@ -8,7 +8,7 @@ data class AdminCreateVariantRequest(
     val colorId: Long,
     val sku: String,
     val price: Double,
-    val compareAtPrice: Double?,
-    val isActive: Boolean,
-    val initialOnHand: Int
+    val compareAtPrice: Double? = null,
+    val isActive: Boolean = true,
+    val initialOnHand: Int = 0
 )

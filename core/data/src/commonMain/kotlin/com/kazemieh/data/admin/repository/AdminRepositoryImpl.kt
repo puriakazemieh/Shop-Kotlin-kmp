@@ -1,8 +1,7 @@
 package com.kazemieh.data.admin.repository
 
 import com.kazemieh.common.AppResult
-import com.kazemieh.data.admin.mapper.toAdminDomain
-import com.kazemieh.data.admin.mapper.toAdminPage
+import com.kazemieh.data.admin.mapper.*
 import com.kazemieh.data.admin.source.AdminDataSource
 import com.kazemieh.domain.model.admin.*
 import com.kazemieh.domain.repository.*
@@ -107,6 +106,9 @@ class AdminRepositoryImpl(
         isActive: Boolean?
     ): AppResult<AdminVariant> =
         dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, isActive)).map { it.toAdminDomain() }
+
+    override suspend fun deleteVariant(variantId: Long): AppResult<Unit> =
+        dataSource.deleteVariant(variantId)
 
     override suspend fun getInventory(variantId: Long): AppResult<AdminInventory> =
         dataSource.getInventory(variantId).map { it.toAdminDomain() }

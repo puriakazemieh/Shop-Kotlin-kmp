@@ -40,6 +40,7 @@ interface AdminApi {
     // ---------- Variants ----------
     suspend fun createVariant(productId: Long, request: AdminCreateVariantRequest): AdminVariantResponse
     suspend fun updateVariant(variantId: Long, request: AdminUpdateVariantRequest): AdminVariantResponse
+    suspend fun deleteVariant(variantId: Long)
 
     // ---------- Inventory ----------
     suspend fun getInventory(variantId: Long): AdminInventoryResponse

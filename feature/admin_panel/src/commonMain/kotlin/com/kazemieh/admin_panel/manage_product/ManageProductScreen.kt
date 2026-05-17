@@ -25,6 +25,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.domain.model.admin.AdminVariant
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -47,12 +48,9 @@ fun ManageProductScreen(
     )
 
     var showCategoriesBottomSheet by remember { mutableStateOf(false) }
-    var showSizesBottomSheet by remember { mutableStateOf(false) }
-    var showColorsBottomSheet by remember { mutableStateOf(false) }
     var showAddVariantDialog by remember { mutableStateOf(false) }
+    var selectedVariantToEdit by remember { mutableStateOf<AdminVariant?>(null) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
-    var showCreateSizeDialog by remember { mutableStateOf(false) }
-    var showCreateColorDialog by remember { mutableStateOf(false) }
     var dropdownMenuOpened by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -73,7 +71,7 @@ fun ManageProductScreen(
                 showCreateCategoryDialog = true
                 showCategoriesBottomSheet = false
             },
-            onDeleteCategory = { /* Delete logic if needed */ },
+            onDeleteCategory = { /* Delete logic */ },
             onDismiss = { showCategoriesBottomSheet = false }
         )
     }
@@ -88,66 +86,43 @@ fun ManageProductScreen(
         )
     }
 
-    if (showSizesBottomSheet) {
-        SizesBottomSheet(
-            sizes = state.sizes,
-            onSizeSelected = { viewModel.handleIntent(ManageProductIntent.SelectSize(it)) },
-            onCreateSizeClick = {
-                showCreateSizeDialog = true
-                showSizesBottomSheet = false
-            },
-            onDeleteSize = { viewModel.handleIntent(ManageProductIntent.DeleteSize(it)) },
-            onDismiss = { showSizesBottomSheet = false }
-        )
-    }
-
-    if (showCreateSizeDialog) {
-        CreateSizeDialog(
-            onDismiss = { showCreateSizeDialog = false },
-            onConfirm = { name, sortOrder ->
-                viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
-                showCreateSizeDialog = false
-            }
-        )
-    }
-
-    if (showColorsBottomSheet) {
-        ColorsBottomSheet(
-            colors = state.colors,
-            onColorSelected = { viewModel.handleIntent(ManageProductIntent.SelectColor(it)) },
-            onCreateColorClick = {
-                showCreateColorDialog = true
-                showColorsBottomSheet = false
-            },
-            onDeleteColor = { viewModel.handleIntent(ManageProductIntent.DeleteColor(it)) },
-            onDismiss = { showColorsBottomSheet = false }
-        )
-    }
-
-    if (showCreateColorDialog) {
-        CreateColorDialog(
-            onDismiss = { showCreateColorDialog = false },
-            onConfirm = { name, hex ->
-                viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
-                showCreateColorDialog = false
-            }
-        )
-    }
-
     if (showAddVariantDialog) {
         AddVariantDialog(
+            sizes = state.sizes,
+            colors = state.colors,
             onDismiss = { showAddVariantDialog = false },
-            onConfirm = { sku, price, initialOnHand ->
+            onConfirm = { sizeId, colorId, sku, price, initialOnHand ->
                 viewModel.handleIntent(
                     ManageProductIntent.AddVariant(
-                        sizeId = state.selectedSize?.id ?: 0L,
-                        colorId = state.selectedColor?.id ?: 0L,
+                        sizeId = sizeId,
+                        colorId = colorId,
                         sku = sku,
                         price = price,
                         initialOnHand = initialOnHand
                     )
                 )
                 showAddVariantDialog = false
+            },
+            onCreateSize = { name, sortOrder ->
+                viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
+            },
+            onCreateColor = { name, hex ->
+                viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
+            }
+        )
+    }
+
+    selectedVariantToEdit?.let { variant ->
+        EditVariantDialog(
+            variant = variant,
+            onDismiss = { selectedVariantToEdit = null },
+            onConfirm = { sku, price, isActive ->
+                viewModel.handleIntent(ManageProductIntent.UpdateVariantInfo(variant.id, sku, price, isActive))
+                selectedVariantToEdit = null
+            },
+            onDelete = {
+                viewModel.handleIntent(ManageProductIntent.DeleteVariant(variant.id))
+                selectedVariantToEdit = null
             }
         )
     }
@@ -212,7 +187,7 @@ fun ManageProductScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     scrolledContainerColor = MaterialTheme.colorScheme.background,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -265,32 +240,6 @@ fun ManageProductScreen(
                         text = state.selectedCategory?.name ?: "Select Category",
                         onClick = { showCategoriesBottomSheet = true }
                     )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        OutlinedCard(
-                            modifier = Modifier.weight(1f).clickable { showSizesBottomSheet = true },
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                        ) {
-                            Text(
-                                state.selectedSize?.name ?: "Manage Sizes",
-                                modifier = Modifier.padding(16.dp),
-                                fontSize = FontSize.SMALL
-                            )
-                        }
-                        OutlinedCard(
-                            modifier = Modifier.weight(1f).clickable { showColorsBottomSheet = true },
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                        ) {
-                            Text(
-                                state.selectedColor?.name ?: "Manage Colors",
-                                modifier = Modifier.padding(16.dp),
-                                fontSize = FontSize.SMALL
-                            )
-                        }
-                    }
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -393,7 +342,9 @@ fun ManageProductScreen(
                     // Variants Section
                     Text("Variants", fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
                     state.variants.forEach { variant ->
-                        VariantItem(variant)
+                        VariantItem(variant) {
+                            selectedVariantToEdit = variant
+                        }
                     }
                     Button(
                         onClick = { showAddVariantDialog = true },
@@ -416,8 +367,9 @@ fun ManageProductScreen(
 }
 
 @Composable
-fun VariantItem(variant: com.kazemieh.domain.model.admin.AdminVariant) {
+fun VariantItem(variant: AdminVariant, onClick: () -> Unit) {
     Card(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {

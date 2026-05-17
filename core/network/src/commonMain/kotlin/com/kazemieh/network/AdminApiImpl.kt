@@ -169,6 +169,10 @@ class AdminApiImpl(
         }
     }
 
+    override suspend fun deleteVariant(variantId: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/variants/$variantId")
+    }
+
     override suspend fun getInventory(variantId: Long): AdminInventoryResponse = safeApiCallRaw {
         client.get("api/admin/variants/$variantId/inventory")
     }

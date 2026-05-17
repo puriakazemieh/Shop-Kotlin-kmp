@@ -12,18 +12,98 @@ import com.kazemieh.domain.repository.Size
 
 @Composable
 fun AddVariantDialog(
+    sizes: List<Size>,
+    colors: List<Color>,
     onDismiss: () -> Unit,
-    onConfirm: (sku: String, price: Double, initialOnHand: Int) -> Unit
+    onConfirm: (sizeId: Long, colorId: Long, sku: String, price: Double, initialOnHand: Int) -> Unit,
+    onCreateSize: (name: String, sortOrder: Int) -> Unit,
+    onCreateColor: (name: String, hex: String?) -> Unit
 ) {
+    var selectedSize by remember { mutableStateOf<Size?>(null) }
+    var selectedColor by remember { mutableStateOf<Color?>(null) }
     var sku by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var initialOnHand by remember { mutableStateOf("") }
+
+    var showSizesBottomSheet by remember { mutableStateOf(false) }
+    var showColorsBottomSheet by remember { mutableStateOf(false) }
+
+    var showCreateSizeDialog by remember { mutableStateOf(false) }
+    var showCreateColorDialog by remember { mutableStateOf(false) }
+
+    if (showSizesBottomSheet) {
+        SizesBottomSheet(
+            sizes = sizes,
+            onSizeSelected = { selectedSize = it },
+            onCreateSizeClick = {
+                showCreateSizeDialog = true
+                showSizesBottomSheet = false
+            },
+            onDeleteSize = {},
+            onDismiss = { showSizesBottomSheet = false }
+        )
+    }
+
+    if (showCreateSizeDialog) {
+        CreateSizeDialog(
+            onDismiss = { showCreateSizeDialog = false },
+            onConfirm = { name, sortOrder ->
+                onCreateSize(name, sortOrder)
+                showCreateSizeDialog = false
+            }
+        )
+    }
+
+    if (showColorsBottomSheet) {
+        ColorsBottomSheet(
+            colors = colors,
+            onColorSelected = { selectedColor = it },
+            onCreateColorClick = {
+                showCreateColorDialog = true
+                showColorsBottomSheet = false
+            },
+            onDeleteColor = {},
+            onDismiss = { showColorsBottomSheet = false }
+        )
+    }
+
+    if (showCreateColorDialog) {
+        CreateColorDialog(
+            onDismiss = { showCreateColorDialog = false },
+            onConfirm = { name, hex ->
+                onCreateColor(name, hex)
+                showCreateColorDialog = false
+            }
+        )
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Add New Variant") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Size Selection
+                OutlinedCard(
+                    onClick = { showSizesBottomSheet = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = selectedSize?.name ?: "Select Size",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                // Color Selection
+                OutlinedCard(
+                    onClick = { showColorsBottomSheet = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = selectedColor?.name ?: "Select Color",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
                 OutlinedTextField(
                     value = sku,
                     onValueChange = { sku = it },
@@ -48,9 +128,11 @@ fun AddVariantDialog(
         },
         confirmButton = {
             Button(
-                enabled = sku.isNotBlank() && price.toDoubleOrNull() != null,
+                enabled = selectedSize != null && selectedColor != null && sku.isNotBlank() && price.toDoubleOrNull() != null,
                 onClick = {
                     onConfirm(
+                        selectedSize!!.id,
+                        selectedColor!!.id,
                         sku,
                         price.toDouble(),
                         initialOnHand.toIntOrNull() ?: 0

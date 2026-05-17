@@ -1,11 +1,7 @@
 package com.kazemieh.data.admin.mapper
 
 import com.kazemieh.domain.model.admin.*
-import com.kazemieh.domain.repository.AdminCategory
-import com.kazemieh.domain.repository.AdminInventory
-import com.kazemieh.domain.repository.AdminPage
-import com.kazemieh.domain.repository.Color as DomainColor
-import com.kazemieh.domain.repository.Size as DomainSize
+import com.kazemieh.domain.repository.*
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.response.*
 
@@ -16,13 +12,13 @@ fun AdminCategoryResponse.toAdminDomain() = AdminCategory(
     parentId = parentId
 )
 
-fun AdminSizeResponse.toAdminDomain() = DomainSize(
+fun AdminSizeResponse.toAdminDomain() = Size(
     id = id,
     name = name,
     sortOrder = sortOrder
 )
 
-fun AdminColorResponse.toAdminDomain() = DomainColor(
+fun AdminColorResponse.toAdminDomain() = Color(
     id = id,
     name = name,
     hex = hex

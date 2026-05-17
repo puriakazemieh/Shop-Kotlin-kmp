@@ -33,6 +33,7 @@ interface AdminDataSource {
 
     suspend fun createVariant(productId: Long, request: AdminCreateVariantRequest): AppResult<AdminVariantResponse>
     suspend fun updateVariant(variantId: Long, request: AdminUpdateVariantRequest): AppResult<AdminVariantResponse>
+    suspend fun deleteVariant(variantId: Long): AppResult<Unit>
 
     suspend fun getInventory(variantId: Long): AppResult<AdminInventoryResponse>
     suspend fun setInventory(variantId: Long, request: AdminInventorySetRequest): AppResult<AdminInventoryResponse>

@@ -33,6 +33,7 @@ object HttpClientFactory {
                     ignoreUnknownKeys = true
                     prettyPrint = true
                     isLenient = true
+                    encodeDefaults = true
                 })
             }
 
