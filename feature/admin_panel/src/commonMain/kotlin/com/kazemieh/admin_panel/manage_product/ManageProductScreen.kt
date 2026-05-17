@@ -117,14 +117,22 @@ fun ManageProductScreen(
     selectedVariantToEdit?.let { variant ->
         EditVariantDialog(
             variant = variant,
+            sizes = state.sizes,
+            colors = state.colors,
             onDismiss = { selectedVariantToEdit = null },
-            onConfirm = { sku, price, isActive ->
-                viewModel.handleIntent(ManageProductIntent.UpdateVariantInfo(variant.id, sku, price, isActive))
+            onConfirm = { sku, price, sizeId, colorId, isActive ->
+                viewModel.handleIntent(ManageProductIntent.UpdateVariantInfo(variant.id, sku, price, sizeId, colorId, isActive))
                 selectedVariantToEdit = null
             },
             onDelete = {
                 viewModel.handleIntent(ManageProductIntent.DeleteVariant(variant.id))
                 selectedVariantToEdit = null
+            },
+            onCreateSize = { name, sortOrder ->
+                viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
+            },
+            onCreateColor = { name, hex ->
+                viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
             }
         )
     }

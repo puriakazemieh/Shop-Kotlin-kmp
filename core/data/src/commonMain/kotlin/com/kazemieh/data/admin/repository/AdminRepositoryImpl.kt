@@ -103,9 +103,11 @@ class AdminRepositoryImpl(
         sku: String?,
         price: Double?,
         compareAtPrice: Double?,
+        sizeId: Long?,
+        colorId: Long?,
         isActive: Boolean?
     ): AppResult<AdminVariant> =
-        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, isActive)).map { it.toAdminDomain() }
+        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, sizeId, colorId, isActive)).map { it.toAdminDomain() }
 
     override suspend fun deleteVariant(variantId: Long): AppResult<Unit> =
         dataSource.deleteVariant(variantId)

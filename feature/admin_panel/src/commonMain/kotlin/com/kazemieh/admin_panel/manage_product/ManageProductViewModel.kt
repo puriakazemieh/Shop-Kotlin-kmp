@@ -68,7 +68,7 @@ class ManageProductViewModel(
             is ManageProductIntent.DeleteProduct -> deleteProduct()
             is ManageProductIntent.DeleteImage -> deleteImage(intent.imageId)
             is ManageProductIntent.AddVariant -> addVariant(intent)
-            is ManageProductIntent.UpdateVariantInfo -> updateVariant(intent.id, intent.sku, intent.price, intent.isActive)
+            is ManageProductIntent.UpdateVariantInfo -> updateVariant(intent.id, intent.sku, intent.price, intent.sizeId, intent.colorId, intent.isActive)
             is ManageProductIntent.DeleteVariant -> deleteVariant(intent.variantId)
             is ManageProductIntent.CreateCategory -> createCategory(intent.name, intent.slug, intent.parentId)
             is ManageProductIntent.DeleteCategory -> deleteCategory(intent.id)
@@ -246,9 +246,9 @@ class ManageProductViewModel(
         }
     }
 
-    private fun updateVariant(id: Long, sku: String?, price: Double?, isActive: Boolean?) {
+    private fun updateVariant(id: Long, sku: String?, price: Double?, sizeId: Long?, colorId: Long?, isActive: Boolean?) {
         viewModelScope.launch {
-            when (val result = updateProductVariantUseCase(id, sku, price, null, isActive)) {
+            when (val result = updateProductVariantUseCase(id, sku, price, null, sizeId, colorId, isActive)) {
                 is AppResult.Success<*> -> {
                     _event.send(ManageProductUiEvent.ShowSuccess("Variant updated"))
                     loadProductDetail()
@@ -452,6 +452,8 @@ sealed interface ManageProductIntent {
         val id: Long,
         val sku: String?,
         val price: Double?,
+        val sizeId: Long?,
+        val colorId: Long?,
         val isActive: Boolean?
     ) : ManageProductIntent
     data class DeleteVariant(val variantId: Long) : ManageProductIntent

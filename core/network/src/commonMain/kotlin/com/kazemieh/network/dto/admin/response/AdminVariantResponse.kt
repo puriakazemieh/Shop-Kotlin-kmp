@@ -11,7 +11,9 @@ data class AdminVariantResponse(
     val compareAtPrice: Double? = null,
     @SerialName("active")
     val isActive: Boolean,
+    val sizeId: Long, // اضافه شد
     val sizeName: String,
+    val colorId: Long, // اضافه شد
     val colorName: String,
     val inventory: AdminInventoryResponse? = null
 )

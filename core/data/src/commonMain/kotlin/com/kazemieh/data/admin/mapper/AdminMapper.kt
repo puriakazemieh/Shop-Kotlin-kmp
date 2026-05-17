@@ -49,7 +49,9 @@ fun AdminVariantResponse.toAdminDomain() = AdminVariant(
     isActive = isActive,
     onHand = inventory?.onHand ?: 0,
     reserved = inventory?.reserved ?: 0,
+    sizeId = sizeId,
     sizeName = sizeName,
+    colorId = colorId,
     colorName = colorName
 )
 
