@@ -71,7 +71,7 @@ fun ManageProductScreen(
                 showCreateCategoryDialog = true
                 showCategoriesBottomSheet = false
             },
-            onDeleteCategory = { /* Delete logic */ },
+            onDeleteCategory = { viewModel.handleIntent(ManageProductIntent.DeleteCategory(it)) },
             onDismiss = { showCategoriesBottomSheet = false }
         )
     }

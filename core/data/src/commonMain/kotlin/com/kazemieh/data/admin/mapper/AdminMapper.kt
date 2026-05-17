@@ -1,7 +1,9 @@
 package com.kazemieh.data.admin.mapper
 
+import com.kazemieh.common.ld
 import com.kazemieh.domain.model.admin.*
 import com.kazemieh.domain.repository.*
+import com.kazemieh.network.PlatformConfig
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.response.*
 
@@ -36,7 +38,7 @@ fun AdminProductResponse.toAdminDomain() = AdminProduct(
 
 fun AdminProductImageResponse.toAdminDomain() = AdminProductImage(
     id = id,
-    url = url,
+    url = if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
     sortOrder = sortOrder
 )
 
@@ -46,8 +48,8 @@ fun AdminVariantResponse.toAdminDomain() = AdminVariant(
     price = price,
     compareAtPrice = compareAtPrice,
     isActive = isActive,
-    onHand = onHand,
-    reserved = reserved,
+    onHand = inventory?.onHand ?: 0,
+    reserved = inventory?.reserved ?: 0,
     sizeName = sizeName,
     colorName = colorName
 )
@@ -61,7 +63,7 @@ fun AdminInventoryResponse.toAdminDomain() = AdminInventory(
 
 fun AdminProductDetailResponse.toAdminDomain() = AdminProductDetail(
     product = product.toAdminDomain(),
-    images = images.map { it.toAdminDomain() },
+    images = images.map { it.toAdminDomain().ld("images") },
     variants = variants.map { it.toAdminDomain() }
 )
 

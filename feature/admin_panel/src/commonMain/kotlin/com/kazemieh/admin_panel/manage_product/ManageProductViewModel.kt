@@ -26,6 +26,7 @@ class ManageProductViewModel(
     private val updateProductVariantUseCase: UpdateProductVariantUseCase,
     private val deleteProductVariantUseCase: DeleteProductVariantUseCase,
     private val createAdminCategoryUseCase: CreateAdminCategoryUseCase,
+    private val deleteAdminCategoryUseCase: DeleteAdminCategoryUseCase,
     private val createSizeUseCase: CreateSizeUseCase,
     private val updateSizeUseCase: UpdateSizeUseCase,
     private val deleteSizeUseCase: DeleteSizeUseCase,
@@ -33,6 +34,7 @@ class ManageProductViewModel(
     private val updateColorUseCase: UpdateColorUseCase,
     private val deleteColorUseCase: DeleteColorUseCase,
     private val addProductImageUseCase: AddProductImageUseCase,
+    private val deleteProductImageUseCase: DeleteProductImageUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getAdminSizesUseCase: GetAdminSizesUseCase,
     private val getAdminColorsUseCase: GetAdminColorsUseCase,
@@ -67,6 +69,7 @@ class ManageProductViewModel(
             is ManageProductIntent.UpdateVariantInfo -> updateVariant(intent.id, intent.sku, intent.price, intent.isActive)
             is ManageProductIntent.DeleteVariant -> deleteVariant(intent.variantId)
             is ManageProductIntent.CreateCategory -> createCategory(intent.name, intent.slug, intent.parentId)
+            is ManageProductIntent.DeleteCategory -> deleteCategory(intent.id)
             is ManageProductIntent.CreateSize -> createSize(intent.name, intent.sortOrder)
             is ManageProductIntent.UpdateSizeInfo -> updateSize(intent.id, intent.name, intent.sortOrder)
             is ManageProductIntent.DeleteSize -> deleteSize(intent.id)
@@ -195,10 +198,19 @@ class ManageProductViewModel(
     }
 
     private fun deleteImage(imageId: Long) {
-        if (productId == -1L) {
-            _state.update { it.copy(images = it.images.filter { img -> img.id != imageId }) }
-        } else {
-            // CALL DELETE API
+        viewModelScope.launch {
+            if (productId == -1L) {
+                _state.update { it.copy(images = it.images.filter { img -> img.id != imageId }) }
+            } else {
+                when (val result = deleteProductImageUseCase(productId, imageId)) {
+                    is AppResult.Success -> {
+                        _event.send(ManageProductUiEvent.ShowSuccess("Image deleted"))
+                        loadProductDetail()
+                    }
+                    is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                    is AppResult.Loading -> {}
+                }
+            }
         }
     }
 
@@ -263,6 +275,19 @@ class ManageProductViewModel(
             when (val result = createAdminCategoryUseCase(name, slug, parentId)) {
                 is AppResult.Success<*> -> {
                     _event.send(ManageProductUiEvent.ShowSuccess("Category created"))
+                    loadInitialData()
+                }
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun deleteCategory(id: Long) {
+        viewModelScope.launch {
+            when (val result = deleteAdminCategoryUseCase(id)) {
+                is AppResult.Success -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Category deleted"))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -424,6 +449,7 @@ sealed interface ManageProductIntent {
         val slug: String,
         val parentId: Long?
     ) : ManageProductIntent
+    data class DeleteCategory(val id: Long) : ManageProductIntent
 
     data class CreateSize(
         val name: String,

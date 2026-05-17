@@ -7,11 +7,12 @@ import kotlinx.serialization.Serializable
 data class AdminProductResponse(
     val id: Long,
     val categoryId: Long? = null,
-    val title: String = "",
-    val slug: String = "",
+    val title: String,
+    val slug: String,
     val description: String? = null,
     val basePrice: Double? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
-    @SerialName("active") val isActive: Boolean = true
+    @SerialName("active")
+    val isActive: Boolean = true
 )
