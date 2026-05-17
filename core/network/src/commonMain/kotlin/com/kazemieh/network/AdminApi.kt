@@ -15,8 +15,15 @@ interface AdminApi {
     suspend fun deleteCategory(id: Long)
 
     // ---------- Sizes & Colors ----------
-    suspend fun createSize(request: AdminCreateSizeRequest): SizeResponse
-    suspend fun createColor(request: AdminCreateColorRequest): ColorResponse
+    suspend fun listSizes(): List<AdminSizeResponse>
+    suspend fun createSize(request: AdminCreateSizeRequest): AdminSizeResponse
+    suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AdminSizeResponse
+    suspend fun deleteSize(id: Long)
+
+    suspend fun listColors(): List<AdminColorResponse>
+    suspend fun createColor(request: AdminCreateColorRequest): AdminColorResponse
+    suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AdminColorResponse
+    suspend fun deleteColor(id: Long)
 
     // ---------- Products ----------
     suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): PageResponse<AdminProductResponse>
@@ -26,7 +33,7 @@ interface AdminApi {
     suspend fun deleteProduct(id: Long)
 
     // ---------- Images ----------
-    suspend fun addImage(productId: Long, request: AdminAddImageRequest): AdminProductImageResponse
+    suspend fun addImage(productId: Long, bytes: ByteArray, sortOrder: Int? = null): AdminProductImageResponse
     suspend fun reorderImages(productId: Long, request: AdminReorderImagesRequest): List<AdminProductImageResponse>
     suspend fun deleteImage(productId: Long, imageId: Long)
 

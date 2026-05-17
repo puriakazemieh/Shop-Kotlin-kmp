@@ -27,12 +27,15 @@ val adminPanelModule = module {
             createProductVariantUseCase = get(),
             createAdminCategoryUseCase = get(),
             createSizeUseCase = get(),
+            updateSizeUseCase = get(),
+            deleteSizeUseCase = get(),
             createColorUseCase = get(),
-            uploadImageUseCase = get(),
+            updateColorUseCase = get(),
+            deleteColorUseCase = get(),
             addProductImageUseCase = get(),
             getCategoriesUseCase = get(),
-            getSizesUseCase = get(),
-            getColorsUseCase = get(),
+            getAdminSizesUseCase = get(),
+            getAdminColorsUseCase = get(),
             savedStateHandle = get()
         )
     }
@@ -47,7 +50,12 @@ val adminPanelModule = module {
     factory { CreateAdminCategoryUseCase(get()) }
     factory { CreateSizeUseCase(get()) }
     factory { CreateColorUseCase(get()) }
-    factory { UploadImageUseCase(get()) }
+    factory { GetAdminSizesUseCase(get()) }
+    factory { UpdateSizeUseCase(get()) }
+    factory { DeleteSizeUseCase(get()) }
+    factory { GetAdminColorsUseCase(get()) }
+    factory { UpdateColorUseCase(get()) }
+    factory { DeleteColorUseCase(get()) }
     factory { AddProductImageUseCase(get()) }
 
     factory { GetCategoriesUseCase(get()) }

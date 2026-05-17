@@ -5,8 +5,6 @@ import com.kazemieh.network.AdminApi
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.request.*
 import com.kazemieh.network.dto.admin.response.*
-import com.kazemieh.network.dto.catalog.response.ColorResponse
-import com.kazemieh.network.dto.catalog.response.SizeResponse
 import com.kazemieh.network.safeApiCall
 
 class AdminDataSourceImpl(
@@ -29,12 +27,36 @@ class AdminDataSourceImpl(
         api.deleteCategory(id)
     }
 
-    override suspend fun createSize(request: AdminCreateSizeRequest): AppResult<SizeResponse> = safeApiCall {
+    override suspend fun listSizes(): AppResult<List<AdminSizeResponse>> = safeApiCall {
+        api.listSizes()
+    }
+
+    override suspend fun createSize(request: AdminCreateSizeRequest): AppResult<AdminSizeResponse> = safeApiCall {
         api.createSize(request)
     }
 
-    override suspend fun createColor(request: AdminCreateColorRequest): AppResult<ColorResponse> = safeApiCall {
+    override suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AppResult<AdminSizeResponse> = safeApiCall {
+        api.updateSize(id, request)
+    }
+
+    override suspend fun deleteSize(id: Long): AppResult<Unit> = safeApiCall {
+        api.deleteSize(id)
+    }
+
+    override suspend fun listColors(): AppResult<List<AdminColorResponse>> = safeApiCall {
+        api.listColors()
+    }
+
+    override suspend fun createColor(request: AdminCreateColorRequest): AppResult<AdminColorResponse> = safeApiCall {
         api.createColor(request)
+    }
+
+    override suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AppResult<AdminColorResponse> = safeApiCall {
+        api.updateColor(id, request)
+    }
+
+    override suspend fun deleteColor(id: Long): AppResult<Unit> = safeApiCall {
+        api.deleteColor(id)
     }
 
     override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String?): AppResult<PageResponse<AdminProductResponse>> = safeApiCall {
@@ -57,8 +79,12 @@ class AdminDataSourceImpl(
         api.deleteProduct(id)
     }
 
-    override suspend fun addImage(productId: Long, request: AdminAddImageRequest): AppResult<AdminProductImageResponse> = safeApiCall {
-        api.addImage(productId, request)
+    override suspend fun addImage(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductImageResponse> = safeApiCall {
+        api.addImage(productId, bytes, sortOrder)
+    }
+
+    override suspend fun reorderImages(productId: Long, request: AdminReorderImagesRequest): AppResult<List<AdminProductImageResponse>> = safeApiCall {
+        api.reorderImages(productId, request)
     }
 
     override suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit> = safeApiCall {

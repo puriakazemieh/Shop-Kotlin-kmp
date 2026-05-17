@@ -7,8 +7,8 @@ import com.kazemieh.network.dto.catalog.response.ColorResponse
 import com.kazemieh.network.dto.catalog.response.SizeResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.client.request.forms.*
+import io.ktor.http.*
 
 class AdminApiImpl(
     private val client: HttpClient
@@ -36,18 +36,48 @@ class AdminApiImpl(
         client.delete("api/admin/categories/$id")
     }
 
-    override suspend fun createSize(request: AdminCreateSizeRequest): SizeResponse = safeApiCallRaw {
+    override suspend fun listSizes(): List<AdminSizeResponse> = safeApiCallRaw {
+        client.get("api/admin/sizes")
+    }
+
+    override suspend fun createSize(request: AdminCreateSizeRequest): AdminSizeResponse = safeApiCallRaw {
         client.post("api/admin/sizes") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
     }
 
-    override suspend fun createColor(request: AdminCreateColorRequest): ColorResponse = safeApiCallRaw {
+    override suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AdminSizeResponse = safeApiCallRaw {
+        client.patch("api/admin/sizes/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun deleteSize(id: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/sizes/$id")
+    }
+
+    override suspend fun listColors(): List<AdminColorResponse> = safeApiCallRaw {
+        client.get("api/admin/colors")
+    }
+
+    override suspend fun createColor(request: AdminCreateColorRequest): AdminColorResponse = safeApiCallRaw {
         client.post("api/admin/colors") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
+    }
+
+    override suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AdminColorResponse = safeApiCallRaw {
+        client.patch("api/admin/colors/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun deleteColor(id: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/colors/$id")
     }
 
     override suspend fun listProducts(
@@ -88,11 +118,20 @@ class AdminApiImpl(
 
     override suspend fun addImage(
         productId: Long,
-        request: AdminAddImageRequest
+        bytes: ByteArray,
+        sortOrder: Int?
     ): AdminProductImageResponse = safeApiCallRaw {
         client.post("api/admin/products/$productId/images") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
+            setBody(MultiPartFormDataContent(
+                formData {
+                    append("file", bytes, Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=\"image.jpg\"")
+                    })
+                    if (sortOrder != null) {
+                        append("sortOrder", sortOrder.toString())
+                    }
+                }
+            ))
         }
     }
 

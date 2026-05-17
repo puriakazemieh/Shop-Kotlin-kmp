@@ -10,8 +10,17 @@ interface AdminRepository {
     suspend fun updateCategory(id: Long, name: String?, slug: String?, parentId: Long?): AppResult<AdminCategory>
     suspend fun deleteCategory(id: Long): AppResult<Unit>
 
+    // Sizes
+    suspend fun listSizes(): AppResult<List<Size>>
     suspend fun createSize(name: String, sortOrder: Int): AppResult<Size>
+    suspend fun updateSize(id: Long, name: String?, sortOrder: Int?): AppResult<Size>
+    suspend fun deleteSize(id: Long): AppResult<Unit>
+
+    // Colors
+    suspend fun listColors(): AppResult<List<Color>>
     suspend fun createColor(name: String, hex: String?): AppResult<Color>
+    suspend fun updateColor(id: Long, name: String?, hex: String?): AppResult<Color>
+    suspend fun deleteColor(id: Long): AppResult<Unit>
 
     // Products
     suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): AppResult<AdminPage<AdminProduct>>
@@ -21,8 +30,8 @@ interface AdminRepository {
     suspend fun deleteProduct(id: Long): AppResult<Unit>
 
     // Images
-    suspend fun uploadImage(bytes: ByteArray): AppResult<String>
-    suspend fun addImage(productId: Long, url: String, sortOrder: Int?): AppResult<AdminProductImage>
+    suspend fun addImage(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductImage>
+    suspend fun reorderImages(productId: Long, items: List<Pair<Long, Int>>): AppResult<List<AdminProductImage>>
     suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit>
 
     // Variants

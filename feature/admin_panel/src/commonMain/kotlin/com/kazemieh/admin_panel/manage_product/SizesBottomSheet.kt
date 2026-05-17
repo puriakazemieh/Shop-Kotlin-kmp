@@ -8,7 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.repository.Size
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -16,6 +18,7 @@ fun SizesBottomSheet(
     sizes: List<Size>,
     onSizeSelected: (Size) -> Unit,
     onCreateSizeClick: () -> Unit,
+    onDeleteSize: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
@@ -42,17 +45,31 @@ fun SizesBottomSheet(
                 }
             }
             items(sizes) { size ->
-                Text(
-                    text = size.name,
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { 
                             onSizeSelected(size)
                             onDismiss()
                         }
-                        .padding(vertical = 12.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = size.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { onDeleteSize(size.id) }) {
+                        Icon(
+                            painter = painterResource(Resources.Icon.Delete),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
             }
             item {
                 Spacer(modifier = Modifier.height(32.dp))

@@ -10,7 +10,6 @@ import com.kazemieh.domain.repository.Color
 import com.kazemieh.domain.repository.Size
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
-import com.kazemieh.domain.usecase.catalog.GetColorsUseCase
 import com.kazemieh.domain.usecase.catalog.GetSizesUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,13 +26,16 @@ class ManageProductViewModel(
     private val createProductVariantUseCase: CreateProductVariantUseCase,
     private val createAdminCategoryUseCase: CreateAdminCategoryUseCase,
     private val createSizeUseCase: CreateSizeUseCase,
+    private val updateSizeUseCase: UpdateSizeUseCase,
+    private val deleteSizeUseCase: DeleteSizeUseCase,
     private val createColorUseCase: CreateColorUseCase,
-    private val uploadImageUseCase: UploadImageUseCase,
+    private val updateColorUseCase: UpdateColorUseCase,
+    private val deleteColorUseCase: DeleteColorUseCase,
     private val addProductImageUseCase: AddProductImageUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val getSizesUseCase: GetSizesUseCase,
-    private val getColorsUseCase: GetColorsUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val getAdminSizesUseCase: GetAdminSizesUseCase,
+    private val getAdminColorsUseCase: GetAdminColorsUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val productId = savedStateHandle.get<Long>("id") ?: -1L
@@ -54,26 +56,29 @@ class ManageProductViewModel(
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
             is ManageProductIntent.UpdateIsActive -> _state.update { it.copy(isActive = intent.isActive) }
-            is ManageProductIntent.UpdateCategory -> _state.update { it.copy(selectedCategory = intent.category) }
-            is ManageProductIntent.UpdateSize -> _state.update { it.copy(selectedSize = intent.size) }
-            is ManageProductIntent.UpdateColor -> _state.update { it.copy(selectedColor = intent.color) }
+            is ManageProductIntent.SelectCategory -> _state.update { it.copy(selectedCategory = intent.category) }
+            is ManageProductIntent.SelectSize -> _state.update { it.copy(selectedSize = intent.size) }
+            is ManageProductIntent.SelectColor -> _state.update { it.copy(selectedColor = intent.color) }
             is ManageProductIntent.SaveProduct -> saveProduct()
             is ManageProductIntent.DeleteProduct -> deleteProduct()
             is ManageProductIntent.DeleteImage -> deleteImage(intent.imageId)
             is ManageProductIntent.AddVariant -> addVariant(intent)
             is ManageProductIntent.CreateCategory -> createCategory(intent.name, intent.slug, intent.parentId)
             is ManageProductIntent.CreateSize -> createSize(intent.name, intent.sortOrder)
+            is ManageProductIntent.UpdateSizeInfo -> updateSize(intent.id, intent.name, intent.sortOrder)
+            is ManageProductIntent.DeleteSize -> deleteSize(intent.id)
             is ManageProductIntent.CreateColor -> createColor(intent.name, intent.hex)
+            is ManageProductIntent.UpdateColorInfo -> updateColor(intent.id, intent.name, intent.hex)
+            is ManageProductIntent.DeleteColor -> deleteColor(intent.id)
             is ManageProductIntent.UploadImage -> uploadImage(intent.bytes)
-            else -> {}
         }
     }
 
     private fun loadInitialData() {
         viewModelScope.launch {
             val categoriesResult = getCategoriesUseCase()
-            val sizesResult = getSizesUseCase()
-            val colorsResult = getColorsUseCase()
+            val sizesResult = getAdminSizesUseCase()
+            val colorsResult = getAdminColorsUseCase()
             _state.update {
                 it.copy(
                     categories = if (categoriesResult is AppResult.Success) categoriesResult.data else emptyList(),
@@ -149,6 +154,12 @@ class ManageProductViewModel(
 
             when (result) {
                 is AppResult.Success<*> -> {
+                    val newId = (result.data as? com.kazemieh.domain.model.admin.AdminProduct)?.id
+                    if (productId == -1L && newId != null) {
+                        currentState.selectedImageBytes.forEach { bytes ->
+                            addProductImageUseCase(newId, bytes, null)
+                        }
+                    }
                     _event.send(ManageProductUiEvent.ShowSuccess("Product saved successfully"))
                     _event.send(ManageProductUiEvent.NavigateBack)
                 }
@@ -184,7 +195,7 @@ class ManageProductViewModel(
         if (productId == -1L) {
             _state.update { it.copy(images = it.images.filter { img -> img.id != imageId }) }
         } else {
-            // Need DeleteProductImageUseCase if added
+            // CALL DELETE API
         }
     }
 
@@ -244,6 +255,32 @@ class ManageProductViewModel(
         }
     }
 
+    private fun updateSize(id: Long, name: String?, sortOrder: Int?) {
+        viewModelScope.launch {
+            when (val result = updateSizeUseCase(id, name, sortOrder)) {
+                is AppResult.Success<*> -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Size updated"))
+                    loadInitialData()
+                }
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun deleteSize(id: Long) {
+        viewModelScope.launch {
+            when (val result = deleteSizeUseCase(id)) {
+                is AppResult.Success<*> -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Size deleted"))
+                    loadInitialData()
+                }
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
     private fun createColor(name: String, hex: String?) {
         viewModelScope.launch {
             when (val result = createColorUseCase(name, hex)) {
@@ -257,27 +294,47 @@ class ManageProductViewModel(
         }
     }
 
-    private fun uploadImage(bytes: ByteArray) {
+    private fun updateColor(id: Long, name: String?, hex: String?) {
         viewModelScope.launch {
-            _state.update { it.copy(isSaving = true) }
-            when (val result = uploadImageUseCase(bytes)) {
-                is AppResult.Success<String> -> {
-                    if (productId != -1L) {
-                        when (val addResult = addProductImageUseCase(productId, result.data, null)) {
-                            is AppResult.Success<*> -> {
-                                _event.send(ManageProductUiEvent.ShowSuccess("Image uploaded"))
-                                loadProductDetail()
-                            }
-                            is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(addResult.message))
-                            is AppResult.Loading -> {}
-                        }
-                    } else {
-                        _state.update { it.copy(images = it.images + ProductImageUiModel(0, result.data)) }
-                        _event.send(ManageProductUiEvent.ShowSuccess("Image selected"))
-                    }
+            when (val result = updateColorUseCase(id, name, hex)) {
+                is AppResult.Success<*> -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Color updated"))
+                    loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun deleteColor(id: Long) {
+        viewModelScope.launch {
+            when (val result = deleteColorUseCase(id)) {
+                is AppResult.Success<*> -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Color deleted"))
+                    loadInitialData()
+                }
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun uploadImage(bytes: ByteArray) {
+        viewModelScope.launch {
+            _state.update { it.copy(isSaving = true) }
+            if (productId != -1L) {
+                when (val result = addProductImageUseCase(productId, bytes, null)) {
+                    is AppResult.Success<*> -> {
+                        _event.send(ManageProductUiEvent.ShowSuccess("Image uploaded"))
+                        loadProductDetail()
+                    }
+                    is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                    is AppResult.Loading -> {}
+                }
+            } else {
+                _state.update { it.copy(selectedImageBytes = it.selectedImageBytes + bytes) }
+                _event.send(ManageProductUiEvent.ShowSuccess("Image selected"))
             }
             _state.update { it.copy(isSaving = false) }
         }
@@ -292,12 +349,13 @@ data class ManageProductState(
     val basePrice: Double = 0.0,
     val isActive: Boolean = true,
     val selectedCategory: Category? = null,
+    val selectedSize: Size? = null,
+    val selectedColor: Color? = null,
     val categories: List<Category> = emptyList(),
     val sizes: List<Size> = emptyList(),
     val colors: List<Color> = emptyList(),
-    val selectedSize: Size? = null,
-    val selectedColor: Color? = null,
     val images: List<ProductImageUiModel> = emptyList(),
+    val selectedImageBytes: List<ByteArray> = emptyList(),
     val variants: List<AdminVariant> = emptyList()
 )
 
@@ -311,12 +369,11 @@ sealed interface ManageProductIntent {
     data class UpdateDescription(val description: String) : ManageProductIntent
     data class UpdateBasePrice(val price: Double) : ManageProductIntent
     data class UpdateIsActive(val isActive: Boolean) : ManageProductIntent
-    data class UpdateCategory(val category: Category) : ManageProductIntent
-    data class UpdateSize(val size: Size) : ManageProductIntent
-    data class UpdateColor(val color: Color) : ManageProductIntent
+    data class SelectCategory(val category: Category) : ManageProductIntent
+    data class SelectSize(val size: Size) : ManageProductIntent
+    data class SelectColor(val color: Color) : ManageProductIntent
     data object SaveProduct : ManageProductIntent
     data object DeleteProduct : ManageProductIntent
-    data class AddImage(val url: String) : ManageProductIntent
     data class DeleteImage(val imageId: Long) : ManageProductIntent
     data class AddVariant(
         val sizeId: Long,
@@ -337,10 +394,26 @@ sealed interface ManageProductIntent {
         val sortOrder: Int
     ) : ManageProductIntent
 
+    data class UpdateSizeInfo(
+        val id: Long,
+        val name: String?,
+        val sortOrder: Int?
+    ) : ManageProductIntent
+
+    data class DeleteSize(val id: Long) : ManageProductIntent
+
     data class CreateColor(
         val name: String,
         val hex: String?
     ) : ManageProductIntent
+
+    data class UpdateColorInfo(
+        val id: Long,
+        val name: String?,
+        val hex: String?
+    ) : ManageProductIntent
+
+    data class DeleteColor(val id: Long) : ManageProductIntent
 
     data class UploadImage(val bytes: ByteArray) : ManageProductIntent {
         override fun equals(other: Any?): Boolean {

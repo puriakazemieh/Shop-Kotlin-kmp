@@ -1,30 +1,30 @@
 package com.kazemieh.data.catalog.mapper
 
 import com.kazemieh.domain.model.*
-import com.kazemieh.domain.repository.Color
-import com.kazemieh.domain.repository.Size
+import com.kazemieh.domain.repository.Color as DomainColor
+import com.kazemieh.domain.repository.Size as DomainSize
 import com.kazemieh.network.dto.catalog.response.*
 
-fun CategoryResponse.toDomain(): Category = Category(
+fun CategoryResponse.toCatalogDomain(): Category = Category(
     id = id,
     name = name,
     slug = slug,
     parentId = parentId
 )
 
-fun SizeResponse.toDomain() = Size(
+fun SizeResponse.toCatalogDomain() = DomainSize(
     id = id,
     name = name,
     sortOrder = sortOrder
 )
 
-fun ColorResponse.toDomain() = Color(
+fun ColorResponse.toCatalogDomain() = DomainColor(
     id = id,
     name = name,
     hex = hex
 )
 
-fun ProductSummaryResponse.toDomain() = ProductSummary(
+fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     id = id,
     title = title,
     slug = slug,
@@ -36,25 +36,25 @@ fun ProductSummaryResponse.toDomain() = ProductSummary(
     categoryName = categoryName
 )
 
-fun ProductDetailResponse.toDomain() = ProductDetail(
+fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
     id = id,
     title = title,
     slug = slug,
     description = description,
     categoryId = categoryId,
     categoryName = categoryName,
-    images = images.map { it.toDomain() },
-    variants = variants.map { it.toDomain() },
+    images = images.map { it.toCatalogDomain() },
+    variants = variants.map { it.toCatalogDomain() },
     createdAt = createdAt
 )
 
-fun ProductImageResponse.toDomain() = ProductImage(
+fun ProductImageResponse.toCatalogDomain() = ProductImage(
     id = id,
     url = url,
     sortOrder = sortOrder
 )
 
-fun ProductVariantResponse.toDomain() = ProductVariant(
+fun ProductVariantResponse.toCatalogDomain() = ProductVariant(
     id = id,
     sku = sku,
     price = price,

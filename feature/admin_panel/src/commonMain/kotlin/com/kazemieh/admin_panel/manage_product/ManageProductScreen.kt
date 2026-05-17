@@ -39,12 +39,13 @@ fun ManageProductScreen(
     val viewModel = koinViewModel<ManageProductViewModel>()
     val state by viewModel.state.collectAsState()
     val photoPicker = remember { PhotoPicker() }
-    
+
     photoPicker.InitializePhotoPicker(
         onImageSelect = { bytes ->
             viewModel.handleIntent(ManageProductIntent.UploadImage(bytes))
         }
     )
+
     var showCategoriesBottomSheet by remember { mutableStateOf(false) }
     var showSizesBottomSheet by remember { mutableStateOf(false) }
     var showColorsBottomSheet by remember { mutableStateOf(false) }
@@ -67,11 +68,12 @@ fun ManageProductScreen(
     if (showCategoriesBottomSheet) {
         CategoriesBottomSheet(
             categories = state.categories,
-            onCategorySelected = { viewModel.handleIntent(ManageProductIntent.UpdateCategory(it)) },
+            onCategorySelected = { viewModel.handleIntent(ManageProductIntent.SelectCategory(it)) },
             onCreateCategoryClick = {
                 showCreateCategoryDialog = true
                 showCategoriesBottomSheet = false
             },
+            onDeleteCategory = { /* Delete logic if needed */ },
             onDismiss = { showCategoriesBottomSheet = false }
         )
     }
@@ -89,11 +91,12 @@ fun ManageProductScreen(
     if (showSizesBottomSheet) {
         SizesBottomSheet(
             sizes = state.sizes,
-            onSizeSelected = { viewModel.handleIntent(ManageProductIntent.UpdateSize(it)) },
+            onSizeSelected = { viewModel.handleIntent(ManageProductIntent.SelectSize(it)) },
             onCreateSizeClick = {
                 showCreateSizeDialog = true
                 showSizesBottomSheet = false
             },
+            onDeleteSize = { viewModel.handleIntent(ManageProductIntent.DeleteSize(it)) },
             onDismiss = { showSizesBottomSheet = false }
         )
     }
@@ -111,11 +114,12 @@ fun ManageProductScreen(
     if (showColorsBottomSheet) {
         ColorsBottomSheet(
             colors = state.colors,
-            onColorSelected = { viewModel.handleIntent(ManageProductIntent.UpdateColor(it)) },
+            onColorSelected = { viewModel.handleIntent(ManageProductIntent.SelectColor(it)) },
             onCreateColorClick = {
                 showCreateColorDialog = true
                 showColorsBottomSheet = false
             },
+            onDeleteColor = { viewModel.handleIntent(ManageProductIntent.DeleteColor(it)) },
             onDismiss = { showColorsBottomSheet = false }
         )
     }
@@ -262,10 +266,6 @@ fun ManageProductScreen(
                         onClick = { showCategoriesBottomSheet = true }
                     )
 
-                    // I will add another row for managing sizes and colors if needed here, 
-                    // but they are already manageable within AddVariantDialog.
-                    // To follow "next to category", I'll add them as buttons or fields.
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -274,13 +274,21 @@ fun ManageProductScreen(
                             modifier = Modifier.weight(1f).clickable { showSizesBottomSheet = true },
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                         ) {
-                            Text(state.selectedSize?.name ?: "Manage Sizes", modifier = Modifier.padding(16.dp), fontSize = FontSize.SMALL)
+                            Text(
+                                state.selectedSize?.name ?: "Manage Sizes",
+                                modifier = Modifier.padding(16.dp),
+                                fontSize = FontSize.SMALL
+                            )
                         }
                         OutlinedCard(
                             modifier = Modifier.weight(1f).clickable { showColorsBottomSheet = true },
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                         ) {
-                            Text(state.selectedColor?.name ?: "Manage Colors", modifier = Modifier.padding(16.dp), fontSize = FontSize.SMALL)
+                            Text(
+                                state.selectedColor?.name ?: "Manage Colors",
+                                modifier = Modifier.padding(16.dp),
+                                fontSize = FontSize.SMALL
+                            )
                         }
                     }
 
@@ -345,6 +353,16 @@ fun ManageProductScreen(
                                         tint = Color.Red
                                     )
                                 }
+                            }
+                        }
+                        items(state.selectedImageBytes) { bytes ->
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                                AsyncImage(
+                                    model = bytes,
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
                             }
                         }
                         item {

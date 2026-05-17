@@ -8,7 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.Category
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -16,6 +18,7 @@ fun CategoriesBottomSheet(
     categories: List<Category>,
     onCategorySelected: (Category) -> Unit,
     onCreateCategoryClick: () -> Unit,
+    onDeleteCategory: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
@@ -47,7 +50,8 @@ fun CategoriesBottomSheet(
                     onSelected = {
                         onCategorySelected(it)
                         onDismiss()
-                    }
+                    },
+                    onDelete = onDeleteCategory
                 )
             }
             item {
@@ -61,18 +65,29 @@ fun CategoriesBottomSheet(
 fun CategoryItem(
     category: Category,
     onSelected: (Category) -> Unit,
+    onDelete: (Long) -> Unit,
     level: Int = 0
 ) {
-    Column {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelected(category) }
+            .padding(vertical = 8.dp, horizontal = (level * 16).dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+    ) {
         Text(
             text = category.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onSelected(category) }
-                .padding(vertical = 12.dp, horizontal = (level * 16).dp),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
         )
-        // If children are needed in the UI, they can be rendered recursively here
-        // For now, I'll keep it simple as a flat list if the server returns flat or just top level
+        IconButton(onClick = { onDelete(category.id) }) {
+            Icon(
+                painter = painterResource(Resources.Icon.Delete),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(20.dp)
+            )
+        }
     }
 }

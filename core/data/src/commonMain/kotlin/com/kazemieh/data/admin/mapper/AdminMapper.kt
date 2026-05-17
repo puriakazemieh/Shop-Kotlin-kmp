@@ -4,17 +4,31 @@ import com.kazemieh.domain.model.admin.*
 import com.kazemieh.domain.repository.AdminCategory
 import com.kazemieh.domain.repository.AdminInventory
 import com.kazemieh.domain.repository.AdminPage
+import com.kazemieh.domain.repository.Color as DomainColor
+import com.kazemieh.domain.repository.Size as DomainSize
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.response.*
 
-fun AdminCategoryResponse.toDomain() = AdminCategory(
+fun AdminCategoryResponse.toAdminDomain() = AdminCategory(
     id = id,
     name = name,
     slug = slug,
     parentId = parentId
 )
 
-fun AdminProductResponse.toDomain() = AdminProduct(
+fun AdminSizeResponse.toAdminDomain() = DomainSize(
+    id = id,
+    name = name,
+    sortOrder = sortOrder
+)
+
+fun AdminColorResponse.toAdminDomain() = DomainColor(
+    id = id,
+    name = name,
+    hex = hex
+)
+
+fun AdminProductResponse.toAdminDomain() = AdminProduct(
     id = id,
     categoryId = categoryId,
     title = title,
@@ -24,13 +38,13 @@ fun AdminProductResponse.toDomain() = AdminProduct(
     isActive = isActive
 )
 
-fun AdminProductImageResponse.toDomain() = AdminProductImage(
+fun AdminProductImageResponse.toAdminDomain() = AdminProductImage(
     id = id,
     url = url,
     sortOrder = sortOrder
 )
 
-fun AdminVariantResponse.toDomain() = AdminVariant(
+fun AdminVariantResponse.toAdminDomain() = AdminVariant(
     id = id,
     sku = sku,
     price = price,
@@ -42,17 +56,17 @@ fun AdminVariantResponse.toDomain() = AdminVariant(
     colorName = colorName
 )
 
-fun AdminInventoryResponse.toDomain() = AdminInventory(
+fun AdminInventoryResponse.toAdminDomain() = AdminInventory(
     variantId = variantId,
     onHand = onHand,
     reserved = reserved,
     version = version
 )
 
-fun AdminProductDetailResponse.toDomain() = AdminProductDetail(
-    product = product.toDomain(),
-    images = images.map { it.toDomain() },
-    variants = variants.map { it.toDomain() }
+fun AdminProductDetailResponse.toAdminDomain() = AdminProductDetail(
+    product = product.toAdminDomain(),
+    images = images.map { it.toAdminDomain() },
+    variants = variants.map { it.toAdminDomain() }
 )
 
 fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(

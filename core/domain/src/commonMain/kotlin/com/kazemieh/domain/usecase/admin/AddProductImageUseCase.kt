@@ -7,7 +7,7 @@ import com.kazemieh.domain.repository.AdminRepository
 class AddProductImageUseCase(
     private val repository: AdminRepository
 ) {
-    suspend operator fun invoke(productId: Long, url: String, sortOrder: Int?): AppResult<AdminProductImage> {
-        return repository.addImage(productId, url, sortOrder)
+    suspend operator fun invoke(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductImage> {
+        return repository.addImage(productId, bytes, sortOrder)
     }
 }
