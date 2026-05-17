@@ -1,6 +1,5 @@
 package com.kazemieh.data.admin.mapper
 
-import com.kazemieh.common.ld
 import com.kazemieh.domain.model.admin.*
 import com.kazemieh.domain.repository.*
 import com.kazemieh.network.PlatformConfig
@@ -63,7 +62,7 @@ fun AdminInventoryResponse.toAdminDomain() = AdminInventory(
 
 fun AdminProductDetailResponse.toAdminDomain() = AdminProductDetail(
     product = product.toAdminDomain(),
-    images = images.map { it.toAdminDomain().ld("images") },
+    images = images.map { it.toAdminDomain() },
     variants = variants.map { it.toAdminDomain() }
 )
 

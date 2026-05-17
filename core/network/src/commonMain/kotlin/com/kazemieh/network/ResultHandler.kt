@@ -37,12 +37,16 @@ suspend fun <T> safeApiCall(
 suspend inline fun <reified T> safeApiCallRaw(
     crossinline request: suspend () -> HttpResponse
 ): T {
+    "Starting safeApiCallRaw".ld("safeApiCallRaw")
     return try {
         val response = request()
-        val bodyText = response.bodyAsText()
+        val bodyText = try { response.bodyAsText() } catch (e: Exception) { "" }
+        "Response status: ${response.status}".ld("safeApiCallRaw")
+        "Response body: $bodyText".ld("safeApiCallRaw")
 
         if (response.status.isSuccess()) {
             if (T::class == Unit::class) {
+                "Returning Unit".ld("safeApiCallRaw")
                 return Unit as T
             }
             try {

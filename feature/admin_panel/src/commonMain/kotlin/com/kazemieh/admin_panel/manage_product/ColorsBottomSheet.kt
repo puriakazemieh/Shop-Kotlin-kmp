@@ -48,18 +48,20 @@ fun ColorsBottomSheet(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { 
-                            onColorSelected(color)
-                            onDismiss()
-                        }
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Text(
                         text = color.name,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { 
+                                onColorSelected(color)
+                                onDismiss()
+                            }
+                            .padding(vertical = 8.dp)
                     )
                     IconButton(onClick = { onDeleteColor(color.id) }) {
                         Icon(

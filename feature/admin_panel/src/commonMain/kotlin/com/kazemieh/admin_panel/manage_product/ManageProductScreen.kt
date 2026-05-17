@@ -106,9 +106,11 @@ fun ManageProductScreen(
             onCreateSize = { name, sortOrder ->
                 viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
             },
+            onDeleteSize = { viewModel.handleIntent(ManageProductIntent.DeleteSize(it)) },
             onCreateColor = { name, hex ->
                 viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
-            }
+            },
+            onDeleteColor = { viewModel.handleIntent(ManageProductIntent.DeleteColor(it)) }
         )
     }
 

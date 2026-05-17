@@ -17,7 +17,9 @@ fun AddVariantDialog(
     onDismiss: () -> Unit,
     onConfirm: (sizeId: Long, colorId: Long, sku: String, price: Double, initialOnHand: Int) -> Unit,
     onCreateSize: (name: String, sortOrder: Int) -> Unit,
-    onCreateColor: (name: String, hex: String?) -> Unit
+    onDeleteSize: (Long) -> Unit,
+    onCreateColor: (name: String, hex: String?) -> Unit,
+    onDeleteColor: (Long) -> Unit
 ) {
     var selectedSize by remember { mutableStateOf<Size?>(null) }
     var selectedColor by remember { mutableStateOf<Color?>(null) }
@@ -39,7 +41,7 @@ fun AddVariantDialog(
                 showCreateSizeDialog = true
                 showSizesBottomSheet = false
             },
-            onDeleteSize = {},
+            onDeleteSize = onDeleteSize,
             onDismiss = { showSizesBottomSheet = false }
         )
     }
@@ -62,7 +64,7 @@ fun AddVariantDialog(
                 showCreateColorDialog = true
                 showColorsBottomSheet = false
             },
-            onDeleteColor = {},
+            onDeleteColor = onDeleteColor,
             onDismiss = { showColorsBottomSheet = false }
         )
     }

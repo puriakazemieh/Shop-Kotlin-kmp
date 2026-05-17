@@ -10,6 +10,7 @@ import com.kazemieh.domain.repository.Color
 import com.kazemieh.domain.repository.Size
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
+import com.kazemieh.common.ld
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,6 +55,7 @@ class ManageProductViewModel(
     }
 
     fun handleIntent(intent: ManageProductIntent) {
+        "Received intent: ${intent::class.simpleName}".ld("ManageProductVM")
         when (intent) {
             is ManageProductIntent.UpdateTitle -> _state.update { it.copy(title = intent.title) }
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
@@ -323,13 +325,18 @@ class ManageProductViewModel(
     }
 
     private fun deleteSize(id: Long) {
+        "Deleting size: $id".ld("ManageProductVM")
         viewModelScope.launch {
             when (val result = deleteSizeUseCase(id)) {
                 is AppResult.Success<*> -> {
+                    "Size deleted successfully".ld("ManageProductVM")
                     _event.send(ManageProductUiEvent.ShowSuccess("Size deleted"))
                     loadInitialData()
                 }
-                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Error -> {
+                    "Error deleting size: ${result.message}".ld("ManageProductVM")
+                    _event.send(ManageProductUiEvent.ShowError(result.message))
+                }
                 is AppResult.Loading -> {}
             }
         }
@@ -362,13 +369,18 @@ class ManageProductViewModel(
     }
 
     private fun deleteColor(id: Long) {
+        "Deleting color: $id".ld("ManageProductVM")
         viewModelScope.launch {
             when (val result = deleteColorUseCase(id)) {
                 is AppResult.Success<*> -> {
+                    "Color deleted successfully".ld("ManageProductVM")
                     _event.send(ManageProductUiEvent.ShowSuccess("Color deleted"))
                     loadInitialData()
                 }
-                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Error -> {
+                    "Error deleting color: ${result.message}".ld("ManageProductVM")
+                    _event.send(ManageProductUiEvent.ShowError(result.message))
+                }
                 is AppResult.Loading -> {}
             }
         }

@@ -65,7 +65,7 @@ fun String.toUserMessage(): String {
 
         // DB & Generic
         "DATA_INTEGRITY_VIOLATION" -> "خطا در ذخیره اطلاعات"
-        "FOREIGN_KEY_VIOLATION" -> "ارجاع نامعتبر"
+        "FOREIGN_KEY_VIOLATION" -> "این مورد در محصولات استفاده شده و قابل حذف نیست"
         "UNIQUE_VIOLATION" -> "این مقدار تکراری است"
         "CHECK_VIOLATION" -> "داده نامعتبر است"
         "VALIDATION_ERROR" -> "اطلاعات وارد شده نامعتبر است"
@@ -73,6 +73,7 @@ fun String.toUserMessage(): String {
         "INTERNAL_ERROR" -> "خطای سرور رخ داد"
 
         "UNKNOWN_ERROR" -> "خطای نامشخص رخ داد"
+
         else -> this
     }
 }
