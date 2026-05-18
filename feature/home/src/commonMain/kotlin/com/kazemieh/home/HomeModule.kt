@@ -4,10 +4,13 @@ import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
 import com.kazemieh.domain.usecase.cart.*
+import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
 import com.kazemieh.domain.usecase.order.*
 import com.kazemieh.home.cart.CartViewModel
 import com.kazemieh.home.cart.checkout.CheckoutViewModel
+import com.kazemieh.home.category.CategoriesViewModel
+import com.kazemieh.home.category.CategorySearchViewModel
 import com.kazemieh.home.productsOverview.ProductsOverviewViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -47,11 +50,24 @@ val homeModule = module {
         )
     }
 
+    viewModel {
+        CategoriesViewModel(
+            getCategoriesUseCase = get()
+        )
+    }
+
+    viewModel {
+        CategorySearchViewModel(
+            getProductsUseCase = get()
+        )
+    }
+
     // UseCases
     factory { IsUserLoggedInUseCase(get()) }
     factory { SignOutUseCase(get()) }
     factory { ObserveAuthStateUseCase(get()) }
     factory { GetProductsUseCase(get()) }
+    factory { GetCategoriesUseCase(get()) }
 
     // Cart UseCases
     factory { GetCartUseCase(get()) }

@@ -44,6 +44,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.kazemieh.common.Screen
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.AppFont
@@ -52,6 +53,8 @@ import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.home.cart.CartScreen
+import com.kazemieh.home.category.CategoriesScreen
+import com.kazemieh.home.category.CategorySearchScreen
 import com.kazemieh.home.component.BottomBar
 import com.kazemieh.home.component.BottomBarDestination
 import com.kazemieh.home.component.CustomDrawer
@@ -71,7 +74,7 @@ fun HomeGraphScreen(
     navigateToProfile: () -> Unit,
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
-    navigateToCategorySearch: (String) -> Unit,
+    navigateToCategorySearch: (Long, String) -> Unit,
     navigateToCheckout: (Double) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -272,8 +275,16 @@ fun HomeGraphScreen(
                                     CartScreen(navigateToCheckout=navigateToCheckout)
                                 }
                                 composable<Screen.Categories> {
-//                                    CategoriesScreen(navigateToCategorySearch = navigateToCategorySearch)
-                                    Box(modifier = Modifier.fillMaxSize().background(Color.Magenta))
+                                    CategoriesScreen(navigateToCategorySearch = navigateToCategorySearch)
+                                }
+                                composable<Screen.CategorySearch> {
+                                    val args = it.toRoute<Screen.CategorySearch>()
+                                    CategorySearchScreen(
+                                        categoryId = args.id,
+                                        categoryName = args.name,
+                                        navigateToDetails = navigateToDetails,
+                                        navigateBack = { navController.navigateUp() }
+                                    )
                                 }
                             }
                         }

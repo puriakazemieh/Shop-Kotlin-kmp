@@ -41,4 +41,7 @@ sealed class Screen {
     @Serializable
     data class Checkout(val totalAmount: Double) : Screen()
 
+    @Serializable
+    data class CategorySearch(val id: Long, val name: String) : Screen()
+
 }

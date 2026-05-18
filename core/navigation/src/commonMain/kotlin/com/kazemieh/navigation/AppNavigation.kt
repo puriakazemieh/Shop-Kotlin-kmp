@@ -60,8 +60,8 @@ fun AppNavHost(
                 navigateToDetails = { productId ->
 //                    navController.navigate(Screen.Details(id = productId))
                 },
-                navigateToCategorySearch = { categoryName ->
-//                    navController.navigate(Screen.CategorySearch(categoryName))
+                navigateToCategorySearch = { categoryId, categoryName ->
+                    navController.navigate(Screen.CategorySearch(id = categoryId, name = categoryName))
                 },
                 navigateToCheckout = { totalAmount ->
                     navController.navigate(Screen.Checkout(totalAmount))
