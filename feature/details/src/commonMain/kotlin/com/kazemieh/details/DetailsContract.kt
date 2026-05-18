@@ -8,7 +8,9 @@ data class DetailsState(
     val product: ProductDetail? = null,
     val error: String? = null,
     val quantity: Int = 1,
-    val selectedVariant: ProductVariant? = null
+    val selectedVariant: ProductVariant? = null,
+    val isAddedToCart: Boolean = false,
+    val isCounterMode: Boolean = true
 )
 
 sealed interface DetailsIntent {
@@ -16,6 +18,7 @@ sealed interface DetailsIntent {
     data class UpdateQuantity(val quantity: Int) : DetailsIntent
     data class SelectVariant(val variant: ProductVariant) : DetailsIntent
     data object AddToCart : DetailsIntent
+    data class SetCounterMode(val isCounterMode: Boolean) : DetailsIntent
 }
 
 sealed interface DetailsEffect {

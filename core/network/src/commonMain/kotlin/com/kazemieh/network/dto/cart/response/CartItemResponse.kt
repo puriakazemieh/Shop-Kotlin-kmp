@@ -1,5 +1,6 @@
 package com.kazemieh.network.dto.cart.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,6 +17,7 @@ data class CartItemResponse(
     val price: Double,
     val compareAtPrice: Double? = null,
     val availableQty: Int,
+    @SerialName("active")
     val isActive: Boolean,
     val lineTotal: Double
 )

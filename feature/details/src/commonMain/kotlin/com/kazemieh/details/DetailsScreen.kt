@@ -1,8 +1,11 @@
 package com.kazemieh.details
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -11,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,9 +46,6 @@ import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.details.DetailsEffect
-import com.kazemieh.details.DetailsIntent
-import com.kazemieh.details.DetailsViewModel
 import com.kazemieh.details.component.VariantChip
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
@@ -57,11 +56,19 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DetailsScreen(
     slug: String,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToCart: () -> Unit
 ) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state.isAddedToCart, state.quantity, state.isCounterMode) {
+        if (state.isAddedToCart && state.isCounterMode) {
+            kotlinx.coroutines.delay(5000)
+            viewModel.onIntent(DetailsIntent.SetCounterMode(false))
+        }
+    }
 
     LaunchedEffect(slug) {
         viewModel.onIntent(DetailsIntent.LoadProduct(slug))
@@ -96,15 +103,6 @@ fun DetailsScreen(
                         )
                     }
                 },
-                actions = {
-                    QuantityCounter(
-                        size = QuantityCounterSize.Medium,
-                        value = state.quantity,
-                        onMinusClick = { viewModel.onIntent(DetailsIntent.UpdateQuantity(it)) },
-                        onPlusClick = { viewModel.onIntent(DetailsIntent.UpdateQuantity(it)) }
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -136,7 +134,8 @@ fun DetailsScreen(
                                 .padding(horizontal = 24.dp)
                                 .padding(top = 12.dp)
                         ) {
-                            val painter = rememberImagePainter(product.images.firstOrNull()?.url ?: "")
+                            val painter =
+                                rememberImagePainter(product.images.firstOrNull()?.url ?: "")
                             Image(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -206,17 +205,80 @@ fun DetailsScreen(
                                         VariantChip(
                                             label = "${variant.sizeName} / ${variant.colorName}",
                                             isSelected = state.selectedVariant == variant,
-                                            onClick = { viewModel.onIntent(DetailsIntent.SelectVariant(variant)) }
+                                            onClick = {
+                                                viewModel.onIntent(
+                                                    DetailsIntent.SelectVariant(
+                                                        variant
+                                                    )
+                                                )
+                                            }
                                         )
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(24.dp))
                             }
-                            PrimaryButton(
-                                text = "Add to Cart",
-                                enabled = state.selectedVariant != null,
-                                onClick = { viewModel.onIntent(DetailsIntent.AddToCart) }
-                            )
+                            if (state.isAddedToCart) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (state.isCounterMode) {
+                                        QuantityCounter(
+                                            size = QuantityCounterSize.Medium,
+                                            value = state.quantity,
+                                            onMinusClick = {
+                                                viewModel.onIntent(
+                                                    DetailsIntent.UpdateQuantity(
+                                                        it
+                                                    )
+                                                )
+                                            },
+                                            onPlusClick = {
+                                                viewModel.onIntent(
+                                                    DetailsIntent.UpdateQuantity(
+                                                        it
+                                                    )
+                                                )
+                                            }
+                                        )
+                                    } else {
+                                        PrimaryButton(
+                                            modifier = Modifier.weight(1f),
+                                            text = "Checkout (${state.quantity})",
+                                            onClick = navigateToCart
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(size = 12.dp))
+                                                .background(MaterialTheme.colorScheme.secondaryContainer)
+                                                .clickable {
+                                                    viewModel.onIntent(
+                                                        DetailsIntent.SetCounterMode(
+                                                            true
+                                                        )
+                                                    )
+                                                }
+                                                .padding(all = 16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = state.quantity.toString(),
+                                                fontSize = FontSize.MEDIUM,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        }
+                                    }
+                                }
+                            } else {
+                                PrimaryButton(
+                                    text = "Add to Cart",
+                                    enabled = !state.isLoading && (state.product?.variants?.isNotEmpty() == true),
+                                    onClick = { viewModel.onIntent(DetailsIntent.AddToCart) }
+                                )
+                            }
                         }
                     }
                 }

@@ -69,6 +69,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun HomeGraphScreen(
+    showCart: Boolean = false,
     viewModel: HomeGraphViewModel = koinViewModel(),
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
@@ -79,6 +80,17 @@ fun HomeGraphScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
+    
+    // Switch to cart if needed when screen is loaded
+    LaunchedEffect(showCart) {
+        if (showCart) {
+            navController.navigate(Screen.Cart) {
+                popUpTo(Screen.ProductsOverview) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
     val currentRoute = navController.currentBackStackEntryAsState()
     val selectedDestination by remember {
         derivedStateOf {

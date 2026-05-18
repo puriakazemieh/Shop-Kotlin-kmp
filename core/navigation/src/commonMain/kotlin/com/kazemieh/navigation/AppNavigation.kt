@@ -24,7 +24,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppNavHost(
-    startDestination: Any = Screen.HomeGraph,
+    startDestination: Any = Screen.HomeGraph(),
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -47,8 +47,9 @@ fun AppNavHost(
         authNavGraph(navController)
 
         composable<Screen.HomeGraph> {
-
+            val args = it.toRoute<Screen.HomeGraph>()
             HomeGraphScreen(
+                showCart = args.showCart,
                 navigateToAuth = {
                     navController.navigate(Screen.AuthGraph)
                 },
@@ -97,7 +98,12 @@ fun AppNavHost(
             val args = it.toRoute<Screen.ProductDetail>()
             DetailsScreen(
                 slug = args.slug,
-                navigateBack = { navController.navigateUp() }
+                navigateBack = { navController.navigateUp() },
+                navigateToCart = {
+                    navController.navigate(Screen.HomeGraph(showCart = true)) {
+                        popUpTo<Screen.HomeGraph> { inclusive = true }
+                    }
+                }
             )
         }
 

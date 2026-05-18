@@ -29,12 +29,22 @@ class DetailsViewModel(
         when (intent) {
             is DetailsIntent.LoadProduct -> loadProduct(intent.slug)
             is DetailsIntent.UpdateQuantity -> {
-                _state.update { it.copy(quantity = intent.quantity) }
+                val newQty = intent.quantity
+                if (newQty <= 0) {
+                    _state.update { it.copy(quantity = 1, isAddedToCart = false) }
+                    // Here we could also call remove from cart if we had the itemId
+                } else {
+                    _state.update { it.copy(quantity = newQty) }
+                    updateQuantityInCart(newQty)
+                }
             }
             is DetailsIntent.SelectVariant -> {
-                _state.update { it.copy(selectedVariant = intent.variant) }
+                _state.update { it.copy(selectedVariant = intent.variant, isAddedToCart = false, quantity = 1, isCounterMode = true) }
             }
             is DetailsIntent.AddToCart -> addToCart()
+            is DetailsIntent.SetCounterMode -> {
+                _state.update { it.copy(isCounterMode = intent.isCounterMode) }
+            }
         }
     }
 
@@ -73,6 +83,7 @@ class DetailsViewModel(
         viewModelScope.launch {
             when (val result = addToCartUseCase(variantId, currentState.quantity)) {
                 is AppResult.Success -> {
+                    _state.update { it.copy(isAddedToCart = true) }
                     _effect.emit(DetailsEffect.AddedToCart)
                 }
                 is AppResult.Error -> {
@@ -80,6 +91,17 @@ class DetailsViewModel(
                 }
                 else -> {}
             }
+        }
+    }
+
+    private fun updateQuantityInCart(newQty: Int) {
+        val currentState = _state.value
+        if (!currentState.isAddedToCart) return
+        val variantId = currentState.selectedVariant?.id ?: return
+
+        viewModelScope.launch {
+            // Using addToCart with a specific quantity effectively sets/updates it in our backend implementation
+            addToCartUseCase(variantId, newQty)
         }
     }
 }
