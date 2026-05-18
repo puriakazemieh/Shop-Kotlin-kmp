@@ -7,6 +7,7 @@ import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.ObserveProfileUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
+import com.kazemieh.domain.usecase.cart.GetCartUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ class HomeGraphViewModel(
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val observeProfileUseCase: ObserveProfileUseCase,
+    private val getCartUseCase: GetCartUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
@@ -27,6 +29,7 @@ class HomeGraphViewModel(
     init {
         handleIntent(HomeIntent.RefreshAuthState)
         observeProfile()
+        observeCart()
     }
 
     fun handleIntent(intent: HomeIntent) {
@@ -41,6 +44,16 @@ class HomeGraphViewModel(
             observeProfileUseCase().collect { result ->
                 if (result is AppResult.Success) {
                     _state.update { it.copy(isAdmin = result.data.role == "ADMIN") }
+                }
+            }
+        }
+    }
+
+    private fun observeCart() {
+        viewModelScope.launch {
+            getCartUseCase().collect { result ->
+                if (result is AppResult.Success) {
+                    _state.update { it.copy(cartItemCount = result.data.totalQty) }
                 }
             }
         }
@@ -83,6 +96,7 @@ data class HomeState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
     val isAdmin: Boolean = false,
+    val cartItemCount: Int = 0,
     val error: String? = null
 )
 

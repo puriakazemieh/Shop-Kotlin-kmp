@@ -24,7 +24,8 @@ val homeModule = module {
             isUserLoggedInUseCase = get(),
             signOutUseCase = get(),
             observeAuthStateUseCase = get(),
-            observeProfileUseCase = get()
+            observeProfileUseCase = get(),
+            getCartUseCase = get()
         )
     }
 

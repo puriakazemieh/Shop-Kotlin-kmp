@@ -296,6 +296,7 @@ fun HomeGraphScreen(
                                 .padding(all = 12.dp)
                         ) {
                             BottomBar(
+                                cartItemCount = state.cartItemCount,
                                 selected = selectedDestination,
                                 onSelect = { destination ->
                                     navController.navigate(destination.screen) {

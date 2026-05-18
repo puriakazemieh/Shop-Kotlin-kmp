@@ -8,21 +8,27 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
-//    customer: RequestState<Customer>,
+    cartItemCount: Int,
     selected: BottomBarDestination,
     onSelect: (BottomBarDestination) -> Unit,
 ) {
@@ -32,7 +38,7 @@ fun BottomBar(
             .clip(RoundedCornerShape(size = 12.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(
-                vertical = 24.dp,
+                vertical = 16.dp,
                 horizontal = 36.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -42,27 +48,35 @@ fun BottomBar(
             val animatedTint by animateColorAsState(
                 targetValue = if (selected == destination) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
             )
-            Box(contentAlignment = Alignment.TopEnd) {
-                Icon(
-                    modifier = Modifier.clickable { onSelect(destination) },
-                    painter = painterResource(destination.icon),
-                    contentDescription = "Bottom Bar destination icon",
-                    tint = animatedTint
-                )
-                if (destination == BottomBarDestination.Cart) {
-//                    AnimatedContent(
-//                        targetState = customer
-//                    ) { customerState ->
-//                        if (customerState.isSuccess() && customerState.getSuccessData().cart.isNotEmpty()) {
-//                            Box(
-//                                modifier = Modifier
-//                                    .size(8.dp)
-//                                    .offset(x = 4.dp, y = (-4).dp)
-//                                    .clip(CircleShape)
-//                                    .background(MaterialTheme.colorScheme.secondary)
-//                            )
-//                        }
-//                    }
+            Box(contentAlignment = Alignment.Center) {
+                if (destination == BottomBarDestination.Cart && cartItemCount > 0) {
+                    BadgedBox(
+                        badge = {
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                                contentColor = Color.White
+                            ) {
+                                Text(
+                                    text = cartItemCount.toString(),
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.clickable { onSelect(destination) },
+                            painter = painterResource(destination.icon),
+                            contentDescription = "Bottom Bar destination icon",
+                            tint = animatedTint
+                        )
+                    }
+                } else {
+                    Icon(
+                        modifier = Modifier.clickable { onSelect(destination) },
+                        painter = painterResource(destination.icon),
+                        contentDescription = "Bottom Bar destination icon",
+                        tint = animatedTint
+                    )
                 }
             }
         }
