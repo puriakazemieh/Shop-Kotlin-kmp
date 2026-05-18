@@ -18,6 +18,7 @@ import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.details.DetailsScreen
 import com.kazemieh.home.HomeGraphScreen
+import com.kazemieh.home.category.CategorySearchScreen
 import com.kazemieh.home.cart.checkout.CheckoutScreen
 import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -104,6 +105,18 @@ fun AppNavHost(
                         popUpTo<Screen.HomeGraph> { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable<Screen.CategorySearch> {
+            val args = it.toRoute<Screen.CategorySearch>()
+            CategorySearchScreen(
+                categoryId = args.id,
+                categoryName = args.name,
+                navigateToDetails = { slug ->
+                    navController.navigate(Screen.ProductDetail(slug = slug))
+                },
+                navigateBack = { navController.navigateUp() }
             )
         }
 
