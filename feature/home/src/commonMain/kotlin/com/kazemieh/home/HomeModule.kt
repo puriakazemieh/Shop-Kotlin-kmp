@@ -9,6 +9,7 @@ import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
 import com.kazemieh.domain.usecase.order.*
 import com.kazemieh.home.cart.CartViewModel
 import com.kazemieh.home.cart.checkout.CheckoutViewModel
+import com.kazemieh.home.cart.payment_completed.PaymentViewModel
 import com.kazemieh.home.category.CategoriesViewModel
 import com.kazemieh.home.category.CategorySearchViewModel
 import com.kazemieh.home.productsOverview.ProductsOverviewViewModel
@@ -53,6 +54,12 @@ val homeModule = module {
     viewModel {
         CategoriesViewModel(
             getCategoriesUseCase = get()
+        )
+    }
+
+    viewModel {
+        PaymentViewModel(
+            clearCartUseCase = get()
         )
     }
 
