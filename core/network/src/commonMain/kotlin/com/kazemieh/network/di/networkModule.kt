@@ -4,9 +4,13 @@ import com.kazemieh.network.AdminApi
 import com.kazemieh.network.AdminApiImpl
 import com.kazemieh.network.AuthApi
 import com.kazemieh.network.AuthApiImpl
+import com.kazemieh.network.CartApi
+import com.kazemieh.network.CartApiImpl
 import com.kazemieh.network.CatalogApi
 import com.kazemieh.network.CatalogApiImpl
 import com.kazemieh.network.HttpClientFactory
+import com.kazemieh.network.OrderApi
+import com.kazemieh.network.OrderApiImpl
 import com.kazemieh.network.ProfileApi
 import com.kazemieh.network.ProfileApiImpl
 import com.kazemieh.network.TokenProvider
@@ -33,5 +37,13 @@ val networkModule = module {
 
     single<CatalogApi> {
         CatalogApiImpl(get())
+    }
+
+    single<CartApi> {
+        CartApiImpl(get())
+    }
+
+    single<OrderApi> {
+        OrderApiImpl(get())
     }
 }

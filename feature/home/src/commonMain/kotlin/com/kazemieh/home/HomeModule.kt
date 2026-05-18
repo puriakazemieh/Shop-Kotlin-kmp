@@ -3,7 +3,11 @@ package com.kazemieh.home
 import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
+import com.kazemieh.domain.usecase.cart.*
 import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
+import com.kazemieh.domain.usecase.order.*
+import com.kazemieh.home.cart.CartViewModel
+import com.kazemieh.home.cart.checkout.CheckoutViewModel
 import com.kazemieh.home.productsOverview.ProductsOverviewViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -26,10 +30,42 @@ val homeModule = module {
         )
     }
 
+    viewModel {
+        CartViewModel(
+            getCartUseCase = get(),
+            updateCartItemUseCase = get(),
+            removeFromCartUseCase = get(),
+            adjustCartVariantQtyUseCase = get()
+        )
+    }
+
+    viewModel {
+        CheckoutViewModel(
+            createOrderUseCase = get(),
+            getProfileUseCase = get(),
+            getCartUseCase = get()
+        )
+    }
+
     // UseCases
     factory { IsUserLoggedInUseCase(get()) }
     factory { SignOutUseCase(get()) }
     factory { ObserveAuthStateUseCase(get()) }
     factory { GetProductsUseCase(get()) }
+
+    // Cart UseCases
+    factory { GetCartUseCase(get()) }
+    factory { AddToCartUseCase(get()) }
+    factory { UpdateCartItemUseCase(get()) }
+    factory { RemoveFromCartUseCase(get()) }
+    factory { ClearCartUseCase(get()) }
+    factory { SetCartVariantQtyUseCase(get()) }
+    factory { AdjustCartVariantQtyUseCase(get()) }
+
+    // Order UseCases
+    factory { GetMyOrdersUseCase(get()) }
+    factory { GetOrderUseCase(get()) }
+    factory { CreateOrderUseCase(get()) }
+    factory { CancelOrderUseCase(get()) }
 
 }

@@ -51,6 +51,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.home.cart.CartScreen
 import com.kazemieh.home.component.BottomBar
 import com.kazemieh.home.component.BottomBarDestination
 import com.kazemieh.home.component.CustomDrawer
@@ -71,7 +72,7 @@ fun HomeGraphScreen(
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (String) -> Unit,
-    navigateToCheckout: (String) -> Unit,
+    navigateToCheckout: (Double) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -268,8 +269,7 @@ fun HomeGraphScreen(
                                     ProductsOverviewScreen(navigateToDetails = navigateToDetails)
                                 }
                                 composable<Screen.Cart> {
-//                                    CartScreen()
-                                    Box(modifier = Modifier.fillMaxSize().background(Color.Green))
+                                    CartScreen(navigateToCheckout=navigateToCheckout)
                                 }
                                 composable<Screen.Categories> {
 //                                    CategoriesScreen(navigateToCategorySearch = navigateToCategorySearch)

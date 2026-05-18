@@ -17,6 +17,7 @@ import com.kazemieh.common.AuthState
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.home.HomeGraphScreen
+import com.kazemieh.home.cart.checkout.CheckoutScreen
 import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -63,7 +64,7 @@ fun AppNavHost(
 //                    navController.navigate(Screen.CategorySearch(categoryName))
                 },
                 navigateToCheckout = { totalAmount ->
-//                    navController.navigate(Screen.Checkout(totalAmount))
+                    navController.navigate(Screen.Checkout(totalAmount))
                 },
             )
         }
@@ -88,6 +89,15 @@ fun AppNavHost(
             ManageProductScreen(
                 id = args.id,
                 navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable<Screen.Checkout> {
+            val args = it.toRoute<Screen.Checkout>()
+            CheckoutScreen(
+                totalAmount = args.totalAmount,
+                navigateBack = { navController.navigateUp() },
+                navigateToPaymentCompleted = { orderId, status -> }
             )
         }
 

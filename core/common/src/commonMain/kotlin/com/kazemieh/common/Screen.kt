@@ -38,4 +38,7 @@ sealed class Screen {
     @Serializable
     data class ManageProduct(val id: Long? = null) : Screen()
 
+    @Serializable
+    data class Checkout(val totalAmount: Double) : Screen()
+
 }
