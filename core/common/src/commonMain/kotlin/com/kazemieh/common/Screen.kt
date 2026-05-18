@@ -44,4 +44,7 @@ sealed class Screen {
     @Serializable
     data class CategorySearch(val id: Long, val name: String) : Screen()
 
+    @Serializable
+    data class ProductDetail(val slug: String) : Screen()
+
 }

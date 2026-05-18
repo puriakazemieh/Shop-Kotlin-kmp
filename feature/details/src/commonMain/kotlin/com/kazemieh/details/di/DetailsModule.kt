@@ -1,0 +1,17 @@
+package com.kazemieh.details.di
+
+import com.kazemieh.details.DetailsViewModel
+import com.kazemieh.domain.usecase.catalog.GetProductDetailUseCase
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
+
+val detailsModule = module {
+    viewModel {
+        DetailsViewModel(
+            getProductDetailUseCase = get(),
+            addToCartUseCase = get()
+        )
+    }
+
+    factory { GetProductDetailUseCase(get()) }
+}

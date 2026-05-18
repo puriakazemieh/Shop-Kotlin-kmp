@@ -6,6 +6,7 @@ import com.kazemieh.auth.authModule
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.details.di.detailsModule
 import com.kazemieh.home.homeModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
@@ -31,7 +32,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             homeModule,
             authModule,
             profileModule,
-            adminPanelModule
+            adminPanelModule,
+            detailsModule
         )
     }
 }

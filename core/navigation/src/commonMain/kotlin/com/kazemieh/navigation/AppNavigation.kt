@@ -16,6 +16,7 @@ import com.kazemieh.admin_panel.manage_product.ManageProductScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
+import com.kazemieh.details.DetailsScreen
 import com.kazemieh.home.HomeGraphScreen
 import com.kazemieh.home.cart.checkout.CheckoutScreen
 import com.kazemieh.profile.ProfileScreen
@@ -57,8 +58,8 @@ fun AppNavHost(
                 navigateToAdminPanel = {
                     navController.navigate(Screen.AdminPanel)
                 },
-                navigateToDetails = { productId ->
-//                    navController.navigate(Screen.Details(id = productId))
+                navigateToDetails = { slug ->
+                    navController.navigate(Screen.ProductDetail(slug = slug))
                 },
                 navigateToCategorySearch = { categoryId, categoryName ->
                     navController.navigate(Screen.CategorySearch(id = categoryId, name = categoryName))
@@ -88,6 +89,14 @@ fun AppNavHost(
             val args = it.toRoute<Screen.ManageProduct>()
             ManageProductScreen(
                 id = args.id,
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable<Screen.ProductDetail> {
+            val args = it.toRoute<Screen.ProductDetail>()
+            DetailsScreen(
+                slug = args.slug,
                 navigateBack = { navController.navigateUp() }
             )
         }

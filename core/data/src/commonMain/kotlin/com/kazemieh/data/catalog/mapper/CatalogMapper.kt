@@ -49,7 +49,7 @@ fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
 )
 
 fun ProductImageResponse.toCatalogDomain() = ProductImage(
-    id = id,
+    id = id ?: 0L,
     url = url,
     sortOrder = sortOrder
 )
@@ -59,7 +59,7 @@ fun ProductVariantResponse.toCatalogDomain() = ProductVariant(
     sku = sku,
     price = price,
     compareAtPrice = compareAtPrice,
-    available = available,
-    sizeName = sizeName,
-    colorName = colorName
+    available = availableQty,
+    sizeName = size.name,
+    colorName = color.name
 )

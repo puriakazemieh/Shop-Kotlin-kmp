@@ -5,18 +5,16 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
-
     androidLibrary {
-        namespace = "com.kazemieh.navigation"
+        namespace = "com.kazemieh.details"
         compileSdk = 36
         minSdk = 24
     }
 
-    val xcfName = "core:navigationKit"
+    val xcfName = "feature:details"
 
     iosX64 {
         binaries.framework {
@@ -36,14 +34,13 @@ kotlin {
         }
     }
 
-    jvm()
-
     js {
         browser()
     }
 
-    sourceSets {
+    jvm()
 
+    sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.compose.runtime)
@@ -52,22 +49,18 @@ kotlin {
                 implementation(libs.compose.ui)
                 implementation(libs.compose.components.resources)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
-                implementation(libs.kotlinx.serialization)
+                implementation(libs.image.loader)
 
-                implementation(libs.compose.navigation)
-                implementation(project(":feature:auth"))
-                implementation(project(":feature:home"))
-                implementation(project(":feature:profile"))
-                implementation(project(":feature:admin_panel"))
-                implementation(project(":feature:details"))
-                implementation(project(":core:common"))
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
 
-
+                implementation(project(":core:designSystem"))
+                implementation(project(":core:domain"))
+                implementation(project(":core:common"))
             }
         }
+
 
         androidMain {
             dependencies {
@@ -75,6 +68,16 @@ kotlin {
         }
 
         iosMain {
+            dependencies {
+            }
+        }
+
+        jsMain {
+            dependencies {
+            }
+        }
+
+        jvmMain {
             dependencies {
             }
         }
