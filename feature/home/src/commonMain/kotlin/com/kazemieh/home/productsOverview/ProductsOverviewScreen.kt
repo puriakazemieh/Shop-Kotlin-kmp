@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +30,7 @@ import com.kazemieh.home.component.MainProductCard
 import com.kazemieh.home.component.ProductCard
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsOverviewScreen(
     navigateToDetails: (String) -> Unit,
@@ -34,6 +38,8 @@ fun ProductsOverviewScreen(
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
     val listState = rememberLazyListState()
+
+    val pullToRefreshState = rememberPullToRefreshState()
 
     val centeredIndex: Int? by remember {
         derivedStateOf {
@@ -56,95 +62,114 @@ fun ProductsOverviewScreen(
         }
     }
 
-    if (state.isLoading) {
-        LoadingCard(modifier = Modifier.fillMaxSize())
-    } else if (state.error != null) {
-        InfoCard(
-            image = Resources.Image.Cat,
-            title = "Oops!",
-            subtitle = state.error ?: "Something went wrong"
-        )
-    } else {
-        AnimatedContent(
-            targetState = state.products
-        ) { products ->
-            if (products.isNotEmpty()) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = "Featured Products",
-                        fontSize = FontSize.LARGE,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    LazyRow(
-                        state = listState,
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        itemsIndexed(
-                            items = products.take(6),
-                            key = { _, item -> item.id }
-                        ) { index, product ->
-                            val isLarge = index == centeredIndex
-                            val animatedScale by animateFloatAsState(
-                                targetValue = if (isLarge) 1f else 0.85f,
-                                animationSpec = tween(300)
-                            )
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = { viewModel.handleIntent(ProductsOverviewIntent.Refresh) },
+        state = pullToRefreshState,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        if (state.isLoading) {
+            LoadingCard(modifier = Modifier.fillMaxSize())
+        } else if (state.error != null) {
+            InfoCard(
+                image = Resources.Image.Cat,
+                title = "Oops!",
+                subtitle = state.error ?: "Something went wrong"
+            )
+        } else {
+            AnimatedContent(
+                targetState = state.products
+            ) { products ->
+                if (products.isNotEmpty()) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            text = "Featured Products",
+                            fontSize = FontSize.LARGE,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LazyRow(
+                            state = listState,
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp)
+                        ) {
+                            itemsIndexed(
+                                items = products.take(6),
+                                key = { _, item -> item.id }
+                            ) { index, product ->
+                                val isLarge = index == centeredIndex
+                                val animatedScale by animateFloatAsState(
+                                    targetValue = if (isLarge) 1f else 0.85f,
+                                    animationSpec = tween(300)
+                                )
 
-                            MainProductCard(
-                                modifier = Modifier
-                                    .scale(animatedScale)
-                                    .height(350.dp)
-                                    .fillParentMaxWidth(0.7f),
-                                product = product,
-                                isLarge = isLarge,
-                                onClick = { viewModel.handleIntent(ProductsOverviewIntent.OnProductClick(it)) }
-                            )
+                                MainProductCard(
+                                    modifier = Modifier
+                                        .scale(animatedScale)
+                                        .height(350.dp)
+                                        .fillParentMaxWidth(0.7f),
+                                    product = product,
+                                    isLarge = isLarge,
+                                    onClick = {
+                                        viewModel.handleIntent(
+                                            ProductsOverviewIntent.OnProductClick(
+                                                it
+                                            )
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .alpha(Alpha.HALF),
+                            text = "All Products",
+                            fontSize = FontSize.MEDIUM,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(horizontal = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(bottom = 16.dp)
+                        ) {
+                            items(
+                                items = products,
+                                key = { it.id }
+                            ) { product ->
+                                ProductCard(
+                                    product = product,
+                                    onClick = {
+                                        viewModel.handleIntent(
+                                            ProductsOverviewIntent.OnProductClick(
+                                                it
+                                            )
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .alpha(Alpha.HALF),
-                        text = "All Products",
-                        fontSize = FontSize.MEDIUM,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
+                } else {
+                    InfoCard(
+                        image = Resources.Image.Cat,
+                        title = "Nothing here",
+                        subtitle = "Empty product list."
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(horizontal = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(bottom = 16.dp)
-                    ) {
-                        items(
-                            items = products,
-                            key = { it.id }
-                        ) { product ->
-                            ProductCard(
-                                product = product,
-                                onClick = { viewModel.handleIntent(ProductsOverviewIntent.OnProductClick(it)) }
-                            )
-                        }
-                    }
                 }
-            } else {
-                InfoCard(
-                    image = Resources.Image.Cat,
-                    title = "Nothing here",
-                    subtitle = "Empty product list."
-                )
             }
         }
     }

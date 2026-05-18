@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -134,7 +135,11 @@ fun AdminPanelScreen(
         }
     ) { padding ->
         val result = state.productsState
-        Box(modifier = Modifier.padding(padding)) {
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
+            modifier = Modifier.padding(padding).fillMaxSize()
+        ) {
             when (result) {
                 is AppResult.Loading -> LoadingCard(modifier = Modifier.fillMaxSize())
                 is AppResult.Success -> {
@@ -164,6 +169,7 @@ fun AdminPanelScreen(
                         )
                     }
                 }
+
                 is AppResult.Error -> {
                     InfoCard(
                         image = Resources.Image.Cat,

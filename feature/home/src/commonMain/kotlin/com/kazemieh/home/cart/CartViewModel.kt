@@ -20,6 +20,9 @@ class CartViewModel(
     private val _cartState = MutableStateFlow<AppResult<Cart>>(AppResult.Loading)
     val cartState: StateFlow<AppResult<Cart>> = _cartState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     init {
         loadCart()
     }
@@ -28,6 +31,16 @@ class CartViewModel(
         viewModelScope.launch {
             getCartUseCase().collect {
                 _cartState.value = it
+            }
+        }
+    }
+
+    fun refreshCart() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            getCartUseCase().collect {
+                _cartState.value = it
+                _isRefreshing.value = false
             }
         }
     }

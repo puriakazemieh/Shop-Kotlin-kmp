@@ -30,33 +30,46 @@ class CategoriesViewModel(
     fun onIntent(intent: CategoriesIntent) {
         when (intent) {
             is CategoriesIntent.LoadCategories -> loadCategories()
+            is CategoriesIntent.Refresh -> refresh()
         }
     }
 
     private fun loadCategories() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            when (val result = getCategoriesUseCase()) {
-                is AppResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            categories = result.data,
-                            error = null
-                        )
-                    }
+            getCategories()
+        }
+    }
+
+    private fun refresh() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            getCategories()
+            _state.update { it.copy(isRefreshing = false) }
+        }
+    }
+
+    private suspend fun getCategories() {
+        when (val result = getCategoriesUseCase()) {
+            is AppResult.Success -> {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        categories = result.data,
+                        error = null
+                    )
                 }
-                is AppResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
-                    _effect.emit(CategoriesEffect.ShowError(result.message))
-                }
-                else -> {}
             }
+            is AppResult.Error -> {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        error = result.message
+                    )
+                }
+                _effect.emit(CategoriesEffect.ShowError(result.message))
+            }
+            else -> {}
         }
     }
 }

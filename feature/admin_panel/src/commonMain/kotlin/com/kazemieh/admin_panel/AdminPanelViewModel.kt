@@ -40,9 +40,23 @@ class AdminPanelViewModel(
     fun handleIntent(intent: AdminPanelIntent) {
         when (intent) {
             is AdminPanelIntent.LoadProducts -> loadProducts(_state.value.searchQuery)
+            is AdminPanelIntent.Refresh -> refresh()
             is AdminPanelIntent.SearchProducts -> {
                 _state.update { it.copy(searchQuery = intent.query) }
             }
+        }
+    }
+
+    private fun refresh() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            val result = getAdminProductsUseCase(
+                page = 0,
+                size = 100,
+                includeInactive = true,
+                query = _state.value.searchQuery
+            )
+            _state.update { it.copy(productsState = result, isRefreshing = false) }
         }
     }
 
@@ -57,10 +71,12 @@ class AdminPanelViewModel(
 
 data class AdminPanelState(
     val productsState: AppResult<AdminPage<AdminProduct>> = AppResult.Loading,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val isRefreshing: Boolean = false
 )
 
 sealed interface AdminPanelIntent {
     data object LoadProducts : AdminPanelIntent
+    data object Refresh : AdminPanelIntent
     data class SearchProducts(val query: String) : AdminPanelIntent
 }

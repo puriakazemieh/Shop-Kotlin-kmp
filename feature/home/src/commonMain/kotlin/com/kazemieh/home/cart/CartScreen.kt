@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,6 +32,7 @@ import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.home.component.CartItemCard
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
     navigateToCheckout: (Double) -> Unit
@@ -37,6 +40,7 @@ fun CartScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CartViewModel>()
     val cartState by viewModel.cartState.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
 
     ContentWithMessageBar(
         contentBackgroundColor = MaterialTheme.colorScheme.surface,
@@ -47,10 +51,15 @@ fun CartScreen(
         successContainerColor = MaterialTheme.colorScheme.primaryContainer,
         successContentColor = MaterialTheme.colorScheme.onPrimaryContainer
     ) {
-        when (val state = cartState) {
-            is AppResult.Loading -> {
-                LoadingCard(modifier = Modifier.fillMaxSize())
-            }
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { viewModel.refreshCart() },
+            modifier = Modifier.fillMaxSize()
+        ) {
+            when (val state = cartState) {
+                is AppResult.Loading -> {
+                    LoadingCard(modifier = Modifier.fillMaxSize())
+                }
 
             is AppResult.Success -> {
                 val cart = state.data
@@ -143,4 +152,5 @@ fun CartScreen(
             }
         }
     }
+}
 }

@@ -28,6 +28,7 @@ class ProductsOverviewViewModel(
     fun handleIntent(intent: ProductsOverviewIntent) {
         when (intent) {
             is ProductsOverviewIntent.LoadProducts -> loadProducts()
+            is ProductsOverviewIntent.Refresh -> refresh()
             is ProductsOverviewIntent.OnProductClick -> {
                 viewModelScope.launch {
                     _effect.send(ProductsOverviewEffect.NavigateToDetails(intent.slug))
@@ -39,27 +40,39 @@ class ProductsOverviewViewModel(
     private fun loadProducts() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
-            when (val result = getProductsUseCase(page = 0, size = 50)) {
-                is AppResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            products = result.data.items,
-                            error = null
-                        )
-                    }
+            getProducts()
+        }
+    }
+
+    private fun refresh() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            getProducts()
+            _state.update { it.copy(isRefreshing = false) }
+        }
+    }
+
+    private suspend fun getProducts() {
+        when (val result = getProductsUseCase(page = 0, size = 50)) {
+            is AppResult.Success -> {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        products = result.data.items,
+                        error = null
+                    )
                 }
-                is AppResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
+            }
+            is AppResult.Error -> {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        error = result.message
+                    )
                 }
-                is AppResult.Loading -> {
-                    _state.update { it.copy(isLoading = true) }
-                }
+            }
+            is AppResult.Loading -> {
+                _state.update { it.copy(isLoading = true) }
             }
         }
     }
