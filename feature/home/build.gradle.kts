@@ -54,6 +54,7 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.compose.navigation)
                 implementation(libs.koin.compose.viewmodel)
+                implementation(libs.image.loader)
 
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))

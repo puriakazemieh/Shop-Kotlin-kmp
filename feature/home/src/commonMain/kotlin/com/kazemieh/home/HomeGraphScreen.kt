@@ -57,6 +57,7 @@ import com.kazemieh.home.component.CustomDrawer
 import com.kazemieh.home.component.CustomDrawerState
 import com.kazemieh.home.component.isOpened
 import com.kazemieh.home.component.opposite
+import com.kazemieh.home.productsOverview.ProductsOverviewScreen
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -264,8 +265,7 @@ fun HomeGraphScreen(
                                 startDestination = Screen.ProductsOverview
                             ) {
                                 composable<Screen.ProductsOverview> {
-//                                    ProductsOverviewScreen(navigateToDetails = navigateToDetails)
-                                    Box(modifier = Modifier.fillMaxSize().background(Color.Red))
+                                    ProductsOverviewScreen(navigateToDetails = navigateToDetails)
                                 }
                                 composable<Screen.Cart> {
 //                                    CartScreen()
