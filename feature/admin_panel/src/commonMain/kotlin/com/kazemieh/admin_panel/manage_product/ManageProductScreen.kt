@@ -232,12 +232,6 @@ fun ManageProductScreen(
                     )
 
                     CustomTextField(
-                        value = state.slug,
-                        onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateSlug(it)) },
-                        placeholder = "Slug"
-                    )
-
-                    CustomTextField(
                         modifier = Modifier.height(120.dp),
                         value = state.description,
                         onValueChange = {

@@ -63,7 +63,6 @@ class ManageProductViewModel(
                     slug = intent.title.lowercase().replace(" ", "-")
                 )
             }
-            is ManageProductIntent.UpdateSlug -> _state.update { it.copy(slug = intent.slug) }
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
             is ManageProductIntent.UpdateIsActive -> _state.update { it.copy(isActive = intent.isActive) }
@@ -497,7 +496,6 @@ data class ProductImageUiModel(
 
 sealed interface ManageProductIntent {
     data class UpdateTitle(val title: String) : ManageProductIntent
-    data class UpdateSlug(val slug: String) : ManageProductIntent
     data class UpdateDescription(val description: String) : ManageProductIntent
     data class UpdateBasePrice(val price: Double) : ManageProductIntent
     data class UpdateIsActive(val isActive: Boolean) : ManageProductIntent
