@@ -56,9 +56,30 @@ class AdminRepositoryImpl(
         slug: String,
         description: String?,
         basePrice: Double?,
-        isActive: Boolean
+        isActive: Boolean,
+        variants: List<AdminCreateVariant>?
     ): AppResult<AdminProduct> =
-        dataSource.createProduct(AdminCreateProductRequest(categoryId, title, slug, description, basePrice, isActive)).map { it.toAdminDomain() }
+        dataSource.createProduct(
+            AdminCreateProductRequest(
+                categoryId,
+                title,
+                slug,
+                description,
+                basePrice,
+                isActive,
+                variants?.map {
+                    AdminCreateVariantRequest(
+                        it.sizeId,
+                        it.colorId,
+                        it.sku,
+                        it.price,
+                        it.compareAtPrice,
+                        it.isActive,
+                        it.initialOnHand
+                    )
+                }
+            )
+        ).map { it.toAdminDomain() }
 
     override suspend fun getProductDetail(id: Long): AppResult<AdminProductDetail> =
         dataSource.getProductDetail(id).map { it.toAdminDomain() }

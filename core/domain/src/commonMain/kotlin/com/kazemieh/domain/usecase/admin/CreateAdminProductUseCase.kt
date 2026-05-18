@@ -1,6 +1,7 @@
 package com.kazemieh.domain.usecase.admin
 
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.model.admin.AdminCreateVariant
 import com.kazemieh.domain.model.admin.AdminProduct
 import com.kazemieh.domain.repository.AdminRepository
 
@@ -13,8 +14,9 @@ class CreateAdminProductUseCase(
         slug: String,
         description: String?,
         basePrice: Double?,
-        isActive: Boolean
+        isActive: Boolean,
+        variants: List<AdminCreateVariant>? = null
     ): AppResult<AdminProduct> {
-        return repository.createProduct(categoryId, title, slug, description, basePrice, isActive)
+        return repository.createProduct(categoryId, title, slug, description, basePrice, isActive, variants)
     }
 }

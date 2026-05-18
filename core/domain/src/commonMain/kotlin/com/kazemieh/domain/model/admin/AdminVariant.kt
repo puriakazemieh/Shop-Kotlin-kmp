@@ -13,3 +13,13 @@ data class AdminVariant(
     val colorId: Long, // اضافه شد
     val colorName: String
 )
+
+data class AdminCreateVariant(
+    val sizeId: Long,
+    val colorId: Long,
+    val sku: String,
+    val price: Double,
+    val compareAtPrice: Double? = null,
+    val isActive: Boolean = true,
+    val initialOnHand: Int = 0
+)

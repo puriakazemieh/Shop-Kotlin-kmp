@@ -57,7 +57,13 @@ class ManageProductViewModel(
     fun handleIntent(intent: ManageProductIntent) {
         "Received intent: ${intent::class.simpleName}".ld("ManageProductVM")
         when (intent) {
-            is ManageProductIntent.UpdateTitle -> _state.update { it.copy(title = intent.title) }
+            is ManageProductIntent.UpdateTitle -> _state.update {
+                it.copy(
+                    title = intent.title,
+                    slug = intent.title.lowercase().replace(" ", "-")
+                )
+            }
+            is ManageProductIntent.UpdateSlug -> _state.update { it.copy(slug = intent.slug) }
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
             is ManageProductIntent.UpdateIsActive -> _state.update { it.copy(isActive = intent.isActive) }
@@ -110,6 +116,7 @@ class ManageProductViewModel(
                         it.copy(
                             isLoading = false,
                             title = detail.product.title,
+                            slug = detail.product.slug,
                             description = detail.product.description ?: "",
                             basePrice = detail.product.basePrice ?: 0.0,
                             isActive = detail.product.isActive,
@@ -136,24 +143,41 @@ class ManageProductViewModel(
     }
 
     private fun saveProduct() {
+        val currentState = _state.value
+        if (productId == -1L && currentState.variants.isEmpty()) {
+            viewModelScope.launch {
+                _event.send(ManageProductUiEvent.ShowError("Please add at least one variant"))
+            }
+            return
+        }
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true) }
-            val currentState = _state.value
             val result = if (productId == -1L) {
                 createAdminProductUseCase(
                     categoryId = currentState.selectedCategory?.id,
                     title = currentState.title,
-                    slug = currentState.title.lowercase().replace(" ", "-"),
+                    slug = currentState.slug,
                     description = currentState.description,
                     basePrice = currentState.basePrice,
-                    isActive = currentState.isActive
+                    isActive = currentState.isActive,
+                    variants = currentState.variants.map {
+                        com.kazemieh.domain.model.admin.AdminCreateVariant(
+                            sizeId = it.sizeId,
+                            colorId = it.colorId,
+                            sku = it.sku,
+                            price = it.price,
+                            compareAtPrice = it.compareAtPrice,
+                            isActive = it.isActive,
+                            initialOnHand = it.onHand
+                        )
+                    }
                 )
             } else {
                 updateAdminProductUseCase(
                     id = productId,
                     categoryId = currentState.selectedCategory?.id,
                     title = currentState.title,
-                    slug = currentState.title.lowercase().replace(" ", "-"),
+                    slug = currentState.slug,
                     description = currentState.description,
                     basePrice = currentState.basePrice,
                     isActive = currentState.isActive
@@ -218,8 +242,23 @@ class ManageProductViewModel(
 
     private fun addVariant(intent: ManageProductIntent.AddVariant) {
         if (productId == -1L) {
-            viewModelScope.launch {
-                _event.send(ManageProductUiEvent.ShowError("Please save the product first before adding variants"))
+            _state.update {
+                val sizeName = it.sizes.find { s -> s.id == intent.sizeId }?.name ?: ""
+                val colorName = it.colors.find { c -> c.id == intent.colorId }?.name ?: ""
+                val newVariant = AdminVariant(
+                    id = -(it.variants.size + 1).toLong(),
+                    sku = intent.sku,
+                    price = intent.price,
+                    compareAtPrice = null,
+                    isActive = true,
+                    onHand = intent.initialOnHand,
+                    reserved = 0,
+                    sizeId = intent.sizeId,
+                    sizeName = sizeName,
+                    colorId = intent.colorId,
+                    colorName = colorName
+                )
+                it.copy(variants = it.variants + newVariant)
             }
             return
         }
@@ -247,6 +286,27 @@ class ManageProductViewModel(
     }
 
     private fun updateVariant(id: Long, sku: String?, price: Double?, sizeId: Long?, colorId: Long?, isActive: Boolean?) {
+        if (productId == -1L) {
+            _state.update { state ->
+                val updatedVariants = state.variants.map { v ->
+                    if (v.id == id) {
+                        val sizeName = if (sizeId != null) state.sizes.find { s -> s.id == sizeId }?.name ?: v.sizeName else v.sizeName
+                        val colorName = if (colorId != null) state.colors.find { c -> c.id == colorId }?.name ?: v.colorName else v.colorName
+                        v.copy(
+                            sku = sku ?: v.sku,
+                            price = price ?: v.price,
+                            sizeId = sizeId ?: v.sizeId,
+                            sizeName = sizeName,
+                            colorId = colorId ?: v.colorId,
+                            colorName = colorName,
+                            isActive = isActive ?: v.isActive
+                        )
+                    } else v
+                }
+                state.copy(variants = updatedVariants)
+            }
+            return
+        }
         viewModelScope.launch {
             when (val result = updateProductVariantUseCase(id, sku, price, null, sizeId, colorId, isActive)) {
                 is AppResult.Success<*> -> {
@@ -260,6 +320,10 @@ class ManageProductViewModel(
     }
 
     private fun deleteVariant(variantId: Long) {
+        if (productId == -1L) {
+            _state.update { it.copy(variants = it.variants.filter { v -> v.id != variantId }) }
+            return
+        }
         viewModelScope.launch {
             when (val result = deleteProductVariantUseCase(variantId)) {
                 is AppResult.Success<*> -> {
@@ -411,6 +475,7 @@ data class ManageProductState(
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val title: String = "",
+    val slug: String = "",
     val description: String = "",
     val basePrice: Double = 0.0,
     val isActive: Boolean = true,
@@ -432,6 +497,7 @@ data class ProductImageUiModel(
 
 sealed interface ManageProductIntent {
     data class UpdateTitle(val title: String) : ManageProductIntent
+    data class UpdateSlug(val slug: String) : ManageProductIntent
     data class UpdateDescription(val description: String) : ManageProductIntent
     data class UpdateBasePrice(val price: Double) : ManageProductIntent
     data class UpdateIsActive(val isActive: Boolean) : ManageProductIntent

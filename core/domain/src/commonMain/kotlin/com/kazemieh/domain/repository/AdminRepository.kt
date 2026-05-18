@@ -24,7 +24,15 @@ interface AdminRepository {
 
     // Products
     suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): AppResult<AdminPage<AdminProduct>>
-    suspend fun createProduct(categoryId: Long?, title: String, slug: String, description: String?, basePrice: Double?, isActive: Boolean): AppResult<AdminProduct>
+    suspend fun createProduct(
+        categoryId: Long?,
+        title: String,
+        slug: String,
+        description: String?,
+        basePrice: Double?,
+        isActive: Boolean,
+        variants: List<AdminCreateVariant>? = null
+    ): AppResult<AdminProduct>
     suspend fun getProductDetail(id: Long): AppResult<AdminProductDetail>
     suspend fun updateProduct(id: Long, categoryId: Long?, title: String?, slug: String?, description: String?, basePrice: Double?, isActive: Boolean?): AppResult<AdminProduct>
     suspend fun deleteProduct(id: Long): AppResult<Unit>
