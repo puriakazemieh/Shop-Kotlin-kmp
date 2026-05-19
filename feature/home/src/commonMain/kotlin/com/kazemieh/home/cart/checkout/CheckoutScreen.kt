@@ -1,30 +1,54 @@
 package com.kazemieh.home.cart.checkout
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.AddressBottomSheet
+import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.component.ProfileForm
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.domain.model.Address
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -39,6 +63,8 @@ fun CheckoutScreen(
     val viewModel = koinViewModel<CheckoutViewModel>()
     val screenState = viewModel.screenState
     val isFormValid = viewModel.isFormValid
+
+    var showAddressBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -93,61 +119,162 @@ fun CheckoutScreen(
             successContainerColor = MaterialTheme.colorScheme.primaryContainer,
             successContentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = 12.dp,
-                        bottom = 24.dp
-                    )
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                ProfileForm(
-                    modifier = Modifier.weight(1f),
-                    firstName = screenState.firstName,
-                    onFirstNameChange = viewModel::updateFirstName,
-                    lastName = screenState.lastName,
-                    onLastNameChange = viewModel::updateLastName,
-                    email = screenState.email,
-                    phoneNumber = screenState.phoneNumber?.number,
-                    onPhoneNumberChange = viewModel::updatePhoneNumber
-                )
-                Column {
-                    PrimaryButton(
-                        text = "Pay with PayPal",
-                        icon = Resources.Image.PaypalLogo,
-                        enabled = isFormValid,
-                        onClick = {
-                            viewModel.payWithPayPal(
-                                onSuccess = {
-
-                                },
-                                onError = { message ->
-                                    messageBarState.addError(message)
-                                }
-                            )
-                        }
-                    )
+            val scrollState = rememberScrollState()
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp)
+                        .verticalScroll(scrollState),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    PrimaryButton(
-                        text = "Pay on Delivery",
-                        icon = Resources.Icon.ShoppingCart,
-                        secondary = true,
-                        enabled = isFormValid,
-                        onClick = {
-                            viewModel.payOnDelivery(
-                                onSuccess = {
-                                    navigateToPaymentCompleted(true, null)
-                                },
-                                onError = { message ->
-                                    navigateToPaymentCompleted(null, message)
-                                }
+
+                    if (screenState.addresses.isNotEmpty()) {
+                        Text(
+                            text = "Select Address",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = FontSize.MEDIUM
+                        )
+                        screenState.addresses.forEach { address ->
+                            AddressItem(
+                                address = address,
+                                isSelected = screenState.selectedAddressId == address.id,
+                                onClick = { viewModel.selectAddress(address.id) }
                             )
                         }
-                    )
+                        
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showAddressBottomSheet = true }
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Add New Address",
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    } else if (!screenState.isLoading) {
+                        PrimaryButton(
+                            text = "Add Your First Address",
+                            icon = Resources.Icon.Plus,
+                            onClick = { showAddressBottomSheet = true }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+                    Column(
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    ) {
+                        PrimaryButton(
+                            text = "Pay with PayPal",
+                            icon = Resources.Image.PaypalLogo,
+                            enabled = isFormValid,
+                            onClick = {
+                                viewModel.payWithPayPal(
+                                    onSuccess = {
+
+                                    },
+                                    onError = { message ->
+                                        messageBarState.addError(message)
+                                    }
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        PrimaryButton(
+                            text = "Pay on Delivery",
+                            icon = Resources.Icon.ShoppingCart,
+                            secondary = true,
+                            enabled = isFormValid,
+                            onClick = {
+                                viewModel.payOnDelivery(
+                                    onSuccess = {
+                                        navigateToPaymentCompleted(true, null)
+                                    },
+                                    onError = { message ->
+                                        navigateToPaymentCompleted(null, message)
+                                    }
+                                )
+                            }
+                        )
+                    }
+                }
+                
+                if (screenState.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
+        }
+    }
+    if (showAddressBottomSheet) {
+        AddressBottomSheet(
+            onDismiss = { showAddressBottomSheet = false },
+            onConfirm = { receiverName, receiverPhone, province, city, addressLine1, addressLine2, postalCode ->
+                viewModel.addNewAddress(
+                    receiverName = receiverName,
+                    receiverPhone = receiverPhone,
+                    province = province,
+                    city = city,
+                    addressLine1 = addressLine1,
+                    addressLine2 = addressLine2,
+                    postalCode = postalCode,
+                    onSuccess = {
+                        showAddressBottomSheet = false
+                        messageBarState.addSuccess("Address added successfully")
+                    },
+                    onError = { error ->
+                        messageBarState.addError(error)
+                    }
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun AddressItem(
+    address: Address,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) else Color.Transparent)
+            .clickable { onClick() }
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = onClick
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column {
+            Text(
+                text = address.receiverName,
+                fontWeight = FontWeight.Bold,
+                fontSize = FontSize.MEDIUM
+            )
+            Text(
+                text = "${address.province}, ${address.city}",
+                fontSize = FontSize.SMALL
+            )
+            Text(
+                text = address.addressLine1,
+                fontSize = FontSize.SMALL
+            )
         }
     }
 }

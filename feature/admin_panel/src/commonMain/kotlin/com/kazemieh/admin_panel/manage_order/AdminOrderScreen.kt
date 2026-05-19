@@ -128,7 +128,7 @@ fun StatusFilterRow(
     selectedStatus: String?,
     onStatusSelected: (String?) -> Unit
 ) {
-    val statuses = listOf(null, "PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED")
+    val statuses = listOf(null, "PLACED", "PROCESSING", "SHIPPING", "COMPLETED", "CANCELLED")
     LazyRow(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -196,10 +196,10 @@ fun AdminOrderCard(
 @Composable
 fun StatusBadge(status: String) {
     val color = when (status.uppercase()) {
-        "PENDING" -> Color(0xFFFFB300)
-        "PAID" -> Color(0xFF4CAF50)
-        "SHIPPED" -> Color(0xFF2196F3)
-        "DELIVERED" -> Color(0xFF8BC34A)
+        "PLACED" -> Color(0xFFFFB300)
+        "PROCESSING" -> Color(0xFF4CAF50)
+        "SHIPPING" -> Color(0xFF2196F3)
+        "COMPLETED" -> Color(0xFF8BC34A)
         "CANCELLED" -> Color(0xFFF44336)
         else -> MaterialTheme.colorScheme.outline
     }
@@ -302,7 +302,7 @@ fun OrderDetailDialog(
 
                             Spacer(modifier = Modifier.height(24.dp))
                             Text("Update Status", fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            val statuses = listOf("PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED")
+                            val statuses = listOf("PLACED", "PROCESSING", "SHIPPING", "COMPLETED", "CANCELLED")
                             FlowRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)

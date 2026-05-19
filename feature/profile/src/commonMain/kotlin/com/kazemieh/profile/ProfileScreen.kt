@@ -52,6 +52,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
@@ -257,20 +258,26 @@ fun ProfileScreen(
 
     if (showAddressDialog) {
         AddressBottomSheet(
-            address = addressToEdit,
+            initialReceiverName = addressToEdit?.receiverName ?: "",
+            initialReceiverPhone = addressToEdit?.receiverPhone ?: "",
+            initialProvince = addressToEdit?.province ?: "",
+            initialCity = addressToEdit?.city ?: "",
+            initialAddressLine1 = addressToEdit?.addressLine1 ?: "",
+            initialAddressLine2 = addressToEdit?.addressLine2,
+            initialPostalCode = addressToEdit?.postalCode,
             onDismiss = { showAddressDialog = false },
-            onConfirm = { addr ->
+            onConfirm = { receiverName, receiverPhone, province, city, addressLine1, addressLine2, postalCode ->
                 if (addressToEdit == null) {
                     viewModel.handleIntent(
                         ProfileIntent.AddAddress(
-                            receiverName = addr.receiverName,
-                            receiverPhone = addr.receiverPhone,
-                            country = addr.country,
-                            province = addr.province,
-                            city = addr.city,
-                            addressLine1 = addr.addressLine1,
-                            addressLine2 = addr.addressLine2,
-                            postalCode = addr.postalCode,
+                            receiverName = receiverName,
+                            receiverPhone = receiverPhone,
+                            country = "IR",
+                            province = province,
+                            city = city,
+                            addressLine1 = addressLine1,
+                            addressLine2 = addressLine2,
+                            postalCode = postalCode,
                             setAsDefault = false
                         )
                     )
@@ -278,14 +285,14 @@ fun ProfileScreen(
                     viewModel.handleIntent(
                         ProfileIntent.UpdateUserAddress(
                             id = addressToEdit!!.id,
-                            receiverName = addr.receiverName,
-                            receiverPhone = addr.receiverPhone,
-                            country = addr.country,
-                            province = addr.province,
-                            city = addr.city,
-                            addressLine1 = addr.addressLine1,
-                            addressLine2 = addr.addressLine2,
-                            postalCode = addr.postalCode
+                            receiverName = receiverName,
+                            receiverPhone = receiverPhone,
+                            country = "IR",
+                            province = province,
+                            city = city,
+                            addressLine1 = addressLine1,
+                            addressLine2 = addressLine2,
+                            postalCode = postalCode
                         )
                     )
                 }
@@ -411,142 +418,5 @@ fun AddressItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddressBottomSheet(
-    address: Address?,
-    onDismiss: () -> Unit,
-    onConfirm: (Address) -> Unit
-) {
-    var receiverName by remember { mutableStateOf(address?.receiverName ?: "") }
-    var receiverPhone by remember { mutableStateOf(address?.receiverPhone ?: "") }
-    var province by remember { mutableStateOf(address?.province ?: "") }
-    var city by remember { mutableStateOf(address?.city ?: "") }
-    var addressLine1 by remember { mutableStateOf(address?.addressLine1 ?: "") }
-    var addressLine2 by remember { mutableStateOf(address?.addressLine2 ?: "") }
-    var postalCode by remember { mutableStateOf(address?.postalCode ?: "") }
 
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .size(width = 32.dp, height = 4.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(2.dp)
-                    )
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.surface,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 32.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = if (address == null) "Add New Address" else "Edit Address",
-                fontFamily = AppFont(),
-                fontSize = FontSize.LARGE,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = receiverName,
-                onValueChange = { receiverName = it },
-                placeholder = "Receiver Name",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = receiverPhone,
-                onValueChange = { receiverPhone = it },
-                placeholder = "Receiver Phone",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = province,
-                onValueChange = { province = it },
-                placeholder = "Province",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = city,
-                onValueChange = { city = it },
-                placeholder = "City",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = addressLine1,
-                onValueChange = { addressLine1 = it },
-                placeholder = "Address Line 1",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = addressLine2,
-                onValueChange = { addressLine2 = it },
-                placeholder = "Address Line 2 (Optional)",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            com.kazemieh.designsystem.component.CustomTextField(
-                value = postalCode,
-                onValueChange = { postalCode = it },
-                placeholder = "Postal Code (Optional)",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            PrimaryButton(
-                text = "Save Address",
-                enabled = receiverName.isNotBlank() && receiverPhone.isNotBlank() && province.isNotBlank() && city.isNotBlank() && addressLine1.isNotBlank(),
-                onClick = {
-                    onConfirm(
-                        Address(
-                            id = address?.id ?: 0,
-                            receiverName = receiverName,
-                            receiverPhone = receiverPhone,
-                            country = "IR",
-                            province = province,
-                            city = city,
-                            addressLine1 = addressLine1,
-                            addressLine2 = addressLine2.takeIf { it.isNotBlank() },
-                            postalCode = postalCode.takeIf { it.isNotBlank() },
-                            isDefault = address?.isDefault ?: false
-                        )
-                    )
-                }
-            )
-        }
-    }
-}
 

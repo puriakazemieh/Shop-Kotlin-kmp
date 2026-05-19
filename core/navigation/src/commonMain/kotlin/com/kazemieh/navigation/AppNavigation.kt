@@ -21,6 +21,7 @@ import com.kazemieh.details.DetailsScreen
 import com.kazemieh.home.HomeGraphScreen
 import com.kazemieh.home.category.CategorySearchScreen
 import com.kazemieh.home.cart.checkout.CheckoutScreen
+import com.kazemieh.home.cart.payment_completed.PaymentCompleted
 import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -135,7 +136,21 @@ fun AppNavHost(
             CheckoutScreen(
                 totalAmount = args.totalAmount,
                 navigateBack = { navController.navigateUp() },
-                navigateToPaymentCompleted = { orderId, status -> }
+                navigateToPaymentCompleted = { success, error ->
+                    navController.navigate(Screen.PaymentCompleted(success ?: false, error)) {
+                        popUpTo<Screen.Checkout> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<Screen.PaymentCompleted> {
+            PaymentCompleted(
+                navigateBack = {
+                    navController.navigate(Screen.HomeGraph()) {
+                        popUpTo<Screen.HomeGraph> { inclusive = true }
+                    }
+                }
             )
         }
 

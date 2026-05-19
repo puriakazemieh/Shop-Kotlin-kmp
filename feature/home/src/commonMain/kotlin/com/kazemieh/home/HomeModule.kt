@@ -3,6 +3,7 @@ package com.kazemieh.home
 import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
+import com.kazemieh.domain.usecase.address.*
 import com.kazemieh.domain.usecase.cart.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
@@ -48,7 +49,9 @@ val homeModule = module {
         CheckoutViewModel(
             createOrderUseCase = get(),
             getProfileUseCase = get(),
-            getCartUseCase = get()
+            getCartUseCase = get(),
+            addAddressUseCase = get(),
+            getAddressesUseCase = get()
         )
     }
 
@@ -76,6 +79,13 @@ val homeModule = module {
     factory { ObserveAuthStateUseCase(get()) }
     factory { GetProductsUseCase(get()) }
     factory { GetCategoriesUseCase(get()) }
+
+    // Address UseCases
+    factory { GetAddressesUseCase(get()) }
+    factory { AddAddressUseCase(get()) }
+    factory { UpdateAddressUseCase(get()) }
+    factory { DeleteAddressUseCase(get()) }
+    factory { SetDefaultAddressUseCase(get()) }
 
     // Cart UseCases
     factory { GetCartUseCase(get()) }

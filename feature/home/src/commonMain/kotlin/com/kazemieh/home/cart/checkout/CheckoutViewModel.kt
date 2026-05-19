@@ -7,8 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.getSuccessValue
+import com.kazemieh.domain.model.Address
 import com.kazemieh.domain.model.Cart
 import com.kazemieh.domain.usecase.GetProfileUseCase
+import com.kazemieh.domain.usecase.address.AddAddressUseCase
+import com.kazemieh.domain.usecase.address.GetAddressesUseCase
 import com.kazemieh.domain.usecase.cart.GetCartUseCase
 import com.kazemieh.domain.usecase.order.CreateOrderUseCase
 import kotlinx.coroutines.flow.first
@@ -22,7 +25,11 @@ data class CheckoutScreenState(
     val postalCode: String = "",
     val address: String = "",
     val phoneNumber: PhoneNumber? = null,
-    val country: String = "Iran"
+    val country: String = "Iran",
+    val addresses: List<Address> = emptyList(),
+    val selectedAddressId: Long? = null,
+    val showAddNewAddressForm: Boolean = false,
+    val isLoading: Boolean = false
 )
 
 data class PhoneNumber(val number: String)
@@ -30,7 +37,9 @@ data class PhoneNumber(val number: String)
 class CheckoutViewModel(
     private val createOrderUseCase: CreateOrderUseCase,
     private val getProfileUseCase: GetProfileUseCase,
-    private val getCartUseCase: GetCartUseCase
+    private val getCartUseCase: GetCartUseCase,
+    private val addAddressUseCase: AddAddressUseCase,
+    private val getAddressesUseCase: GetAddressesUseCase
 ) : ViewModel() {
 
     var screenState by mutableStateOf(CheckoutScreenState())
@@ -44,6 +53,25 @@ class CheckoutViewModel(
     init {
         loadProfile()
         loadCart()
+        loadAddresses()
+    }
+
+    private fun loadAddresses() {
+        viewModelScope.launch {
+            screenState = screenState.copy(isLoading = true)
+            val result = getAddressesUseCase()
+            result.getSuccessValue()?.let { addresses ->
+                screenState = screenState.copy(
+                    addresses = addresses,
+                    selectedAddressId = addresses.find { it.isDefault }?.id ?: addresses.firstOrNull()?.id,
+                    showAddNewAddressForm = addresses.isEmpty(),
+                    isLoading = false
+                )
+            } ?: run {
+                screenState = screenState.copy(isLoading = false, showAddNewAddressForm = true)
+            }
+            validateForm()
+        }
     }
 
     private fun loadProfile() {
@@ -104,12 +132,60 @@ class CheckoutViewModel(
         validateForm()
     }
 
+    fun selectAddress(addressId: Long) {
+        screenState = screenState.copy(selectedAddressId = addressId, showAddNewAddressForm = false)
+        validateForm()
+    }
+
+    fun toggleAddNewAddress(show: Boolean) {
+        screenState = screenState.copy(showAddNewAddressForm = show)
+        validateForm()
+    }
+
+    fun addNewAddress(
+        receiverName: String,
+        receiverPhone: String,
+        province: String,
+        city: String,
+        addressLine1: String,
+        addressLine2: String?,
+        postalCode: String?,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = addAddressUseCase(
+                receiverName = receiverName,
+                receiverPhone = receiverPhone,
+                country = screenState.country,
+                province = province,
+                city = city,
+                addressLine1 = addressLine1,
+                addressLine2 = addressLine2,
+                postalCode = postalCode,
+                setAsDefault = true
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    loadAddresses()
+                    onSuccess()
+                }
+                is AppResult.Error -> onError(result.message)
+                else -> {}
+            }
+        }
+    }
+
     private fun validateForm() {
-        isFormValid = screenState.firstName.isNotBlank() &&
-                screenState.lastName.isNotBlank() &&
-                screenState.email.isNotBlank() &&
-                screenState.city.isNotBlank() &&
-                screenState.address.isNotBlank()
+        isFormValid = if (screenState.showAddNewAddressForm) {
+            screenState.firstName.isNotBlank() &&
+                    screenState.lastName.isNotBlank() &&
+                    screenState.email.isNotBlank() &&
+                    screenState.city.isNotBlank() &&
+                    screenState.address.isNotBlank()
+        } else {
+            screenState.selectedAddressId != null
+        }
     }
 
     fun payWithPayPal(onSuccess: () -> Unit, onError: (String) -> Unit) {
@@ -125,7 +201,15 @@ class CheckoutViewModel(
                 return@launch
             }
 
-            val result = createOrderUseCase(items)
+            val addressId = screenState.selectedAddressId
+
+            if (addressId == null) {
+                onError("Please select or add an address")
+                return@launch
+            }
+
+            // Create Order
+            val result = createOrderUseCase(items, addressId)
             when (result) {
                 is AppResult.Success -> onSuccess()
                 is AppResult.Error -> onError(result.message)
