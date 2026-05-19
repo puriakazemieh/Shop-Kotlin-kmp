@@ -68,6 +68,50 @@ fun AdminProductDetailResponse.toAdminDomain() = AdminProductDetail(
     variants = variants.map { it.toAdminDomain() }
 )
 
+fun AdminOrderSummaryResponse.toAdminDomain() = AdminOrderSummary(
+    id = id,
+    userId = userId,
+    userEmail = userEmail,
+    status = status,
+    totalPrice = totalPrice,
+    createdAt = createdAt
+)
+
+fun AdminOrderDetailResponse.toAdminDomain() = AdminOrderDetail(
+    id = id,
+    userId = userId,
+    userEmail = userEmail,
+    status = status,
+    subtotalPrice = subtotalPrice,
+    shippingPrice = shippingPrice,
+    totalPrice = totalPrice,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+    addressSnapshot = addressSnapshot.toAdminDomain(),
+    items = items.map { it.toAdminDomain() }
+)
+
+fun AdminOrderItemResponse.toAdminDomain() = AdminOrderItem(
+    id = id,
+    variantId = variantId,
+    qty = qty,
+    unitPriceSnapshot = unitPriceSnapshot,
+    titleSnapshot = titleSnapshot,
+    sizeSnapshot = sizeSnapshot,
+    colorSnapshot = colorSnapshot
+)
+
+fun AdminAddressSnapshotResponse.toAdminDomain() = AdminAddressSnapshot(
+    receiverName = receiverName,
+    receiverPhone = receiverPhone,
+    country = country,
+    province = province,
+    city = city,
+    addressLine1 = addressLine1,
+    addressLine2 = addressLine2,
+    postalCode = postalCode
+)
+
 fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(
     items = items.map(mapper),
     page = page,

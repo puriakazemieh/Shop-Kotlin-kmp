@@ -141,4 +141,18 @@ class AdminRepositoryImpl(
 
     override suspend fun adjustInventory(variantId: Long, delta: Int, version: Int?): AppResult<AdminInventory> =
         dataSource.adjustInventory(variantId, AdminInventoryAdjustRequest(delta, version)).map { it.toAdminDomain() }
+
+    override suspend fun listOrders(
+        status: String?,
+        userId: Long?,
+        page: Int,
+        size: Int
+    ): AppResult<AdminPage<AdminOrderSummary>> =
+        dataSource.listOrders(status, userId, page, size).map { it.toAdminPage { dto -> dto.toAdminDomain() } }
+
+    override suspend fun getOrderDetail(id: Long): AppResult<AdminOrderDetail> =
+        dataSource.getOrderDetail(id).map { it.toAdminDomain() }
+
+    override suspend fun updateOrderStatus(id: Long, status: String): AppResult<Unit> =
+        dataSource.updateOrderStatus(id, AdminUpdateOrderStatusRequest(status))
 }

@@ -51,6 +51,9 @@ kotlin {
                 implementation(libs.androidx.lifecycle.runtimeCompose)
 
 
+                implementation(libs.compose.material.icons.core)
+                implementation(libs.compose.material.icons.extended)
+
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
                 implementation("io.coil-kt.coil3:coil-compose:3.0.4")

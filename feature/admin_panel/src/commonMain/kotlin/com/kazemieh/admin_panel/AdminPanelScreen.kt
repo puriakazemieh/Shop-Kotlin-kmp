@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
@@ -23,6 +25,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
+    navigateToManageOrders: () -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
@@ -101,6 +104,13 @@ fun AdminPanelScreen(
                             }
                         },
                         actions = {
+                            IconButton(onClick = navigateToManageOrders) {
+                                Icon(
+                                    imageVector = Icons.Default.ShoppingCart,
+                                    contentDescription = "Orders icon",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
                             IconButton(onClick = { searchBarVisible = true }) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Search),

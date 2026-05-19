@@ -114,4 +114,21 @@ class AdminDataSourceImpl(
     override suspend fun adjustInventory(variantId: Long, request: AdminInventoryAdjustRequest): AppResult<AdminInventoryResponse> = safeApiCall {
         api.adjustInventory(variantId, request)
     }
+
+    override suspend fun listOrders(
+        status: String?,
+        userId: Long?,
+        page: Int,
+        size: Int
+    ): AppResult<PageResponse<AdminOrderSummaryResponse>> = safeApiCall {
+        api.listOrders(status, userId, page, size)
+    }
+
+    override suspend fun getOrderDetail(id: Long): AppResult<AdminOrderDetailResponse> = safeApiCall {
+        api.getOrderDetail(id)
+    }
+
+    override suspend fun updateOrderStatus(id: Long, request: AdminUpdateOrderStatusRequest): AppResult<Unit> = safeApiCall {
+        api.updateOrderStatus(id, request)
+    }
 }

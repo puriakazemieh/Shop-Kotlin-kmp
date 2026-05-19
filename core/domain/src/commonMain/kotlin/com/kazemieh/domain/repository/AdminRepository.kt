@@ -51,4 +51,16 @@ interface AdminRepository {
     suspend fun getInventory(variantId: Long): AppResult<AdminInventory>
     suspend fun setInventory(variantId: Long, onHand: Int, version: Int?): AppResult<AdminInventory>
     suspend fun adjustInventory(variantId: Long, delta: Int, version: Int?): AppResult<AdminInventory>
+
+    // Orders
+    suspend fun listOrders(
+        status: String? = null,
+        userId: Long? = null,
+        page: Int = 0,
+        size: Int = 20
+    ): AppResult<AdminPage<AdminOrderSummary>>
+
+    suspend fun getOrderDetail(id: Long): AppResult<AdminOrderDetail>
+
+    suspend fun updateOrderStatus(id: Long, status: String): AppResult<Unit>
 }

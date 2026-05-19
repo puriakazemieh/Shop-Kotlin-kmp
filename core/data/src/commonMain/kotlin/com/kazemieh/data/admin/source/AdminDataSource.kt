@@ -38,4 +38,16 @@ interface AdminDataSource {
     suspend fun getInventory(variantId: Long): AppResult<AdminInventoryResponse>
     suspend fun setInventory(variantId: Long, request: AdminInventorySetRequest): AppResult<AdminInventoryResponse>
     suspend fun adjustInventory(variantId: Long, request: AdminInventoryAdjustRequest): AppResult<AdminInventoryResponse>
+
+    // Orders
+    suspend fun listOrders(
+        status: String?,
+        userId: Long?,
+        page: Int,
+        size: Int
+    ): AppResult<PageResponse<AdminOrderSummaryResponse>>
+
+    suspend fun getOrderDetail(id: Long): AppResult<AdminOrderDetailResponse>
+
+    suspend fun updateOrderStatus(id: Long, request: AdminUpdateOrderStatusRequest): AppResult<Unit>
 }

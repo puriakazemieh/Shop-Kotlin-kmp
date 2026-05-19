@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.kazemieh.admin_panel.AdminPanelScreen
+import com.kazemieh.admin_panel.manage_order.AdminOrderScreen
 import com.kazemieh.admin_panel.manage_product.ManageProductScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.Screen
@@ -83,7 +84,16 @@ fun AppNavHost(
                 navigateBack = { navController.navigateUp() },
                 navigateToManageProduct = { id ->
                     navController.navigate(Screen.ManageProduct(id))
+                },
+                navigateToManageOrders = {
+                    navController.navigate(Screen.ManageOrders)
                 }
+            )
+        }
+
+        composable<Screen.ManageOrders> {
+            AdminOrderScreen(
+                onBackClick = { navController.navigateUp() }
             )
         }
 

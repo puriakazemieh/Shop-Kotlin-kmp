@@ -196,4 +196,30 @@ class AdminApiImpl(
             setBody(request)
         }
     }
+
+    override suspend fun listOrders(
+        status: String?,
+        userId: Long?,
+        page: Int,
+        size: Int
+    ): PageResponse<AdminOrderSummaryResponse> = safeApiCallRaw {
+        client.get("api/admin/orders") {
+            parameter("status", status)
+            parameter("userId", userId)
+            parameter("page", page)
+            parameter("size", size)
+        }
+    }
+
+    override suspend fun getOrderDetail(id: Long): AdminOrderDetailResponse = safeApiCallRaw {
+        client.get("api/admin/orders/$id")
+    }
+
+    override suspend fun updateOrderStatus(id: Long, request: AdminUpdateOrderStatusRequest) =
+        safeApiCallRaw<Unit> {
+            client.patch("api/admin/orders/$id/status") {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+        }
 }

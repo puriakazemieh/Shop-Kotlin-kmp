@@ -1,5 +1,6 @@
 package com.kazemieh.admin_panel
 
+import com.kazemieh.admin_panel.manage_order.AdminOrderViewModel
 import com.kazemieh.admin_panel.manage_product.ManageProductViewModel
 import com.kazemieh.admin_panel.manage_product.PhotoPicker
 import com.kazemieh.domain.usecase.admin.*
@@ -44,6 +45,14 @@ val adminPanelModule = module {
         )
     }
 
+    viewModel {
+        AdminOrderViewModel(
+            listAdminOrdersUseCase = get(),
+            getAdminOrderDetailUseCase = get(),
+            updateAdminOrderStatusUseCase = get()
+        )
+    }
+
     // UseCases
     factory { GetAdminProductsUseCase(get()) }
     factory { GetAdminProductDetailUseCase(get()) }
@@ -65,6 +74,10 @@ val adminPanelModule = module {
     factory { DeleteColorUseCase(get()) }
     factory { AddProductImageUseCase(get()) }
     factory { DeleteProductImageUseCase(get()) }
+
+    factory { ListAdminOrdersUseCase(get()) }
+    factory { GetAdminOrderDetailUseCase(get()) }
+    factory { UpdateAdminOrderStatusUseCase(get()) }
 
     factory { GetCategoriesUseCase(get()) }
     factory { GetSizesUseCase(get()) }
