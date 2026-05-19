@@ -17,9 +17,13 @@ import com.kazemieh.data.local.TokenManager
 import com.kazemieh.data.order.repository.OrderRepositoryImpl
 import com.kazemieh.data.order.source.OrderDataSource
 import com.kazemieh.data.order.source.OrderDataSourceImpl
+import com.kazemieh.data.profile.repository.AddressRepositoryImpl
 import com.kazemieh.data.profile.repository.ProfileRepositoryImpl
+import com.kazemieh.data.profile.source.AddressDataSource
+import com.kazemieh.data.profile.source.AddressDataSourceImpl
 import com.kazemieh.data.profile.source.ProfileDataSource
 import com.kazemieh.data.profile.source.ProfileDataSourceImpl
+import com.kazemieh.domain.repository.AddressRepository
 import com.kazemieh.domain.repository.AdminRepository
 import com.kazemieh.domain.repository.AuthRepository
 import com.kazemieh.domain.repository.CartRepository
@@ -52,6 +56,14 @@ val dataModule = module {
 
     single<ProfileDataSource> {
         ProfileDataSourceImpl(get())
+    }
+
+    single<AddressRepository> {
+        AddressRepositoryImpl(get())
+    }
+
+    single<AddressDataSource> {
+        AddressDataSourceImpl(get())
     }
 
     single<AdminRepository> {

@@ -1,24 +1,52 @@
 package com.kazemieh.profile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
@@ -30,6 +58,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.component.ProfileForm
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.domain.model.Address
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,6 +70,9 @@ fun ProfileScreen(
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
+
+    var showAddressDialog by remember { mutableStateOf(false) }
+    var addressToEdit by remember { mutableStateOf<Address?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { effect ->
@@ -77,7 +109,7 @@ fun ProfileScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.onSecondary,
                     scrolledContainerColor = MaterialTheme.colorScheme.onSecondary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -105,15 +137,16 @@ fun ProfileScreen(
                     .padding(horizontal = 24.dp)
                     .padding(top = 12.dp, bottom = 24.dp)
                     .imePadding()
+                    .verticalScroll(rememberScrollState())
             ) {
                 when (val displayState = state.displayState) {
                     is AppResult.Loading -> {
-                        LoadingCard(modifier = Modifier.fillMaxSize())
+                        LoadingCard(modifier = Modifier.fillMaxWidth().height(200.dp))
                     }
 
                     is AppResult.Error -> {
                         InfoCard(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxWidth().height(200.dp),
                             image = Resources.Image.Cat,
                             title = "Oops!",
                             subtitle = displayState.message
@@ -122,58 +155,116 @@ fun ProfileScreen(
 
                     is AppResult.Success -> {
                         state.profile?.let { profile ->
-                            Column(modifier = Modifier.fillMaxSize()) {
-                                ProfileForm(
-                                    modifier = Modifier.weight(1f),
-                                    firstName = profile.firstName,
-                                    onFirstNameChange = { value ->
-                                        viewModel.handleIntent(
-                                            ProfileIntent.UpdateFirstName(value)
-                                        )
-                                    },
-                                    lastName = profile.lastName,
-                                    onLastNameChange = { value ->
-                                        viewModel.handleIntent(
-                                            ProfileIntent.UpdateLastName(value)
-                                        )
-                                    },
-                                    email = profile.email,
-                                    city = profile.city,
-                                    onCityChange = { value ->
-                                        viewModel.handleIntent(
-                                            ProfileIntent.UpdateCity(value)
-                                        )
-                                    },
-                                    postalCode = profile.postalCode,
-                                    onPostalCodeChange = { value ->
-                                        viewModel.handleIntent(
-                                            ProfileIntent.UpdatePostalCode(value)
-                                        )
-                                    },
-                                    address = null,
-                                    onAddressChange = { value ->
-                                        viewModel.handleIntent(
-                                            ProfileIntent.UpdateAddress(value)
-                                        )
-                                    },
-                                    phoneNumber = profile.phone,
-                                    onPhoneNumberChange = { value ->
-                                        viewModel.handleIntent(
-                                            ProfileIntent.UpdatePhoneNumber(value)
-                                        )
-                                    }
+                            ProfileForm(
+                                modifier = Modifier.fillMaxWidth(),
+                                firstName = profile.firstName,
+                                onFirstNameChange = { value ->
+                                    viewModel.handleIntent(
+                                        ProfileIntent.UpdateFirstName(value)
+                                    )
+                                },
+                                lastName = profile.lastName,
+                                onLastNameChange = { value ->
+                                    viewModel.handleIntent(
+                                        ProfileIntent.UpdateLastName(value)
+                                    )
+                                },
+                                email = profile.email,
+                                city = profile.city,
+                                onCityChange = { value ->
+                                    viewModel.handleIntent(
+                                        ProfileIntent.UpdateCity(value)
+                                    )
+                                },
+                                postalCode = profile.postalCode,
+                                onPostalCodeChange = { value ->
+                                    viewModel.handleIntent(
+                                        ProfileIntent.UpdatePostalCode(value)
+                                    )
+                                },
+                                address = null,
+                                onAddressChange = { value ->
+                                    viewModel.handleIntent(
+                                        ProfileIntent.UpdateAddress(value)
+                                    )
+                                },
+                                phoneNumber = profile.phone,
+                                onPhoneNumberChange = { value ->
+                                    viewModel.handleIntent(
+                                        ProfileIntent.UpdatePhoneNumber(value)
+                                    )
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            PrimaryButton(
+                                text = if (state.isSaving) "Saving..." else "Update Profile",
+                                icon = Resources.Icon.Checkmark,
+                                enabled = state.isFormValid && !state.isSaving,
+                                onClick = {
+                                    viewModel.handleIntent(ProfileIntent.SaveProfile)
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "My Addresses",
+                                    fontFamily = AppFont(),
+                                    fontSize = FontSize.LARGE,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
 
-                                Spacer(modifier = Modifier.height(12.dp))
+                                IconButton(onClick = {
+                                    addressToEdit = null
+                                    showAddressDialog = true
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Add Address",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
 
-                                PrimaryButton(
-                                    text = if (state.isSaving) "Saving..." else "Update",
-                                    icon = Resources.Icon.Checkmark,
-                                    enabled = state.isFormValid && !state.isSaving,
-                                    onClick = {
-                                        viewModel.handleIntent(ProfileIntent.SaveProfile)
-                                    }
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            if (state.addressLoading) {
+                                LoadingCard(modifier = Modifier.fillMaxWidth().height(100.dp))
+                            } else if (state.addresses.isEmpty()) {
+                                Text(
+                                    text = "No addresses found",
+                                    fontFamily = AppFont(),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+                            } else {
+                                state.addresses.forEach { address ->
+                                    AddressItem(
+                                        address = address,
+                                        onSetDefault = {
+                                            viewModel.handleIntent(
+                                                ProfileIntent.SetDefaultAddress(address.id)
+                                            )
+                                        },
+                                        onEdit = {
+                                            addressToEdit = address
+                                            showAddressDialog = true
+                                        },
+                                        onDelete = {
+                                            viewModel.handleIntent(
+                                                ProfileIntent.DeleteAddress(address.id)
+                                            )
+                                        }
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
                             }
                         }
                     }
@@ -181,4 +272,299 @@ fun ProfileScreen(
             }
         }
     }
+
+    if (showAddressDialog) {
+        AddressBottomSheet(
+            address = addressToEdit,
+            onDismiss = { showAddressDialog = false },
+            onConfirm = { addr ->
+                if (addressToEdit == null) {
+                    viewModel.handleIntent(
+                        ProfileIntent.AddAddress(
+                            receiverName = addr.receiverName,
+                            receiverPhone = addr.receiverPhone,
+                            country = addr.country,
+                            province = addr.province,
+                            city = addr.city,
+                            addressLine1 = addr.addressLine1,
+                            addressLine2 = addr.addressLine2,
+                            postalCode = addr.postalCode,
+                            setAsDefault = false
+                        )
+                    )
+                } else {
+                    viewModel.handleIntent(
+                        ProfileIntent.UpdateUserAddress(
+                            id = addressToEdit!!.id,
+                            receiverName = addr.receiverName,
+                            receiverPhone = addr.receiverPhone,
+                            country = addr.country,
+                            province = addr.province,
+                            city = addr.city,
+                            addressLine1 = addr.addressLine1,
+                            addressLine2 = addr.addressLine2,
+                            postalCode = addr.postalCode
+                        )
+                    )
+                }
+                showAddressDialog = false
+            }
+        )
+    }
 }
+
+@Composable
+fun AddressItem(
+    address: Address,
+    onSetDefault: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = if (address.isDefault) Icons.Default.Star else Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = if (address.isDefault) Color(0xFFFFB300) else MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = address.receiverName,
+                        fontFamily = AppFont(),
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (address.isDefault) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "Default",
+                                fontSize = FontSize.SMALL,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontFamily = AppFont()
+                            )
+                        }
+                    }
+                }
+
+                Row {
+                    IconButton(onClick = onEdit) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = onDelete) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = address.receiverPhone,
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "${address.province}, ${address.city}, ${address.addressLine1}",
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM
+            )
+            address.addressLine2?.let {
+                Text(
+                    text = it,
+                    fontFamily = AppFont(),
+                    fontSize = FontSize.MEDIUM
+                )
+            }
+            address.postalCode?.let {
+                Text(
+                    text = "Postal Code: $it",
+                    fontFamily = AppFont(),
+                    fontSize = FontSize.MEDIUM,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            if (!address.isDefault) {
+                Spacer(modifier = Modifier.height(12.dp))
+                TextButton(
+                    onClick = onSetDefault,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text(
+                        text = "Set as Default",
+                        fontFamily = AppFont(),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddressBottomSheet(
+    address: Address?,
+    onDismiss: () -> Unit,
+    onConfirm: (Address) -> Unit
+) {
+    var receiverName by remember { mutableStateOf(address?.receiverName ?: "") }
+    var receiverPhone by remember { mutableStateOf(address?.receiverPhone ?: "") }
+    var province by remember { mutableStateOf(address?.province ?: "") }
+    var city by remember { mutableStateOf(address?.city ?: "") }
+    var addressLine1 by remember { mutableStateOf(address?.addressLine1 ?: "") }
+    var addressLine2 by remember { mutableStateOf(address?.addressLine2 ?: "") }
+    var postalCode by remember { mutableStateOf(address?.postalCode ?: "") }
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        dragHandle = {
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .size(width = 32.dp, height = 4.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(2.dp)
+                    )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = if (address == null) "Add New Address" else "Edit Address",
+                fontFamily = AppFont(),
+                fontSize = FontSize.LARGE,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = receiverName,
+                onValueChange = { receiverName = it },
+                placeholder = "Receiver Name",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = receiverPhone,
+                onValueChange = { receiverPhone = it },
+                placeholder = "Receiver Phone",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = province,
+                onValueChange = { province = it },
+                placeholder = "Province",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = city,
+                onValueChange = { city = it },
+                placeholder = "City",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = addressLine1,
+                onValueChange = { addressLine1 = it },
+                placeholder = "Address Line 1",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = addressLine2,
+                onValueChange = { addressLine2 = it },
+                placeholder = "Address Line 2 (Optional)",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            com.kazemieh.designsystem.component.CustomTextField(
+                value = postalCode,
+                onValueChange = { postalCode = it },
+                placeholder = "Postal Code (Optional)",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            PrimaryButton(
+                text = "Save Address",
+                enabled = receiverName.isNotBlank() && receiverPhone.isNotBlank() && province.isNotBlank() && city.isNotBlank() && addressLine1.isNotBlank(),
+                onClick = {
+                    onConfirm(
+                        Address(
+                            id = address?.id ?: 0,
+                            receiverName = receiverName,
+                            receiverPhone = receiverPhone,
+                            country = "IR",
+                            province = province,
+                            city = city,
+                            addressLine1 = addressLine1,
+                            addressLine2 = addressLine2.takeIf { it.isNotBlank() },
+                            postalCode = postalCode.takeIf { it.isNotBlank() },
+                            isDefault = address?.isDefault ?: false
+                        )
+                    )
+                }
+            )
+        }
+    }
+}
+

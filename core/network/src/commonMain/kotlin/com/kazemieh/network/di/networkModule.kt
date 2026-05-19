@@ -1,5 +1,7 @@
 package com.kazemieh.network.di
 
+import com.kazemieh.network.AddressApi
+import com.kazemieh.network.AddressApiImpl
 import com.kazemieh.network.AdminApi
 import com.kazemieh.network.AdminApiImpl
 import com.kazemieh.network.AuthApi
@@ -13,7 +15,6 @@ import com.kazemieh.network.OrderApi
 import com.kazemieh.network.OrderApiImpl
 import com.kazemieh.network.ProfileApi
 import com.kazemieh.network.ProfileApiImpl
-import com.kazemieh.network.TokenProvider
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -45,5 +46,9 @@ val networkModule = module {
 
     single<OrderApi> {
         OrderApiImpl(get())
+    }
+
+    single<AddressApi> {
+        AddressApiImpl(get())
     }
 }
