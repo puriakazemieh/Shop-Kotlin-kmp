@@ -170,24 +170,6 @@ fun ProfileScreen(
                                     )
                                 },
                                 email = profile.email,
-                                city = profile.city,
-                                onCityChange = { value ->
-                                    viewModel.handleIntent(
-                                        ProfileIntent.UpdateCity(value)
-                                    )
-                                },
-                                postalCode = profile.postalCode,
-                                onPostalCodeChange = { value ->
-                                    viewModel.handleIntent(
-                                        ProfileIntent.UpdatePostalCode(value)
-                                    )
-                                },
-                                address = null,
-                                onAddressChange = { value ->
-                                    viewModel.handleIntent(
-                                        ProfileIntent.UpdateAddress(value)
-                                    )
-                                },
                                 phoneNumber = profile.phone,
                                 onPhoneNumberChange = { value ->
                                     viewModel.handleIntent(

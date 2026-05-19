@@ -110,12 +110,6 @@ fun CheckoutScreen(
                     lastName = screenState.lastName,
                     onLastNameChange = viewModel::updateLastName,
                     email = screenState.email,
-                    city = screenState.city,
-                    onCityChange = viewModel::updateCity,
-                    postalCode = screenState.postalCode.toIntOrNull(),
-                    onPostalCodeChange = { viewModel.updatePostalCode(it?.toString() ?: "") },
-                    address = screenState.address,
-                    onAddressChange = viewModel::updateAddress,
                     phoneNumber = screenState.phoneNumber?.number,
                     onPhoneNumberChange = viewModel::updatePhoneNumber
                 )
