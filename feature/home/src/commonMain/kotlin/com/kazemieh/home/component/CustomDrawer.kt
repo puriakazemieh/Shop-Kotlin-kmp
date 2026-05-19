@@ -1,20 +1,25 @@
 package com.kazemieh.home.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CustomDrawer(
@@ -31,12 +36,19 @@ fun CustomDrawer(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth(0.6f)
-            .padding(horizontal = 12.dp)
+            .padding(horizontal = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(50.dp))
+        Image(
+            modifier = Modifier.size(100.dp),
+            painter = painterResource(Resources.Image.AppLogo),
+            contentDescription = "App Logo"
+        )
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "NUTRISPORT",
+            text = "Carmilla",
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.secondary,
             fontFamily = AppFont(),
@@ -44,7 +56,7 @@ fun CustomDrawer(
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Healthy Lifestyle",
+            text = "Be BOLD, Be CARMILLA",
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = FontSize.REGULAR

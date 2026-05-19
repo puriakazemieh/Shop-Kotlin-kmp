@@ -13,6 +13,7 @@ import kmp_shop.core.designsystem.generated.resources.edit
 import kmp_shop.core.designsystem.generated.resources.google_logo
 import kmp_shop.core.designsystem.generated.resources.grid
 import kmp_shop.core.designsystem.generated.resources.home
+import kmp_shop.core.designsystem.generated.resources.ic_carmilla
 import kmp_shop.core.designsystem.generated.resources.india
 import kmp_shop.core.designsystem.generated.resources.log_in
 import kmp_shop.core.designsystem.generated.resources.log_out
@@ -61,6 +62,7 @@ object Resources {
     }
 
     object Image {
+        val AppLogo = Res.drawable.ic_carmilla
         val ShoppingCart = Res.drawable.shopping_cart_image
         val Checkmark = Res.drawable.checkmark_image
         val Cat = Res.drawable.cat

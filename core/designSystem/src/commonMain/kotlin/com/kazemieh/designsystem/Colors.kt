@@ -13,8 +13,8 @@ val GrayLighter = Color(0xFFFAFAFA)
 val Gray = Color(0xFFF1F1F1)
 val GrayDarker = Color(0xFFEBEBEB)
 
-val Yellowish = Color(0xFFEEFF00) // Primary
-val Orange = Color(0xFFF24C00)    // Secondary
+val NavyBlue = Color(0xFF2E3667) // Primary
+val Gold = Color(0xFFC8A57C)     // Secondary
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val Red = Color(0xFFDD0000)      // Error
@@ -39,13 +39,13 @@ val CategoryRed = Color(0xFFFF5E60)
 
 // --- پالت لایت ---
 val LightAppColorScheme = lightColorScheme(
-    primary = Yellowish,       // رنگ اصلی دکمه‌ها، هدرها و ...
+    primary = NavyBlue,       // رنگ اصلی دکمه‌ها، هدرها و ...
     onPrimary = Black,         // رنگ متن روی Primary
 
     primaryContainer = GrayLighter, // رنگ پس‌زمینه برای المان‌های اصلی
     onPrimaryContainer = Black,     // رنگ متن روی PrimaryContainer
 
-    secondary = Orange,        // رنگ ثانویه برای عناصر تأکید شده
+    secondary = Gold,        // رنگ ثانویه برای عناصر تأکید شده
     onSecondary = White,       // رنگ متن روی Secondary
 
     secondaryContainer = Gray,     // رنگ پس‌زمینه برای المان‌های ثانویه
@@ -78,13 +78,13 @@ val LightAppColorScheme = lightColorScheme(
 
 // --- پالت دارک ---
 val DarkAppColorScheme = darkColorScheme(
-    primary = Yellowish,       // رنگ اصلی در حالت دارک
+    primary = NavyBlue,       // رنگ اصلی در حالت دارک
     onPrimary = Black,
 
     primaryContainer = Color(0xFF333333), // تیره‌تر برای پس‌زمینه
     onPrimaryContainer = White,
 
-    secondary = Orange,
+    secondary = Gold,
     onSecondary = White,
 
     secondaryContainer = Color(0xFF2A2A2A), // تیره‌تر
@@ -139,8 +139,8 @@ data class AppColors(
     val grayLighter: Color,
     val gray: Color,
     val grayDarker: Color,
-    val yellowish: Color,
-    val orange: Color,
+    val navyBlue: Color,
+    val gold: Color,
     val white: Color,
     val black: Color,
     val red: Color
@@ -179,8 +179,8 @@ fun provideAppColors(darkTheme: Boolean): AppColors {
             grayLighter = GrayLighter,
             gray = Gray,
             grayDarker = GrayDarker,
-            yellowish = Yellowish,
-            orange = Orange,
+            navyBlue = NavyBlue,
+            gold = Gold,
             white = White,
             black = Black,
             red = Red
