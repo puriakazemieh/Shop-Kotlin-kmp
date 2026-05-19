@@ -3,6 +3,7 @@ package com.kazemieh.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.CartEventBus
 import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.ObserveProfileUseCase
@@ -49,13 +50,16 @@ class HomeGraphViewModel(
         }
     }
 
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private fun observeCart() {
         viewModelScope.launch {
-            getCartUseCase().collect { result ->
-                if (result is AppResult.Success) {
-                    _state.update { it.copy(cartItemCount = result.data.totalQty) }
+            merge(flowOf(Unit), CartEventBus.events)
+                .flatMapLatest { getCartUseCase() }
+                .collect { result ->
+                    if (result is AppResult.Success) {
+                        _state.update { it.copy(cartItemCount = result.data.totalQty) }
+                    }
                 }
-            }
         }
     }
 

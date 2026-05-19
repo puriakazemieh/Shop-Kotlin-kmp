@@ -29,7 +29,7 @@ data class AdminOrderDetailResponse(
 
 @Serializable
 data class AdminOrderItemResponse(
-    val id: Long,
+    val id: Long? = null,
     val variantId: Long,
     val qty: Int,
     val unitPriceSnapshot: Double,

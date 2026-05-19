@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.CartEventBus
 import com.kazemieh.common.getSuccessValue
 import com.kazemieh.domain.model.Address
 import com.kazemieh.domain.model.Cart
@@ -93,7 +94,9 @@ class CheckoutViewModel(
 
     private fun loadCart() {
         viewModelScope.launch {
-            cart = getCartUseCase().first().getSuccessValue()
+            getCartUseCase().collect { result ->
+                cart = result.getSuccessValue()
+            }
         }
     }
 
@@ -211,7 +214,10 @@ class CheckoutViewModel(
             // Create Order
             val result = createOrderUseCase(items, addressId)
             when (result) {
-                is AppResult.Success -> onSuccess()
+                is AppResult.Success -> {
+                    CartEventBus.refresh()
+                    onSuccess()
+                }
                 is AppResult.Error -> onError(result.message)
                 else -> {}
             }

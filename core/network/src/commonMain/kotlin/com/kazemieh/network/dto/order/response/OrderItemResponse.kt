@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OrderItemResponse(
-    val id: Long,
+    val id: Long? = null,
     val variantId: Long,
     val qty: Int,
     val unitPrice: Double,

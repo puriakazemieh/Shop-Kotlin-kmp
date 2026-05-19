@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -71,11 +73,18 @@ fun ProductsOverviewScreen(
         if (state.isLoading) {
             LoadingCard(modifier = Modifier.fillMaxSize())
         } else if (state.error != null) {
-            InfoCard(
-                image = Resources.Image.Cat,
-                title = "Oops!",
-                subtitle = state.error ?: "Something went wrong"
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                contentAlignment = Alignment.Center
+            ) {
+                InfoCard(
+                    image = Resources.Image.Cat,
+                    title = "Oops!",
+                    subtitle = state.error ?: "Something went wrong"
+                )
+            }
         } else {
             AnimatedContent(
                 targetState = state.products
@@ -164,11 +173,18 @@ fun ProductsOverviewScreen(
                         }
                     }
                 } else {
-                    InfoCard(
-                        image = Resources.Image.Cat,
-                        title = "Nothing here",
-                        subtitle = "Empty product list."
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        InfoCard(
+                            image = Resources.Image.Cat,
+                            title = "Nothing here",
+                            subtitle = "Empty product list."
+                        )
+                    }
                 }
             }
         }

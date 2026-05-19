@@ -1,6 +1,7 @@
 package com.kazemieh.home.cart
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -135,20 +138,34 @@ fun CartScreen(
                         )
                     }
                 } else {
-                    InfoCard(
-                        image = Resources.Image.ShoppingCart,
-                        title = "Empty Cart",
-                        subtitle = "Check some of our products."
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        InfoCard(
+                            image = Resources.Image.ShoppingCart,
+                            title = "Empty Cart",
+                            subtitle = "Check some of our products."
+                        )
+                    }
                 }
             }
 
             is AppResult.Error -> {
-                InfoCard(
-                    image = Resources.Image.Cat,
-                    title = "Oops!",
-                    subtitle = state.message
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    contentAlignment = Alignment.Center
+                ) {
+                    InfoCard(
+                        image = Resources.Image.Cat,
+                        title = "Oops!",
+                        subtitle = state.message
+                    )
+                }
             }
         }
     }

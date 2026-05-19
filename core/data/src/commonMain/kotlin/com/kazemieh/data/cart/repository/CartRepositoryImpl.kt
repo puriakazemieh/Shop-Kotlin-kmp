@@ -1,6 +1,7 @@
 package com.kazemieh.data.cart.repository
 
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.CartEventBus
 import com.kazemieh.common.map
 import com.kazemieh.data.cart.mapper.toDomain
 import com.kazemieh.data.cart.source.CartDataSource
@@ -20,26 +21,50 @@ class CartRepositoryImpl(
     }
 
     override suspend fun addItem(variantId: Long, qty: Int): AppResult<Cart> {
-        return dataSource.addItem(AddCartItemRequest(variantId, qty)).map { it.toDomain() }
+        val result = dataSource.addItem(AddCartItemRequest(variantId, qty)).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
     }
 
     override suspend fun updateQty(itemId: Long, qty: Int): AppResult<Cart> {
-        return dataSource.updateQty(itemId, UpdateCartItemRequest(qty)).map { it.toDomain() }
+        val result = dataSource.updateQty(itemId, UpdateCartItemRequest(qty)).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
     }
 
     override suspend fun remove(itemId: Long): AppResult<Cart> {
-        return dataSource.remove(itemId).map { it.toDomain() }
+        val result = dataSource.remove(itemId).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
     }
 
     override suspend fun clear(): AppResult<Unit> {
-        return dataSource.clear()
+        val result = dataSource.clear()
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
     }
 
     override suspend fun setVariantQty(variantId: Long, qty: Int): AppResult<Cart> {
-        return dataSource.setVariantQty(variantId, SetCartVariantQtyRequest(qty)).map { it.toDomain() }
+        val result = dataSource.setVariantQty(variantId, SetCartVariantQtyRequest(qty)).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
     }
 
     override suspend fun adjustVariantQty(variantId: Long, delta: Int): AppResult<Cart> {
-        return dataSource.adjustVariantQty(variantId, AdjustCartVariantQtyRequest(delta)).map { it.toDomain() }
+        val result = dataSource.adjustVariantQty(variantId, AdjustCartVariantQtyRequest(delta)).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
     }
 }

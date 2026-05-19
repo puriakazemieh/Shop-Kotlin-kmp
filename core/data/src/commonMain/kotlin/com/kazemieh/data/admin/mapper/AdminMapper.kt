@@ -92,7 +92,7 @@ fun AdminOrderDetailResponse.toAdminDomain() = AdminOrderDetail(
 )
 
 fun AdminOrderItemResponse.toAdminDomain() = AdminOrderItem(
-    id = id,
+    id = id ?: 0L,
     variantId = variantId,
     qty = qty,
     unitPriceSnapshot = unitPriceSnapshot,

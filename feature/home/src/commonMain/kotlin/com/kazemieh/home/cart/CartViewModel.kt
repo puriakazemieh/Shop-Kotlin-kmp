@@ -3,11 +3,10 @@ package com.kazemieh.home.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.CartEventBus
 import com.kazemieh.domain.model.Cart
 import com.kazemieh.domain.usecase.cart.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class CartViewModel(
@@ -24,14 +23,17 @@ class CartViewModel(
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     init {
-        loadCart()
+        observeCart()
     }
 
-    fun loadCart() {
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private fun observeCart() {
         viewModelScope.launch {
-            getCartUseCase().collect {
-                _cartState.value = it
-            }
+            merge(flowOf(Unit), CartEventBus.events)
+                .flatMapLatest { getCartUseCase() }
+                .collect {
+                    _cartState.value = it
+                }
         }
     }
 

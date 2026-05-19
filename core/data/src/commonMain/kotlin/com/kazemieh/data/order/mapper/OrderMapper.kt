@@ -31,7 +31,7 @@ fun OrderDetailResponse.toDomain(): OrderDetail = OrderDetail(
 )
 
 fun OrderItemResponse.toDomain(): OrderItem = OrderItem(
-    id = id,
+    id = id ?: 0L,
     variantId = variantId,
     qty = qty,
     unitPrice = unitPrice,
