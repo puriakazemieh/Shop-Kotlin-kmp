@@ -4,21 +4,37 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.Category
 import com.kazemieh.domain.model.admin.AdminVariant
 import com.kazemieh.domain.repository.Color
 import com.kazemieh.domain.repository.Size
-import com.kazemieh.domain.usecase.admin.*
+import com.kazemieh.domain.usecase.admin.AddProductImageUseCase
+import com.kazemieh.domain.usecase.admin.CreateAdminCategoryUseCase
+import com.kazemieh.domain.usecase.admin.CreateAdminProductUseCase
+import com.kazemieh.domain.usecase.admin.CreateColorUseCase
+import com.kazemieh.domain.usecase.admin.CreateProductVariantUseCase
+import com.kazemieh.domain.usecase.admin.CreateSizeUseCase
+import com.kazemieh.domain.usecase.admin.DeleteAdminCategoryUseCase
+import com.kazemieh.domain.usecase.admin.DeleteAdminProductUseCase
+import com.kazemieh.domain.usecase.admin.DeleteColorUseCase
+import com.kazemieh.domain.usecase.admin.DeleteProductImageUseCase
+import com.kazemieh.domain.usecase.admin.DeleteProductVariantUseCase
+import com.kazemieh.domain.usecase.admin.DeleteSizeUseCase
+import com.kazemieh.domain.usecase.admin.GetAdminColorsUseCase
+import com.kazemieh.domain.usecase.admin.GetAdminProductDetailUseCase
+import com.kazemieh.domain.usecase.admin.GetAdminSizesUseCase
+import com.kazemieh.domain.usecase.admin.UpdateAdminProductUseCase
+import com.kazemieh.domain.usecase.admin.UpdateColorUseCase
+import com.kazemieh.domain.usecase.admin.UpdateProductVariantUseCase
+import com.kazemieh.domain.usecase.admin.UpdateSizeUseCase
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
-import com.kazemieh.common.ld
-import com.kazemieh.designsystem.Resources
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.StringResource
 
 class ManageProductViewModel(
     private val getAdminProductDetailUseCase: GetAdminProductDetailUseCase,
@@ -57,7 +73,6 @@ class ManageProductViewModel(
     }
 
     fun handleIntent(intent: ManageProductIntent) {
-        "Received intent: ${intent::class.simpleName}".ld("ManageProductVM")
         when (intent) {
             is ManageProductIntent.UpdateTitle -> _state.update {
                 it.copy(
@@ -65,6 +80,7 @@ class ManageProductViewModel(
                     slug = intent.title.lowercase().replace(" ", "-")
                 )
             }
+
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
             is ManageProductIntent.UpdateIsActive -> _state.update { it.copy(isActive = intent.isActive) }
@@ -75,15 +91,38 @@ class ManageProductViewModel(
             is ManageProductIntent.DeleteProduct -> deleteProduct()
             is ManageProductIntent.DeleteImage -> deleteImage(intent.imageId)
             is ManageProductIntent.AddVariant -> addVariant(intent)
-            is ManageProductIntent.UpdateVariantInfo -> updateVariant(intent.id, intent.sku, intent.price, intent.sizeId, intent.colorId, intent.isActive)
+            is ManageProductIntent.UpdateVariantInfo -> updateVariant(
+                intent.id,
+                intent.sku,
+                intent.price,
+                intent.sizeId,
+                intent.colorId,
+                intent.isActive
+            )
+
             is ManageProductIntent.DeleteVariant -> deleteVariant(intent.variantId)
-            is ManageProductIntent.CreateCategory -> createCategory(intent.name, intent.slug, intent.parentId)
+            is ManageProductIntent.CreateCategory -> createCategory(
+                intent.name,
+                intent.slug,
+                intent.parentId
+            )
+
             is ManageProductIntent.DeleteCategory -> deleteCategory(intent.id)
             is ManageProductIntent.CreateSize -> createSize(intent.name, intent.sortOrder)
-            is ManageProductIntent.UpdateSizeInfo -> updateSize(intent.id, intent.name, intent.sortOrder)
+            is ManageProductIntent.UpdateSizeInfo -> updateSize(
+                intent.id,
+                intent.name,
+                intent.sortOrder
+            )
+
             is ManageProductIntent.DeleteSize -> deleteSize(intent.id)
             is ManageProductIntent.CreateColor -> createColor(intent.name, intent.hex)
-            is ManageProductIntent.UpdateColorInfo -> updateColor(intent.id, intent.name, intent.hex)
+            is ManageProductIntent.UpdateColorInfo -> updateColor(
+                intent.id,
+                intent.name,
+                intent.hex
+            )
+
             is ManageProductIntent.DeleteColor -> deleteColor(intent.id)
             is ManageProductIntent.UploadImage -> uploadImage(intent.bytes)
         }
@@ -234,6 +273,7 @@ class ManageProductViewModel(
                         _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ImageDeleted))
                         loadProductDetail()
                     }
+
                     is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                     is AppResult.Loading -> {}
                 }
@@ -286,13 +326,24 @@ class ManageProductViewModel(
         }
     }
 
-    private fun updateVariant(id: Long, sku: String?, price: Double?, sizeId: Long?, colorId: Long?, isActive: Boolean?) {
+    private fun updateVariant(
+        id: Long,
+        sku: String?,
+        price: Double?,
+        sizeId: Long?,
+        colorId: Long?,
+        isActive: Boolean?
+    ) {
         if (productId == -1L) {
             _state.update { state ->
                 val updatedVariants = state.variants.map { v ->
                     if (v.id == id) {
-                        val sizeName = if (sizeId != null) state.sizes.find { s -> s.id == sizeId }?.name ?: v.sizeName else v.sizeName
-                        val colorName = if (colorId != null) state.colors.find { c -> c.id == colorId }?.name ?: v.colorName else v.colorName
+                        val sizeName =
+                            if (sizeId != null) state.sizes.find { s -> s.id == sizeId }?.name
+                                ?: v.sizeName else v.sizeName
+                        val colorName =
+                            if (colorId != null) state.colors.find { c -> c.id == colorId }?.name
+                                ?: v.colorName else v.colorName
                         v.copy(
                             sku = sku ?: v.sku,
                             price = price ?: v.price,
@@ -309,11 +360,13 @@ class ManageProductViewModel(
             return
         }
         viewModelScope.launch {
-            when (val result = updateProductVariantUseCase(id, sku, price, null, sizeId, colorId, isActive)) {
+            when (val result =
+                updateProductVariantUseCase(id, sku, price, null, sizeId, colorId, isActive)) {
                 is AppResult.Success<*> -> {
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantUpdated))
                     loadProductDetail()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -331,6 +384,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantDeleted))
                     loadProductDetail()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -344,6 +398,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.CategoryCreated))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -357,6 +412,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.CategoryDeleted))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -370,6 +426,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.SizeCreated))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -383,6 +440,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.SizeUpdated))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -390,18 +448,17 @@ class ManageProductViewModel(
     }
 
     private fun deleteSize(id: Long) {
-        "Deleting size: $id".ld("ManageProductVM")
         viewModelScope.launch {
             when (val result = deleteSizeUseCase(id)) {
                 is AppResult.Success<*> -> {
-                    "Size deleted successfully".ld("ManageProductVM")
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.SizeDeleted))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> {
-                    "Error deleting size: ${result.message}".ld("ManageProductVM")
                     _event.send(ManageProductUiEvent.ShowError(result.message))
                 }
+
                 is AppResult.Loading -> {}
             }
         }
@@ -414,6 +471,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ColorCreated))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -427,6 +485,7 @@ class ManageProductViewModel(
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ColorUpdated))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                 is AppResult.Loading -> {}
             }
@@ -434,18 +493,17 @@ class ManageProductViewModel(
     }
 
     private fun deleteColor(id: Long) {
-        "Deleting color: $id".ld("ManageProductVM")
         viewModelScope.launch {
             when (val result = deleteColorUseCase(id)) {
                 is AppResult.Success<*> -> {
-                    "Color deleted successfully".ld("ManageProductVM")
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ColorDeleted))
                     loadInitialData()
                 }
+
                 is AppResult.Error -> {
-                    "Error deleting color: ${result.message}".ld("ManageProductVM")
                     _event.send(ManageProductUiEvent.ShowError(result.message))
                 }
+
                 is AppResult.Loading -> {}
             }
         }
@@ -460,6 +518,7 @@ class ManageProductViewModel(
                         _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ImageUploaded))
                         loadProductDetail()
                     }
+
                     is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
                     is AppResult.Loading -> {}
                 }
@@ -514,6 +573,7 @@ sealed interface ManageProductIntent {
         val price: Double,
         val initialOnHand: Int
     ) : ManageProductIntent
+
     data class UpdateVariantInfo(
         val id: Long,
         val sku: String?,
@@ -522,6 +582,7 @@ sealed interface ManageProductIntent {
         val colorId: Long?,
         val isActive: Boolean?
     ) : ManageProductIntent
+
     data class DeleteVariant(val variantId: Long) : ManageProductIntent
 
     data class CreateCategory(
@@ -529,6 +590,7 @@ sealed interface ManageProductIntent {
         val slug: String,
         val parentId: Long?
     ) : ManageProductIntent
+
     data class DeleteCategory(val id: Long) : ManageProductIntent
 
     data class CreateSize(

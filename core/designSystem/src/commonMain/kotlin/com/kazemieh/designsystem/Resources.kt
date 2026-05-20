@@ -172,6 +172,7 @@ object Resources {
         val CityProvinceFormat = CommonRes.string.city_province_format
         val QtyXPriceFormat = CommonRes.string.qty_x_price_format
         val PriceRangeFormat = CommonRes.string.price_range_format
+        val StockReservedFormat = CommonRes.string.stock_reserved_format
 
         // Auth
         val ForgotPassword = CommonRes.string.forgot_password

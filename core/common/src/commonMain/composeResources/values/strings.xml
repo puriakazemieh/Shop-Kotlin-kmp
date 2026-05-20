@@ -160,6 +160,7 @@
     <string name="city_province_format">%1$s, %2$s</string>
     <string name="qty_x_price_format">%1$s x %2$s</string>
     <string name="price_range_format">%1$s - %2$s</string>
+    <string name="stock_reserved_format">Stock: %1$s (Reserved: %2$s)</string>
 
     <!-- Form Placeholders -->
     <string name="first_name_placeholder">First Name</string>

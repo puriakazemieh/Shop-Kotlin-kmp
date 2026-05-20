@@ -395,7 +395,7 @@ fun VariantItem(variant: AdminVariant, onClick: () -> Unit) {
             }
             Text(stringResource(Resources.String.VariantFormat, variant.sizeName, variant.colorName), fontSize = FontSize.SMALL)
             Text(
-                "Stock: ${variant.onHand} (Reserved: ${variant.reserved})",
+                stringResource(Resources.String.StockReservedFormat, variant.onHand, variant.reserved),
                 fontSize = FontSize.SMALL
             )
         }

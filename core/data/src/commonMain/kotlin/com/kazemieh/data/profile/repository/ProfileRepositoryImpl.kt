@@ -2,7 +2,6 @@ package com.kazemieh.data.profile.repository
 
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.doOnSuccess
-import com.kazemieh.common.ld
 import com.kazemieh.data.local.ProfileLocalDataSource
 import com.kazemieh.data.profile.source.ProfileDataSource
 import com.kazemieh.domain.model.Profile
@@ -27,7 +26,7 @@ class ProfileRepositoryImpl(
     override fun observeProfile(): Flow<AppResult<Profile>> {
         return profileLocalDataSource.observeProfile().map { profile ->
             if (profile != null) {
-                AppResult.Success(profile.ld("observeProfile"))
+                AppResult.Success(profile)
             } else {
                 AppResult.Error("Profile not found")
             }
