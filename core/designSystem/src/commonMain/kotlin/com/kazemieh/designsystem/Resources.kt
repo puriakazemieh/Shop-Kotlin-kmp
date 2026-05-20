@@ -159,6 +159,20 @@ object Resources {
         val CheckoutWithQty = CommonRes.string.checkout_with_qty
         val ProductImageDesc = CommonRes.string.product_image_desc
 
+        val ItemsLabel = CommonRes.string.items_label
+        val SubtotalLabel = CommonRes.string.subtotal_label
+        val ShippingLabel = CommonRes.string.shipping_label
+        val TotalLabelSimple = CommonRes.string.total_label_simple
+        val EmailLabelFormat = CommonRes.string.email_label_format
+        val UserIdLabelFormat = CommonRes.string.user_id_label_format
+        val AllLabel = CommonRes.string.all_label
+        val PriceFormat = CommonRes.string.price_format
+        val VariantFormat = CommonRes.string.variant_format
+        val AddressFormat = CommonRes.string.address_format
+        val CityProvinceFormat = CommonRes.string.city_province_format
+        val QtyXPriceFormat = CommonRes.string.qty_x_price_format
+        val PriceRangeFormat = CommonRes.string.price_range_format
+
         // Auth
         val ForgotPassword = CommonRes.string.forgot_password
         val CreateAccount = CommonRes.string.create_account

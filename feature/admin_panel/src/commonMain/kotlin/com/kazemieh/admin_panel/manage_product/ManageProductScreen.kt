@@ -391,9 +391,9 @@ fun VariantItem(variant: AdminVariant, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(variant.sku, fontWeight = FontWeight.Bold)
-                Text("$${variant.price}", color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(Resources.String.PriceFormat, variant.price), color = MaterialTheme.colorScheme.secondary)
             }
-            Text("${variant.sizeName} / ${variant.colorName}", fontSize = FontSize.SMALL)
+            Text(stringResource(Resources.String.VariantFormat, variant.sizeName, variant.colorName), fontSize = FontSize.SMALL)
             Text(
                 "Stock: ${variant.onHand} (Reserved: ${variant.reserved})",
                 fontSize = FontSize.SMALL

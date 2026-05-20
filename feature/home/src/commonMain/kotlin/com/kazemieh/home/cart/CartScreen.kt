@@ -113,7 +113,7 @@ fun CartScreen(
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
-                                    text = "$${cart.subtotal}",
+                                    text = stringResource(Resources.String.PriceFormat, cart.subtotal),
                                     fontFamily = com.kazemieh.designsystem.AppFont(),
                                     fontWeight = FontWeight.Bold,
                                     fontSize = com.kazemieh.designsystem.FontSize.LARGE,

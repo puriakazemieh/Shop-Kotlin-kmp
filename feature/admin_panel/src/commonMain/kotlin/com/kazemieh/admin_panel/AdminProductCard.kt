@@ -70,7 +70,7 @@ fun AdminProductCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "$${product.basePrice ?: 0.0}",
+                text = stringResource(Resources.String.PriceFormat, product.basePrice ?: 0.0),
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

@@ -118,14 +118,14 @@ fun CartItemCard(
             ) {
                 Column {
                     Text(
-                        text = "$${cartItem.price}",
+                        text = stringResource(Resources.String.PriceFormat, cartItem.price),
                         fontSize = FontSize.EXTRA_REGULAR,
                         color = MaterialTheme.colorScheme.secondary,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1
                     )
                     Text(
-                        text = "${cartItem.sizeName} / ${cartItem.colorName}",
+                        text = stringResource(Resources.String.VariantFormat, cartItem.sizeName, cartItem.colorName),
                         fontSize = FontSize.SMALL,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1

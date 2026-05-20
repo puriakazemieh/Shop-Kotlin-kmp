@@ -147,6 +147,20 @@
     <string name="info_card_image_desc">Info card image</string>
     <string name="copy">Copy</string>
 
+    <string name="items_label">Items</string>
+    <string name="subtotal_label">Subtotal</string>
+    <string name="shipping_label">Shipping</string>
+    <string name="total_label_simple">Total</string>
+    <string name="email_label_format">Email: %s</string>
+    <string name="user_id_label_format">User ID: %s</string>
+    <string name="all_label">All</string>
+    <string name="price_format">$%s</string>
+    <string name="variant_format">%1$s / %2$s</string>
+    <string name="address_format">%1$s, %2$s, %3$s</string>
+    <string name="city_province_format">%1$s, %2$s</string>
+    <string name="qty_x_price_format">%1$s x %2$s</string>
+    <string name="price_range_format">%1$s - %2$s</string>
+
     <!-- Form Placeholders -->
     <string name="first_name_placeholder">First Name</string>
     <string name="last_name_placeholder">Last Name</string>

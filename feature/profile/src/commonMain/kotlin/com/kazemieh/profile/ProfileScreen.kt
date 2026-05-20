@@ -383,7 +383,7 @@ fun AddressItem(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${address.province}, ${address.city}, ${address.addressLine1}",
+                text = stringResource(Resources.String.AddressFormat, address.province, address.city, address.addressLine1),
                 fontFamily = AppFont(),
                 fontSize = FontSize.MEDIUM
             )

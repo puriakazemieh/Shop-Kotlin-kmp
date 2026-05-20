@@ -333,7 +333,7 @@ internal fun MessageBar(
             )
             Spacer(modifier = Modifier.width(spacing))
             Text(
-                text = successMessage ?: (errorMessage ?: "Unknown"),
+                text = successMessage ?: (errorMessage ?: stringResource(Resources.String.UnknownError)),
                 color = if (errorMessage != null) errorContentColor
                 else successContentColor,
                 fontSize = fontSize,
@@ -345,6 +345,7 @@ internal fun MessageBar(
             )
         }
         if ((errorMessage != null && showCopyButton) || (successMessage != null && showCopyButtonOnSuccess)) {
+            val unknownError = stringResource(Resources.String.UnknownError)
             Row(
                 modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.End
@@ -352,7 +353,7 @@ internal fun MessageBar(
                 TextButton(
                     onClick = {
                         clipboardManager.setText(
-                            AnnotatedString(text = errorMessage ?: successMessage ?: "Unknown")
+                            AnnotatedString(text = errorMessage ?: successMessage ?: unknownError)
                         )
                         onMessageCopied?.invoke()
                     },

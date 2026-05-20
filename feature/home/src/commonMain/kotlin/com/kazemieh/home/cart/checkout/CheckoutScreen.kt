@@ -77,7 +77,7 @@ fun CheckoutScreen(
                 },
                 actions = {
                     Text(
-                        text = "$${totalAmount}",
+                        text = stringResource(Resources.String.PriceFormat, totalAmount),
                         fontSize = FontSize.EXTRA_MEDIUM,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
@@ -266,7 +266,7 @@ fun AddressItem(
                 fontSize = FontSize.MEDIUM
             )
             Text(
-                text = "${address.province}, ${address.city}",
+                text = stringResource(Resources.String.CityProvinceFormat, address.province, address.city),
                 fontSize = FontSize.SMALL
             )
             Text(

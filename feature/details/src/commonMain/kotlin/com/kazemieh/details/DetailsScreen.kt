@@ -165,7 +165,7 @@ fun DetailsScreen(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    text = "$${state.selectedVariant?.price ?: 0.0}",
+                                    text = stringResource(Resources.String.PriceFormat, state.selectedVariant?.price ?: 0.0),
                                     fontSize = FontSize.MEDIUM,
                                     color = MaterialTheme.colorScheme.secondary,
                                     fontWeight = FontWeight.Medium
@@ -206,7 +206,7 @@ fun DetailsScreen(
                                 ) {
                                     product.variants.forEach { variant ->
                                         VariantChip(
-                                            label = "${variant.sizeName} / ${variant.colorName}",
+                                            label = stringResource(Resources.String.VariantFormat, variant.sizeName, variant.colorName),
                                             isSelected = state.selectedVariant == variant,
                                             onClick = {
                                                 viewModel.onIntent(

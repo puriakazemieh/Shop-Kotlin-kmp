@@ -133,9 +133,13 @@ fun MainProductCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 val priceText = if (product.minPrice == product.maxPrice) {
-                    "$${product.minPrice}"
+                    stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
                 } else {
-                    "$${product.minPrice} - $${product.maxPrice}"
+                    stringResource(
+                        Resources.String.PriceRangeFormat,
+                        stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
+                        stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
+                    )
                 }
                 
                 Text(

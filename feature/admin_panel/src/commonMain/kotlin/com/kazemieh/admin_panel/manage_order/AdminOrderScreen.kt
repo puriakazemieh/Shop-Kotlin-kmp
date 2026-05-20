@@ -139,7 +139,7 @@ fun StatusFilterRow(
             FilterChip(
                 selected = selectedStatus == status,
                 onClick = { onStatusSelected(status) },
-                label = { Text(status ?: "All", fontFamily = AppFont()) }
+                label = { Text(status ?: stringResource(Resources.String.AllLabel), fontFamily = AppFont()) }
             )
         }
     }
@@ -262,19 +262,19 @@ fun OrderDetailDialog(
                                 .verticalScroll(rememberScrollState())
                         ) {
                             Text(stringResource(Resources.String.CustomerInformation), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            Text("Email: ${order.userEmail}", fontFamily = AppFont())
-                            Text("User ID: ${order.userId}", fontFamily = AppFont())
+                            Text(stringResource(Resources.String.EmailLabelFormat, order.userEmail), fontFamily = AppFont())
+                            Text(stringResource(Resources.String.UserIdLabelFormat, order.userId), fontFamily = AppFont())
                             
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(stringResource(Resources.String.ShippingAddress), fontWeight = FontWeight.Bold, fontFamily = AppFont())
                             Text(order.addressSnapshot.receiverName, fontFamily = AppFont())
                             Text(order.addressSnapshot.receiverPhone, fontFamily = AppFont())
-                            Text("${order.addressSnapshot.province}, ${order.addressSnapshot.city}", fontFamily = AppFont())
+                            Text(stringResource(Resources.String.CityProvinceFormat, order.addressSnapshot.province, order.addressSnapshot.city), fontFamily = AppFont())
                             Text(order.addressSnapshot.addressLine1, fontFamily = AppFont())
                             order.addressSnapshot.addressLine2?.let { Text(it, fontFamily = AppFont()) }
                             
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text("Items", fontWeight = FontWeight.Bold, fontFamily = AppFont())
+                            Text(stringResource(Resources.String.ItemsLabel), fontWeight = FontWeight.Bold, fontFamily = AppFont())
                             order.items.forEach { item ->
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -282,24 +282,24 @@ fun OrderDetailDialog(
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(item.titleSnapshot, fontWeight = FontWeight.Medium, fontFamily = AppFont())
-                                        Text("${item.sizeSnapshot} / ${item.colorSnapshot}", fontSize = FontSize.SMALL, fontFamily = AppFont())
+                                        Text(stringResource(Resources.String.VariantFormat, item.sizeSnapshot, item.colorSnapshot), fontSize = FontSize.SMALL, fontFamily = AppFont())
                                     }
-                                    Text("${item.qty} x $${item.unitPriceSnapshot}", fontFamily = AppFont())
+                                    Text(stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, item.unitPriceSnapshot)), fontFamily = AppFont())
                                 }
                             }
                             
                             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Subtotal", fontFamily = AppFont())
-                                Text("$${order.subtotalPrice}", fontFamily = AppFont())
+                                Text(stringResource(Resources.String.SubtotalLabel), fontFamily = AppFont())
+                                Text(stringResource(Resources.String.PriceFormat, order.subtotalPrice), fontFamily = AppFont())
                             }
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Shipping", fontFamily = AppFont())
-                                Text("$${order.shippingPrice}", fontFamily = AppFont())
+                                Text(stringResource(Resources.String.ShippingLabel), fontFamily = AppFont())
+                                Text(stringResource(Resources.String.PriceFormat, order.shippingPrice), fontFamily = AppFont())
                             }
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Total", fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                                Text("$${order.totalPrice}", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontFamily = AppFont())
+                                Text(stringResource(Resources.String.TotalLabelSimple), fontWeight = FontWeight.Bold, fontFamily = AppFont())
+                                Text(stringResource(Resources.String.PriceFormat, order.totalPrice), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontFamily = AppFont())
                             }
 
                             Spacer(modifier = Modifier.height(24.dp))
