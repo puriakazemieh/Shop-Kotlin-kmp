@@ -6,11 +6,13 @@ import androidx.compose.runtime.getValue
 import com.kazemieh.admin_panel.adminPanelModule
 import com.kazemieh.auth.authModule
 import com.kazemieh.common.AppLanguage
+import com.kazemieh.common.AppThemeMode
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
+import com.kazemieh.domain.usecase.settings.ObserveThemeModeUseCase
 import com.kazemieh.home.homeModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
@@ -24,9 +26,15 @@ import org.koin.dsl.KoinAppDeclaration
 @Composable
 fun App() {
     val observeLanguageUseCase = koinInject<ObserveLanguageUseCase>()
-    val language by observeLanguageUseCase().collectAsState(AppLanguage.ENGLISH)
+    val observeThemeModeUseCase = koinInject<ObserveThemeModeUseCase>()
 
-    AppTheme(language = language) {
+    val language by observeLanguageUseCase().collectAsState(AppLanguage.ENGLISH)
+    val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.SYSTEM)
+
+    AppTheme(
+        themeMode = themeMode,
+        language = language
+    ) {
         AppNavHost()
     }
 }

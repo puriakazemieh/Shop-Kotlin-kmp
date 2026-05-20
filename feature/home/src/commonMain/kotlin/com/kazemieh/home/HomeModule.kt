@@ -9,7 +9,9 @@ import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
 import com.kazemieh.domain.usecase.order.*
 import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
+import com.kazemieh.domain.usecase.settings.ObserveThemeModeUseCase
 import com.kazemieh.domain.usecase.settings.UpdateLanguageUseCase
+import com.kazemieh.domain.usecase.settings.UpdateThemeModeUseCase
 import com.kazemieh.home.cart.CartViewModel
 import com.kazemieh.home.cart.checkout.CheckoutViewModel
 import com.kazemieh.home.cart.payment_completed.PaymentViewModel
@@ -79,7 +81,9 @@ val homeModule = module {
     viewModel {
         SettingsViewModel(
             observeLanguageUseCase = get(),
-            updateLanguageUseCase = get()
+            updateLanguageUseCase = get(),
+            observeThemeModeUseCase = get(),
+            updateThemeModeUseCase = get()
         )
     }
 
@@ -93,6 +97,8 @@ val homeModule = module {
     // Settings UseCases
     factory { ObserveLanguageUseCase(get()) }
     factory { UpdateLanguageUseCase(get()) }
+    factory { ObserveThemeModeUseCase(get()) }
+    factory { UpdateThemeModeUseCase(get()) }
 
     // Address UseCases
     factory { GetAddressesUseCase(get()) }

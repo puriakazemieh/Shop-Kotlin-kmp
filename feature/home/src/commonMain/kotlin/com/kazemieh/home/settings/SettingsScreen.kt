@@ -26,9 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppLanguage
+import com.kazemieh.common.AppThemeMode
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -39,6 +41,7 @@ fun SettingsScreen(
     navigateBack: () -> Unit
 ) {
     val currentLanguage by viewModel.language.collectAsState()
+    val currentThemeMode by viewModel.themeMode.collectAsState()
 
     Scaffold(
         topBar = {
@@ -74,19 +77,44 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             AppLanguage.entries.forEach { language ->
-                LanguageItem(
-                    language = language,
+                SettingsItem(
+                    label = language.label,
                     isSelected = currentLanguage == language,
                     onSelect = { viewModel.onLanguageSelected(language) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(Resources.String.Theme),
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = AppFont()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            AppThemeMode.entries.forEach { mode ->
+                SettingsItem(
+                    label = stringResource(mode.toResource()),
+                    isSelected = currentThemeMode == mode,
+                    onSelect = { viewModel.onThemeModeSelected(mode) }
                 )
             }
         }
     }
 }
 
+fun AppThemeMode.toResource(): StringResource {
+    return when (this) {
+        AppThemeMode.LIGHT -> Resources.String.Light
+        AppThemeMode.DARK -> Resources.String.Dark
+        AppThemeMode.SYSTEM -> Resources.String.SystemDefault
+    }
+}
+
 @Composable
-fun LanguageItem(
-    language: AppLanguage,
+fun SettingsItem(
+    label: String,
     isSelected: Boolean,
     onSelect: () -> Unit
 ) {
@@ -102,7 +130,7 @@ fun LanguageItem(
             onClick = onSelect
         )
         Text(
-            text = language.label,
+            text = label,
             modifier = Modifier.padding(start = 8.dp),
             fontFamily = AppFont()
         )

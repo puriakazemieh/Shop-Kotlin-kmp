@@ -54,6 +54,10 @@ object Resources {
         val Language = CommonRes.string.language
         val English = CommonRes.string.english
         val Persian = CommonRes.string.persian
+        val Theme = CommonRes.string.theme
+        val Light = CommonRes.string.light
+        val Dark = CommonRes.string.dark
+        val SystemDefault = CommonRes.string.system_default
         val NoAddressesFound = CommonRes.string.no_addresses_found
         val Default = CommonRes.string.default_label
         val PostalCodeLabel = CommonRes.string.postal_code_label

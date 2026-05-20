@@ -1,6 +1,7 @@
 package com.kazemieh.data.repository
 
 import com.kazemieh.common.AppLanguage
+import com.kazemieh.common.AppThemeMode
 import com.kazemieh.domain.repository.SettingsRepository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
@@ -27,7 +28,22 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
         return AppLanguage.fromCode(code)
     }
 
+    override fun observeThemeMode(): Flow<AppThemeMode> {
+        return flowSettings.getStringFlow(KEY_THEME_MODE, AppThemeMode.SYSTEM.code)
+            .map { AppThemeMode.fromCode(it) }
+    }
+
+    override suspend fun setThemeMode(mode: AppThemeMode) {
+        settings.putString(KEY_THEME_MODE, mode.code)
+    }
+
+    override suspend fun getThemeMode(): AppThemeMode {
+        val code = settings.getString(KEY_THEME_MODE, AppThemeMode.SYSTEM.code)
+        return AppThemeMode.fromCode(code)
+    }
+
     companion object {
         private const val KEY_LANGUAGE = "app_language"
+        private const val KEY_THEME_MODE = "app_theme_mode"
     }
 }
