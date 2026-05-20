@@ -26,10 +26,10 @@ import org.jetbrains.compose.resources.stringResource
 fun CustomDrawer(
     isLoggedIn: Boolean,
     isAdmin: Boolean = false,
-//    customer: RequestState<Customer>,
     onLoginClick: () -> Unit,
     onProfileClick: () -> Unit,
     onContactUsClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
 ) {
@@ -92,6 +92,7 @@ fun CustomDrawer(
                 onClick = {
                     when (item) {
                         DrawerItem.Contact -> onContactUsClick()
+                        DrawerItem.Settings -> onSettingsClick()
                         DrawerItem.SignOut -> onSignOutClick()
                         else -> {}
                     }

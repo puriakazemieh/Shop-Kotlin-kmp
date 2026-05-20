@@ -29,6 +29,7 @@ object Resources {
         val Delete = DesignRes.drawable.delete
         val Warning = DesignRes.drawable.warning
         val Weight = DesignRes.drawable.weight
+        val Settings = DesignRes.drawable.settings
     }
 
     object Image {
@@ -49,6 +50,10 @@ object Resources {
     object String {
         val MyProfile = CommonRes.string.my_profile
         val MyAddresses = CommonRes.string.my_addresses
+        val Settings = CommonRes.string.settings
+        val Language = CommonRes.string.language
+        val English = CommonRes.string.english
+        val Persian = CommonRes.string.persian
         val NoAddressesFound = CommonRes.string.no_addresses_found
         val Default = CommonRes.string.default_label
         val PostalCodeLabel = CommonRes.string.postal_code_label

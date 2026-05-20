@@ -72,6 +72,7 @@ fun HomeGraphScreen(
     viewModel: HomeGraphViewModel = koinViewModel(),
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToSettings: () -> Unit,
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
@@ -159,6 +160,7 @@ fun HomeGraphScreen(
 //            customer = customer,
             onProfileClick = navigateToProfile,
             onContactUsClick = {},
+            onSettingsClick = navigateToSettings,
             onSignOutClick = {
 //                viewModel.signOut(
 //                    onSuccess = navigateToAuth,

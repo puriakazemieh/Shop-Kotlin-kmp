@@ -22,6 +22,7 @@ import com.kazemieh.home.HomeGraphScreen
 import com.kazemieh.home.category.CategorySearchScreen
 import com.kazemieh.home.cart.checkout.CheckoutScreen
 import com.kazemieh.home.cart.payment_completed.PaymentCompleted
+import com.kazemieh.home.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -59,6 +60,9 @@ fun AppNavHost(
                 navigateToProfile = {
                     navController.navigate(Screen.Profile)
                 },
+                navigateToSettings = {
+                    navController.navigate(Screen.Settings)
+                },
                 navigateToAdminPanel = {
                     navController.navigate(Screen.AdminPanel)
                 },
@@ -76,6 +80,12 @@ fun AppNavHost(
 
         composable<Screen.Profile> {
             ProfileScreen {
+                navController.navigateUp()
+            }
+        }
+
+        composable<Screen.Settings> {
+            SettingsScreen {
                 navController.navigateUp()
             }
         }

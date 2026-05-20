@@ -23,6 +23,7 @@ import com.kazemieh.data.profile.source.AddressDataSource
 import com.kazemieh.data.profile.source.AddressDataSourceImpl
 import com.kazemieh.data.profile.source.ProfileDataSource
 import com.kazemieh.data.profile.source.ProfileDataSourceImpl
+import com.kazemieh.data.repository.SettingsRepositoryImpl
 import com.kazemieh.domain.repository.AddressRepository
 import com.kazemieh.domain.repository.AdminRepository
 import com.kazemieh.domain.repository.AuthRepository
@@ -30,10 +31,13 @@ import com.kazemieh.domain.repository.CartRepository
 import com.kazemieh.domain.repository.CatalogRepository
 import com.kazemieh.domain.repository.OrderRepository
 import com.kazemieh.domain.repository.ProfileRepository
+import com.kazemieh.domain.repository.SettingsRepository
 import com.kazemieh.network.TokenProvider
 import org.koin.dsl.module
 
 val dataModule = module {
+
+    single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 
     single<AuthRepository> {
         AuthRepositoryImpl(

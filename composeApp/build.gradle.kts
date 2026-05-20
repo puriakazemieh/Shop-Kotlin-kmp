@@ -49,8 +49,12 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.core.designSystem)
 
+            implementation(project(":core:common"))
+            implementation(project(":core:domain"))
+
             implementation(libs.kotlinx.serialization)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
             implementation(project(":feature:auth"))
             implementation(project(":feature:profile"))

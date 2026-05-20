@@ -79,7 +79,7 @@ val LightAppColorScheme = lightColorScheme(
 // --- پالت دارک ---
 val DarkAppColorScheme = darkColorScheme(
     primary = NavyBlue,       // رنگ اصلی در حالت دارک
-    onPrimary = Black,
+    onPrimary = White,
 
     primaryContainer = Color(0xFF333333), // تیره‌تر برای پس‌زمینه
     onPrimaryContainer = White,

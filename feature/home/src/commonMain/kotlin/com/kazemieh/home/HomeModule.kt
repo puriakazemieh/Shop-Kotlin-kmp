@@ -8,12 +8,15 @@ import com.kazemieh.domain.usecase.cart.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
 import com.kazemieh.domain.usecase.order.*
+import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
+import com.kazemieh.domain.usecase.settings.UpdateLanguageUseCase
 import com.kazemieh.home.cart.CartViewModel
 import com.kazemieh.home.cart.checkout.CheckoutViewModel
 import com.kazemieh.home.cart.payment_completed.PaymentViewModel
 import com.kazemieh.home.category.CategoriesViewModel
 import com.kazemieh.home.category.CategorySearchViewModel
 import com.kazemieh.home.productsOverview.ProductsOverviewViewModel
+import com.kazemieh.home.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -73,12 +76,23 @@ val homeModule = module {
         )
     }
 
+    viewModel {
+        SettingsViewModel(
+            observeLanguageUseCase = get(),
+            updateLanguageUseCase = get()
+        )
+    }
+
     // UseCases
     factory { IsUserLoggedInUseCase(get()) }
     factory { SignOutUseCase(get()) }
     factory { ObserveAuthStateUseCase(get()) }
     factory { GetProductsUseCase(get()) }
     factory { GetCategoriesUseCase(get()) }
+
+    // Settings UseCases
+    factory { ObserveLanguageUseCase(get()) }
+    factory { UpdateLanguageUseCase(get()) }
 
     // Address UseCases
     factory { GetAddressesUseCase(get()) }
