@@ -118,6 +118,8 @@
     <string name="blog">Blog</string>
     <string name="locations">Locations</string>
     <string name="contact_us">Contact us</string>
+    <string name="address">Address: No. 123, Sample St, Tehran, Iran</string>
+    <string name="phone_number">Phone: +98 21 12345678</string>
     <string name="sign_out">Sign Out</string>
     <string name="settings">Settings</string>
     <string name="language">Language</string>

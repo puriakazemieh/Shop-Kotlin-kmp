@@ -205,6 +205,8 @@ object Resources {
         val Blog = CommonRes.string.blog
         val Locations = CommonRes.string.locations
         val ContactUs = CommonRes.string.contact_us
+        val Address = CommonRes.string.address
+        val PhoneNumber = CommonRes.string.phone_number
         val SignOut = CommonRes.string.sign_out
         val CartIsEmpty = CommonRes.string.cart_is_empty
         val CartIsEmptySubtitle = CommonRes.string.cart_is_empty_subtitle

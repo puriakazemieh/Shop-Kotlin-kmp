@@ -19,6 +19,7 @@ import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.details.DetailsScreen
 import com.kazemieh.home.HomeGraphScreen
+import com.kazemieh.home.contact.ContactUsScreen
 import com.kazemieh.home.category.CategorySearchScreen
 import com.kazemieh.home.cart.checkout.CheckoutScreen
 import com.kazemieh.home.cart.payment_completed.PaymentCompleted
@@ -63,6 +64,9 @@ fun AppNavHost(
                 navigateToSettings = {
                     navController.navigate(Screen.Settings)
                 },
+                navigateToContactUs = {
+                    navController.navigate(Screen.ContactUs)
+                },
                 navigateToAdminPanel = {
                     navController.navigate(Screen.AdminPanel)
                 },
@@ -86,6 +90,12 @@ fun AppNavHost(
 
         composable<Screen.Settings> {
             SettingsScreen {
+                navController.navigateUp()
+            }
+        }
+
+        composable<Screen.ContactUs> {
+            ContactUsScreen {
                 navController.navigateUp()
             }
         }

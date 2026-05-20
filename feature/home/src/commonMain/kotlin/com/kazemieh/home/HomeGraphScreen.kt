@@ -75,6 +75,7 @@ fun HomeGraphScreen(
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToSettings: () -> Unit,
+    navigateToContactUs: () -> Unit,
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
@@ -163,7 +164,7 @@ fun HomeGraphScreen(
         CustomDrawer(
 //            customer = customer,
             onProfileClick = navigateToProfile,
-            onContactUsClick = {},
+            onContactUsClick = navigateToContactUs,
             onSettingsClick = navigateToSettings,
             onSignOutClick = {
 //                viewModel.signOut(

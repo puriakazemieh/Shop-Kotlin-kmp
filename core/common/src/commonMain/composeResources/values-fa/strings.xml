@@ -118,6 +118,8 @@
     <string name="blog">بلاگ</string>
     <string name="locations">شعب</string>
     <string name="contact_us">تماس با ما</string>
+    <string name="address">آدرس: تهران، خیابان نمونه، پلاک ۱۲۳</string>
+    <string name="phone_number">شماره تماس: ۰۲۱-۱۲۳۴۵۶۷۸</string>
     <string name="sign_out">خروج</string>
     <string name="settings">تنظیمات</string>
     <string name="language">زبان</string>
