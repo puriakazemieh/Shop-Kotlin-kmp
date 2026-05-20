@@ -37,8 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -114,10 +116,12 @@ fun HomeGraphScreen(
     val screenWidth = rememberScreenWidth()
     var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
 
+    val layoutDirection = LocalLayoutDirection.current
+    val isRtl = layoutDirection == LayoutDirection.Rtl
 
     val drawerWidth = 280.dp
 
-    val offsetValue = drawerWidth
+    val offsetValue = if (isRtl) -drawerWidth else drawerWidth
 
     val animatedOffset by animateDpAsState(
         targetValue = if (drawerState.isOpened()) offsetValue else 0.dp
@@ -180,7 +184,7 @@ fun HomeGraphScreen(
                     scaleX = animatedScale
                     scaleY = animatedScale
                     translationX = animatedOffset.toPx()
-                    transformOrigin = TransformOrigin(1f, 0.5f)
+                    transformOrigin = TransformOrigin(if (isRtl) 0f else 1f, 0.5f)
                 }
                 .shadow(
                     elevation = 20.dp,
