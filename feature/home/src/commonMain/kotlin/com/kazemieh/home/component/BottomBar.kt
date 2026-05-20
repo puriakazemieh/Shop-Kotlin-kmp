@@ -23,7 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun BottomBar(
@@ -66,7 +68,7 @@ fun BottomBar(
                         Icon(
                             modifier = Modifier.clickable { onSelect(destination) },
                             painter = painterResource(destination.icon),
-                            contentDescription = "Bottom Bar destination icon",
+                            contentDescription = stringResource(Resources.String.BottomBarDesc),
                             tint = animatedTint
                         )
                     }
@@ -74,7 +76,7 @@ fun BottomBar(
                     Icon(
                         modifier = Modifier.clickable { onSelect(destination) },
                         painter = painterResource(destination.icon),
-                        contentDescription = "Bottom Bar destination icon",
+                        contentDescription = stringResource(Resources.String.BottomBarDesc),
                         tint = animatedTint
                     )
                 }

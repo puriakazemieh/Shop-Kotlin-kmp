@@ -5,11 +5,12 @@ import com.kazemieh.common.ld
 import com.kazemieh.common.toUserMessage
 import com.kazemieh.network.dto.ApiError
 import com.kazemieh.network.dto.ApiException
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.*
 import io.ktor.http.isSuccess
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import com.kazemieh.common.*
+import com.kazemieh.common.Res
 
 val json = Json {
     ignoreUnknownKeys = true
@@ -23,12 +24,12 @@ suspend fun <T> safeApiCall(
         AppResult.Success(apiCall())
     } catch (e: ApiException) {
         AppResult.Error(
-            message = e.messageText.toUserMessage(),
+            message = e.messageText,
             code = e.code
         )
     } catch (e: Exception) {
         AppResult.Error(
-            message = "خطای نامشخص رخ داد",
+            message = Res.string.unknown_error,
             code = 0
         )
     }
@@ -57,7 +58,7 @@ suspend inline fun <reified T> safeApiCallRaw(
             } catch (e: SerializationException) {
                 e.ld("SerializationException")
                 throw ApiException(
-                    messageText = "خطا در پردازش اطلاعات دریافتی",
+                    messageText = Res.string.error_parsing_data,
                     code = 0
                 )
             }
@@ -70,7 +71,7 @@ suspend inline fun <reified T> safeApiCallRaw(
             } catch (e: Exception) {
                 e.message.ld("⚠️ Failed to parse ApiError")
                 ApiError(
-                    message = "خطای سرور رخ داد",
+                    message = "Server error",
                     status = response.status.value.toString(),
                     code = response.status.value,
                     errorCode = "UNKNOWN_ERROR",
@@ -91,7 +92,7 @@ suspend inline fun <reified T> safeApiCallRaw(
         "Exception: ${e::class.simpleName} - ${e.message}".ld("❌ Unexpected Error in safeApiCallRaw")
         e.printStackTrace()
         throw ApiException(
-            messageText = "خطای نامشخص رخ داد",
+            messageText = Res.string.unknown_error,
             code = 0
         )
     }

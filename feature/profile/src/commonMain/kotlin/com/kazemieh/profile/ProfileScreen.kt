@@ -60,7 +60,9 @@ import com.kazemieh.designsystem.component.ProfileForm
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.model.Address
+import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,7 +97,7 @@ fun ProfileScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "My Profile",
+                        text = stringResource(Resources.String.MyProfile),
                         fontFamily = AppFont(),
                         fontSize = FontSize.LARGE,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -105,7 +107,7 @@ fun ProfileScreen(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = "Back Arrow icon",
+                            contentDescription = stringResource(Resources.String.BackArrowDesc),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
@@ -149,7 +151,7 @@ fun ProfileScreen(
                         InfoCard(
                             modifier = Modifier.fillMaxWidth().height(200.dp),
                             image = Resources.Image.Cat,
-                            title = "Oops!",
+                            title = stringResource(Resources.String.Oops),
                             subtitle = displayState.message
                         )
                     }
@@ -182,7 +184,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.height(12.dp))
 
                             PrimaryButton(
-                                text = if (state.isSaving) "Saving..." else "Update Profile",
+                                text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(Resources.String.UpdateProfile),
                                 icon = Resources.Icon.Checkmark,
                                 enabled = state.isFormValid && !state.isSaving,
                                 onClick = {
@@ -198,7 +200,7 @@ fun ProfileScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "My Addresses",
+                                    text = stringResource(Resources.String.MyAddresses),
                                     fontFamily = AppFont(),
                                     fontSize = FontSize.LARGE,
                                     fontWeight = FontWeight.Bold,
@@ -211,7 +213,7 @@ fun ProfileScreen(
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        contentDescription = "Add Address",
+                                        contentDescription = stringResource(Resources.String.AddAddress),
                                         tint = MaterialTheme.colorScheme.primary
                                     )
                                 }
@@ -223,7 +225,7 @@ fun ProfileScreen(
                                 LoadingCard(modifier = Modifier.fillMaxWidth().height(100.dp))
                             } else if (state.addresses.isEmpty()) {
                                 Text(
-                                    text = "No addresses found",
+                                    text = stringResource(Resources.String.NoAddressesFound),
                                     fontFamily = AppFont(),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -343,7 +345,7 @@ fun AddressItem(
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = "Default",
+                                text = stringResource(Resources.String.Default),
                                 fontSize = FontSize.SMALL,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontFamily = AppFont()
@@ -356,7 +358,7 @@ fun AddressItem(
                     IconButton(onClick = onEdit) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
+                            contentDescription = stringResource(Resources.String.Edit),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )
@@ -364,7 +366,7 @@ fun AddressItem(
                     IconButton(onClick = onDelete) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete",
+                            contentDescription = stringResource(Resources.String.Delete),
                             tint = MaterialTheme.colorScheme.error,
                             modifier = Modifier.size(20.dp)
                         )
@@ -394,7 +396,7 @@ fun AddressItem(
             }
             address.postalCode?.let {
                 Text(
-                    text = "Postal Code: $it",
+                    text = stringResource(Resources.String.PostalCodeLabel, it),
                     fontFamily = AppFont(),
                     fontSize = FontSize.MEDIUM,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -408,7 +410,7 @@ fun AddressItem(
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Text(
-                        text = "Set as Default",
+                        text = stringResource(Resources.String.SetAsDefault),
                         fontFamily = AppFont(),
                         color = MaterialTheme.colorScheme.primary
                     )

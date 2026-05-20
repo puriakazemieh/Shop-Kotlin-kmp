@@ -5,7 +5,7 @@ import com.kazemieh.domain.model.ProductSummary
 data class CategorySearchState(
     val isLoading: Boolean = false,
     val products: List<ProductSummary> = emptyList(),
-    val error: String? = null,
+    val error: Any? = null,
     val searchQuery: String = "",
     val categoryId: Long? = null,
     val categoryName: String = ""
@@ -17,5 +17,5 @@ sealed interface CategorySearchIntent {
 }
 
 sealed interface CategorySearchEffect {
-    data class ShowError(val message: String) : CategorySearchEffect
+    data class ShowError(val message: Any) : CategorySearchEffect
 }

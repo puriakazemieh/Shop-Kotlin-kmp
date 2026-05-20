@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.repository.Color
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,11 +37,11 @@ fun ColorsBottomSheet(
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Select Color",
+                        text = stringResource(Resources.String.SelectColor),
                         style = MaterialTheme.typography.titleLarge
                     )
                     TextButton(onClick = onCreateColorClick) {
-                        Text("Add New")
+                        Text(stringResource(Resources.String.AddNew))
                     }
                 }
             }

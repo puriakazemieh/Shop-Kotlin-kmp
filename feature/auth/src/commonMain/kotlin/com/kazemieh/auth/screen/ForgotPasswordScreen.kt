@@ -18,6 +18,9 @@ import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.anyToString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -35,7 +38,7 @@ fun ForgotPasswordScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Forgot Password", fontSize = FontSize.LARGE)
+        Text(stringResource(Resources.String.ForgotPassword), fontSize = FontSize.LARGE)
 
         Spacer(Modifier.height(24.dp))
 
@@ -44,16 +47,16 @@ fun ForgotPasswordScreen(
             onValueChange = {
                 viewModel.onEvent(AuthEvent.OnEmailChange(it))
             },
-            hint = "Email"
+            hint = stringResource(Resources.String.EmailHint)
         )
 
         state.emailError?.let {
-            Text(it, color = colors.error)
+            Text(anyToString(it), color = colors.error)
         }
 
         Spacer(Modifier.height(24.dp))
 
-        AuthButton("Send Reset Link") {
+        AuthButton(stringResource(Resources.String.SendResetLink)) {
             viewModel.onEvent(AuthEvent.SubmitForgotPassword)
         }
 
@@ -64,7 +67,7 @@ fun ForgotPasswordScreen(
         Spacer(Modifier.height(16.dp))
 
         TextButton(onClick = onBack) {
-            Text("Back to Login")
+            Text(stringResource(Resources.String.BackToLogin))
         }
     }
 }

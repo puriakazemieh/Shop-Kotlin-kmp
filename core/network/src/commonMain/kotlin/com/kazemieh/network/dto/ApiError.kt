@@ -12,8 +12,7 @@ data class ApiError(
     val timestamp: String? = null
 )
 
-@Serializable
-data class ApiException(
-    val messageText: String,
+class ApiException(
+    val messageText: Any,
     val code: Int?
-) : Exception(messageText)
+) : Exception(if (messageText is String) messageText else "API Error")

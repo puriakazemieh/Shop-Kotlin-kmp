@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.repository.Size
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,11 +37,11 @@ fun SizesBottomSheet(
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Select Size",
+                        text = stringResource(Resources.String.SelectSize),
                         style = MaterialTheme.typography.titleLarge
                     )
                     TextButton(onClick = onCreateSizeClick) {
-                        Text("Add New")
+                        Text(stringResource(Resources.String.AddNew))
                     }
                 }
             }

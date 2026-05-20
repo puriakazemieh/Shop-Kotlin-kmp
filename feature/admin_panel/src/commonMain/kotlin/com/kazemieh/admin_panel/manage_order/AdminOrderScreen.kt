@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -35,6 +34,7 @@ import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.model.admin.AdminOrderSummary
 import com.kazemieh.domain.model.admin.AdminOrderDetail
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,11 +46,13 @@ fun AdminOrderScreen(
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
 
+    val statusUpdatedSuccessMessage = stringResource(Resources.String.StatusUpdatedSuccessfully)
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is AdminOrderEffect.ShowError -> messageBarState.addError(effect.message)
-                is AdminOrderEffect.StatusUpdated -> messageBarState.addSuccess("Status updated successfully")
+                is AdminOrderEffect.StatusUpdated -> messageBarState.addSuccess(statusUpdatedSuccessMessage)
             }
         }
     }
@@ -58,10 +60,10 @@ fun AdminOrderScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Manage Orders", fontFamily = AppFont()) },
+                title = { Text(stringResource(Resources.String.ManageOrders), fontFamily = AppFont()) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Resources.String.BackDesc))
                     }
                 }
             )
@@ -80,7 +82,7 @@ fun AdminOrderScreen(
                 when (val result = state.ordersState) {
                     is AppResult.Loading -> LoadingCard(Modifier.fillMaxSize())
                     is AppResult.Error -> InfoCard(
-                        title = "Error",
+                        title = stringResource(Resources.String.Oops),
                         subtitle = result.message,
                         image = Resources.Image.Cat
                     )
@@ -88,7 +90,7 @@ fun AdminOrderScreen(
                         val orders = result.data.items
                         if (orders.isEmpty()) {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text("No orders found", fontFamily = AppFont())
+                                Text(stringResource(Resources.String.NoOrdersFound), fontFamily = AppFont())
                             }
                         } else {
                             LazyColumn(
@@ -158,7 +160,7 @@ fun AdminOrderCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Order #${order.id}",
+                    text = stringResource(Resources.String.OrderIdPrefix, order.id),
                     fontWeight = FontWeight.Bold,
                     fontSize = FontSize.MEDIUM,
                     fontFamily = AppFont()
@@ -219,7 +221,7 @@ fun StatusBadge(status: String) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun OrderDetailDialog(
     state: AdminOrderState,
@@ -234,10 +236,10 @@ fun OrderDetailDialog(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopAppBar(
-                    title = { Text("Order Detail", fontFamily = AppFont()) },
+                    title = { Text(stringResource(Resources.String.OrderDetail), fontFamily = AppFont()) },
                     navigationIcon = {
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = "Close")
+                            Icon(Icons.Default.Close, contentDescription = stringResource(Resources.String.CloseDesc))
                         }
                     }
                 )
@@ -247,7 +249,7 @@ fun OrderDetailDialog(
                 when (val result = state.orderDetailState) {
                     is AppResult.Loading -> LoadingCard(Modifier.fillMaxSize())
                     is AppResult.Error -> InfoCard(
-                        title = "Error",
+                        title = stringResource(Resources.String.Oops),
                         subtitle = result.message,
                         image = Resources.Image.Cat
                     )
@@ -259,12 +261,12 @@ fun OrderDetailDialog(
                                 .padding(16.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            Text("Customer Information", fontWeight = FontWeight.Bold, fontFamily = AppFont())
+                            Text(stringResource(Resources.String.CustomerInformation), fontWeight = FontWeight.Bold, fontFamily = AppFont())
                             Text("Email: ${order.userEmail}", fontFamily = AppFont())
                             Text("User ID: ${order.userId}", fontFamily = AppFont())
                             
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text("Shipping Address", fontWeight = FontWeight.Bold, fontFamily = AppFont())
+                            Text(stringResource(Resources.String.ShippingAddress), fontWeight = FontWeight.Bold, fontFamily = AppFont())
                             Text(order.addressSnapshot.receiverName, fontFamily = AppFont())
                             Text(order.addressSnapshot.receiverPhone, fontFamily = AppFont())
                             Text("${order.addressSnapshot.province}, ${order.addressSnapshot.city}", fontFamily = AppFont())
@@ -301,7 +303,7 @@ fun OrderDetailDialog(
                             }
 
                             Spacer(modifier = Modifier.height(24.dp))
-                            Text("Update Status", fontWeight = FontWeight.Bold, fontFamily = AppFont())
+                            Text(stringResource(Resources.String.UpdateStatus), fontWeight = FontWeight.Bold, fontFamily = AppFont())
                             val statuses = listOf("PLACED", "PROCESSING", "SHIPPING", "COMPLETED", "CANCELLED")
                             FlowRow(
                                 modifier = Modifier.fillMaxWidth(),

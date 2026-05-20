@@ -9,6 +9,7 @@ plugins {
 }
 compose.resources {
     publicResClass = true
+    packageOfResClass = "com.kazemieh.designsystem"
 }
 kotlin {
 

@@ -44,6 +44,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
                 implementation(project(":core:common"))
+                implementation(libs.compose.components.resources)
             }
         }
 

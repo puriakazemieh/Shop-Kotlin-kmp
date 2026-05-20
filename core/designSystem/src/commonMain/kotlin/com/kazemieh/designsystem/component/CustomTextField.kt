@@ -19,13 +19,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.util.anyToString
 
 @Composable
 fun CustomTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String? = null,
+    placeholder: Any? = null,
     enabled: Boolean = true,
     error: Boolean = false,
     expanded: Boolean = false,
@@ -52,7 +53,7 @@ fun CustomTextField(
         placeholder = if (placeholder != null) {
             {
                 Text(
-                    text = placeholder,
+                    text = anyToString(placeholder),
                     fontSize = FontSize.REGULAR
                 )
             }

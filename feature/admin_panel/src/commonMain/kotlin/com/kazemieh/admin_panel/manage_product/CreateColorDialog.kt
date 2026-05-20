@@ -5,6 +5,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CreateColorDialog(
@@ -16,21 +18,21 @@ fun CreateColorDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create Color") },
+        title = { Text(stringResource(Resources.String.CreateColor)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name") },
+                    label = { Text(stringResource(Resources.String.Name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = hex,
                     onValueChange = { hex = it },
-                    label = { Text("Hex Code (Optional)") },
+                    label = { Text(stringResource(Resources.String.HexCodeOptional)) },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("#FFFFFF") }
+                    placeholder = { Text(stringResource(Resources.String.HexCodePlaceholder)) }
                 )
             }
         },
@@ -39,12 +41,12 @@ fun CreateColorDialog(
                 enabled = name.isNotBlank(),
                 onClick = { onConfirm(name, hex.takeIf { it.isNotBlank() }) }
             ) {
-                Text("Create")
+                Text(stringResource(Resources.String.Create))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Resources.String.Cancel))
             }
         }
     )

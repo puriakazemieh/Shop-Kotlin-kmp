@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.domain.model.ProductSummary
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.AppFont
 import com.seiko.imageloader.rememberImagePainter
 
@@ -82,7 +84,7 @@ fun MainProductCard(
                     else Modifier
                 ),
             painter = painter,
-            contentDescription = "Product thumbnail",
+            contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
             contentScale = ContentScale.Crop
         )
         Box(
@@ -145,7 +147,7 @@ fun MainProductCard(
                 
                 if (!product.inStock) {
                     Text(
-                        text = "Out of Stock",
+                        text = stringResource(Resources.String.OutOfStock),
                         fontSize = FontSize.EXTRA_SMALL,
                         color = Color.Red,
                         fontWeight = FontWeight.Bold

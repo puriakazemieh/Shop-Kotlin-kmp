@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,7 +88,7 @@ fun AddressBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Add New Address",
+                text = stringResource(Resources.String.AddNewAddress),
                 fontFamily = AppFont(),
                 fontSize = FontSize.LARGE,
                 fontWeight = FontWeight.Bold
@@ -97,7 +99,7 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = receiverName,
                 onValueChange = { receiverName = it },
-                placeholder = "Receiver Name",
+                placeholder = stringResource(Resources.String.ReceiverNamePlaceholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -106,7 +108,7 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = receiverPhone,
                 onValueChange = { receiverPhone = it },
-                placeholder = "Receiver Phone",
+                placeholder = stringResource(Resources.String.ReceiverPhonePlaceholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -115,7 +117,7 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = province,
                 onValueChange = { province = it },
-                placeholder = "Province",
+                placeholder = stringResource(Resources.String.ProvincePlaceholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -124,7 +126,7 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = city,
                 onValueChange = { city = it },
-                placeholder = "City",
+                placeholder = stringResource(Resources.String.CityPlaceholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -133,7 +135,7 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = addressLine1,
                 onValueChange = { addressLine1 = it },
-                placeholder = "Address Line 1",
+                placeholder = stringResource(Resources.String.AddressLine1Placeholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -142,7 +144,7 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = addressLine2,
                 onValueChange = { addressLine2 = it },
-                placeholder = "Address Line 2 (Optional)",
+                placeholder = stringResource(Resources.String.AddressLine2OptionalPlaceholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -151,14 +153,14 @@ fun AddressBottomSheet(
             CustomTextField(
                 value = postalCode,
                 onValueChange = { postalCode = it },
-                placeholder = "Postal Code (Optional)",
+                placeholder = stringResource(Resources.String.PostalCodeOptionalPlaceholder),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             PrimaryButton(
-                text = "Save Address",
+                text = stringResource(Resources.String.SaveAddress),
                 enabled = receiverName.isNotBlank() && receiverPhone.isNotBlank() && province.isNotBlank() && city.isNotBlank() && addressLine1.isNotBlank(),
                 onClick = {
                     onConfirm(

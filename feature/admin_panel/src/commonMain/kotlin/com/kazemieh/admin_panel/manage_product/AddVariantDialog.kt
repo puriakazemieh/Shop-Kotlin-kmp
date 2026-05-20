@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.domain.repository.Color
 import com.kazemieh.domain.repository.Size
 
@@ -81,7 +83,7 @@ fun AddVariantDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add New Variant") },
+        title = { Text(stringResource(Resources.String.AddNewVariant)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Size Selection
@@ -90,7 +92,7 @@ fun AddVariantDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = selectedSize?.name ?: "Select Size",
+                        text = selectedSize?.name ?: stringResource(Resources.String.SelectSize),
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -101,7 +103,7 @@ fun AddVariantDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = selectedColor?.name ?: "Select Color",
+                        text = selectedColor?.name ?: stringResource(Resources.String.SelectColor),
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -109,20 +111,20 @@ fun AddVariantDialog(
                 OutlinedTextField(
                     value = sku,
                     onValueChange = { sku = it },
-                    label = { Text("SKU") },
+                    label = { Text(stringResource(Resources.String.Sku)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = price,
                     onValueChange = { price = it },
-                    label = { Text("Price") },
+                    label = { Text(stringResource(Resources.String.Price)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
                 OutlinedTextField(
                     value = initialOnHand,
                     onValueChange = { initialOnHand = it },
-                    label = { Text("Initial Stock") },
+                    label = { Text(stringResource(Resources.String.InitialStock)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -141,12 +143,12 @@ fun AddVariantDialog(
                     )
                 }
             ) {
-                Text("Add")
+                Text(stringResource(Resources.String.Add))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Resources.String.Cancel))
             }
         }
     )

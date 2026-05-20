@@ -11,12 +11,14 @@ import com.kazemieh.domain.repository.Size
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.common.ld
+import com.kazemieh.designsystem.Resources
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 
 class ManageProductViewModel(
     private val getAdminProductDetailUseCase: GetAdminProductDetailUseCase,
@@ -145,7 +147,7 @@ class ManageProductViewModel(
         val currentState = _state.value
         if (productId == -1L && currentState.variants.isEmpty()) {
             viewModelScope.launch {
-                _event.send(ManageProductUiEvent.ShowError("Please add at least one variant"))
+                _event.send(ManageProductUiEvent.ShowError(Resources.String.PleaseAddAtLeastOneVariant))
             }
             return
         }
@@ -191,7 +193,7 @@ class ManageProductViewModel(
                             addProductImageUseCase(newId, bytes, null)
                         }
                     }
-                    _event.send(ManageProductUiEvent.ShowSuccess("Product saved successfully"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ProductSavedSuccessfully))
                     _event.send(ManageProductUiEvent.NavigateBack)
                 }
 
@@ -209,7 +211,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = deleteAdminProductUseCase(productId)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Product deleted successfully"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ProductDeletedSuccessfully))
                     _event.send(ManageProductUiEvent.NavigateBack)
                 }
 
@@ -229,7 +231,7 @@ class ManageProductViewModel(
             } else {
                 when (val result = deleteProductImageUseCase(productId, imageId)) {
                     is AppResult.Success -> {
-                        _event.send(ManageProductUiEvent.ShowSuccess("Image deleted"))
+                        _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ImageDeleted))
                         loadProductDetail()
                     }
                     is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -274,7 +276,7 @@ class ManageProductViewModel(
             )
             when (result) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Variant added"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantAdded))
                     loadProductDetail()
                 }
 
@@ -309,7 +311,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = updateProductVariantUseCase(id, sku, price, null, sizeId, colorId, isActive)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Variant updated"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantUpdated))
                     loadProductDetail()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -326,7 +328,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = deleteProductVariantUseCase(variantId)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Variant deleted"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantDeleted))
                     loadProductDetail()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -339,7 +341,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = createAdminCategoryUseCase(name, slug, parentId)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Category created"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.CategoryCreated))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -352,7 +354,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = deleteAdminCategoryUseCase(id)) {
                 is AppResult.Success -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Category deleted"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.CategoryDeleted))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -365,7 +367,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = createSizeUseCase(name, sortOrder)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Size created"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.SizeCreated))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -378,7 +380,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = updateSizeUseCase(id, name, sortOrder)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Size updated"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.SizeUpdated))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -393,7 +395,7 @@ class ManageProductViewModel(
             when (val result = deleteSizeUseCase(id)) {
                 is AppResult.Success<*> -> {
                     "Size deleted successfully".ld("ManageProductVM")
-                    _event.send(ManageProductUiEvent.ShowSuccess("Size deleted"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.SizeDeleted))
                     loadInitialData()
                 }
                 is AppResult.Error -> {
@@ -409,7 +411,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = createColorUseCase(name, hex)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Color created"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ColorCreated))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -422,7 +424,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             when (val result = updateColorUseCase(id, name, hex)) {
                 is AppResult.Success<*> -> {
-                    _event.send(ManageProductUiEvent.ShowSuccess("Color updated"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ColorUpdated))
                     loadInitialData()
                 }
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -437,7 +439,7 @@ class ManageProductViewModel(
             when (val result = deleteColorUseCase(id)) {
                 is AppResult.Success<*> -> {
                     "Color deleted successfully".ld("ManageProductVM")
-                    _event.send(ManageProductUiEvent.ShowSuccess("Color deleted"))
+                    _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ColorDeleted))
                     loadInitialData()
                 }
                 is AppResult.Error -> {
@@ -455,7 +457,7 @@ class ManageProductViewModel(
             if (productId != -1L) {
                 when (val result = addProductImageUseCase(productId, bytes, null)) {
                     is AppResult.Success<*> -> {
-                        _event.send(ManageProductUiEvent.ShowSuccess("Image uploaded"))
+                        _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ImageUploaded))
                         loadProductDetail()
                     }
                     is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
@@ -463,7 +465,7 @@ class ManageProductViewModel(
                 }
             } else {
                 _state.update { it.copy(selectedImageBytes = it.selectedImageBytes + bytes) }
-                _event.send(ManageProductUiEvent.ShowSuccess("Image selected"))
+                _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.ImageSelected))
             }
             _state.update { it.copy(isSaving = false) }
         }
@@ -570,7 +572,7 @@ sealed interface ManageProductIntent {
 }
 
 sealed class ManageProductUiEvent {
-    data class ShowError(val message: String) : ManageProductUiEvent()
-    data class ShowSuccess(val message: String) : ManageProductUiEvent()
+    data class ShowError(val message: Any) : ManageProductUiEvent()
+    data class ShowSuccess(val message: Any) : ManageProductUiEvent()
     data object NavigateBack : ManageProductUiEvent()
 }

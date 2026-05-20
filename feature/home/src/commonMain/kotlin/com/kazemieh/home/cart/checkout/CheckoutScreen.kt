@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,17 +41,12 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.AddressBottomSheet
-import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.PrimaryButton
-import com.kazemieh.designsystem.component.ProfileForm
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.model.Address
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,6 +62,7 @@ fun CheckoutScreen(
     val isFormValid = viewModel.isFormValid
 
     var showAddressBottomSheet by remember { mutableStateOf(false) }
+    val addressAddedSuccessMessage = stringResource(Resources.String.AddressAddedSuccessfully)
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -72,7 +70,7 @@ fun CheckoutScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Checkout",
+                        text = stringResource(Resources.String.Checkout),
                         fontSize = FontSize.LARGE,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -90,7 +88,7 @@ fun CheckoutScreen(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = "Back arrow icon",
+                            contentDescription = stringResource(Resources.String.BackArrowDesc),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -132,7 +130,7 @@ fun CheckoutScreen(
 
                     if (screenState.addresses.isNotEmpty()) {
                         Text(
-                            text = "Select Address",
+                            text = stringResource(Resources.String.SelectAddress),
                             fontWeight = FontWeight.Bold,
                             fontSize = FontSize.MEDIUM
                         )
@@ -143,7 +141,7 @@ fun CheckoutScreen(
                                 onClick = { viewModel.selectAddress(address.id) }
                             )
                         }
-                        
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -158,14 +156,14 @@ fun CheckoutScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Add New Address",
+                                text = stringResource(Resources.String.AddNewAddress),
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium
                             )
                         }
                     } else if (!screenState.isLoading) {
                         PrimaryButton(
-                            text = "Add Your First Address",
+                            text = stringResource(Resources.String.AddYourFirstAddress),
                             icon = Resources.Icon.Plus,
                             onClick = { showAddressBottomSheet = true }
                         )
@@ -176,7 +174,7 @@ fun CheckoutScreen(
                         modifier = Modifier.padding(bottom = 24.dp)
                     ) {
                         PrimaryButton(
-                            text = "Pay with PayPal",
+                            text = stringResource(Resources.String.PayWithPayPal),
                             icon = Resources.Image.PaypalLogo,
                             enabled = isFormValid,
                             onClick = {
@@ -192,7 +190,7 @@ fun CheckoutScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         PrimaryButton(
-                            text = "Pay on Delivery",
+                            text = stringResource(Resources.String.PayOnDelivery),
                             icon = Resources.Icon.ShoppingCart,
                             secondary = true,
                             enabled = isFormValid,
@@ -202,14 +200,14 @@ fun CheckoutScreen(
                                         navigateToPaymentCompleted(true, null)
                                     },
                                     onError = { message ->
-                                        navigateToPaymentCompleted(null, message)
+                                        navigateToPaymentCompleted(null, message.toString())
                                     }
                                 )
                             }
                         )
                     }
                 }
-                
+
                 if (screenState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
@@ -230,7 +228,7 @@ fun CheckoutScreen(
                     postalCode = postalCode,
                     onSuccess = {
                         showAddressBottomSheet = false
-                        messageBarState.addSuccess("Address added successfully")
+                        messageBarState.addSuccess(addressAddedSuccessMessage)
                     },
                     onError = { error ->
                         messageBarState.addError(error)

@@ -6,7 +6,7 @@ import com.kazemieh.domain.model.ProductVariant
 data class DetailsState(
     val isLoading: Boolean = false,
     val product: ProductDetail? = null,
-    val error: String? = null,
+    val error: Any? = null,
     val quantity: Int = 1,
     val selectedVariant: ProductVariant? = null,
     val isAddedToCart: Boolean = false,
@@ -22,6 +22,6 @@ sealed interface DetailsIntent {
 }
 
 sealed interface DetailsEffect {
-    data class ShowError(val message: String) : DetailsEffect
+    data class ShowError(val message: Any) : DetailsEffect
     data object AddedToCart : DetailsEffect
 }

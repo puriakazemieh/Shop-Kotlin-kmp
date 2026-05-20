@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.AlertTextField
@@ -28,6 +29,7 @@ import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.model.admin.AdminVariant
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +145,7 @@ fun ManageProductScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (id == null) "New Product" else "Edit Product",
+                        text = if (id == null) stringResource(Resources.String.NewProduct) else stringResource(Resources.String.EditProduct),
                         fontSize = FontSize.LARGE,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -152,7 +154,7 @@ fun ManageProductScreen(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = "Back Arrow icon",
+                            contentDescription = stringResource(Resources.String.BackArrowIconDesc),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
@@ -163,7 +165,7 @@ fun ManageProductScreen(
                             IconButton(onClick = { dropdownMenuOpened = true }) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.VerticalMenu),
-                                    contentDescription = "Vertical menu icon",
+                                    contentDescription = stringResource(Resources.String.VerticalMenuIconDesc),
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
@@ -177,13 +179,13 @@ fun ManageProductScreen(
                                         Icon(
                                             modifier = Modifier.size(14.dp),
                                             painter = painterResource(Resources.Icon.Delete),
-                                            contentDescription = "Delete icon",
+                                            contentDescription = stringResource(Resources.String.DeleteIconDesc),
                                             tint = MaterialTheme.colorScheme.error
                                         )
                                     },
                                     text = {
                                         Text(
-                                            text = "Delete Product",
+                                            text = stringResource(Resources.String.DeleteProduct),
                                             color = MaterialTheme.colorScheme.error,
                                             fontSize = FontSize.REGULAR
                                         )
@@ -228,7 +230,7 @@ fun ManageProductScreen(
                     CustomTextField(
                         value = state.title,
                         onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateTitle(it)) },
-                        placeholder = "Product Title"
+                        placeholder = stringResource(Resources.String.ProductTitlePlaceholder)
                     )
 
                     CustomTextField(
@@ -241,13 +243,13 @@ fun ManageProductScreen(
                                 )
                             )
                         },
-                        placeholder = "Description",
+                        placeholder = stringResource(Resources.String.Details),
                         expanded = true
                     )
 
                     AlertTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        text = state.selectedCategory?.name ?: "Select Category",
+                        text = state.selectedCategory?.name ?: stringResource(Resources.String.SelectCategory),
                         onClick = { showCategoriesBottomSheet = true }
                     )
 
@@ -263,12 +265,12 @@ fun ManageProductScreen(
                                 val price = it.toDoubleOrNull() ?: 0.0
                                 viewModel.handleIntent(ManageProductIntent.UpdateBasePrice(price))
                             },
-                            placeholder = "Base Price",
+                            placeholder = stringResource(Resources.String.BasePricePlaceholder),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Active", fontSize = FontSize.REGULAR)
+                            Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR)
                             Switch(
                                 checked = state.isActive,
                                 onCheckedChange = {
@@ -283,7 +285,7 @@ fun ManageProductScreen(
                     }
 
                     // Images Section
-                    Text("Images", fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
+                    Text(stringResource(Resources.String.Details), fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -350,7 +352,7 @@ fun ManageProductScreen(
                     }
 
                     // Variants Section
-                    Text("Variants", fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
+                    Text(stringResource(Resources.String.Variants), fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
                     state.variants.forEach { variant ->
                         VariantItem(variant) {
                             selectedVariantToEdit = variant
@@ -360,12 +362,12 @@ fun ManageProductScreen(
                         onClick = { showAddVariantDialog = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Add Variant")
+                        Text(stringResource(Resources.String.AddVariant))
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
                     PrimaryButton(
-                        text = if (id == null) "Add Product" else "Update Product",
+                        text = if (id == null) stringResource(Resources.String.AddProduct) else stringResource(Resources.String.UpdateProduct),
                         enabled = !state.isSaving,
                         onClick = { viewModel.handleIntent(ManageProductIntent.SaveProduct) }
                     )

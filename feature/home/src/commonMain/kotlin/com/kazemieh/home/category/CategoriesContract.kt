@@ -6,7 +6,7 @@ data class CategoriesState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val categories: List<Category> = emptyList(),
-    val error: String? = null
+    val error: Any? = null
 )
 
 sealed interface CategoriesIntent {
@@ -15,5 +15,5 @@ sealed interface CategoriesIntent {
 }
 
 sealed interface CategoriesEffect {
-    data class ShowError(val message: String) : CategoriesEffect
+    data class ShowError(val message: Any) : CategoriesEffect
 }

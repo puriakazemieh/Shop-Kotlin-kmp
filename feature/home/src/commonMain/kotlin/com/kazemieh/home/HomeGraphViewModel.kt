@@ -101,10 +101,10 @@ data class HomeState(
     val isLoggedIn: Boolean = false,
     val isAdmin: Boolean = false,
     val cartItemCount: Int = 0,
-    val error: String? = null
+    val error: Any? = null
 )
 
 sealed interface HomeEffect {
     data object NavigateToAuth : HomeEffect
-    data class ShowError(val message: String) : HomeEffect
+    data class ShowError(val message: Any) : HomeEffect
 }

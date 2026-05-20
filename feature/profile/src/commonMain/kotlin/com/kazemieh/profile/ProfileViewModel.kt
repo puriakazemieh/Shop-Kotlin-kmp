@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.kazemieh.designsystem.Resources
 
 class ProfileViewModel(
     private val getProfileUseCase: GetProfileUseCase,
@@ -153,7 +154,7 @@ class ProfileViewModel(
             )
             when (result) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess("Address added successfully"))
+                    _event.send(UiEvent.ShowSuccess(Resources.String.AddressAddedSuccessfully))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
@@ -181,7 +182,7 @@ class ProfileViewModel(
             )
             when (result) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess("Address updated successfully"))
+                    _event.send(UiEvent.ShowSuccess(Resources.String.VariantUpdated))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
@@ -197,7 +198,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             when (val result = deleteAddressUseCase(id)) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess("Address deleted successfully"))
+                    _event.send(UiEvent.ShowSuccess(Resources.String.VariantDeleted))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
@@ -212,7 +213,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             when (val result = setDefaultAddressUseCase(id)) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess("Default address updated"))
+                    _event.send(UiEvent.ShowSuccess(Resources.String.StatusUpdatedSuccessfully))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
@@ -291,7 +292,7 @@ class ProfileViewModel(
 
             when (val result = updateProfileUseCase(profile)) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess("Successfully updated!"))
+                    _event.send(UiEvent.ShowSuccess(Resources.String.Success))
                 }
 
                 is AppResult.Error -> {
@@ -355,6 +356,6 @@ data class ProfileState(
 )
 
 sealed class UiEvent {
-    data class ShowError(val message: String) : UiEvent()
-    data class ShowSuccess(val message: String) : UiEvent()
+    data class ShowError(val message: Any) : UiEvent()
+    data class ShowSuccess(val message: Any) : UiEvent()
 }

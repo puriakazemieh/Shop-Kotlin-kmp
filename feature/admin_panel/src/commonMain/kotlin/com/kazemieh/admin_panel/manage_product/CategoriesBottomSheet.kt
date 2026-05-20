@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.Category
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,11 +37,11 @@ fun CategoriesBottomSheet(
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Select Category",
+                        text = stringResource(Resources.String.SelectCategory),
                         style = MaterialTheme.typography.titleLarge
                     )
                     TextButton(onClick = onCreateCategoryClick) {
-                        Text("Add New")
+                        Text(stringResource(Resources.String.AddNew))
                     }
                 }
             }

@@ -47,28 +47,28 @@ class CartViewModel(
         }
     }
 
-    fun updateCartItemQuantity(itemId: Long, quantity: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun updateCartItemQuantity(itemId: Long, quantity: Int, onSuccess: () -> Unit, onError: (Any) -> Unit) {
         viewModelScope.launch {
             val result = updateCartItemUseCase(itemId, quantity)
             handleResult(result, onSuccess, onError)
         }
     }
 
-    fun deleteCartItem(itemId: Long, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun deleteCartItem(itemId: Long, onSuccess: () -> Unit, onError: (Any) -> Unit) {
         viewModelScope.launch {
             val result = removeFromCartUseCase(itemId)
             handleResult(result, onSuccess, onError)
         }
     }
 
-    fun adjustQuantity(variantId: Long, delta: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun adjustQuantity(variantId: Long, delta: Int, onSuccess: () -> Unit, onError: (Any) -> Unit) {
         viewModelScope.launch {
             val result = adjustCartVariantQtyUseCase(variantId, delta)
             handleResult(result, onSuccess, onError)
         }
     }
 
-    private fun handleResult(result: AppResult<Cart>, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    private fun handleResult(result: AppResult<Cart>, onSuccess: () -> Unit, onError: (Any) -> Unit) {
         when (result) {
             is AppResult.Success -> {
                 _cartState.value = result

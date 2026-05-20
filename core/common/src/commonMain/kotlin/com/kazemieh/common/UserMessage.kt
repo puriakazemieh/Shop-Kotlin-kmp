@@ -1,79 +1,82 @@
 package com.kazemieh.common
 
-fun String.toUserMessage(): String {
+import com.kazemieh.common.Res
+import org.jetbrains.compose.resources.StringResource
+
+fun String.toUserMessage(): StringResource {
     return when (this) {
         // Auth & User
-        "USER_NOT_FOUND" -> "کاربر یافت نشد"
-        "EMAIL_ALREADY_EXISTS" -> "این ایمیل قبلاً ثبت شده است"
-        "USER_INACTIVE" -> "حساب کاربری غیرفعال است"
-        "INVALID_CREDENTIALS" -> "ایمیل یا رمز عبور اشتباه است"
-        "ACCESS_DENIED" -> "دسترسی غیرمجاز"
-        "INVALID_CURRENT_PASSWORD" -> "رمز عبور فعلی اشتباه است"
-        "SAME_AS_OLD_PASSWORD" -> "رمز عبور جدید باید متفاوت باشد"
+        "USER_NOT_FOUND" -> Res.string.user_not_found
+        "EMAIL_ALREADY_EXISTS" -> Res.string.email_already_exists
+        "USER_INACTIVE" -> Res.string.user_inactive
+        "INVALID_CREDENTIALS" -> Res.string.invalid_credentials
+        "ACCESS_DENIED" -> Res.string.access_denied
+        "INVALID_CURRENT_PASSWORD" -> Res.string.invalid_current_password
+        "SAME_AS_OLD_PASSWORD" -> Res.string.same_as_old_password
 
         // Category
-        "CATEGORY_NOT_FOUND" -> "دسته‌بندی یافت نشد"
-        "CATEGORY_SLUG_EXISTS" -> "این نام دسته‌بندی تکراری است"
-        "CATEGORY_CYCLE" -> "ساختار دسته‌بندی نامعتبر است"
+        "CATEGORY_NOT_FOUND" -> Res.string.category_not_found
+        "CATEGORY_SLUG_EXISTS" -> Res.string.category_slug_exists
+        "CATEGORY_CYCLE" -> Res.string.category_cycle
 
         // Product
-        "PRODUCT_NOT_FOUND" -> "محصول یافت نشد"
-        "PRODUCT_SLUG_EXISTS" -> "این نام محصول تکراری است"
-        "PRODUCT_INACTIVE" -> "محصول غیرفعال است"
-        "INVALID_PRODUCT_PRICE" -> "قیمت محصول نامعتبر است"
+        "PRODUCT_NOT_FOUND" -> Res.string.product_not_found
+        "PRODUCT_SLUG_EXISTS" -> Res.string.product_slug_exists
+        "PRODUCT_INACTIVE" -> Res.string.product_inactive
+        "INVALID_PRODUCT_PRICE" -> Res.string.invalid_product_price
 
         // Size & Color
-        "SIZE_NOT_FOUND" -> "سایز یافت نشد"
-        "SIZE_EXISTS" -> "این سایز قبلاً ثبت شده"
-        "COLOR_NOT_FOUND" -> "رنگ یافت نشد"
-        "COLOR_EXISTS" -> "این رنگ قبلاً ثبت شده"
-        "INVALID_COLOR_HEX" -> "کد رنگ نامعتبر است"
+        "SIZE_NOT_FOUND" -> Res.string.size_not_found
+        "SIZE_EXISTS" -> Res.string.size_exists
+        "COLOR_NOT_FOUND" -> Res.string.color_not_found
+        "COLOR_EXISTS" -> Res.string.color_exists
+        "INVALID_COLOR_HEX" -> Res.string.invalid_color_hex
 
         // Variant
-        "VARIANT_NOT_FOUND" -> "تنوع محصول یافت نشد"
-        "SKU_EXISTS" -> "کد محصول تکراری است"
-        "VARIANT_COMBO_EXISTS" -> "این ترکیب رنگ و سایز قبلاً ثبت شده"
-        "VARIANT_INACTIVE" -> "این تنوع محصول غیرفعال است"
-        "INVALID_VARIANT_PRICE" -> "قیمت نامعتبر است"
+        "VARIANT_NOT_FOUND" -> Res.string.variant_not_found
+        "SKU_EXISTS" -> Res.string.sku_exists
+        "VARIANT_COMBO_EXISTS" -> Res.string.variant_combo_exists
+        "VARIANT_INACTIVE" -> Res.string.variant_inactive
+        "INVALID_VARIANT_PRICE" -> Res.string.invalid_variant_price
 
         // Inventory
-        "INVENTORY_NOT_FOUND" -> "موجودی یافت نشد"
-        "INSUFFICIENT_STOCK" -> "موجودی کافی نیست"
-        "INVENTORY_CONFLICT" -> "خطا در به‌روزرسانی موجودی"
-        "INVALID_INVENTORY" -> "مقدار موجودی نامعتبر است"
+        "INVENTORY_NOT_FOUND" -> Res.string.inventory_not_found
+        "INSUFFICIENT_STOCK" -> Res.string.insufficient_stock
+        "INVENTORY_CONFLICT" -> Res.string.inventory_conflict
+        "INVALID_INVENTORY" -> Res.string.invalid_inventory
 
         // Address
-        "ADDRESS_NOT_FOUND" -> "آدرس یافت نشد"
-        "ADDRESS_ACCESS_DENIED" -> "دسترسی به آدرس غیرمجاز است"
-        "DEFAULT_ADDRESS_CONFLICT" -> "خطا در تنظیم آدرس پیش‌فرض"
-        "INVALID_ADDRESS" -> "آدرس نامعتبر است"
+        "ADDRESS_NOT_FOUND" -> Res.string.address_not_found
+        "ADDRESS_ACCESS_DENIED" -> Res.string.address_access_denied
+        "DEFAULT_ADDRESS_CONFLICT" -> Res.string.default_address_conflict
+        "INVALID_ADDRESS" -> Res.string.invalid_address
 
         // Order
-        "ORDER_NOT_FOUND" -> "سفارش یافت نشد"
-        "ORDER_ACCESS_DENIED" -> "دسترسی به سفارش غیرمجاز است"
-        "EMPTY_ORDER" -> "سفارش خالی است"
-        "INVALID_ORDER_STATUS" -> "وضعیت سفارش نامعتبر است"
-        "ORDER_STATUS_TRANSITION" -> "تغییر وضعیت سفارش امکان‌پذیر نیست"
-        "ORDER_FINALIZED" -> "سفارش نهایی شده و قابل تغییر نیست"
-        "ORDER_PRICE_MISMATCH" -> "مبلغ سفارش مطابقت ندارد"
+        "ORDER_NOT_FOUND" -> Res.string.order_not_found
+        "ORDER_ACCESS_DENIED" -> Res.string.order_access_denied
+        "EMPTY_ORDER" -> Res.string.empty_order
+        "INVALID_ORDER_STATUS" -> Res.string.invalid_order_status
+        "ORDER_STATUS_TRANSITION" -> Res.string.order_status_transition
+        "ORDER_FINALIZED" -> Res.string.order_finalized
+        "ORDER_PRICE_MISMATCH" -> Res.string.order_price_mismatch
 
         // Order Item
-        "ORDER_ITEM_NOT_FOUND" -> "آیتم سفارش یافت نشد"
-        "INVALID_QUANTITY" -> "تعداد نامعتبر است"
-        "INVALID_ORDER_ITEM_PRICE" -> "قیمت آیتم نامعتبر است"
-        "VARIANT_NOT_AVAILABLE" -> "این محصول در حال حاضر موجود نیست"
+        "ORDER_ITEM_NOT_FOUND" -> Res.string.order_item_not_found
+        "INVALID_QUANTITY" -> Res.string.invalid_quantity
+        "INVALID_ORDER_ITEM_PRICE" -> Res.string.invalid_order_item_price
+        "VARIANT_NOT_AVAILABLE" -> Res.string.variant_not_available
 
         // DB & Generic
-        "DATA_INTEGRITY_VIOLATION" -> "خطا در ذخیره اطلاعات"
-        "FOREIGN_KEY_VIOLATION" -> "این مورد در محصولات استفاده شده و قابل حذف نیست"
-        "UNIQUE_VIOLATION" -> "این مقدار تکراری است"
-        "CHECK_VIOLATION" -> "داده نامعتبر است"
-        "VALIDATION_ERROR" -> "اطلاعات وارد شده نامعتبر است"
-        "INVALID_JSON" -> "فرمت درخواست نامعتبر است"
-        "INTERNAL_ERROR" -> "خطای سرور رخ داد"
+        "DATA_INTEGRITY_VIOLATION" -> Res.string.data_integrity_violation
+        "FOREIGN_KEY_VIOLATION" -> Res.string.foreign_key_violation
+        "UNIQUE_VIOLATION" -> Res.string.unique_violation
+        "CHECK_VIOLATION" -> Res.string.check_violation
+        "VALIDATION_ERROR" -> Res.string.validation_error
+        "INVALID_JSON" -> Res.string.invalid_json
+        "INTERNAL_ERROR" -> Res.string.internal_error
 
-        "UNKNOWN_ERROR" -> "خطای نامشخص رخ داد"
+        "UNKNOWN_ERROR" -> Res.string.unknown_error
 
-        else -> this
+        else -> Res.string.unknown_error
     }
 }

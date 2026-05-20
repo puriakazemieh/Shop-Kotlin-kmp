@@ -18,13 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AlertTextField(
     modifier: Modifier = Modifier,
-    text: String,
+    text: Any,
     icon: DrawableResource? = null,
     onClick: () -> Unit
 ) {
@@ -48,12 +51,12 @@ fun AlertTextField(
             Image(
                 modifier = Modifier.size(14.dp),
                 painter = painterResource(icon),
-                contentDescription = "Text field icon"
+                contentDescription = stringResource(Resources.String.TextFieldIconDesc)
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
         Text(
-            text = text,
+            text = anyToString(text),
             fontSize = FontSize.REGULAR,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )

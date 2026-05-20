@@ -22,16 +22,20 @@ import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.anyToString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: AuthViewModel= koinViewModel(),
+    viewModel: AuthViewModel = koinViewModel(),
     onNavigateRegister: () -> Unit,
     onNavigateForgot: () -> Unit
 ) {
     val state = viewModel.state
     val colors = AppTheme.colors
+    val emailHint = stringResource(Resources.String.EmailHint)
 
     Column(
         modifier = Modifier
@@ -40,7 +44,7 @@ fun LoginScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Login", fontSize = FontSize.LARGE)
+        Text(stringResource(Resources.String.Login), fontSize = FontSize.LARGE)
 
         Spacer(Modifier.height(24.dp))
 
@@ -49,11 +53,11 @@ fun LoginScreen(
             onValueChange = {
                 viewModel.onEvent(AuthEvent.OnEmailChange(it))
             },
-            hint = "Email"
+            hint = emailHint
         )
 
         state.emailError?.let {
-            Text(it, color = colors.error)
+            Text(anyToString(it), color = colors.error)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -63,17 +67,17 @@ fun LoginScreen(
             onValueChange = {
                 viewModel.onEvent(AuthEvent.OnPasswordChange(it))
             },
-            hint = "Password",
+            hint = stringResource(Resources.String.PasswordHint),
             isPassword = true
         )
 
         state.passwordError?.let {
-            Text(it, color = colors.error)
+            Text(anyToString(it), color = colors.error)
         }
 
         Spacer(Modifier.height(24.dp))
 
-        AuthButton("Login") {
+        AuthButton(stringResource(Resources.String.Login)) {
             viewModel.onEvent(AuthEvent.SubmitLogin)
         }
 
@@ -85,11 +89,11 @@ fun LoginScreen(
         Spacer(Modifier.height(16.dp))
 
         TextButton(onClick = onNavigateForgot) {
-            Text("Forgot Password?")
+            Text(stringResource(Resources.String.ForgotPassword))
         }
 
         TextButton(onClick = onNavigateRegister) {
-            Text("Create Account")
+            Text(stringResource(Resources.String.CreateAccount))
         }
     }
 }

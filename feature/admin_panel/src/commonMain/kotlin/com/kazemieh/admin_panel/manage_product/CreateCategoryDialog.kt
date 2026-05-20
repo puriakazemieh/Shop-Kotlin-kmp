@@ -5,6 +5,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CreateCategoryDialog(
@@ -17,7 +19,7 @@ fun CreateCategoryDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create Category") },
+        title = { Text(stringResource(Resources.String.CreateCategory)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -26,13 +28,13 @@ fun CreateCategoryDialog(
                         name = it
                         if (slug.isEmpty()) slug = it.lowercase().replace(" ", "-")
                     },
-                    label = { Text("Name") },
+                    label = { Text(stringResource(Resources.String.Name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = slug,
                     onValueChange = { slug = it },
-                    label = { Text("Slug") },
+                    label = { Text(stringResource(Resources.String.Slug)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -42,12 +44,12 @@ fun CreateCategoryDialog(
                 enabled = name.isNotBlank() && slug.isNotBlank(),
                 onClick = { onConfirm(name, slug) }
             ) {
-                Text("Create")
+                Text(stringResource(Resources.String.Create))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Resources.String.Cancel))
             }
         }
     )

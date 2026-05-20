@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun DrawerItemCard(
@@ -36,12 +38,12 @@ fun DrawerItemCard(
     ) {
         Icon(
             painter = painterResource(drawerItem.icon),
-            contentDescription = "Drawer item icon",
+            contentDescription = stringResource(Resources.String.DrawerItemDesc),
             tint = MaterialTheme.colorScheme.onPrimary
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            text = drawerItem.title,
+            text = stringResource(drawerItem.title),
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = FontSize.EXTRA_REGULAR
         )

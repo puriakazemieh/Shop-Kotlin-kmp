@@ -3,6 +3,13 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.kazemieh.common"
 }
 
 kotlin {
@@ -46,6 +53,8 @@ kotlin {
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kermit)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.components.resources)
             }
         }
 

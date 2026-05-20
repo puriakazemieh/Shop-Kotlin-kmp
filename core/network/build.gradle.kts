@@ -52,6 +52,7 @@ kotlin {
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
                 implementation(project(":core:common"))
+                implementation(libs.compose.components.resources)
 //                implementation("io.arrow-kt:arrow-core:2.2.2.1")
 
             }

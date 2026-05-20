@@ -17,6 +17,7 @@ import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.model.ProductSummary
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -56,7 +57,7 @@ fun AdminPanelScreen(
                                 onSearch = {},
                                 placeholder = {
                                     Text(
-                                        text = "Search here",
+                                        text = stringResource(Resources.String.SearchHere),
                                         fontSize = FontSize.REGULAR,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
@@ -71,7 +72,7 @@ fun AdminPanelScreen(
                                     ) {
                                         Icon(
                                             painter = painterResource(Resources.Icon.Close),
-                                            contentDescription = "Close icon"
+                                            contentDescription = stringResource(Resources.String.CloseIconDesc)
                                         )
                                     }
                                 }
@@ -89,7 +90,7 @@ fun AdminPanelScreen(
                     TopAppBar(
                         title = {
                             Text(
-                                text = "Admin Panel",
+                                text = stringResource(Resources.String.AdminPanel),
                                 fontSize = FontSize.LARGE,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -98,7 +99,7 @@ fun AdminPanelScreen(
                             IconButton(onClick = navigateBack) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.BackArrow),
-                                    contentDescription = "Back Arrow icon",
+                                    contentDescription = stringResource(Resources.String.BackArrowIconDesc),
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
@@ -107,14 +108,14 @@ fun AdminPanelScreen(
                             IconButton(onClick = navigateToManageOrders) {
                                 Icon(
                                     imageVector = Icons.Default.ShoppingCart,
-                                    contentDescription = "Orders icon",
+                                    contentDescription = stringResource(Resources.String.OrdersIconDesc),
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
                             IconButton(onClick = { searchBarVisible = true }) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Search),
-                                    contentDescription = "Search icon",
+                                    contentDescription = stringResource(Resources.String.SearchIconDesc),
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
@@ -138,7 +139,7 @@ fun AdminPanelScreen(
                 content = {
                     Icon(
                         painter = painterResource(Resources.Icon.Plus),
-                        contentDescription = "Add icon"
+                        contentDescription = stringResource(Resources.String.AddIconDesc)
                     )
                 }
             )
@@ -174,8 +175,8 @@ fun AdminPanelScreen(
                     } else {
                         InfoCard(
                             image = Resources.Image.Cat,
-                            title = "Oops!",
-                            subtitle = "Products not found."
+                            title = stringResource(Resources.String.Oops),
+                            subtitle = stringResource(Resources.String.NothingHere)
                         )
                     }
                 }
@@ -183,7 +184,7 @@ fun AdminPanelScreen(
                 is AppResult.Error -> {
                     InfoCard(
                         image = Resources.Image.Cat,
-                        title = "Oops!",
+                        title = stringResource(Resources.String.Oops),
                         subtitle = result.message
                     )
                 }

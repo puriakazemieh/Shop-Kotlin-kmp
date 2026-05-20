@@ -16,15 +16,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun InfoCard(
     modifier: Modifier = Modifier,
     image: DrawableResource,
-    title: String,
-    subtitle: String
+    title: Any,
+    subtitle: Any
 ) {
     Column(
         modifier = modifier
@@ -35,12 +38,12 @@ fun InfoCard(
         Image(
             modifier = Modifier.size(60.dp),
             painter = painterResource(image),
-            contentDescription = "Info card image"
+            contentDescription = stringResource(Resources.String.InfoCardImageDesc)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = title,
+            text = anyToString(title),
             fontSize = FontSize.MEDIUM,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -48,7 +51,7 @@ fun InfoCard(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = subtitle,
+            text = anyToString(subtitle),
             fontSize = FontSize.REGULAR,
             textAlign = TextAlign.Center
         )

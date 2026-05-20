@@ -62,6 +62,7 @@ import com.kazemieh.home.component.opposite
 import com.kazemieh.home.productsOverview.ProductsOverviewScreen
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -195,7 +196,7 @@ fun HomeGraphScreen(
                                 targetState = selectedDestination
                             ) { destination ->
                                 Text(
-                                    text = destination.title,
+                                    text = stringResource(destination.title),
                                     fontFamily = AppFont(),
                                     fontSize = FontSize.LARGE,
                                     color = MaterialTheme.colorScheme.onPrimary
@@ -233,7 +234,7 @@ fun HomeGraphScreen(
                                     IconButton(onClick = { drawerState = drawerState.opposite() }) {
                                         Icon(
                                             painter = painterResource(Resources.Icon.Close),
-                                            contentDescription = "Close icon",
+                                            contentDescription = stringResource(Resources.String.CloseIconDesc),
                                             tint = MaterialTheme.colorScheme.onPrimary
                                         )
                                     }
@@ -241,7 +242,7 @@ fun HomeGraphScreen(
                                     IconButton(onClick = { drawerState = drawerState.opposite() }) {
                                         Icon(
                                             painter = painterResource(Resources.Icon.Menu),
-                                            contentDescription = "Menu icon",
+                                            contentDescription = stringResource(Resources.String.MenuDesc),
                                             tint = MaterialTheme.colorScheme.onPrimary
                                         )
                                     }

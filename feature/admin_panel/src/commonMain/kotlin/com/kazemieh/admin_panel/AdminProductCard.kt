@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.domain.model.admin.AdminProduct
 
 @Composable
@@ -56,7 +58,11 @@ fun AdminProductCard(
                 )
             }
             Text(
-                text = "ID: ${product.id} | ${if (product.isActive) "Active" else "Inactive"}",
+                text = stringResource(
+                    Resources.String.ProductIdActiveFormat,
+                    product.id,
+                    if (product.isActive) stringResource(Resources.String.Active) else stringResource(Resources.String.Inactive)
+                ),
                 fontSize = FontSize.EXTRA_SMALL,
                 color = if (product.isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                 maxLines = 1,

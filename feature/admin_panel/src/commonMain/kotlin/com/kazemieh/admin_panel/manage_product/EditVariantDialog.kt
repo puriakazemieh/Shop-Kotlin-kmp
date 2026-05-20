@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.domain.model.admin.AdminVariant
 import com.kazemieh.domain.repository.Color
 import com.kazemieh.domain.repository.Size
@@ -81,7 +83,7 @@ fun EditVariantDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Edit Variant") },
+        title = { Text(stringResource(Resources.String.EditVariant)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Size Selection
@@ -90,7 +92,7 @@ fun EditVariantDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = selectedSize?.name ?: "Select Size",
+                        text = selectedSize?.name ?: stringResource(Resources.String.SelectSize),
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -101,7 +103,7 @@ fun EditVariantDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = selectedColor?.name ?: "Select Color",
+                        text = selectedColor?.name ?: stringResource(Resources.String.SelectColor),
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -109,18 +111,18 @@ fun EditVariantDialog(
                 OutlinedTextField(
                     value = sku,
                     onValueChange = { sku = it },
-                    label = { Text("SKU") },
+                    label = { Text(stringResource(Resources.String.Sku)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = price,
                     onValueChange = { price = it },
-                    label = { Text("Price") },
+                    label = { Text(stringResource(Resources.String.Price)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Active")
+                    Text(stringResource(Resources.String.Active))
                     Switch(checked = isActive, onCheckedChange = { isActive = it })
                 }
                 
@@ -128,7 +130,7 @@ fun EditVariantDialog(
                     onClick = onDelete,
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Delete Variant")
+                    Text(stringResource(Resources.String.DeleteVariant))
                 }
             }
         },
@@ -139,12 +141,12 @@ fun EditVariantDialog(
                     onConfirm(sku, price.toDouble(), selectedSize?.id, selectedColor?.id, isActive)
                 }
             ) {
-                Text("Update")
+                Text(stringResource(Resources.String.Update))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Resources.String.Cancel))
             }
         }
     )

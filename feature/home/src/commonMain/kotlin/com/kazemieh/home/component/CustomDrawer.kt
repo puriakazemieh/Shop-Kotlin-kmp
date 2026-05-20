@@ -20,6 +20,7 @@ import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CustomDrawer(
@@ -43,12 +44,12 @@ fun CustomDrawer(
         Image(
             modifier = Modifier.size(100.dp),
             painter = painterResource(Resources.Image.AppLogo),
-            contentDescription = "App Logo"
+            contentDescription = stringResource(Resources.String.AppLogoDesc)
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Carmilla",
+            text = stringResource(Resources.String.Carmilla),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.secondary,
             fontFamily = AppFont(),
@@ -56,7 +57,7 @@ fun CustomDrawer(
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Be BOLD, Be CARMILLA",
+            text = stringResource(Resources.String.CarmillaSlogan),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = FontSize.REGULAR

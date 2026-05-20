@@ -22,6 +22,6 @@ sealed interface AdminOrderIntent {
 }
 
 sealed interface AdminOrderEffect {
-    data class ShowError(val message: String) : AdminOrderEffect
+    data class ShowError(val message: Any) : AdminOrderEffect
     data object StatusUpdated : AdminOrderEffect
 }

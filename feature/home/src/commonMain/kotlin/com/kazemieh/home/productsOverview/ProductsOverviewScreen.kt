@@ -3,7 +3,15 @@ package com.kazemieh.home.productsOverview
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -16,7 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,6 +43,7 @@ import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.home.component.MainProductCard
 import com.kazemieh.home.component.ProductCard
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,8 +95,8 @@ fun ProductsOverviewScreen(
             ) {
                 InfoCard(
                     image = Resources.Image.Cat,
-                    title = "Oops!",
-                    subtitle = state.error ?: "Something went wrong"
+                    title = stringResource(Resources.String.Oops),
+                    subtitle = state.error ?: stringResource(Resources.String.SomethingWentWrong)
                 )
             }
         } else {
@@ -96,7 +110,7 @@ fun ProductsOverviewScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            text = "Featured Products",
+                            text = stringResource(Resources.String.FeaturedProducts),
                             fontSize = FontSize.LARGE,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onBackground
@@ -141,7 +155,7 @@ fun ProductsOverviewScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .alpha(Alpha.HALF),
-                            text = "All Products",
+                            text = stringResource(Resources.String.AllProducts),
                             fontSize = FontSize.MEDIUM,
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
@@ -181,8 +195,8 @@ fun ProductsOverviewScreen(
                     ) {
                         InfoCard(
                             image = Resources.Image.Cat,
-                            title = "Nothing here",
-                            subtitle = "Empty product list."
+                            title = stringResource(Resources.String.NothingHere),
+                            subtitle = stringResource(Resources.String.EmptyProductList)
                         )
                     }
                 }

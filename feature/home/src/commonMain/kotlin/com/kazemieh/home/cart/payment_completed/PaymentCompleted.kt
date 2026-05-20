@@ -19,6 +19,7 @@ import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.util.DisplayResult
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,13 +53,13 @@ fun PaymentCompleted(
                         contentAlignment = Alignment.Center
                     ) {
                         InfoCard(
-                            title = "Success!",
-                            subtitle = "Your purchase is on the way.",
+                            title = stringResource(Resources.String.Success),
+                            subtitle = stringResource(Resources.String.PurchaseOnTheWay),
                             image = Resources.Image.Checkmark
                         )
                     }
                     PrimaryButton(
-                        text = "Go back",
+                        text = stringResource(Resources.String.GoBack),
                         icon = Resources.Icon.RightArrow,
                         onClick = { viewModel.handleIntent(PaymentIntent.OnBackClick) }
                     )
@@ -71,13 +72,13 @@ fun PaymentCompleted(
                         contentAlignment = Alignment.Center
                     ) {
                         InfoCard(
-                            title = "Oops!",
+                            title = stringResource(Resources.String.Oops),
                             subtitle = message,
                             image = Resources.Image.Cat
                         )
                     }
                     PrimaryButton(
-                        text = "Go back",
+                        text = stringResource(Resources.String.GoBack),
                         icon = Resources.Icon.RightArrow,
                         onClick = { viewModel.handleIntent(PaymentIntent.OnBackClick) }
                     )

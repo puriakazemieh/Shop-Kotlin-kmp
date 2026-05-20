@@ -19,13 +19,15 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PrimaryButton(
     modifier: Modifier = Modifier,
-    text: String,
+    text: Any,
     icon: DrawableResource? = null,
     enabled: Boolean = true,
     secondary: Boolean = false,
@@ -48,14 +50,14 @@ fun PrimaryButton(
             Icon(
                 modifier = Modifier.size(14.dp),
                 painter = painterResource(icon),
-                contentDescription = "Button icon",
+                contentDescription = stringResource(Resources.String.ButtonIconDesc),
                 tint = if (icon == Resources.Image.PaypalLogo) Color.Unspecified
                 else MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            text = text,
+            text = anyToString(text),
             fontSize = FontSize.REGULAR,
             fontWeight = FontWeight.Medium
         )

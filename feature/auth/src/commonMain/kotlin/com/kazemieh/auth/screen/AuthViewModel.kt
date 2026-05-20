@@ -34,11 +34,11 @@ class AuthViewModel(
         when (event) {
 
             is AuthEvent.OnEmailChange -> {
-                state = state.copy(email = event.value)
+                state = state.copy(email = event.value, emailError = null)
             }
 
             is AuthEvent.OnPasswordChange -> {
-                state = state.copy(password = event.value)
+                state = state.copy(password = event.value, passwordError = null)
             }
 
             AuthEvent.SubmitLogin -> {
@@ -139,8 +139,8 @@ data class AuthState(
     val email: String = "",
     val password: String = "",
 
-    val emailError: String? = null,
-    val passwordError: String? = null,
+    val emailError: Any? = null,
+    val passwordError: Any? = null,
 
     val isLoading: Boolean = false,
 )
@@ -156,5 +156,5 @@ sealed class AuthEvent {
 
 sealed class UiEvent {
     object NavigateToHome : UiEvent()
-    data class ShowError(val message: String?) : UiEvent()
+    data class ShowError(val message: Any?) : UiEvent()
 }

@@ -48,6 +48,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.anyToString
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun rememberMessageBarState(): MessageBarState {
@@ -213,9 +216,9 @@ internal fun MessageBarComponent(
     val scope = rememberCoroutineScope()
     var showMessageBar by remember { mutableStateOf(false) }
 
-    // Retrieve both error message and exception message
-    val errorMessage = messageBarState.errorMessage ?: messageBarState.errorException?.message
-    val successMessage = messageBarState.success
+    // Resolve messages to strings
+    val errorMessage = anyToString(messageBarState.errorMessage ?: messageBarState.errorException?.message)
+    val successMessage = anyToString(messageBarState.success)
 
     val timerManager = remember { TimerManager() }
 
@@ -237,13 +240,13 @@ internal fun MessageBarComponent(
             Arrangement.Top else Arrangement.Bottom
     ) {
         AnimatedVisibility(
-            visible = (errorMessage != null || successMessage != null) && showMessageBar,
+            visible = (errorMessage.isNotBlank() || successMessage.isNotBlank()) && showMessageBar,
             enter = enterAnimation,
             exit = exitAnimation
         ) {
             MessageBar(
-                successMessage = successMessage,
-                errorMessage = errorMessage,
+                successMessage = successMessage.takeIf { it.isNotBlank() },
+                errorMessage = errorMessage.takeIf { it.isNotBlank() },
                 successIcon = successIcon,
                 errorIcon = errorIcon,
                 iconSize = iconSize,
@@ -324,7 +327,7 @@ internal fun MessageBar(
                 imageVector =
                     if (errorMessage != null) errorIcon
                     else successIcon,
-                contentDescription = "Message Bar Icon",
+                contentDescription = stringResource(Resources.String.MessageBarIconDesc),
                 tint = if (errorMessage != null) errorContentColor
                 else successContentColor
             )
@@ -356,7 +359,7 @@ internal fun MessageBar(
                     contentPadding = PaddingValues(vertical = 0.dp)
                 ) {
                     Text(
-                        text = "Copy",
+                        text = stringResource(Resources.String.Copy),
                         color = if (errorMessage != null && showCopyButton) errorContentColor
                         else successContentColor,
                         fontSize = copyButtonFontSize,

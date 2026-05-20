@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.CartEventBus
 import com.kazemieh.common.getSuccessValue
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.Address
 import com.kazemieh.domain.model.Cart
 import com.kazemieh.domain.usecase.GetProfileUseCase
@@ -154,7 +155,7 @@ class CheckoutViewModel(
         addressLine2: String?,
         postalCode: String?,
         onSuccess: () -> Unit,
-        onError: (String) -> Unit
+        onError: (Any) -> Unit
     ) {
         viewModelScope.launch {
             val result = addAddressUseCase(
@@ -191,23 +192,23 @@ class CheckoutViewModel(
         }
     }
 
-    fun payWithPayPal(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun payWithPayPal(onSuccess: () -> Unit, onError: (Any) -> Unit) {
         // PayPal implementation would go here
-        onError("PayPal is not implemented yet.")
+        onError(Resources.String.PaypalNotImplemented)
     }
 
-    fun payOnDelivery(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun payOnDelivery(onSuccess: () -> Unit, onError: (Any) -> Unit) {
         viewModelScope.launch {
             val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
             if (items.isEmpty()) {
-                onError("Cart is empty")
+                onError(Resources.String.CartIsEmptyError)
                 return@launch
             }
 
             val addressId = screenState.selectedAddressId
 
             if (addressId == null) {
-                onError("Please select or add an address")
+                onError(Resources.String.SelectAddressError)
                 return@launch
             }
 

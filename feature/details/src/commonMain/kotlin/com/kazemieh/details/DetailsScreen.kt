@@ -50,6 +50,7 @@ import com.kazemieh.details.component.VariantChip
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,11 +75,13 @@ fun DetailsScreen(
         viewModel.onIntent(DetailsIntent.LoadProduct(slug))
     }
 
+    val productAddedToCartMessage = stringResource(Resources.String.ProductAddedToCart)
+
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is DetailsEffect.ShowError -> messageBarState.addError(effect.message)
-                is DetailsEffect.AddedToCart -> messageBarState.addSuccess("Product added to cart.")
+                is DetailsEffect.AddedToCart -> messageBarState.addSuccess(productAddedToCartMessage)
             }
         }
     }
@@ -89,7 +92,7 @@ fun DetailsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Details",
+                        text = stringResource(Resources.String.Details),
                         fontSize = FontSize.LARGE,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -98,7 +101,7 @@ fun DetailsScreen(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = "Back",
+                            contentDescription = stringResource(Resources.String.BackDesc),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -119,7 +122,7 @@ fun DetailsScreen(
             } else if (state.error != null) {
                 InfoCard(
                     image = Resources.Image.Cat,
-                    title = "Oops!",
+                    title = stringResource(Resources.String.Oops),
                     subtitle = state.error!!
                 )
             } else {
@@ -147,7 +150,7 @@ fun DetailsScreen(
                                         shape = RoundedCornerShape(size = 12.dp)
                                     ),
                                 painter = painter,
-                                contentDescription = "Product image",
+                                contentDescription = stringResource(Resources.String.ProductImageDesc),
                                 contentScale = ContentScale.Crop
                             )
                             Spacer(modifier = Modifier.height(12.dp))
@@ -190,7 +193,7 @@ fun DetailsScreen(
                         ) {
                             if (product.variants.isNotEmpty()) {
                                 Text(
-                                    text = "Variants",
+                                    text = stringResource(Resources.String.Variants),
                                     fontSize = FontSize.MEDIUM,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
@@ -245,7 +248,7 @@ fun DetailsScreen(
                                     } else {
                                         PrimaryButton(
                                             modifier = Modifier.weight(1f),
-                                            text = "Checkout (${state.quantity})",
+                                            text = stringResource(Resources.String.CheckoutWithQty, state.quantity),
                                             onClick = navigateToCart
                                         )
                                         Spacer(modifier = Modifier.width(12.dp))
@@ -274,7 +277,7 @@ fun DetailsScreen(
                                 }
                             } else {
                                 PrimaryButton(
-                                    text = "Add to Cart",
+                                    text = stringResource(Resources.String.AddToCart),
                                     enabled = !state.isLoading && (state.product?.variants?.isNotEmpty() == true),
                                     onClick = { viewModel.onIntent(DetailsIntent.AddToCart) }
                                 )

@@ -32,6 +32,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.domain.model.CartItem
@@ -66,7 +67,7 @@ fun CartItemCard(
                 .data(cartItem.imageUrl)
                 .crossfade(enable = true)
                 .build(),
-            contentDescription = "Product thumbnail image",
+            contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
             contentScale = ContentScale.Crop
         )
         Column(
@@ -105,7 +106,7 @@ fun CartItemCard(
                     Icon(
                         modifier = Modifier.size(14.dp),
                         painter = painterResource(Resources.Icon.Delete),
-                        contentDescription = "Delete icon",
+                        contentDescription = stringResource(Resources.String.Delete),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }

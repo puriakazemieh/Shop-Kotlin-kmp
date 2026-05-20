@@ -120,3 +120,44 @@ compose.desktop {
         }
     }
 }
+afterEvaluate {
+    // ---------- :common ----------
+    val commonProject = project(":core:common")
+    val composeParentResources =
+        File(commonProject.buildDir, "processedResources/jvm/main")
+    android.sourceSets["main"].assets.srcDir(composeParentResources.absolutePath)
+
+    tasks.matching {
+        (it.name.startsWith("merge") && it.name.endsWith("Assets")) ||
+                it.name.contains("Lint", ignoreCase = true)
+    }
+        .configureEach {
+            dependsOn(
+                commonProject.tasks.matching {
+                    it.name.equals("copyJvmMainComposeResourcesForAndroid", ignoreCase = true) ||
+                            it.name.equals("processJvmMainResources", ignoreCase = true) ||
+                            it.name.equals("jvmProcessResources", ignoreCase = true)
+                }
+            )
+        }
+
+    // ---------- :core:designsystem ----------
+    val designSystemProject = project(":core:designSystem")
+    val designSystemParentResources =
+        File(designSystemProject.buildDir, "processedResources/jvm/main")
+    android.sourceSets["main"].assets.srcDir(designSystemParentResources.absolutePath)
+
+    tasks.matching {
+        (it.name.startsWith("merge") && it.name.endsWith("Assets")) ||
+                it.name.contains("Lint", ignoreCase = true)
+    }
+        .configureEach {
+            dependsOn(
+                designSystemProject.tasks.matching {
+                    it.name.equals("copyJvmMainComposeResourcesForAndroid", ignoreCase = true) ||
+                            it.name.equals("processJvmMainResources", ignoreCase = true) ||
+                            it.name.equals("jvmProcessResources", ignoreCase = true)
+                }
+            )
+        }
+}

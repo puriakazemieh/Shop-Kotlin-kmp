@@ -6,7 +6,7 @@ data class ProductsOverviewState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val products: List<ProductSummary> = emptyList(),
-    val error: String? = null
+    val error: Any? = null
 )
 
 sealed interface ProductsOverviewIntent {

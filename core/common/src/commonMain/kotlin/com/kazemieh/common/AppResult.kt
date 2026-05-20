@@ -3,7 +3,7 @@ package com.kazemieh.common
 
 sealed class AppResult<out T> {
     data class Success<T>(val data: T) : AppResult<T>()
-    data class Error(val message: String, val code: Int? = null) : AppResult<Nothing>()
+    data class Error(val message: Any, val code: Int? = null) : AppResult<Nothing>()
     data object Loading : AppResult<Nothing>()
 }
 
@@ -16,7 +16,7 @@ inline fun <T, R> AppResult<T>.doOnSuccess(func: (AppResult: T) -> R): AppResult
 }
 
 
-inline fun <T, R> AppResult<T>.doOnError(func: (error: String?) -> R): AppResult<T> {
+inline fun <T, R> AppResult<T>.doOnError(func: (error: Any?) -> R): AppResult<T> {
     if (this is AppResult.Error) {
         func.invoke(message)
     }
@@ -29,9 +29,9 @@ fun <T> AppResult<T>.getSuccessValue(): T? {
     return null
 }
 
-fun <T> AppResult<T>.getMessage(): String? {
+fun <T> AppResult<T>.getMessage(): Any? {
     return when (this) {
-        is AppResult.Success -> data as String
+        is AppResult.Success -> data
         is AppResult.Error -> message
         is AppResult.Loading -> "Loading"
     }

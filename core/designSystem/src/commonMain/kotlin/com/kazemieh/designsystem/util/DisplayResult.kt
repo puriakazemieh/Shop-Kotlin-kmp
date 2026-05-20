@@ -25,7 +25,7 @@ import com.kazemieh.common.AppResult
 fun <T> AppResult<T>.DisplayResult(
     modifier: Modifier = Modifier,
     onLoading: (@Composable () -> Unit)? = null,
-    onError: (@Composable (String) -> Unit)? = null,
+    onError: (@Composable (Any) -> Unit)? = null,
     onSuccess: @Composable (T) -> Unit,
     transitionSpec: ContentTransform? = scaleIn(tween(durationMillis = 400))
             + fadeIn(tween(durationMillis = 800))

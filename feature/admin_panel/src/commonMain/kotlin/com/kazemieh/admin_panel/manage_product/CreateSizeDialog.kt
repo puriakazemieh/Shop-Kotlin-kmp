@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CreateSizeDialog(
@@ -18,19 +20,19 @@ fun CreateSizeDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create Size") },
+        title = { Text(stringResource(Resources.String.CreateSize)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name") },
+                    label = { Text(stringResource(Resources.String.Name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = sortOrder,
                     onValueChange = { sortOrder = it },
-                    label = { Text("Sort Order") },
+                    label = { Text(stringResource(Resources.String.SortOrder)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -41,12 +43,12 @@ fun CreateSizeDialog(
                 enabled = name.isNotBlank(),
                 onClick = { onConfirm(name, sortOrder.toIntOrNull() ?: 0) }
             ) {
-                Text("Create")
+                Text(stringResource(Resources.String.Create))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Resources.String.Cancel))
             }
         }
     )

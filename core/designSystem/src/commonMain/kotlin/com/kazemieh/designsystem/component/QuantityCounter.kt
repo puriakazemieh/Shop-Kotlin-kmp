@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 
 enum class QuantityCounterSize { Small, Medium }
@@ -45,7 +46,7 @@ fun QuantityCounter(
         ) {
             Icon(
                 painter = painterResource(Resources.Icon.Minus),
-                contentDescription = "Minus",
+                contentDescription = stringResource(Resources.String.MinusDesc),
                 modifier = Modifier.size(iconSize)
             )
         }
@@ -63,7 +64,7 @@ fun QuantityCounter(
         ) {
             Icon(
                 painter = painterResource(Resources.Icon.Plus),
-                contentDescription = "Plus",
+                contentDescription = stringResource(Resources.String.PlusDesc),
                 modifier = Modifier.size(iconSize)
             )
         }
