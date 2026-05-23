@@ -2,6 +2,7 @@ package com.kazemieh.data.cart.mapper
 
 import com.kazemieh.domain.model.Cart
 import com.kazemieh.domain.model.CartItem
+import com.kazemieh.network.PlatformConfig
 import com.kazemieh.network.dto.cart.response.CartItemResponse
 import com.kazemieh.network.dto.cart.response.CartResponse
 
@@ -18,7 +19,7 @@ fun CartItemResponse.toDomain(): CartItem = CartItem(
     productId = productId,
     productTitle = productTitle,
     productSlug = productSlug,
-    imageUrl = imageUrl,
+    imageUrl =  if (imageUrl?.startsWith("http") == true) imageUrl else "${PlatformConfig.baseUrl.removeSuffix("/")}$imageUrl",
     options = options,
     price = price,
     compareAtPrice = compareAtPrice,
