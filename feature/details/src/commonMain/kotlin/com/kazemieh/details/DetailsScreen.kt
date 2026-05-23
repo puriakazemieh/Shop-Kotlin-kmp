@@ -210,8 +210,9 @@ fun DetailsScreen(
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     product.variants.forEach { variant ->
+                                        val variantLabel = variant.options.entries.firstOrNull()?.let { "${it.key}: ${it.value}" } ?: variant.sku
                                         VariantChip(
-                                            label = variant.options.entries.joinToString(", ") { "${it.key}: ${it.value}" },
+                                            label = variantLabel,
                                             isSelected = state.selectedVariant == variant,
                                             onClick = {
                                                 viewModel.onIntent(
