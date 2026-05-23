@@ -4,27 +4,30 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.domain.model.admin.AdminOption
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddVariantDialog(
+    availableOptions: List<AdminOption>,
     onDismiss: () -> Unit,
-    onConfirm: (options: Map<String, String>, sku: String, price: Double, initialOnHand: Int) -> Unit
+    onConfirm: (optionType: String, optionValue: String, sku: String, price: Double, initialOnHand: Int) -> Unit
 ) {
-    var options by remember { mutableStateOf(mutableListOf("" to "")) }
+    var optionType by remember { mutableStateOf("") }
+    var optionValue by remember { mutableStateOf("") }
     var sku by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var initialOnHand by remember { mutableStateOf("") }
+
+    var typeExpanded by remember { mutableStateOf(false) }
+    var valueExpanded by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -34,58 +37,61 @@ fun AddVariantDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(stringResource(Resources.String.Variants), style = MaterialTheme.typography.titleSmall)
-                options.forEachIndexed { index, (key, value) ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ExposedDropdownMenuBox(
+                    expanded = typeExpanded,
+                    onExpandedChange = { typeExpanded = it }
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier.menuAnchor(),
+                        value = optionType,
+                        onValueChange = { optionType = it },
+                        label = { Text("Option Type") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeExpanded) },
+                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = typeExpanded,
+                        onDismissRequest = { typeExpanded = false }
                     ) {
-                        OutlinedTextField(
-                            modifier = Modifier.weight(1f),
-                            value = key,
-                            onValueChange = {
-                                val newList = options.toMutableList()
-                                newList[index] = it to value
-                                options = newList
-                            },
-                            label = { Text(stringResource(Resources.String.Name)) }
-                        )
-                        OutlinedTextField(
-                            modifier = Modifier.weight(1f),
-                            value = value,
-                            onValueChange = {
-                                val newList = options.toMutableList()
-                                newList[index] = key to it
-                                options = newList
-                            },
-                            label = { Text(stringResource(Resources.String.Default)) }
-                        )
-                        IconButton(onClick = {
-                            if (options.size > 1) {
-                                val newList = options.toMutableList()
-                                newList.removeAt(index)
-                                options = newList
-                            }
-                        }) {
-                            Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                        availableOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option.name) },
+                                onClick = {
+                                    optionType = option.name
+                                    typeExpanded = false
+                                }
+                            )
                         }
                     }
                 }
-                TextButton(
-                    onClick = {
-                        val newList = options.toMutableList()
-                        newList.add("" to "")
-                        options = newList
-                    },
-                    modifier = Modifier.align(Alignment.Start)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(Modifier.width(4.dp))
-                    Text(stringResource(Resources.String.Add))
-                }
 
-                HorizontalDivider()
+                ExposedDropdownMenuBox(
+                    expanded = valueExpanded,
+                    onExpandedChange = { valueExpanded = it }
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier.menuAnchor(),
+                        value = optionValue,
+                        onValueChange = { optionValue = it },
+                        label = { Text("Option Value") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = valueExpanded) },
+                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = valueExpanded,
+                        onDismissRequest = { valueExpanded = false }
+                    ) {
+                        availableOptions.find { it.name == optionType }?.values?.forEach { value ->
+                            DropdownMenuItem(
+                                text = { Text(value.value) },
+                                onClick = {
+                                    optionValue = value.value
+                                    valueExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 OutlinedTextField(
                     value = sku,
@@ -111,10 +117,11 @@ fun AddVariantDialog(
         },
         confirmButton = {
             Button(
-                enabled = options.all { it.first.isNotBlank() && it.second.isNotBlank() } && sku.isNotBlank() && price.toDoubleOrNull() != null,
+                enabled = optionType.isNotBlank() && optionValue.isNotBlank() && sku.isNotBlank() && price.toDoubleOrNull() != null,
                 onClick = {
                     onConfirm(
-                        options.toMap(),
+                        optionType,
+                        optionValue,
                         sku,
                         price.toDouble(),
                         initialOnHand.toIntOrNull() ?: 0

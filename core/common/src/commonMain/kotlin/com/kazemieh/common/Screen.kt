@@ -45,6 +45,9 @@ sealed class Screen {
     data object ManageOrders : Screen()
 
     @Serializable
+    data object ManageOptions : Screen()
+
+    @Serializable
     data class Checkout(val totalAmount: Double) : Screen()
 
     @Serializable

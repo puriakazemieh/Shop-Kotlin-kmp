@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.kazemieh.admin_panel.AdminPanelScreen
+import com.kazemieh.admin_panel.manage_options.ManageOptionsScreen
 import com.kazemieh.admin_panel.manage_order.AdminOrderScreen
 import com.kazemieh.admin_panel.manage_product.ManageProductScreen
 import com.kazemieh.common.AuthState
@@ -108,12 +109,21 @@ fun AppNavHost(
                 },
                 navigateToManageOrders = {
                     navController.navigate(Screen.ManageOrders)
+                },
+                navigateToManageOptions = {
+                    navController.navigate(Screen.ManageOptions)
                 }
             )
         }
 
         composable<Screen.ManageOrders> {
             AdminOrderScreen(
+                onBackClick = { navController.navigateUp() }
+            )
+        }
+
+        composable<Screen.ManageOptions> {
+            ManageOptionsScreen(
                 onBackClick = { navController.navigateUp() }
             )
         }

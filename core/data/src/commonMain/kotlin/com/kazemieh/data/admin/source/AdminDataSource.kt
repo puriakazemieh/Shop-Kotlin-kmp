@@ -25,6 +25,14 @@ interface AdminDataSource {
     suspend fun updateVariant(variantId: Long, request: AdminUpdateVariantRequest): AppResult<AdminVariantResponse>
     suspend fun deleteVariant(variantId: Long): AppResult<Unit>
 
+    suspend fun listOptions(): AppResult<List<AdminOptionResponse>>
+    suspend fun createOptionType(request: AdminOptionTypeRequest): AppResult<AdminOptionResponse>
+    suspend fun updateOptionType(id: Long, request: AdminOptionTypeRequest): AppResult<AdminOptionResponse>
+    suspend fun deleteOptionType(id: Long): AppResult<Unit>
+    suspend fun createOptionValue(request: AdminOptionValueRequest): AppResult<AdminOptionValueResponse>
+    suspend fun updateOptionValue(id: Long, request: AdminOptionValueRequest): AppResult<AdminOptionValueResponse>
+    suspend fun deleteOptionValue(id: Long): AppResult<Unit>
+
     suspend fun getInventory(variantId: Long): AppResult<AdminInventoryResponse>
     suspend fun setInventory(variantId: Long, request: AdminInventorySetRequest): AppResult<AdminInventoryResponse>
     suspend fun adjustInventory(variantId: Long, request: AdminInventoryAdjustRequest): AppResult<AdminInventoryResponse>

@@ -4,7 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AdminCreateVariantRequest(
-    val options: Map<String, String>,
+    val optionType: String,
+    val optionValue: String,
     val sku: String,
     val price: Double,
     val compareAtPrice: Double? = null,

@@ -45,7 +45,8 @@ class AdminRepositoryImpl(
                 isActive,
                 variants?.map {
                     AdminCreateVariantRequest(
-                        it.options,
+                        it.optionType,
+                        it.optionValue,
                         it.sku,
                         it.price,
                         it.compareAtPrice,
@@ -84,27 +85,50 @@ class AdminRepositoryImpl(
 
     override suspend fun createVariant(
         productId: Long,
-        options: Map<String, String>,
+        optionType: String,
+        optionValue: String,
         sku: String,
         price: Double,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
     ): AppResult<AdminVariant> =
-        dataSource.createVariant(productId, AdminCreateVariantRequest(options, sku, price, compareAtPrice, isActive, initialOnHand)).map { it.toAdminDomain() }
+        dataSource.createVariant(productId, AdminCreateVariantRequest(optionType, optionValue, sku, price, compareAtPrice, isActive, initialOnHand)).map { it.toAdminDomain() }
 
     override suspend fun updateVariant(
         variantId: Long,
         sku: String?,
         price: Double?,
         compareAtPrice: Double?,
-        options: Map<String, String>?,
+        optionType: String?,
+        optionValue: String?,
         isActive: Boolean?
     ): AppResult<AdminVariant> =
-        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, options, isActive)).map { it.toAdminDomain() }
+        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, optionType, optionValue, isActive)).map { it.toAdminDomain() }
 
     override suspend fun deleteVariant(variantId: Long): AppResult<Unit> =
         dataSource.deleteVariant(variantId)
+
+    override suspend fun listOptions(): AppResult<List<AdminOption>> =
+        dataSource.listOptions().map { list -> list.map { it.toAdminDomain() } }
+
+    override suspend fun createOptionType(name: String): AppResult<AdminOption> =
+        dataSource.createOptionType(AdminOptionTypeRequest(name)).map { it.toAdminDomain() }
+
+    override suspend fun updateOptionType(id: Long, name: String): AppResult<AdminOption> =
+        dataSource.updateOptionType(id, AdminOptionTypeRequest(name)).map { it.toAdminDomain() }
+
+    override suspend fun deleteOptionType(id: Long): AppResult<Unit> =
+        dataSource.deleteOptionType(id)
+
+    override suspend fun createOptionValue(optionTypeId: Long, value: String): AppResult<AdminOptionValue> =
+        dataSource.createOptionValue(AdminOptionValueRequest(optionTypeId, value)).map { it.toAdminDomain() }
+
+    override suspend fun updateOptionValue(id: Long, optionTypeId: Long, value: String): AppResult<AdminOptionValue> =
+        dataSource.updateOptionValue(id, AdminOptionValueRequest(optionTypeId, value)).map { it.toAdminDomain() }
+
+    override suspend fun deleteOptionValue(id: Long): AppResult<Unit> =
+        dataSource.deleteOptionValue(id)
 
     override suspend fun getInventory(variantId: Long): AppResult<AdminInventory> =
         dataSource.getInventory(variantId).map { it.toAdminDomain() }

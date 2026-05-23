@@ -3,8 +3,6 @@ package com.kazemieh.network
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.request.*
 import com.kazemieh.network.dto.admin.response.*
-import com.kazemieh.network.dto.catalog.response.ColorResponse
-import com.kazemieh.network.dto.catalog.response.SizeResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -127,6 +125,46 @@ class AdminApiImpl(
 
     override suspend fun deleteVariant(variantId: Long) = safeApiCallRaw<Unit> {
         client.delete("api/admin/variants/$variantId")
+    }
+
+    override suspend fun listOptions(): List<AdminOptionResponse> = safeApiCallRaw {
+        client.get("api/admin/options")
+    }
+
+    override suspend fun createOptionType(request: AdminOptionTypeRequest): AdminOptionResponse = safeApiCallRaw {
+        client.post("api/admin/options/types") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun updateOptionType(id: Long, request: AdminOptionTypeRequest): AdminOptionResponse = safeApiCallRaw {
+        client.put("api/admin/options/types/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun deleteOptionType(id: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/options/types/$id")
+    }
+
+    override suspend fun createOptionValue(request: AdminOptionValueRequest): AdminOptionValueResponse = safeApiCallRaw {
+        client.post("api/admin/options/values") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun updateOptionValue(id: Long, request: AdminOptionValueRequest): AdminOptionValueResponse = safeApiCallRaw {
+        client.put("api/admin/options/values/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun deleteOptionValue(id: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/options/values/$id")
     }
 
     override suspend fun getInventory(variantId: Long): AdminInventoryResponse = safeApiCallRaw {

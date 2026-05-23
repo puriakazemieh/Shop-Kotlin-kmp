@@ -96,6 +96,17 @@ fun AdminAddressSnapshotResponse.toAdminDomain() = AdminAddressSnapshot(
     postalCode = postalCode
 )
 
+fun AdminOptionResponse.toAdminDomain() = AdminOption(
+    id = id,
+    name = name,
+    values = values.map { it.toAdminDomain() }
+)
+
+fun AdminOptionValueResponse.toAdminDomain() = AdminOptionValue(
+    id = id,
+    value = value
+)
+
 fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(
     items = items.map(mapper),
     page = page,

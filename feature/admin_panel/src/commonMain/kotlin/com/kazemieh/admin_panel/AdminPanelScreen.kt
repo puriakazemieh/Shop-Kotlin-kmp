@@ -30,6 +30,7 @@ fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
     navigateToManageOrders: () -> Unit,
+    navigateToManageOptions: () -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
@@ -110,6 +111,13 @@ fun AdminPanelScreen(
                             }
                         },
                         actions = {
+                            IconButton(onClick = navigateToManageOptions) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.VerticalMenu), // Using VerticalMenu icon as a placeholder for Options
+                                    contentDescription = stringResource(Resources.String.Settings),
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
                             IconButton(onClick = navigateToManageOrders) {
                                 Icon(
                                     imageVector = Icons.Default.ShoppingCart,

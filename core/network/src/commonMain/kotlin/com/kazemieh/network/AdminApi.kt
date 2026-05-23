@@ -3,8 +3,6 @@ package com.kazemieh.network
 import com.kazemieh.network.dto.PageResponse
 import com.kazemieh.network.dto.admin.request.*
 import com.kazemieh.network.dto.admin.response.*
-import com.kazemieh.network.dto.catalog.response.ColorResponse
-import com.kazemieh.network.dto.catalog.response.SizeResponse
 
 interface AdminApi {
 
@@ -35,6 +33,15 @@ interface AdminApi {
     suspend fun getInventory(variantId: Long): AdminInventoryResponse
     suspend fun setInventory(variantId: Long, request: AdminInventorySetRequest): AdminInventoryResponse
     suspend fun adjustInventory(variantId: Long, request: AdminInventoryAdjustRequest): AdminInventoryResponse
+
+    // ---------- Options ----------
+    suspend fun listOptions(): List<AdminOptionResponse>
+    suspend fun createOptionType(request: AdminOptionTypeRequest): AdminOptionResponse
+    suspend fun updateOptionType(id: Long, request: AdminOptionTypeRequest): AdminOptionResponse
+    suspend fun deleteOptionType(id: Long)
+    suspend fun createOptionValue(request: AdminOptionValueRequest): AdminOptionValueResponse
+    suspend fun updateOptionValue(id: Long, request: AdminOptionValueRequest): AdminOptionValueResponse
+    suspend fun deleteOptionValue(id: Long)
 
     // ---------- Orders ----------
     suspend fun listOrders(

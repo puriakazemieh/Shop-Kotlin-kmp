@@ -1,5 +1,6 @@
 package com.kazemieh.admin_panel
 
+import com.kazemieh.admin_panel.manage_options.ManageOptionsViewModel
 import com.kazemieh.admin_panel.manage_order.AdminOrderViewModel
 import com.kazemieh.admin_panel.manage_product.ManageProductViewModel
 import com.kazemieh.admin_panel.manage_product.PhotoPicker
@@ -31,6 +32,7 @@ val adminPanelModule = module {
             addProductImageUseCase = get(),
             deleteProductImageUseCase = get(),
             getCategoriesUseCase = get(),
+            getAdminOptionsUseCase = get(),
             savedStateHandle = get()
         )
     }
@@ -40,6 +42,18 @@ val adminPanelModule = module {
             listAdminOrdersUseCase = get(),
             getAdminOrderDetailUseCase = get(),
             updateAdminOrderStatusUseCase = get()
+        )
+    }
+
+    viewModel {
+        ManageOptionsViewModel(
+            getAdminOptionsUseCase = get(),
+            createOptionTypeUseCase = get(),
+            updateOptionTypeUseCase = get(),
+            deleteOptionTypeUseCase = get(),
+            createOptionValueUseCase = get(),
+            updateOptionValueUseCase = get(),
+            deleteOptionValueUseCase = get()
         )
     }
 
@@ -56,6 +70,14 @@ val adminPanelModule = module {
     factory { DeleteAdminCategoryUseCase(get()) }
     factory { AddProductImageUseCase(get()) }
     factory { DeleteProductImageUseCase(get()) }
+
+    factory { GetAdminOptionsUseCase(get()) }
+    factory { CreateOptionTypeUseCase(get()) }
+    factory { UpdateOptionTypeUseCase(get()) }
+    factory { DeleteOptionTypeUseCase(get()) }
+    factory { CreateOptionValueUseCase(get()) }
+    factory { UpdateOptionValueUseCase(get()) }
+    factory { DeleteOptionValueUseCase(get()) }
 
     factory { ListAdminOrdersUseCase(get()) }
     factory { GetAdminOrderDetailUseCase(get()) }

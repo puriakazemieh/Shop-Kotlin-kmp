@@ -71,6 +71,34 @@ class AdminDataSourceImpl(
         api.deleteVariant(variantId)
     }
 
+    override suspend fun listOptions(): AppResult<List<AdminOptionResponse>> = safeApiCall {
+        api.listOptions()
+    }
+
+    override suspend fun createOptionType(request: AdminOptionTypeRequest): AppResult<AdminOptionResponse> = safeApiCall {
+        api.createOptionType(request)
+    }
+
+    override suspend fun updateOptionType(id: Long, request: AdminOptionTypeRequest): AppResult<AdminOptionResponse> = safeApiCall {
+        api.updateOptionType(id, request)
+    }
+
+    override suspend fun deleteOptionType(id: Long): AppResult<Unit> = safeApiCall {
+        api.deleteOptionType(id)
+    }
+
+    override suspend fun createOptionValue(request: AdminOptionValueRequest): AppResult<AdminOptionValueResponse> = safeApiCall {
+        api.createOptionValue(request)
+    }
+
+    override suspend fun updateOptionValue(id: Long, request: AdminOptionValueRequest): AppResult<AdminOptionValueResponse> = safeApiCall {
+        api.updateOptionValue(id, request)
+    }
+
+    override suspend fun deleteOptionValue(id: Long): AppResult<Unit> = safeApiCall {
+        api.deleteOptionValue(id)
+    }
+
     override suspend fun getInventory(variantId: Long): AppResult<AdminInventoryResponse> = safeApiCall {
         api.getInventory(variantId)
     }
