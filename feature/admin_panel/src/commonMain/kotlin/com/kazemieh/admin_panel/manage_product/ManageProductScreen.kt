@@ -93,10 +93,10 @@ fun ManageProductScreen(
     }
 
     if (showAddVariantDialog) {
-        AddVariantDialog(
+        VariantBottomSheet(
             availableOptions = state.availableOptions,
             onDismiss = { showAddVariantDialog = false },
-            onConfirm = { optionType, optionValue, sku, price, initialOnHand ->
+            onConfirm = { sku, price, optionType, optionValue, isActive, initialOnHand ->
                 viewModel.handleIntent(
                     ManageProductIntent.AddVariant(
                         optionType = optionType,
@@ -112,12 +112,21 @@ fun ManageProductScreen(
     }
 
     selectedVariantToEdit?.let { variant ->
-        EditVariantDialog(
+        VariantBottomSheet(
             variant = variant,
             availableOptions = state.availableOptions,
             onDismiss = { selectedVariantToEdit = null },
-            onConfirm = { sku, price, optionType, optionValue, isActive ->
-                viewModel.handleIntent(ManageProductIntent.UpdateVariantInfo(variant.id, sku, price, optionType, optionValue, isActive))
+            onConfirm = { sku, price, optionType, optionValue, isActive, initialOnHand ->
+                viewModel.handleIntent(
+                    ManageProductIntent.UpdateVariantInfo(
+                        id = variant.id,
+                        sku = sku,
+                        price = price,
+                        optionType = optionType,
+                        optionValue = optionValue,
+                        isActive = isActive
+                    )
+                )
                 selectedVariantToEdit = null
             },
             onDelete = {

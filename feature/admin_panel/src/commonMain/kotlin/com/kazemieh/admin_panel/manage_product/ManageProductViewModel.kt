@@ -348,7 +348,16 @@ class ManageProductViewModel(
             when (val result = createAdminCategoryUseCase(name, slug, parentId)) {
                 is AppResult.Success<*> -> {
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.CategoryCreated))
-                    loadInitialData()
+                    val categoriesResult = getCategoriesUseCase()
+                    if (categoriesResult is AppResult.Success) {
+                        val newCategory = categoriesResult.data.find { it.name == name }
+                        _state.update {
+                            it.copy(
+                                categories = categoriesResult.data,
+                                selectedCategory = newCategory ?: it.selectedCategory
+                            )
+                        }
+                    }
                 }
 
                 is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))

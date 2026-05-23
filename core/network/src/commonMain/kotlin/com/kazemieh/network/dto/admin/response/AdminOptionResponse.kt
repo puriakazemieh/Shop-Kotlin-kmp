@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class AdminOptionResponse(
     val id: Long,
     val name: String,
-    val values: List<AdminOptionValueResponse>
+    val values: List<AdminOptionValueResponse> = emptyList()
 )
 
 @Serializable
