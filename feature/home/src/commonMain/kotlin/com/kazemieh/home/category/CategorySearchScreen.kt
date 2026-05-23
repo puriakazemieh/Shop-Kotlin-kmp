@@ -8,6 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.Resources
@@ -30,6 +33,7 @@ fun CategorySearchScreen(
 ) {
     val viewModel = koinViewModel<CategorySearchViewModel>()
     val state by viewModel.state.collectAsState()
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     LaunchedEffect(categoryId, categoryName) {
         viewModel.onIntent(CategorySearchIntent.Init(categoryId, categoryName))
@@ -82,6 +86,7 @@ fun CategorySearchScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackDesc)
                         )

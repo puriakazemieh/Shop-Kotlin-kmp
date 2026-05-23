@@ -33,9 +33,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -63,6 +66,7 @@ fun DetailsScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val state by viewModel.state.collectAsState()
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     LaunchedEffect(state.isAddedToCart, state.quantity, state.isCounterMode) {
         if (state.isAddedToCart && state.isCounterMode) {
@@ -100,6 +104,7 @@ fun DetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackDesc),
                             tint = MaterialTheme.colorScheme.onSurface

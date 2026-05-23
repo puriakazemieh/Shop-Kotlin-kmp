@@ -10,6 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
@@ -31,6 +34,7 @@ fun AdminPanelScreen(
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
     var searchBarVisible by mutableStateOf(false)
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     LaunchedEffect(Unit) {
         viewModel.handleIntent(AdminPanelIntent.LoadProducts)
@@ -98,6 +102,7 @@ fun AdminPanelScreen(
                         navigationIcon = {
                             IconButton(onClick = navigateBack) {
                                 Icon(
+                                    modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                                     painter = painterResource(Resources.Icon.BackArrow),
                                     contentDescription = stringResource(Resources.String.BackArrowIconDesc),
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer

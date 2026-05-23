@@ -12,9 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
@@ -42,6 +45,7 @@ fun ManageProductScreen(
     val viewModel = koinViewModel<ManageProductViewModel>()
     val state by viewModel.state.collectAsState()
     val photoPicker = remember { PhotoPicker() }
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     photoPicker.InitializePhotoPicker(
         onImageSelect = { bytes ->
@@ -153,6 +157,7 @@ fun ManageProductScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackArrowIconDesc),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer

@@ -36,7 +36,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -60,6 +63,7 @@ fun CheckoutScreen(
     val viewModel = koinViewModel<CheckoutViewModel>()
     val screenState = viewModel.screenState
     val isFormValid = viewModel.isFormValid
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     var showAddressBottomSheet by remember { mutableStateOf(false) }
     val addressAddedSuccessMessage = stringResource(Resources.String.AddressAddedSuccessfully)
@@ -87,6 +91,7 @@ fun CheckoutScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackArrowDesc),
                             tint = MaterialTheme.colorScheme.onSurface

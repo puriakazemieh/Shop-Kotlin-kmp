@@ -43,7 +43,7 @@ val LightAppColorScheme = lightColorScheme(
     onPrimary = Black,         // رنگ متن روی Primary
 
     primaryContainer = GrayLighter, // رنگ پس‌زمینه برای المان‌های اصلی
-    onPrimaryContainer = Black,     // رنگ متن روی PrimaryContainer
+    onPrimaryContainer = White,     // رنگ متن روی PrimaryContainer
 
     secondary = Gold,        // رنگ ثانویه برای عناصر تأکید شده
     onSecondary = White,       // رنگ متن روی Secondary
@@ -119,6 +119,8 @@ val DarkAppColorScheme = darkColorScheme(
 data class AppColors(
     val primary: Color,
     val onPrimary: Color,
+    val primaryContainer: Color,
+    val onPrimaryContainer: Color,
     val secondary: Color,
     val onSecondary: Color,
     val background: Color,
@@ -159,6 +161,8 @@ fun provideAppColors(darkTheme: Boolean): AppColors {
         AppColors(
             primary = colors.primary,
             onPrimary = colors.onPrimary,
+            primaryContainer = colors.primaryContainer,
+            onPrimaryContainer = colors.onPrimaryContainer,
             secondary = colors.secondary,
             onSecondary = colors.onSecondary,
             background = colors.background,

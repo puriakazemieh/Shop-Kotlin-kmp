@@ -130,7 +130,9 @@
     <string name="dark">Dark</string>
     <string name="system_default">System Default</string>
     <string name="cart_is_empty">Cart is Empty</string>
-    <string name="cart_is_empty_subtitle">You haven't added any items to your cart yet.</string>
+    <string name="cart_is_empty_subtitle">You haven\'t added any items to your cart yet.</string>
+    <string name="categories_is_empty">No Categories Found</string>
+    <string name="categories_is_empty_subtitle">Please try again later.</string>
     <string name="search_in_category_format">Search in %s</string>
 
     <!-- Content Descriptions -->

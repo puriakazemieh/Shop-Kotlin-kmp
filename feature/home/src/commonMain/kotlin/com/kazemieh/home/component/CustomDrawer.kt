@@ -65,7 +65,7 @@ fun CustomDrawer(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Resources.String.CarmillaSlogan),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = FontSize.REGULAR
             )
             Spacer(modifier = Modifier.height(50.dp))

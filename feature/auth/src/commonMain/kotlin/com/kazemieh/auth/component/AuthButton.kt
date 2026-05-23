@@ -20,7 +20,7 @@ fun AuthButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.primary,
-            contentColor = colors.onPrimary
+            contentColor = colors.onPrimaryContainer
         ),
         modifier = Modifier.fillMaxWidth()
     ) {

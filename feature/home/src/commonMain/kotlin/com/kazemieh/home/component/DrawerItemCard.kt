@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -25,6 +28,7 @@ fun DrawerItemCard(
     drawerItem: DrawerItem,
     onClick: () -> Unit
 ) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,14 +41,17 @@ fun DrawerItemCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
+            modifier = Modifier.graphicsLayer {
+                rotationY = if (isRtl && (drawerItem.icon == Resources.Icon.SignOut || drawerItem.icon == Resources.Icon.SignIn)) 180f else 0f
+            },
             painter = painterResource(drawerItem.icon),
             contentDescription = stringResource(Resources.String.DrawerItemDesc),
-            tint = MaterialTheme.colorScheme.onPrimary
+            tint = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = stringResource(drawerItem.title),
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = FontSize.EXTRA_REGULAR
         )
     }

@@ -19,7 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -45,6 +48,7 @@ fun AdminOrderScreen(
     val viewModel = koinViewModel<AdminOrderViewModel>()
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     val statusUpdatedSuccessMessage = stringResource(Resources.String.StatusUpdatedSuccessfully)
 
@@ -63,7 +67,11 @@ fun AdminOrderScreen(
                 title = { Text(stringResource(Resources.String.ManageOrders), fontFamily = AppFont()) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Resources.String.BackDesc))
+                        Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            painter = painterResource(Resources.Icon.BackArrow),
+                            contentDescription = stringResource(Resources.String.BackDesc)
+                        )
                     }
                 }
             )

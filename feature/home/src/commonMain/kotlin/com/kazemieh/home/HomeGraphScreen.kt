@@ -242,7 +242,7 @@ fun HomeGraphScreen(
                                         Icon(
                                             painter = painterResource(Resources.Icon.Close),
                                             contentDescription = stringResource(Resources.String.CloseIconDesc),
-                                            tint = MaterialTheme.colorScheme.onPrimary
+                                            tint = MaterialTheme.colorScheme.onSurface
                                         )
                                     }
                                 } else {
@@ -250,7 +250,7 @@ fun HomeGraphScreen(
                                         Icon(
                                             painter = painterResource(Resources.Icon.Menu),
                                             contentDescription = stringResource(Resources.String.MenuDesc),
-                                            tint = MaterialTheme.colorScheme.onPrimary
+                                            tint = MaterialTheme.colorScheme.onSurface
                                         )
                                     }
                                 }
@@ -259,9 +259,9 @@ fun HomeGraphScreen(
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                            titleContentColor = MaterialTheme.colorScheme.onSurface,
+                            actionIconContentColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }

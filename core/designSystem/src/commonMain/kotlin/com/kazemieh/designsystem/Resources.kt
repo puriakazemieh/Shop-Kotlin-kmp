@@ -210,6 +210,8 @@ object Resources {
         val SignOut = CommonRes.string.sign_out
         val CartIsEmpty = CommonRes.string.cart_is_empty
         val CartIsEmptySubtitle = CommonRes.string.cart_is_empty_subtitle
+        val CategoriesIsEmpty = CommonRes.string.categories_is_empty
+        val CategoriesIsEmptySubtitle = CommonRes.string.categories_is_empty_subtitle
         val SearchInCategoryFormat = CommonRes.string.search_in_category_format
 
         // Content Descriptions

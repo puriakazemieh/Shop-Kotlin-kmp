@@ -46,7 +46,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
@@ -73,6 +76,7 @@ fun ProfileScreen(
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     var showAddressDialog by remember { mutableStateOf(false) }
     var addressToEdit by remember { mutableStateOf<Address?>(null) }
@@ -106,6 +110,7 @@ fun ProfileScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackArrowDesc),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer

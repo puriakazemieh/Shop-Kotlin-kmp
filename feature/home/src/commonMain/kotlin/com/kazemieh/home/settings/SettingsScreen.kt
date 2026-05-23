@@ -24,6 +24,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
@@ -31,6 +34,7 @@ import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -42,6 +46,7 @@ fun SettingsScreen(
 ) {
     val currentLanguage by viewModel.language.collectAsState()
     val currentThemeMode by viewModel.themeMode.collectAsState()
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Scaffold(
         topBar = {
@@ -55,7 +60,8 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackDesc)
                         )
                     }

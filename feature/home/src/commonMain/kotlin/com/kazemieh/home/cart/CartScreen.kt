@@ -1,6 +1,7 @@
 package com.kazemieh.home.cart
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -64,12 +65,17 @@ fun CartScreen(
                 is AppResult.Success -> {
                     val cart = state.data
                     if (cart.items.isEmpty()) {
-                        InfoCard(
-                            modifier = Modifier.fillMaxWidth().height(200.dp),
-                            image = Resources.Image.Cat,
-                            title = stringResource(Resources.String.CartIsEmpty),
-                            subtitle = stringResource(Resources.String.CartIsEmptySubtitle)
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            InfoCard(
+                                modifier = Modifier.fillMaxWidth().height(200.dp),
+                                image = Resources.Image.Cat,
+                                title = stringResource(Resources.String.CartIsEmpty),
+                                subtitle = stringResource(Resources.String.CartIsEmptySubtitle)
+                            )
+                        }
                     } else {
                         Column(
                             modifier = Modifier
@@ -133,12 +139,17 @@ fun CartScreen(
                 }
 
                 is AppResult.Error -> {
-                    InfoCard(
-                        modifier = Modifier.fillMaxWidth().height(200.dp),
-                        image = Resources.Image.Cat,
-                        title = stringResource(Resources.String.Oops),
-                        subtitle = state.message
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        InfoCard(
+                            modifier = Modifier.fillMaxWidth().height(200.dp),
+                            image = Resources.Image.Cat,
+                            title = stringResource(Resources.String.Oops),
+                            subtitle = state.message
+                        )
+                    }
                 }
             }
         }

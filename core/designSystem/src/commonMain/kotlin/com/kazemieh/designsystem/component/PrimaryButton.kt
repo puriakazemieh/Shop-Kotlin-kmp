@@ -14,7 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
@@ -33,6 +36,7 @@ fun PrimaryButton(
     secondary: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Button(
         modifier = modifier.fillMaxWidth(),
         onClick = onClick,
@@ -47,8 +51,14 @@ fun PrimaryButton(
         contentPadding = PaddingValues(all = 20.dp)
     ) {
         if (icon != null) {
+            val shouldMirror = icon == Resources.Icon.BackArrow || icon == Resources.Icon.RightArrow
             Icon(
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier
+                    .size(14.dp)
+                    .then(
+                        if (shouldMirror) Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+                        else Modifier
+                    ),
                 painter = painterResource(icon),
                 contentDescription = stringResource(Resources.String.ButtonIconDesc),
                 tint = if (icon == Resources.Image.PaypalLogo) Color.Unspecified

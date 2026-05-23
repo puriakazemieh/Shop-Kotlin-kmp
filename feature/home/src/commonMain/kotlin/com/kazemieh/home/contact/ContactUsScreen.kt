@@ -18,7 +18,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
@@ -31,6 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 fun ContactUsScreen(
     onBackClick: () -> Unit
 ) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Scaffold(
         topBar = {
             TopAppBar(
@@ -44,6 +48,7 @@ fun ContactUsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackArrowDesc)
                         )
