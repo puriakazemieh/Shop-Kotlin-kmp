@@ -290,7 +290,11 @@ fun OrderDetailDialog(
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(item.titleSnapshot, fontWeight = FontWeight.Medium, fontFamily = AppFont())
-                                        Text(stringResource(Resources.String.VariantFormat, item.sizeSnapshot, item.colorSnapshot), fontSize = FontSize.SMALL, fontFamily = AppFont())
+                                        Text(
+                                            text = item.optionsSnapshot.entries.joinToString(", ") { "${it.key}: ${it.value}" },
+                                            fontSize = FontSize.SMALL,
+                                            fontFamily = AppFont()
+                                        )
                                     }
                                     Text(stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, item.unitPriceSnapshot)), fontFamily = AppFont())
                                 }

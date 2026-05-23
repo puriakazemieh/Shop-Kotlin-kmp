@@ -1,8 +1,6 @@
 package com.kazemieh.data.catalog.mapper
 
 import com.kazemieh.domain.model.*
-import com.kazemieh.domain.repository.Color as DomainColor
-import com.kazemieh.domain.repository.Size as DomainSize
 import com.kazemieh.network.dto.catalog.response.*
 
 fun CategoryResponse.toCatalogDomain(): Category = Category(
@@ -10,18 +8,6 @@ fun CategoryResponse.toCatalogDomain(): Category = Category(
     name = name,
     slug = slug,
     parentId = parentId
-)
-
-fun SizeResponse.toCatalogDomain() = DomainSize(
-    id = id,
-    name = name,
-    sortOrder = sortOrder
-)
-
-fun ColorResponse.toCatalogDomain() = DomainColor(
-    id = id,
-    name = name,
-    hex = hex
 )
 
 fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
@@ -33,7 +19,8 @@ fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     maxPrice = maxPrice,
     inStock = inStock,
     categoryId = categoryId,
-    categoryName = categoryName
+    categoryName = categoryName,
+    options = options
 )
 
 fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
@@ -60,6 +47,5 @@ fun ProductVariantResponse.toCatalogDomain() = ProductVariant(
     price = price,
     compareAtPrice = compareAtPrice,
     available = availableQty,
-    sizeName = size.name,
-    colorName = color.name
+    options = options
 )

@@ -33,6 +33,18 @@ class CategorySearchViewModel(
                 _state.update { it.copy(searchQuery = intent.query) }
                 loadProducts()
             }
+            is CategorySearchIntent.ToggleOption -> {
+                _state.update {
+                    val currentSelected = it.selectedOptions.toMutableMap()
+                    if (currentSelected[intent.key] == intent.value) {
+                        currentSelected.remove(intent.key)
+                    } else {
+                        currentSelected[intent.key] = intent.value
+                    }
+                    it.copy(selectedOptions = currentSelected)
+                }
+                loadProducts()
+            }
         }
     }
 
@@ -42,14 +54,21 @@ class CategorySearchViewModel(
             _state.update { it.copy(isLoading = true) }
             val result = getProductsUseCase(
                 query = currentState.searchQuery.ifBlank { null },
-                categoryId = currentState.categoryId
+                categoryId = currentState.categoryId,
+                options = currentState.selectedOptions.ifEmpty { null }
             )
             when (result) {
                 is AppResult.Success -> {
+                    val availableOptions = result.data.items
+                        .flatMap { it.options.entries }
+                        .groupBy({ it.key }, { it.value })
+                        .mapValues { it.value.flatten().toSet() }
+
                     _state.update {
                         it.copy(
                             isLoading = false,
                             products = result.data.items,
+                            availableOptions = availableOptions,
                             error = null
                         )
                     }

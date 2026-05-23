@@ -29,8 +29,7 @@ data class AdminOrderItem(
     val qty: Int,
     val unitPriceSnapshot: Double,
     val titleSnapshot: String,
-    val sizeSnapshot: String,
-    val colorSnapshot: String
+    val optionsSnapshot: Map<String, String>
 )
 
 data class AdminAddressSnapshot(

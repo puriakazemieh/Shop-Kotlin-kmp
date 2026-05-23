@@ -211,7 +211,7 @@ fun DetailsScreen(
                                 ) {
                                     product.variants.forEach { variant ->
                                         VariantChip(
-                                            label = stringResource(Resources.String.VariantFormat, variant.sizeName, variant.colorName),
+                                            label = variant.options.entries.joinToString(", ") { "${it.key}: ${it.value}" },
                                             isSelected = state.selectedVariant == variant,
                                             onClick = {
                                                 viewModel.onIntent(

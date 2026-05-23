@@ -94,51 +94,32 @@ fun ManageProductScreen(
 
     if (showAddVariantDialog) {
         AddVariantDialog(
-            sizes = state.sizes,
-            colors = state.colors,
             onDismiss = { showAddVariantDialog = false },
-            onConfirm = { sizeId, colorId, sku, price, initialOnHand ->
+            onConfirm = { options, sku, price, initialOnHand ->
                 viewModel.handleIntent(
                     ManageProductIntent.AddVariant(
-                        sizeId = sizeId,
-                        colorId = colorId,
+                        options = options,
                         sku = sku,
                         price = price,
                         initialOnHand = initialOnHand
                     )
                 )
                 showAddVariantDialog = false
-            },
-            onCreateSize = { name, sortOrder ->
-                viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
-            },
-            onDeleteSize = { viewModel.handleIntent(ManageProductIntent.DeleteSize(it)) },
-            onCreateColor = { name, hex ->
-                viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
-            },
-            onDeleteColor = { viewModel.handleIntent(ManageProductIntent.DeleteColor(it)) }
+            }
         )
     }
 
     selectedVariantToEdit?.let { variant ->
         EditVariantDialog(
             variant = variant,
-            sizes = state.sizes,
-            colors = state.colors,
             onDismiss = { selectedVariantToEdit = null },
-            onConfirm = { sku, price, sizeId, colorId, isActive ->
-                viewModel.handleIntent(ManageProductIntent.UpdateVariantInfo(variant.id, sku, price, sizeId, colorId, isActive))
+            onConfirm = { sku, price, options, isActive ->
+                viewModel.handleIntent(ManageProductIntent.UpdateVariantInfo(variant.id, sku, price, options, isActive))
                 selectedVariantToEdit = null
             },
             onDelete = {
                 viewModel.handleIntent(ManageProductIntent.DeleteVariant(variant.id))
                 selectedVariantToEdit = null
-            },
-            onCreateSize = { name, sortOrder ->
-                viewModel.handleIntent(ManageProductIntent.CreateSize(name, sortOrder))
-            },
-            onCreateColor = { name, hex ->
-                viewModel.handleIntent(ManageProductIntent.CreateColor(name, hex))
             }
         )
     }
@@ -398,7 +379,7 @@ fun VariantItem(variant: AdminVariant, onClick: () -> Unit) {
                 Text(variant.sku, fontWeight = FontWeight.Bold)
                 Text(stringResource(Resources.String.PriceFormat, variant.price), color = MaterialTheme.colorScheme.secondary)
             }
-            Text(stringResource(Resources.String.VariantFormat, variant.sizeName, variant.colorName), fontSize = FontSize.SMALL)
+            Text(variant.options.entries.joinToString(", ") { "${it.key}: ${it.value}" }, fontSize = FontSize.SMALL)
             Text(
                 stringResource(Resources.String.StockReservedFormat, variant.onHand, variant.reserved),
                 fontSize = FontSize.SMALL

@@ -29,6 +29,5 @@ data class OrderItem(
     val qty: Int,
     val unitPrice: Double,
     val title: String,
-    val size: String,
-    val color: String
+    val options: Map<String, String>
 )

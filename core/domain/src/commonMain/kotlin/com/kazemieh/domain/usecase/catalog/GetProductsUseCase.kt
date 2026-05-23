@@ -11,8 +11,7 @@ class GetProductsUseCase(
     suspend operator fun invoke(
         query: String? = null,
         categoryId: Long? = null,
-        sizeId: Long? = null,
-        colorId: Long? = null,
+        options: Map<String, String>? = null,
         minPrice: Double? = null,
         maxPrice: Double? = null,
         inStock: Boolean? = null,
@@ -21,7 +20,7 @@ class GetProductsUseCase(
         sort: String? = null
     ): AppResult<AdminPage<ProductSummary>> {
         return repository.getProducts(
-            query, categoryId, sizeId, colorId, minPrice, maxPrice, inStock, page, size, sort
+            query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort
         )
     }
 }

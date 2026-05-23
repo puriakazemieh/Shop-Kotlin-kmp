@@ -14,17 +14,6 @@ interface AdminApi {
     suspend fun updateCategory(id: Long, request: AdminUpdateCategoryRequest): AdminCategoryResponse
     suspend fun deleteCategory(id: Long)
 
-    // ---------- Sizes & Colors ----------
-    suspend fun listSizes(): List<AdminSizeResponse>
-    suspend fun createSize(request: AdminCreateSizeRequest): AdminSizeResponse
-    suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AdminSizeResponse
-    suspend fun deleteSize(id: Long)
-
-    suspend fun listColors(): List<AdminColorResponse>
-    suspend fun createColor(request: AdminCreateColorRequest): AdminColorResponse
-    suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AdminColorResponse
-    suspend fun deleteColor(id: Long)
-
     // ---------- Products ----------
     suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): PageResponse<AdminProductResponse>
     suspend fun createProduct(request: AdminCreateProductRequest): AdminProductResponse

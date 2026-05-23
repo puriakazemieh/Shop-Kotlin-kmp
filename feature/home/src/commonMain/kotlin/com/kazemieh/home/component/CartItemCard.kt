@@ -125,7 +125,7 @@ fun CartItemCard(
                         maxLines = 1
                     )
                     Text(
-                        text = stringResource(Resources.String.VariantFormat, cartItem.sizeName, cartItem.colorName),
+                        text = cartItem.options.entries.joinToString(", ") { "${it.key}: ${it.value}" },
                         fontSize = FontSize.SMALL,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1

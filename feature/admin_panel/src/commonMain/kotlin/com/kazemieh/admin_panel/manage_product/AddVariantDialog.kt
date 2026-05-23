@@ -1,112 +1,91 @@
 package com.kazemieh.admin_panel.manage_product
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
-import com.kazemieh.domain.repository.Color
-import com.kazemieh.domain.repository.Size
 
 @Composable
 fun AddVariantDialog(
-    sizes: List<Size>,
-    colors: List<Color>,
     onDismiss: () -> Unit,
-    onConfirm: (sizeId: Long, colorId: Long, sku: String, price: Double, initialOnHand: Int) -> Unit,
-    onCreateSize: (name: String, sortOrder: Int) -> Unit,
-    onDeleteSize: (Long) -> Unit,
-    onCreateColor: (name: String, hex: String?) -> Unit,
-    onDeleteColor: (Long) -> Unit
+    onConfirm: (options: Map<String, String>, sku: String, price: Double, initialOnHand: Int) -> Unit
 ) {
-    var selectedSize by remember { mutableStateOf<Size?>(null) }
-    var selectedColor by remember { mutableStateOf<Color?>(null) }
+    var options by remember { mutableStateOf(mutableListOf("" to "")) }
     var sku by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var initialOnHand by remember { mutableStateOf("") }
-
-    var showSizesBottomSheet by remember { mutableStateOf(false) }
-    var showColorsBottomSheet by remember { mutableStateOf(false) }
-
-    var showCreateSizeDialog by remember { mutableStateOf(false) }
-    var showCreateColorDialog by remember { mutableStateOf(false) }
-
-    if (showSizesBottomSheet) {
-        SizesBottomSheet(
-            sizes = sizes,
-            onSizeSelected = { selectedSize = it },
-            onCreateSizeClick = {
-                showCreateSizeDialog = true
-                showSizesBottomSheet = false
-            },
-            onDeleteSize = onDeleteSize,
-            onDismiss = { showSizesBottomSheet = false }
-        )
-    }
-
-    if (showCreateSizeDialog) {
-        CreateSizeDialog(
-            onDismiss = { showCreateSizeDialog = false },
-            onConfirm = { name, sortOrder ->
-                onCreateSize(name, sortOrder)
-                showCreateSizeDialog = false
-            }
-        )
-    }
-
-    if (showColorsBottomSheet) {
-        ColorsBottomSheet(
-            colors = colors,
-            onColorSelected = { selectedColor = it },
-            onCreateColorClick = {
-                showCreateColorDialog = true
-                showColorsBottomSheet = false
-            },
-            onDeleteColor = onDeleteColor,
-            onDismiss = { showColorsBottomSheet = false }
-        )
-    }
-
-    if (showCreateColorDialog) {
-        CreateColorDialog(
-            onDismiss = { showCreateColorDialog = false },
-            onConfirm = { name, hex ->
-                onCreateColor(name, hex)
-                showCreateColorDialog = false
-            }
-        )
-    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Resources.String.AddNewVariant)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                // Size Selection
-                OutlinedCard(
-                    onClick = { showSizesBottomSheet = true },
-                    modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(stringResource(Resources.String.Variants), style = MaterialTheme.typography.titleSmall)
+                options.forEachIndexed { index, (key, value) ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier.weight(1f),
+                            value = key,
+                            onValueChange = {
+                                val newList = options.toMutableList()
+                                newList[index] = it to value
+                                options = newList
+                            },
+                            label = { Text(stringResource(Resources.String.Name)) }
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.weight(1f),
+                            value = value,
+                            onValueChange = {
+                                val newList = options.toMutableList()
+                                newList[index] = key to it
+                                options = newList
+                            },
+                            label = { Text(stringResource(Resources.String.Default)) }
+                        )
+                        IconButton(onClick = {
+                            if (options.size > 1) {
+                                val newList = options.toMutableList()
+                                newList.removeAt(index)
+                                options = newList
+                            }
+                        }) {
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                }
+                TextButton(
+                    onClick = {
+                        val newList = options.toMutableList()
+                        newList.add("" to "")
+                        options = newList
+                    },
+                    modifier = Modifier.align(Alignment.Start)
                 ) {
-                    Text(
-                        text = selectedSize?.name ?: stringResource(Resources.String.SelectSize),
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Spacer(Modifier.width(4.dp))
+                    Text(stringResource(Resources.String.Add))
                 }
 
-                // Color Selection
-                OutlinedCard(
-                    onClick = { showColorsBottomSheet = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = selectedColor?.name ?: stringResource(Resources.String.SelectColor),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+                HorizontalDivider()
 
                 OutlinedTextField(
                     value = sku,
@@ -132,11 +111,10 @@ fun AddVariantDialog(
         },
         confirmButton = {
             Button(
-                enabled = selectedSize != null && selectedColor != null && sku.isNotBlank() && price.toDoubleOrNull() != null,
+                enabled = options.all { it.first.isNotBlank() && it.second.isNotBlank() } && sku.isNotBlank() && price.toDoubleOrNull() != null,
                 onClick = {
                     onConfirm(
-                        selectedSize!!.id,
-                        selectedColor!!.id,
+                        options.toMap(),
                         sku,
                         price.toDouble(),
                         initialOnHand.toIntOrNull() ?: 0

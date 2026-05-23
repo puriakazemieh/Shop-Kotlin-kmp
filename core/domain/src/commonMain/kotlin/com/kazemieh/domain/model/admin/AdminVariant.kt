@@ -8,15 +8,11 @@ data class AdminVariant(
     val isActive: Boolean,
     val onHand: Int,
     val reserved: Int,
-    val sizeId: Long, // اضافه شد
-    val sizeName: String,
-    val colorId: Long, // اضافه شد
-    val colorName: String
+    val options: Map<String, String>
 )
 
 data class AdminCreateVariant(
-    val sizeId: Long,
-    val colorId: Long,
+    val options: Map<String, String>,
     val sku: String,
     val price: Double,
     val compareAtPrice: Double? = null,

@@ -36,6 +36,5 @@ fun OrderItemResponse.toDomain(): OrderItem = OrderItem(
     qty = qty,
     unitPrice = unitPrice,
     title = title,
-    size = size,
-    color = color
+    options = options
 )

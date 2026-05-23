@@ -14,19 +14,10 @@ class CatalogDataSourceImpl(
         api.getCategories()
     }
 
-    override suspend fun getSizes(): AppResult<List<SizeResponse>> = safeApiCall {
-        api.getSizes()
-    }
-
-    override suspend fun getColors(): AppResult<List<ColorResponse>> = safeApiCall {
-        api.getColors()
-    }
-
     override suspend fun getProducts(
         query: String?,
         categoryId: Long?,
-        sizeId: Long?,
-        colorId: Long?,
+        options: Map<String, String>?,
         minPrice: Double?,
         maxPrice: Double?,
         inStock: Boolean?,
@@ -34,7 +25,7 @@ class CatalogDataSourceImpl(
         size: Int,
         sort: String?
     ): AppResult<PageResponse<ProductSummaryResponse>> = safeApiCall {
-        api.getProducts(query, categoryId, sizeId, colorId, minPrice, maxPrice, inStock, page, size, sort)
+        api.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort)
     }
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetailResponse> = safeApiCall {

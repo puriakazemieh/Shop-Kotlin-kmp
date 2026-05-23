@@ -23,30 +23,6 @@ class AdminRepositoryImpl(
     override suspend fun deleteCategory(id: Long): AppResult<Unit> =
         dataSource.deleteCategory(id)
 
-    override suspend fun listSizes(): AppResult<List<Size>> =
-        dataSource.listSizes().map { list -> list.map { it.toAdminDomain() } }
-
-    override suspend fun createSize(name: String, sortOrder: Int): AppResult<Size> =
-        dataSource.createSize(AdminCreateSizeRequest(name, sortOrder)).map { it.toAdminDomain() }
-
-    override suspend fun updateSize(id: Long, name: String?, sortOrder: Int?): AppResult<Size> =
-        dataSource.updateSize(id, AdminUpdateSizeRequest(name, sortOrder)).map { it.toAdminDomain() }
-
-    override suspend fun deleteSize(id: Long): AppResult<Unit> =
-        dataSource.deleteSize(id)
-
-    override suspend fun listColors(): AppResult<List<Color>> =
-        dataSource.listColors().map { list -> list.map { it.toAdminDomain() } }
-
-    override suspend fun createColor(name: String, hex: String?): AppResult<Color> =
-        dataSource.createColor(AdminCreateColorRequest(name, hex)).map { it.toAdminDomain() }
-
-    override suspend fun updateColor(id: Long, name: String?, hex: String?): AppResult<Color> =
-        dataSource.updateColor(id, AdminUpdateColorRequest(name, hex)).map { it.toAdminDomain() }
-
-    override suspend fun deleteColor(id: Long): AppResult<Unit> =
-        dataSource.deleteColor(id)
-
     override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String?): AppResult<AdminPage<AdminProduct>> =
         dataSource.listProducts(page, size, includeInactive, query).map { it.toAdminPage { dto -> dto.toAdminDomain() } }
 
@@ -69,8 +45,7 @@ class AdminRepositoryImpl(
                 isActive,
                 variants?.map {
                     AdminCreateVariantRequest(
-                        it.sizeId,
-                        it.colorId,
+                        it.options,
                         it.sku,
                         it.price,
                         it.compareAtPrice,
@@ -109,26 +84,24 @@ class AdminRepositoryImpl(
 
     override suspend fun createVariant(
         productId: Long,
-        sizeId: Long,
-        colorId: Long,
+        options: Map<String, String>,
         sku: String,
         price: Double,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
     ): AppResult<AdminVariant> =
-        dataSource.createVariant(productId, AdminCreateVariantRequest(sizeId, colorId, sku, price, compareAtPrice, isActive, initialOnHand)).map { it.toAdminDomain() }
+        dataSource.createVariant(productId, AdminCreateVariantRequest(options, sku, price, compareAtPrice, isActive, initialOnHand)).map { it.toAdminDomain() }
 
     override suspend fun updateVariant(
         variantId: Long,
         sku: String?,
         price: Double?,
         compareAtPrice: Double?,
-        sizeId: Long?,
-        colorId: Long?,
+        options: Map<String, String>?,
         isActive: Boolean?
     ): AppResult<AdminVariant> =
-        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, sizeId, colorId, isActive)).map { it.toAdminDomain() }
+        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, options, isActive)).map { it.toAdminDomain() }
 
     override suspend fun deleteVariant(variantId: Long): AppResult<Unit> =
         dataSource.deleteVariant(variantId)

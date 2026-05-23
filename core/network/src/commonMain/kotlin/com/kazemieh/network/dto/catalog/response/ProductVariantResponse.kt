@@ -8,8 +8,7 @@ data class ProductVariantResponse(
     val sku: String,
     val price: Double,
     val compareAtPrice: Double?,
-    val size: SizeResponse,
-    val color: ColorResponse,
+    val options: Map<String, String>,
     val availableQty: Int,
     val active: Boolean
 )

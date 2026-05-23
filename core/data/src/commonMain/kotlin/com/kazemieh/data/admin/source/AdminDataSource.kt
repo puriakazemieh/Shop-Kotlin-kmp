@@ -11,16 +11,6 @@ interface AdminDataSource {
     suspend fun updateCategory(id: Long, request: AdminUpdateCategoryRequest): AppResult<AdminCategoryResponse>
     suspend fun deleteCategory(id: Long): AppResult<Unit>
 
-    suspend fun listSizes(): AppResult<List<AdminSizeResponse>>
-    suspend fun createSize(request: AdminCreateSizeRequest): AppResult<AdminSizeResponse>
-    suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AppResult<AdminSizeResponse>
-    suspend fun deleteSize(id: Long): AppResult<Unit>
-
-    suspend fun listColors(): AppResult<List<AdminColorResponse>>
-    suspend fun createColor(request: AdminCreateColorRequest): AppResult<AdminColorResponse>
-    suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AppResult<AdminColorResponse>
-    suspend fun deleteColor(id: Long): AppResult<Unit>
-
     suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String? = null): AppResult<PageResponse<AdminProductResponse>>
     suspend fun createProduct(request: AdminCreateProductRequest): AppResult<AdminProductResponse>
     suspend fun getProductDetail(id: Long): AppResult<AdminProductDetailResponse>

@@ -9,7 +9,8 @@ data class ProductSummary(
     val maxPrice: Double?,
     val inStock: Boolean,
     val categoryId: Long?,
-    val categoryName: String?
+    val categoryName: String?,
+    val options: Map<String, List<String>>
 )
 
 data class ProductDetail(
@@ -36,6 +37,5 @@ data class ProductVariant(
     val price: Double,
     val compareAtPrice: Double?,
     val available: Int,
-    val sizeName: String,
-    val colorName: String
+    val options: Map<String, String>
 )

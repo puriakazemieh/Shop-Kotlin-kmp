@@ -15,17 +15,10 @@ class CatalogRepositoryImpl(
     override suspend fun getCategories(): AppResult<List<Category>> =
         dataSource.getCategories().map { list -> list.map { it.toCatalogDomain() } }
 
-    override suspend fun getSizes(): AppResult<List<Size>> =
-        dataSource.getSizes().map { list -> list.map { it.toCatalogDomain() } }
-
-    override suspend fun getColors(): AppResult<List<Color>> =
-        dataSource.getColors().map { list -> list.map { it.toCatalogDomain() } }
-
     override suspend fun getProducts(
         query: String?,
         categoryId: Long?,
-        sizeId: Long?,
-        colorId: Long?,
+        options: Map<String, String>?,
         minPrice: Double?,
         maxPrice: Double?,
         inStock: Boolean?,
@@ -33,7 +26,7 @@ class CatalogRepositoryImpl(
         size: Int,
         sort: String?
     ): AppResult<AdminPage<ProductSummary>> =
-        dataSource.getProducts(query, categoryId, sizeId, colorId, minPrice, maxPrice, inStock, page, size, sort)
+        dataSource.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort)
             .map { it.toAdminPage { dto -> dto.toCatalogDomain() } }
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetail> =

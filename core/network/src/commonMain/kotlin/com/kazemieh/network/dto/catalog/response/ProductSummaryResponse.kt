@@ -12,5 +12,6 @@ data class ProductSummaryResponse(
     val maxPrice: Double?,
     val inStock: Boolean,
     val categoryId: Long?,
-    val categoryName: String?
+    val categoryName: String?,
+    val options: Map<String, List<String>> = emptyMap()
 )

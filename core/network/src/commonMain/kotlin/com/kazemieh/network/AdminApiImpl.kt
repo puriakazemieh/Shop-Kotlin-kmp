@@ -36,50 +36,6 @@ class AdminApiImpl(
         client.delete("api/admin/categories/$id")
     }
 
-    override suspend fun listSizes(): List<AdminSizeResponse> = safeApiCallRaw {
-        client.get("api/admin/sizes")
-    }
-
-    override suspend fun createSize(request: AdminCreateSizeRequest): AdminSizeResponse = safeApiCallRaw {
-        client.post("api/admin/sizes") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }
-    }
-
-    override suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AdminSizeResponse = safeApiCallRaw {
-        client.patch("api/admin/sizes/$id") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }
-    }
-
-    override suspend fun deleteSize(id: Long) = safeApiCallRaw<Unit> {
-        client.delete("api/admin/sizes/$id")
-    }
-
-    override suspend fun listColors(): List<AdminColorResponse> = safeApiCallRaw {
-        client.get("api/admin/colors")
-    }
-
-    override suspend fun createColor(request: AdminCreateColorRequest): AdminColorResponse = safeApiCallRaw {
-        client.post("api/admin/colors") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }
-    }
-
-    override suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AdminColorResponse = safeApiCallRaw {
-        client.patch("api/admin/colors/$id") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }
-    }
-
-    override suspend fun deleteColor(id: Long) = safeApiCallRaw<Unit> {
-        client.delete("api/admin/colors/$id")
-    }
-
     override suspend fun listProducts(
         page: Int,
         size: Int,

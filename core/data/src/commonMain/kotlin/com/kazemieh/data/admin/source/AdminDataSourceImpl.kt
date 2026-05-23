@@ -27,38 +27,6 @@ class AdminDataSourceImpl(
         api.deleteCategory(id)
     }
 
-    override suspend fun listSizes(): AppResult<List<AdminSizeResponse>> = safeApiCall {
-        api.listSizes()
-    }
-
-    override suspend fun createSize(request: AdminCreateSizeRequest): AppResult<AdminSizeResponse> = safeApiCall {
-        api.createSize(request)
-    }
-
-    override suspend fun updateSize(id: Long, request: AdminUpdateSizeRequest): AppResult<AdminSizeResponse> = safeApiCall {
-        api.updateSize(id, request)
-    }
-
-    override suspend fun deleteSize(id: Long): AppResult<Unit> = safeApiCall {
-        api.deleteSize(id)
-    }
-
-    override suspend fun listColors(): AppResult<List<AdminColorResponse>> = safeApiCall {
-        api.listColors()
-    }
-
-    override suspend fun createColor(request: AdminCreateColorRequest): AppResult<AdminColorResponse> = safeApiCall {
-        api.createColor(request)
-    }
-
-    override suspend fun updateColor(id: Long, request: AdminUpdateColorRequest): AppResult<AdminColorResponse> = safeApiCall {
-        api.updateColor(id, request)
-    }
-
-    override suspend fun deleteColor(id: Long): AppResult<Unit> = safeApiCall {
-        api.deleteColor(id)
-    }
-
     override suspend fun listProducts(page: Int, size: Int, includeInactive: Boolean, query: String?): AppResult<PageResponse<AdminProductResponse>> = safeApiCall {
         api.listProducts(page, size, includeInactive, query)
     }

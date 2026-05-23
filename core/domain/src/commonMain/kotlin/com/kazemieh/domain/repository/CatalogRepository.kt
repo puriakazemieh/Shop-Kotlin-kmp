@@ -7,13 +7,10 @@ import com.kazemieh.domain.model.ProductSummary
 
 interface CatalogRepository {
     suspend fun getCategories(): AppResult<List<Category>>
-    suspend fun getSizes(): AppResult<List<Size>>
-    suspend fun getColors(): AppResult<List<Color>>
     suspend fun getProducts(
         query: String? = null,
         categoryId: Long? = null,
-        sizeId: Long? = null,
-        colorId: Long? = null,
+        options: Map<String, String>? = null,
         minPrice: Double? = null,
         maxPrice: Double? = null,
         inStock: Boolean? = null,

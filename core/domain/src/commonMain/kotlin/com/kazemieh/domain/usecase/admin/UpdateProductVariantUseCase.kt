@@ -12,10 +12,9 @@ class UpdateProductVariantUseCase(
         sku: String?,
         price: Double?,
         compareAtPrice: Double?,
-        sizeId: Long?,
-        colorId: Long?,
+        options: Map<String, String>?,
         isActive: Boolean?
     ): AppResult<AdminVariant> {
-        return repository.updateVariant(variantId, sku, price, compareAtPrice, sizeId, colorId, isActive)
+        return repository.updateVariant(variantId, sku, price, compareAtPrice, options, isActive)
     }
 }

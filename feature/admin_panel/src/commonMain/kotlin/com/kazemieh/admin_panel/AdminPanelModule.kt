@@ -5,8 +5,6 @@ import com.kazemieh.admin_panel.manage_product.ManageProductViewModel
 import com.kazemieh.admin_panel.manage_product.PhotoPicker
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
-import com.kazemieh.domain.usecase.catalog.GetSizesUseCase
-import com.kazemieh.domain.usecase.catalog.GetColorsUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -30,17 +28,9 @@ val adminPanelModule = module {
             deleteProductVariantUseCase = get(),
             createAdminCategoryUseCase = get(),
             deleteAdminCategoryUseCase = get(),
-            createSizeUseCase = get(),
-            updateSizeUseCase = get(),
-            deleteSizeUseCase = get(),
-            createColorUseCase = get(),
-            updateColorUseCase = get(),
-            deleteColorUseCase = get(),
             addProductImageUseCase = get(),
             deleteProductImageUseCase = get(),
             getCategoriesUseCase = get(),
-            getAdminSizesUseCase = get(),
-            getAdminColorsUseCase = get(),
             savedStateHandle = get()
         )
     }
@@ -64,14 +54,6 @@ val adminPanelModule = module {
     factory { DeleteProductVariantUseCase(get()) }
     factory { CreateAdminCategoryUseCase(get()) }
     factory { DeleteAdminCategoryUseCase(get()) }
-    factory { CreateSizeUseCase(get()) }
-    factory { CreateColorUseCase(get()) }
-    factory { GetAdminSizesUseCase(get()) }
-    factory { UpdateSizeUseCase(get()) }
-    factory { DeleteSizeUseCase(get()) }
-    factory { GetAdminColorsUseCase(get()) }
-    factory { UpdateColorUseCase(get()) }
-    factory { DeleteColorUseCase(get()) }
     factory { AddProductImageUseCase(get()) }
     factory { DeleteProductImageUseCase(get()) }
 
@@ -80,8 +62,6 @@ val adminPanelModule = module {
     factory { UpdateAdminOrderStatusUseCase(get()) }
 
     factory { GetCategoriesUseCase(get()) }
-    factory { GetSizesUseCase(get()) }
-    factory { GetColorsUseCase(get()) }
 
     single { PhotoPicker() }
 }

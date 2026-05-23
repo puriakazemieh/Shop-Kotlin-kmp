@@ -8,8 +8,7 @@ data class AdminUpdateVariantRequest(
     val sku: String? = null,
     val price: Double? = null,
     val compareAtPrice: Double? = null,
-    val sizeId: Long? = null, // اضافه شد
-    val colorId: Long? = null, // اضافه شد
+    val options: Map<String, String>? = null,
     @SerialName("active")
     val isActive: Boolean? = null
 )

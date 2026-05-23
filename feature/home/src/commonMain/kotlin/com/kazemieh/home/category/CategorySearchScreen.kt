@@ -3,6 +3,7 @@ package com.kazemieh.home.category
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -108,6 +109,33 @@ fun CategorySearchScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
+            if (state.availableOptions.isNotEmpty()) {
+                Column(modifier = Modifier.padding(horizontal = 12.dp)) {
+                    state.availableOptions.forEach { (key, values) ->
+                        Text(
+                            text = key,
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            contentPadding = PaddingValues(vertical = 4.dp)
+                        ) {
+                            items(values.toList()) { value ->
+                                val isSelected = state.selectedOptions[key] == value
+                                FilterChip(
+                                    selected = isSelected,
+                                    onClick = { viewModel.onIntent(CategorySearchIntent.ToggleOption(key, value)) },
+                                    label = { Text(value) }
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                }
+            }
+
             if (state.isLoading) {
                 LoadingCard(modifier = Modifier.fillMaxSize())
             } else if (state.error != null) {

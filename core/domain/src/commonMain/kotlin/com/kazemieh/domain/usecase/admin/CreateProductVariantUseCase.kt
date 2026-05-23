@@ -9,14 +9,13 @@ class CreateProductVariantUseCase(
 ) {
     suspend operator fun invoke(
         productId: Long,
-        sizeId: Long,
-        colorId: Long,
+        options: Map<String, String>,
         sku: String,
         price: Double,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
     ): AppResult<AdminVariant> {
-        return repository.createVariant(productId, sizeId, colorId, sku, price, compareAtPrice, isActive, initialOnHand)
+        return repository.createVariant(productId, options, sku, price, compareAtPrice, isActive, initialOnHand)
     }
 }

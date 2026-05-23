@@ -13,18 +13,6 @@ fun AdminCategoryResponse.toAdminDomain() = AdminCategory(
     parentId = parentId
 )
 
-fun AdminSizeResponse.toAdminDomain() = Size(
-    id = id,
-    name = name,
-    sortOrder = sortOrder
-)
-
-fun AdminColorResponse.toAdminDomain() = Color(
-    id = id,
-    name = name,
-    hex = hex
-)
-
 fun AdminProductResponse.toAdminDomain() = AdminProduct(
     id = id,
     categoryId = categoryId,
@@ -49,10 +37,7 @@ fun AdminVariantResponse.toAdminDomain() = AdminVariant(
     isActive = isActive,
     onHand = inventory?.onHand ?: 0,
     reserved = inventory?.reserved ?: 0,
-    sizeId = sizeId,
-    sizeName = sizeName,
-    colorId = colorId,
-    colorName = colorName
+    options = options
 )
 
 fun AdminInventoryResponse.toAdminDomain() = AdminInventory(
@@ -97,8 +82,7 @@ fun AdminOrderItemResponse.toAdminDomain() = AdminOrderItem(
     qty = qty,
     unitPriceSnapshot = unitPriceSnapshot,
     titleSnapshot = titleSnapshot,
-    sizeSnapshot = sizeSnapshot,
-    colorSnapshot = colorSnapshot
+    optionsSnapshot = optionsSnapshot
 )
 
 fun AdminAddressSnapshotResponse.toAdminDomain() = AdminAddressSnapshot(

@@ -13,19 +13,10 @@ class CatalogApiImpl(
         client.get("api/categories")
     }
 
-    override suspend fun getSizes(): List<SizeResponse> = safeApiCallRaw {
-        client.get("api/sizes")
-    }
-
-    override suspend fun getColors(): List<ColorResponse> = safeApiCallRaw {
-        client.get("api/colors")
-    }
-
     override suspend fun getProducts(
         query: String?,
         categoryId: Long?,
-        sizeId: Long?,
-        colorId: Long?,
+        options: Map<String, String>?,
         minPrice: Double?,
         maxPrice: Double?,
         inStock: Boolean?,
@@ -36,8 +27,9 @@ class CatalogApiImpl(
         client.get("api/products") {
             parameter("q", query)
             parameter("categoryId", categoryId)
-            parameter("sizeId", sizeId)
-            parameter("colorId", colorId)
+            options?.forEach { (key, value) ->
+                parameter("options.$key", value)
+            }
             parameter("minPrice", minPrice)
             parameter("maxPrice", maxPrice)
             parameter("inStock", inStock)
