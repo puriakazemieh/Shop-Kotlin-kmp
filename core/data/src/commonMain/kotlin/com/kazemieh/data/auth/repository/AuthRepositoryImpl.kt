@@ -69,6 +69,10 @@ class AuthRepositoryImpl(
         return authDataSource.forgotPassword(email)
     }
 
+    override suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit> {
+        return authDataSource.resetPassword(token, newPassword)
+    }
+
     override suspend fun signOut(): AppResult<Unit> {
         return try {
             tokenManager.clearTokens()

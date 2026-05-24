@@ -4,10 +4,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.kazemieh.auth.screen.AuthViewModel
 import com.kazemieh.auth.screen.ForgotPasswordScreen
 import com.kazemieh.auth.screen.LoginScreen
 import com.kazemieh.auth.screen.RegisterScreen
+import com.kazemieh.auth.screen.ResetPasswordScreen
 import com.kazemieh.common.Screen
 
 
@@ -59,6 +61,24 @@ fun NavGraphBuilder.authNavGraph(
                 onBack = {
                     navController.popBackStack()
                 })
+        }
+
+        composable<Screen.ResetPassword> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.ResetPassword>()
+            val viewModel: AuthViewModel = sharedViewModel(
+                navController = navController,
+                backStackEntry = backStackEntry,
+                navGraph = Screen.AuthGraph
+            )
+            ResetPasswordScreen(
+                token = args.token,
+                viewModel = viewModel,
+                onNavigateLogin = {
+                    navController.navigate(Screen.Login) {
+                        popUpTo(Screen.AuthGraph) { inclusive = true }
+                    }
+                }
+            )
         }
 
     }

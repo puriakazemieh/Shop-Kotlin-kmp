@@ -10,6 +10,7 @@ import com.kazemieh.common.doOnSuccess
 import com.kazemieh.domain.usecase.ForgotPasswordUseCase
 import com.kazemieh.domain.usecase.LoginUseCase
 import com.kazemieh.domain.usecase.RegisterUseCase
+import com.kazemieh.domain.usecase.ResetPasswordUseCase
 import com.kazemieh.domain.validation.ValidateEmail
 import com.kazemieh.domain.validation.ValidatePassword
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,6 +21,7 @@ class AuthViewModel(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
     private val forgotPasswordUseCase: ForgotPasswordUseCase,
+    private val resetPasswordUseCase: ResetPasswordUseCase,
     private val validateEmail: ValidateEmail,
     private val validatePassword: ValidatePassword
 ) : ViewModel() {
@@ -51,6 +53,22 @@ class AuthViewModel(
 
             AuthEvent.SubmitForgotPassword -> {
                 submitForgot()
+            }
+
+            is AuthEvent.OnNewPasswordChange -> {
+                state = state.copy(newPassword = event.value, newPasswordError = null)
+            }
+
+            is AuthEvent.OnConfirmPasswordChange -> {
+                state = state.copy(confirmPassword = event.value, confirmPasswordError = null)
+            }
+
+            is AuthEvent.OnTokenReceived -> {
+                state = state.copy(token = event.value)
+            }
+
+            AuthEvent.SubmitResetPassword -> {
+                submitResetPassword()
             }
         }
     }
@@ -125,12 +143,40 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 state = state.copy(isLoading = false)
-                _event.emit(UiEvent.NavigateToHome)
+                _event.emit(UiEvent.ShowSuccess(Unit))
             }.doOnError {
                 state = state.copy(isLoading = false)
                 _event.emit(UiEvent.ShowError(it))
             }
 
+        }
+    }
+
+    private fun submitResetPassword() {
+        val passwordResult = validatePassword(state.newPassword)
+        if (!passwordResult.successful) {
+            state = state.copy(newPasswordError = passwordResult.errorMessage)
+            return
+        }
+
+        if (state.newPassword != state.confirmPassword) {
+            state = state.copy(confirmPasswordError = "PASSWORDS_DO_NOT_MATCH")
+            return
+        }
+
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+
+            val result = resetPasswordUseCase(state.token, state.newPassword)
+
+            result.doOnSuccess {
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.ShowSuccess(Unit))
+                _event.emit(UiEvent.NavigateToLogin)
+            }.doOnError {
+                state = state.copy(isLoading = false)
+                _event.emit(UiEvent.ShowError(it))
+            }
         }
     }
 }
@@ -139,8 +185,14 @@ data class AuthState(
     val email: String = "",
     val password: String = "",
 
+    val newPassword: String = "",
+    val confirmPassword: String = "",
+    val token: String = "",
+
     val emailError: Any? = null,
     val passwordError: Any? = null,
+    val newPasswordError: Any? = null,
+    val confirmPasswordError: Any? = null,
 
     val isLoading: Boolean = false,
 )
@@ -149,12 +201,19 @@ sealed class AuthEvent {
     data class OnEmailChange(val value: String) : AuthEvent()
     data class OnPasswordChange(val value: String) : AuthEvent()
 
+    data class OnNewPasswordChange(val value: String) : AuthEvent()
+    data class OnConfirmPasswordChange(val value: String) : AuthEvent()
+    data class OnTokenReceived(val value: String) : AuthEvent()
+
     object SubmitLogin : AuthEvent()
     object SubmitRegister : AuthEvent()
     object SubmitForgotPassword : AuthEvent()
+    object SubmitResetPassword : AuthEvent()
 }
 
 sealed class UiEvent {
     object NavigateToHome : UiEvent()
+    object NavigateToLogin : UiEvent()
     data class ShowError(val message: Any?) : UiEvent()
+    data class ShowSuccess(val message: Any?) : UiEvent()
 }

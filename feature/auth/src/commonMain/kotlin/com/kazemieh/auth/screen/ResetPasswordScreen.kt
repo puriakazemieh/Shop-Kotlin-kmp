@@ -1,6 +1,5 @@
 package com.kazemieh.auth.screen
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -28,7 +26,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun RegisterScreen(
+fun ResetPasswordScreen(
+    token: String,
     viewModel: AuthViewModel = koinViewModel(),
     onNavigateLogin: () -> Unit
 ) {
@@ -36,14 +35,30 @@ fun RegisterScreen(
     val colors = AppTheme.colors
     val messageBarState = rememberMessageBarState()
 
+    val successMessage = stringResource(Resources.String.PasswordResetSuccess)
+    val passwordsDoNotMatchMessage = stringResource(Resources.String.PasswordsDoNotMatch)
+
+    LaunchedEffect(token) {
+        viewModel.onEvent(AuthEvent.OnTokenReceived(token))
+    }
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-
-                UiEvent.NavigateToHome -> {
+                is UiEvent.ShowError -> {
+                    if (event.message == "PASSWORDS_DO_NOT_MATCH") {
+                        messageBarState.addError(passwordsDoNotMatchMessage)
+                    } else {
+                        messageBarState.addError(event.message ?: "Unknown Error")
+                    }
                 }
 
-                is UiEvent.ShowError -> {
+                is UiEvent.ShowSuccess -> {
+                    messageBarState.addSuccess(successMessage)
+                }
+
+                UiEvent.NavigateToLogin -> {
+                    onNavigateLogin()
                 }
 
                 else -> {}
@@ -67,51 +82,46 @@ fun RegisterScreen(
                     .padding(24.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(stringResource(Resources.String.CreateAccount), fontSize = FontSize.LARGE)
+                Text(stringResource(Resources.String.ResetPassword), fontSize = FontSize.LARGE)
 
                 Spacer(Modifier.height(24.dp))
 
                 AuthTextField(
-                    value = state.email,
+                    value = state.newPassword,
                     onValueChange = {
-                        viewModel.onEvent(AuthEvent.OnEmailChange(it))
+                        viewModel.onEvent(AuthEvent.OnNewPasswordChange(it))
                     },
-                    hint = stringResource(Resources.String.EmailHint)
+                    hint = stringResource(Resources.String.NewPasswordHint),
+                    isPassword = true
                 )
 
-                state.emailError?.let {
+                state.newPasswordError?.let {
                     Text(anyToString(it), color = colors.error)
                 }
 
                 Spacer(Modifier.height(12.dp))
 
                 AuthTextField(
-                    value = state.password,
+                    value = state.confirmPassword,
                     onValueChange = {
-                        viewModel.onEvent(AuthEvent.OnPasswordChange(it))
+                        viewModel.onEvent(AuthEvent.OnConfirmPasswordChange(it))
                     },
-                    hint = stringResource(Resources.String.PasswordHint),
+                    hint = stringResource(Resources.String.ConfirmPasswordHint),
                     isPassword = true
                 )
 
-                state.passwordError?.let {
+                state.confirmPasswordError?.let {
                     Text(anyToString(it), color = colors.error)
                 }
 
                 Spacer(Modifier.height(24.dp))
 
-                AuthButton(stringResource(Resources.String.CreateAccount)) {
-                    viewModel.onEvent(AuthEvent.SubmitRegister)
+                AuthButton(stringResource(Resources.String.ResetPassword)) {
+                    viewModel.onEvent(AuthEvent.SubmitResetPassword)
                 }
 
                 if (state.isLoading) {
                     CircularProgressIndicator()
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                TextButton(onClick = onNavigateLogin) {
-                    Text(stringResource(Resources.String.AlreadyHaveAccount))
                 }
             }
         }

@@ -23,6 +23,11 @@ import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
+import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+
 @Composable
 fun ForgotPasswordScreen(
     viewModel: AuthViewModel = koinViewModel(),
@@ -30,44 +35,74 @@ fun ForgotPasswordScreen(
 ) {
     val state = viewModel.state
     val colors = AppTheme.colors
+    val messageBarState = rememberMessageBarState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.background)
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(stringResource(Resources.String.ForgotPassword), fontSize = FontSize.LARGE)
+    val emailSentMessage = stringResource(Resources.String.PasswordResetEmailSent)
 
-        Spacer(Modifier.height(24.dp))
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is UiEvent.ShowError -> {
+                    messageBarState.addError(event.message ?: "Unknown Error")
+                }
 
-        AuthTextField(
-            value = state.email,
-            onValueChange = {
-                viewModel.onEvent(AuthEvent.OnEmailChange(it))
-            },
-            hint = stringResource(Resources.String.EmailHint)
-        )
+                is UiEvent.ShowSuccess -> {
+                    messageBarState.addSuccess(emailSentMessage)
+                }
 
-        state.emailError?.let {
-            Text(anyToString(it), color = colors.error)
+                else -> {}
+            }
         }
+    }
 
-        Spacer(Modifier.height(24.dp))
+    Scaffold { padding ->
+        ContentWithMessageBar(
+            modifier = Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    bottom = padding.calculateBottomPadding()
+                ),
+            messageBarState = messageBarState,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colors.background)
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(stringResource(Resources.String.ForgotPassword), fontSize = FontSize.LARGE)
 
-        AuthButton(stringResource(Resources.String.SendResetLink)) {
-            viewModel.onEvent(AuthEvent.SubmitForgotPassword)
-        }
+                Spacer(Modifier.height(24.dp))
 
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
+                AuthTextField(
+                    value = state.email,
+                    onValueChange = {
+                        viewModel.onEvent(AuthEvent.OnEmailChange(it))
+                    },
+                    hint = stringResource(Resources.String.EmailHint)
+                )
 
-        Spacer(Modifier.height(16.dp))
+                state.emailError?.let {
+                    Text(anyToString(it), color = colors.error)
+                }
 
-        TextButton(onClick = onBack) {
-            Text(stringResource(Resources.String.BackToLogin))
+                Spacer(Modifier.height(24.dp))
+
+                AuthButton(stringResource(Resources.String.SendResetLink)) {
+                    viewModel.onEvent(AuthEvent.SubmitForgotPassword)
+                }
+
+                if (state.isLoading) {
+                    CircularProgressIndicator()
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                TextButton(onClick = onBack) {
+                    Text(stringResource(Resources.String.BackToLogin))
+                }
+            }
         }
     }
 }

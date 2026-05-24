@@ -2,6 +2,7 @@ package com.kazemieh.network
 
 import com.kazemieh.network.dto.request.LoginRequest
 import com.kazemieh.network.dto.request.RegisterRequest
+import com.kazemieh.network.dto.request.ResetPasswordRequest
 import com.kazemieh.network.dto.response.AuthResponse
 import com.kazemieh.network.dto.response.UserResponse
 import io.ktor.client.HttpClient
@@ -26,7 +27,13 @@ class AuthApiImpl(
 
     override suspend fun forgotPassword(
         email: String
-    ) {
+    ) = safeApiCallRaw<Unit> {
         client.post("api/auth/forgot-password") { setBody(mapOf("email" to email)) }
+    }
+
+    override suspend fun resetPassword(
+        request: ResetPasswordRequest
+    ) = safeApiCallRaw<Unit> {
+        client.post("api/auth/reset-password") { setBody(request) }
     }
 }

@@ -18,6 +18,9 @@ sealed class Screen {
     data object ForgotPassword : Screen()
 
     @Serializable
+    data class ResetPassword(val token: String) : Screen()
+
+    @Serializable
     data class HomeGraph(val showCart: Boolean = false) : Screen()
 
     @Serializable

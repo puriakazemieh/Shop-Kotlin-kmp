@@ -6,6 +6,7 @@ import com.kazemieh.domain.model.Auth
 import com.kazemieh.network.AuthApi
 import com.kazemieh.network.dto.request.LoginRequest
 import com.kazemieh.network.dto.request.RegisterRequest
+import com.kazemieh.network.dto.request.ResetPasswordRequest
 import com.kazemieh.network.safeApiCall
 
 class AuthDataSourceImpl(
@@ -22,6 +23,10 @@ class AuthDataSourceImpl(
 
     override suspend fun forgotPassword(email: String): AppResult<Unit> = safeApiCall {
         authApi.forgotPassword(email)
+    }
+
+    override suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit> = safeApiCall {
+        authApi.resetPassword(ResetPasswordRequest(token, newPassword))
     }
 
 }

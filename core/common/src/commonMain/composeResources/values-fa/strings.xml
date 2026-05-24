@@ -101,12 +101,19 @@
 
     <!-- Auth -->
     <string name="forgot_password">فراموشی رمز عبور</string>
+    <string name="reset_password">بازنشانی رمز عبور</string>
     <string name="create_account">ایجاد حساب کاربری</string>
     <string name="back_to_login">بازگشت به ورود</string>
     <string name="already_have_account">حساب کاربری دارید؟</string>
     <string name="email_hint">ایمیل</string>
     <string name="password_hint">رمز عبور</string>
+    <string name="new_password_hint">رمز عبور جدید</string>
+    <string name="confirm_password_hint">تکرار رمز عبور جدید</string>
     <string name="send_reset_link">ارسال لینک بازیابی</string>
+    <string name="reset_password_email_sent">ایمیل بازنشانی رمز عبور برای شما ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید.</string>
+    <string name="password_reset_success">رمز عبور شما با موفقیت تغییر کرد</string>
+    <string name="invalid_reset_token">این لینک بازنشانی نامعتبر است یا منقضی شده. لطفاً دوباره تلاش کنید.</string>
+    <string name="passwords_do_not_match">رمزهای عبور مطابقت ندارند</string>
 
     <!-- Home/Drawer -->
     <string name="carmilla">کارمیلا</string>

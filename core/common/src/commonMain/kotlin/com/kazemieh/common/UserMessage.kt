@@ -13,6 +13,7 @@ fun String.toUserMessage(): StringResource {
         "ACCESS_DENIED" -> Res.string.access_denied
         "INVALID_CURRENT_PASSWORD" -> Res.string.invalid_current_password
         "SAME_AS_OLD_PASSWORD" -> Res.string.same_as_old_password
+        "INVALID_RESET_TOKEN" -> Res.string.invalid_reset_token
 
         // Category
         "CATEGORY_NOT_FOUND" -> Res.string.category_not_found

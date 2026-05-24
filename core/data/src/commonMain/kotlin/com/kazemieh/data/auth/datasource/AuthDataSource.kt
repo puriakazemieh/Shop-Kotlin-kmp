@@ -7,4 +7,5 @@ interface AuthDataSource {
     suspend fun login(email: String, password: String): AppResult<Auth>
     suspend fun register(email: String, password: String): AppResult<Auth>
     suspend fun forgotPassword(email: String): AppResult<Unit>
+    suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit>
 }

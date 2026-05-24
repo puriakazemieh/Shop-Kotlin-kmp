@@ -87,6 +87,7 @@ object Resources {
         val PayWithPayPal = CommonRes.string.pay_with_paypal
         val PayOnDelivery = CommonRes.string.pay_on_delivery
         val Login = CommonRes.string.login
+        val ResetPassword = CommonRes.string.reset_password
 
         // Error/Result handling
         val ErrorParsingData = CommonRes.string.error_parsing_data
@@ -190,7 +191,13 @@ object Resources {
         val AlreadyHaveAccount = CommonRes.string.already_have_account
         val EmailHint = CommonRes.string.email_hint
         val PasswordHint = CommonRes.string.password_hint
+        val NewPasswordHint = CommonRes.string.new_password_hint
+        val ConfirmPasswordHint = CommonRes.string.confirm_password_hint
         val SendResetLink = CommonRes.string.send_reset_link
+        val PasswordResetEmailSent = CommonRes.string.reset_password_email_sent
+        val PasswordResetSuccess = CommonRes.string.password_reset_success
+        val InvalidResetToken = CommonRes.string.invalid_reset_token
+        val PasswordsDoNotMatch = CommonRes.string.passwords_do_not_match
         val PasswordTooShort = CommonRes.string.password_too_short
         val InvalidEmail = CommonRes.string.invalid_email
         val EmailEmpty = CommonRes.string.email_empty
