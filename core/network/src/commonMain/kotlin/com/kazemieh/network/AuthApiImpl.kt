@@ -4,9 +4,7 @@ import com.kazemieh.network.dto.request.LoginRequest
 import com.kazemieh.network.dto.request.RegisterRequest
 import com.kazemieh.network.dto.request.ResetPasswordRequest
 import com.kazemieh.network.dto.response.AuthResponse
-import com.kazemieh.network.dto.response.UserResponse
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
@@ -17,13 +15,15 @@ class AuthApiImpl(
     //puriakazemieh@gmail.com
     override suspend fun login(
         request: LoginRequest
-    ): AuthResponse =
-        client.post("api/auth/login") { setBody(request) }.body()
+    ): AuthResponse = safeApiCallRaw {
+        client.post("api/auth/login") { setBody(request) }
+    }
 
     override suspend fun register(
         request: RegisterRequest
-    ): AuthResponse =
-        client.post("api/auth/register") { setBody(request) }.body()
+    ): AuthResponse = safeApiCallRaw {
+        client.post("api/auth/register") { setBody(request) }
+    }
 
     override suspend fun forgotPassword(
         email: String

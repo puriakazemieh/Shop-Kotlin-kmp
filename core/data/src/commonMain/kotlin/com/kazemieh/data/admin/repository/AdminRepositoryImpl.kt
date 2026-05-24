@@ -45,8 +45,7 @@ class AdminRepositoryImpl(
                 isActive,
                 variants?.map {
                     AdminCreateVariantRequest(
-                        it.optionType,
-                        it.optionValue,
+                        it.options.map { option -> AdminVariantOptionRequest(option.type, option.value) },
                         it.sku,
                         it.price,
                         it.compareAtPrice,
@@ -85,26 +84,43 @@ class AdminRepositoryImpl(
 
     override suspend fun createVariant(
         productId: Long,
-        optionType: String,
-        optionValue: String,
+        options: List<AdminVariantOption>,
         sku: String,
         price: Double,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
     ): AppResult<AdminVariant> =
-        dataSource.createVariant(productId, AdminCreateVariantRequest(optionType, optionValue, sku, price, compareAtPrice, isActive, initialOnHand)).map { it.toAdminDomain() }
+        dataSource.createVariant(
+            productId,
+            AdminCreateVariantRequest(
+                options.map { AdminVariantOptionRequest(it.type, it.value) },
+                sku,
+                price,
+                compareAtPrice,
+                isActive,
+                initialOnHand
+            )
+        ).map { it.toAdminDomain() }
 
     override suspend fun updateVariant(
         variantId: Long,
         sku: String?,
         price: Double?,
         compareAtPrice: Double?,
-        optionType: String?,
-        optionValue: String?,
+        options: List<AdminVariantOption>?,
         isActive: Boolean?
     ): AppResult<AdminVariant> =
-        dataSource.updateVariant(variantId, AdminUpdateVariantRequest(sku, price, compareAtPrice, optionType, optionValue, isActive)).map { it.toAdminDomain() }
+        dataSource.updateVariant(
+            variantId,
+            AdminUpdateVariantRequest(
+                sku,
+                price,
+                compareAtPrice,
+                options?.map { AdminVariantOptionRequest(it.type, it.value) },
+                isActive
+            )
+        ).map { it.toAdminDomain() }
 
     override suspend fun deleteVariant(variantId: Long): AppResult<Unit> =
         dataSource.deleteVariant(variantId)

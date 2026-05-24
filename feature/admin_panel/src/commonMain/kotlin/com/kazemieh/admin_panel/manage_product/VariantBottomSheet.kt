@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +18,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.admin.AdminOption
 import com.kazemieh.domain.model.admin.AdminVariant
+import com.kazemieh.domain.model.admin.AdminVariantOption
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,20 +27,23 @@ fun VariantBottomSheet(
     variant: AdminVariant? = null,
     availableOptions: List<AdminOption>,
     onDismiss: () -> Unit,
-    onConfirm: (sku: String, price: Double, optionType: String, optionValue: String, isActive: Boolean, initialOnHand: Int) -> Unit,
+    onConfirm: (sku: String, price: Double, options: List<AdminVariantOption>, isActive: Boolean, initialOnHand: Int) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    
-    var optionType by remember { mutableStateOf(variant?.options?.keys?.firstOrNull() ?: "") }
-    var optionValue by remember { mutableStateOf(variant?.options?.values?.firstOrNull() ?: "") }
+
+    var options by remember {
+        mutableStateOf(
+            variant?.options?.map { AdminVariantOption(it.key, it.value) } ?: listOf(
+                AdminVariantOption("", "")
+            )
+        )
+    }
     var sku by remember { mutableStateOf(variant?.sku ?: "") }
     var price by remember { mutableStateOf(variant?.price?.toString() ?: "") }
     var isActive by remember { mutableStateOf(variant?.isActive ?: true) }
     var initialOnHand by remember { mutableStateOf(variant?.onHand?.toString() ?: "") }
 
-    var typeExpanded by remember { mutableStateOf(false) }
-    var valueExpanded by remember { mutableStateOf(false) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -58,66 +65,54 @@ fun VariantBottomSheet(
                 fontWeight = FontWeight.Bold
             )
 
-            // Option Type
-            ExposedDropdownMenuBox(
-                expanded = typeExpanded,
-                onExpandedChange = { typeExpanded = it }
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    value = optionType,
-                    onValueChange = { 
-                        optionType = it
-                        optionValue = "" // Reset value when type changes
-                    },
-                    label = { Text("Option Type") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeExpanded) },
-                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
-                )
-                ExposedDropdownMenu(
-                    expanded = typeExpanded,
-                    onDismissRequest = { typeExpanded = false }
+            options.forEachIndexed { index, option ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    availableOptions.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option.name) },
-                            onClick = {
-                                optionType = option.name
-                                optionValue = "" // Reset value
-                                typeExpanded = false
+                    Column(modifier = Modifier.weight(1f)) {
+                        OptionSelector(
+                            label = "Type",
+                            value = option.type,
+                            suggestions = availableOptions.map { it.name },
+                            onValueChange = { newType ->
+                                val newList = options.toMutableList()
+                                newList[index] = option.copy(type = newType, value = "")
+                                options = newList
                             }
                         )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        OptionSelector(
+                            label = "Value",
+                            value = option.value,
+                            suggestions = availableOptions.find { it.name == option.type }?.values?.map { it.value }
+                                ?: emptyList(),
+                            onValueChange = { newValue ->
+                                val newList = options.toMutableList()
+                                newList[index] = option.copy(value = newValue)
+                                options = newList
+                            }
+                        )
+                    }
+                    IconButton(onClick = {
+                        if (options.size > 1) {
+                            options = options.filterIndexed { i, _ -> i != index }
+                        }
+                    }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete Option", tint = MaterialTheme.colorScheme.error)
                     }
                 }
             }
 
-            // Option Value
-            ExposedDropdownMenuBox(
-                expanded = valueExpanded,
-                onExpandedChange = { valueExpanded = it }
+            TextButton(
+                onClick = { options = options + AdminVariantOption("", "") },
+                modifier = Modifier.align(Alignment.Start)
             ) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    value = optionValue,
-                    onValueChange = { optionValue = it },
-                    label = { Text("Option Value") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = valueExpanded) },
-                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
-                )
-                ExposedDropdownMenu(
-                    expanded = valueExpanded,
-                    onDismissRequest = { valueExpanded = false }
-                ) {
-                    availableOptions.find { it.name == optionType }?.values?.forEach { value ->
-                        DropdownMenuItem(
-                            text = { Text(value.value) },
-                            onClick = {
-                                optionValue = value.value
-                                valueExpanded = false
-                            }
-                        )
-                    }
-                }
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text("Add Option")
             }
 
             OutlinedTextField(
@@ -160,17 +155,15 @@ fun VariantBottomSheet(
             }
 
             Button(
-                enabled = optionType.isNotBlank() && 
-                          optionValue.isNotBlank() && 
-                          sku.isNotBlank() && 
-                          price.toDoubleOrNull() != null &&
-                          initialOnHand.toIntOrNull() != null,
+                enabled = options.all { it.type.isNotBlank() && it.value.isNotBlank() } &&
+                        sku.isNotBlank() &&
+                        price.toDoubleOrNull() != null &&
+                        initialOnHand.toIntOrNull() != null,
                 onClick = {
                     onConfirm(
                         sku,
                         price.toDouble(),
-                        optionType,
-                        optionValue,
+                        options,
                         isActive,
                         initialOnHand.toInt()
                     )
@@ -178,6 +171,49 @@ fun VariantBottomSheet(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (variant == null) stringResource(Resources.String.Add) else stringResource(Resources.String.Update))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OptionSelector(
+    label: String,
+    value: String,
+    suggestions: List<String>,
+    onValueChange: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it }
+    ) {
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth().menuAnchor(),
+            value = value,
+            onValueChange = {
+                onValueChange(it)
+            },
+            label = { Text(label) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+        )
+        if (suggestions.isNotEmpty()) {
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                suggestions.forEach { suggestion ->
+                    DropdownMenuItem(
+                        text = { Text(suggestion) },
+                        onClick = {
+                            onValueChange(suggestion)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }

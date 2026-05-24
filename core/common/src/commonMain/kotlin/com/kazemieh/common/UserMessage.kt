@@ -76,6 +76,9 @@ fun String.toUserMessage(): StringResource {
         "INVALID_JSON" -> Res.string.invalid_json
         "INTERNAL_ERROR" -> Res.string.internal_error
 
+        "OPTION_VALUE_IN_USE" -> Res.string.option_value_in_use
+        "OPTION_TYPE_IN_USE" -> Res.string.option_type_in_use
+
         "UNKNOWN_ERROR" -> Res.string.unknown_error
 
         else -> Res.string.unknown_error

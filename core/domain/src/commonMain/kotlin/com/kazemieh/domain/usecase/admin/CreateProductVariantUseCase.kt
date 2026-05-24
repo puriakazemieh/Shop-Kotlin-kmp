@@ -2,6 +2,7 @@ package com.kazemieh.domain.usecase.admin
 
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.model.admin.AdminVariant
+import com.kazemieh.domain.model.admin.AdminVariantOption
 import com.kazemieh.domain.repository.AdminRepository
 
 class CreateProductVariantUseCase(
@@ -9,14 +10,13 @@ class CreateProductVariantUseCase(
 ) {
     suspend operator fun invoke(
         productId: Long,
-        optionType: String,
-        optionValue: String,
+        options: List<AdminVariantOption>,
         sku: String,
         price: Double,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
     ): AppResult<AdminVariant> {
-        return repository.createVariant(productId, optionType, optionValue, sku, price, compareAtPrice, isActive, initialOnHand)
+        return repository.createVariant(productId, options, sku, price, compareAtPrice, isActive, initialOnHand)
     }
 }

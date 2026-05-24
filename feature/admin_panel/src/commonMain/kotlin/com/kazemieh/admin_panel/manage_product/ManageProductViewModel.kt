@@ -8,6 +8,8 @@ import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.Category
 import com.kazemieh.domain.model.admin.AdminOption
 import com.kazemieh.domain.model.admin.AdminVariant
+import com.kazemieh.domain.model.admin.AdminVariantOption
+import com.kazemieh.domain.model.admin.AdminCreateVariant
 import com.kazemieh.domain.usecase.admin.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import kotlinx.coroutines.channels.Channel
@@ -63,8 +65,7 @@ class ManageProductViewModel(
             is ManageProductIntent.DeleteProduct -> deleteProduct()
             is ManageProductIntent.DeleteImage -> deleteImage(intent.imageId)
             is ManageProductIntent.AddVariant -> addVariant(
-                intent.optionType,
-                intent.optionValue,
+                intent.options,
                 intent.sku,
                 intent.price,
                 intent.initialOnHand
@@ -73,8 +74,7 @@ class ManageProductViewModel(
                 intent.id,
                 intent.sku,
                 intent.price,
-                intent.optionType,
-                intent.optionValue,
+                intent.options,
                 intent.isActive
             )
 
@@ -161,9 +161,13 @@ class ManageProductViewModel(
                     basePrice = currentState.basePrice,
                     isActive = currentState.isActive,
                     variants = currentState.variants.map {
-                        com.kazemieh.domain.model.admin.AdminCreateVariant(
-                            optionType = it.options.keys.firstOrNull() ?: "",
-                            optionValue = it.options.values.firstOrNull() ?: "",
+                        AdminCreateVariant(
+                            options = it.options.map { entry ->
+                                AdminVariantOption(
+                                    entry.key,
+                                    entry.value
+                                )
+                            },
                             sku = it.sku,
                             price = it.price,
                             compareAtPrice = it.compareAtPrice,
@@ -242,8 +246,7 @@ class ManageProductViewModel(
     }
 
     private fun addVariant(
-        optionType: String,
-        optionValue: String,
+        options: List<AdminVariantOption>,
         sku: String,
         price: Double,
         initialOnHand: Int
@@ -258,7 +261,7 @@ class ManageProductViewModel(
                     isActive = true,
                     onHand = initialOnHand,
                     reserved = 0,
-                    options = mapOf(optionType to optionValue)
+                    options = options.associate { opt -> opt.type to opt.value }
                 )
                 it.copy(variants = it.variants + newVariant)
             }
@@ -267,8 +270,7 @@ class ManageProductViewModel(
         viewModelScope.launch {
             val result = createProductVariantUseCase(
                 productId = productId,
-                optionType = optionType,
-                optionValue = optionValue,
+                options = options,
                 sku = sku,
                 price = price,
                 compareAtPrice = null,
@@ -291,8 +293,7 @@ class ManageProductViewModel(
         id: Long,
         sku: String?,
         price: Double?,
-        optionType: String?,
-        optionValue: String?,
+        options: List<AdminVariantOption>?,
         isActive: Boolean?
     ) {
         if (productId == -1L) {
@@ -302,7 +303,7 @@ class ManageProductViewModel(
                         v.copy(
                             sku = sku ?: v.sku,
                             price = price ?: v.price,
-                            options = if (optionType != null && optionValue != null) mapOf(optionType to optionValue) else v.options,
+                            options = options?.associate { it.type to it.value } ?: v.options,
                             isActive = isActive ?: v.isActive
                         )
                     } else v
@@ -313,7 +314,7 @@ class ManageProductViewModel(
         }
         viewModelScope.launch {
             when (val result =
-                updateProductVariantUseCase(id, sku, price, null, optionType, optionValue, isActive)) {
+                updateProductVariantUseCase(id, sku, price, null, options, isActive)) {
                 is AppResult.Success<*> -> {
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantUpdated))
                     loadProductDetail()
@@ -433,8 +434,7 @@ sealed interface ManageProductIntent {
     data object DeleteProduct : ManageProductIntent
     data class DeleteImage(val imageId: Long) : ManageProductIntent
     data class AddVariant(
-        val optionType: String,
-        val optionValue: String,
+        val options: List<AdminVariantOption>,
         val sku: String,
         val price: Double,
         val initialOnHand: Int
@@ -444,8 +444,7 @@ sealed interface ManageProductIntent {
         val id: Long,
         val sku: String?,
         val price: Double?,
-        val optionType: String?,
-        val optionValue: String?,
+        val options: List<AdminVariantOption>?,
         val isActive: Boolean?
     ) : ManageProductIntent
 

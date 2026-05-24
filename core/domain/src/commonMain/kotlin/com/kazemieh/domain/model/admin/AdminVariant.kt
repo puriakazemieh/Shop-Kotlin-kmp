@@ -12,11 +12,15 @@ data class AdminVariant(
 )
 
 data class AdminCreateVariant(
-    val optionType: String,
-    val optionValue: String,
+    val options: List<AdminVariantOption>,
     val sku: String,
     val price: Double,
     val compareAtPrice: Double? = null,
     val isActive: Boolean = true,
     val initialOnHand: Int = 0
+)
+
+data class AdminVariantOption(
+    val type: String,
+    val value: String
 )

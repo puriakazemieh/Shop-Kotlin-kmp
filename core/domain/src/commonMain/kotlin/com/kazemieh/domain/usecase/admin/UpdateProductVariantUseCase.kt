@@ -2,6 +2,7 @@ package com.kazemieh.domain.usecase.admin
 
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.model.admin.AdminVariant
+import com.kazemieh.domain.model.admin.AdminVariantOption
 import com.kazemieh.domain.repository.AdminRepository
 
 class UpdateProductVariantUseCase(
@@ -12,10 +13,9 @@ class UpdateProductVariantUseCase(
         sku: String?,
         price: Double?,
         compareAtPrice: Double?,
-        optionType: String?,
-        optionValue: String?,
+        options: List<AdminVariantOption>?,
         isActive: Boolean?
     ): AppResult<AdminVariant> {
-        return repository.updateVariant(variantId, sku, price, compareAtPrice, optionType, optionValue, isActive)
+        return repository.updateVariant(variantId, sku, price, compareAtPrice, options, isActive)
     }
 }

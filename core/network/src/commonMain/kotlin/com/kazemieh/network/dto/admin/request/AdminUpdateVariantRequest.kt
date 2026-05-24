@@ -8,8 +8,7 @@ data class AdminUpdateVariantRequest(
     val sku: String? = null,
     val price: Double? = null,
     val compareAtPrice: Double? = null,
-    val optionType: String? = null,
-    val optionValue: String? = null,
+    val options: List<AdminVariantOptionRequest>? = null,
     @SerialName("active")
     val isActive: Boolean? = null
 )
