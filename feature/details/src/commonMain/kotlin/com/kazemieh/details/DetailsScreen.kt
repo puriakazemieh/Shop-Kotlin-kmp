@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,9 +34,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -40,6 +48,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -68,6 +78,7 @@ fun DetailsScreen(
     val viewModel = koinViewModel<DetailsViewModel>()
     val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    var fullscreenImageUrl by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state.isAddedToCart, state.quantity, state.isCounterMode) {
         if (state.isAddedToCart && state.isCounterMode) {
@@ -144,9 +155,8 @@ fun DetailsScreen(
                                 .padding(horizontal = 24.dp)
                                 .padding(top = 12.dp)
                         ) {
-                            val painter =
-                                rememberImagePainter(product.images.firstOrNull()?.url ?: "")
-                            Image(
+                            val pagerState = rememberPagerState(pageCount = { product.images.size.coerceAtLeast(1) })
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(300.dp)
@@ -155,11 +165,48 @@ fun DetailsScreen(
                                         width = 1.dp,
                                         color = MaterialTheme.colorScheme.outline,
                                         shape = RoundedCornerShape(size = 12.dp)
-                                    ),
-                                painter = painter,
-                                contentDescription = stringResource(Resources.String.ProductImageDesc),
-                                contentScale = ContentScale.Crop
-                            )
+                                    )
+                            ) {
+                                HorizontalPager(
+                                    state = pagerState,
+                                    modifier = Modifier.fillMaxSize()
+                                ) { page ->
+                                    val imageUrl = product.images.getOrNull(page)?.url ?: ""
+                                    val painter = rememberImagePainter(imageUrl)
+                                    Image(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clickable {
+                                                if (imageUrl.isNotEmpty()) fullscreenImageUrl = imageUrl
+                                            },
+                                        painter = painter,
+                                        contentDescription = stringResource(Resources.String.ProductImageDesc),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+
+                                if (product.images.size > 1) {
+                                    Row(
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .padding(bottom = 12.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    ) {
+                                        repeat(product.images.size) { iteration ->
+                                            val color = if (pagerState.currentPage == iteration)
+                                                MaterialTheme.colorScheme.primary
+                                            else
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                            Box(
+                                                modifier = Modifier
+                                                    .clip(CircleShape)
+                                                    .background(color)
+                                                    .size(8.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                             Spacer(modifier = Modifier.height(12.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -172,7 +219,7 @@ fun DetailsScreen(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    text = stringResource(Resources.String.PriceFormat, state.selectedVariant?.price ?: 0.0),
+                                    text = stringResource(Resources.String.PriceFormat).format((state.selectedVariant?.price ?: 0.0).toString()),
                                     fontSize = FontSize.MEDIUM,
                                     color = MaterialTheme.colorScheme.secondary,
                                     fontWeight = FontWeight.Medium
@@ -199,34 +246,44 @@ fun DetailsScreen(
                                 .padding(all = 24.dp)
                         ) {
                             if (product.variants.isNotEmpty()) {
-                                Text(
-                                    text = stringResource(Resources.String.Variants),
-                                    fontSize = FontSize.MEDIUM,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                FlowRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
+                                val groupedOptions = remember(product.variants) {
+                                    val map = mutableMapOf<String, MutableSet<String>>()
                                     product.variants.forEach { variant ->
-                                        val variantLabel = variant.options.entries.firstOrNull()?.let { "${it.key}: ${it.value}" } ?: variant.sku
-                                        VariantChip(
-                                            label = variantLabel,
-                                            isSelected = state.selectedVariant == variant,
-                                            onClick = {
-                                                viewModel.onIntent(
-                                                    DetailsIntent.SelectVariant(
-                                                        variant
-                                                    )
-                                                )
-                                            }
-                                        )
+                                        variant.options.forEach { (key, value) ->
+                                            map.getOrPut(key) { mutableSetOf() }.add(value)
+                                        }
                                     }
+                                    map
                                 }
-                                Spacer(modifier = Modifier.height(24.dp))
+
+                                groupedOptions.forEach { (optionName, values) ->
+                                    Text(
+                                        text = optionName,
+                                        fontSize = FontSize.MEDIUM,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    FlowRow(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        values.forEach { value ->
+                                            val isSelected = state.selectedOptions[optionName] == value
+                                            VariantChip(
+                                                label = value,
+                                                isSelected = isSelected,
+                                                onClick = {
+                                                    viewModel.onIntent(
+                                                        DetailsIntent.SelectOption(optionName, value)
+                                                    )
+                                                }
+                                            )
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
                             }
                             if (state.isAddedToCart) {
                                 Row(
@@ -256,7 +313,7 @@ fun DetailsScreen(
                                     } else {
                                         PrimaryButton(
                                             modifier = Modifier.weight(1f),
-                                            text = stringResource(Resources.String.CheckoutWithQty, state.quantity),
+                                            text = stringResource(Resources.String.CheckoutWithQty).format(state.quantity.toString()),
                                             onClick = navigateToCart
                                         )
                                         Spacer(modifier = Modifier.width(12.dp))
@@ -285,13 +342,49 @@ fun DetailsScreen(
                                 }
                             } else {
                                 PrimaryButton(
-                                    text = stringResource(Resources.String.AddToCart),
-                                    enabled = !state.isLoading && (state.product?.variants?.isNotEmpty() == true),
+                                    text = if (state.selectedVariant != null)
+                                        stringResource(Resources.String.AddToCart)
+                                    else
+                                        stringResource(Resources.String.OutOfStock),
+                                    enabled = !state.isLoading && state.selectedVariant != null,
                                     onClick = { viewModel.onIntent(DetailsIntent.AddToCart) }
                                 )
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fullscreenImageUrl?.let { url ->
+        Dialog(
+            onDismissRequest = { fullscreenImageUrl = null },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+            ) {
+                val painter = rememberImagePainter(url)
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
+                )
+                IconButton(
+                    onClick = { fullscreenImageUrl = null },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(Resources.Icon.Close),
+                        contentDescription = stringResource(Resources.String.Cancel),
+                        tint = Color.White
+                    )
                 }
             }
         }

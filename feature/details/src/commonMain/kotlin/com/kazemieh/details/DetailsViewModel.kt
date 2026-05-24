@@ -42,7 +42,29 @@ class DetailsViewModel(
                 }
             }
             is DetailsIntent.SelectVariant -> {
-                _state.update { it.copy(selectedVariant = intent.variant, isAddedToCart = false, quantity = 1, isCounterMode = true) }
+                _state.update {
+                    it.copy(
+                        selectedVariant = intent.variant,
+                        selectedOptions = intent.variant.options,
+                        isAddedToCart = false,
+                        quantity = 1,
+                        isCounterMode = true
+                    )
+                }
+            }
+            is DetailsIntent.SelectOption -> {
+                val currentOptions = _state.value.selectedOptions.toMutableMap()
+                currentOptions[intent.key] = intent.value
+                val matchingVariant = _state.value.product?.variants?.find { it.options == currentOptions }
+                _state.update {
+                    it.copy(
+                        selectedOptions = currentOptions,
+                        selectedVariant = matchingVariant,
+                        isAddedToCart = false,
+                        quantity = 1,
+                        isCounterMode = true
+                    )
+                }
             }
             is DetailsIntent.AddToCart -> addToCart()
             is DetailsIntent.SetCounterMode -> {
@@ -56,11 +78,14 @@ class DetailsViewModel(
             _state.update { it.copy(isLoading = true) }
             when (val result = getProductDetailUseCase(slug)) {
                 is AppResult.Success -> {
+                    val product = result.data
+                    val firstVariant = product.variants.firstOrNull()
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            product = result.data,
-                            selectedVariant = result.data.variants.firstOrNull(),
+                            product = product,
+                            selectedVariant = firstVariant,
+                            selectedOptions = firstVariant?.options ?: emptyMap(),
                             error = null
                         )
                     }
