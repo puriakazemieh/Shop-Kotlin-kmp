@@ -24,4 +24,5 @@ sealed interface DetailsIntent {
 sealed interface DetailsEffect {
     data class ShowError(val message: Any) : DetailsEffect
     data object AddedToCart : DetailsEffect
+    data object NavigateToAuth : DetailsEffect
 }

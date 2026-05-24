@@ -145,6 +145,9 @@ fun AppNavHost(
                     navController.navigate(Screen.HomeGraph(showCart = true)) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }
                     }
+                },
+                navigateToAuth = {
+                    navController.navigate(Screen.AuthGraph)
                 }
             )
         }

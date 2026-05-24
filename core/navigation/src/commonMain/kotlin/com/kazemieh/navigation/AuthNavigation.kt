@@ -32,7 +32,11 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 onNavigateForgot = {
                     navController.navigate(Screen.ForgotPassword)
-                })
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable<Screen.Register> { backStackEntry ->
@@ -46,7 +50,11 @@ fun NavGraphBuilder.authNavGraph(
                 viewModel = viewModel,
                 onNavigateLogin = {
                     navController.navigate(Screen.Login)
-                })
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable<Screen.ForgotPassword> { backStackEntry ->

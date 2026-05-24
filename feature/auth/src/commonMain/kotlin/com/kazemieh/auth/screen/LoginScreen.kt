@@ -12,6 +12,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.util.anyToString
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -31,11 +33,24 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreen(
     viewModel: AuthViewModel = koinViewModel(),
     onNavigateRegister: () -> Unit,
-    onNavigateForgot: () -> Unit
+    onNavigateForgot: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     val state = viewModel.state
     val colors = AppTheme.colors
     val emailHint = stringResource(Resources.String.EmailHint)
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest { event ->
+            when (event) {
+                is UiEvent.NavigateBack -> onNavigateBack()
+                is UiEvent.NavigateToHome -> {} // Handle if needed
+                is UiEvent.NavigateToLogin -> {}
+                is UiEvent.ShowError -> {}
+                is UiEvent.ShowSuccess -> {}
+            }
+        }
+    }
 
     Column(
         modifier = Modifier

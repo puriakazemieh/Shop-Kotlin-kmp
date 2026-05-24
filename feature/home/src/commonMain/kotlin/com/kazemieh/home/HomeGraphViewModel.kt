@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.CartEventBus
-import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
+import com.kazemieh.domain.usecase.GetProfileUseCase
 import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
 import com.kazemieh.domain.usecase.ObserveProfileUseCase
 import com.kazemieh.domain.usecase.SignOutUseCase
@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeGraphViewModel(
-    observeAuthStateUseCase: ObserveAuthStateUseCase,
-    private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
+    private val observeAuthStateUseCase: ObserveAuthStateUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val observeProfileUseCase: ObserveProfileUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
     private val getCartUseCase: GetCartUseCase
 ) : ViewModel() {
 
@@ -28,15 +28,28 @@ class HomeGraphViewModel(
     val effect = _effect.receiveAsFlow()
 
     init {
-        handleIntent(HomeIntent.RefreshAuthState)
+        observeAuthState()
         observeProfile()
         observeCart()
+    }
+
+    private fun observeAuthState() {
+        viewModelScope.launch {
+            observeAuthStateUseCase().collect { authState ->
+                val isLoggedIn = authState is com.kazemieh.common.AuthState.Authenticated
+                _state.update { it.copy(isLoggedIn = isLoggedIn) }
+                if (isLoggedIn) {
+                    getProfileUseCase()
+                } else {
+                    _state.update { it.copy(isAdmin = false) }
+                }
+            }
+        }
     }
 
     fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.SignOut -> signOut()
-            is HomeIntent.RefreshAuthState -> checkAuthState()
         }
     }
 
@@ -63,20 +76,11 @@ class HomeGraphViewModel(
         }
     }
 
-    private fun checkAuthState() {
-        viewModelScope.launch {
-            isUserLoggedInUseCase().collect { isLoggedIn ->
-                _state.update { it.copy(isLoggedIn = isLoggedIn) }
-            }
-        }
-    }
-
-
     private fun signOut() {
         viewModelScope.launch {
             when (val result = signOutUseCase()) {
                 is AppResult.Success -> {
-                    _state.update { it.copy(isLoggedIn = false) }
+                    _state.update { it.copy(isLoggedIn = false, isAdmin = false) }
                     _effect.send(HomeEffect.NavigateToAuth)
                 }
 
@@ -93,7 +97,6 @@ class HomeGraphViewModel(
 
 sealed interface HomeIntent {
     data object SignOut : HomeIntent
-    data object RefreshAuthState : HomeIntent
 }
 
 data class HomeState(

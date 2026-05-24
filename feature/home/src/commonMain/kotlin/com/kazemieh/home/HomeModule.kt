@@ -27,10 +27,10 @@ val homeModule = module {
     // ViewModel
     viewModel {
         HomeGraphViewModel(
-            isUserLoggedInUseCase = get(),
             signOutUseCase = get(),
             observeAuthStateUseCase = get(),
             observeProfileUseCase = get(),
+            getProfileUseCase = get(),
             getCartUseCase = get()
         )
     }

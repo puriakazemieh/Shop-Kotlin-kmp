@@ -92,7 +92,7 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 state = state.copy(isLoading = false)
-                _event.emit(UiEvent.NavigateToHome)
+                _event.emit(UiEvent.NavigateBack)
             }.doOnError {
                 state = state.copy(isLoading = false)
                 _event.emit(UiEvent.ShowError(it))
@@ -120,7 +120,7 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 state = state.copy(isLoading = false)
-                _event.emit(UiEvent.NavigateToHome)
+                _event.emit(UiEvent.NavigateBack)
             }.doOnError {
                 state = state.copy(isLoading = false)
                 _event.emit(UiEvent.ShowError(it))
@@ -213,6 +213,7 @@ sealed class AuthEvent {
 
 sealed class UiEvent {
     object NavigateToHome : UiEvent()
+    object NavigateBack : UiEvent()
     object NavigateToLogin : UiEvent()
     data class ShowError(val message: Any?) : UiEvent()
     data class ShowSuccess(val message: Any?) : UiEvent()

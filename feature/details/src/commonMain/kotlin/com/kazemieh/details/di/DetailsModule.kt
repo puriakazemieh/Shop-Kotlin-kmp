@@ -1,6 +1,7 @@
 package com.kazemieh.details.di
 
 import com.kazemieh.details.DetailsViewModel
+import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductDetailUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -9,9 +10,11 @@ val detailsModule = module {
     viewModel {
         DetailsViewModel(
             getProductDetailUseCase = get(),
-            addToCartUseCase = get()
+            addToCartUseCase = get(),
+            isUserLoggedInUseCase = get()
         )
     }
 
     factory { GetProductDetailUseCase(get()) }
+    factory { IsUserLoggedInUseCase(get()) }
 }

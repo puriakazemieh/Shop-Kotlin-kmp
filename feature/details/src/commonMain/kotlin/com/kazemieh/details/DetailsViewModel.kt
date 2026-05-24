@@ -3,6 +3,7 @@ package com.kazemieh.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.cart.AddToCartUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductDetailUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,12 +12,14 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     private val getProductDetailUseCase: GetProductDetailUseCase,
-    private val addToCartUseCase: AddToCartUseCase
+    private val addToCartUseCase: AddToCartUseCase,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -81,6 +84,12 @@ class DetailsViewModel(
         val variantId = currentState.selectedVariant?.id ?: return
         
         viewModelScope.launch {
+            val isLoggedIn = isUserLoggedInUseCase().first()
+            if (!isLoggedIn) {
+                _effect.emit(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+
             when (val result = addToCartUseCase(variantId, currentState.quantity)) {
                 is AppResult.Success -> {
                     _state.update { it.copy(isAddedToCart = true) }

@@ -61,7 +61,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun DetailsScreen(
     slug: String,
     navigateBack: () -> Unit,
-    navigateToCart: () -> Unit
+    navigateToCart: () -> Unit,
+    navigateToAuth: () -> Unit
 ) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
@@ -86,6 +87,7 @@ fun DetailsScreen(
             when (effect) {
                 is DetailsEffect.ShowError -> messageBarState.addError(effect.message)
                 is DetailsEffect.AddedToCart -> messageBarState.addSuccess(productAddedToCartMessage)
+                is DetailsEffect.NavigateToAuth -> navigateToAuth()
             }
         }
     }

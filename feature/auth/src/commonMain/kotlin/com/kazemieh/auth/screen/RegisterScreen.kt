@@ -30,7 +30,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun RegisterScreen(
     viewModel: AuthViewModel = koinViewModel(),
-    onNavigateLogin: () -> Unit
+    onNavigateLogin: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     val state = viewModel.state
     val colors = AppTheme.colors
@@ -40,7 +41,8 @@ fun RegisterScreen(
         viewModel.event.collect { event ->
             when (event) {
 
-                UiEvent.NavigateToHome -> {
+                UiEvent.NavigateBack -> {
+                    onNavigateBack()
                 }
 
                 is UiEvent.ShowError -> {
