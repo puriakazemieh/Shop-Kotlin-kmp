@@ -162,15 +162,11 @@ fun HomeGraphScreen(
             .systemBarsPadding()
     ) {
         CustomDrawer(
-//            customer = customer,
             onProfileClick = navigateToProfile,
             onContactUsClick = navigateToContactUs,
             onSettingsClick = navigateToSettings,
             onSignOutClick = {
-//                viewModel.signOut(
-//                    onSuccess = navigateToAuth,
-//                    onError = { message -> messageBarState.addError(message) }
-//                )
+                viewModel.handleIntent(HomeIntent.SignOut)
             },
             onAdminPanelClick = navigateToAdminPanel,
             isLoggedIn = state.isLoggedIn,

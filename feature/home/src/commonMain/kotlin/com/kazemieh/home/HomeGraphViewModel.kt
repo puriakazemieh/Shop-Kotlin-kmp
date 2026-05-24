@@ -77,7 +77,7 @@ class HomeGraphViewModel(
             when (val result = signOutUseCase()) {
                 is AppResult.Success -> {
                     _state.update { it.copy(isLoggedIn = false) }
-//                    _effect.send(HomeEffect.NavigateToAuth)
+                    _effect.send(HomeEffect.NavigateToAuth)
                 }
 
                 is AppResult.Error -> {
