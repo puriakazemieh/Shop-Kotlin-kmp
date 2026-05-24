@@ -33,6 +33,8 @@ val adminPanelModule = module {
             deleteProductImageUseCase = get(),
             getCategoriesUseCase = get(),
             getAdminOptionsUseCase = get(),
+            createOptionTypeUseCase = get(),
+            createOptionValueUseCase = get(),
             savedStateHandle = get()
         )
     }

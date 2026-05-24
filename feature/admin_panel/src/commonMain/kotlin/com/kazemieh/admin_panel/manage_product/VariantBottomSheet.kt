@@ -28,6 +28,9 @@ fun VariantBottomSheet(
     availableOptions: List<AdminOption>,
     onDismiss: () -> Unit,
     onConfirm: (sku: String, price: Double, options: List<AdminVariantOption>, isActive: Boolean, initialOnHand: Int) -> Unit,
+    onCreateOptionType: (String) -> Unit,
+    onCreateOptionValue: (Long, String) -> Unit,
+    onCreateOptionTypeAndValue: (String, String) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -66,42 +69,107 @@ fun VariantBottomSheet(
             )
 
             options.forEachIndexed { index, option ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        OptionSelector(
-                            label = "Type",
-                            value = option.type,
-                            suggestions = availableOptions.map { it.name },
-                            onValueChange = { newType ->
-                                val newList = options.toMutableList()
-                                newList[index] = option.copy(type = newType, value = "")
-                                options = newList
-                            }
-                        )
-                    }
-                    Column(modifier = Modifier.weight(1f)) {
-                        OptionSelector(
-                            label = "Value",
-                            value = option.value,
-                            suggestions = availableOptions.find { it.name == option.type }?.values?.map { it.value }
-                                ?: emptyList(),
-                            onValueChange = { newValue ->
-                                val newList = options.toMutableList()
-                                newList[index] = option.copy(value = newValue)
-                                options = newList
-                            }
-                        )
-                    }
-                    IconButton(onClick = {
-                        if (options.size > 1) {
-                            options = options.filterIndexed { i, _ -> i != index }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            OptionSelector(
+                                label = stringResource(Resources.String.OptionType),
+                                value = option.type,
+                                suggestions = availableOptions.map { it.name },
+                                onValueChange = { newType ->
+                                    val newList = options.toMutableList()
+                                    newList[index] = option.copy(type = newType, value = "")
+                                    options = newList
+                                }
+                            )
                         }
-                    }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete Option", tint = MaterialTheme.colorScheme.error)
+                        Column(modifier = Modifier.weight(1f)) {
+                            OptionSelector(
+                                label = stringResource(Resources.String.OptionValue),
+                                value = option.value,
+                                suggestions = availableOptions.find { it.name == option.type }?.values?.map { it.value }
+                                    ?: emptyList(),
+                                onValueChange = { newValue ->
+                                    val newList = options.toMutableList()
+                                    newList[index] = option.copy(value = newValue)
+                                    options = newList
+                                }
+                            )
+                        }
+                        IconButton(onClick = {
+                            if (options.size > 1) {
+                                options = options.filterIndexed { i, _ -> i != index }
+                            }
+                        }) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete Option",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    // Clear actions for new properties
+                    val typeExists = availableOptions.any { it.name == option.type }
+                    val valueExists = availableOptions.find { it.name == option.type }?.values?.any { it.value == option.value } ?: false
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        if (option.type.isNotBlank() && !typeExists && option.value.isNotBlank()) {
+                            TextButton(
+                                onClick = { onCreateOptionTypeAndValue(option.type, option.value) },
+                                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    text = stringResource(Resources.String.CreateTypeAndValue),
+                                    fontSize = FontSize.SMALL
+                                )
+                            }
+                        } else {
+                            if (option.type.isNotBlank() && !typeExists) {
+                                TextButton(
+                                    onClick = { onCreateOptionType(option.type) },
+                                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(Modifier.width(4.dp))
+                                    Text(
+                                        text = stringResource(Resources.String.CreateTypeFormat, option.type),
+                                        fontSize = FontSize.SMALL
+                                    )
+                                }
+                            }
+                            if (option.value.isNotBlank() && typeExists && !valueExists) {
+                                TextButton(
+                                    onClick = {
+                                        availableOptions.find { it.name == option.type }?.id?.let { id ->
+                                            onCreateOptionValue(id, option.value)
+                                        }
+                                    },
+                                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(Modifier.width(4.dp))
+                                    Text(
+                                        text = stringResource(Resources.String.CreateValueFormat, option.value),
+                                        fontSize = FontSize.SMALL
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -154,23 +222,53 @@ fun VariantBottomSheet(
                 }
             }
 
-            Button(
-                enabled = options.all { it.type.isNotBlank() && it.value.isNotBlank() } &&
-                        sku.isNotBlank() &&
-                        price.toDoubleOrNull() != null &&
-                        initialOnHand.toIntOrNull() != null,
-                onClick = {
-                    onConfirm(
-                        sku,
-                        price.toDouble(),
-                        options,
-                        isActive,
-                        initialOnHand.toInt()
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
+            val isFormValid = options.all { it.type.isNotBlank() && it.value.isNotBlank() } &&
+                    sku.isNotBlank() &&
+                    price.toDoubleOrNull() != null &&
+                    initialOnHand.toIntOrNull() != null
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(if (variant == null) stringResource(Resources.String.Add) else stringResource(Resources.String.Update))
+                if (variant == null) {
+                    OutlinedButton(
+                        enabled = isFormValid,
+                        onClick = {
+                            onConfirm(
+                                sku,
+                                price.toDouble(),
+                                options,
+                                isActive,
+                                initialOnHand.toInt()
+                            )
+                            // Reset form for next variant
+                            sku = ""
+                            price = ""
+                            initialOnHand = ""
+                            options = listOf(AdminVariantOption("", ""))
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(Resources.String.AddAndNext))
+                    }
+                }
+
+                Button(
+                    enabled = isFormValid,
+                    onClick = {
+                        onConfirm(
+                            sku,
+                            price.toDouble(),
+                            options,
+                            isActive,
+                            initialOnHand.toInt()
+                        )
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(if (variant == null) stringResource(Resources.String.Add) else stringResource(Resources.String.Update))
+                }
             }
         }
     }

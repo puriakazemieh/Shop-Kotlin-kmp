@@ -33,6 +33,8 @@ class ManageProductViewModel(
     private val deleteProductImageUseCase: DeleteProductImageUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getAdminOptionsUseCase: GetAdminOptionsUseCase,
+    private val createOptionTypeUseCase: CreateOptionTypeUseCase,
+    private val createOptionValueUseCase: CreateOptionValueUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -87,6 +89,65 @@ class ManageProductViewModel(
 
             is ManageProductIntent.DeleteCategory -> deleteCategory(intent.id)
             is ManageProductIntent.UploadImage -> uploadImage(intent.bytes)
+            is ManageProductIntent.CreateOptionType -> createOptionType(intent.name)
+            is ManageProductIntent.CreateOptionValue -> createOptionValue(intent.optionTypeId, intent.value)
+            is ManageProductIntent.CreateOptionTypeAndValue -> createOptionTypeAndValue(intent.typeName, intent.valueName)
+        }
+    }
+
+    private fun createOptionTypeAndValue(typeName: String, valueName: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isSaving = true) }
+            val typeResult = createOptionTypeUseCase(typeName)
+            if (typeResult is AppResult.Success) {
+                val valueResult = createOptionValueUseCase(typeResult.data.id, valueName)
+                if (valueResult is AppResult.Success) {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Option type and value created"))
+                    val optionsResult = getAdminOptionsUseCase()
+                    if (optionsResult is AppResult.Success) {
+                        _state.update { it.copy(availableOptions = optionsResult.data) }
+                    }
+                } else if (valueResult is AppResult.Error) {
+                    _event.send(ManageProductUiEvent.ShowError(valueResult.message))
+                }
+            } else if (typeResult is AppResult.Error) {
+                _event.send(ManageProductUiEvent.ShowError(typeResult.message))
+            }
+            _state.update { it.copy(isSaving = false) }
+        }
+    }
+
+    private fun createOptionType(name: String) {
+        viewModelScope.launch {
+            when (val result = createOptionTypeUseCase(name)) {
+                is AppResult.Success -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Option type created"))
+                    val optionsResult = getAdminOptionsUseCase()
+                    if (optionsResult is AppResult.Success) {
+                        _state.update { it.copy(availableOptions = optionsResult.data) }
+                    }
+                }
+
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun createOptionValue(optionTypeId: Long, value: String) {
+        viewModelScope.launch {
+            when (val result = createOptionValueUseCase(optionTypeId, value)) {
+                is AppResult.Success -> {
+                    _event.send(ManageProductUiEvent.ShowSuccess("Option value created"))
+                    val optionsResult = getAdminOptionsUseCase()
+                    if (optionsResult is AppResult.Success) {
+                        _state.update { it.copy(availableOptions = optionsResult.data) }
+                    }
+                }
+
+                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
         }
     }
 
@@ -457,6 +518,10 @@ sealed interface ManageProductIntent {
     ) : ManageProductIntent
 
     data class DeleteCategory(val id: Long) : ManageProductIntent
+
+    data class CreateOptionType(val name: String) : ManageProductIntent
+    data class CreateOptionValue(val optionTypeId: Long, val value: String) : ManageProductIntent
+    data class CreateOptionTypeAndValue(val typeName: String, val valueName: String) : ManageProductIntent
 
     data class UploadImage(val bytes: ByteArray) : ManageProductIntent {
         override fun equals(other: Any?): Boolean {

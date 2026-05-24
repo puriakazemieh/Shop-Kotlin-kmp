@@ -106,6 +106,23 @@ fun ManageProductScreen(
                     )
                 )
                 showAddVariantDialog = false
+            },
+            onCreateOptionType = { viewModel.handleIntent(ManageProductIntent.CreateOptionType(it)) },
+            onCreateOptionValue = { id, value ->
+                viewModel.handleIntent(
+                    ManageProductIntent.CreateOptionValue(
+                        id,
+                        value
+                    )
+                )
+            },
+            onCreateOptionTypeAndValue = { type, value ->
+                viewModel.handleIntent(
+                    ManageProductIntent.CreateOptionTypeAndValue(
+                        type,
+                        value
+                    )
+                )
             }
         )
     }
@@ -130,6 +147,23 @@ fun ManageProductScreen(
             onDelete = {
                 viewModel.handleIntent(ManageProductIntent.DeleteVariant(variant.id))
                 selectedVariantToEdit = null
+            },
+            onCreateOptionType = { viewModel.handleIntent(ManageProductIntent.CreateOptionType(it)) },
+            onCreateOptionValue = { id, value ->
+                viewModel.handleIntent(
+                    ManageProductIntent.CreateOptionValue(
+                        id,
+                        value
+                    )
+                )
+            },
+            onCreateOptionTypeAndValue = { type, value ->
+                viewModel.handleIntent(
+                    ManageProductIntent.CreateOptionTypeAndValue(
+                        type,
+                        value
+                    )
+                )
             }
         )
     }

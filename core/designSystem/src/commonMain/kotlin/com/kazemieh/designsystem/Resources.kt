@@ -142,6 +142,12 @@ object Resources {
         val BasePricePlaceholder = CommonRes.string.base_price_placeholder
         val AddProduct = CommonRes.string.add_product
         val UpdateProduct = CommonRes.string.update_product
+        val OptionType = CommonRes.string.option_type
+        val OptionValue = CommonRes.string.option_value
+        val CreateTypeFormat = CommonRes.string.create_type_format
+        val CreateValueFormat = CommonRes.string.create_value_format
+        val CreateTypeAndValue = CommonRes.string.create_type_and_value
+        val AddAndNext = CommonRes.string.add_and_next
         val StatusUpdatedSuccessfully = CommonRes.string.status_updated_successfully
         val OrderDetail = CommonRes.string.order_detail
         val CustomerInformation = CommonRes.string.customer_information
