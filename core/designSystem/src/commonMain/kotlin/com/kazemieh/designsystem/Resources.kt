@@ -148,6 +148,7 @@ object Resources {
         val CreateValueFormat = CommonRes.string.create_value_format
         val CreateTypeAndValue = CommonRes.string.create_type_and_value
         val AddAndNext = CommonRes.string.add_and_next
+        val DuplicateOptionType = CommonRes.string.duplicate_option_type
         val StatusUpdatedSuccessfully = CommonRes.string.status_updated_successfully
         val OrderDetail = CommonRes.string.order_detail
         val CustomerInformation = CommonRes.string.customer_information

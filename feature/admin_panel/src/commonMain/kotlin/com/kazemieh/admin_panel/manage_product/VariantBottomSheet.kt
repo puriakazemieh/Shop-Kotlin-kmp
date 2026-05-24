@@ -69,6 +69,9 @@ fun VariantBottomSheet(
             )
 
             options.forEachIndexed { index, option ->
+                val otherSelectedTypes = options.filterIndexed { i, _ -> i != index }.map { it.type.trim().lowercase() }
+                val isDuplicateType = option.type.trim().lowercase() in otherSelectedTypes && option.type.isNotBlank()
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -84,7 +87,8 @@ fun VariantBottomSheet(
                             OptionSelector(
                                 label = stringResource(Resources.String.OptionType),
                                 value = option.type,
-                                suggestions = availableOptions.map { it.name },
+                                suggestions = availableOptions.map { it.name }.filter { it.lowercase() !in otherSelectedTypes },
+                                isError = isDuplicateType,
                                 onValueChange = { newType ->
                                     val newList = options.toMutableList()
                                     newList[index] = option.copy(type = newType, value = "")
@@ -118,6 +122,15 @@ fun VariantBottomSheet(
                         }
                     }
 
+                    if (isDuplicateType) {
+                        Text(
+                            text = stringResource(Resources.String.DuplicateOptionType),
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = FontSize.EXTRA_SMALL,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+
                     // Clear actions for new properties
                     val typeExists = availableOptions.any { it.name == option.type }
                     val valueExists = availableOptions.find { it.name == option.type }?.values?.any { it.value == option.value } ?: false
@@ -126,7 +139,7 @@ fun VariantBottomSheet(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        if (option.type.isNotBlank() && !typeExists && option.value.isNotBlank()) {
+                        if (option.type.isNotBlank() && !typeExists && option.value.isNotBlank() && !isDuplicateType) {
                             TextButton(
                                 onClick = { onCreateOptionTypeAndValue(option.type, option.value) },
                                 colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
@@ -139,7 +152,7 @@ fun VariantBottomSheet(
                                 )
                             }
                         } else {
-                            if (option.type.isNotBlank() && !typeExists) {
+                            if (option.type.isNotBlank() && !typeExists && !isDuplicateType) {
                                 TextButton(
                                     onClick = { onCreateOptionType(option.type) },
                                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
@@ -152,7 +165,7 @@ fun VariantBottomSheet(
                                     )
                                 }
                             }
-                            if (option.value.isNotBlank() && typeExists && !valueExists) {
+                            if (option.value.isNotBlank() && typeExists && !valueExists && !isDuplicateType) {
                                 TextButton(
                                     onClick = {
                                         availableOptions.find { it.name == option.type }?.id?.let { id ->
@@ -176,6 +189,7 @@ fun VariantBottomSheet(
 
             TextButton(
                 onClick = { options = options + AdminVariantOption("", "") },
+                enabled = options.all { it.type.isNotBlank() && it.value.isNotBlank() } && options.map { it.type.lowercase() }.distinct().size == options.size,
                 modifier = Modifier.align(Alignment.Start)
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
@@ -223,6 +237,7 @@ fun VariantBottomSheet(
             }
 
             val isFormValid = options.all { it.type.isNotBlank() && it.value.isNotBlank() } &&
+                    options.map { it.type.trim().lowercase() }.distinct().size == options.size &&
                     sku.isNotBlank() &&
                     price.toDoubleOrNull() != null &&
                     initialOnHand.toIntOrNull() != null
@@ -280,6 +295,7 @@ fun OptionSelector(
     label: String,
     value: String,
     suggestions: List<String>,
+    isError: Boolean = false,
     onValueChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -295,6 +311,7 @@ fun OptionSelector(
                 onValueChange(it)
             },
             label = { Text(label) },
+            isError = isError,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
         )

@@ -250,6 +250,7 @@
     <string name="create_value_format">ایجاد مقدار: %1$s</string>
     <string name="create_type_and_value">ایجاد نوع و مقدار</string>
     <string name="add_and_next">افزودن و بعدی</string>
+    <string name="duplicate_option_type">این نوع ویژگی قبلاً اضافه شده است</string>
     <string name="option_value_in_use">این مقدار گزینه توسط یک واریانت محصول در حال استفاده است و قابل حذف نیست.</string>
     <string name="option_type_in_use">این نوع گزینه دارای مقادیر است و قابل حذف نیست.</string>
     <string name="unknown_error">خطای نامشخص رخ داد</string>
