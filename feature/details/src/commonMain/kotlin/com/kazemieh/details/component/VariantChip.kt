@@ -20,16 +20,27 @@ import com.kazemieh.designsystem.FontSize
 fun VariantChip(
     label: String,
     isSelected: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(size = 12.dp))
-            .clickable { onClick() }
-            .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+            .clickable(enabled = enabled) { onClick() }
+            .background(
+                when {
+                    isSelected -> MaterialTheme.colorScheme.primaryContainer
+                    !enabled -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    else -> MaterialTheme.colorScheme.surface
+                }
+            )
             .border(
                 width = 1.dp,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                color = when {
+                    isSelected -> MaterialTheme.colorScheme.primary
+                    !enabled -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    else -> MaterialTheme.colorScheme.outline
+                },
                 shape = RoundedCornerShape(size = 12.dp)
             )
             .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -38,7 +49,11 @@ fun VariantChip(
         Text(
             text = label,
             fontSize = FontSize.SMALL,
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+            color = when {
+                isSelected -> MaterialTheme.colorScheme.onPrimaryContainer
+                !enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                else -> MaterialTheme.colorScheme.onSurface
+            },
             fontWeight = FontWeight.Medium
         )
     }

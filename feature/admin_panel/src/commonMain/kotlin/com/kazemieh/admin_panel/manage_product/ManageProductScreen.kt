@@ -95,8 +95,10 @@ fun ManageProductScreen(
     if (showAddVariantDialog) {
         VariantBottomSheet(
             availableOptions = state.availableOptions,
+            existingVariants = state.variants,
+            defaultOptionTypes = state.defaultOptionTypes,
             onDismiss = { showAddVariantDialog = false },
-            onConfirm = { sku, price, options, isActive, initialOnHand ->
+            onConfirm = { sku, price, options, isActive, initialOnHand, shouldDismiss ->
                 viewModel.handleIntent(
                     ManageProductIntent.AddVariant(
                         options = options,
@@ -105,8 +107,9 @@ fun ManageProductScreen(
                         initialOnHand = initialOnHand
                     )
                 )
-                showAddVariantDialog = false
+                if (shouldDismiss) showAddVariantDialog = false
             },
+            onApplyToAll = { viewModel.handleIntent(ManageProductIntent.ApplyPropertyToAll(it)) },
             onCreateOptionType = { viewModel.handleIntent(ManageProductIntent.CreateOptionType(it)) },
             onCreateOptionValue = { id, value ->
                 viewModel.handleIntent(
@@ -131,8 +134,10 @@ fun ManageProductScreen(
         VariantBottomSheet(
             variant = variant,
             availableOptions = state.availableOptions,
+            existingVariants = state.variants,
+            defaultOptionTypes = state.defaultOptionTypes,
             onDismiss = { selectedVariantToEdit = null },
-            onConfirm = { sku, price, options, isActive, initialOnHand ->
+            onConfirm = { sku, price, options, isActive, initialOnHand, shouldDismiss ->
                 viewModel.handleIntent(
                     ManageProductIntent.UpdateVariantInfo(
                         id = variant.id,
@@ -142,8 +147,9 @@ fun ManageProductScreen(
                         isActive = isActive
                     )
                 )
-                selectedVariantToEdit = null
+                if (shouldDismiss) selectedVariantToEdit = null
             },
+            onApplyToAll = { viewModel.handleIntent(ManageProductIntent.ApplyPropertyToAll(it)) },
             onDelete = {
                 viewModel.handleIntent(ManageProductIntent.DeleteVariant(variant.id))
                 selectedVariantToEdit = null
@@ -383,10 +389,20 @@ fun ManageProductScreen(
 
                     // Variants Section
                     Text(stringResource(Resources.String.Variants), fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
+                    
+                    val masterKeys = state.variants.firstOrNull()?.options?.keys ?: emptySet()
+                    
                     state.variants.forEach { variant ->
-                        VariantItem(variant) {
-                            selectedVariantToEdit = variant
-                        }
+                        // A variant is invalid if its keys don't exactly match the master keys
+                        // and it's not a temporary empty state
+                        val currentKeys = variant.options.keys
+                        val isInvalid = currentKeys != masterKeys && masterKeys.isNotEmpty()
+
+                        VariantItem(
+                            variant = variant,
+                            isInvalid = isInvalid,
+                            onClick = { selectedVariantToEdit = variant }
+                        )
                     }
                     Button(
                         onClick = { showAddVariantDialog = true },
@@ -409,10 +425,13 @@ fun ManageProductScreen(
 }
 
 @Composable
-fun VariantItem(variant: AdminVariant, onClick: () -> Unit) {
+fun VariantItem(variant: AdminVariant, isInvalid: Boolean = false, onClick: () -> Unit) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().then(
+            if (isInvalid) Modifier.border(2.dp, MaterialTheme.colorScheme.error, CardDefaults.shape)
+            else Modifier
+        ),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {

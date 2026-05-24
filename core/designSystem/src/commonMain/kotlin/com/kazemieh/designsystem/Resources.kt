@@ -149,6 +149,13 @@ object Resources {
         val CreateTypeAndValue = CommonRes.string.create_type_and_value
         val AddAndNext = CommonRes.string.add_and_next
         val DuplicateOptionType = CommonRes.string.duplicate_option_type
+        val DeleteOption = CommonRes.string.delete_option
+        val WarningText = CommonRes.string.warning_text
+        val DeletePropertyWarning = CommonRes.string.delete_property_warning
+        val DeleteAnyway = CommonRes.string.delete_anyway
+        val ApplyToAll = CommonRes.string.apply_to_all
+        val PropertyMismatchError = CommonRes.string.property_mismatch_error
+        val VariantComboExists = CommonRes.string.variant_combo_exists
         val StatusUpdatedSuccessfully = CommonRes.string.status_updated_successfully
         val OrderDetail = CommonRes.string.order_detail
         val CustomerInformation = CommonRes.string.customer_information

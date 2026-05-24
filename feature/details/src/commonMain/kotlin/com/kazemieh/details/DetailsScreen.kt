@@ -271,9 +271,18 @@ fun DetailsScreen(
                                     ) {
                                         values.forEach { value ->
                                             val isSelected = state.selectedOptions[optionName] == value
+                                            // Check if this option value is available for the current other selections
+                                            val isAvailable = product.variants.any { variant ->
+                                                variant.options[optionName] == value && 
+                                                state.selectedOptions.filterKeys { it != optionName }.all { (k, v) ->
+                                                    variant.options[k] == v
+                                                }
+                                            }
+                                            
                                             VariantChip(
                                                 label = value,
                                                 isSelected = isSelected,
+                                                enabled = isAvailable,
                                                 onClick = {
                                                     viewModel.onIntent(
                                                         DetailsIntent.SelectOption(optionName, value)

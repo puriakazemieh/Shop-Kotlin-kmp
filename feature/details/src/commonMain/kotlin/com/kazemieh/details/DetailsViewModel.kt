@@ -53,12 +53,25 @@ class DetailsViewModel(
                 }
             }
             is DetailsIntent.SelectOption -> {
+                val product = _state.value.product ?: return
                 val currentOptions = _state.value.selectedOptions.toMutableMap()
+                
+                // Update the changed option
                 currentOptions[intent.key] = intent.value
-                val matchingVariant = _state.value.product?.variants?.find { it.options == currentOptions }
+                
+                // Try to find an exact match
+                var matchingVariant = product.variants.find { it.options == currentOptions }
+                
+                // If no exact match, find the first variant that contains the newly selected option
+                if (matchingVariant == null) {
+                    matchingVariant = product.variants.find { 
+                        it.options[intent.key] == intent.value 
+                    }
+                }
+
                 _state.update {
                     it.copy(
-                        selectedOptions = currentOptions,
+                        selectedOptions = matchingVariant?.options ?: currentOptions,
                         selectedVariant = matchingVariant,
                         isAddedToCart = false,
                         quantity = 1,

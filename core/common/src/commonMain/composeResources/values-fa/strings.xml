@@ -251,6 +251,12 @@
     <string name="create_type_and_value">ایجاد نوع و مقدار</string>
     <string name="add_and_next">افزودن و بعدی</string>
     <string name="duplicate_option_type">این نوع ویژگی قبلاً اضافه شده است</string>
+    <string name="delete_option">حذف ویژگی</string>
+    <string name="warning_text">هشدار</string>
+    <string name="delete_property_warning">حذف این ویژگی از واریانت اصلی، آن را از تمام واریانت‌های دیگر نیز حذف می‌کند. آیا مایل به ادامه هستید؟</string>
+    <string name="delete_anyway">به هر حال حذف کن</string>
+    <string name="apply_to_all">اعمال روی تمام واریانت‌ها</string>
+    <string name="property_mismatch_error">همه واریانت‌ها باید مجموعه ویژگی‌های یکسانی داشته باشند.</string>
     <string name="option_value_in_use">این مقدار گزینه توسط یک واریانت محصول در حال استفاده است و قابل حذف نیست.</string>
     <string name="option_type_in_use">این نوع گزینه دارای مقادیر است و قابل حذف نیست.</string>
     <string name="unknown_error">خطای نامشخص رخ داد</string>

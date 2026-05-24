@@ -25,9 +25,12 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun VariantBottomSheet(
     variant: AdminVariant? = null,
+    existingVariants: List<AdminVariant> = emptyList(),
     availableOptions: List<AdminOption>,
+    defaultOptionTypes: List<String> = emptyList(),
     onDismiss: () -> Unit,
-    onConfirm: (sku: String, price: Double, options: List<AdminVariantOption>, isActive: Boolean, initialOnHand: Int) -> Unit,
+    onConfirm: (sku: String, price: Double, options: List<AdminVariantOption>, isActive: Boolean, initialOnHand: Int, shouldDismiss: Boolean) -> Unit,
+    onApplyToAll: (List<AdminVariantOption>) -> Unit,
     onCreateOptionType: (String) -> Unit,
     onCreateOptionValue: (Long, String) -> Unit,
     onCreateOptionTypeAndValue: (String, String) -> Unit,
@@ -36,10 +39,25 @@ fun VariantBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var options by remember {
+        val masterVariant = existingVariants.firstOrNull()
+        val masterKeys = masterVariant?.options?.keys ?: emptySet()
+        
         mutableStateOf(
-            variant?.options?.map { AdminVariantOption(it.key, it.value) } ?: listOf(
-                AdminVariantOption("", "")
-            )
+            if (variant != null) {
+                if (variant.id == masterVariant?.id) {
+                    // It's the master variant, use its own options
+                    variant.options.map { AdminVariantOption(it.key, it.value) }.toMutableList()
+                } else {
+                    // It's a subsequent variant, STRICTLY sync with master variant's keys
+                    masterKeys.map { key ->
+                        AdminVariantOption(key, variant.options[key] ?: "")
+                    }.toMutableList()
+                }
+            } else if (defaultOptionTypes.isNotEmpty()) {
+                defaultOptionTypes.map { AdminVariantOption(it, "") }
+            } else {
+                listOf(AdminVariantOption("", ""))
+            }
         )
     }
     var sku by remember { mutableStateOf(variant?.sku ?: "") }
@@ -47,6 +65,33 @@ fun VariantBottomSheet(
     var isActive by remember { mutableStateOf(variant?.isActive ?: true) }
     var initialOnHand by remember { mutableStateOf(variant?.onHand?.toString() ?: "") }
 
+    val isMasterVariant = variant != null && existingVariants.firstOrNull()?.id == variant.id
+    val isSubsequentVariant = (defaultOptionTypes.isNotEmpty() && variant == null) || (variant != null && !isMasterVariant)
+
+    var showDeletePropertyWarning by remember { mutableStateOf<Int?>(null) }
+
+    if (showDeletePropertyWarning != null) {
+        AlertDialog(
+            onDismissRequest = { showDeletePropertyWarning = null },
+            title = { Text(stringResource(Resources.String.WarningText)) },
+            text = { Text(stringResource(Resources.String.DeletePropertyWarning)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeletePropertyWarning?.let { index ->
+                        options = options.filterIndexed { i, _ -> i != index }
+                    }
+                    showDeletePropertyWarning = null
+                }) {
+                    Text(stringResource(Resources.String.DeleteAnyway), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeletePropertyWarning = null }) {
+                    Text(stringResource(Resources.String.Cancel))
+                }
+            }
+        )
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -89,6 +134,7 @@ fun VariantBottomSheet(
                                 value = option.type,
                                 suggestions = availableOptions.map { it.name }.filter { it.lowercase() !in otherSelectedTypes },
                                 isError = isDuplicateType,
+                                enabled = !isSubsequentVariant,
                                 onValueChange = { newType ->
                                     val newList = options.toMutableList()
                                     newList[index] = option.copy(type = newType, value = "")
@@ -109,16 +155,22 @@ fun VariantBottomSheet(
                                 }
                             )
                         }
-                        IconButton(onClick = {
-                            if (options.size > 1) {
-                                options = options.filterIndexed { i, _ -> i != index }
+                        if (!isSubsequentVariant) {
+                            IconButton(onClick = {
+                                if (options.size > 1) {
+                                    if (isMasterVariant) {
+                                        showDeletePropertyWarning = index
+                                    } else {
+                                        options = options.filterIndexed { i, _ -> i != index }
+                                    }
+                                }
+                            }) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = stringResource(Resources.String.DeleteOption),
+                                    tint = MaterialTheme.colorScheme.error
+                                )
                             }
-                        }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Delete Option",
-                                tint = MaterialTheme.colorScheme.error
-                            )
                         }
                     }
 
@@ -187,14 +239,51 @@ fun VariantBottomSheet(
                 }
             }
 
-            TextButton(
-                onClick = { options = options + AdminVariantOption("", "") },
-                enabled = options.all { it.type.isNotBlank() && it.value.isNotBlank() } && options.map { it.type.lowercase() }.distinct().size == options.size,
-                modifier = Modifier.align(Alignment.Start)
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text("Add Option")
+            if (!isSubsequentVariant) {
+                TextButton(
+                    onClick = { options = options + AdminVariantOption("", "") },
+                    enabled = options.all { it.type.isNotBlank() && it.value.isNotBlank() } && options.map { it.type.lowercase() }.distinct().size == options.size,
+                    modifier = Modifier.align(Alignment.Start)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(Resources.String.AddVariant))
+                }
+            }
+
+            val currentOptionsMap = options.associate { it.type.trim() to it.value.trim() }
+            val isDuplicateVariant = existingVariants.any {
+                it.id != variant?.id && it.options.mapValues { e -> e.value.trim() } == currentOptionsMap
+            }
+
+            if (isDuplicateVariant) {
+                Text(
+                    text = stringResource(Resources.String.VariantComboExists),
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = FontSize.SMALL,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
+            // Apply to all variants logic
+            val masterKeysInOtherVariants = existingVariants.getOrNull(1)?.options?.keys ?: emptySet()
+            val newCompletedProperties = options.filter { 
+                it.type.isNotBlank() && it.value.isNotBlank() && it.type !in masterKeysInOtherVariants 
+            }
+            val hasNewCompletedProperties = isMasterVariant && existingVariants.size > 1 && newCompletedProperties.isNotEmpty()
+
+            if (hasNewCompletedProperties) {
+                Button(
+                    onClick = {
+                        onApplyToAll(options.filter { it.type.isNotBlank() && it.value.isNotBlank() })
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(Resources.String.ApplyToAll))
+                }
             }
 
             OutlinedTextField(
@@ -238,6 +327,7 @@ fun VariantBottomSheet(
 
             val isFormValid = options.all { it.type.isNotBlank() && it.value.isNotBlank() } &&
                     options.map { it.type.trim().lowercase() }.distinct().size == options.size &&
+                    !isDuplicateVariant &&
                     sku.isNotBlank() &&
                     price.toDoubleOrNull() != null &&
                     initialOnHand.toIntOrNull() != null
@@ -253,15 +343,16 @@ fun VariantBottomSheet(
                             onConfirm(
                                 sku,
                                 price.toDouble(),
-                                options,
+                                options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
                                 isActive,
-                                initialOnHand.toInt()
+                                initialOnHand.toInt(),
+                                false
                             )
-                            // Reset form for next variant
+                            // Reset form for next variant while keeping the same property types
                             sku = ""
                             price = ""
                             initialOnHand = ""
-                            options = listOf(AdminVariantOption("", ""))
+                            options = options.map { it.copy(value = "") }
                         },
                         modifier = Modifier.weight(1f)
                     ) {
@@ -275,9 +366,10 @@ fun VariantBottomSheet(
                         onConfirm(
                             sku,
                             price.toDouble(),
-                            options,
+                            options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
                             isActive,
-                            initialOnHand.toInt()
+                            initialOnHand.toInt(),
+                            true
                         )
                     },
                     modifier = Modifier.weight(1f)
@@ -296,23 +388,26 @@ fun OptionSelector(
     value: String,
     suggestions: List<String>,
     isError: Boolean = false,
+    enabled: Boolean = true,
     onValueChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = it }
+        expanded = expanded && enabled,
+        onExpandedChange = { if (enabled) expanded = it }
     ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth().menuAnchor(),
             value = value,
             onValueChange = {
-                onValueChange(it)
+                if (enabled) onValueChange(it)
             },
+            readOnly = !enabled,
+            enabled = enabled,
             label = { Text(label) },
             isError = isError,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            trailingIcon = { if (enabled) ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
         )
         if (suggestions.isNotEmpty()) {

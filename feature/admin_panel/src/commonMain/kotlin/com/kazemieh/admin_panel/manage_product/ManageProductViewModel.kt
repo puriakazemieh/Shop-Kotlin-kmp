@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.ld
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.model.Category
 import com.kazemieh.domain.model.admin.AdminOption
@@ -92,6 +93,18 @@ class ManageProductViewModel(
             is ManageProductIntent.CreateOptionType -> createOptionType(intent.name)
             is ManageProductIntent.CreateOptionValue -> createOptionValue(intent.optionTypeId, intent.value)
             is ManageProductIntent.CreateOptionTypeAndValue -> createOptionTypeAndValue(intent.typeName, intent.valueName)
+            is ManageProductIntent.ApplyPropertyToAll -> applyPropertyToAll(intent.options)
+        }
+    }
+
+    private fun applyPropertyToAll(options: List<AdminVariantOption>) {
+        _state.update { state ->
+            val masterKeys = options.map { it.type }
+            val updatedVariants = state.variants.map { variant ->
+                val newOptions = options.associate { it.type to (variant.options[it.type] ?: "") }
+                variant.copy(options = newOptions)
+            }
+            state.copy(variants = updatedVariants, defaultOptionTypes = masterKeys)
         }
     }
 
@@ -173,6 +186,7 @@ class ManageProductViewModel(
             when (val result = getAdminProductDetailUseCase(productId)) {
                 is AppResult.Success -> {
                     val detail = result.data
+                    val defaultTypes = detail.variants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -185,10 +199,11 @@ class ManageProductViewModel(
                             images = detail.images.map { img ->
                                 ProductImageUiModel(
                                     img.id,
-                                    img.url
+                                    img.url.ld("ProductImageUiModel")
                                 )
                             },
-                            variants = detail.variants
+                            variants = detail.variants,
+                            defaultOptionTypes = defaultTypes
                         )
                     }
                 }
@@ -205,6 +220,18 @@ class ManageProductViewModel(
 
     private fun saveProduct() {
         val currentState = _state.value
+        
+        // Validation: All variants must have same keys
+        val masterKeys = currentState.variants.firstOrNull()?.options?.keys ?: emptySet()
+        val hasInvalidVariants = currentState.variants.any { it.options.keys != masterKeys }
+        
+        if (hasInvalidVariants) {
+            viewModelScope.launch {
+                _event.send(ManageProductUiEvent.ShowError(Resources.String.PropertyMismatchError))
+            }
+            return
+        }
+
         if (productId == -1L && currentState.variants.isEmpty()) {
             viewModelScope.launch {
                 _event.send(ManageProductUiEvent.ShowError(Resources.String.PleaseAddAtLeastOneVariant))
@@ -324,7 +351,9 @@ class ManageProductViewModel(
                     reserved = 0,
                     options = options.associate { opt -> opt.type to opt.value }
                 )
-                it.copy(variants = it.variants + newVariant)
+                val newVariants = it.variants + newVariant
+                val defaultTypes = newVariants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
+                it.copy(variants = newVariants, defaultOptionTypes = defaultTypes)
             }
             return
         }
@@ -359,6 +388,7 @@ class ManageProductViewModel(
     ) {
         if (productId == -1L) {
             _state.update { state ->
+                val isMaster = state.variants.firstOrNull()?.id == id
                 val updatedVariants = state.variants.map { v ->
                     if (v.id == id) {
                         v.copy(
@@ -367,29 +397,44 @@ class ManageProductViewModel(
                             options = options?.associate { it.type to it.value } ?: v.options,
                             isActive = isActive ?: v.isActive
                         )
+                    } else if (isMaster && options != null) {
+                        val newKeys = options.map { it.type }
+                        v.copy(options = v.options.filterKeys { it in newKeys })
                     } else v
                 }
-                state.copy(variants = updatedVariants)
+                val defaultTypes = updatedVariants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
+                state.copy(variants = updatedVariants, defaultOptionTypes = defaultTypes)
             }
             return
         }
+        
         viewModelScope.launch {
-            when (val result =
-                updateProductVariantUseCase(id, sku, price, null, options, isActive)) {
-                is AppResult.Success<*> -> {
+            val isMaster = _state.value.variants.firstOrNull()?.id == id
+            
+            // 1. Update the target variant
+            val result = updateProductVariantUseCase(id, sku, price, null, options, isActive)
+            
+            if (result is AppResult.Success<*>) {
+                // 2. If Master changed its property structure, we need to ensure consistency.
+                // In a production app, the backend should ideally handle this.
+                // Here we at least reload the detail to get the latest server state.
+                if (isMaster && options != null) {
                     _event.send(ManageProductUiEvent.ShowSuccess(Resources.String.VariantUpdated))
-                    loadProductDetail()
                 }
-
-                is AppResult.Error -> _event.send(ManageProductUiEvent.ShowError(result.message))
-                is AppResult.Loading -> {}
+                loadProductDetail()
+            } else if (result is AppResult.Error) {
+                _event.send(ManageProductUiEvent.ShowError(result.message))
             }
         }
     }
 
     private fun deleteVariant(variantId: Long) {
         if (productId == -1L) {
-            _state.update { it.copy(variants = it.variants.filter { v -> v.id != variantId }) }
+            _state.update {
+                val updatedVariants = it.variants.filter { v -> v.id != variantId }
+                val defaultTypes = updatedVariants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
+                it.copy(variants = updatedVariants, defaultOptionTypes = defaultTypes)
+            }
             return
         }
         viewModelScope.launch {
@@ -477,7 +522,8 @@ data class ManageProductState(
     val availableOptions: List<AdminOption> = emptyList(),
     val images: List<ProductImageUiModel> = emptyList(),
     val selectedImageBytes: List<ByteArray> = emptyList(),
-    val variants: List<AdminVariant> = emptyList()
+    val variants: List<AdminVariant> = emptyList(),
+    val defaultOptionTypes: List<String> = emptyList()
 )
 
 data class ProductImageUiModel(
@@ -522,6 +568,7 @@ sealed interface ManageProductIntent {
     data class CreateOptionType(val name: String) : ManageProductIntent
     data class CreateOptionValue(val optionTypeId: Long, val value: String) : ManageProductIntent
     data class CreateOptionTypeAndValue(val typeName: String, val valueName: String) : ManageProductIntent
+    data class ApplyPropertyToAll(val options: List<AdminVariantOption>) : ManageProductIntent
 
     data class UploadImage(val bytes: ByteArray) : ManageProductIntent {
         override fun equals(other: Any?): Boolean {
