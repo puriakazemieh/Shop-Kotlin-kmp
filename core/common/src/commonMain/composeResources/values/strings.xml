@@ -254,6 +254,7 @@
     <string name="delete_option">Delete Option</string>
     <string name="warning_text">Warning</string>
     <string name="delete_property_warning">Deleting this property from the master variant will remove it from all other variants. Do you want to proceed?</string>
+    <string name="delete_property_duplicate_warning">Deleting this property will make some variants identical. Those duplicate variants will be removed automatically. Do you want to proceed?</string>
     <string name="delete_anyway">Delete Anyway</string>
     <string name="apply_to_all">Apply to all variants</string>
     <string name="property_mismatch_error">All variants must have the same set of properties.</string>

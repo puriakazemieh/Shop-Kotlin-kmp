@@ -186,7 +186,15 @@ class ManageProductViewModel(
             when (val result = getAdminProductDetailUseCase(productId)) {
                 is AppResult.Success -> {
                     val detail = result.data
-                    val defaultTypes = detail.variants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
+                    val masterKeys = detail.variants.firstOrNull()?.options?.keys ?: emptySet()
+                    
+                    // Sync subsequent variants with master schema locally to avoid visual red borders
+                    // until they are eventually updated on the server.
+                    val syncedVariants = detail.variants.mapIndexed { index, variant ->
+                        if (index == 0) variant
+                        else variant.copy(options = variant.options.filterKeys { it in masterKeys })
+                    }
+                    
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -202,8 +210,8 @@ class ManageProductViewModel(
                                     img.url.ld("ProductImageUiModel")
                                 )
                             },
-                            variants = detail.variants,
-                            defaultOptionTypes = defaultTypes
+                            variants = syncedVariants,
+                            defaultOptionTypes = masterKeys.toList()
                         )
                     }
                 }
@@ -402,8 +410,16 @@ class ManageProductViewModel(
                         v.copy(options = v.options.filterKeys { it in newKeys })
                     } else v
                 }
-                val defaultTypes = updatedVariants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
-                state.copy(variants = updatedVariants, defaultOptionTypes = defaultTypes)
+                
+                // If master structure changed, keep only unique variant combinations
+                val finalVariants = if (isMaster && options != null) {
+                    updatedVariants.distinctBy { it.options }
+                } else {
+                    updatedVariants
+                }
+                
+                val defaultTypes = finalVariants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
+                state.copy(variants = finalVariants, defaultOptionTypes = defaultTypes)
             }
             return
         }

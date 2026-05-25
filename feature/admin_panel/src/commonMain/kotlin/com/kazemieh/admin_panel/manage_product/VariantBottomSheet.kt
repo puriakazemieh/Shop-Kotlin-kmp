@@ -69,12 +69,18 @@ fun VariantBottomSheet(
     val isSubsequentVariant = (defaultOptionTypes.isNotEmpty() && variant == null) || (variant != null && !isMasterVariant)
 
     var showDeletePropertyWarning by remember { mutableStateOf<Int?>(null) }
+    var causesDuplicates by remember { mutableStateOf(false) }
 
     if (showDeletePropertyWarning != null) {
         AlertDialog(
             onDismissRequest = { showDeletePropertyWarning = null },
             title = { Text(stringResource(Resources.String.WarningText)) },
-            text = { Text(stringResource(Resources.String.DeletePropertyWarning)) },
+            text = { 
+                Text(
+                    if (causesDuplicates) stringResource(Resources.String.DeletePropertyDuplicateWarning)
+                    else stringResource(Resources.String.DeletePropertyWarning)
+                ) 
+            },
             confirmButton = {
                 TextButton(onClick = {
                     showDeletePropertyWarning?.let { index ->
@@ -159,6 +165,11 @@ fun VariantBottomSheet(
                             IconButton(onClick = {
                                 if (options.size > 1) {
                                     if (isMasterVariant) {
+                                        val remainingKeys = options.filterIndexed { i, _ -> i != index }.map { it.type }
+                                        val futureVariants = existingVariants.map { v -> 
+                                            v.options.filterKeys { it in remainingKeys } 
+                                        }
+                                        causesDuplicates = futureVariants.size != futureVariants.distinct().size
                                         showDeletePropertyWarning = index
                                     } else {
                                         options = options.filterIndexed { i, _ -> i != index }

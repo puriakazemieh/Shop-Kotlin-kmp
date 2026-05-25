@@ -254,6 +254,7 @@
     <string name="delete_option">حذف ویژگی</string>
     <string name="warning_text">هشدار</string>
     <string name="delete_property_warning">حذف این ویژگی از واریانت اصلی، آن را از تمام واریانت‌های دیگر نیز حذف می‌کند. آیا مایل به ادامه هستید؟</string>
+    <string name="delete_property_duplicate_warning">حذف این ویژگی باعث می‌شود برخی تنوع‌ها (واریانت‌ها) کاملاً یکسان شوند. آن تنوع‌های تکراری به صورت خودکار حذف خواهند شد. آیا مایل به ادامه هستید؟</string>
     <string name="delete_anyway">به هر حال حذف کن</string>
     <string name="apply_to_all">اعمال روی تمام واریانت‌ها</string>
     <string name="property_mismatch_error">همه واریانت‌ها باید مجموعه ویژگی‌های یکسانی داشته باشند.</string>

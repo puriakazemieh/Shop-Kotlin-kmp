@@ -152,6 +152,7 @@ object Resources {
         val DeleteOption = CommonRes.string.delete_option
         val WarningText = CommonRes.string.warning_text
         val DeletePropertyWarning = CommonRes.string.delete_property_warning
+        val DeletePropertyDuplicateWarning = CommonRes.string.delete_property_duplicate_warning
         val DeleteAnyway = CommonRes.string.delete_anyway
         val ApplyToAll = CommonRes.string.apply_to_all
         val PropertyMismatchError = CommonRes.string.property_mismatch_error

@@ -393,10 +393,9 @@ fun ManageProductScreen(
                     val masterKeys = state.variants.firstOrNull()?.options?.keys ?: emptySet()
                     
                     state.variants.forEach { variant ->
-                        // A variant is invalid if its keys don't exactly match the master keys
-                        // and it's not a temporary empty state
                         val currentKeys = variant.options.keys
-                        val isInvalid = currentKeys != masterKeys && masterKeys.isNotEmpty()
+                        // A variant is only invalid if it LACKS a property that the master variant has.
+                        val isInvalid = !currentKeys.containsAll(masterKeys) && masterKeys.isNotEmpty()
 
                         VariantItem(
                             variant = variant,
