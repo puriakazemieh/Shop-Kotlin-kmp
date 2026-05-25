@@ -3,7 +3,7 @@
     <string name="my_addresses">آدرس‌های من</string>
     <string name="no_addresses_found">آدرسی یافت نشد</string>
     <string name="default_label">پیش‌فرض</string>
-    <string name="postal_code_label">کد پستی: %s</string>
+    <string name="postal_code_label">کد پستی: %1$s</string>
     <string name="set_as_default">تنظیم به عنوان پیش‌فرض</string>
     <string name="update_profile">بروزرسانی پروفایل</string>
     <string name="saving">در حال ذخیره...</string>
@@ -34,7 +34,7 @@
     <string name="select_color">انتخاب رنگ</string>
     <string name="select_size">انتخاب سایز</string>
     <string name="manage_orders">مدیریت سفارشات</string>
-    <string name="order_id_prefix">سفارش شماره %s</string>
+    <string name="order_id_prefix">سفارش شماره %1$s</string>
     <string name="delete_product">حذف محصول</string>
     <string name="add_variant">افزودن تنوع</string>
     <string name="edit_variant">ویرایش تنوع</string>
@@ -89,7 +89,7 @@
     <string name="image_uploaded">تصویر آپلود شد</string>
     <string name="image_selected">تصویر انتخاب شد</string>
     <string name="product_added_to_cart">محصول به سبد خرید اضافه شد.</string>
-    <string name="checkout_with_qty">تسویه حساب (%s)</string>
+    <string name="checkout_with_qty">تسویه حساب (%1$s)</string>
     <string name="product_image_desc">تصویر محصول</string>
     <string name="purchase_on_the_way">خرید شما در راه است.</string>
     <string name="empty_product_list">لیست محصولات خالی است.</string>
@@ -140,7 +140,7 @@
     <string name="cart_is_empty_subtitle">هنوز هیچ کالایی به سبد خود اضافه نکرده‌اید.</string>
     <string name="categories_is_empty">دسته‌بندی یافت نشد</string>
     <string name="categories_is_empty_subtitle">لطفا بعدا تلاش کنید.</string>
-    <string name="search_in_category_format">جستجو در %s</string>
+    <string name="search_in_category_format">جستجو در %1$s</string>
 
     <!-- Content Descriptions -->
     <string name="back_desc">بازگشت</string>
@@ -170,10 +170,10 @@
     <string name="subtotal_label">جمع جزء</string>
     <string name="shipping_label">هزینه ارسال</string>
     <string name="total_label_simple">جمع کل</string>
-    <string name="email_label_format">ایمیل: %s</string>
-    <string name="user_id_label_format">شناسه کاربر: %s</string>
+    <string name="email_label_format">ایمیل: %1$s</string>
+    <string name="user_id_label_format">شناسه کاربر: %1$s</string>
     <string name="all_label">همه</string>
-    <string name="price_format">%s تومان</string>
+    <string name="price_format">%1$s تومان</string>
     <string name="variant_format">%1$s / %2$s</string>
     <string name="address_format">%1$s، %2$s، %3$s</string>
     <string name="city_province_format">%1$s، %2$s</string>
@@ -261,7 +261,7 @@
     <string name="bulk_add_variants">تولید گروهی تنوع‌ها</string>
     <string name="select_attributes_to_combine">مقادیر هر ویژگی را برای تولید تمام ترکیب‌های ممکن انتخاب کنید</string>
     <string name="generate">تولید تنوع‌ها</string>
-    <string name="variants_generated_count">%s تنوع جدید ایجاد خواهد شد. ادامه می‌دهید؟</string>
+    <string name="variants_generated_count">%1$s تنوع جدید ایجاد خواهد شد. ادامه می‌دهید؟</string>
     <string name="option_value_in_use">این مقدار گزینه توسط یک واریانت محصول در حال استفاده است و قابل حذف نیست.</string>
     <string name="option_type_in_use">این نوع گزینه دارای مقادیر است و قابل حذف نیست.</string>
     <string name="unknown_error">خطای نامشخص رخ داد</string>

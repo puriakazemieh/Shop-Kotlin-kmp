@@ -3,7 +3,7 @@
     <string name="my_addresses">My Addresses</string>
     <string name="no_addresses_found">No addresses found</string>
     <string name="default_label">Default</string>
-    <string name="postal_code_label">Postal Code: %s</string>
+    <string name="postal_code_label">Postal Code: %1$s</string>
     <string name="set_as_default">Set as Default</string>
     <string name="update_profile">Update Profile</string>
     <string name="saving">Saving...</string>
@@ -34,7 +34,7 @@
     <string name="select_color">Select Color</string>
     <string name="select_size">Select Size</string>
     <string name="manage_orders">Manage Orders</string>
-    <string name="order_id_prefix">Order #%s</string>
+    <string name="order_id_prefix">Order #%1$s</string>
     <string name="delete_product">Delete Product</string>
     <string name="add_variant">Add Variant</string>
     <string name="edit_variant">Edit Variant</string>
@@ -89,7 +89,7 @@
     <string name="image_uploaded">Image uploaded</string>
     <string name="image_selected">Image selected</string>
     <string name="product_added_to_cart">Product added to cart.</string>
-    <string name="checkout_with_qty">Checkout (%s)</string>
+    <string name="checkout_with_qty">Checkout (%1$s)</string>
     <string name="product_image_desc">Product image</string>
     <string name="purchase_on_the_way">Your purchase is on the way.</string>
     <string name="empty_product_list">Empty product list.</string>
@@ -140,7 +140,7 @@
     <string name="cart_is_empty_subtitle">You haven\'t added any items to your cart yet.</string>
     <string name="categories_is_empty">No Categories Found</string>
     <string name="categories_is_empty_subtitle">Please try again later.</string>
-    <string name="search_in_category_format">Search in %s</string>
+    <string name="search_in_category_format">Search in %1$s</string>
 
     <!-- Content Descriptions -->
     <string name="back_desc">Back</string>
@@ -170,10 +170,10 @@
     <string name="subtotal_label">Subtotal</string>
     <string name="shipping_label">Shipping</string>
     <string name="total_label_simple">Total</string>
-    <string name="email_label_format">Email: %s</string>
-    <string name="user_id_label_format">User ID: %s</string>
+    <string name="email_label_format">Email: %1$s</string>
+    <string name="user_id_label_format">User ID: %1$s</string>
     <string name="all_label">All</string>
-    <string name="price_format">$%s</string>
+    <string name="price_format">$%1$s</string>
     <string name="variant_format">%1$s / %2$s</string>
     <string name="address_format">%1$s, %2$s, %3$s</string>
     <string name="city_province_format">%1$s, %2$s</string>
@@ -261,7 +261,7 @@
     <string name="bulk_add_variants">Generate Variants</string>
     <string name="select_attributes_to_combine">Select values for each attribute to generate all possible combinations</string>
     <string name="generate">Generate</string>
-    <string name="variants_generated_count">%s variants will be generated. Proceed?</string>
+    <string name="variants_generated_count">%1$s variants will be generated. Proceed?</string>
     <string name="option_value_in_use">This option value is in use by a product variant and cannot be deleted.</string>
     <string name="option_type_in_use">This option type has values and cannot be deleted.</string>
     <string name="unknown_error">Unknown error occurred</string>

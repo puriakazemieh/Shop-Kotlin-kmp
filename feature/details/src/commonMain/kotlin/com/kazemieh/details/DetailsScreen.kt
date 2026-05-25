@@ -219,7 +219,7 @@ fun DetailsScreen(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    text = stringResource(Resources.String.PriceFormat, (state.selectedVariant?.price ?: 0.0).toString()),
+                                    text = stringResource(Resources.String.PriceFormat, (state.selectedVariant?.price ?: 0.0)),
                                     fontSize = FontSize.MEDIUM,
                                     color = MaterialTheme.colorScheme.secondary,
                                     fontWeight = FontWeight.Medium
@@ -322,7 +322,7 @@ fun DetailsScreen(
                                     } else {
                                         PrimaryButton(
                                             modifier = Modifier.weight(1f),
-                                            text = stringResource(Resources.String.CheckoutWithQty, state.quantity.toString()),
+                                            text = stringResource(Resources.String.CheckoutWithQty, state.quantity),
                                             onClick = navigateToCart
                                         )
                                         Spacer(modifier = Modifier.width(12.dp))
