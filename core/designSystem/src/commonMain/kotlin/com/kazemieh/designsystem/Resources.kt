@@ -156,6 +156,10 @@ object Resources {
         val DeleteAnyway = CommonRes.string.delete_anyway
         val ApplyToAll = CommonRes.string.apply_to_all
         val PropertyMismatchError = CommonRes.string.property_mismatch_error
+        val BulkAddVariants = CommonRes.string.bulk_add_variants
+        val SelectAttributesToCombine = CommonRes.string.select_attributes_to_combine
+        val Generate = CommonRes.string.generate
+        val VariantsGeneratedCount = CommonRes.string.variants_generated_count
         val VariantComboExists = CommonRes.string.variant_combo_exists
         val StatusUpdatedSuccessfully = CommonRes.string.status_updated_successfully
         val OrderDetail = CommonRes.string.order_detail

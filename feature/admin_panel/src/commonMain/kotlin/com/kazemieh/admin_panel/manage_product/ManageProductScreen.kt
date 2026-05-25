@@ -55,6 +55,7 @@ fun ManageProductScreen(
 
     var showCategoriesBottomSheet by remember { mutableStateOf(false) }
     var showAddVariantDialog by remember { mutableStateOf(false) }
+    var showBulkVariantDialog by remember { mutableStateOf(false) }
     var selectedVariantToEdit by remember { mutableStateOf<AdminVariant?>(null) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
     var dropdownMenuOpened by remember { mutableStateOf(false) }
@@ -127,6 +128,19 @@ fun ManageProductScreen(
                     )
                 )
             }
+        )
+    }
+
+    if (showBulkVariantDialog) {
+        BulkVariantBottomSheet(
+            availableOptions = state.availableOptions,
+            onDismiss = { showBulkVariantDialog = false },
+            onGenerate = { combinations ->
+                viewModel.handleIntent(ManageProductIntent.BulkAddVariants(combinations))
+                showBulkVariantDialog = false
+            },
+            onCreateOptionType = { viewModel.handleIntent(ManageProductIntent.CreateOptionType(it)) },
+            onCreateOptionValue = { id, value -> viewModel.handleIntent(ManageProductIntent.CreateOptionValue(id, value)) }
         )
     }
 
@@ -400,14 +414,34 @@ fun ManageProductScreen(
                         VariantItem(
                             variant = variant,
                             isInvalid = isInvalid,
-                            onClick = { selectedVariantToEdit = variant }
+                            onClick = { selectedVariantToEdit = variant },
+                            onFieldUpdate = { sku, price, onHand ->
+                                viewModel.handleIntent(ManageProductIntent.UpdateVariantInline(variant.id, sku, price, onHand))
+                            }
                         )
                     }
-                    Button(
-                        onClick = { showAddVariantDialog = true },
-                        modifier = Modifier.fillMaxWidth()
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(stringResource(Resources.String.AddVariant))
+                        OutlinedButton(
+                            onClick = { showBulkVariantDialog = true },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(painterResource(Resources.Icon.Plus), contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(Resources.String.BulkAddVariants))
+                        }
+                        
+                        Button(
+                            onClick = { showAddVariantDialog = true },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(painterResource(Resources.Icon.Plus), contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(Resources.String.AddVariant))
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -424,28 +458,67 @@ fun ManageProductScreen(
 }
 
 @Composable
-fun VariantItem(variant: AdminVariant, isInvalid: Boolean = false, onClick: () -> Unit) {
+fun VariantItem(
+    variant: AdminVariant, 
+    isInvalid: Boolean = false, 
+    onClick: () -> Unit,
+    onFieldUpdate: (sku: String?, price: Double?, onHand: Int?) -> Unit
+) {
     Card(
-        onClick = onClick,
         modifier = Modifier.fillMaxWidth().then(
             if (isInvalid) Modifier.border(2.dp, MaterialTheme.colorScheme.error, CardDefaults.shape)
             else Modifier
         ),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(variant.sku, fontWeight = FontWeight.Bold)
-                Text(stringResource(Resources.String.PriceFormat, variant.price), color = MaterialTheme.colorScheme.secondary)
+                Text(
+                    text = variant.options.entries.joinToString(", ") { "${it.key}: ${it.value}" },
+                    fontSize = FontSize.MEDIUM,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f).clickable { onClick() }
+                )
+                IconButton(onClick = onClick, modifier = Modifier.size(24.dp)) {
+                    Icon(painterResource(Resources.Icon.Edit), contentDescription = null, modifier = Modifier.size(16.dp))
+                }
             }
-            Text(variant.options.entries.joinToString(", ") { "${it.key}: ${it.value}" }, fontSize = FontSize.SMALL)
-            Text(
-                stringResource(Resources.String.StockReservedFormat, variant.onHand, variant.reserved),
-                fontSize = FontSize.SMALL
-            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = variant.sku,
+                    onValueChange = { onFieldUpdate(it, null, null) },
+                    label = { Text(stringResource(Resources.String.Sku), fontSize = FontSize.EXTRA_SMALL) },
+                    modifier = Modifier.weight(1f),
+                    textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = if (variant.price == 0.0) "" else variant.price.toString(),
+                    onValueChange = { onFieldUpdate(null, it.toDoubleOrNull() ?: 0.0, null) },
+                    label = { Text(stringResource(Resources.String.Price), fontSize = FontSize.EXTRA_SMALL) },
+                    modifier = Modifier.weight(1f),
+                    textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = variant.onHand.toString(),
+                    onValueChange = { onFieldUpdate(null, null, it.toIntOrNull() ?: 0) },
+                    label = { Text("Stock", fontSize = FontSize.EXTRA_SMALL) },
+                    modifier = Modifier.weight(0.8f),
+                    textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true
+                )
+            }
         }
     }
 }

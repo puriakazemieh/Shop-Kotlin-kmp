@@ -258,6 +258,10 @@
     <string name="delete_anyway">Delete Anyway</string>
     <string name="apply_to_all">Apply to all variants</string>
     <string name="property_mismatch_error">All variants must have the same set of properties.</string>
+    <string name="bulk_add_variants">Generate Variants</string>
+    <string name="select_attributes_to_combine">Select values for each attribute to generate all possible combinations</string>
+    <string name="generate">Generate</string>
+    <string name="variants_generated_count">%s variants will be generated. Proceed?</string>
     <string name="option_value_in_use">This option value is in use by a product variant and cannot be deleted.</string>
     <string name="option_type_in_use">This option type has values and cannot be deleted.</string>
     <string name="unknown_error">Unknown error occurred</string>

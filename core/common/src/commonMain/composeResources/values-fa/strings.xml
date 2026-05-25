@@ -258,6 +258,10 @@
     <string name="delete_anyway">به هر حال حذف کن</string>
     <string name="apply_to_all">اعمال روی تمام واریانت‌ها</string>
     <string name="property_mismatch_error">همه واریانت‌ها باید مجموعه ویژگی‌های یکسانی داشته باشند.</string>
+    <string name="bulk_add_variants">تولید گروهی تنوع‌ها</string>
+    <string name="select_attributes_to_combine">مقادیر هر ویژگی را برای تولید تمام ترکیب‌های ممکن انتخاب کنید</string>
+    <string name="generate">تولید تنوع‌ها</string>
+    <string name="variants_generated_count">%s تنوع جدید ایجاد خواهد شد. ادامه می‌دهید؟</string>
     <string name="option_value_in_use">این مقدار گزینه توسط یک واریانت محصول در حال استفاده است و قابل حذف نیست.</string>
     <string name="option_type_in_use">این نوع گزینه دارای مقادیر است و قابل حذف نیست.</string>
     <string name="unknown_error">خطای نامشخص رخ داد</string>

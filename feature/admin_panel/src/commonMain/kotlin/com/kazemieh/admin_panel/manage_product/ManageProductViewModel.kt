@@ -94,6 +94,33 @@ class ManageProductViewModel(
             is ManageProductIntent.CreateOptionValue -> createOptionValue(intent.optionTypeId, intent.value)
             is ManageProductIntent.CreateOptionTypeAndValue -> createOptionTypeAndValue(intent.typeName, intent.valueName)
             is ManageProductIntent.ApplyPropertyToAll -> applyPropertyToAll(intent.options)
+            is ManageProductIntent.BulkAddVariants -> bulkAddVariants(intent.combinations)
+            is ManageProductIntent.UpdateVariantInline -> updateVariantField(intent.id, intent.sku, intent.price, intent.onHand)
+        }
+    }
+
+    private fun bulkAddVariants(combinations: List<List<AdminVariantOption>>) {
+        _state.update { state ->
+            val currentMaxId = state.variants.minOfOrNull { it.id } ?: 0L
+            val newVariants = combinations.mapIndexed { index, options ->
+                AdminVariant(
+                    id = currentMaxId - (index + 1),
+                    sku = "",
+                    price = state.basePrice,
+                    compareAtPrice = null,
+                    isActive = true,
+                    onHand = 0,
+                    reserved = 0,
+                    options = options.associate { it.type to it.value }
+                )
+            }.filter { newV -> 
+                // Only add if this combination doesn't already exist
+                state.variants.none { it.options == newV.options }
+            }
+            
+            val updatedVariants = state.variants + newVariants
+            val defaultTypes = updatedVariants.firstOrNull()?.options?.keys?.toList() ?: emptyList()
+            state.copy(variants = updatedVariants, defaultOptionTypes = defaultTypes)
         }
     }
 
@@ -105,6 +132,21 @@ class ManageProductViewModel(
                 variant.copy(options = newOptions)
             }
             state.copy(variants = updatedVariants, defaultOptionTypes = masterKeys)
+        }
+    }
+
+    private fun updateVariantField(variantId: Long, sku: String? = null, price: Double? = null, onHand: Int? = null) {
+        _state.update { state ->
+            val updated = state.variants.map { 
+                if (it.id == variantId) {
+                    it.copy(
+                        sku = sku ?: it.sku,
+                        price = price ?: it.price,
+                        onHand = onHand ?: it.onHand
+                    )
+                } else it
+            }
+            state.copy(variants = updated)
         }
     }
 
@@ -585,6 +627,8 @@ sealed interface ManageProductIntent {
     data class CreateOptionValue(val optionTypeId: Long, val value: String) : ManageProductIntent
     data class CreateOptionTypeAndValue(val typeName: String, val valueName: String) : ManageProductIntent
     data class ApplyPropertyToAll(val options: List<AdminVariantOption>) : ManageProductIntent
+    data class BulkAddVariants(val combinations: List<List<AdminVariantOption>>) : ManageProductIntent
+    data class UpdateVariantInline(val id: Long, val sku: String? = null, val price: Double? = null, val onHand: Int? = null) : ManageProductIntent
 
     data class UploadImage(val bytes: ByteArray) : ManageProductIntent {
         override fun equals(other: Any?): Boolean {
