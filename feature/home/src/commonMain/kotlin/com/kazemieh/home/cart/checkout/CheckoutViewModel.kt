@@ -16,6 +16,7 @@ import com.kazemieh.domain.usecase.address.AddAddressUseCase
 import com.kazemieh.domain.usecase.address.GetAddressesUseCase
 import com.kazemieh.domain.usecase.cart.GetCartUseCase
 import com.kazemieh.domain.usecase.order.CreateOrderUseCase
+import com.kazemieh.domain.usecase.payment.RequestPaymentUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -41,7 +42,8 @@ class CheckoutViewModel(
     private val getProfileUseCase: GetProfileUseCase,
     private val getCartUseCase: GetCartUseCase,
     private val addAddressUseCase: AddAddressUseCase,
-    private val getAddressesUseCase: GetAddressesUseCase
+    private val getAddressesUseCase: GetAddressesUseCase,
+    private val requestPaymentUseCase: RequestPaymentUseCase
 ) : ViewModel() {
 
     var screenState by mutableStateOf(CheckoutScreenState())
@@ -192,9 +194,48 @@ class CheckoutViewModel(
         }
     }
 
-    fun payWithPayPal(onSuccess: () -> Unit, onError: (Any) -> Unit) {
-        // PayPal implementation would go here
-        onError(Resources.String.PaypalNotImplemented)
+    fun payWithZarinpal(onSuccess: (String) -> Unit, onError: (Any) -> Unit) {
+        viewModelScope.launch {
+            val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
+            if (items.isEmpty()) {
+                onError(Resources.String.CartIsEmptyError)
+                return@launch
+            }
+
+            val addressId = screenState.selectedAddressId
+            if (addressId == null) {
+                onError(Resources.String.SelectAddressError)
+                return@launch
+            }
+
+            screenState = screenState.copy(isLoading = true)
+
+            // 1. Create Order
+            val orderResult = createOrderUseCase(items, addressId)
+            when (orderResult) {
+                is AppResult.Success -> {
+                    val orderId = orderResult.data.id
+                    // 2. Request Payment URL
+                    val paymentResult = requestPaymentUseCase(orderId)
+                    when (paymentResult) {
+                        is AppResult.Success -> {
+                            screenState = screenState.copy(isLoading = false)
+                            onSuccess(paymentResult.data)
+                        }
+                        is AppResult.Error -> {
+                            screenState = screenState.copy(isLoading = false)
+                            onError(paymentResult.message)
+                        }
+                        else -> {}
+                    }
+                }
+                is AppResult.Error -> {
+                    screenState = screenState.copy(isLoading = false)
+                    onError(orderResult.message)
+                }
+                else -> {}
+            }
+        }
     }
 
     fun payOnDelivery(onSuccess: () -> Unit, onError: (Any) -> Unit) {

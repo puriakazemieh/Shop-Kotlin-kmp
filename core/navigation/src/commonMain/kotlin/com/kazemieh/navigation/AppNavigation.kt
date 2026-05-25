@@ -16,6 +16,7 @@ import com.kazemieh.admin_panel.manage_options.ManageOptionsScreen
 import com.kazemieh.admin_panel.manage_order.AdminOrderScreen
 import com.kazemieh.admin_panel.manage_product.ManageProductScreen
 import com.kazemieh.common.AuthState
+import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.details.DetailsScreen
@@ -39,6 +40,18 @@ fun AppNavHost(
         TokenExpiredEventBus.events.collect { authState ->
             if (authState is AuthState.Unauthenticated) {
                 navController.navigate(Screen.AuthGraph)
+            }
+        }
+    }
+
+    LaunchedEffect(true) {
+        PaymentEventBus.events.collect { result ->
+            if (result.status == "success" || result.status == "failed") {
+                val success = result.status == "success"
+                PaymentEventBus.reset()
+                navController.navigate(Screen.PaymentCompleted(success)) {
+                    popUpTo<Screen.Checkout> { inclusive = true }
+                }
             }
         }
     }
@@ -178,6 +191,15 @@ fun AppNavHost(
         }
 
         composable<Screen.PaymentCompleted> {
+            val args = it.toRoute<Screen.PaymentCompleted>()
+            
+            // If we came from a deep link, the args might be different or not populated correctly 
+            // because of naming mismatch between Screen.PaymentCompleted and the deep link params.
+            // But since we are using Type-Safe Navigation, it might be tricky.
+            
+            // Actually, if we use type-safe navigation, the deep link uri pattern should match the route structure.
+            // Screen.PaymentCompleted(success: Boolean, error: String?)
+
             PaymentCompleted(
                 navigateBack = {
                     navController.navigate(Screen.HomeGraph()) {

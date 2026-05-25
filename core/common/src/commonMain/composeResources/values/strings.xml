@@ -25,7 +25,7 @@
     <string name="add_to_cart">Add to Cart</string>
     <string name="select_address">Select Address</string>
     <string name="add_your_first_address">Add Your First Address</string>
-    <string name="pay_with_paypal">Pay with PayPal</string>
+    <string name="pay_with_paypal">Pay with Zarinpal</string>
     <string name="pay_on_delivery">Pay on Delivery</string>
     <string name="login">Login</string>
 
@@ -95,7 +95,7 @@
     <string name="empty_product_list">Empty product list.</string>
     <string name="no_product_in_category">We couldn't find any product in this category.</string>
     <string name="address_added_successfully">Address added successfully</string>
-    <string name="paypal_not_implemented">PayPal is not implemented yet.</string>
+    <string name="paypal_not_implemented">Zarinpal is not implemented yet.</string>
     <string name="cart_is_empty_error">Cart is empty</string>
     <string name="select_address_error">Please select or add an address</string>
 

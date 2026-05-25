@@ -61,7 +61,7 @@ fun PrimaryButton(
                     ),
                 painter = painterResource(icon),
                 contentDescription = stringResource(Resources.String.ButtonIconDesc),
-                tint = if (icon == Resources.Image.PaypalLogo) Color.Unspecified
+                tint = if (icon == Resources.Image.ZarinpalLogo) Color.Unspecified
                 else MaterialTheme.colorScheme.onPrimaryContainer
             )
         }

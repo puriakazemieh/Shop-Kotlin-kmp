@@ -17,6 +17,9 @@ import com.kazemieh.data.local.TokenManager
 import com.kazemieh.data.order.repository.OrderRepositoryImpl
 import com.kazemieh.data.order.source.OrderDataSource
 import com.kazemieh.data.order.source.OrderDataSourceImpl
+import com.kazemieh.data.payment.datasource.PaymentDataSource
+import com.kazemieh.data.payment.datasource.PaymentDataSourceImpl
+import com.kazemieh.data.payment.repository.PaymentRepositoryImpl
 import com.kazemieh.data.profile.repository.AddressRepositoryImpl
 import com.kazemieh.data.profile.repository.ProfileRepositoryImpl
 import com.kazemieh.data.profile.source.AddressDataSource
@@ -30,6 +33,7 @@ import com.kazemieh.domain.repository.AuthRepository
 import com.kazemieh.domain.repository.CartRepository
 import com.kazemieh.domain.repository.CatalogRepository
 import com.kazemieh.domain.repository.OrderRepository
+import com.kazemieh.domain.repository.PaymentRepository
 import com.kazemieh.domain.repository.ProfileRepository
 import com.kazemieh.domain.repository.SettingsRepository
 import com.kazemieh.network.TokenProvider
@@ -100,6 +104,14 @@ val dataModule = module {
 
     single<OrderDataSource> {
         OrderDataSourceImpl(get())
+    }
+
+    single<PaymentRepository> {
+        PaymentRepositoryImpl(get())
+    }
+
+    single<PaymentDataSource> {
+        PaymentDataSourceImpl(get())
     }
 
     single { ProfileLocalDataSource(get()) }

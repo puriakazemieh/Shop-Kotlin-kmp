@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -64,6 +65,7 @@ fun CheckoutScreen(
     val screenState = viewModel.screenState
     val isFormValid = viewModel.isFormValid
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val uriHandler = LocalUriHandler.current
 
     var showAddressBottomSheet by remember { mutableStateOf(false) }
     val addressAddedSuccessMessage = stringResource(Resources.String.AddressAddedSuccessfully)
@@ -179,13 +181,13 @@ fun CheckoutScreen(
                         modifier = Modifier.padding(bottom = 24.dp)
                     ) {
                         PrimaryButton(
-                            text = stringResource(Resources.String.PayWithPayPal),
-                            icon = Resources.Image.PaypalLogo,
+                            text = stringResource(Resources.String.PayWithZarinpal),
+                            icon = Resources.Image.ZarinpalLogo,
                             enabled = isFormValid,
                             onClick = {
-                                viewModel.payWithPayPal(
-                                    onSuccess = {
-
+                                viewModel.payWithZarinpal(
+                                    onSuccess = { paymentUrl ->
+                                        uriHandler.openUri(paymentUrl)
                                     },
                                     onError = { message ->
                                         messageBarState.addError(message)

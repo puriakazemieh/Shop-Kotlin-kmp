@@ -8,6 +8,7 @@ import com.kazemieh.domain.usecase.cart.*
 import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductsUseCase
 import com.kazemieh.domain.usecase.order.*
+import com.kazemieh.domain.usecase.payment.RequestPaymentUseCase
 import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.usecase.settings.ObserveThemeModeUseCase
 import com.kazemieh.domain.usecase.settings.UpdateLanguageUseCase
@@ -56,7 +57,8 @@ val homeModule = module {
             getProfileUseCase = get(),
             getCartUseCase = get(),
             addAddressUseCase = get(),
-            getAddressesUseCase = get()
+            getAddressesUseCase = get(),
+            requestPaymentUseCase = get()
         )
     }
 
@@ -121,5 +123,6 @@ val homeModule = module {
     factory { GetOrderUseCase(get()) }
     factory { CreateOrderUseCase(get()) }
     factory { CancelOrderUseCase(get()) }
+    factory { RequestPaymentUseCase(get()) }
 
 }

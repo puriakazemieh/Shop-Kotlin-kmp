@@ -13,6 +13,8 @@ import com.kazemieh.network.CatalogApiImpl
 import com.kazemieh.network.HttpClientFactory
 import com.kazemieh.network.OrderApi
 import com.kazemieh.network.OrderApiImpl
+import com.kazemieh.network.PaymentApi
+import com.kazemieh.network.PaymentApiImpl
 import com.kazemieh.network.ProfileApi
 import com.kazemieh.network.ProfileApiImpl
 import org.koin.dsl.module
@@ -50,5 +52,9 @@ val networkModule = module {
 
     single<AddressApi> {
         AddressApiImpl(get())
+    }
+
+    single<PaymentApi> {
+        PaymentApiImpl(get())
     }
 }

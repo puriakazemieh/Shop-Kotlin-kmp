@@ -38,7 +38,7 @@ object Resources {
         val Checkmark = DesignRes.drawable.checkmark_image
         val Cat = DesignRes.drawable.cat
         val GoogleLogo = DesignRes.drawable.google_logo
-        val PaypalLogo = DesignRes.drawable.paypal_logo
+        val ZarinpalLogo = DesignRes.drawable.paypal_logo
     }
 
     object Flag {
@@ -84,7 +84,7 @@ object Resources {
         val AddToCart = CommonRes.string.add_to_cart
         val SelectAddress = CommonRes.string.select_address
         val AddYourFirstAddress = CommonRes.string.add_your_first_address
-        val PayWithPayPal = CommonRes.string.pay_with_paypal
+        val PayWithZarinpal = CommonRes.string.pay_with_paypal
         val PayOnDelivery = CommonRes.string.pay_on_delivery
         val Login = CommonRes.string.login
         val ResetPassword = CommonRes.string.reset_password
@@ -99,7 +99,7 @@ object Resources {
         val EmptyProductList = CommonRes.string.empty_product_list
         val NoProductInCategory = CommonRes.string.no_product_in_category
         val AddressAddedSuccessfully = CommonRes.string.address_added_successfully
-        val PaypalNotImplemented = CommonRes.string.paypal_not_implemented
+        val ZarinpalNotImplemented = CommonRes.string.paypal_not_implemented
         val CartIsEmptyError = CommonRes.string.cart_is_empty_error
         val SelectAddressError = CommonRes.string.select_address_error
         val SomethingWentWrong = CommonRes.string.something_went_wrong
