@@ -202,7 +202,7 @@ fun HomeGraphScreen(
                                     text = stringResource(destination.title),
                                     fontFamily = AppFont(),
                                     fontSize = FontSize.LARGE,
-                                    color = MaterialTheme.colorScheme.onPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         },

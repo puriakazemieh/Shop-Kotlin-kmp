@@ -48,7 +48,7 @@ fun BottomBar(
     ) {
         BottomBarDestination.entries.forEach { destination ->
             val animatedTint by animateColorAsState(
-                targetValue = if (selected == destination) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
+                targetValue = if (selected == destination) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimaryContainer,
             )
             Box(contentAlignment = Alignment.Center) {
                 if (destination == BottomBarDestination.Cart && cartItemCount > 0) {

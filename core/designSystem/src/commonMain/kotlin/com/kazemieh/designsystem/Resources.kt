@@ -38,7 +38,7 @@ object Resources {
         val Checkmark = DesignRes.drawable.checkmark_image
         val Cat = DesignRes.drawable.cat
         val GoogleLogo = DesignRes.drawable.google_logo
-        val ZarinpalLogo = DesignRes.drawable.paypal_logo
+        val ZarinpalLogo = DesignRes.drawable.zarinpal_logo
     }
 
     object Flag {

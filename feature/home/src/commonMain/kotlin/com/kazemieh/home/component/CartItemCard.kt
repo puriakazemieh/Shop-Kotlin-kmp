@@ -1,5 +1,6 @@
 package com.kazemieh.home.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,12 +31,14 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.kazemieh.common.ld
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.domain.model.CartItem
+import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -53,7 +56,8 @@ fun CartItemCard(
             .clip(RoundedCornerShape(size = 12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        AsyncImage(
+        val painter = rememberImagePainter(cartItem.imageUrl ?: "")
+        Image(
             modifier = Modifier
                 .width(120.dp)
                 .height(120.dp)
@@ -63,10 +67,7 @@ fun CartItemCard(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(size = 12.dp)
                 ),
-            model = ImageRequest.Builder(LocalPlatformContext.current)
-                .data(cartItem.imageUrl)
-                .crossfade(enable = true)
-                .build(),
+            painter = painter,
             contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
             contentScale = ContentScale.Crop
         )

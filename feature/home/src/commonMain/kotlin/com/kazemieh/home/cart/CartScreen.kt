@@ -48,9 +48,9 @@ fun CartScreen(
         contentBackgroundColor = MaterialTheme.colorScheme.surface,
         messageBarState = messageBarState,
         errorContainerColor = MaterialTheme.colorScheme.error,
-        errorContentColor = MaterialTheme.colorScheme.primaryContainer,
+        errorContentColor = MaterialTheme.colorScheme.onError,
         successContainerColor = MaterialTheme.colorScheme.primary,
-        successContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        successContentColor = MaterialTheme.colorScheme.onPrimary
     ) {
         PullToRefreshBox(
             isRefreshing = isRefreshing,

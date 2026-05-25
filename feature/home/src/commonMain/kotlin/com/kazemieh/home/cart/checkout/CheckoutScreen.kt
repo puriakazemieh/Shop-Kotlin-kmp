@@ -121,8 +121,8 @@ fun CheckoutScreen(
             errorMaxLines = 2,
             errorContainerColor = MaterialTheme.colorScheme.errorContainer,
             errorContentColor = MaterialTheme.colorScheme.onErrorContainer,
-            successContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            successContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            successContainerColor = MaterialTheme.colorScheme.primary,
+            successContentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             val scrollState = rememberScrollState()
             Box(modifier = Modifier.fillMaxSize()) {
@@ -270,15 +270,18 @@ fun AddressItem(
             Text(
                 text = address.receiverName,
                 fontWeight = FontWeight.Bold,
-                fontSize = FontSize.MEDIUM
+                fontSize = FontSize.MEDIUM,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = stringResource(Resources.String.CityProvinceFormat, address.province, address.city),
-                fontSize = FontSize.SMALL
+                fontSize = FontSize.SMALL,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = address.addressLine1,
-                fontSize = FontSize.SMALL
+                fontSize = FontSize.SMALL,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

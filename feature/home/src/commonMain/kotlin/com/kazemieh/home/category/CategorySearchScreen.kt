@@ -68,7 +68,8 @@ fun CategorySearchScreen(
                                         IconButton(onClick = { viewModel.onIntent(CategorySearchIntent.UpdateSearchQuery("")) }) {
                                             Icon(
                                                 painter = painterResource(Resources.Icon.Close),
-                                                contentDescription = stringResource(Resources.String.CloseDesc)
+                                                contentDescription = stringResource(Resources.String.CloseDesc),
+                                                tint = MaterialTheme.colorScheme.onSurface
                                             )
                                         }
                                     }
@@ -89,7 +90,8 @@ fun CategorySearchScreen(
                         Icon(
                             modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = stringResource(Resources.String.BackDesc)
+                            contentDescription = stringResource(Resources.String.BackDesc),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -97,10 +99,17 @@ fun CategorySearchScreen(
                     IconButton(onClick = {}) {
                         Icon(
                             painter = painterResource(Resources.Icon.Search),
-                            contentDescription = stringResource(Resources.String.SearchDesc)
+                            contentDescription = stringResource(Resources.String.SearchDesc),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     ) { padding ->

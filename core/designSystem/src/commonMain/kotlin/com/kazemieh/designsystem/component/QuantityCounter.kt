@@ -47,14 +47,16 @@ fun QuantityCounter(
             Icon(
                 painter = painterResource(Resources.Icon.Minus),
                 contentDescription = stringResource(Resources.String.MinusDesc),
-                modifier = Modifier.size(iconSize)
+                modifier = Modifier.size(iconSize),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         Text(
             text = value.toString(),
             fontSize = if (size == QuantityCounterSize.Small) FontSize.SMALL else FontSize.MEDIUM,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Box(
@@ -65,7 +67,8 @@ fun QuantityCounter(
             Icon(
                 painter = painterResource(Resources.Icon.Plus),
                 contentDescription = stringResource(Resources.String.PlusDesc),
-                modifier = Modifier.size(iconSize)
+                modifier = Modifier.size(iconSize),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

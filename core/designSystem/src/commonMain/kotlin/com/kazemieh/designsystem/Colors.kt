@@ -8,114 +8,89 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 
-// --- رنگ‌های اصلی و سفارشی شما ---
-val GrayLighter = Color(0xFFFAFAFA)
-val Gray = Color(0xFFF1F1F1)
-val GrayDarker = Color(0xFFEBEBEB)
+// --- پایه‌ رنگ‌های تم لایت (روشن و شفاف) ---
+val NavyBlueLight = Color(0xFF1E254C)      // سرمه‌ای عمیق برای لایت تم
+val GoldLight = Color(0xFFAC8453)          // طلایی با کنتراست کافی برای متن و دکمه در لایت تم
+val BgLight = Color(0xFFF8F9FA)            // پس‌زمینه لایت تم (کمی متمایل به خاکستری گرم برای کاهش خستگی چشم)
+val SurfaceLight = Color(0xFFFFFFFF)       // کارت‌ها و دیالوگ‌های سفید خالص
+val SurfaceVariantLight = Color(0xFFF1F3F5) // لایه‌های ثانویه
+val OutlineLight = Color(0xFFE2E8F0)        // خطوط مرزی بسیار تمیز و کمرنگ
 
-val NavyBlue = Color(0xFF2E3667) // Primary
-val Gold = Color(0xFFC8A57C)     // Secondary
-val White = Color(0xFFFFFFFF)
-val Black = Color(0xFF000000)
-val Red = Color(0xFFDD0000)      // Error
+// --- پایه‌ رنگ‌های تم دارک (مدرن و ملو) ---
+val NavyBlueDark = Color(0xFF7C8EFF)       // نسخه روشن‌تر و زنده‌تر سرمه‌ای برای دکمه‌های دارک تم
+val GoldDark = Color(0xFFE5C49A)           // طلایی روشن و درخشان برای دارک تم
+val BgDark = Color(0xFF0F111A)             // پس‌زمینه دارک (سرمه‌ای بسیار تیره و شیک، به جای مشکی مطلق)
+val SurfaceDark = Color(0xFF181C2A)        // کارت‌ها در دارک تم
+val SurfaceVariantDark = Color(0xFF24293E) // لایه‌های ثانویه دارک
+val OutlineDark = Color(0xFF2F3652)        // خطوط مرزی دارک
 
-val CategoryYellow = Color(0xFFFFC738)
-val CategoryBlue = Color(0xFF38B3FF)
-val CategoryGreen = Color(0xFF19D109)
-val CategoryPurple = Color(0xFF8E5EFF)
-val CategoryRed = Color(0xFFFF5E60)
+// --- رنگ‌های عمومی و اصلاح شده دسته‌بندی‌ها (ملایم و شیک) ---
+val CategoryYellow = Color(0xFFF5B041)
+val CategoryBlue = Color(0xFF4EA8DE)
+val CategoryGreen = Color(0xFF4895EF)
+val CategoryPurple = Color(0xFF9B5DE5)
+val CategoryRed = Color(0xFFF25C54)
+val RedError = Color(0xFFE63946)
 
-//TextPrimary -> MaterialTheme.colorScheme.onPrimaryContainer
-//IconPrimary -> MaterialTheme.colorScheme.onPrimaryContainer
-//SurfaceError -> MaterialTheme.colorScheme.error
-//TextWhite -> MaterialTheme.colorScheme.primaryContainer
-//SurfaceBrand -> MaterialTheme.colorScheme.primary
-//Surface -> MaterialTheme.colorScheme.background
-//SurfaceLighter -> MaterialTheme.colorScheme.primaryContainer
-//BorderIdle -> MaterialTheme.colorScheme.outline
-//ButtonPrimary -> MaterialTheme.colorScheme.primary
-//SurfaceSecondary -> MaterialTheme.colorScheme.secondary
-//SurfaceDarker -> MaterialTheme.colorScheme.secondaryContainer
-
-// --- پالت لایت ---
+// --- پالت لایت (Light Palette) ---
 val LightAppColorScheme = lightColorScheme(
-    primary = NavyBlue,       // رنگ اصلی دکمه‌ها، هدرها و ...
-    onPrimary = Black,         // رنگ متن روی Primary
+    primary = NavyBlueLight,
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFE8EAF6),
+    onPrimaryContainer = NavyBlueLight,
 
-    primaryContainer = GrayLighter, // رنگ پس‌زمینه برای المان‌های اصلی
-    onPrimaryContainer = White,     // رنگ متن روی PrimaryContainer
+    secondary = GoldLight,
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFDF6ED),
+    onSecondaryContainer = Color(0xFF5C4325),
 
-    secondary = Gold,        // رنگ ثانویه برای عناصر تأکید شده
-    onSecondary = White,       // رنگ متن روی Secondary
+    background = BgLight,
+    onBackground = Color(0xFF1A1A1A),
 
-    secondaryContainer = Gray,     // رنگ پس‌زمینه برای المان‌های ثانویه
-    onSecondaryContainer = Black,  // رنگ متن روی SecondaryContainer
+    surface = SurfaceLight,
+    onSurface = Color(0xFF1A1A1A),
+    surfaceVariant = SurfaceVariantLight,
+    onSurfaceVariant = Color(0xFF4A4A4A),
 
-    tertiary = CategoryBlue,   // رنگ سوم (اگر نیاز باشد)
-    onTertiary = White,
+    outline = OutlineLight,
+    outlineVariant = Color(0xFFCBD5E1),
 
-    tertiaryContainer = CategoryGreen,
-    onTertiaryContainer = Black,
-
-    error = Red,               // رنگ خطا
-    onError = White,           // رنگ متن روی Error
-
-    errorContainer = CategoryRed, // رنگ پس‌زمینه برای المان‌های خطا
-    onErrorContainer = White,
-
-    background = White,        // رنگ اصلی پس‌زمینه صفحه
-    onBackground = Black,      // رنگ متن اصلی روی پس‌زمینه
-
-    surface = GrayLighter,     // رنگ سطوح (کارت‌ها، dialog ها)
-    onSurface = Black,         // رنگ متن روی Surface
-
-    surfaceVariant = Gray,     // رنگ جایگزین برای Surface (مثلا برای لیست‌ها)
-    onSurfaceVariant = Black,  // رنگ متن روی SurfaceVariant
-
-    outline = GrayDarker,      // رنگ خطوط دور المان‌ها
-    outlineVariant = Gray,     // رنگ خطوط نازک‌تر
+    error = RedError,
+    onError = Color.White,
+    errorContainer = Color(0xFFFFEAEB),
+    onErrorContainer = Color(0xFF600004)
 )
 
-// --- پالت دارک ---
+// --- پالت دارک (Dark Palette) ---
 val DarkAppColorScheme = darkColorScheme(
-    primary = NavyBlue,       // رنگ اصلی در حالت دارک
-    onPrimary = White,
+    primary = NavyBlueDark,
+    onPrimary = Color(0xFF0A1033),
+    primaryContainer = Color(0xFF1E254C),
+    onPrimaryContainer = Color(0xFFE8EAF6),
 
-    primaryContainer = Color(0xFF333333), // تیره‌تر برای پس‌زمینه
-    onPrimaryContainer = White,
+    secondary = GoldDark,
+    onSecondary = Color(0xFF422F18),
+    secondaryContainer = Color(0xFF5C4325),
+    onSecondaryContainer = Color(0xFFFDF6ED),
 
-    secondary = Gold,
-    onSecondary = White,
+    background = BgDark,
+    onBackground = Color(0xFFE2E8F0),
 
-    secondaryContainer = Color(0xFF2A2A2A), // تیره‌تر
-    onSecondaryContainer = White,
+    surface = SurfaceDark,
+    onSurface = Color(0xFFE2E8F0),
+    surfaceVariant = SurfaceVariantDark,
+    onSurfaceVariant = Color(0xFF94A3B8),
 
-    tertiary = CategoryBlue,
-    onTertiary = White,
+    outline = OutlineDark,
+    outlineVariant = Color(0xFF3F476C),
 
-    tertiaryContainer = CategoryGreen,
-    onTertiaryContainer = Black,
-
-    error = Red,
-    onError = White,
-
-    errorContainer = CategoryRed,
-    onErrorContainer = White,
-
-    background = Black,        // پس‌زمینه تیره
-    onBackground = White,      // متن روشن روی پس‌زمینه تیره
-
-    surface = Color(0xFF1E1E1E), // سطح تیره‌تر
-    onSurface = White,         // متن روشن روی سطح
-
-    surfaceVariant = Color(0xFF272727), // سطح جایگزین تیره‌تر
-    onSurfaceVariant = White,
-
-    outline = Color(0xFF404040), // خطوط تیره
-    outlineVariant = Color(0xFF333333), // خطوط نازک‌تر تیره
+    error = Color(0xFFFF6B6B),
+    onError = Color(0xFF600004),
+    errorContainer = Color(0xFF4A0002),
+    onErrorContainer = Color(0xFFFFD8D8)
 )
 
-
+// --- ساختار داده‌ای AppColors ---
 data class AppColors(
     val primary: Color,
     val onPrimary: Color,
@@ -123,37 +98,30 @@ data class AppColors(
     val onPrimaryContainer: Color,
     val secondary: Color,
     val onSecondary: Color,
+    val secondaryContainer: Color,
+    val onSecondaryContainer: Color,
     val background: Color,
     val onBackground: Color,
     val surface: Color,
     val onSurface: Color,
+    val surfaceVariant: Color,
+    val onSurfaceVariant: Color,
+    val outline: Color,
     val error: Color,
     val onError: Color,
-    val outline: Color,
-    val outlineVariant: Color,
+
     // رنگ‌های دسته‌بندی
     val categoryYellow: Color,
     val categoryBlue: Color,
     val categoryGreen: Color,
     val categoryPurple: Color,
-    val categoryRed: Color,
-    // رنگ‌های UI
-    val grayLighter: Color,
-    val gray: Color,
-    val grayDarker: Color,
-    val navyBlue: Color,
-    val gold: Color,
-    val white: Color,
-    val black: Color,
-    val red: Color
+    val categoryRed: Color
 )
 
-// تعریف CompositionLocal برای دسترسی به AppColors
 val LocalAppColors = compositionLocalOf<AppColors> {
     error("No AppColors provided")
 }
 
-// ایجاد یک Composable برای ارائه AppColors
 @Composable
 fun provideAppColors(darkTheme: Boolean): AppColors {
     val colors = if (darkTheme) DarkAppColorScheme else LightAppColorScheme
@@ -165,29 +133,23 @@ fun provideAppColors(darkTheme: Boolean): AppColors {
             onPrimaryContainer = colors.onPrimaryContainer,
             secondary = colors.secondary,
             onSecondary = colors.onSecondary,
+            secondaryContainer = colors.secondaryContainer,
+            onSecondaryContainer = colors.onSecondaryContainer,
             background = colors.background,
             onBackground = colors.onBackground,
             surface = colors.surface,
             onSurface = colors.onSurface,
+            surfaceVariant = colors.surfaceVariant,
+            onSurfaceVariant = colors.onSurfaceVariant,
+            outline = colors.outline,
             error = colors.error,
             onError = colors.onError,
-            outline = colors.outline,
-            outlineVariant = colors.outlineVariant,
-            // رنگ‌های دسته‌بندی
+            // دسته‌بندی‌ها
             categoryYellow = CategoryYellow,
             categoryBlue = CategoryBlue,
             categoryGreen = CategoryGreen,
             categoryPurple = CategoryPurple,
-            categoryRed = CategoryRed,
-            // رنگ‌های UI
-            grayLighter = GrayLighter,
-            gray = Gray,
-            grayDarker = GrayDarker,
-            navyBlue = NavyBlue,
-            gold = Gold,
-            white = White,
-            black = Black,
-            red = Red
+            categoryRed = CategoryRed
         )
     }
 }

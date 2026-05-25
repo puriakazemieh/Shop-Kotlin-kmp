@@ -44,9 +44,9 @@ fun PrimaryButton(
         shape = RoundedCornerShape(size = 6.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (secondary) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            contentColor = if (secondary) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
             disabledContainerColor = MaterialTheme.colorScheme.outline,
-            disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.DISABLED)
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = Alpha.DISABLED)
         ),
         contentPadding = PaddingValues(all = 20.dp)
     ) {
@@ -62,7 +62,8 @@ fun PrimaryButton(
                 painter = painterResource(icon),
                 contentDescription = stringResource(Resources.String.ButtonIconDesc),
                 tint = if (icon == Resources.Image.ZarinpalLogo) Color.Unspecified
-                else MaterialTheme.colorScheme.onPrimaryContainer
+                else if (secondary) MaterialTheme.colorScheme.onSurface
+                else MaterialTheme.colorScheme.onPrimary
             )
         }
         Spacer(modifier = Modifier.width(12.dp))
