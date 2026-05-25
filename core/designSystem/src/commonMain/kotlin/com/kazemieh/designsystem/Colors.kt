@@ -9,12 +9,12 @@ import androidx.compose.ui.graphics.Color
 
 
 // --- پایه‌ رنگ‌های تم لایت (روشن و شفاف) ---
-val NavyBlueLight = Color(0xFF1E254C)      // سرمه‌ای عمیق برای لایت تم
-val GoldLight = Color(0xFFAC8453)          // طلایی با کنتراست کافی برای متن و دکمه در لایت تم
-val BgLight = Color(0xFFF8F9FA)            // پس‌زمینه لایت تم (کمی متمایل به خاکستری گرم برای کاهش خستگی چشم)
-val SurfaceLight = Color(0xFFFFFFFF)       // کارت‌ها و دیالوگ‌های سفید خالص
-val SurfaceVariantLight = Color(0xFFF1F3F5) // لایه‌های ثانویه
-val OutlineLight = Color(0xFFE2E8F0)        // خطوط مرزی بسیار تمیز و کمرنگ
+val NavyBlueLight = Color(0xFF171E43)       // سرمه‌ای بسیار عمیق و شیک (پایه اصلی)
+val GoldLight = Color(0xFFBD9563)           // طلایی زنده و باکیفیت (بدون حس کثیفی یا تیرگی)
+val SurfaceVariantLight = Color(0xFFF4F4F2)  // پس‌زمینه ثانویه (مثلاً برای TextField یا آیتم‌های لیست)
+val BgLight = Color(0xFFF5F7FA)       // پس‌زمینه: سفید با هاله بسیار ملایم سرمه‌ای-آبی
+val SurfaceLight = Color(0xFFFFFFFF)  // کارت‌ها: سفید خالص
+val OutlineLight = Color(0xFFE2E8F0)  // خطوط دور المان‌ها
 
 // --- پایه‌ رنگ‌های تم دارک (مدرن و ملو) ---
 val NavyBlueDark = Color(0xFF7C8EFF)       // نسخه روشن‌تر و زنده‌تر سرمه‌ای برای دکمه‌های دارک تم

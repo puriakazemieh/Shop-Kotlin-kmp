@@ -50,7 +50,7 @@ fun CustomTextField(
         enabled = enabled,
         value = value,
         onValueChange = onValueChange,
-        placeholder = if (placeholder != null) {
+        label = if (placeholder != null) {
             {
                 Text(
                     text = anyToString(placeholder),
@@ -66,11 +66,11 @@ fun CustomTextField(
             focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
             focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
             unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.DISABLED),
+            disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.HALF),
             focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.HALF),
             unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.HALF),
-            disabledPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.DISABLED),
-            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = Alpha.HALF),
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             errorIndicatorColor = Color.Transparent,

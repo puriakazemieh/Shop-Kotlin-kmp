@@ -1,5 +1,6 @@
 package com.kazemieh.admin_panel.manage_options
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,23 +56,41 @@ fun ManageOptionsScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Resources.String.Settings)) }, // Using Settings as a placeholder for "Options Management"
+                title = {
+                    Text(
+                        text = stringResource(Resources.String.VariantsManager),
+                        fontSize = FontSize.LARGE,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }, // Changed from Settings to Variants
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = null
+                            contentDescription = stringResource(Resources.String.BackDesc),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = { showAddTypeDialog = true }) {
-                        Icon(Icons.Default.Add, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     ) { padding ->
@@ -103,7 +122,7 @@ fun ManageOptionsScreen(
 
     if (showAddTypeDialog) {
         OptionNameDialog(
-            title = "Add Option Type",
+            title = stringResource(Resources.String.AddOptionType),
             onDismiss = { showAddTypeDialog = false },
             onConfirm = { name ->
                 viewModel.handleIntent(ManageOptionsIntent.CreateOptionType(name))
@@ -114,7 +133,7 @@ fun ManageOptionsScreen(
 
     typeToEdit?.let { type ->
         OptionNameDialog(
-            title = "Edit Option Type",
+            title = stringResource(Resources.String.EditOptionType),
             initialValue = type.name,
             onDismiss = { typeToEdit = null },
             onConfirm = { name ->
@@ -126,7 +145,7 @@ fun ManageOptionsScreen(
 
     showAddValueDialogForType?.let { typeId ->
         OptionNameDialog(
-            title = "Add Option Value",
+            title = stringResource(Resources.String.AddOptionValue),
             onDismiss = { showAddValueDialogForType = null },
             onConfirm = { value ->
                 viewModel.handleIntent(ManageOptionsIntent.CreateOptionValue(typeId, value))
@@ -137,7 +156,7 @@ fun ManageOptionsScreen(
 
     valueToEdit?.let { (typeId, value) ->
         OptionNameDialog(
-            title = "Edit Option Value",
+            title = stringResource(Resources.String.EditOptionValue),
             initialValue = value.value,
             onDismiss = { valueToEdit = null },
             onConfirm = { newValue ->
@@ -159,6 +178,8 @@ fun OptionTypeItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -222,12 +243,13 @@ fun OptionNameDialog(
     var name by remember { mutableStateOf(initialValue) }
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
         title = { Text(title) },
         text = {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
+                label = { Text(stringResource(Resources.String.Name)) },
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -236,7 +258,7 @@ fun OptionNameDialog(
                 enabled = name.isNotBlank(),
                 onClick = { onConfirm(name) }
             ) {
-                Text("Confirm")
+                Text(stringResource(Resources.String.Confirm))
             }
         },
         dismissButton = {

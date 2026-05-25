@@ -42,7 +42,7 @@ fun AdminPanelScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             AnimatedContent(
                 targetState = searchBarVisible
@@ -97,7 +97,7 @@ fun AdminPanelScreen(
                             Text(
                                 text = stringResource(Resources.String.AdminPanel),
                                 fontSize = FontSize.LARGE,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         },
                         navigationIcon = {
@@ -106,7 +106,7 @@ fun AdminPanelScreen(
                                     modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                                     painter = painterResource(Resources.Icon.BackArrow),
                                     contentDescription = stringResource(Resources.String.BackArrowIconDesc),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         },
@@ -115,27 +115,27 @@ fun AdminPanelScreen(
                                 Icon(
                                     painter = painterResource(Resources.Icon.VerticalMenu), // Using VerticalMenu icon as a placeholder for Options
                                     contentDescription = stringResource(Resources.String.Settings),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             IconButton(onClick = navigateToManageOrders) {
                                 Icon(
                                     imageVector = Icons.Default.ShoppingCart,
                                     contentDescription = stringResource(Resources.String.OrdersIconDesc),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             IconButton(onClick = { searchBarVisible = true }) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Search),
                                     contentDescription = stringResource(Resources.String.SearchIconDesc),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.background,
-                            scrolledContainerColor = MaterialTheme.colorScheme.background,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            scrolledContainerColor = MaterialTheme.colorScheme.surface,
                             navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                             titleContentColor = MaterialTheme.colorScheme.onSurface,
                             actionIconContentColor = MaterialTheme.colorScheme.onSurface

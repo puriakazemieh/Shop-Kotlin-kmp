@@ -22,6 +22,15 @@
     <string name="out_of_stock">Out of Stock</string>
     <string name="details">Details</string>
     <string name="variants">Variants</string>
+    <string name="variants_manager">Variants Manager</string>
+    <string name="add_option_type">Add Option Type</string>
+    <string name="edit_option_type">Edit Option Type</string>
+    <string name="add_option_value">Add Option Value</string>
+    <string name="edit_option_value">Edit Option Value</string>
+    <string name="qty_format">x%1$s</string>
+    <string name="initial_stock_required">Initial Stock *</string>
+    <string name="confirm">Confirm</string>
+    <string name="add_property">Add Property</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="select_address">Select Address</string>
     <string name="add_your_first_address">Add Your First Address</string>

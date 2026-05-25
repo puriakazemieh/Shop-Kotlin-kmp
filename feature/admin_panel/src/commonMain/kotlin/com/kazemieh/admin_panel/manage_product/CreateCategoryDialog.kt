@@ -19,6 +19,7 @@ fun CreateCategoryDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
         title = { Text(stringResource(Resources.String.CreateCategory)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

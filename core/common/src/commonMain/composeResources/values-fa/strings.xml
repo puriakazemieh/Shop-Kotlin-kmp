@@ -22,6 +22,15 @@
     <string name="out_of_stock">ناموجود</string>
     <string name="details">جزئیات</string>
     <string name="variants">انواع</string>
+    <string name="variants_manager">مدیریت تنوع</string>
+    <string name="add_option_type">افزودن نوع ویژگی</string>
+    <string name="edit_option_type">ویرایش نوع ویژگی</string>
+    <string name="add_option_value">افزودن مقدار ویژگی</string>
+    <string name="edit_option_value">ویرایش مقدار ویژگی</string>
+    <string name="qty_format">%1$s عدد</string>
+    <string name="initial_stock_required">موجودی اولیه *</string>
+    <string name="confirm">تایید</string>
+    <string name="add_property">افزودن ویژگی</string>
     <string name="add_to_cart">افزودن به سبد</string>
     <string name="select_address">انتخاب آدرس</string>
     <string name="add_your_first_address">اولین آدرس خود را اضافه کنید</string>

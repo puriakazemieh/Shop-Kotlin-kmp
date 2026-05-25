@@ -23,7 +23,8 @@ fun CategoriesBottomSheet(
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         LazyColumn(
             modifier = Modifier

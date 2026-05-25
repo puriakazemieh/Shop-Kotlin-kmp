@@ -81,6 +81,15 @@ object Resources {
         val OutOfStock = CommonRes.string.out_of_stock
         val Details = CommonRes.string.details
         val Variants = CommonRes.string.variants
+        val VariantsManager = CommonRes.string.variants_manager
+        val AddOptionType = CommonRes.string.add_option_type
+        val EditOptionType = CommonRes.string.edit_option_type
+        val AddOptionValue = CommonRes.string.add_option_value
+        val EditOptionValue = CommonRes.string.edit_option_value
+        val QtyFormat = CommonRes.string.qty_format
+        val InitialStockRequired = CommonRes.string.initial_stock_required
+        val Confirm = CommonRes.string.confirm
+        val AddProperty = CommonRes.string.add_property
         val AddToCart = CommonRes.string.add_to_cart
         val SelectAddress = CommonRes.string.select_address
         val AddYourFirstAddress = CommonRes.string.add_your_first_address

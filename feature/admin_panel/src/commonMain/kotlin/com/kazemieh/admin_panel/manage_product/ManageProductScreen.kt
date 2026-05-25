@@ -189,14 +189,14 @@ fun ManageProductScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = if (id == null) stringResource(Resources.String.NewProduct) else stringResource(Resources.String.EditProduct),
                         fontSize = FontSize.LARGE,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 navigationIcon = {
@@ -205,7 +205,7 @@ fun ManageProductScreen(
                             modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackArrowIconDesc),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -216,11 +216,11 @@ fun ManageProductScreen(
                                 Icon(
                                     painter = painterResource(Resources.Icon.VerticalMenu),
                                     contentDescription = stringResource(Resources.String.VerticalMenuIconDesc),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             DropdownMenu(
-                                containerColor = MaterialTheme.colorScheme.background,
+                                containerColor = MaterialTheme.colorScheme.surface,
                                 expanded = dropdownMenuOpened,
                                 onDismissRequest = { dropdownMenuOpened = false }
                             ) {
@@ -250,11 +250,11 @@ fun ManageProductScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.background,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -469,7 +469,8 @@ fun VariantItem(
             if (isInvalid) Modifier.border(2.dp, MaterialTheme.colorScheme.error, CardDefaults.shape)
             else Modifier
         ),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
@@ -512,7 +513,7 @@ fun VariantItem(
                 OutlinedTextField(
                     value = variant.onHand.toString(),
                     onValueChange = { onFieldUpdate(null, null, it.toIntOrNull() ?: 0) },
-                    label = { Text("Stock", fontSize = FontSize.EXTRA_SMALL) },
+                    label = { Text(stringResource(Resources.String.InitialStock), fontSize = FontSize.EXTRA_SMALL) },
                     modifier = Modifier.weight(0.8f),
                     textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

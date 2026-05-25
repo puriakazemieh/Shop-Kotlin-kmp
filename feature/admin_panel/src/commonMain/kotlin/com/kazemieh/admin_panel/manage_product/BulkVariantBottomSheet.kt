@@ -36,6 +36,7 @@ fun BulkVariantBottomSheet(
         var newTypeName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showAddTypeDialog = false },
+            containerColor = MaterialTheme.colorScheme.surface,
             title = { Text(stringResource(Resources.String.CreateCategory)) }, // Reuse or add new string
             text = {
                 OutlinedTextField(
@@ -57,6 +58,7 @@ fun BulkVariantBottomSheet(
         var newValueName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showAddValueToTypeId = null },
+            containerColor = MaterialTheme.colorScheme.surface,
             title = { Text(stringResource(Resources.String.Add)) },
             text = {
                 OutlinedTextField(
@@ -77,7 +79,8 @@ fun BulkVariantBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() }
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier = Modifier
@@ -105,7 +108,7 @@ fun BulkVariantBottomSheet(
                     )
                 }
                 IconButton(onClick = { showAddTypeDialog = true }) {
-                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.Add, contentDescription = "Add Property")
+                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.Add, contentDescription = stringResource(Resources.String.AddProperty))
                 }
             }
 

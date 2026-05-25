@@ -1,5 +1,6 @@
 package com.kazemieh.admin_panel.manage_order
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -62,18 +63,32 @@ fun AdminOrderScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Resources.String.ManageOrders), fontFamily = AppFont()) },
+                title = {
+                    Text(
+                        text = stringResource(Resources.String.ManageOrders),
+                        fontFamily = AppFont(),
+                        fontSize = FontSize.LARGE,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = stringResource(Resources.String.BackDesc)
+                            contentDescription = stringResource(Resources.String.BackDesc),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     ) { padding ->
@@ -160,7 +175,8 @@ fun AdminOrderCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -193,7 +209,7 @@ fun AdminOrderCard(
                     fontFamily = AppFont()
                 )
                 Text(
-                    text = "$${order.totalPrice}",
+                    text = stringResource(Resources.String.PriceFormat, order.totalPrice),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = AppFont()
@@ -242,14 +258,31 @@ fun OrderDetailDialog(
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(Resources.String.OrderDetail), fontFamily = AppFont()) },
+                    title = {
+                        Text(
+                            text = stringResource(Resources.String.OrderDetail),
+                            fontFamily = AppFont(),
+                            fontSize = FontSize.LARGE,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = stringResource(Resources.String.CloseDesc))
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(Resources.String.CloseDesc),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                    )
                 )
             }
         ) { padding ->

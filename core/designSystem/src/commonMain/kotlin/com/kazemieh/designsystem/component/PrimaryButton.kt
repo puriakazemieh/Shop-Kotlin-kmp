@@ -45,8 +45,8 @@ fun PrimaryButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = if (secondary) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
             contentColor = if (secondary) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.outline,
-            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = Alpha.DISABLED)
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Alpha.DISABLED)
         ),
         contentPadding = PaddingValues(all = 20.dp)
     ) {

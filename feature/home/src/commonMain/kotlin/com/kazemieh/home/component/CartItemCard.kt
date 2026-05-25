@@ -54,6 +54,11 @@ fun CartItemCard(
             .fillMaxWidth()
             .height(120.dp)
             .clip(RoundedCornerShape(size = 12.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(12.dp)
+            )
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         val painter = rememberImagePainter(cartItem.imageUrl ?: "")

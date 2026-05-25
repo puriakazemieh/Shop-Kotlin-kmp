@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,7 +67,9 @@ fun ResetPasswordScreen(
         }
     }
 
-    Scaffold { padding ->
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface
+    ) { padding ->
         ContentWithMessageBar(
             modifier = Modifier
                 .padding(
@@ -74,11 +77,12 @@ fun ResetPasswordScreen(
                     bottom = padding.calculateBottomPadding()
                 ),
             messageBarState = messageBarState,
+            contentBackgroundColor = MaterialTheme.colorScheme.surface
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colors.background)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(24.dp),
                 verticalArrangement = Arrangement.Center
             ) {

@@ -1,5 +1,6 @@
 package com.kazemieh.home.settings
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,8 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -19,6 +21,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,12 +52,15 @@ fun SettingsScreen(
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = stringResource(Resources.String.Settings),
-                        fontFamily = AppFont()
+                        fontFamily = AppFont(),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = FontSize.LARGE
                     )
                 },
                 navigationIcon = {
@@ -62,10 +68,16 @@ fun SettingsScreen(
                         Icon(
                             modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = stringResource(Resources.String.BackDesc)
+                            contentDescription = stringResource(Resources.String.BackDesc),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     ) { padding ->
@@ -78,16 +90,32 @@ fun SettingsScreen(
             Text(
                 text = stringResource(Resources.String.Language),
                 style = MaterialTheme.typography.titleMedium,
-                fontFamily = AppFont()
+                fontFamily = AppFont(),
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            AppLanguage.entries.forEach { language ->
-                SettingsItem(
-                    label = language.label,
-                    isSelected = currentLanguage == language,
-                    onSelect = { viewModel.onLanguageSelected(language) }
-                )
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column {
+                    AppLanguage.entries.forEachIndexed { index, language ->
+                        SettingsItem(
+                            label = language.label,
+                            isSelected = currentLanguage == language,
+                            onSelect = { viewModel.onLanguageSelected(language) }
+                        )
+                        if (index < AppLanguage.entries.size - 1) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -95,16 +123,32 @@ fun SettingsScreen(
             Text(
                 text = stringResource(Resources.String.Theme),
                 style = MaterialTheme.typography.titleMedium,
-                fontFamily = AppFont()
+                fontFamily = AppFont(),
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            AppThemeMode.entries.forEach { mode ->
-                SettingsItem(
-                    label = stringResource(mode.toResource()),
-                    isSelected = currentThemeMode == mode,
-                    onSelect = { viewModel.onThemeModeSelected(mode) }
-                )
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column {
+                    AppThemeMode.entries.forEachIndexed { index, mode ->
+                        SettingsItem(
+                            label = stringResource(mode.toResource()),
+                            isSelected = currentThemeMode == mode,
+                            onSelect = { viewModel.onThemeModeSelected(mode) }
+                        )
+                        if (index < AppThemeMode.entries.size - 1) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -128,7 +172,7 @@ fun SettingsItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onSelect)
-            .padding(vertical = 12.dp),
+            .padding(vertical = 14.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
@@ -137,8 +181,9 @@ fun SettingsItem(
         )
         Text(
             text = label,
-            modifier = Modifier.padding(start = 8.dp),
-            fontFamily = AppFont()
+            modifier = Modifier.padding(start = 12.dp),
+            fontFamily = AppFont(),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

@@ -74,6 +74,7 @@ fun VariantBottomSheet(
     if (showDeletePropertyWarning != null) {
         AlertDialog(
             onDismissRequest = { showDeletePropertyWarning = null },
+            containerColor = MaterialTheme.colorScheme.surface,
             title = { Text(stringResource(Resources.String.WarningText)) },
             text = { 
                 Text(
@@ -102,7 +103,8 @@ fun VariantBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() }
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier = Modifier
@@ -315,7 +317,7 @@ fun VariantBottomSheet(
             OutlinedTextField(
                 value = initialOnHand,
                 onValueChange = { initialOnHand = it },
-                label = { Text("Initial Stock *") },
+                label = { Text(stringResource(Resources.String.InitialStockRequired)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 isError = initialOnHand.isEmpty()
