@@ -34,8 +34,8 @@ class DetailsViewModel(
             is DetailsIntent.UpdateQuantity -> {
                 val newQty = intent.quantity
                 if (newQty <= 0) {
+                    updateQuantityInCart(0)
                     _state.update { it.copy(quantity = 1, isAddedToCart = false) }
-                    // Here we could also call remove from cart if we had the itemId
                 } else {
                     _state.update { it.copy(quantity = newQty) }
                     updateQuantityInCart(newQty)

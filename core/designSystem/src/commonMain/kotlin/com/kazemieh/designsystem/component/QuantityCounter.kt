@@ -41,14 +41,14 @@ fun QuantityCounter(
     ) {
         Box(
             modifier = Modifier
-                .clickable { if (value > 1) onMinusClick(value - 1) }
+                .clickable { onMinusClick(value - 1) }
                 .padding(padding)
         ) {
             Icon(
-                painter = painterResource(Resources.Icon.Minus),
-                contentDescription = stringResource(Resources.String.MinusDesc),
+                painter = painterResource(if (value == 1) Resources.Icon.Delete else Resources.Icon.Minus),
+                contentDescription = stringResource(if (value == 1) Resources.String.Delete else Resources.String.MinusDesc),
                 modifier = Modifier.size(iconSize),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = if (value == 1) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 

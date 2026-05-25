@@ -94,8 +94,12 @@ fun CartScreen(
                                         onPlusClick = {
                                             viewModel.adjustQuantity(item.variantId, 1, {}, { messageBarState.addError(it) })
                                         },
-                                        onMinusClick = {
-                                            viewModel.adjustQuantity(item.variantId, -1, {}, { messageBarState.addError(it) })
+                                        onMinusClick = { newQty ->
+                                            if (newQty == 0) {
+                                                viewModel.deleteCartItem(item.id, {}, { messageBarState.addError(it) })
+                                            } else {
+                                                viewModel.adjustQuantity(item.variantId, -1, {}, { messageBarState.addError(it) })
+                                            }
                                         },
                                         onDeleteClick = {
                                             viewModel.deleteCartItem(item.id, {}, { messageBarState.addError(it) })
