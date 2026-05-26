@@ -34,7 +34,7 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(Screen.ForgotPassword)
                 },
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigateBack()
                 }
             )
         }
@@ -52,7 +52,7 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(Screen.Login)
                 },
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigateBack()
                 }
             )
         }
@@ -67,7 +67,7 @@ fun NavGraphBuilder.authNavGraph(
             ForgotPasswordScreen(
                 viewModel = viewModel,
                 onBack = {
-                    navController.popBackStack()
+                    navController.navigateBack()
                 })
         }
 

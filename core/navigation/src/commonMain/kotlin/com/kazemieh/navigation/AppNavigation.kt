@@ -36,6 +36,8 @@ fun AppNavHost(
 ) {
     val navController = rememberNavController()
 
+    BindBrowserHistory(navController)
+
     LaunchedEffect(true) {
         TokenExpiredEventBus.events.collect { authState ->
             if (authState is AuthState.Unauthenticated) {
@@ -98,25 +100,25 @@ fun AppNavHost(
 
         composable<Screen.Profile> {
             ProfileScreen {
-                navController.navigateUp()
+                navController.navigateBack()
             }
         }
 
         composable<Screen.Settings> {
             SettingsScreen {
-                navController.navigateUp()
+                navController.navigateBack()
             }
         }
 
         composable<Screen.ContactUs> {
             ContactUsScreen {
-                navController.navigateUp()
+                navController.navigateBack()
             }
         }
 
         composable<Screen.AdminPanel> {
             AdminPanelScreen(
-                navigateBack = { navController.navigateUp() },
+                navigateBack = { navController.navigateBack() },
                 navigateToManageProduct = { id ->
                     navController.navigate(Screen.ManageProduct(id))
                 },
@@ -131,13 +133,13 @@ fun AppNavHost(
 
         composable<Screen.ManageOrders> {
             AdminOrderScreen(
-                onBackClick = { navController.navigateUp() }
+                onBackClick = { navController.navigateBack() }
             )
         }
 
         composable<Screen.ManageOptions> {
             ManageOptionsScreen(
-                onBackClick = { navController.navigateUp() }
+                onBackClick = { navController.navigateBack() }
             )
         }
 
@@ -145,7 +147,7 @@ fun AppNavHost(
             val args = it.toRoute<Screen.ManageProduct>()
             ManageProductScreen(
                 id = args.id,
-                navigateBack = { navController.navigateUp() }
+                navigateBack = { navController.navigateBack() }
             )
         }
 
@@ -153,7 +155,7 @@ fun AppNavHost(
             val args = it.toRoute<Screen.ProductDetail>()
             DetailsScreen(
                 slug = args.slug,
-                navigateBack = { navController.navigateUp() },
+                navigateBack = { navController.navigateBack() },
                 navigateToCart = {
                     navController.navigate(Screen.HomeGraph(showCart = true)) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }
@@ -173,7 +175,7 @@ fun AppNavHost(
                 navigateToDetails = { slug ->
                     navController.navigate(Screen.ProductDetail(slug = slug))
                 },
-                navigateBack = { navController.navigateUp() }
+                navigateBack = { navController.navigateBack() }
             )
         }
 
@@ -181,7 +183,7 @@ fun AppNavHost(
             val args = it.toRoute<Screen.Checkout>()
             CheckoutScreen(
                 totalAmount = args.totalAmount,
-                navigateBack = { navController.navigateUp() },
+                navigateBack = { navController.navigateBack() },
                 navigateToPaymentCompleted = { success, error ->
                     navController.navigate(Screen.PaymentCompleted(success ?: false, error)) {
                         popUpTo<Screen.Checkout> { inclusive = true }
@@ -210,6 +212,17 @@ fun AppNavHost(
         }
 
 
+    }
+}
+
+
+fun NavController.navigateBack() {
+    if (previousBackStackEntry != null) {
+        popBackStack()
+    } else {
+        navigate(Screen.HomeGraph()) {
+            popUpTo<Screen.HomeGraph> { inclusive = true }
+        }
     }
 }
 
