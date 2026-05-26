@@ -14,15 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
-import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.util.anyToString
@@ -37,8 +34,7 @@ fun LoginScreen(
     onNavigateForgot: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val state = viewModel.state
-    val colors = AppTheme.colors
+    val state by viewModel.state.collectAsState()
     val emailHint = stringResource(Resources.String.EmailHint)
 
     LaunchedEffect(Unit) {
@@ -67,13 +63,13 @@ fun LoginScreen(
         AuthTextField(
             value = state.email,
             onValueChange = {
-                viewModel.onEvent(AuthEvent.OnEmailChange(it))
+                viewModel.handleIntent(AuthIntent.OnEmailChange(it))
             },
             hint = emailHint
         )
 
         state.emailError?.let {
-            Text(anyToString(it), color = colors.error)
+            Text(anyToString(it), color = MaterialTheme.colorScheme.error)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -81,20 +77,20 @@ fun LoginScreen(
         AuthTextField(
             value = state.password,
             onValueChange = {
-                viewModel.onEvent(AuthEvent.OnPasswordChange(it))
+                viewModel.handleIntent(AuthIntent.OnPasswordChange(it))
             },
             hint = stringResource(Resources.String.PasswordHint),
             isPassword = true
         )
 
         state.passwordError?.let {
-            Text(anyToString(it), color = colors.error)
+            Text(anyToString(it), color = MaterialTheme.colorScheme.error)
         }
 
         Spacer(Modifier.height(24.dp))
 
         AuthButton(stringResource(Resources.String.Login)) {
-            viewModel.onEvent(AuthEvent.SubmitLogin)
+            viewModel.handleIntent(AuthIntent.SubmitLogin)
         }
 
         if (state.isLoading) {

@@ -1,8 +1,5 @@
 package com.kazemieh.auth.screen
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.doOnError
@@ -14,7 +11,10 @@ import com.kazemieh.domain.usecase.ResetPasswordUseCase
 import com.kazemieh.domain.validation.ValidateEmail
 import com.kazemieh.domain.validation.ValidatePassword
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
@@ -26,156 +26,164 @@ class AuthViewModel(
     private val validatePassword: ValidatePassword
 ) : ViewModel() {
 
-    var state by mutableStateOf(AuthState())
-        private set
+    private val _state = MutableStateFlow(AuthState())
+    val state = _state.asStateFlow()
 
     private val _event = MutableSharedFlow<UiEvent>()
     val event = _event.asSharedFlow()
 
-    fun onEvent(event: AuthEvent) {
+    fun handleIntent(event: AuthIntent) {
         when (event) {
 
-            is AuthEvent.OnEmailChange -> {
-                state = state.copy(email = event.value, emailError = null)
+            is AuthIntent.OnEmailChange -> {
+                _state.update { it.copy(email = event.value, emailError = null) }
             }
 
-            is AuthEvent.OnPasswordChange -> {
-                state = state.copy(password = event.value, passwordError = null)
+            is AuthIntent.OnPasswordChange -> {
+                _state.update { it.copy(password = event.value, passwordError = null) }
             }
 
-            AuthEvent.SubmitLogin -> {
+            AuthIntent.SubmitLogin -> {
                 submitLogin()
             }
 
-            AuthEvent.SubmitRegister -> {
+            AuthIntent.SubmitRegister -> {
                 submitRegister()
             }
 
-            AuthEvent.SubmitForgotPassword -> {
+            AuthIntent.SubmitForgotPassword -> {
                 submitForgot()
             }
 
-            is AuthEvent.OnNewPasswordChange -> {
-                state = state.copy(newPassword = event.value, newPasswordError = null)
+            is AuthIntent.OnNewPasswordChange -> {
+                _state.update { it.copy(newPassword = event.value, newPasswordError = null) }
             }
 
-            is AuthEvent.OnConfirmPasswordChange -> {
-                state = state.copy(confirmPassword = event.value, confirmPasswordError = null)
+            is AuthIntent.OnConfirmPasswordChange -> {
+                _state.update { it.copy(confirmPassword = event.value, confirmPasswordError = null) }
             }
 
-            is AuthEvent.OnTokenReceived -> {
-                state = state.copy(token = event.value)
+            is AuthIntent.OnTokenReceived -> {
+                _state.update { it.copy(token = event.value) }
             }
 
-            AuthEvent.SubmitResetPassword -> {
+            AuthIntent.SubmitResetPassword -> {
                 submitResetPassword()
             }
         }
     }
 
     private fun submitLogin() {
-        val emailResult = validateEmail(state.email)
-        val passwordResult = validatePassword(state.password)
+        val s = _state.value
+        val emailResult = validateEmail(s.email)
+        val passwordResult = validatePassword(s.password)
 
         if (!emailResult.successful || !passwordResult.successful) {
-            state = state.copy(
-                emailError = emailResult.errorMessage,
-                passwordError = passwordResult.errorMessage
-            )
+            _state.update {
+                it.copy(
+                    emailError = emailResult.errorMessage,
+                    passwordError = passwordResult.errorMessage
+                )
+            }
             return
         }
 
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            _state.update { it.copy(isLoading = true) }
 
-            val result = loginUseCase(state.email, state.password)
+            val result = loginUseCase(s.email, s.password)
 
             result.doOnSuccess {
-                state = state.copy(isLoading = false)
+                _state.update { it.copy(isLoading = false) }
                 _event.emit(UiEvent.NavigateBack)
-            }.doOnError {
-                state = state.copy(isLoading = false)
-                _event.emit(UiEvent.ShowError(it))
+            }.doOnError { err ->
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(UiEvent.ShowError(err))
             }
 
         }
     }
 
     private fun submitRegister() {
-        val emailResult = validateEmail(state.email)
-        val passwordResult = validatePassword(state.password)
+        val s = _state.value
+        val emailResult = validateEmail(s.email)
+        val passwordResult = validatePassword(s.password)
 
         if (!emailResult.successful || !passwordResult.successful) {
-            state = state.copy(
-                emailError = emailResult.errorMessage,
-                passwordError = passwordResult.errorMessage
-            )
+            _state.update {
+                it.copy(
+                    emailError = emailResult.errorMessage,
+                    passwordError = passwordResult.errorMessage
+                )
+            }
             return
         }
 
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            _state.update { it.copy(isLoading = true) }
 
-            val result = registerUseCase(state.email, state.password)
+            val result = registerUseCase(s.email, s.password)
 
             result.doOnSuccess {
-                state = state.copy(isLoading = false)
+                _state.update { it.copy(isLoading = false) }
                 _event.emit(UiEvent.NavigateBack)
-            }.doOnError {
-                state = state.copy(isLoading = false)
-                _event.emit(UiEvent.ShowError(it))
+            }.doOnError { err ->
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(UiEvent.ShowError(err))
             }
         }
     }
 
     private fun submitForgot() {
-        val emailResult = validateEmail(state.email)
+        val s = _state.value
+        val emailResult = validateEmail(s.email)
 
         if (!emailResult.successful) {
-            state = state.copy(emailError = emailResult.errorMessage)
+            _state.update { it.copy(emailError = emailResult.errorMessage) }
             return
         }
 
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            _state.update { it.copy(isLoading = true) }
 
-            val result = forgotPasswordUseCase(state.email)
+            val result = forgotPasswordUseCase(s.email)
 
             result.doOnSuccess {
-                state = state.copy(isLoading = false)
+                _state.update { it.copy(isLoading = false) }
                 _event.emit(UiEvent.ShowSuccess(Unit))
-            }.doOnError {
-                state = state.copy(isLoading = false)
-                _event.emit(UiEvent.ShowError(it))
+            }.doOnError { err ->
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(UiEvent.ShowError(err))
             }
 
         }
     }
 
     private fun submitResetPassword() {
-        val passwordResult = validatePassword(state.newPassword)
+        val s = _state.value
+        val passwordResult = validatePassword(s.newPassword)
         if (!passwordResult.successful) {
-            state = state.copy(newPasswordError = passwordResult.errorMessage)
+            _state.update { it.copy(newPasswordError = passwordResult.errorMessage) }
             return
         }
 
-        if (state.newPassword != state.confirmPassword) {
-            state = state.copy(confirmPasswordError = "PASSWORDS_DO_NOT_MATCH")
+        if (s.newPassword != s.confirmPassword) {
+            _state.update { it.copy(confirmPasswordError = "PASSWORDS_DO_NOT_MATCH") }
             return
         }
 
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            _state.update { it.copy(isLoading = true) }
 
-            val result = resetPasswordUseCase(state.token, state.newPassword)
+            val result = resetPasswordUseCase(s.token, s.newPassword)
 
             result.doOnSuccess {
-                state = state.copy(isLoading = false)
+                _state.update { it.copy(isLoading = false) }
                 _event.emit(UiEvent.ShowSuccess(Unit))
                 _event.emit(UiEvent.NavigateToLogin)
-            }.doOnError {
-                state = state.copy(isLoading = false)
-                _event.emit(UiEvent.ShowError(it))
+            }.doOnError { err ->
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(UiEvent.ShowError(err))
             }
         }
     }
@@ -197,18 +205,18 @@ data class AuthState(
     val isLoading: Boolean = false,
 )
 
-sealed class AuthEvent {
-    data class OnEmailChange(val value: String) : AuthEvent()
-    data class OnPasswordChange(val value: String) : AuthEvent()
+sealed class AuthIntent {
+    data class OnEmailChange(val value: String) : AuthIntent()
+    data class OnPasswordChange(val value: String) : AuthIntent()
 
-    data class OnNewPasswordChange(val value: String) : AuthEvent()
-    data class OnConfirmPasswordChange(val value: String) : AuthEvent()
-    data class OnTokenReceived(val value: String) : AuthEvent()
+    data class OnNewPasswordChange(val value: String) : AuthIntent()
+    data class OnConfirmPasswordChange(val value: String) : AuthIntent()
+    data class OnTokenReceived(val value: String) : AuthIntent()
 
-    object SubmitLogin : AuthEvent()
-    object SubmitRegister : AuthEvent()
-    object SubmitForgotPassword : AuthEvent()
-    object SubmitResetPassword : AuthEvent()
+    object SubmitLogin : AuthIntent()
+    object SubmitRegister : AuthIntent()
+    object SubmitForgotPassword : AuthIntent()
+    object SubmitResetPassword : AuthIntent()
 }
 
 sealed class UiEvent {

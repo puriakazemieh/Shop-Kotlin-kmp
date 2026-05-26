@@ -28,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +51,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.model.Address
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,13 +65,32 @@ fun CheckoutScreen(
 ) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CheckoutViewModel>()
-    val screenState = viewModel.screenState
-    val isFormValid = viewModel.isFormValid
+    val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val uriHandler = LocalUriHandler.current
 
     var showAddressBottomSheet by remember { mutableStateOf(false) }
     val addressAddedSuccessMessage = stringResource(Resources.String.AddressAddedSuccessfully)
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is CheckoutEffect.AddressAdded -> {
+                    showAddressBottomSheet = false
+                    messageBarState.addSuccess(addressAddedSuccessMessage)
+                }
+                is CheckoutEffect.NavigateToPaymentCompleted -> {
+                    navigateToPaymentCompleted(effect.success, effect.error)
+                }
+                is CheckoutEffect.OpenZarinpal -> {
+                    uriHandler.openUri(effect.url)
+                }
+                is CheckoutEffect.ShowError -> {
+                    messageBarState.addError(effect.message)
+                }
+            }
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -135,17 +157,17 @@ fun CheckoutScreen(
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    if (screenState.addresses.isNotEmpty()) {
+                    if (state.addresses.isNotEmpty()) {
                         Text(
                             text = stringResource(Resources.String.SelectAddress),
                             fontWeight = FontWeight.Bold,
                             fontSize = FontSize.MEDIUM
                         )
-                        screenState.addresses.forEach { address ->
+                        state.addresses.forEach { address ->
                             AddressItem(
                                 address = address,
-                                isSelected = screenState.selectedAddressId == address.id,
-                                onClick = { viewModel.selectAddress(address.id) }
+                                isSelected = state.selectedAddressId == address.id,
+                                onClick = { viewModel.handleIntent(CheckoutIntent.SelectAddress(address.id)) }
                             )
                         }
 
@@ -168,7 +190,7 @@ fun CheckoutScreen(
                                 fontWeight = FontWeight.Medium
                             )
                         }
-                    } else if (!screenState.isLoading) {
+                    } else if (!state.isLoading) {
                         PrimaryButton(
                             text = stringResource(Resources.String.AddYourFirstAddress),
                             icon = Resources.Icon.Plus,
@@ -183,16 +205,9 @@ fun CheckoutScreen(
                         PrimaryButton(
                             text = stringResource(Resources.String.PayWithZarinpal),
                             icon = Resources.Image.ZarinpalLogo,
-                            enabled = isFormValid,
+                            enabled = state.isFormValid,
                             onClick = {
-                                viewModel.payWithZarinpal(
-                                    onSuccess = { paymentUrl ->
-                                        uriHandler.openUri(paymentUrl)
-                                    },
-                                    onError = { message ->
-                                        messageBarState.addError(message)
-                                    }
-                                )
+                                viewModel.handleIntent(CheckoutIntent.PayWithZarinpal)
                             }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
@@ -200,22 +215,15 @@ fun CheckoutScreen(
                             text = stringResource(Resources.String.PayOnDelivery),
                             icon = Resources.Icon.ShoppingCart,
                             secondary = true,
-                            enabled = isFormValid,
+                            enabled = state.isFormValid,
                             onClick = {
-                                viewModel.payOnDelivery(
-                                    onSuccess = {
-                                        navigateToPaymentCompleted(true, null)
-                                    },
-                                    onError = { message ->
-                                        navigateToPaymentCompleted(null, message.toString())
-                                    }
-                                )
+                                viewModel.handleIntent(CheckoutIntent.PayOnDelivery)
                             }
                         )
                     }
                 }
 
-                if (screenState.isLoading) {
+                if (state.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
@@ -225,21 +233,16 @@ fun CheckoutScreen(
         AddressBottomSheet(
             onDismiss = { showAddressBottomSheet = false },
             onConfirm = { receiverName, receiverPhone, province, city, addressLine1, addressLine2, postalCode ->
-                viewModel.addNewAddress(
-                    receiverName = receiverName,
-                    receiverPhone = receiverPhone,
-                    province = province,
-                    city = city,
-                    addressLine1 = addressLine1,
-                    addressLine2 = addressLine2,
-                    postalCode = postalCode,
-                    onSuccess = {
-                        showAddressBottomSheet = false
-                        messageBarState.addSuccess(addressAddedSuccessMessage)
-                    },
-                    onError = { error ->
-                        messageBarState.addError(error)
-                    }
+                viewModel.handleIntent(
+                    CheckoutIntent.AddNewAddress(
+                        receiverName = receiverName,
+                        receiverPhone = receiverPhone,
+                        province = province,
+                        city = city,
+                        addressLine1 = addressLine1,
+                        addressLine2 = addressLine2,
+                        postalCode = postalCode
+                    )
                 )
             }
         )

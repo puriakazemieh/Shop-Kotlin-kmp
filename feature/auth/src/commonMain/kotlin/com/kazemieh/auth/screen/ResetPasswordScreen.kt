@@ -13,11 +13,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
-import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -32,15 +33,14 @@ fun ResetPasswordScreen(
     viewModel: AuthViewModel = koinViewModel(),
     onNavigateLogin: () -> Unit
 ) {
-    val state = viewModel.state
-    val colors = AppTheme.colors
+    val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
 
     val successMessage = stringResource(Resources.String.PasswordResetSuccess)
     val passwordsDoNotMatchMessage = stringResource(Resources.String.PasswordsDoNotMatch)
 
     LaunchedEffect(token) {
-        viewModel.onEvent(AuthEvent.OnTokenReceived(token))
+        viewModel.handleIntent(AuthIntent.OnTokenReceived(token))
     }
 
     LaunchedEffect(Unit) {
@@ -93,14 +93,14 @@ fun ResetPasswordScreen(
                 AuthTextField(
                     value = state.newPassword,
                     onValueChange = {
-                        viewModel.onEvent(AuthEvent.OnNewPasswordChange(it))
+                        viewModel.handleIntent(AuthIntent.OnNewPasswordChange(it))
                     },
                     hint = stringResource(Resources.String.NewPasswordHint),
                     isPassword = true
                 )
 
                 state.newPasswordError?.let {
-                    Text(anyToString(it), color = colors.error)
+                    Text(anyToString(it), color = MaterialTheme.colorScheme.error)
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -108,20 +108,20 @@ fun ResetPasswordScreen(
                 AuthTextField(
                     value = state.confirmPassword,
                     onValueChange = {
-                        viewModel.onEvent(AuthEvent.OnConfirmPasswordChange(it))
+                        viewModel.handleIntent(AuthIntent.OnConfirmPasswordChange(it))
                     },
                     hint = stringResource(Resources.String.ConfirmPasswordHint),
                     isPassword = true
                 )
 
                 state.confirmPasswordError?.let {
-                    Text(anyToString(it), color = colors.error)
+                    Text(anyToString(it), color = MaterialTheme.colorScheme.error)
                 }
 
                 Spacer(Modifier.height(24.dp))
 
                 AuthButton(stringResource(Resources.String.ResetPassword)) {
-                    viewModel.onEvent(AuthEvent.SubmitResetPassword)
+                    viewModel.handleIntent(AuthIntent.SubmitResetPassword)
                 }
 
                 if (state.isLoading) {

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.home.component.CartItemCard
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,8 +43,17 @@ fun CartScreen(
 ) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CartViewModel>()
-    val cartState by viewModel.cartState.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is CartEffect.ShowError -> {
+                    messageBarState.addError(effect.message)
+                }
+            }
+        }
+    }
 
     ContentWithMessageBar(
         contentBackgroundColor = MaterialTheme.colorScheme.surface,
@@ -53,17 +64,17 @@ fun CartScreen(
         successContentColor = MaterialTheme.colorScheme.onPrimary
     ) {
         PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = { viewModel.refreshCart() },
+            isRefreshing = state.isRefreshing,
+            onRefresh = { viewModel.handleIntent(CartIntent.Refresh) },
             modifier = Modifier.fillMaxSize()
         ) {
-            when (val state = cartState) {
+            when (val cartResult = state.cartState) {
                 is AppResult.Loading -> {
                     LoadingCard(modifier = Modifier.fillMaxWidth().height(200.dp))
                 }
 
                 is AppResult.Success -> {
-                    val cart = state.data
+                    val cart = cartResult.data
                     if (cart.items.isEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -92,17 +103,17 @@ fun CartScreen(
                                     CartItemCard(
                                         cartItem = item,
                                         onPlusClick = {
-                                            viewModel.adjustQuantity(item.variantId, 1, {}, { messageBarState.addError(it) })
+                                            viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, 1))
                                         },
                                         onMinusClick = { newQty ->
                                             if (newQty == 0) {
-                                                viewModel.deleteCartItem(item.id, {}, { messageBarState.addError(it) })
+                                                viewModel.handleIntent(CartIntent.DeleteItem(item.id))
                                             } else {
-                                                viewModel.adjustQuantity(item.variantId, -1, {}, { messageBarState.addError(it) })
+                                                viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, -1))
                                             }
                                         },
                                         onDeleteClick = {
-                                            viewModel.deleteCartItem(item.id, {}, { messageBarState.addError(it) })
+                                            viewModel.handleIntent(CartIntent.DeleteItem(item.id))
                                         }
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
@@ -151,7 +162,7 @@ fun CartScreen(
                             modifier = Modifier.fillMaxWidth().height(200.dp),
                             image = Resources.Image.Cat,
                             title = stringResource(Resources.String.Oops),
-                            subtitle = state.message
+                            subtitle = cartResult.message
                         )
                     }
                 }

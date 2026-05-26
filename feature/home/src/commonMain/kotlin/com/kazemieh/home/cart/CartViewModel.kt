@@ -6,21 +6,21 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.CartEventBus
 import com.kazemieh.domain.model.Cart
 import com.kazemieh.domain.usecase.cart.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class CartViewModel(
     private val getCartUseCase: GetCartUseCase,
-    private val updateCartItemUseCase: UpdateCartItemUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
     private val adjustCartVariantQtyUseCase: AdjustCartVariantQtyUseCase
 ) : ViewModel() {
 
-    private val _cartState = MutableStateFlow<AppResult<Cart>>(AppResult.Loading)
-    val cartState: StateFlow<AppResult<Cart>> = _cartState.asStateFlow()
+    private val _state = MutableStateFlow(CartState())
+    val state = _state.asStateFlow()
 
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+    private val _effect = Channel<CartEffect>()
+    val effect = _effect.receiveAsFlow()
 
     init {
         observeCart()
@@ -31,53 +31,69 @@ class CartViewModel(
         viewModelScope.launch {
             merge(flowOf(Unit), CartEventBus.events)
                 .flatMapLatest { getCartUseCase() }
-                .collect {
-                    _cartState.value = it
+                .collect { result ->
+                    _state.update { it.copy(cartState = result) }
                 }
         }
     }
 
-    fun refreshCart() {
+    fun handleIntent(intent: CartIntent) {
+        when (intent) {
+            is CartIntent.Refresh -> refreshCart()
+            is CartIntent.AdjustQuantity -> adjustQuantity(intent.variantId, intent.delta)
+            is CartIntent.DeleteItem -> deleteCartItem(intent.itemId)
+        }
+    }
+
+    private fun refreshCart() {
         viewModelScope.launch {
-            _isRefreshing.value = true
-            getCartUseCase().collect {
-                _cartState.value = it
-                _isRefreshing.value = false
+            _state.update { it.copy(isRefreshing = true) }
+            getCartUseCase().collect { result ->
+                _state.update { it.copy(cartState = result, isRefreshing = false) }
             }
         }
     }
 
-    fun updateCartItemQuantity(itemId: Long, quantity: Int, onSuccess: () -> Unit, onError: (Any) -> Unit) {
+    private fun deleteCartItem(itemId: Long) {
         viewModelScope.launch {
-            val result = updateCartItemUseCase(itemId, quantity)
-            handleResult(result, onSuccess, onError)
-        }
-    }
-
-    fun deleteCartItem(itemId: Long, onSuccess: () -> Unit, onError: (Any) -> Unit) {
-        viewModelScope.launch {
-            val result = removeFromCartUseCase(itemId)
-            handleResult(result, onSuccess, onError)
-        }
-    }
-
-    fun adjustQuantity(variantId: Long, delta: Int, onSuccess: () -> Unit, onError: (Any) -> Unit) {
-        viewModelScope.launch {
-            val result = adjustCartVariantQtyUseCase(variantId, delta)
-            handleResult(result, onSuccess, onError)
-        }
-    }
-
-    private fun handleResult(result: AppResult<Cart>, onSuccess: () -> Unit, onError: (Any) -> Unit) {
-        when (result) {
-            is AppResult.Success -> {
-                _cartState.value = result
-                onSuccess()
+            when (val result = removeFromCartUseCase(itemId)) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(cartState = result) }
+                }
+                is AppResult.Error -> {
+                    _effect.send(CartEffect.ShowError(result.message))
+                }
+                else -> {}
             }
-            is AppResult.Error -> {
-                onError(result.message)
-            }
-            else -> {}
         }
     }
+
+    private fun adjustQuantity(variantId: Long, delta: Int) {
+        viewModelScope.launch {
+            when (val result = adjustCartVariantQtyUseCase(variantId, delta)) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(cartState = result) }
+                }
+                is AppResult.Error -> {
+                    _effect.send(CartEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+}
+
+data class CartState(
+    val cartState: AppResult<Cart> = AppResult.Loading,
+    val isRefreshing: Boolean = false
+)
+
+sealed interface CartIntent {
+    data object Refresh : CartIntent
+    data class AdjustQuantity(val variantId: Long, val delta: Int) : CartIntent
+    data class DeleteItem(val itemId: Long) : CartIntent
+}
+
+sealed interface CartEffect {
+    data class ShowError(val message: Any) : CartEffect
 }

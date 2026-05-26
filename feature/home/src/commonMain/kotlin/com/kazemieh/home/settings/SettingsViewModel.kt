@@ -10,6 +10,7 @@ import com.kazemieh.domain.usecase.settings.UpdateLanguageUseCase
 import com.kazemieh.domain.usecase.settings.UpdateThemeModeUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -20,29 +21,33 @@ class SettingsViewModel(
     private val updateThemeModeUseCase: UpdateThemeModeUseCase
 ) : ViewModel() {
 
-    val language: StateFlow<AppLanguage> = observeLanguageUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = AppLanguage.ENGLISH
-        )
+    val state: StateFlow<SettingsState> = combine(
+        observeLanguageUseCase(),
+        observeThemeModeUseCase()
+    ) { language, themeMode ->
+        SettingsState(language, themeMode)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SettingsState()
+    )
 
-    val themeMode: StateFlow<AppThemeMode> = observeThemeModeUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = AppThemeMode.SYSTEM
-        )
-
-    fun onLanguageSelected(language: AppLanguage) {
+    fun handleIntent(intent: SettingsIntent) {
         viewModelScope.launch {
-            updateLanguageUseCase(language)
+            when (intent) {
+                is SettingsIntent.SelectLanguage -> updateLanguageUseCase(intent.language)
+                is SettingsIntent.SelectThemeMode -> updateThemeModeUseCase(intent.mode)
+            }
         }
     }
+}
 
-    fun onThemeModeSelected(mode: AppThemeMode) {
-        viewModelScope.launch {
-            updateThemeModeUseCase(mode)
-        }
-    }
+data class SettingsState(
+    val language: AppLanguage = AppLanguage.ENGLISH,
+    val themeMode: AppThemeMode = AppThemeMode.SYSTEM
+)
+
+sealed interface SettingsIntent {
+    data class SelectLanguage(val language: AppLanguage) : SettingsIntent
+    data class SelectThemeMode(val mode: AppThemeMode) : SettingsIntent
 }

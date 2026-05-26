@@ -45,7 +45,6 @@ val homeModule = module {
     viewModel {
         CartViewModel(
             getCartUseCase = get(),
-            updateCartItemUseCase = get(),
             removeFromCartUseCase = get(),
             adjustCartVariantQtyUseCase = get()
         )

@@ -47,8 +47,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     navigateBack: () -> Unit
 ) {
-    val currentLanguage by viewModel.language.collectAsState()
-    val currentThemeMode by viewModel.themeMode.collectAsState()
+    val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Scaffold(
@@ -105,8 +104,8 @@ fun SettingsScreen(
                     AppLanguage.entries.forEachIndexed { index, language ->
                         SettingsItem(
                             label = language.label,
-                            isSelected = currentLanguage == language,
-                            onSelect = { viewModel.onLanguageSelected(language) }
+                            isSelected = state.language == language,
+                            onSelect = { viewModel.handleIntent(SettingsIntent.SelectLanguage(language)) }
                         )
                         if (index < AppLanguage.entries.size - 1) {
                             HorizontalDivider(
@@ -138,8 +137,8 @@ fun SettingsScreen(
                     AppThemeMode.entries.forEachIndexed { index, mode ->
                         SettingsItem(
                             label = stringResource(mode.toResource()),
-                            isSelected = currentThemeMode == mode,
-                            onSelect = { viewModel.onThemeModeSelected(mode) }
+                            isSelected = state.themeMode == mode,
+                            onSelect = { viewModel.handleIntent(SettingsIntent.SelectThemeMode(mode)) }
                         )
                         if (index < AppThemeMode.entries.size - 1) {
                             HorizontalDivider(
