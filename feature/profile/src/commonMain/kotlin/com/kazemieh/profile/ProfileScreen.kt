@@ -83,13 +83,13 @@ fun ProfileScreen(
     var addressToEdit by remember { mutableStateOf<Address?>(null) }
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect { effect ->
+        viewModel.effect.collect { effect ->
             when (effect) {
-                is UiEvent.ShowSuccess -> {
+                is ProfileEffect.ShowSuccess -> {
                     messageBarState.addSuccess(effect.message)
                 }
 
-                is UiEvent.ShowError -> {
+                is ProfileEffect.ShowError -> {
                     messageBarState.addError(effect.message)
                 }
             }

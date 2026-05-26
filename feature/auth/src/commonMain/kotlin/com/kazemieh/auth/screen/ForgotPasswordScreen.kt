@@ -41,13 +41,13 @@ fun ForgotPasswordScreen(
     val emailSentMessage = stringResource(Resources.String.PasswordResetEmailSent)
 
     LaunchedEffect(Unit) {
-        viewModel.event.collectLatest { event ->
-            when (event) {
-                is UiEvent.ShowError -> {
-                    messageBarState.addError(event.message ?: "Unknown Error")
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is AuthEffect.ShowError -> {
+                    messageBarState.addError(effect.message ?: "Unknown Error")
                 }
 
-                is UiEvent.ShowSuccess -> {
+                is AuthEffect.ShowSuccess -> {
                     messageBarState.addSuccess(emailSentMessage)
                 }
 

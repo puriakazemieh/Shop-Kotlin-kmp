@@ -3,20 +3,26 @@ package com.kazemieh.shop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.kazemieh.admin_panel.adminPanelModule
+import com.kazemieh.admin.options.adminOptionsModule
+import com.kazemieh.admin.orders.adminOrdersModule
+import com.kazemieh.admin.products.adminProductsModule
 import com.kazemieh.auth.authModule
+import com.kazemieh.cart.cartModule
+import com.kazemieh.catalog.catalogModule
 import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.details.di.detailsModule
+import com.kazemieh.domain.di.domainModule
 import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.usecase.settings.ObserveThemeModeUseCase
-import com.kazemieh.home.homeModule
+import com.kazemieh.main.mainModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
 import com.kazemieh.profile.profileModule
+import com.kazemieh.settings.settingsModule
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
@@ -47,10 +53,16 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             platformModule(),
             networkModule,
             dataModule,
-            homeModule,
+            domainModule,
+            mainModule,
             authModule,
             profileModule,
-            adminPanelModule,
+            cartModule,
+            catalogModule,
+            settingsModule,
+            adminProductsModule,
+            adminOrdersModule,
+            adminOptionsModule,
             detailsModule
         )
     }

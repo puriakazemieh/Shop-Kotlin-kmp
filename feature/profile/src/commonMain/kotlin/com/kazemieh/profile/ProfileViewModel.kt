@@ -38,8 +38,8 @@ class ProfileViewModel(
     private val _state = MutableStateFlow(ProfileState())
     val state = _state.asStateFlow()
 
-    private val _event = Channel<UiEvent>()
-    val event = _event.receiveAsFlow()
+    private val _effect = Channel<ProfileEffect>()
+    val effect = _effect.receiveAsFlow()
 
     init {
         handleIntent(ProfileIntent.LoadProfile)
@@ -131,7 +131,7 @@ class ProfileViewModel(
                 }
                 is AppResult.Error -> {
                     _state.update { it.copy(addressLoading = false) }
-                    _event.send(UiEvent.ShowError(result.message))
+                    _effect.send(ProfileEffect.ShowError(result.message))
                 }
                 is AppResult.Loading -> {}
             }
@@ -154,11 +154,11 @@ class ProfileViewModel(
             )
             when (result) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess(Resources.String.AddressAddedSuccessfully))
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.AddressAddedSuccessfully))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
-                    _event.send(UiEvent.ShowError(result.message))
+                    _effect.send(ProfileEffect.ShowError(result.message))
                 }
                 is AppResult.Loading -> {}
             }
@@ -182,11 +182,11 @@ class ProfileViewModel(
             )
             when (result) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess(Resources.String.VariantUpdated))
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.VariantUpdated))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
-                    _event.send(UiEvent.ShowError(result.message))
+                    _effect.send(ProfileEffect.ShowError(result.message))
                 }
                 is AppResult.Loading -> {}
             }
@@ -198,11 +198,11 @@ class ProfileViewModel(
         viewModelScope.launch {
             when (val result = deleteAddressUseCase(id)) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess(Resources.String.VariantDeleted))
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.VariantDeleted))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
-                    _event.send(UiEvent.ShowError(result.message))
+                    _effect.send(ProfileEffect.ShowError(result.message))
                 }
                 is AppResult.Loading -> {}
             }
@@ -213,11 +213,11 @@ class ProfileViewModel(
         viewModelScope.launch {
             when (val result = setDefaultAddressUseCase(id)) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess(Resources.String.StatusUpdatedSuccessfully))
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.StatusUpdatedSuccessfully))
                     loadAddresses()
                 }
                 is AppResult.Error -> {
-                    _event.send(UiEvent.ShowError(result.message))
+                    _effect.send(ProfileEffect.ShowError(result.message))
                 }
                 is AppResult.Loading -> {}
             }
@@ -292,11 +292,11 @@ class ProfileViewModel(
 
             when (val result = updateProfileUseCase(profile)) {
                 is AppResult.Success -> {
-                    _event.send(UiEvent.ShowSuccess(Resources.String.Success))
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.Success))
                 }
 
                 is AppResult.Error -> {
-                    _event.send(UiEvent.ShowError(result.message))
+                    _effect.send(ProfileEffect.ShowError(result.message))
                 }
 
                 is AppResult.Loading -> {}
@@ -355,7 +355,7 @@ data class ProfileState(
     val addressSaving: Boolean = false
 )
 
-sealed class UiEvent {
-    data class ShowError(val message: Any) : UiEvent()
-    data class ShowSuccess(val message: Any) : UiEvent()
+sealed class ProfileEffect {
+    data class ShowError(val message: Any) : ProfileEffect()
+    data class ShowSuccess(val message: Any) : ProfileEffect()
 }

@@ -38,13 +38,13 @@ fun LoginScreen(
     val emailHint = stringResource(Resources.String.EmailHint)
 
     LaunchedEffect(Unit) {
-        viewModel.event.collectLatest { event ->
-            when (event) {
-                is UiEvent.NavigateBack -> onNavigateBack()
-                is UiEvent.NavigateToHome -> {} // Handle if needed
-                is UiEvent.NavigateToLogin -> {}
-                is UiEvent.ShowError -> {}
-                is UiEvent.ShowSuccess -> {}
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is AuthEffect.NavigateBack -> onNavigateBack()
+                is AuthEffect.NavigateToHome -> {} // Handle if needed
+                is AuthEffect.NavigateToLogin -> {}
+                is AuthEffect.ShowError -> {}
+                is AuthEffect.ShowSuccess -> {}
             }
         }
     }

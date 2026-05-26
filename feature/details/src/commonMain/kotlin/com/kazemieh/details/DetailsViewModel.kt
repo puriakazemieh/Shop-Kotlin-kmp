@@ -6,13 +6,13 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
 import com.kazemieh.domain.usecase.cart.AddToCartUseCase
 import com.kazemieh.domain.usecase.catalog.GetProductDetailUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,10 +25,10 @@ class DetailsViewModel(
     private val _state = MutableStateFlow(DetailsState())
     val state: StateFlow<DetailsState> = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<DetailsEffect>()
-    val effect: SharedFlow<DetailsEffect> = _effect.asSharedFlow()
+    private val _effect = Channel<DetailsEffect>()
+    val effect: Flow<DetailsEffect> = _effect.receiveAsFlow()
 
-    fun onIntent(intent: DetailsIntent) {
+    fun handleIntent(intent: DetailsIntent) {
         when (intent) {
             is DetailsIntent.LoadProduct -> loadProduct(intent.slug)
             is DetailsIntent.UpdateQuantity -> {
@@ -110,7 +110,7 @@ class DetailsViewModel(
                             error = result.message
                         )
                     }
-                    _effect.emit(DetailsEffect.ShowError(result.message))
+                    _effect.send(DetailsEffect.ShowError(result.message))
                 }
                 else -> {}
             }
@@ -124,17 +124,17 @@ class DetailsViewModel(
         viewModelScope.launch {
             val isLoggedIn = isUserLoggedInUseCase().first()
             if (!isLoggedIn) {
-                _effect.emit(DetailsEffect.NavigateToAuth)
+                _effect.send(DetailsEffect.NavigateToAuth)
                 return@launch
             }
 
             when (val result = addToCartUseCase(variantId, currentState.quantity)) {
                 is AppResult.Success -> {
                     _state.update { it.copy(isAddedToCart = true) }
-                    _effect.emit(DetailsEffect.AddedToCart)
+                    _effect.send(DetailsEffect.AddedToCart)
                 }
                 is AppResult.Error -> {
-                    _effect.emit(DetailsEffect.ShowError(result.message))
+                    _effect.send(DetailsEffect.ShowError(result.message))
                 }
                 else -> {}
             }

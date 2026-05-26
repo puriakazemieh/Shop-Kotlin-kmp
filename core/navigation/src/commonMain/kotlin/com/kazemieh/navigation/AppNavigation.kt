@@ -11,21 +11,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.kazemieh.admin_panel.AdminPanelScreen
-import com.kazemieh.admin_panel.manage_options.ManageOptionsScreen
-import com.kazemieh.admin_panel.manage_order.AdminOrderScreen
-import com.kazemieh.admin_panel.manage_product.ManageProductScreen
+import com.kazemieh.admin.products.AdminPanelScreen
+import com.kazemieh.admin.options.ManageOptionsScreen
+import com.kazemieh.admin.orders.AdminOrderScreen
+import com.kazemieh.admin.products.ManageProductScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.details.DetailsScreen
-import com.kazemieh.home.HomeGraphScreen
-import com.kazemieh.home.contact.ContactUsScreen
-import com.kazemieh.home.category.CategorySearchScreen
-import com.kazemieh.home.cart.checkout.CheckoutScreen
-import com.kazemieh.home.cart.payment_completed.PaymentCompleted
-import com.kazemieh.home.settings.SettingsScreen
+import com.kazemieh.main.MainGraphScreen
+import com.kazemieh.support.ContactUsScreen
+import com.kazemieh.catalog.CategorySearchScreen
+import com.kazemieh.cart.checkout.CheckoutScreen
+import com.kazemieh.cart.payment_completed.PaymentCompleted
+import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -67,7 +67,7 @@ fun AppNavHost(
 
         composable<Screen.HomeGraph> {
             val args = it.toRoute<Screen.HomeGraph>()
-            HomeGraphScreen(
+            MainGraphScreen(
                 showCart = args.showCart,
                 navigateToAuth = {
                     navController.navigate(Screen.AuthGraph)

@@ -44,21 +44,21 @@ fun ResetPasswordScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is UiEvent.ShowError -> {
-                    if (event.message == "PASSWORDS_DO_NOT_MATCH") {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is AuthEffect.ShowError -> {
+                    if (effect.message == "PASSWORDS_DO_NOT_MATCH") {
                         messageBarState.addError(passwordsDoNotMatchMessage)
                     } else {
-                        messageBarState.addError(event.message ?: "Unknown Error")
+                        messageBarState.addError(effect.message ?: "Unknown Error")
                     }
                 }
 
-                is UiEvent.ShowSuccess -> {
+                is AuthEffect.ShowSuccess -> {
                     messageBarState.addSuccess(successMessage)
                 }
 
-                UiEvent.NavigateToLogin -> {
+                AuthEffect.NavigateToLogin -> {
                     onNavigateLogin()
                 }
 

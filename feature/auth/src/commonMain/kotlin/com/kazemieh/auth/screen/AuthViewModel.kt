@@ -10,10 +10,10 @@ import com.kazemieh.domain.usecase.RegisterUseCase
 import com.kazemieh.domain.usecase.ResetPasswordUseCase
 import com.kazemieh.domain.validation.ValidateEmail
 import com.kazemieh.domain.validation.ValidatePassword
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,8 +29,8 @@ class AuthViewModel(
     private val _state = MutableStateFlow(AuthState())
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<UiEvent>()
-    val event = _event.asSharedFlow()
+    private val _effect = Channel<AuthEffect>()
+    val effect = _effect.receiveAsFlow()
 
     fun handleIntent(event: AuthIntent) {
         when (event) {
@@ -95,10 +95,10 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.NavigateBack)
+                _effect.send(AuthEffect.NavigateBack)
             }.doOnError { err ->
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.ShowError(err))
+                _effect.send(AuthEffect.ShowError(err))
             }
 
         }
@@ -126,10 +126,10 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.NavigateBack)
+                _effect.send(AuthEffect.NavigateBack)
             }.doOnError { err ->
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.ShowError(err))
+                _effect.send(AuthEffect.ShowError(err))
             }
         }
     }
@@ -150,10 +150,10 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.ShowSuccess(Unit))
+                _effect.send(AuthEffect.ShowSuccess(Unit))
             }.doOnError { err ->
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.ShowError(err))
+                _effect.send(AuthEffect.ShowError(err))
             }
 
         }
@@ -179,11 +179,11 @@ class AuthViewModel(
 
             result.doOnSuccess {
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.ShowSuccess(Unit))
-                _event.emit(UiEvent.NavigateToLogin)
+                _effect.send(AuthEffect.ShowSuccess(Unit))
+                _effect.send(AuthEffect.NavigateToLogin)
             }.doOnError { err ->
                 _state.update { it.copy(isLoading = false) }
-                _event.emit(UiEvent.ShowError(err))
+                _effect.send(AuthEffect.ShowError(err))
             }
         }
     }
@@ -219,10 +219,10 @@ sealed class AuthIntent {
     object SubmitResetPassword : AuthIntent()
 }
 
-sealed class UiEvent {
-    object NavigateToHome : UiEvent()
-    object NavigateBack : UiEvent()
-    object NavigateToLogin : UiEvent()
-    data class ShowError(val message: Any?) : UiEvent()
-    data class ShowSuccess(val message: Any?) : UiEvent()
+sealed class AuthEffect {
+    object NavigateToHome : AuthEffect()
+    object NavigateBack : AuthEffect()
+    object NavigateToLogin : AuthEffect()
+    data class ShowError(val message: Any?) : AuthEffect()
+    data class ShowSuccess(val message: Any?) : AuthEffect()
 }

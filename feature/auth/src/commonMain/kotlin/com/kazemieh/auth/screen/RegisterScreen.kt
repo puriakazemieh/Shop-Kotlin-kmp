@@ -39,14 +39,14 @@ fun RegisterScreen(
     val messageBarState = rememberMessageBarState()
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
 
-                UiEvent.NavigateBack -> {
+                AuthEffect.NavigateBack -> {
                     onNavigateBack()
                 }
 
-                is UiEvent.ShowError -> {
+                is AuthEffect.ShowError -> {
                 }
 
                 else -> {}

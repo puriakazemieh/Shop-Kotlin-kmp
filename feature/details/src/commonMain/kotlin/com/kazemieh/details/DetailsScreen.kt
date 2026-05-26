@@ -83,12 +83,12 @@ fun DetailsScreen(
     LaunchedEffect(state.isAddedToCart, state.quantity, state.isCounterMode) {
         if (state.isAddedToCart && state.isCounterMode) {
             kotlinx.coroutines.delay(5000)
-            viewModel.onIntent(DetailsIntent.SetCounterMode(false))
+            viewModel.handleIntent(DetailsIntent.SetCounterMode(false))
         }
     }
 
     LaunchedEffect(slug) {
-        viewModel.onIntent(DetailsIntent.LoadProduct(slug))
+        viewModel.handleIntent(DetailsIntent.LoadProduct(slug))
     }
 
     val productAddedToCartMessage = stringResource(Resources.String.ProductAddedToCart)
@@ -284,7 +284,7 @@ fun DetailsScreen(
                                                 isSelected = isSelected,
                                                 enabled = isAvailable,
                                                 onClick = {
-                                                    viewModel.onIntent(
+                                                    viewModel.handleIntent(
                                                         DetailsIntent.SelectOption(optionName, value)
                                                     )
                                                 }
@@ -305,14 +305,14 @@ fun DetailsScreen(
                                             size = QuantityCounterSize.Medium,
                                             value = state.quantity,
                                             onMinusClick = {
-                                                viewModel.onIntent(
+                                                viewModel.handleIntent(
                                                     DetailsIntent.UpdateQuantity(
                                                         it
                                                     )
                                                 )
                                             },
                                             onPlusClick = {
-                                                viewModel.onIntent(
+                                                viewModel.handleIntent(
                                                     DetailsIntent.UpdateQuantity(
                                                         it
                                                     )
@@ -331,7 +331,7 @@ fun DetailsScreen(
                                                 .clip(RoundedCornerShape(size = 12.dp))
                                                 .background(MaterialTheme.colorScheme.secondaryContainer)
                                                 .clickable {
-                                                    viewModel.onIntent(
+                                                    viewModel.handleIntent(
                                                         DetailsIntent.SetCounterMode(
                                                             true
                                                         )
@@ -356,7 +356,7 @@ fun DetailsScreen(
                                     else
                                         stringResource(Resources.String.OutOfStock),
                                     enabled = !state.isLoading && state.selectedVariant != null,
-                                    onClick = { viewModel.onIntent(DetailsIntent.AddToCart) }
+                                    onClick = { viewModel.handleIntent(DetailsIntent.AddToCart) }
                                 )
                             }
                         }

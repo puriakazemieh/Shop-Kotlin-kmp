@@ -16,5 +16,6 @@ val detailsModule = module {
     }
 
     factory { GetProductDetailUseCase(get()) }
+    factory { AddToCartUseCase(get()) }
     factory { IsUserLoggedInUseCase(get()) }
 }
