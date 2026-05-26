@@ -240,12 +240,9 @@ fun DetailsScreen(
                                 fontSize = FontSize.REGULAR,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .padding(all = 24.dp)
-                        ) {
+
                             if (product.variants.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(24.dp))
                                 val groupedOptions = remember(product.variants) {
                                     val map = mutableMapOf<String, MutableSet<String>>()
                                     product.variants.forEach { variant ->
@@ -271,14 +268,11 @@ fun DetailsScreen(
                                     ) {
                                         values.forEach { value ->
                                             val isSelected = state.selectedOptions[optionName] == value
-                                            // Check if this option value is available for the current other selections
+                                            // An option is available if it exists in ANY variant of the product
                                             val isAvailable = product.variants.any { variant ->
-                                                variant.options[optionName] == value && 
-                                                state.selectedOptions.filterKeys { it != optionName }.all { (k, v) ->
-                                                    variant.options[k] == v
-                                                }
+                                                variant.options[optionName] == value
                                             }
-                                            
+
                                             VariantChip(
                                                 label = value,
                                                 isSelected = isSelected,
@@ -294,6 +288,11 @@ fun DetailsScreen(
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
                             }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(all = 24.dp)
+                        ) {
                             if (state.isAddedToCart) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
