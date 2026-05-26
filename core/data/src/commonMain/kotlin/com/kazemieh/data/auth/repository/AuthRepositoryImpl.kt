@@ -48,6 +48,7 @@ class AuthRepositoryImpl(
                     refreshToken = auth.refreshToken
                 )
                 profileLocalDataSource.saveProfile(auth.profile)
+                _authState.value = AuthState.Authenticated
             }
             .map { }
     }
@@ -63,6 +64,7 @@ class AuthRepositoryImpl(
                     refreshToken = auth.refreshToken
                 )
                 profileLocalDataSource.saveProfile(auth.profile)
+                _authState.value = AuthState.Authenticated
             }
             .map { }
     }
@@ -78,6 +80,7 @@ class AuthRepositoryImpl(
     override suspend fun signOut(): AppResult<Unit> {
         return try {
             tokenManager.clearTokens()
+            _authState.value = AuthState.Unauthenticated
             AppResult.Success(Unit)
         } catch (e: Exception) {
             AppResult.Error(e.message ?: "Unknown error")
