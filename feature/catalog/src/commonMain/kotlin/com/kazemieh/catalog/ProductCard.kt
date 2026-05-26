@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
-import com.kazemieh.domain.model.ProductSummary
+import com.kazemieh.domain.catalog.ProductSummary
 import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.stringResource
 

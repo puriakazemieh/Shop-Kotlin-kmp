@@ -1,11 +1,15 @@
 package com.kazemieh.data.admin.repository
 
-import com.kazemieh.common.AppResult
+import com.kazemieh.network.admin.dto.request.*
+import com.kazemieh.network.admin.dto.response.*
+import com.kazemieh.domain.admin.*
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
 import com.kazemieh.data.admin.mapper.*
 import com.kazemieh.data.admin.source.AdminDataSource
-import com.kazemieh.domain.model.admin.*
-import com.kazemieh.domain.repository.*
-import com.kazemieh.network.dto.admin.request.*
+
+
+
 
 class AdminRepositoryImpl(
     private val dataSource: AdminDataSource

@@ -3,7 +3,7 @@ package com.kazemieh.catalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
+import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

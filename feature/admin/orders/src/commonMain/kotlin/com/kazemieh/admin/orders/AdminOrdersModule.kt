@@ -1,8 +1,8 @@
 package com.kazemieh.admin.orders
 
-import com.kazemieh.domain.usecase.admin.GetAdminOrderDetailUseCase
-import com.kazemieh.domain.usecase.admin.ListAdminOrdersUseCase
-import com.kazemieh.domain.usecase.admin.UpdateAdminOrderStatusUseCase
+import com.kazemieh.domain.admin.GetAdminOrderDetailUseCase
+import com.kazemieh.domain.admin.ListAdminOrdersUseCase
+import com.kazemieh.domain.admin.UpdateAdminOrderStatusUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

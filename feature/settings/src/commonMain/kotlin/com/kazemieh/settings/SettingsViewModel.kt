@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
-import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
-import com.kazemieh.domain.usecase.settings.ObserveThemeModeUseCase
-import com.kazemieh.domain.usecase.settings.UpdateLanguageUseCase
-import com.kazemieh.domain.usecase.settings.UpdateThemeModeUseCase
+import com.kazemieh.domain.settings.ObserveLanguageUseCase
+import com.kazemieh.domain.settings.ObserveThemeModeUseCase
+import com.kazemieh.domain.settings.UpdateLanguageUseCase
+import com.kazemieh.domain.settings.UpdateThemeModeUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine

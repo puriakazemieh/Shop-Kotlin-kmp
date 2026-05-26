@@ -3,9 +3,9 @@ package com.kazemieh.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
-import com.kazemieh.domain.usecase.cart.AddToCartUseCase
-import com.kazemieh.domain.usecase.catalog.GetProductDetailUseCase
+import com.kazemieh.domain.auth.IsUserLoggedInUseCase
+import com.kazemieh.domain.cart.AddToCartUseCase
+import com.kazemieh.domain.catalog.GetProductDetailUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

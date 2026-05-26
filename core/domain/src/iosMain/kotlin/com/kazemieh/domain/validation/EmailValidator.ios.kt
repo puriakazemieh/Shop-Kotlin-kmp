@@ -1,4 +1,4 @@
-package com.kazemieh.domain.validation
+package com.kazemieh.domain.common
 
 import platform.Foundation.NSPredicate
 

@@ -3,8 +3,8 @@ package com.kazemieh.admin.options
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.model.admin.AdminOption
-import com.kazemieh.domain.usecase.admin.*
+import com.kazemieh.domain.admin.AdminOption
+import com.kazemieh.domain.admin.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

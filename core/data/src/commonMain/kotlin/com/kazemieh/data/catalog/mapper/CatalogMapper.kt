@@ -1,16 +1,16 @@
 package com.kazemieh.data.catalog.mapper
 
-import com.kazemieh.domain.model.Category
-import com.kazemieh.domain.model.ProductDetail
-import com.kazemieh.domain.model.ProductImage
-import com.kazemieh.domain.model.ProductSummary
-import com.kazemieh.domain.model.ProductVariant
-import com.kazemieh.network.PlatformConfig
-import com.kazemieh.network.dto.catalog.response.CategoryResponse
-import com.kazemieh.network.dto.catalog.response.ProductDetailResponse
-import com.kazemieh.network.dto.catalog.response.ProductImageResponse
-import com.kazemieh.network.dto.catalog.response.ProductSummaryResponse
-import com.kazemieh.network.dto.catalog.response.ProductVariantResponse
+import com.kazemieh.network.catalog.dto.response.*
+import com.kazemieh.domain.catalog.*
+import com.kazemieh.domain.admin.AdminPage
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
+
+
+
+
+
 
 fun CategoryResponse.toCatalogDomain(): Category = Category(
     id = id,

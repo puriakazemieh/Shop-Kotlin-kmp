@@ -1,14 +1,14 @@
 package com.kazemieh.profile
 
-import com.kazemieh.domain.usecase.GetProfileUseCase
-import com.kazemieh.domain.usecase.ObserveProfileUseCase
-import com.kazemieh.domain.usecase.UpdateProfileUseCase
-import com.kazemieh.domain.usecase.address.AddAddressUseCase
-import com.kazemieh.domain.usecase.address.DeleteAddressUseCase
-import com.kazemieh.domain.usecase.address.GetAddressesUseCase
-import com.kazemieh.domain.usecase.address.SetDefaultAddressUseCase
-import com.kazemieh.domain.usecase.address.UpdateAddressUseCase
-import com.kazemieh.domain.validation.ValidateProfileUseCase
+import com.kazemieh.domain.profile.GetProfileUseCase
+import com.kazemieh.domain.profile.ObserveProfileUseCase
+import com.kazemieh.domain.profile.UpdateProfileUseCase
+import com.kazemieh.domain.address.AddAddressUseCase
+import com.kazemieh.domain.address.DeleteAddressUseCase
+import com.kazemieh.domain.address.GetAddressesUseCase
+import com.kazemieh.domain.address.SetDefaultAddressUseCase
+import com.kazemieh.domain.address.UpdateAddressUseCase
+import com.kazemieh.domain.profile.ValidateProfileUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

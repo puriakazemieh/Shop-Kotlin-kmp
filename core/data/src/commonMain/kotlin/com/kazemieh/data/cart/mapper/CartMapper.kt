@@ -1,10 +1,12 @@
 package com.kazemieh.data.cart.mapper
 
-import com.kazemieh.domain.model.Cart
-import com.kazemieh.domain.model.CartItem
-import com.kazemieh.network.PlatformConfig
-import com.kazemieh.network.dto.cart.response.CartItemResponse
-import com.kazemieh.network.dto.cart.response.CartResponse
+import com.kazemieh.network.cart.dto.request.*
+import com.kazemieh.network.cart.dto.response.*
+import com.kazemieh.domain.cart.*
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
+
 
 fun CartResponse.toDomain(): Cart = Cart(
     items = items.map { it.toDomain() },

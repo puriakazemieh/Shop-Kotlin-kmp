@@ -1,9 +1,11 @@
 package com.kazemieh.data.local
 
-import com.kazemieh.domain.model.Profile
+import com.kazemieh.domain.profile.Profile
 import com.russhwolf.settings.Settings
-import kotlinx.coroutines.flow.Flow
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 

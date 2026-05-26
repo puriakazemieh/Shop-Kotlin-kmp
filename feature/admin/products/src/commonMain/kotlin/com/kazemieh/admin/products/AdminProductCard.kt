@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
-import com.kazemieh.domain.model.admin.AdminProduct
+import com.kazemieh.domain.admin.AdminProduct
 
 @Composable
 fun AdminProductCard(

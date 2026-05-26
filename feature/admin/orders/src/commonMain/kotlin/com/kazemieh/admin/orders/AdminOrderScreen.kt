@@ -35,8 +35,8 @@ import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.domain.model.admin.AdminOrderSummary
-import com.kazemieh.domain.model.admin.AdminOrderDetail
+import com.kazemieh.domain.admin.AdminOrderSummary
+import com.kazemieh.domain.admin.AdminOrderDetail
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

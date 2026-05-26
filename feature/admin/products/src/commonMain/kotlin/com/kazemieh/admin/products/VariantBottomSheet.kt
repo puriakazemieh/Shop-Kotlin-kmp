@@ -16,9 +16,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
-import com.kazemieh.domain.model.admin.AdminOption
-import com.kazemieh.domain.model.admin.AdminVariant
-import com.kazemieh.domain.model.admin.AdminVariantOption
+import com.kazemieh.domain.admin.AdminOption
+import com.kazemieh.domain.admin.AdminVariant
+import com.kazemieh.domain.admin.AdminVariantOption
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)

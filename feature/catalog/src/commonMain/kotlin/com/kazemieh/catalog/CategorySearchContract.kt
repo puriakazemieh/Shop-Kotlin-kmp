@@ -1,6 +1,6 @@
 package com.kazemieh.catalog
 
-import com.kazemieh.domain.model.ProductSummary
+import com.kazemieh.domain.catalog.ProductSummary
 
 data class CategorySearchState(
     val isLoading: Boolean = false,

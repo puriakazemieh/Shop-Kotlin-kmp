@@ -2,10 +2,10 @@ package com.kazemieh.cart
 
 import com.kazemieh.cart.checkout.CheckoutViewModel
 import com.kazemieh.cart.payment_completed.PaymentViewModel
-import com.kazemieh.domain.usecase.cart.*
-import com.kazemieh.domain.usecase.order.CreateOrderUseCase
-import com.kazemieh.domain.usecase.payment.RequestPaymentUseCase
-import com.kazemieh.domain.usecase.address.*
+import com.kazemieh.domain.cart.*
+import com.kazemieh.domain.order.CreateOrderUseCase
+import com.kazemieh.domain.payment.RequestPaymentUseCase
+import com.kazemieh.domain.address.*
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

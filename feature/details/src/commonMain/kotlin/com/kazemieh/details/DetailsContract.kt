@@ -1,7 +1,7 @@
 package com.kazemieh.details
 
-import com.kazemieh.domain.model.ProductDetail
-import com.kazemieh.domain.model.ProductVariant
+import com.kazemieh.domain.catalog.ProductDetail
+import com.kazemieh.domain.catalog.ProductVariant
 
 data class DetailsState(
     val isLoading: Boolean = false,

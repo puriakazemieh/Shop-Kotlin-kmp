@@ -1,6 +1,6 @@
 package com.kazemieh.catalog
 
-import com.kazemieh.domain.model.Category
+import com.kazemieh.domain.catalog.Category
 
 data class CategoriesState(
     val isLoading: Boolean = false,

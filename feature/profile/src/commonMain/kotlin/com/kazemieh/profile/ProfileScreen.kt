@@ -63,7 +63,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.component.ProfileForm
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.domain.model.Address
+import com.kazemieh.domain.address.Address
 import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

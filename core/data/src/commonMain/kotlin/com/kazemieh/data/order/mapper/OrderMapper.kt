@@ -1,11 +1,12 @@
 package com.kazemieh.data.order.mapper
 
-import com.kazemieh.domain.model.Order
-import com.kazemieh.domain.model.OrderDetail
-import com.kazemieh.domain.model.OrderItem
-import com.kazemieh.network.dto.order.response.OrderDetailResponse
-import com.kazemieh.network.dto.order.response.OrderItemResponse
-import com.kazemieh.network.dto.order.response.OrderResponse
+import com.kazemieh.network.order.dto.request.*
+import com.kazemieh.network.order.dto.response.*
+import com.kazemieh.domain.order.*
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
+
 
 fun OrderResponse.toDomain(): Order = Order(
     id = id,

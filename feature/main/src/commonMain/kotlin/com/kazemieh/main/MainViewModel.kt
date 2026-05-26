@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.CartEventBus
-import com.kazemieh.domain.usecase.GetProfileUseCase
-import com.kazemieh.domain.usecase.ObserveAuthStateUseCase
-import com.kazemieh.domain.usecase.ObserveProfileUseCase
-import com.kazemieh.domain.usecase.SignOutUseCase
-import com.kazemieh.domain.usecase.cart.GetCartUseCase
+import com.kazemieh.domain.profile.GetProfileUseCase
+import com.kazemieh.domain.auth.ObserveAuthStateUseCase
+import com.kazemieh.domain.profile.ObserveProfileUseCase
+import com.kazemieh.domain.auth.SignOutUseCase
+import com.kazemieh.domain.cart.GetCartUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

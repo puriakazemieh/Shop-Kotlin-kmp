@@ -37,7 +37,7 @@ import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
-import com.kazemieh.domain.model.CartItem
+import com.kazemieh.domain.cart.CartItem
 import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.painterResource
 

@@ -1,6 +1,6 @@
 package com.kazemieh.admin.options
 
-import com.kazemieh.domain.usecase.admin.*
+import com.kazemieh.domain.admin.*
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

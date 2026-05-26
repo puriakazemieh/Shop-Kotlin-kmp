@@ -24,8 +24,8 @@ import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.domain.model.admin.AdminOption
-import com.kazemieh.domain.model.admin.AdminOptionValue
+import com.kazemieh.domain.admin.AdminOption
+import com.kazemieh.domain.admin.AdminOptionValue
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

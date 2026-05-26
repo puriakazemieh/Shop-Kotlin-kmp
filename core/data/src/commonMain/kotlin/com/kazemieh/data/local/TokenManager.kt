@@ -1,6 +1,8 @@
 package com.kazemieh.data.local
 
-import com.kazemieh.network.TokenProvider
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 

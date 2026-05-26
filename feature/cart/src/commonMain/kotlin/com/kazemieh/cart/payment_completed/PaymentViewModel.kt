@@ -3,7 +3,7 @@ package com.kazemieh.cart.payment_completed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.usecase.cart.ClearCartUseCase
+import com.kazemieh.domain.cart.ClearCartUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

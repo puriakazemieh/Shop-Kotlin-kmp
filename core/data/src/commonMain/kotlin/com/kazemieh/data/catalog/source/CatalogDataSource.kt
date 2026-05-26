@@ -1,8 +1,13 @@
 package com.kazemieh.data.catalog.source
 
-import com.kazemieh.common.AppResult
-import com.kazemieh.network.dto.PageResponse
-import com.kazemieh.network.dto.catalog.response.*
+import com.kazemieh.network.catalog.dto.response.*
+import com.kazemieh.domain.catalog.*
+import com.kazemieh.domain.admin.AdminPage
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
+
+
 
 interface CatalogDataSource {
     suspend fun getCategories(): AppResult<List<CategoryResponse>>

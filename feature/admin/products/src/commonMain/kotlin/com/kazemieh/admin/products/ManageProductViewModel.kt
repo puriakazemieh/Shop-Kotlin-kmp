@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.ld
 import com.kazemieh.designsystem.Resources
-import com.kazemieh.domain.model.Category
-import com.kazemieh.domain.model.admin.AdminOption
-import com.kazemieh.domain.model.admin.AdminVariant
-import com.kazemieh.domain.model.admin.AdminVariantOption
-import com.kazemieh.domain.model.admin.AdminCreateVariant
-import com.kazemieh.domain.usecase.admin.*
-import com.kazemieh.domain.usecase.catalog.GetCategoriesUseCase
+import com.kazemieh.domain.catalog.Category
+import com.kazemieh.domain.admin.AdminOption
+import com.kazemieh.domain.admin.AdminVariant
+import com.kazemieh.domain.admin.AdminVariantOption
+import com.kazemieh.domain.admin.AdminCreateVariant
+import com.kazemieh.domain.admin.*
+import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -328,7 +328,7 @@ class ManageProductViewModel(
 
             when (result) {
                 is AppResult.Success<*> -> {
-                    val newId = (result.data as? com.kazemieh.domain.model.admin.AdminProduct)?.id
+                    val newId = (result.data as? com.kazemieh.domain.admin.AdminProduct)?.id
                     if (productId == -1L && newId != null) {
                         currentState.selectedImageBytes.forEach { bytes ->
                             addProductImageUseCase(newId, bytes, null)

@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.CartEventBus
-import com.kazemieh.domain.model.Cart
-import com.kazemieh.domain.usecase.cart.*
+import com.kazemieh.domain.cart.Cart
+import com.kazemieh.domain.cart.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

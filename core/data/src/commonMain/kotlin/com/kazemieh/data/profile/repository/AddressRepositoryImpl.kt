@@ -1,9 +1,17 @@
 package com.kazemieh.data.profile.repository
 
-import com.kazemieh.common.AppResult
+import com.kazemieh.network.profile.dto.request.*
+import com.kazemieh.network.profile.dto.response.*
+import com.kazemieh.network.address.dto.request.*
+import com.kazemieh.network.address.dto.response.*
+import com.kazemieh.domain.profile.*
+import com.kazemieh.domain.address.*
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
 import com.kazemieh.data.profile.source.AddressDataSource
-import com.kazemieh.domain.model.Address
-import com.kazemieh.domain.repository.AddressRepository
+
+
+
 
 class AddressRepositoryImpl(
     private val addressDataSource: AddressDataSource

@@ -1,22 +1,22 @@
 package com.kazemieh.network.di
 
-import com.kazemieh.network.AddressApi
-import com.kazemieh.network.AddressApiImpl
-import com.kazemieh.network.AdminApi
-import com.kazemieh.network.AdminApiImpl
-import com.kazemieh.network.AuthApi
-import com.kazemieh.network.AuthApiImpl
-import com.kazemieh.network.CartApi
-import com.kazemieh.network.CartApiImpl
-import com.kazemieh.network.CatalogApi
-import com.kazemieh.network.CatalogApiImpl
-import com.kazemieh.network.HttpClientFactory
-import com.kazemieh.network.OrderApi
-import com.kazemieh.network.OrderApiImpl
-import com.kazemieh.network.PaymentApi
-import com.kazemieh.network.PaymentApiImpl
-import com.kazemieh.network.ProfileApi
-import com.kazemieh.network.ProfileApiImpl
+import com.kazemieh.network.address.AddressApi
+import com.kazemieh.network.address.AddressApiImpl
+import com.kazemieh.network.admin.AdminApi
+import com.kazemieh.network.admin.AdminApiImpl
+import com.kazemieh.network.auth.AuthApi
+import com.kazemieh.network.auth.AuthApiImpl
+import com.kazemieh.network.cart.CartApi
+import com.kazemieh.network.cart.CartApiImpl
+import com.kazemieh.network.catalog.CatalogApi
+import com.kazemieh.network.catalog.CatalogApiImpl
+import com.kazemieh.network.common.HttpClientFactory
+import com.kazemieh.network.order.OrderApi
+import com.kazemieh.network.order.OrderApiImpl
+import com.kazemieh.network.payment.PaymentApi
+import com.kazemieh.network.payment.PaymentApiImpl
+import com.kazemieh.network.profile.ProfileApi
+import com.kazemieh.network.profile.ProfileApiImpl
 import org.koin.dsl.module
 
 val networkModule = module {

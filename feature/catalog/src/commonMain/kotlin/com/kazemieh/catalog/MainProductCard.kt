@@ -33,7 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.kazemieh.domain.model.ProductSummary
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources

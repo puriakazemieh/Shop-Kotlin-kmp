@@ -3,9 +3,9 @@ package com.kazemieh.admin.orders
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.usecase.admin.GetAdminOrderDetailUseCase
-import com.kazemieh.domain.usecase.admin.ListAdminOrdersUseCase
-import com.kazemieh.domain.usecase.admin.UpdateAdminOrderStatusUseCase
+import com.kazemieh.domain.admin.GetAdminOrderDetailUseCase
+import com.kazemieh.domain.admin.ListAdminOrdersUseCase
+import com.kazemieh.domain.admin.UpdateAdminOrderStatusUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

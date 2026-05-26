@@ -1,8 +1,9 @@
 package com.kazemieh.details.di
 
 import com.kazemieh.details.DetailsViewModel
-import com.kazemieh.domain.usecase.IsUserLoggedInUseCase
-import com.kazemieh.domain.usecase.catalog.GetProductDetailUseCase
+import com.kazemieh.domain.auth.IsUserLoggedInUseCase
+import com.kazemieh.domain.cart.AddToCartUseCase
+import com.kazemieh.domain.catalog.GetProductDetailUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

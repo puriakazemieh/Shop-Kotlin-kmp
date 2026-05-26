@@ -1,10 +1,16 @@
 package com.kazemieh.data.admin.mapper
 
-import com.kazemieh.domain.model.admin.*
-import com.kazemieh.domain.repository.*
-import com.kazemieh.network.PlatformConfig
-import com.kazemieh.network.dto.PageResponse
-import com.kazemieh.network.dto.admin.response.*
+import com.kazemieh.network.admin.dto.request.*
+import com.kazemieh.network.admin.dto.response.*
+import com.kazemieh.domain.admin.*
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
+
+
+
+
+
 
 fun AdminCategoryResponse.toAdminDomain() = AdminCategory(
     id = id,

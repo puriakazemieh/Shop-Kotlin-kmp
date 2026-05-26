@@ -15,9 +15,8 @@ import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.details.di.detailsModule
-import com.kazemieh.domain.di.domainModule
-import com.kazemieh.domain.usecase.settings.ObserveLanguageUseCase
-import com.kazemieh.domain.usecase.settings.ObserveThemeModeUseCase
+import com.kazemieh.domain.settings.ObserveLanguageUseCase
+import com.kazemieh.domain.settings.ObserveThemeModeUseCase
 import com.kazemieh.main.mainModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
@@ -53,7 +52,6 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             platformModule(),
             networkModule,
             dataModule,
-            domainModule,
             mainModule,
             authModule,
             profileModule,

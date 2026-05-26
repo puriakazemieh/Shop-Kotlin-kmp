@@ -1,4 +1,4 @@
-package com.kazemieh.domain.validation
+package com.kazemieh.domain.common
 
 actual object EmailValidator {
     private val regex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")

@@ -1,9 +1,9 @@
 package com.kazemieh.admin.orders
 
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.model.admin.AdminOrderDetail
-import com.kazemieh.domain.model.admin.AdminOrderSummary
-import com.kazemieh.domain.repository.AdminPage
+import com.kazemieh.domain.admin.AdminOrderDetail
+import com.kazemieh.domain.admin.AdminOrderSummary
+import com.kazemieh.domain.admin.AdminPage
 
 data class AdminOrderState(
     val ordersState: AppResult<AdminPage<AdminOrderSummary>> = AppResult.Loading,

@@ -1,10 +1,15 @@
 package com.kazemieh.data.auth.mapper
 
-import com.kazemieh.domain.model.Auth
-import com.kazemieh.domain.model.Profile
-import com.kazemieh.domain.model.User
-import com.kazemieh.network.dto.response.AuthResponse
-import com.kazemieh.network.dto.response.UserResponse
+import com.kazemieh.network.auth.dto.request.*
+import com.kazemieh.network.auth.dto.response.*
+import com.kazemieh.network.profile.dto.response.UserResponse
+import com.kazemieh.domain.auth.*
+import com.kazemieh.domain.profile.Profile
+import com.kazemieh.network.common.*
+import com.kazemieh.common.*
+
+
+
 
 
 fun UserResponse.toProfile(): Profile {

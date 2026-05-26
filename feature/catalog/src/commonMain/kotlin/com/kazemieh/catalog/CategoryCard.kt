@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
-import com.kazemieh.domain.model.Category
+import com.kazemieh.domain.catalog.Category
 
 @Composable
 fun CategoryCard(
