@@ -39,7 +39,7 @@ fun BottomBar(
             .clip(RoundedCornerShape(size = 12.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(
-                vertical = 16.dp,
+                vertical = 8.dp,
                 horizontal = 36.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -64,20 +64,34 @@ fun BottomBar(
                             }
                         }
                     ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { onSelect(destination) }
+                            .padding(12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
-                            modifier = Modifier.clickable { onSelect(destination) },
                             painter = painterResource(destination.icon),
                             contentDescription = stringResource(Resources.String.BottomBarDesc),
                             tint = animatedTint
                         )
                     }
+                    }
                 } else {
-                    Icon(
-                        modifier = Modifier.clickable { onSelect(destination) },
-                        painter = painterResource(destination.icon),
-                        contentDescription = stringResource(Resources.String.BottomBarDesc),
-                        tint = animatedTint
-                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { onSelect(destination) }
+                            .padding(12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(destination.icon),
+                            contentDescription = stringResource(Resources.String.BottomBarDesc),
+                            tint = animatedTint
+                        )
+                    }
                 }
             }
         }
