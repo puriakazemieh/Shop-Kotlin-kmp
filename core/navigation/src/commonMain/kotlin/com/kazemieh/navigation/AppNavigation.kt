@@ -31,7 +31,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppNavHost(
-    startDestination: Any = Screen.HomeGraph(),
+    startDestination: Any = getInitialDestination() ?: Screen.HomeGraph(),
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()

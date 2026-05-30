@@ -7,3 +7,5 @@ import androidx.navigation.NavController
 actual fun BindBrowserHistory(navController: NavController) {
     // No-op for JVM/Desktop
 }
+
+actual fun getInitialDestination(): Any? = null

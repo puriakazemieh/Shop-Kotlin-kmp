@@ -5,3 +5,5 @@ import androidx.navigation.NavController
 
 @Composable
 expect fun BindBrowserHistory(navController: NavController)
+
+expect fun getInitialDestination(): Any?

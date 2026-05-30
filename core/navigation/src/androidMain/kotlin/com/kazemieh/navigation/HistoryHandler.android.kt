@@ -7,3 +7,5 @@ import androidx.navigation.NavController
 actual fun BindBrowserHistory(navController: NavController) {
     // No-op for Android as NavHost handles back button integration automatically
 }
+
+actual fun getInitialDestination(): Any? = null
