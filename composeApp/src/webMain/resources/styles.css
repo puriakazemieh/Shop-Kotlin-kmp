@@ -9,6 +9,7 @@ html, body {
 @font-face {
     font-family: 'typeface_fa';
     src: url('typeface_fa.ttf') format('truetype');
+    font-display: swap;
 }
 
 * {
