@@ -28,6 +28,7 @@ class ManageProductViewModel(
     private val createProductVariantUseCase: CreateProductVariantUseCase,
     private val updateProductVariantUseCase: UpdateProductVariantUseCase,
     private val deleteProductVariantUseCase: DeleteProductVariantUseCase,
+    private val setInventoryUseCase: SetInventoryUseCase,
     private val createAdminCategoryUseCase: CreateAdminCategoryUseCase,
     private val deleteAdminCategoryUseCase: DeleteAdminCategoryUseCase,
     private val addProductImageUseCase: AddProductImageUseCase,
@@ -78,7 +79,8 @@ class ManageProductViewModel(
                 intent.sku,
                 intent.price,
                 intent.options,
-                intent.isActive
+                intent.isActive,
+                intent.onHand
             )
 
             is ManageProductIntent.DeleteVariant -> deleteVariant(intent.variantId)
@@ -315,6 +317,20 @@ class ManageProductViewModel(
                     }
                 )
             } else {
+                // Sync variant changes when updating product
+                currentState.variants.forEach { variant ->
+                    if (variant.id > 0) { // Existing variant
+                        updateVariant(
+                            id = variant.id,
+                            sku = variant.sku,
+                            price = variant.price,
+                            options = variant.options.map { AdminVariantOption(it.key, it.value) },
+                            isActive = variant.isActive,
+                            onHand = variant.onHand
+                        )
+                    }
+                }
+                
                 updateAdminProductUseCase(
                     id = productId,
                     categoryId = currentState.selectedCategory?.id,
@@ -434,7 +450,8 @@ class ManageProductViewModel(
         sku: String?,
         price: Double?,
         options: List<AdminVariantOption>?,
-        isActive: Boolean?
+        isActive: Boolean?,
+        onHand: Int? = null
     ) {
         if (productId == -1L) {
             _state.update { state ->
@@ -445,7 +462,8 @@ class ManageProductViewModel(
                             sku = sku ?: v.sku,
                             price = price ?: v.price,
                             options = options?.associate { it.type to it.value } ?: v.options,
-                            isActive = isActive ?: v.isActive
+                            isActive = isActive ?: v.isActive,
+                            onHand = onHand ?: v.onHand
                         )
                     } else if (isMaster && options != null) {
                         val newKeys = options.map { it.type }
@@ -469,17 +487,22 @@ class ManageProductViewModel(
         viewModelScope.launch {
             val isMaster = _state.value.variants.firstOrNull()?.id == id
             
-            // 1. Update the target variant
+            // 1. Update the target variant info
             val result = updateProductVariantUseCase(id, sku, price, null, options, isActive)
             
+            // 2. Update inventory if provided
+            if (onHand != null) {
+                setInventoryUseCase(id, onHand)
+            }
+            
             if (result is AppResult.Success<*>) {
-                // 2. If Master changed its property structure, we need to ensure consistency.
-                // In a production app, the backend should ideally handle this.
-                // Here we at least reload the detail to get the latest server state.
+                // 3. If Master changed its property structure, we need to ensure consistency.
                 if (isMaster && options != null) {
                     _effect.send(ManageProductEffect.ShowSuccess(Resources.String.VariantUpdated))
                 }
-                loadProductDetail()
+                if (onHand == null) { // If it was a deep update from sheet, reload. If from bulk save, maybe redundant.
+                    loadProductDetail()
+                }
             } else if (result is AppResult.Error) {
                 _effect.send(ManageProductEffect.ShowError(result.message))
             }
@@ -610,7 +633,8 @@ sealed interface ManageProductIntent {
         val sku: String?,
         val price: Double?,
         val options: List<AdminVariantOption>?,
-        val isActive: Boolean?
+        val isActive: Boolean?,
+        val onHand: Int? = null
     ) : ManageProductIntent
 
     data class DeleteVariant(val variantId: Long) : ManageProductIntent

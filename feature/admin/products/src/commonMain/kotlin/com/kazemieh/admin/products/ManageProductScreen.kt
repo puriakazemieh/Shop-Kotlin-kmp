@@ -158,7 +158,8 @@ fun ManageProductScreen(
                         sku = sku,
                         price = price,
                         options = options,
-                        isActive = isActive
+                        isActive = isActive,
+                        onHand = initialOnHand
                     )
                 )
                 if (shouldDismiss) selectedVariantToEdit = null

@@ -19,6 +19,11 @@ val adminProductsModule = module {
     factory { AddProductImageUseCase(get()) }
     factory { DeleteProductImageUseCase(get()) }
 
+    factory { GetAdminOptionsUseCase(get()) }
+    factory { CreateOptionTypeUseCase(get()) }
+    factory { CreateOptionValueUseCase(get()) }
+    factory { SetInventoryUseCase(get()) }
+
     viewModel {
         AdminPanelViewModel(
             getAdminProductsUseCase = get()
@@ -42,6 +47,7 @@ val adminProductsModule = module {
             getAdminOptionsUseCase = get(),
             createOptionTypeUseCase = get(),
             createOptionValueUseCase = get(),
+            setInventoryUseCase = get(),
             savedStateHandle = get()
         )
     }
