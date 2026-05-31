@@ -13,15 +13,21 @@ import org.w3c.dom.url.URLSearchParams
 
 @Composable
 actual fun BindBrowserHistory(navController: NavController) {
-    // Listen for NavController changes and update the browser URL
+    // Listen for NavController changes and update the browser URL using Hash
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect { entry ->
-            val currentPath = window.location.pathname
-            val newPath = mapRouteToPath(entry)
+            val currentHash = window.location.hash // Starts with #
+            val newPath = try {
+                mapRouteToPath(entry)
+            } catch (e: Exception) {
+                "/"
+            }
             
-            // Only push if the path actually changed to avoid infinite loops or redundant entries
-            if (currentPath != newPath) {
-                window.history.pushState(null, "", newPath)
+            val newHash = if (newPath == "/") "" else "#$newPath"
+            
+            // Only push if the hash actually changed to avoid infinite loops
+            if (currentHash != newHash) {
+                window.history.pushState(null, "", window.location.pathname + newHash)
             }
         }
     }
@@ -43,36 +49,45 @@ actual fun BindBrowserHistory(navController: NavController) {
 }
 
 actual fun getInitialDestination(): Any? {
-    val path = window.location.pathname
-    val params = URLSearchParams(window.location.search)
+    val hash = window.location.hash
+    if (hash.isEmpty() || hash == "#/") return null
+    
+    val fullPath = hash.substring(1) // Remove the '#'
+    val path = try { js("decodeURIComponent")(fullPath) as String } catch (e: Exception) { fullPath }
+    
+    // Simple query param parsing from hash if needed (e.g. #/search?id=1)
+    val pathPart = if (path.contains("?")) path.substringBefore("?") else path
+    val queryPart = if (path.contains("?")) path.substringAfter("?") else ""
+    val params = URLSearchParams(queryPart)
+
     return when {
-        path == "/" || path == "" -> {
-            val showCart = params.get("cart") == "true"
-            Screen.HomeGraph(showCart)
-        }
-        path == "/login" -> Screen.Login
-        path == "/register" -> Screen.Register
-        path == "/forgot-password" -> Screen.ForgotPassword
-        path == "/reset-password" -> {
+        pathPart == "/login" -> Screen.Login
+        pathPart == "/register" -> Screen.Register
+        pathPart == "/forgot-password" -> Screen.ForgotPassword
+        pathPart == "/reset-password" -> {
             val token = params.get("token") ?: ""
             Screen.ResetPassword(token)
         }
-        path == "/profile" -> Screen.Profile
-        path == "/settings" -> Screen.Settings
-        path == "/admin" -> Screen.AdminPanel
-        path == "/admin/products" -> Screen.AdminPanel
-        path == "/admin/orders" -> Screen.ManageOrders
-        path == "/admin/options" -> Screen.ManageOptions
-        path == "/checkout" -> {
+        pathPart == "/profile" -> Screen.Profile
+        pathPart == "/settings" -> Screen.Settings
+        pathPart == "/admin" -> Screen.AdminPanel
+        pathPart == "/admin/products" -> Screen.AdminPanel
+        pathPart == "/admin/orders" -> Screen.ManageOrders
+        pathPart == "/admin/options" -> Screen.ManageOptions
+        pathPart.startsWith("/admin/products/") -> {
+            val id = pathPart.substringAfterLast("/").toLongOrNull()
+            Screen.ManageProduct(id)
+        }
+        pathPart == "/checkout" -> {
             val amount = params.get("amount")?.toDoubleOrNull() ?: 0.0
             Screen.Checkout(amount)
         }
-        path == "/contact" -> Screen.ContactUs
-        path.startsWith("/product/") -> {
-            val slug = path.substringAfter("/product/")
+        pathPart == "/contact" -> Screen.ContactUs
+        pathPart.startsWith("/product/") -> {
+            val slug = pathPart.substringAfter("/product/")
             Screen.ProductDetail(slug)
         }
-        path == "/search" -> {
+        pathPart == "/search" -> {
             val id = params.get("id")?.toLongOrNull() ?: 0L
             val name = params.get("name") ?: ""
             Screen.CategorySearch(id, name)
@@ -86,52 +101,64 @@ actual fun getInitialDestination(): Any? {
  */
 private fun mapRouteToPath(entry: NavBackStackEntry): String {
     val route = entry.destination.route ?: return "/"
-    return when {
-        // Main Graph / Home
-        route.contains("HomeGraph") -> {
-            val showCart = entry.toRoute<Screen.HomeGraph>().showCart
-            if (showCart) "/?cart=true" else "/"
+    
+    // Using try-catch to prevent crashes during type-safe argument extraction
+    return try {
+        when {
+            // Main Graph / Home
+            route.contains("HomeGraph") -> {
+                val showCart = entry.toRoute<Screen.HomeGraph>().showCart
+                if (showCart) "/?cart=true" else "/"
+            }
+            
+            // Auth
+            route.contains("AuthGraph") -> "/auth"
+            route.contains("Login") -> "/login"
+            route.contains("Register") -> "/register"
+            route.contains("ForgotPassword") -> "/forgot-password"
+            route.contains("ResetPassword") -> {
+                val token = entry.toRoute<Screen.ResetPassword>().token
+                if (token.isNotEmpty()) "/reset-password?token=$token" else "/reset-password"
+            }
+            
+            // Profile & Settings
+            route.contains("Profile") -> "/profile"
+            route.contains("Settings") -> "/settings"
+            
+            // Admin
+            route.contains("AdminPanel") -> "/admin"
+            route.contains("ManageProduct") -> {
+                val id = entry.toRoute<Screen.ManageProduct>().id
+                if (id != null && id != 0L) "/admin/products/$id" else "/admin/products"
+            }
+            route.contains("ManageOrders") -> "/admin/orders"
+            route.contains("ManageOptions") -> "/admin/options"
+            
+            // Shop Features
+            route.contains("Checkout") -> {
+                val total = entry.toRoute<Screen.Checkout>().totalAmount
+                if (total != 0.0) "/checkout?amount=$total" else "/checkout"
+            }
+            route.contains("PaymentCompleted") -> "/payment-completed"
+            route.contains("CategorySearch") -> {
+                val search = entry.toRoute<Screen.CategorySearch>()
+                "/search?id=${search.id}&name=${search.name}"
+            }
+            route.contains("ContactUs") -> "/contact"
+            route.contains("ProductDetail") -> {
+                val slug = entry.toRoute<Screen.ProductDetail>().slug
+                "/product/$slug"
+            }
+            
+            else -> "/"
         }
-        
-        // Auth
-        route.contains("AuthGraph") -> "/auth"
-        route.contains("Login") -> "/login"
-        route.contains("Register") -> "/register"
-        route.contains("ForgotPassword") -> "/forgot-password"
-        route.contains("ResetPassword") -> {
-            val token = entry.toRoute<Screen.ResetPassword>().token
-            if (token.isNotEmpty()) "/reset-password?token=$token" else "/reset-password"
+    } catch (e: Exception) {
+        // Fallback for screens without parameters if toRoute fails
+        when {
+            route.contains("Login") -> "/login"
+            route.contains("Register") -> "/register"
+            route.contains("AdminPanel") -> "/admin"
+            else -> "/"
         }
-        
-        // Profile & Settings
-        route.contains("Profile") -> "/profile"
-        route.contains("Settings") -> "/settings"
-        
-        // Admin
-        route.contains("AdminPanel") -> "/admin"
-        route.contains("ManageProduct") -> {
-            val id = entry.toRoute<Screen.ManageProduct>().id
-            if (id != null && id != 0L) "/admin/products/$id" else "/admin/products"
-        }
-        route.contains("ManageOrders") -> "/admin/orders"
-        route.contains("ManageOptions") -> "/admin/options"
-        
-        // Shop Features
-        route.contains("Checkout") -> {
-            val total = entry.toRoute<Screen.Checkout>().totalAmount
-            if (total != 0.0) "/checkout?amount=$total" else "/checkout"
-        }
-        route.contains("PaymentCompleted") -> "/payment-completed"
-        route.contains("CategorySearch") -> {
-            val search = entry.toRoute<Screen.CategorySearch>()
-            "/search?id=${search.id}&name=${search.name}"
-        }
-        route.contains("ContactUs") -> "/contact"
-        route.contains("ProductDetail") -> {
-            val slug = entry.toRoute<Screen.ProductDetail>().slug
-            "/product/$slug"
-        }
-        
-        else -> "/"
     }
 }
