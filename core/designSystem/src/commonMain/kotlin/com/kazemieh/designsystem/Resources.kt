@@ -30,6 +30,7 @@ object Resources {
         val Warning = DesignRes.drawable.warning
         val Weight = DesignRes.drawable.weight
         val Settings = DesignRes.drawable.settings
+        val Clock = DesignRes.drawable.clock
     }
 
     object Image {
@@ -51,6 +52,9 @@ object Resources {
         val MyProfile = CommonRes.string.my_profile
         val MyAddresses = CommonRes.string.my_addresses
         val Settings = CommonRes.string.settings
+        val SavedForLater = CommonRes.string.saved_for_later
+        val MoveToCart = CommonRes.string.move_to_cart
+        val SaveForLater = CommonRes.string.save_for_later
         val Language = CommonRes.string.language
         val English = CommonRes.string.english
         val Persian = CommonRes.string.persian

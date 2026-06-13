@@ -4,14 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProductSummaryResponse(
-    val id: Long,
-    val title: String,
-    val slug: String,
-    val thumbnailUrl: String?,
-    val minPrice: Double?,
-    val maxPrice: Double?,
-    val inStock: Boolean,
-    val categoryId: Long?,
-    val categoryName: String?,
+    val id: Long = 0,
+    val title: String = "",
+    val slug: String = "",
+    val thumbnailUrl: String? = null,
+    val minPrice: Double? = null,
+    val maxPrice: Double? = null,
+    val inStock: Boolean = false,
+    val categoryId: Long? = null,
+    val categoryName: String? = null,
     val options: Map<String, List<String>> = emptyMap()
 )

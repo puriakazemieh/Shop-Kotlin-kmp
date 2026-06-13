@@ -16,4 +16,6 @@ interface CartApi {
     suspend fun clear()
     suspend fun setVariantQty(variantId: Long, request: SetCartVariantQtyRequest): CartResponse
     suspend fun adjustVariantQty(variantId: Long, request: AdjustCartVariantQtyRequest): CartResponse
+    suspend fun moveToSaveForLater(itemId: Long): CartResponse
+    suspend fun moveToCart(itemId: Long): CartResponse
 }

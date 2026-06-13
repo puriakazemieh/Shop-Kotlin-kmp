@@ -10,6 +10,7 @@ import com.kazemieh.common.*
 
 fun CartResponse.toDomain(): Cart = Cart(
     items = items.map { it.toDomain() },
+    savedForLater = savedForLater.map { it.toDomain() },
     subtotal = subtotal,
     totalQty = totalQty
 )
@@ -26,6 +27,7 @@ fun CartItemResponse.toDomain(): CartItem = CartItem(
     price = price,
     compareAtPrice = compareAtPrice,
     availableQty = availableQty,
+    savedForLater = savedForLater,
     isActive = isActive,
     lineTotal = lineTotal
 )

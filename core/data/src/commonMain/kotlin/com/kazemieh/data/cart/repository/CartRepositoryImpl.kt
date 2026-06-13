@@ -70,4 +70,20 @@ class CartRepositoryImpl(
         }
         return result
     }
+
+    override suspend fun moveToSaveForLater(itemId: Long): AppResult<Cart> {
+        val result = dataSource.moveToSaveForLater(itemId).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
+    }
+
+    override suspend fun moveToCart(itemId: Long): AppResult<Cart> {
+        val result = dataSource.moveToCart(itemId).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
+    }
 }

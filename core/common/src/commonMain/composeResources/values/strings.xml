@@ -152,6 +152,9 @@
     <string name="system_default">System Default</string>
     <string name="cart_is_empty">Cart is Empty</string>
     <string name="cart_is_empty_subtitle">You haven\'t added any items to your cart yet.</string>
+    <string name="saved_for_later">Saved for Later</string>
+    <string name="move_to_cart">Move to Cart</string>
+    <string name="save_for_later">Save for Later</string>
     <string name="categories_is_empty">No Categories Found</string>
     <string name="categories_is_empty_subtitle">Please try again later.</string>
     <string name="search_in_category_format">Search in %1$s</string>

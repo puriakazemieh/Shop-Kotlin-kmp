@@ -48,6 +48,8 @@ fun CartItemCard(
     onMinusClick: (Int) -> Unit,
     onPlusClick: (Int) -> Unit,
     onDeleteClick: () -> Unit,
+    onMoveToSaveForLaterClick: (() -> Unit)? = null,
+    onMoveToCartClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -115,6 +117,52 @@ fun CartItemCard(
                         contentDescription = stringResource(Resources.String.Delete),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
+                }
+                onMoveToSaveForLaterClick?.let {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(size = 6.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                                shape = RoundedCornerShape(size = 6.dp)
+                            )
+                            .clickable { it() }
+                            .padding(all = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(14.dp),
+                            painter = painterResource(Resources.Icon.Clock),
+                            contentDescription = stringResource(Resources.String.SaveForLater),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+                onMoveToCartClick?.let {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(size = 6.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                                shape = RoundedCornerShape(size = 6.dp)
+                            )
+                            .clickable { it() }
+                            .padding(all = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(14.dp),
+                            painter = painterResource(Resources.Icon.ShoppingCart),
+                            contentDescription = stringResource(Resources.String.MoveToCart),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
             Row(

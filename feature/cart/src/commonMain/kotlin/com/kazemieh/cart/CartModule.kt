@@ -18,6 +18,8 @@ val cartModule = module {
     factory { ClearCartUseCase(get()) }
     factory { AdjustCartVariantQtyUseCase(get()) }
     factory { SetCartVariantQtyUseCase(get()) }
+    factory { MoveToSaveForLaterUseCase(get()) }
+    factory { MoveToCartUseCase(get()) }
 
     // Order UseCases (Related to Cart/Checkout)
     factory { CreateOrderUseCase(get()) }
@@ -36,7 +38,9 @@ val cartModule = module {
         CartViewModel(
             getCartUseCase = get(),
             removeFromCartUseCase = get(),
-            adjustCartVariantQtyUseCase = get()
+            adjustCartVariantQtyUseCase = get(),
+            moveToSaveForLaterUseCase = get(),
+            moveToCartUseCase = get()
         )
     }
 

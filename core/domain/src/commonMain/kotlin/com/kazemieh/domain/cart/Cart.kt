@@ -2,6 +2,7 @@ package com.kazemieh.domain.cart
 
 data class Cart(
     val items: List<CartItem>,
+    val savedForLater: List<CartItem> = emptyList(),
     val subtotal: Double,
     val totalQty: Int
 )
@@ -18,6 +19,7 @@ data class CartItem(
     val price: Double,
     val compareAtPrice: Double?,
     val availableQty: Int,
+    val savedForLater: Boolean = false,
     val isActive: Boolean,
     val lineTotal: Double
 )

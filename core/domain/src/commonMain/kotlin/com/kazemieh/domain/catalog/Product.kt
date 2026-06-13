@@ -22,7 +22,9 @@ data class ProductDetail(
     val categoryName: String?,
     val images: List<ProductImage>,
     val variants: List<ProductVariant>,
-    val createdAt: String
+    val createdAt: String,
+    val basePrice: Double? = null,
+    val discountedPrice: Double? = null
 )
 
 data class ProductImage(

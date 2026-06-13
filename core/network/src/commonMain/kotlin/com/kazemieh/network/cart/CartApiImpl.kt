@@ -51,4 +51,12 @@ class CartApiImpl(
             setBody(request)
         }
     }
+
+    override suspend fun moveToSaveForLater(itemId: Long): CartResponse = safeApiCallRaw {
+        client.post("api/cart/items/$itemId/save-for-later")
+    }
+
+    override suspend fun moveToCart(itemId: Long): CartResponse = safeApiCallRaw {
+        client.post("api/cart/items/$itemId/move-to-cart")
+    }
 }

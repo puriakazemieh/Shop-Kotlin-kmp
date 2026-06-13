@@ -17,4 +17,6 @@ interface CartDataSource {
     suspend fun clear(): AppResult<Unit>
     suspend fun setVariantQty(variantId: Long, request: SetCartVariantQtyRequest): AppResult<CartResponse>
     suspend fun adjustVariantQty(variantId: Long, request: AdjustCartVariantQtyRequest): AppResult<CartResponse>
+    suspend fun moveToSaveForLater(itemId: Long): AppResult<CartResponse>
+    suspend fun moveToCart(itemId: Long): AppResult<CartResponse>
 }

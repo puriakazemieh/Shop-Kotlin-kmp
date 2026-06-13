@@ -152,6 +152,9 @@
     <string name="system_default">پیش‌فرض سیستم</string>
     <string name="cart_is_empty">سبد خرید خالی است</string>
     <string name="cart_is_empty_subtitle">هنوز هیچ کالایی به سبد خود اضافه نکرده‌اید.</string>
+    <string name="saved_for_later">ذخیره شده برای بعد</string>
+    <string name="move_to_cart">انتقال به سبد خرید</string>
+    <string name="save_for_later">ذخیره برای بعد</string>
     <string name="categories_is_empty">دسته‌بندی یافت نشد</string>
     <string name="categories_is_empty_subtitle">لطفا بعدا تلاش کنید.</string>
     <string name="search_in_category_format">جستجو در %1$s</string>
