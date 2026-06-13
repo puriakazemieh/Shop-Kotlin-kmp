@@ -56,7 +56,7 @@ class CartViewModel(
     private fun applyDiscount(code: String) {
         if (code.isBlank()) {
             viewModelScope.launch {
-                _effect.send(CartEffect.ShowError(com.kazemieh.common.Res.string.invalid_input))
+                _effect.send(CartEffect.ShowError(com.kazemieh.designsystem.Resources.String.InvalidInput))
             }
             return
         }

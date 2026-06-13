@@ -62,5 +62,8 @@ interface AdminRepository {
     suspend fun updateOrderStatus(id: Long, status: String): AppResult<Unit>
 
     // Discounts
+    suspend fun listDiscounts(): AppResult<List<Discount>>
     suspend fun createDiscount(param: CreateDiscountParam): AppResult<Discount>
+    suspend fun updateDiscount(id: Long, param: UpdateDiscountParam): AppResult<Discount>
+    suspend fun deleteDiscount(id: Long): AppResult<Unit>
 }

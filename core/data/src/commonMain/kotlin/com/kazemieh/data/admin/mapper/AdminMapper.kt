@@ -139,6 +139,18 @@ fun CreateDiscountParam.toRequest() = AdminCreateDiscountRequest(
     isActive = isActive
 )
 
+fun UpdateDiscountParam.toRequest() = AdminUpdateDiscountRequest(
+    code = code,
+    type = type?.name,
+    value = value,
+    maxDiscountAmount = maxDiscountAmount,
+    minOrderAmount = minOrderAmount,
+    startDate = startDate,
+    endDate = endDate,
+    usageLimit = usageLimit,
+    isActive = isActive
+)
+
 fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(
     items = items.map(mapper),
     page = page,

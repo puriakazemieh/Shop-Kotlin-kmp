@@ -228,4 +228,22 @@ class AdminApiImpl(
             setBody(request)
         }
     }
+
+    override suspend fun listDiscounts(): List<AdminDiscountResponse> = safeApiCallRaw {
+        client.get("api/admin/discounts")
+    }
+
+    override suspend fun updateDiscount(
+        id: Long,
+        request: AdminUpdateDiscountRequest
+    ): AdminDiscountResponse = safeApiCallRaw {
+        client.put("api/admin/discounts/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun deleteDiscount(id: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/discounts/$id")
+    }
 }

@@ -175,4 +175,13 @@ class AdminRepositoryImpl(
 
     override suspend fun createDiscount(param: CreateDiscountParam): AppResult<Discount> =
         dataSource.createDiscount(param.toRequest()).map { it.toAdminDomain() }
+
+    override suspend fun listDiscounts(): AppResult<List<Discount>> =
+        dataSource.listDiscounts().map { list -> list.map { it.toAdminDomain() } }
+
+    override suspend fun updateDiscount(id: Long, param: UpdateDiscountParam): AppResult<Discount> =
+        dataSource.updateDiscount(id, param.toRequest()).map { it.toAdminDomain() }
+
+    override suspend fun deleteDiscount(id: Long): AppResult<Unit> =
+        dataSource.deleteDiscount(id)
 }

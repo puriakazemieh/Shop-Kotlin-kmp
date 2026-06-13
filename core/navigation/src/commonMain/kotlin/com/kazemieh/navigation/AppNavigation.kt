@@ -15,6 +15,7 @@ import com.kazemieh.admin.products.AdminPanelScreen
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
 import com.kazemieh.admin.products.ManageProductScreen
+import com.kazemieh.admin.products.AdminDiscountsScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
@@ -163,6 +164,9 @@ fun AppNavHost(
                 },
                 navigateToManageOptions = {
                     navController.navigate(Screen.ManageOptions)
+                },
+                navigateToManageDiscounts = {
+                    navController.navigate(Screen.ManageDiscounts)
                 }
             )
         }
@@ -183,6 +187,12 @@ fun AppNavHost(
             val args = it.toRoute<Screen.ManageProduct>()
             ManageProductScreen(
                 id = args.id,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ManageDiscounts> {
+            AdminDiscountsScreen(
                 navigateBack = { navController.navigateBack() }
             )
         }

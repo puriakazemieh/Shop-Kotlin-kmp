@@ -31,23 +31,20 @@ fun AdminPanelScreen(
     navigateToManageProduct: (Long?) -> Unit,
     navigateToManageOrders: () -> Unit,
     navigateToManageOptions: () -> Unit,
+    navigateToManageDiscounts: () -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
     var searchBarVisible by mutableStateOf(false)
-    var showCreateDiscountDialog by remember { mutableStateOf(false) }
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is AdminPanelEffect.DiscountCreated -> {
-                    showCreateDiscountDialog = false
-                    // Optionally show a success message
-                }
                 is AdminPanelEffect.ShowError -> {
                     // Handle error
                 }
+                else -> {}
             }
         }
     }
@@ -136,7 +133,7 @@ fun AdminPanelScreen(
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
-                            IconButton(onClick = { showCreateDiscountDialog = true }) {
+                            IconButton(onClick = navigateToManageDiscounts) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Dollar), // Using Dollar icon for discounts
                                     contentDescription = stringResource(Resources.String.CreateDiscount),
@@ -220,18 +217,6 @@ fun AdminPanelScreen(
                     )
                 }
             }
-        }
-        if (showCreateDiscountDialog) {
-            CreateDiscountDialog(
-                onDismiss = { showCreateDiscountDialog = false },
-                onConfirm = { code, type, value, maxDiscountAmount, minOrderAmount, usageLimit, isActive ->
-                    viewModel.handleIntent(
-                        AdminPanelIntent.CreateDiscount(
-                            code, type, value, maxDiscountAmount, minOrderAmount, usageLimit, isActive
-                        )
-                    )
-                }
-            )
         }
     }
 }

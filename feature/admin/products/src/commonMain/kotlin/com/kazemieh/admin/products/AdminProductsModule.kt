@@ -19,6 +19,9 @@ val adminProductsModule = module {
     factory { AddProductImageUseCase(get()) }
     factory { DeleteProductImageUseCase(get()) }
     factory { AdminCreateDiscountUseCase(get()) }
+    factory { GetAdminDiscountsUseCase(get()) }
+    factory { UpdateAdminDiscountUseCase(get()) }
+    factory { DeleteAdminDiscountUseCase(get()) }
 
     factory { GetAdminOptionsUseCase(get()) }
     factory { CreateOptionTypeUseCase(get()) }
@@ -27,8 +30,16 @@ val adminProductsModule = module {
 
     viewModel {
         AdminPanelViewModel(
-            getAdminProductsUseCase = get(),
-            createDiscountUseCase = get()
+            getAdminProductsUseCase = get()
+        )
+    }
+
+    viewModel {
+        AdminDiscountsViewModel(
+            getAdminDiscountsUseCase = get(),
+            createDiscountUseCase = get(),
+            updateAdminDiscountUseCase = get(),
+            deleteAdminDiscountUseCase = get()
         )
     }
 

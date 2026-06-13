@@ -29,3 +29,15 @@ data class CreateDiscountParam(
     val usageLimit: Int? = null,
     val isActive: Boolean = true
 )
+
+data class UpdateDiscountParam(
+    val code: String? = null,
+    val type: DiscountType? = null,
+    val value: Double? = null,
+    val maxDiscountAmount: Double? = null,
+    val minOrderAmount: Double? = null,
+    val startDate: String? = null,
+    val endDate: String? = null,
+    val usageLimit: Int? = null,
+    val isActive: Boolean? = null
+)

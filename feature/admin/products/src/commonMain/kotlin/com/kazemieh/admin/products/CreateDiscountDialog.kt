@@ -22,6 +22,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateDiscountDialog(
+    discount: com.kazemieh.domain.admin.Discount? = null,
     onDismiss: () -> Unit,
     onConfirm: (
         code: String,
@@ -33,13 +34,13 @@ fun CreateDiscountDialog(
         isActive: Boolean
     ) -> Unit
 ) {
-    var code by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf(DiscountType.PERCENTAGE) }
-    var value by remember { mutableStateOf("") }
-    var maxDiscountAmount by remember { mutableStateOf("") }
-    var minOrderAmount by remember { mutableStateOf("") }
-    var usageLimit by remember { mutableStateOf("") }
-    var isActive by remember { mutableStateOf(true) }
+    var code by remember { mutableStateOf(discount?.code ?: "") }
+    var type by remember { mutableStateOf(discount?.type ?: DiscountType.PERCENTAGE) }
+    var value by remember { mutableStateOf(discount?.value?.toString() ?: "") }
+    var maxDiscountAmount by remember { mutableStateOf(discount?.maxDiscountAmount?.toString() ?: "") }
+    var minOrderAmount by remember { mutableStateOf(discount?.minOrderAmount?.toString() ?: "") }
+    var usageLimit by remember { mutableStateOf(discount?.usageLimit?.toString() ?: "") }
+    var isActive by remember { mutableStateOf(discount?.isActive ?: true) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -57,7 +58,7 @@ fun CreateDiscountDialog(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = stringResource(Resources.String.CreateDiscount),
+                    text = if (discount == null) stringResource(Resources.String.CreateDiscount) else "Edit Discount",
                     fontSize = FontSize.LARGE,
                     fontWeight = FontWeight.Bold
                 )
@@ -152,7 +153,7 @@ fun CreateDiscountDialog(
                         },
                         enabled = code.isNotBlank() && value.toDoubleOrNull() != null
                     ) {
-                        Text(stringResource(Resources.String.Create))
+                        Text(if (discount == null) stringResource(Resources.String.Create) else stringResource(Resources.String.Update))
                     }
                 }
             }

@@ -122,6 +122,12 @@ object Resources {
         val TotalPayable = CommonRes.string.total_payable
         val DiscountCodeApplied = CommonRes.string.discount_code_applied
         val InvalidDiscountCode = CommonRes.string.invalid_discount_code
+        val InvalidInput = CommonRes.string.invalid_input
+        val DiscountNotFound = CommonRes.string.discount_not_found
+        val DiscountExpired = CommonRes.string.discount_expired
+        val DiscountNotActive = CommonRes.string.discount_not_active
+        val DiscountLimitExceeded = CommonRes.string.discount_limit_exceeded
+        val DiscountMinAmountNotMet = CommonRes.string.discount_min_amount_not_met
         val CreateDiscount = CommonRes.string.create_discount
         val DiscountCodeLabel = CommonRes.string.discount_code_label
         val DiscountValueLabel = CommonRes.string.discount_value_label

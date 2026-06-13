@@ -135,4 +135,19 @@ class AdminDataSourceImpl(
     override suspend fun createDiscount(request: AdminCreateDiscountRequest): AppResult<AdminDiscountResponse> = safeApiCall {
         api.createDiscount(request)
     }
+
+    override suspend fun listDiscounts(): AppResult<List<AdminDiscountResponse>> = safeApiCall {
+        api.listDiscounts()
+    }
+
+    override suspend fun updateDiscount(
+        id: Long,
+        request: AdminUpdateDiscountRequest
+    ): AppResult<AdminDiscountResponse> = safeApiCall {
+        api.updateDiscount(id, request)
+    }
+
+    override suspend fun deleteDiscount(id: Long): AppResult<Unit> = safeApiCall {
+        api.deleteDiscount(id)
+    }
 }
