@@ -59,4 +59,14 @@ class CartApiImpl(
     override suspend fun moveToCart(itemId: Long): CartResponse = safeApiCallRaw {
         client.post("api/cart/items/$itemId/move-to-cart")
     }
+
+    override suspend fun applyDiscount(request: ApplyDiscountRequest): CartResponse = safeApiCallRaw {
+        client.post("api/cart/discount") {
+            setBody(request)
+        }
+    }
+
+    override suspend fun removeDiscount(): CartResponse = safeApiCallRaw {
+        client.delete("api/cart/discount")
+    }
 }

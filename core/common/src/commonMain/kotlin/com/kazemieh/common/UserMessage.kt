@@ -61,6 +61,14 @@ fun String.toUserMessage(): StringResource {
         "ORDER_FINALIZED" -> Res.string.order_finalized
         "ORDER_PRICE_MISMATCH" -> Res.string.order_price_mismatch
 
+        // Discount
+        "INVALID_INPUT" -> Res.string.invalid_input
+        "DISCOUNT_NOT_FOUND" -> Res.string.discount_not_found
+        "DISCOUNT_EXPIRED" -> Res.string.discount_expired
+        "DISCOUNT_NOT_ACTIVE" -> Res.string.discount_not_active
+        "DISCOUNT_LIMIT_EXCEEDED" -> Res.string.discount_limit_exceeded
+        "DISCOUNT_MIN_AMOUNT_NOT_MET" -> Res.string.discount_min_amount_not_met
+
         // Order Item
         "ORDER_ITEM_NOT_FOUND" -> Res.string.order_item_not_found
         "INVALID_QUANTITY" -> Res.string.invalid_quantity

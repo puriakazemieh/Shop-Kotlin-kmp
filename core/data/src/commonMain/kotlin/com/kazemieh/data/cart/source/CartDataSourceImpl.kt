@@ -20,4 +20,6 @@ class CartDataSourceImpl(private val api: CartApi) : CartDataSource {
     override suspend fun adjustVariantQty(variantId: Long, request: AdjustCartVariantQtyRequest): AppResult<CartResponse> = safeApiCall { api.adjustVariantQty(variantId, request) }
     override suspend fun moveToSaveForLater(itemId: Long): AppResult<CartResponse> = safeApiCall { api.moveToSaveForLater(itemId) }
     override suspend fun moveToCart(itemId: Long): AppResult<CartResponse> = safeApiCall { api.moveToCart(itemId) }
+    override suspend fun applyDiscount(request: ApplyDiscountRequest): AppResult<CartResponse> = safeApiCall { api.applyDiscount(request) }
+    override suspend fun removeDiscount(): AppResult<CartResponse> = safeApiCall { api.removeDiscount() }
 }

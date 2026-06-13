@@ -3,9 +3,7 @@ package com.kazemieh.admin.products
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
-import com.kazemieh.domain.admin.AdminProduct
-import com.kazemieh.domain.admin.AdminPage
-import com.kazemieh.domain.admin.GetAdminProductsUseCase
+import com.kazemieh.domain.admin.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class AdminPanelViewModel(
     private val getAdminProductsUseCase: GetAdminProductsUseCase,
+    private val createDiscountUseCase: AdminCreateDiscountUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminPanelState())
@@ -48,6 +47,32 @@ class AdminPanelViewModel(
             is AdminPanelIntent.Refresh -> refresh()
             is AdminPanelIntent.SearchProducts -> {
                 _state.update { it.copy(searchQuery = intent.query) }
+            }
+            is AdminPanelIntent.CreateDiscount -> createDiscount(intent)
+        }
+    }
+
+    private fun createDiscount(intent: AdminPanelIntent.CreateDiscount) {
+        viewModelScope.launch {
+            val result = createDiscountUseCase(
+                CreateDiscountParam(
+                    code = intent.code,
+                    type = intent.type,
+                    value = intent.value,
+                    maxDiscountAmount = intent.maxDiscountAmount,
+                    minOrderAmount = intent.minOrderAmount,
+                    usageLimit = intent.usageLimit,
+                    isActive = intent.isActive
+                )
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    _effect.send(AdminPanelEffect.DiscountCreated)
+                }
+                is AppResult.Error -> {
+                    _effect.send(AdminPanelEffect.ShowError(result.message))
+                }
+                else -> {}
             }
         }
     }
@@ -84,8 +109,18 @@ sealed interface AdminPanelIntent {
     data object LoadProducts : AdminPanelIntent
     data object Refresh : AdminPanelIntent
     data class SearchProducts(val query: String) : AdminPanelIntent
+    data class CreateDiscount(
+        val code: String,
+        val type: DiscountType,
+        val value: Double,
+        val maxDiscountAmount: Double?,
+        val minOrderAmount: Double?,
+        val usageLimit: Int?,
+        val isActive: Boolean
+    ) : AdminPanelIntent
 }
 
 sealed interface AdminPanelEffect {
     data class ShowError(val message: Any) : AdminPanelEffect
+    data object DiscountCreated : AdminPanelEffect
 }

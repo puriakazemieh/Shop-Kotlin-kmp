@@ -86,4 +86,20 @@ class CartRepositoryImpl(
         }
         return result
     }
+
+    override suspend fun applyDiscount(code: String): AppResult<Cart> {
+        val result = dataSource.applyDiscount(ApplyDiscountRequest(code)).map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
+    }
+
+    override suspend fun removeDiscount(): AppResult<Cart> {
+        val result = dataSource.removeDiscount().map { it.toDomain() }
+        if (result is AppResult.Success) {
+            CartEventBus.refresh()
+        }
+        return result
+    }
 }

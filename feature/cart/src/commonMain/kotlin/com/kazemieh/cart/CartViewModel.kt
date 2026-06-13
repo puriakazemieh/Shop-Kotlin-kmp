@@ -15,7 +15,9 @@ class CartViewModel(
     private val removeFromCartUseCase: RemoveFromCartUseCase,
     private val adjustCartVariantQtyUseCase: AdjustCartVariantQtyUseCase,
     private val moveToSaveForLaterUseCase: MoveToSaveForLaterUseCase,
-    private val moveToCartUseCase: MoveToCartUseCase
+    private val moveToCartUseCase: MoveToCartUseCase,
+    private val applyDiscountUseCase: ApplyDiscountUseCase,
+    private val removeDiscountUseCase: RemoveDiscountUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CartState())
@@ -46,6 +48,55 @@ class CartViewModel(
             is CartIntent.DeleteItem -> deleteCartItem(intent.itemId)
             is CartIntent.MoveToSaveForLater -> moveToSaveForLater(intent.itemId)
             is CartIntent.MoveToCart -> moveToCart(intent.itemId)
+            is CartIntent.ApplyDiscount -> applyDiscount(intent.code)
+            is CartIntent.RemoveDiscount -> removeDiscount()
+        }
+    }
+
+    private fun applyDiscount(code: String) {
+        if (code.isBlank()) {
+            viewModelScope.launch {
+                _effect.send(CartEffect.ShowError(com.kazemieh.common.Res.string.invalid_input))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update { it.copy(isApplyingDiscount = true) }
+            when (val result = applyDiscountUseCase(code.uppercase().trim())) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(cartState = result, isApplyingDiscount = false) }
+                }
+
+                is AppResult.Error -> {
+                    _effect.send(CartEffect.ShowError(result.message))
+                    _state.update { it.copy(isApplyingDiscount = false) }
+                }
+
+                else -> {
+                    _state.update { it.copy(isApplyingDiscount = false) }
+                }
+            }
+        }
+    }
+
+    private fun removeDiscount() {
+        viewModelScope.launch {
+            _state.update { it.copy(isApplyingDiscount = true) }
+            when (val result = removeDiscountUseCase()) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(cartState = result, isApplyingDiscount = false) }
+                }
+
+                is AppResult.Error -> {
+                    _effect.send(CartEffect.ShowError(result.message))
+                    _state.update { it.copy(isApplyingDiscount = false) }
+                }
+
+                else -> {
+                    _state.update { it.copy(isApplyingDiscount = false) }
+                }
+            }
         }
     }
 
@@ -125,7 +176,8 @@ class CartViewModel(
 
 data class CartState(
     val cartState: AppResult<Cart> = AppResult.Loading,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val isApplyingDiscount: Boolean = false
 )
 
 sealed interface CartIntent {
@@ -134,6 +186,8 @@ sealed interface CartIntent {
     data class DeleteItem(val itemId: Long) : CartIntent
     data class MoveToSaveForLater(val itemId: Long) : CartIntent
     data class MoveToCart(val itemId: Long) : CartIntent
+    data class ApplyDiscount(val code: String) : CartIntent
+    data object RemoveDiscount : CartIntent
 }
 
 sealed interface CartEffect {

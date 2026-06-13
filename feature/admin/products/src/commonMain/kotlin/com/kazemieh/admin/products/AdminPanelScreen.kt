@@ -35,10 +35,21 @@ fun AdminPanelScreen(
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
     var searchBarVisible by mutableStateOf(false)
+    var showCreateDiscountDialog by remember { mutableStateOf(false) }
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     LaunchedEffect(Unit) {
-        viewModel.handleIntent(AdminPanelIntent.LoadProducts)
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is AdminPanelEffect.DiscountCreated -> {
+                    showCreateDiscountDialog = false
+                    // Optionally show a success message
+                }
+                is AdminPanelEffect.ShowError -> {
+                    // Handle error
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -125,6 +136,13 @@ fun AdminPanelScreen(
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
+                            IconButton(onClick = { showCreateDiscountDialog = true }) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Dollar), // Using Dollar icon for discounts
+                                    contentDescription = stringResource(Resources.String.CreateDiscount),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                             IconButton(onClick = { searchBarVisible = true }) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Search),
@@ -202,6 +220,18 @@ fun AdminPanelScreen(
                     )
                 }
             }
+        }
+        if (showCreateDiscountDialog) {
+            CreateDiscountDialog(
+                onDismiss = { showCreateDiscountDialog = false },
+                onConfirm = { code, type, value, maxDiscountAmount, minOrderAmount, usageLimit, isActive ->
+                    viewModel.handleIntent(
+                        AdminPanelIntent.CreateDiscount(
+                            code, type, value, maxDiscountAmount, minOrderAmount, usageLimit, isActive
+                        )
+                    )
+                }
+            )
         }
     }
 }

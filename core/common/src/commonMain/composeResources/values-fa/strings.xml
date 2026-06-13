@@ -112,6 +112,25 @@
     <string name="paypal_not_implemented">پرداخت زرین پال هنوز پیاده‌سازی نشده است.</string>
     <string name="cart_is_empty_error">سبد خرید خالی است</string>
     <string name="select_address_error">لطفاً یک آدرس انتخاب یا اضافه کنید</string>
+    <string name="discount_code">کد تخفیف</string>
+    <string name="apply_label">اعمال</string>
+    <string name="remove_label">حذف</string>
+    <string name="discount_amount">مبلغ تخفیف</string>
+    <string name="total_payable">مبلغ قابل پرداخت</string>
+    <string name="discount_code_applied">کد تخفیف اعمال شد</string>
+    <string name="invalid_discount_code">کد تخفیف نامعتبر است</string>
+    <string name="create_discount">ایجاد کد تخفیف</string>
+    <string name="discount_code_label">کد</string>
+    <string name="discount_value_label">مقدار</string>
+    <string name="discount_type_label">نوع</string>
+    <string name="max_discount_amount_label">حداکثر مبلغ تخفیف (اختیاری)</string>
+    <string name="min_order_amount_label">حداقل مبلغ سفارش (اختیاری)</string>
+    <string name="start_date_label">تاریخ شروع (اختیاری)</string>
+    <string name="end_date_label">تاریخ پایان (اختیاری)</string>
+    <string name="usage_limit_label">محدودیت تعداد (اختیاری)</string>
+    <string name="is_active_label">فعال است</string>
+    <string name="percentage">درصدی</string>
+    <string name="fixed_amount">مبلغ ثابت</string>
 
     <!-- Auth -->
     <string name="forgot_password">فراموشی رمز عبور</string>
@@ -289,6 +308,12 @@
     <string name="password_too_short">رمز عبور خیلی کوتاه است</string>
     <string name="invalid_email">ایمیل نامعتبر است</string>
     <string name="email_empty">ایمیل نمی‌تواند خالی باشد</string>
+    <string name="invalid_input">لطفاً کد تخفیف را وارد کنید.</string>
+    <string name="discount_not_found">کد تخفیف معتبر نیست.</string>
+    <string name="discount_expired">این کد تخفیف منقضی شده است.</string>
+    <string name="discount_not_active">این کد در حال حاضر فعال نیست.</string>
+    <string name="discount_limit_exceeded">ظرفیت استفاده از این کد تکمیل شده است.</string>
+    <string name="discount_min_amount_not_met">مبلغ خرید شما برای این کد کافی نیست.</string>
     <string name="oops">اوپس!</string>
     <string name="success">موفقیت‌آمیز!</string>
     <string name="go_back">بازگشت</string>

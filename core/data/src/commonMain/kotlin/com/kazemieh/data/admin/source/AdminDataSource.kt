@@ -53,4 +53,7 @@ interface AdminDataSource {
     suspend fun getOrderDetail(id: Long): AppResult<AdminOrderDetailResponse>
 
     suspend fun updateOrderStatus(id: Long, request: AdminUpdateOrderStatusRequest): AppResult<Unit>
+
+    // Discounts
+    suspend fun createDiscount(request: AdminCreateDiscountRequest): AppResult<AdminDiscountResponse>
 }

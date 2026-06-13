@@ -12,7 +12,10 @@ fun CartResponse.toDomain(): Cart = Cart(
     items = items.map { it.toDomain() },
     savedForLater = savedForLater.map { it.toDomain() },
     subtotal = subtotal,
-    totalQty = totalQty
+    totalQty = totalQty,
+    discountAmount = discountAmount,
+    total = total,
+    appliedDiscountCode = appliedDiscountCode
 )
 
 fun CartItemResponse.toDomain(): CartItem = CartItem(

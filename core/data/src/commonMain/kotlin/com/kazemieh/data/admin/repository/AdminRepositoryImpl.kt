@@ -172,4 +172,7 @@ class AdminRepositoryImpl(
 
     override suspend fun updateOrderStatus(id: Long, status: String): AppResult<Unit> =
         dataSource.updateOrderStatus(id, AdminUpdateOrderStatusRequest(status))
+
+    override suspend fun createDiscount(param: CreateDiscountParam): AppResult<Discount> =
+        dataSource.createDiscount(param.toRequest()).map { it.toAdminDomain() }
 }

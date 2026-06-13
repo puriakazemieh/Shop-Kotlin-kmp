@@ -112,6 +112,25 @@
     <string name="paypal_not_implemented">Zarinpal is not implemented yet.</string>
     <string name="cart_is_empty_error">Cart is empty</string>
     <string name="select_address_error">Please select or add an address</string>
+    <string name="discount_code">Discount Code</string>
+    <string name="apply_label">Apply</string>
+    <string name="remove_label">Remove</string>
+    <string name="discount_amount">Discount Amount</string>
+    <string name="total_payable">Total Payable</string>
+    <string name="discount_code_applied">Discount code applied</string>
+    <string name="invalid_discount_code">Invalid discount code</string>
+    <string name="create_discount">Create Discount</string>
+    <string name="discount_code_label">Code</string>
+    <string name="discount_value_label">Value</string>
+    <string name="discount_type_label">Type</string>
+    <string name="max_discount_amount_label">Max Discount (Optional)</string>
+    <string name="min_order_amount_label">Min Order (Optional)</string>
+    <string name="start_date_label">Start Date (Optional)</string>
+    <string name="end_date_label">End Date (Optional)</string>
+    <string name="usage_limit_label">Usage Limit (Optional)</string>
+    <string name="is_active_label">Is Active</string>
+    <string name="percentage">Percentage</string>
+    <string name="fixed_amount">Fixed Amount</string>
 
     <!-- Auth -->
     <string name="forgot_password">Forgot Password</string>
@@ -289,6 +308,12 @@
     <string name="password_too_short">Password too short</string>
     <string name="invalid_email">Invalid email</string>
     <string name="email_empty">Email can\'t be empty</string>
+    <string name="invalid_input">Please enter the discount code.</string>
+    <string name="discount_not_found">Discount code is not valid.</string>
+    <string name="discount_expired">This discount code has expired.</string>
+    <string name="discount_not_active">This code is not active at the moment.</string>
+    <string name="discount_limit_exceeded">Usage limit for this code has been reached.</string>
+    <string name="discount_min_amount_not_met">Your order amount is not enough for this discount.</string>
     <string name="oops">Oops!</string>
     <string name="success">Success!</string>
     <string name="go_back">Go back</string>

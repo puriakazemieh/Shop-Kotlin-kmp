@@ -113,6 +113,32 @@ fun AdminOptionValueResponse.toAdminDomain() = AdminOptionValue(
     value = value
 )
 
+fun AdminDiscountResponse.toAdminDomain() = Discount(
+    id = id,
+    code = code,
+    type = if (type == "PERCENTAGE") DiscountType.PERCENTAGE else DiscountType.FIXED_AMOUNT,
+    value = value,
+    maxDiscountAmount = maxDiscountAmount,
+    minOrderAmount = minOrderAmount,
+    startDate = startDate,
+    endDate = endDate,
+    usageLimit = usageLimit,
+    usageCount = usageCount,
+    isActive = isActive
+)
+
+fun CreateDiscountParam.toRequest() = AdminCreateDiscountRequest(
+    code = code,
+    type = type.name,
+    value = value,
+    maxDiscountAmount = maxDiscountAmount,
+    minOrderAmount = minOrderAmount,
+    startDate = startDate,
+    endDate = endDate,
+    usageLimit = usageLimit,
+    isActive = isActive
+)
+
 fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(
     items = items.map(mapper),
     page = page,

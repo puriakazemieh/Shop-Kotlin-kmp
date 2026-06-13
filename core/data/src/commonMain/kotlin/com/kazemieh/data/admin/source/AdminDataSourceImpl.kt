@@ -131,4 +131,8 @@ class AdminDataSourceImpl(
     override suspend fun updateOrderStatus(id: Long, request: AdminUpdateOrderStatusRequest): AppResult<Unit> = safeApiCall {
         api.updateOrderStatus(id, request)
     }
+
+    override suspend fun createDiscount(request: AdminCreateDiscountRequest): AppResult<AdminDiscountResponse> = safeApiCall {
+        api.createDiscount(request)
+    }
 }

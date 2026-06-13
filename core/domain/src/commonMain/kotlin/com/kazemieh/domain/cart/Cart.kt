@@ -4,7 +4,10 @@ data class Cart(
     val items: List<CartItem>,
     val savedForLater: List<CartItem> = emptyList(),
     val subtotal: Double,
-    val totalQty: Int
+    val totalQty: Int,
+    val discountAmount: Double = 0.0,
+    val total: Double = subtotal,
+    val appliedDiscountCode: String? = null
 )
 
 data class CartItem(

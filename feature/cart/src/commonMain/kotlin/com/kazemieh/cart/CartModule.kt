@@ -20,6 +20,8 @@ val cartModule = module {
     factory { SetCartVariantQtyUseCase(get()) }
     factory { MoveToSaveForLaterUseCase(get()) }
     factory { MoveToCartUseCase(get()) }
+    factory { ApplyDiscountUseCase(get()) }
+    factory { RemoveDiscountUseCase(get()) }
 
     // Order UseCases (Related to Cart/Checkout)
     factory { CreateOrderUseCase(get()) }
@@ -40,7 +42,9 @@ val cartModule = module {
             removeFromCartUseCase = get(),
             adjustCartVariantQtyUseCase = get(),
             moveToSaveForLaterUseCase = get(),
-            moveToCartUseCase = get()
+            moveToCartUseCase = get(),
+            applyDiscountUseCase = get(),
+            removeDiscountUseCase = get()
         )
     }
 

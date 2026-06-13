@@ -14,4 +14,6 @@ interface CartRepository {
     suspend fun adjustVariantQty(variantId: Long, delta: Int): AppResult<Cart>
     suspend fun moveToSaveForLater(itemId: Long): AppResult<Cart>
     suspend fun moveToCart(itemId: Long): AppResult<Cart>
+    suspend fun applyDiscount(code: String): AppResult<Cart>
+    suspend fun removeDiscount(): AppResult<Cart>
 }

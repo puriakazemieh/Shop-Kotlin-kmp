@@ -57,4 +57,7 @@ interface AdminApi {
     suspend fun getOrderDetail(id: Long): AdminOrderDetailResponse
 
     suspend fun updateOrderStatus(id: Long, request: AdminUpdateOrderStatusRequest)
+
+    // ---------- Discounts ----------
+    suspend fun createDiscount(request: AdminCreateDiscountRequest): AdminDiscountResponse
 }

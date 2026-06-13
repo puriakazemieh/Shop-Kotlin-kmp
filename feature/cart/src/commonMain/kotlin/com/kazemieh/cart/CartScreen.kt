@@ -15,6 +15,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +43,10 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.kazemieh.designsystem.component.CustomTextField
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -55,6 +62,7 @@ fun CartScreen(
     val state by viewModel.state.collectAsState()
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
+    var discountCode by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -185,31 +193,109 @@ fun CartScreen(
 
                                         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
-                                        Row(
+                                        // Discount Code Section
+                                        Card(
                                             modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                            ),
+                                            shape = RoundedCornerShape(12.dp)
                                         ) {
-                                            Text(
-                                                text = stringResource(Resources.String.TotalLabel),
-                                                fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.onSurface
-                                            )
-                                            Text(
-                                                text = stringResource(Resources.String.PriceFormat, cart.subtotal),
-                                                fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = com.kazemieh.designsystem.FontSize.LARGE,
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
+                                            Column (
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(12.dp),
+                                            ) {
+                                                CustomTextField(
+//                                                    modifier = Modifier.weight(1f),
+                                                    value = if (cart.appliedDiscountCode.isNullOrBlank()) discountCode else cart.appliedDiscountCode!!,
+                                                    onValueChange = { discountCode = it },
+                                                    placeholder = Resources.String.DiscountCode,
+                                                    enabled = cart.appliedDiscountCode.isNullOrBlank()
+                                                )
+                                                PrimaryButton(
+                                                    text = if (!cart.appliedDiscountCode.isNullOrBlank()) stringResource(Resources.String.Remove) else stringResource(Resources.String.Apply),
+                                                    onClick = {
+                                                        if (!cart.appliedDiscountCode.isNullOrBlank()) {
+                                                            viewModel.handleIntent(CartIntent.RemoveDiscount)
+                                                        } else {
+                                                            viewModel.handleIntent(CartIntent.ApplyDiscount(discountCode))
+                                                        }
+                                                    },
+                                                    enabled = !state.isApplyingDiscount,
+                                                    modifier = Modifier.height(56.dp)
+                                                )
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.height(16.dp))
+
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = stringResource(Resources.String.SubtotalLabel),
+                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Text(
+                                                    text = stringResource(Resources.String.PriceFormat, cart.subtotal),
+                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+
+                                            if (cart.discountAmount > 0) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(Resources.String.DiscountAmount),
+                                                        fontFamily = com.kazemieh.designsystem.AppFont(),
+                                                        color = MaterialTheme.colorScheme.error
+                                                    )
+                                                    Text(
+                                                        text = "- ${stringResource(Resources.String.PriceFormat, cart.discountAmount)}",
+                                                        fontFamily = com.kazemieh.designsystem.AppFont(),
+                                                        color = MaterialTheme.colorScheme.error
+                                                    )
+                                                }
+                                            }
+
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = stringResource(Resources.String.TotalLabel),
+                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.onSurface
+                                                )
+                                                Text(
+                                                    text = stringResource(Resources.String.PriceFormat, cart.total),
+                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = com.kazemieh.designsystem.FontSize.LARGE,
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                            }
                                         }
 
                                         Spacer(modifier = Modifier.height(16.dp))
 
                                         PrimaryButton(
                                             text = stringResource(Resources.String.Checkout),
-                                            onClick = { navigateToCheckout(cart.subtotal) },
+                                            onClick = { navigateToCheckout(cart.total) },
                                             modifier = Modifier.fillMaxWidth()
                                         )
                                     }

@@ -221,4 +221,11 @@ class AdminApiImpl(
                 setBody(request)
             }
         }
+
+    override suspend fun createDiscount(request: AdminCreateDiscountRequest): AdminDiscountResponse = safeApiCallRaw {
+        client.post("api/admin/discounts") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
 }
