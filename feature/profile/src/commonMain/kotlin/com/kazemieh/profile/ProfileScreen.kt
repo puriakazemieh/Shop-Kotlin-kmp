@@ -73,6 +73,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileScreen(
     navigateBack: () -> Unit,
+    navigateToMyOrders: () -> Unit,
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
@@ -196,6 +197,14 @@ fun ProfileScreen(
                                 onClick = {
                                     viewModel.handleIntent(ProfileIntent.SaveProfile)
                                 }
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            PrimaryButton(
+                                text = stringResource(Resources.String.ManageOrders),
+                                icon = Resources.Icon.Book,
+                                onClick = navigateToMyOrders
                             )
 
                             Spacer(modifier = Modifier.height(32.dp))

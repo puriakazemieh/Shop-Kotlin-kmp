@@ -76,6 +76,11 @@
     <string name="update_product">بروزرسانی محصول</string>
     <string name="status_updated_successfully">وضعیت با موفقیت بروز شد</string>
     <string name="order_detail">جزئیات سفارش</string>
+    <string name="track_order">پیگیری سفارش</string>
+    <string name="ordered_at">زمان ثبت</string>
+    <string name="shipped_at">زمان ارسال</string>
+    <string name="tracking_code">کد رهگیری</string>
+    <string name="tracking_info_availability">اطلاعات پیگیری پس از ارسال در دسترس خواهد بود.</string>
     <string name="customer_information">اطلاعات مشتری</string>
     <string name="shipping_address">آدرس ارسال</string>
     <string name="update_status">بروزرسانی وضعیت</string>

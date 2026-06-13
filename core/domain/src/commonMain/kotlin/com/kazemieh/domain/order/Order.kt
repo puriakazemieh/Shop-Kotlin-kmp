@@ -1,11 +1,14 @@
 package com.kazemieh.domain.order
 
+import com.kazemieh.domain.address.Address
+
 data class Order(
     val id: Long,
     val status: String,
+    val subtotalPrice: Double,
+    val shippingPrice: Double,
     val totalPrice: Double,
-    val createdAt: String,
-    val itemCount: Int
+    val createdAt: String
 )
 
 data class OrderDetail(
@@ -15,7 +18,7 @@ data class OrderDetail(
     val shippingPrice: Double,
     val totalPrice: Double,
     val items: List<OrderItem>,
-    val address: String?,
+    val address: Address?,
     val createdAt: String,
     val shippingCarrier: String?,
     val trackingCode: String?,
@@ -30,4 +33,12 @@ data class OrderItem(
     val unitPrice: Double,
     val title: String,
     val options: Map<String, String>
+)
+
+data class OrderTracking(
+    val id: Long,
+    val status: String,
+    val trackingCode: String?,
+    val orderedAt: String,
+    val shippedAt: String?
 )

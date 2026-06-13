@@ -3,12 +3,8 @@ package com.kazemieh.network.order
 import com.kazemieh.network.order.dto.request.*
 import com.kazemieh.network.order.dto.response.*
 
-import com.kazemieh.network.common.PageResponse
-
 import com.kazemieh.network.common.safeApiCallRaw
 
-import com.kazemieh.network.order.dto.*
-import com.kazemieh.network.order.dto.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
 
@@ -32,5 +28,9 @@ class OrderApiImpl(
 
     override suspend fun cancelOrder(id: Long): Unit = safeApiCallRaw {
         client.post("api/orders/$id/cancel")
+    }
+
+    override suspend fun trackOrder(id: Long): OrderTrackingResponse = safeApiCallRaw {
+        client.get("api/orders/$id/track")
     }
 }

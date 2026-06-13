@@ -10,4 +10,5 @@ interface OrderRepository {
     suspend fun getOrder(id: Long): AppResult<OrderDetail>
     suspend fun createOrder(items: List<Pair<Long, Int>>, addressId: Long? = null): AppResult<OrderDetail>
     suspend fun cancelOrder(id: Long): AppResult<Unit>
+    suspend fun trackOrder(id: Long): AppResult<OrderTracking>
 }

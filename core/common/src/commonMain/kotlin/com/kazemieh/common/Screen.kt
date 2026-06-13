@@ -36,6 +36,15 @@ sealed class Screen {
     data object Profile : Screen()
 
     @Serializable
+    data object MyOrders : Screen()
+
+    @Serializable
+    data class OrderDetail(val id: Long) : Screen()
+
+    @Serializable
+    data class OrderTracking(val id: Long) : Screen()
+
+    @Serializable
     data object Settings : Screen()
 
     @Serializable

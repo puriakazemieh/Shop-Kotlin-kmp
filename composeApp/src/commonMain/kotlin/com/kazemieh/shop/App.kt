@@ -20,6 +20,7 @@ import com.kazemieh.domain.settings.ObserveThemeModeUseCase
 import com.kazemieh.main.mainModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
+import com.kazemieh.orders.di.ordersModule
 import com.kazemieh.profile.profileModule
 import com.kazemieh.settings.settingsModule
 import org.jetbrains.compose.resources.InternalResourceApi
@@ -61,7 +62,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             adminProductsModule,
             adminOrdersModule,
             adminOptionsModule,
-            detailsModule
+            detailsModule,
+            ordersModule
         )
     }
 }

@@ -27,6 +27,9 @@ import com.kazemieh.cart.checkout.CheckoutScreen
 import com.kazemieh.cart.payment_completed.PaymentCompleted
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
+import com.kazemieh.orders.list.OrderListScreen
+import com.kazemieh.orders.detail.OrderDetailScreen
+import com.kazemieh.orders.tracking.OrderTrackingScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -99,9 +102,42 @@ fun AppNavHost(
         }
 
         composable<Screen.Profile> {
-            ProfileScreen {
-                navController.navigateBack()
-            }
+            ProfileScreen(
+                navigateBack = {
+                    navController.navigateBack()
+                },
+                navigateToMyOrders = {
+                    navController.navigate(Screen.MyOrders)
+                }
+            )
+        }
+
+        composable<Screen.MyOrders> {
+            OrderListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToDetail = { id: Long ->
+                    navController.navigate(Screen.OrderDetail(id))
+                }
+            )
+        }
+
+        composable<Screen.OrderDetail> {
+            val args = it.toRoute<Screen.OrderDetail>()
+            OrderDetailScreen(
+                orderId = args.id,
+                navigateBack = { navController.navigateBack() },
+                navigateToTracking = { id: Long ->
+                    navController.navigate(Screen.OrderTracking(id))
+                }
+            )
+        }
+
+        composable<Screen.OrderTracking> {
+            val args = it.toRoute<Screen.OrderTracking>()
+            OrderTrackingScreen(
+                orderId = args.id,
+                navigateBack = { navController.navigateBack() }
+            )
         }
 
         composable<Screen.Settings> {

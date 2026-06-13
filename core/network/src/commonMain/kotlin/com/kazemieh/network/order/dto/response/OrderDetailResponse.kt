@@ -1,7 +1,6 @@
 package com.kazemieh.network.order.dto.response
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class OrderDetailResponse(
@@ -10,9 +9,9 @@ data class OrderDetailResponse(
     val subtotalPrice: Double,
     val shippingPrice: Double,
     val totalPrice: Double,
+    val createdAt: String?,
+    val address: AddressSnapshotResponse,
     val items: List<OrderItemResponse>,
-    val address: JsonElement? = null,
-    val createdAt: String,
     val shippingCarrier: String? = null,
     val trackingCode: String? = null,
     val shippedAt: String? = null,

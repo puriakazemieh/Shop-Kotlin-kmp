@@ -1,0 +1,182 @@
+package com.kazemieh.orders.list
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import com.kazemieh.common.AppResult
+import com.kazemieh.common.util.formatDateTime
+import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.InfoCard
+import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.domain.order.Order
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OrderListScreen(
+    navigateBack: () -> Unit,
+    navigateToDetail: (Long) -> Unit
+) {
+    val viewModel = koinViewModel<OrderListViewModel>()
+    val state by viewModel.state.collectAsState()
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is OrderListEffect.NavigateToDetail -> navigateToDetail(effect.orderId)
+            }
+        }
+    }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(Resources.String.ManageOrders),
+                        fontFamily = AppFont(),
+                        fontSize = FontSize.LARGE,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            painter = painterResource(Resources.Icon.BackArrow),
+                            contentDescription = stringResource(Resources.String.BackDesc),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+            when (val result = state.ordersState) {
+                is AppResult.Loading -> LoadingCard(Modifier.fillMaxSize())
+                is AppResult.Error -> InfoCard(
+                    title = stringResource(Resources.String.Oops),
+                    subtitle = result.message,
+                    image = Resources.Image.Cat
+                )
+                is AppResult.Success -> {
+                    val orders = result.data
+                    if (orders.isEmpty()) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(stringResource(Resources.String.NoOrdersFound), fontFamily = AppFont())
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(orders) { order ->
+                                OrderCard(
+                                    order = order,
+                                    onClick = { viewModel.handleIntent(OrderListIntent.OnOrderClick(order.id)) }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun OrderCard(
+    order: Order,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(Resources.String.OrderIdPrefix, order.id),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.MEDIUM,
+                    fontFamily = AppFont()
+                )
+                UserStatusBadge(status = order.status)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = formatDateTime(order.createdAt),
+                    fontSize = FontSize.SMALL,
+                    fontFamily = AppFont()
+                )
+                Text(
+                    text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontFamily = AppFont()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun UserStatusBadge(status: String) {
+    val color = when (status.uppercase()) {
+        "PLACED" -> androidx.compose.ui.graphics.Color(0xFFFFB300)
+        "PROCESSING" -> androidx.compose.ui.graphics.Color(0xFF4CAF50)
+        "SHIPPING" -> androidx.compose.ui.graphics.Color(0xFF2196F3)
+        "COMPLETED" -> androidx.compose.ui.graphics.Color(0xFF8BC34A)
+        "CANCELLED" -> androidx.compose.ui.graphics.Color(0xFFF44336)
+        else -> MaterialTheme.colorScheme.outline
+    }
+    Surface(
+        color = color.copy(alpha = 0.1f),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
+        border = BorderStroke(1.dp, color.copy(alpha = 0.5f))
+    ) {
+        Text(
+            text = status,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            fontSize = FontSize.EXTRA_SMALL,
+            color = color,
+            fontWeight = FontWeight.Bold,
+            fontFamily = AppFont()
+        )
+    }
+}

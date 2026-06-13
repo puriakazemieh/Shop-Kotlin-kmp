@@ -37,4 +37,8 @@ class OrderRepositoryImpl(
     override suspend fun cancelOrder(id: Long): AppResult<Unit> {
         return dataSource.cancelOrder(id)
     }
+
+    override suspend fun trackOrder(id: Long): AppResult<OrderTracking> {
+        return dataSource.trackOrder(id).map { it.toDomain() }
+    }
 }

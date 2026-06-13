@@ -172,6 +172,11 @@ object Resources {
         val VariantComboExists = CommonRes.string.variant_combo_exists
         val StatusUpdatedSuccessfully = CommonRes.string.status_updated_successfully
         val OrderDetail = CommonRes.string.order_detail
+        val TrackOrder = CommonRes.string.track_order
+        val OrderedAt = CommonRes.string.ordered_at
+        val ShippedAt = CommonRes.string.shipped_at
+        val TrackingCode = CommonRes.string.tracking_code
+        val TrackingInfoAvailability = CommonRes.string.tracking_info_availability
         val CustomerInformation = CommonRes.string.customer_information
         val ShippingAddress = CommonRes.string.shipping_address
         val UpdateStatus = CommonRes.string.update_status

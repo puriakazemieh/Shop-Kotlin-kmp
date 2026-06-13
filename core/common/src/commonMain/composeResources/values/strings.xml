@@ -76,6 +76,11 @@
     <string name="update_product">Update Product</string>
     <string name="status_updated_successfully">Status updated successfully</string>
     <string name="order_detail">Order Detail</string>
+    <string name="track_order">Track Order</string>
+    <string name="ordered_at">Ordered At</string>
+    <string name="shipped_at">Shipped At</string>
+    <string name="tracking_code">Tracking Code</string>
+    <string name="tracking_info_availability">Tracking info will be available once shipped.</string>
     <string name="customer_information">Customer Information</string>
     <string name="shipping_address">Shipping Address</string>
     <string name="update_status">Update Status</string>

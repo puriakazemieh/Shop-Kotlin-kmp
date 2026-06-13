@@ -1,19 +1,16 @@
 package com.kazemieh.data.order.mapper
 
-import com.kazemieh.network.order.dto.request.*
 import com.kazemieh.network.order.dto.response.*
+import com.kazemieh.domain.address.Address
 import com.kazemieh.domain.order.*
-import com.kazemieh.network.common.*
-import com.kazemieh.common.*
-
-
 
 fun OrderResponse.toDomain(): Order = Order(
     id = id,
     status = status,
+    subtotalPrice = subtotalPrice,
+    shippingPrice = shippingPrice,
     totalPrice = totalPrice,
-    createdAt = createdAt,
-    itemCount = itemCount
+    createdAt = createdAt
 )
 
 fun OrderDetailResponse.toDomain(): OrderDetail = OrderDetail(
@@ -23,12 +20,25 @@ fun OrderDetailResponse.toDomain(): OrderDetail = OrderDetail(
     shippingPrice = shippingPrice,
     totalPrice = totalPrice,
     items = items.map { it.toDomain() },
-    address = address?.toString(),
-    createdAt = createdAt,
+    address = address.toDomain(),
+    createdAt = createdAt ?: "",
     shippingCarrier = shippingCarrier,
     trackingCode = trackingCode,
     shippedAt = shippedAt,
     deliveredAt = deliveredAt
+)
+
+fun AddressSnapshotResponse.toDomain(): Address = Address(
+    id = 0, // Snapshot doesn't have an ID
+    receiverName = receiverName,
+    receiverPhone = receiverPhone,
+    country = country,
+    province = province,
+    city = city,
+    addressLine1 = addressLine1,
+    addressLine2 = addressLine2,
+    postalCode = postalCode,
+    isDefault = false
 )
 
 fun OrderItemResponse.toDomain(): OrderItem = OrderItem(
@@ -38,4 +48,12 @@ fun OrderItemResponse.toDomain(): OrderItem = OrderItem(
     unitPrice = unitPrice,
     title = title,
     options = options
+)
+
+fun OrderTrackingResponse.toDomain(): OrderTracking = OrderTracking(
+    id = id,
+    status = status,
+    trackingCode = trackingCode,
+    orderedAt = orderedAt,
+    shippedAt = shippedAt
 )
