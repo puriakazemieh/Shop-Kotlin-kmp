@@ -138,6 +138,18 @@ fun AdminDiscountResponse.toAdminDomain() = Discount(
     isActive = isActive
 )
 
+fun AdminInteractionResponse.toAdminDomain() = AdminInteraction(
+    id = id,
+    productId = productId,
+    productTitle = productTitle,
+    userId = userId,
+    userName = userName,
+    content = content,
+    rating = rating,
+    isNew = isNew,
+    createdAt = createdAt
+)
+
 fun CreateDiscountParam.toRequest() = AdminCreateDiscountRequest(
     code = code,
     type = type.name,

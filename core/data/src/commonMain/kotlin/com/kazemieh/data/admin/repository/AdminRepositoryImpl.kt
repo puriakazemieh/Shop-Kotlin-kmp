@@ -202,4 +202,20 @@ class AdminRepositoryImpl(
 
     override suspend fun deleteDiscount(id: Long): AppResult<Unit> =
         dataSource.deleteDiscount(id)
+
+    override suspend fun listReviews(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): AppResult<AdminPage<AdminInteraction>> =
+        dataSource.listReviews(productId, isNew, page, size).map { it.toAdminPage { dto -> dto.toAdminDomain() } }
+
+    override suspend fun listQuestions(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): AppResult<AdminPage<AdminInteraction>> =
+        dataSource.listQuestions(productId, isNew, page, size).map { it.toAdminPage { dto -> dto.toAdminDomain() } }
 }

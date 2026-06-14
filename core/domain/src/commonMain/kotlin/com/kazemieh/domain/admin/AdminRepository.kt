@@ -82,4 +82,19 @@ interface AdminRepository {
     suspend fun createDiscount(param: CreateDiscountParam): AppResult<Discount>
     suspend fun updateDiscount(id: Long, param: UpdateDiscountParam): AppResult<Discount>
     suspend fun deleteDiscount(id: Long): AppResult<Unit>
+
+    // Interactions
+    suspend fun listReviews(
+        productId: Long? = null,
+        isNew: Boolean? = null,
+        page: Int = 0,
+        size: Int = 20
+    ): AppResult<AdminPage<AdminInteraction>>
+
+    suspend fun listQuestions(
+        productId: Long? = null,
+        isNew: Boolean? = null,
+        page: Int = 0,
+        size: Int = 20
+    ): AppResult<AdminPage<AdminInteraction>>
 }

@@ -26,7 +26,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -45,6 +49,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
@@ -60,9 +65,17 @@ import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.details.component.AddQuestionDialog
+import com.kazemieh.details.component.AddReviewDialog
+import com.kazemieh.details.component.EditQuestionDialog
+import com.kazemieh.details.component.EditReviewDialog
+import com.kazemieh.details.component.QuestionItem
+import com.kazemieh.details.component.ReviewItem
 import com.kazemieh.details.component.VariantChip
 import com.kazemieh.domain.catalog.ProductImage
 import com.kazemieh.domain.catalog.ProductVideo
+import com.kazemieh.domain.catalog.Question
+import com.kazemieh.domain.catalog.Review
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
@@ -87,6 +100,12 @@ fun DetailsScreen(
     val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     var fullscreenImageUrl by remember { mutableStateOf<String?>(null) }
+    var selectedTab by remember { mutableStateOf(0) }
+    var showReviewDialog by remember { mutableStateOf(false) }
+    var showQuestionDialog by remember { mutableStateOf(false) }
+    var activeParentId by remember { mutableStateOf<Long?>(null) }
+    var editReview by remember { mutableStateOf<Review?>(null) }
+    var editQuestion by remember { mutableStateOf<Question?>(null) }
 
     LaunchedEffect(state.isAddedToCart, state.quantity, state.isCounterMode) {
         if (state.isAddedToCart && state.isCounterMode) {
@@ -311,51 +330,153 @@ fun DetailsScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
 
-                            if (product.variants.isNotEmpty()) {
-                                Spacer(modifier = Modifier.height(24.dp))
-                                val groupedOptions = remember(product.variants) {
-                                    val map = mutableMapOf<String, MutableSet<String>>()
-                                    product.variants.forEach { variant ->
-                                        variant.options.forEach { (key, value) ->
-                                            map.getOrPut(key) { mutableSetOf() }.add(value)
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // Tabs for Details, Reviews, and Questions
+                            PrimaryTabRow(
+                                selectedTabIndex = selectedTab,
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ) {
+                                Tab(
+                                    selected = selectedTab == 0,
+                                    onClick = { selectedTab = 0 },
+                                    text = { Text("جزئیات") }
+                                )
+                                Tab(
+                                    selected = selectedTab == 1,
+                                    onClick = { selectedTab = 1 },
+                                    text = { Text("نظرات (${state.reviews.size})") }
+                                )
+                                Tab(
+                                    selected = selectedTab == 2,
+                                    onClick = { selectedTab = 2 },
+                                    text = { Text("پرسش‌ها (${state.questions.size})") }
+                                )
+                            }
+
+                            when (selectedTab) {
+                                0 -> {
+                                    if (product.variants.isNotEmpty()) {
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                        val groupedOptions = remember(product.variants) {
+                                            val map = mutableMapOf<String, MutableSet<String>>()
+                                            product.variants.forEach { variant ->
+                                                variant.options.forEach { (key, value) ->
+                                                    map.getOrPut(key) { mutableSetOf() }.add(value)
+                                                }
+                                            }
+                                            map
+                                        }
+
+                                        groupedOptions.forEach { (optionName, values) ->
+                                            Text(
+                                                text = optionName,
+                                                fontSize = FontSize.MEDIUM,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            FlowRow(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                values.forEach { value ->
+                                                    val isSelected = state.selectedOptions[optionName] == value
+                                                    // An option is available if it exists in ANY variant of the product
+                                                    val isAvailable = product.variants.any { variant ->
+                                                        variant.options[optionName] == value
+                                                    }
+
+                                                    VariantChip(
+                                                        label = value,
+                                                        isSelected = isSelected,
+                                                        enabled = isAvailable,
+                                                        onClick = {
+                                                            viewModel.handleIntent(
+                                                                DetailsIntent.SelectOption(optionName, value)
+                                                            )
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                            Spacer(modifier = Modifier.height(16.dp))
                                         }
                                     }
-                                    map
                                 }
 
-                                groupedOptions.forEach { (optionName, values) ->
-                                    Text(
-                                        text = optionName,
-                                        fontSize = FontSize.MEDIUM,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    FlowRow(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        values.forEach { value ->
-                                            val isSelected = state.selectedOptions[optionName] == value
-                                            // An option is available if it exists in ANY variant of the product
-                                            val isAvailable = product.variants.any { variant ->
-                                                variant.options[optionName] == value
+                                1 -> {
+                                    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                                        PrimaryButton(
+                                            text = "ثبت نظر جدید",
+                                            onClick = {
+                                                activeParentId = null
+                                                showReviewDialog = true
                                             }
-
-                                            VariantChip(
-                                                label = value,
-                                                isSelected = isSelected,
-                                                enabled = isAvailable,
-                                                onClick = {
-                                                    viewModel.handleIntent(
-                                                        DetailsIntent.SelectOption(optionName, value)
-                                                    )
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        if (state.reviews.isEmpty()) {
+                                            Text(
+                                                "هنوز نظری برای این محصول ثبت نشده است.",
+                                                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                                                textAlign = TextAlign.Center,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                        state.reviews.forEach { review ->
+                                            ReviewItem(
+                                                review = review,
+                                                onReplyClick = {
+                                                    activeParentId = it
+                                                    showReviewDialog = true
+                                                },
+                                                onEditClick = { editReview = it },
+                                                onDeleteClick = {
+                                                    state.product?.id?.let { pid ->
+                                                        viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid))
+                                                    }
                                                 }
                                             )
                                         }
                                     }
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+
+                                2 -> {
+                                    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                                        PrimaryButton(
+                                            text = "ثبت پرسش جدید",
+                                            onClick = {
+                                                activeParentId = null
+                                                showQuestionDialog = true
+                                            }
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        if (state.questions.isEmpty()) {
+                                            Text(
+                                                "هنوز پرسشی برای این محصول ثبت نشده است.",
+                                                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                                                textAlign = TextAlign.Center,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                        state.questions.forEach { question ->
+                                            QuestionItem(
+                                                question = question,
+                                                onReplyClick = {
+                                                    activeParentId = it
+                                                    showQuestionDialog = true
+                                                },
+                                                onEditClick = { editQuestion = it },
+                                                onDeleteClick = {
+                                                    state.product?.id?.let { pid ->
+                                                        viewModel.handleIntent(DetailsIntent.DeleteQuestion(it, pid))
+                                                    }
+                                                }
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -433,6 +554,56 @@ fun DetailsScreen(
                 }
             }
         }
+    }
+
+    if (showReviewDialog) {
+        AddReviewDialog(
+            onDismiss = { showReviewDialog = false },
+            onSubmit = { rating, comment ->
+                state.product?.id?.let {
+                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId))
+                }
+                showReviewDialog = false
+            }
+        )
+    }
+
+    if (showQuestionDialog) {
+        AddQuestionDialog(
+            onDismiss = { showQuestionDialog = false },
+            onSubmit = { content ->
+                state.product?.id?.let {
+                    viewModel.handleIntent(DetailsIntent.AddQuestion(it, content, activeParentId))
+                }
+                showQuestionDialog = false
+            }
+        )
+    }
+
+    editReview?.let { review ->
+        EditReviewDialog(
+            review = review,
+            onDismiss = { editReview = null },
+            onSubmit = { rating, comment ->
+                state.product?.id?.let {
+                    viewModel.handleIntent(DetailsIntent.UpdateReview(review.id, it, rating, comment))
+                }
+                editReview = null
+            }
+        )
+    }
+
+    editQuestion?.let { question ->
+        EditQuestionDialog(
+            question = question,
+            onDismiss = { editQuestion = null },
+            onSubmit = { content ->
+                state.product?.id?.let {
+                    viewModel.handleIntent(DetailsIntent.UpdateQuestion(question.id, it, content))
+                }
+                editQuestion = null
+            }
+        )
     }
 
     fullscreenImageUrl?.let { url ->

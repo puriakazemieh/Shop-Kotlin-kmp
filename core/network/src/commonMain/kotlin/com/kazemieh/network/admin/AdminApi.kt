@@ -67,4 +67,19 @@ interface AdminApi {
     suspend fun createDiscount(request: AdminCreateDiscountRequest): AdminDiscountResponse
     suspend fun updateDiscount(id: Long, request: AdminUpdateDiscountRequest): AdminDiscountResponse
     suspend fun deleteDiscount(id: Long)
+
+    // ---------- Interactions ----------
+    suspend fun listReviews(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): PageResponse<AdminInteractionResponse>
+
+    suspend fun listQuestions(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): PageResponse<AdminInteractionResponse>
 }

@@ -6,7 +6,17 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.auth.IsUserLoggedInUseCase
 import com.kazemieh.domain.cart.AddToCartUseCase
+import com.kazemieh.domain.catalog.CreateQuestionRequest
+import com.kazemieh.domain.catalog.CreateReviewRequest
+import com.kazemieh.domain.catalog.DeleteQuestionUseCase
+import com.kazemieh.domain.catalog.DeleteReviewUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
+import com.kazemieh.domain.catalog.GetQuestionsUseCase
+import com.kazemieh.domain.catalog.GetReviewsUseCase
+import com.kazemieh.domain.catalog.PostQuestionUseCase
+import com.kazemieh.domain.catalog.PostReviewUseCase
+import com.kazemieh.domain.catalog.UpdateQuestionUseCase
+import com.kazemieh.domain.catalog.UpdateReviewUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +30,15 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(
     private val getProductDetailUseCase: GetProductDetailUseCase,
     private val addToCartUseCase: AddToCartUseCase,
-    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
+    private val getReviewsUseCase: GetReviewsUseCase,
+    private val postReviewUseCase: PostReviewUseCase,
+    private val updateReviewUseCase: UpdateReviewUseCase,
+    private val deleteReviewUseCase: DeleteReviewUseCase,
+    private val getQuestionsUseCase: GetQuestionsUseCase,
+    private val postQuestionUseCase: PostQuestionUseCase,
+    private val updateQuestionUseCase: UpdateQuestionUseCase,
+    private val deleteQuestionUseCase: DeleteQuestionUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -84,6 +102,13 @@ class DetailsViewModel(
             is DetailsIntent.SetCounterMode -> {
                 _state.update { it.copy(isCounterMode = intent.isCounterMode) }
             }
+            is DetailsIntent.LoadInteractions -> loadInteractions(intent.productId)
+            is DetailsIntent.AddReview -> addReview(intent.productId, intent.rating, intent.comment, intent.parentId)
+            is DetailsIntent.UpdateReview -> updateReview(intent.reviewId, intent.productId, intent.rating, intent.comment)
+            is DetailsIntent.DeleteReview -> deleteReview(intent.reviewId, intent.productId)
+            is DetailsIntent.AddQuestion -> addQuestion(intent.productId, intent.content, intent.parentId)
+            is DetailsIntent.UpdateQuestion -> updateQuestion(intent.questionId, intent.productId, intent.content)
+            is DetailsIntent.DeleteQuestion -> deleteQuestion(intent.questionId, intent.productId)
         }
     }
 
@@ -103,6 +128,7 @@ class DetailsViewModel(
                             error = null
                         )
                     }
+                    loadInteractions(product.id)
                 }
                 is AppResult.Error -> {
                     _state.update {
@@ -113,6 +139,95 @@ class DetailsViewModel(
                     }
                     _effect.send(DetailsEffect.ShowError(result.message))
                 }
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadInteractions(productId: Long) {
+        viewModelScope.launch {
+            // Load Reviews
+            when (val result = getReviewsUseCase(productId)) {
+                is AppResult.Success -> _state.update { it.copy(reviews = result.data) }
+                else -> {}
+            }
+            // Load Questions
+            when (val result = getQuestionsUseCase(productId)) {
+                is AppResult.Success -> _state.update { it.copy(questions = result.data) }
+                else -> {}
+            }
+        }
+    }
+
+    private fun addReview(productId: Long, rating: Int?, comment: String, parentId: Long?) {
+        viewModelScope.launch {
+            val isLoggedIn = isUserLoggedInUseCase().first()
+            if (!isLoggedIn) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+
+            val request = CreateReviewRequest(productId, rating, comment, parentId)
+            when (val result = postReviewUseCase(request)) {
+                is AppResult.Success -> loadInteractions(productId)
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun updateReview(reviewId: Long, productId: Long, rating: Int?, comment: String) {
+        viewModelScope.launch {
+            when (val result = updateReviewUseCase(reviewId, rating, comment)) {
+                is AppResult.Success -> loadInteractions(productId)
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun deleteReview(reviewId: Long, productId: Long) {
+        viewModelScope.launch {
+            when (val result = deleteReviewUseCase(reviewId)) {
+                is AppResult.Success -> loadInteractions(productId)
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun addQuestion(productId: Long, content: String, parentId: Long?) {
+        viewModelScope.launch {
+            val isLoggedIn = isUserLoggedInUseCase().first()
+            if (!isLoggedIn) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+
+            val request = CreateQuestionRequest(productId, content, parentId)
+            when (val result = postQuestionUseCase(request)) {
+                is AppResult.Success -> loadInteractions(productId)
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun updateQuestion(questionId: Long, productId: Long, content: String) {
+        viewModelScope.launch {
+            when (val result = updateQuestionUseCase(questionId, content)) {
+                is AppResult.Success -> loadInteractions(productId)
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun deleteQuestion(questionId: Long, productId: Long) {
+        viewModelScope.launch {
+            when (val result = deleteQuestionUseCase(questionId)) {
+                is AppResult.Success -> loadInteractions(productId)
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
                 else -> {}
             }
         }

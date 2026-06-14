@@ -158,4 +158,22 @@ class AdminDataSourceImpl(
     override suspend fun deleteDiscount(id: Long): AppResult<Unit> = safeApiCall {
         api.deleteDiscount(id)
     }
+
+    override suspend fun listReviews(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): AppResult<PageResponse<AdminInteractionResponse>> = safeApiCall {
+        api.listReviews(productId, isNew, page, size)
+    }
+
+    override suspend fun listQuestions(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): AppResult<PageResponse<AdminInteractionResponse>> = safeApiCall {
+        api.listQuestions(productId, isNew, page, size)
+    }
 }

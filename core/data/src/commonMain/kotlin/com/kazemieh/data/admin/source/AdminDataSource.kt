@@ -62,4 +62,19 @@ interface AdminDataSource {
     suspend fun createDiscount(request: AdminCreateDiscountRequest): AppResult<AdminDiscountResponse>
     suspend fun updateDiscount(id: Long, request: AdminUpdateDiscountRequest): AppResult<AdminDiscountResponse>
     suspend fun deleteDiscount(id: Long): AppResult<Unit>
+
+    // Interactions
+    suspend fun listReviews(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): AppResult<PageResponse<AdminInteractionResponse>>
+
+    suspend fun listQuestions(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): AppResult<PageResponse<AdminInteractionResponse>>
 }

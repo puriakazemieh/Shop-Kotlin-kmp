@@ -270,4 +270,32 @@ class AdminApiImpl(
     override suspend fun deleteDiscount(id: Long) = safeApiCallRaw<Unit> {
         client.delete("api/admin/discounts/$id")
     }
+
+    override suspend fun listReviews(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): PageResponse<AdminInteractionResponse> = safeApiCallRaw {
+        client.get("api/admin/reviews") {
+            parameter("productId", productId)
+            parameter("isNew", isNew)
+            parameter("page", page)
+            parameter("size", size)
+        }
+    }
+
+    override suspend fun listQuestions(
+        productId: Long?,
+        isNew: Boolean?,
+        page: Int,
+        size: Int
+    ): PageResponse<AdminInteractionResponse> = safeApiCallRaw {
+        client.get("api/admin/questions") {
+            parameter("productId", productId)
+            parameter("isNew", isNew)
+            parameter("page", page)
+            parameter("size", size)
+        }
+    }
 }
