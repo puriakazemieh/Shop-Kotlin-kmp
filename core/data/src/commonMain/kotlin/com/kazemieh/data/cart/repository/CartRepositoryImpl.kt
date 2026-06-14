@@ -23,8 +23,8 @@ class CartRepositoryImpl(
         emit(dataSource.getCart().map { it.toDomain() })
     }
 
-    override suspend fun addItem(variantId: Long, qty: Int): AppResult<Cart> {
-        val result = dataSource.addItem(AddCartItemRequest(variantId, qty)).map { it.toDomain() }
+    override suspend fun addItem(productId: Long?, variantId: Long?, qty: Int): AppResult<Cart> {
+        val result = dataSource.addItem(AddCartItemRequest(productId, variantId, qty)).map { it.toDomain() }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }

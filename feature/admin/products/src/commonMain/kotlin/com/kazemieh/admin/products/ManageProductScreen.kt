@@ -334,6 +334,32 @@ fun ManageProductScreen(
                         )
                     }
 
+                    if (state.variants.isEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                value = state.sku,
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateSku(it)) },
+                                placeholder = stringResource(Resources.String.Sku)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                value = if (state.initialOnHand == 0) "" else state.initialOnHand.toString(),
+                                onValueChange = {
+                                    val qty = it.toIntOrNull() ?: 0
+                                    viewModel.handleIntent(ManageProductIntent.UpdateInitialOnHand(qty))
+                                },
+                                placeholder = stringResource(Resources.String.InitialStock),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
+                    }
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -437,6 +463,32 @@ fun ManageProductScreen(
                                 viewModel.handleIntent(ManageProductIntent.UpdateVariantInline(id = variant.id, sku = sku, price = price, onHand = onHand))
                             }
                         )
+                    }
+
+                    if (state.variants.isEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                value = state.sku,
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateSku(it)) },
+                                placeholder = stringResource(Resources.String.Sku)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                value = if (state.initialOnHand == 0) "" else state.initialOnHand.toString(),
+                                onValueChange = {
+                                    val qty = it.toIntOrNull() ?: 0
+                                    viewModel.handleIntent(ManageProductIntent.UpdateInitialOnHand(qty))
+                                },
+                                placeholder = stringResource(Resources.String.InitialStock),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
                     }
 
                     Row(

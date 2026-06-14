@@ -3,6 +3,7 @@ package com.kazemieh.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.auth.IsUserLoggedInUseCase
 import com.kazemieh.domain.cart.AddToCartUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
@@ -119,8 +120,23 @@ class DetailsViewModel(
 
     private fun addToCart() {
         val currentState = _state.value
-        val variantId = currentState.selectedVariant?.id ?: return
-        
+        val product = currentState.product ?: return
+
+        // A product is simple if it has no variants or just one variant without options
+        val isSimpleProduct = product.variants.isEmpty() ||
+                (product.variants.size == 1 && product.variants.first().options.isEmpty())
+
+        val variantId = currentState.selectedVariant?.id
+        val productId = if (isSimpleProduct) product.id else null
+        val finalVariantId = if (isSimpleProduct) null else variantId
+
+        if (!isSimpleProduct && finalVariantId == null) {
+            viewModelScope.launch {
+                _effect.send(DetailsEffect.ShowError(Resources.String.PleaseSelectVariant))
+            }
+            return
+        }
+
         viewModelScope.launch {
             val isLoggedIn = isUserLoggedInUseCase().first()
             if (!isLoggedIn) {
@@ -128,7 +144,7 @@ class DetailsViewModel(
                 return@launch
             }
 
-            when (val result = addToCartUseCase(variantId, currentState.quantity)) {
+            when (val result = addToCartUseCase(productId = productId, variantId = finalVariantId, qty = currentState.quantity)) {
                 is AppResult.Success -> {
                     _state.update { it.copy(isAddedToCart = true) }
                     _effect.send(DetailsEffect.AddedToCart)
@@ -144,11 +160,18 @@ class DetailsViewModel(
     private fun updateQuantityInCart(newQty: Int) {
         val currentState = _state.value
         if (!currentState.isAddedToCart) return
-        val variantId = currentState.selectedVariant?.id ?: return
+        val product = currentState.product ?: return
+
+        val isSimpleProduct = product.variants.isEmpty() ||
+                (product.variants.size == 1 && product.variants.first().options.isEmpty())
+
+        val variantId = currentState.selectedVariant?.id
+        val productId = if (isSimpleProduct) product.id else null
+        val finalVariantId = if (isSimpleProduct) null else variantId
 
         viewModelScope.launch {
             // Using addToCart with a specific quantity effectively sets/updates it in our backend implementation
-            addToCartUseCase(variantId, newQty)
+            addToCartUseCase(productId = productId, variantId = finalVariantId, qty = newQty)
         }
     }
 }

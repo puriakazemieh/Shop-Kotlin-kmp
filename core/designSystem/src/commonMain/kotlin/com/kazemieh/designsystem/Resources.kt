@@ -231,6 +231,7 @@ object Resources {
         val ProductAddedToCart = CommonRes.string.product_added_to_cart
         val CheckoutWithQty = CommonRes.string.checkout_with_qty
         val ProductImageDesc = CommonRes.string.product_image_desc
+        val PleaseSelectVariant = CommonRes.string.please_select_variant
 
         val ItemsLabel = CommonRes.string.items_label
         val SubtotalLabel = CommonRes.string.subtotal_label

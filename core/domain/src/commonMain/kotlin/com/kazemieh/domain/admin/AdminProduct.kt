@@ -8,6 +8,8 @@ data class AdminProduct(
     val description: String?,
     val basePrice: Double?,
     val discountedPrice: Double? = null,
+    val sku: String? = null,
+    val initialOnHand: Int? = null,
     val isActive: Boolean
 )
 

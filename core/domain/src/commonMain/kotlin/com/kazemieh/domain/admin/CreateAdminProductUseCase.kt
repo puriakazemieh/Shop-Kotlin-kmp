@@ -15,9 +15,11 @@ class CreateAdminProductUseCase(
         description: String?,
         basePrice: Double?,
         discountedPrice: Double? = null,
+        sku: String? = null,
+        initialOnHand: Int? = null,
         isActive: Boolean,
         variants: List<AdminCreateVariant>? = null
     ): AppResult<AdminProduct> {
-        return repository.createProduct(categoryId, title, slug, description, basePrice, discountedPrice, isActive, variants)
+        return repository.createProduct(categoryId, title, slug, description, basePrice, discountedPrice, sku, initialOnHand, isActive, variants)
     }
 }

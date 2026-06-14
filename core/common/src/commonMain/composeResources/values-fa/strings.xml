@@ -315,6 +315,14 @@
     <string name="discount_not_active">این کد در حال حاضر فعال نیست.</string>
     <string name="discount_limit_exceeded">ظرفیت استفاده از این کد تکمیل شده است.</string>
     <string name="discount_min_amount_not_met">مبلغ خرید شما برای این کد کافی نیست.</string>
+
+    <!-- New Error Codes -->
+    <string name="product_no_active_variant">محصول هیچ واریانت فعالی برای فروش ندارد.</string>
+    <string name="product_multiple_variants">محصول دارای چندین واریانت است. لطفاً یک واریانت انتخاب کنید.</string>
+    <string name="missing_variant_or_product">شناسه محصول یا واریانت ارسال نشده است.</string>
+    <string name="variant_options_required">انتخاب ویژگی برای ساخت واریانت الزامی است.</string>
+    <string name="please_select_variant">لطفاً ابتدا یک واریانت انتخاب کنید.</string>
+
     <string name="oops">اوپس!</string>
     <string name="success">موفقیت‌آمیز!</string>
     <string name="go_back">بازگشت</string>

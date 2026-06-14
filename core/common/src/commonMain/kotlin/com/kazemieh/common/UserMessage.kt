@@ -26,6 +26,12 @@ fun String.toUserMessage(): StringResource {
         "PRODUCT_INACTIVE" -> Res.string.product_inactive
         "INVALID_PRODUCT_PRICE" -> Res.string.invalid_product_price
 
+        // New Error Codes
+        "PRODUCT_NO_ACTIVE_VARIANT" -> Res.string.product_no_active_variant
+        "PRODUCT_MULTIPLE_VARIANTS" -> Res.string.product_multiple_variants
+        "MISSING_VARIANT_OR_PRODUCT" -> Res.string.missing_variant_or_product
+        "VARIANT_OPTIONS_REQUIRED" -> Res.string.variant_options_required
+
         // Size & Color
         "SIZE_NOT_FOUND" -> Res.string.size_not_found
         "SIZE_EXISTS" -> Res.string.size_exists

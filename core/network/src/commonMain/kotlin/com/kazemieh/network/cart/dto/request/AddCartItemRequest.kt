@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AddCartItemRequest(
-    val variantId: Long,
+    val productId: Long? = null,
+    val variantId: Long? = null,
     val qty: Int
 )

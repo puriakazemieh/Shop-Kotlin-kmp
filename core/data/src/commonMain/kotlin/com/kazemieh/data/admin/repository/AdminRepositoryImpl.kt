@@ -37,6 +37,8 @@ class AdminRepositoryImpl(
         description: String?,
         basePrice: Double?,
         discountedPrice: Double?,
+        sku: String?,
+        initialOnHand: Int?,
         isActive: Boolean,
         variants: List<AdminCreateVariant>?
     ): AppResult<AdminProduct> =
@@ -48,6 +50,8 @@ class AdminRepositoryImpl(
                 description,
                 basePrice,
                 discountedPrice,
+                sku,
+                initialOnHand,
                 isActive,
                 variants?.map {
                     AdminCreateVariantRequest(

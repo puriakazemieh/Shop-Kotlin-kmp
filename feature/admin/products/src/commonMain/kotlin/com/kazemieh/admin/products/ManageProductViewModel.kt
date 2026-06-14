@@ -64,6 +64,8 @@ class ManageProductViewModel(
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
             is ManageProductIntent.UpdateDiscountedPrice -> _state.update { it.copy(discountedPrice = intent.price) }
+            is ManageProductIntent.UpdateSku -> _state.update { it.copy(sku = intent.sku) }
+            is ManageProductIntent.UpdateInitialOnHand -> _state.update { it.copy(initialOnHand = intent.onHand) }
             is ManageProductIntent.UpdateIsActive -> _state.update { it.copy(isActive = intent.isActive) }
             is ManageProductIntent.SelectCategory -> _state.update { it.copy(selectedCategory = intent.category) }
             is ManageProductIntent.SaveProduct -> saveProduct()
@@ -252,6 +254,8 @@ class ManageProductViewModel(
                             description = detail.product.description ?: "",
                             basePrice = detail.product.basePrice ?: 0.0,
                             discountedPrice = detail.product.discountedPrice ?: 0.0,
+                            sku = detail.product.sku ?: "",
+                            initialOnHand = detail.product.initialOnHand ?: 0,
                             isActive = detail.product.isActive,
                             selectedCategory = it.categories.find { c -> c.id == detail.product.categoryId },
                             images = detail.images.map { img ->
@@ -290,12 +294,6 @@ class ManageProductViewModel(
             return
         }
 
-        if (productId == -1L && currentState.variants.isEmpty()) {
-            viewModelScope.launch {
-                _effect.send(ManageProductEffect.ShowError(Resources.String.PleaseAddAtLeastOneVariant))
-            }
-            return
-        }
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true) }
             val result = if (productId == -1L) {
@@ -306,6 +304,8 @@ class ManageProductViewModel(
                     description = currentState.description,
                     basePrice = currentState.basePrice,
                     discountedPrice = if (currentState.discountedPrice == 0.0) null else currentState.discountedPrice,
+                    sku = currentState.sku.ifBlank { null },
+                    initialOnHand = if (currentState.variants.isEmpty()) currentState.initialOnHand else null,
                     isActive = currentState.isActive,
                     variants = currentState.variants.map {
                         AdminCreateVariant(
@@ -612,6 +612,8 @@ data class ManageProductState(
     val description: String = "",
     val basePrice: Double = 0.0,
     val discountedPrice: Double = 0.0,
+    val sku: String = "",
+    val initialOnHand: Int = 0,
     val isActive: Boolean = true,
     val selectedCategory: Category? = null,
     val categories: List<Category> = emptyList(),
@@ -631,6 +633,8 @@ sealed interface ManageProductIntent {
     data class UpdateTitle(val title: String) : ManageProductIntent
     data class UpdateDescription(val description: String) : ManageProductIntent
     data class UpdateBasePrice(val price: Double) : ManageProductIntent
+    data class UpdateSku(val sku: String) : ManageProductIntent
+    data class UpdateInitialOnHand(val onHand: Int) : ManageProductIntent
     data class UpdateDiscountedPrice(val price: Double) : ManageProductIntent
     data class UpdateIsActive(val isActive: Boolean) : ManageProductIntent
     data class SelectCategory(val category: Category) : ManageProductIntent

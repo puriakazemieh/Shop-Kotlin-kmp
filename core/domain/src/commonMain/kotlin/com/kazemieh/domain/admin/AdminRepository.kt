@@ -19,6 +19,8 @@ interface AdminRepository {
         description: String?,
         basePrice: Double?,
         discountedPrice: Double? = null,
+        sku: String? = null,
+        initialOnHand: Int? = null,
         isActive: Boolean,
         variants: List<AdminCreateVariant>? = null
     ): AppResult<AdminProduct>
