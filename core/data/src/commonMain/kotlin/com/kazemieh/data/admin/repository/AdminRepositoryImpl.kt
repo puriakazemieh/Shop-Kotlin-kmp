@@ -54,6 +54,7 @@ class AdminRepositoryImpl(
                         it.options.map { option -> AdminVariantOptionRequest(option.type, option.value) },
                         it.sku,
                         it.price,
+                        it.discountedPrice,
                         it.compareAtPrice,
                         it.isActive,
                         it.initialOnHand
@@ -94,6 +95,7 @@ class AdminRepositoryImpl(
         options: List<AdminVariantOption>,
         sku: String,
         price: Double,
+        discountedPrice: Double?,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
@@ -104,6 +106,7 @@ class AdminRepositoryImpl(
                 options.map { AdminVariantOptionRequest(it.type, it.value) },
                 sku,
                 price,
+                discountedPrice,
                 compareAtPrice,
                 isActive,
                 initialOnHand
@@ -114,6 +117,7 @@ class AdminRepositoryImpl(
         variantId: Long,
         sku: String?,
         price: Double?,
+        discountedPrice: Double?,
         compareAtPrice: Double?,
         options: List<AdminVariantOption>?,
         isActive: Boolean?
@@ -123,6 +127,7 @@ class AdminRepositoryImpl(
             AdminUpdateVariantRequest(
                 sku,
                 price,
+                discountedPrice,
                 compareAtPrice,
                 options?.map { AdminVariantOptionRequest(it.type, it.value) },
                 isActive

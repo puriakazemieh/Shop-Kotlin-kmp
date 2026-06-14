@@ -41,8 +41,8 @@ interface AdminRepository {
     suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit>
 
     // Variants
-    suspend fun createVariant(productId: Long, options: List<AdminVariantOption>, sku: String, price: Double, compareAtPrice: Double?, isActive: Boolean, initialOnHand: Int): AppResult<AdminVariant>
-    suspend fun updateVariant(variantId: Long, sku: String?, price: Double?, compareAtPrice: Double?, options: List<AdminVariantOption>?, isActive: Boolean?): AppResult<AdminVariant>
+    suspend fun createVariant(productId: Long, options: List<AdminVariantOption>, sku: String, price: Double, discountedPrice: Double?, compareAtPrice: Double?, isActive: Boolean, initialOnHand: Int): AppResult<AdminVariant>
+    suspend fun updateVariant(variantId: Long, sku: String?, price: Double?, discountedPrice: Double?, compareAtPrice: Double?, options: List<AdminVariantOption>?, isActive: Boolean?): AppResult<AdminVariant>
     suspend fun deleteVariant(variantId: Long): AppResult<Unit>
 
     // Options

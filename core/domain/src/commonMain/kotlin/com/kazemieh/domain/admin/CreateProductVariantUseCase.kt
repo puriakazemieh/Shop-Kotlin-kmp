@@ -13,10 +13,11 @@ class CreateProductVariantUseCase(
         options: List<AdminVariantOption>,
         sku: String,
         price: Double,
+        discountedPrice: Double?,
         compareAtPrice: Double?,
         isActive: Boolean,
         initialOnHand: Int
     ): AppResult<AdminVariant> {
-        return repository.createVariant(productId, options, sku, price, compareAtPrice, isActive, initialOnHand)
+        return repository.createVariant(productId, options, sku, price, discountedPrice, compareAtPrice, isActive, initialOnHand)
     }
 }

@@ -56,6 +56,7 @@ fun ProductVariantResponse.toCatalogDomain() = ProductVariant(
     id = id,
     sku = sku,
     price = price,
+    discountedPrice = discountedPrice,
     compareAtPrice = compareAtPrice,
     available = availableQty,
     options = options

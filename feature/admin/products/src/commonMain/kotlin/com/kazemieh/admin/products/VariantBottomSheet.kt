@@ -29,7 +29,7 @@ fun VariantBottomSheet(
     availableOptions: List<AdminOption>,
     defaultOptionTypes: List<String> = emptyList(),
     onDismiss: () -> Unit,
-    onConfirm: (sku: String, price: Double, options: List<AdminVariantOption>, isActive: Boolean, initialOnHand: Int, shouldDismiss: Boolean) -> Unit,
+    onConfirm: (sku: String, price: Double, discountedPrice: Double?, options: List<AdminVariantOption>, isActive: Boolean, initialOnHand: Int, shouldDismiss: Boolean) -> Unit,
     onApplyToAll: (List<AdminVariantOption>) -> Unit,
     onCreateOptionType: (String) -> Unit,
     onCreateOptionValue: (Long, String) -> Unit,
@@ -62,6 +62,7 @@ fun VariantBottomSheet(
     }
     var sku by remember { mutableStateOf(variant?.sku ?: "") }
     var price by remember { mutableStateOf(variant?.price?.toString() ?: "") }
+    var discountedPrice by remember { mutableStateOf(variant?.discountedPrice?.toString() ?: "") }
     var isActive by remember { mutableStateOf(variant?.isActive ?: true) }
     var initialOnHand by remember { mutableStateOf(variant?.onHand?.toString() ?: "") }
 
@@ -315,6 +316,14 @@ fun VariantBottomSheet(
             )
 
             OutlinedTextField(
+                value = discountedPrice,
+                onValueChange = { discountedPrice = it },
+                label = { Text(stringResource(Resources.String.DiscountedPricePlaceholder)) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+            OutlinedTextField(
                 value = initialOnHand,
                 onValueChange = { initialOnHand = it },
                 label = { Text(stringResource(Resources.String.InitialStockRequired)) },
@@ -343,6 +352,7 @@ fun VariantBottomSheet(
                     !isDuplicateVariant &&
                     sku.isNotBlank() &&
                     price.toDoubleOrNull() != null &&
+                    (discountedPrice.isEmpty() || discountedPrice.toDoubleOrNull() != null) &&
                     initialOnHand.toIntOrNull() != null
 
             Row(
@@ -356,6 +366,7 @@ fun VariantBottomSheet(
                             onConfirm(
                                 sku,
                                 price.toDouble(),
+                                discountedPrice.toDoubleOrNull(),
                                 options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
                                 isActive,
                                 initialOnHand.toInt(),
@@ -364,6 +375,7 @@ fun VariantBottomSheet(
                             // Reset form for next variant while keeping the same property types
                             sku = ""
                             price = ""
+                            discountedPrice = ""
                             initialOnHand = ""
                             options = options.map { it.copy(value = "") }
                         },
@@ -379,6 +391,7 @@ fun VariantBottomSheet(
                         onConfirm(
                             sku,
                             price.toDouble(),
+                            discountedPrice.toDoubleOrNull(),
                             options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
                             isActive,
                             initialOnHand.toInt(),

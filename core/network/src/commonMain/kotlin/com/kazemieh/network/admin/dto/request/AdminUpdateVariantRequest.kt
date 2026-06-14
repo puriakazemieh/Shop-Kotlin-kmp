@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class AdminUpdateVariantRequest(
     val sku: String? = null,
     val price: Double? = null,
+    val discountedPrice: Double? = null,
     val compareAtPrice: Double? = null,
     val options: List<AdminVariantOptionRequest>? = null,
     @SerialName("active")

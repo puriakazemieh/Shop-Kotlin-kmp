@@ -99,12 +99,13 @@ fun ManageProductScreen(
             existingVariants = state.variants,
             defaultOptionTypes = state.defaultOptionTypes,
             onDismiss = { showAddVariantDialog = false },
-            onConfirm = { sku, price, options, isActive, initialOnHand, shouldDismiss ->
+            onConfirm = { sku, price, discountedPrice, options, isActive, initialOnHand, shouldDismiss ->
                 viewModel.handleIntent(
                     ManageProductIntent.AddVariant(
                         options = options,
                         sku = sku,
                         price = price,
+                        discountedPrice = discountedPrice,
                         initialOnHand = initialOnHand
                     )
                 )
@@ -151,12 +152,13 @@ fun ManageProductScreen(
             existingVariants = state.variants,
             defaultOptionTypes = state.defaultOptionTypes,
             onDismiss = { selectedVariantToEdit = null },
-            onConfirm = { sku, price, options, isActive, initialOnHand, shouldDismiss ->
+            onConfirm = { sku, price, discountedPrice, options, isActive, initialOnHand, shouldDismiss ->
                 viewModel.handleIntent(
                     ManageProductIntent.UpdateVariantInfo(
                         id = variant.id,
                         sku = sku,
                         price = price,
+                        discountedPrice = discountedPrice,
                         options = options,
                         isActive = isActive,
                         onHand = initialOnHand
@@ -432,7 +434,7 @@ fun ManageProductScreen(
                             isInvalid = isInvalid,
                             onClick = { selectedVariantToEdit = variant },
                             onFieldUpdate = { sku, price, onHand ->
-                                viewModel.handleIntent(ManageProductIntent.UpdateVariantInline(variant.id, sku, price, onHand))
+                                viewModel.handleIntent(ManageProductIntent.UpdateVariantInline(id = variant.id, sku = sku, price = price, onHand = onHand))
                             }
                         )
                     }
@@ -500,6 +502,15 @@ fun VariantItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f).clickable { onClick() }
                 )
+                val discountedPrice = variant.discountedPrice
+                if (discountedPrice != null) {
+                    Text(
+                        text = stringResource(Resources.String.PriceFormat, discountedPrice),
+                        fontSize = FontSize.SMALL,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 IconButton(onClick = onClick, modifier = Modifier.size(24.dp)) {
                     Icon(painterResource(Resources.Icon.Edit), contentDescription = null, modifier = Modifier.size(16.dp))
                 }

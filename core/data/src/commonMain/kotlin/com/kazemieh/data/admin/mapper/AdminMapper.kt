@@ -40,6 +40,7 @@ fun AdminVariantResponse.toAdminDomain() = AdminVariant(
     id = id,
     sku = sku,
     price = price,
+    discountedPrice = discountedPrice,
     compareAtPrice = compareAtPrice,
     isActive = isActive,
     onHand = inventory?.onHand ?: 0,

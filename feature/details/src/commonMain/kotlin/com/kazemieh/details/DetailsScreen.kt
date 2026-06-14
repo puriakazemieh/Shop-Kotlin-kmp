@@ -222,8 +222,8 @@ fun DetailsScreen(
 
                                 val variant = state.selectedVariant
                                 val basePrice = variant?.price ?: product.basePrice ?: 0.0
-                                val discountedPrice = product.discountedPrice // Product-wide discount
-                                val compareAtPrice = variant?.compareAtPrice // Variant-specific original price
+                                val discountedPrice = variant?.discountedPrice ?: product.discountedPrice
+                                val compareAtPrice = variant?.compareAtPrice
 
                                 Column(horizontalAlignment = Alignment.End) {
                                     if (discountedPrice != null) {

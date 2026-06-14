@@ -39,6 +39,7 @@ data class ProductVariant(
     val id: Long,
     val sku: String,
     val price: Double,
+    val discountedPrice: Double? = null,
     val compareAtPrice: Double?,
     val available: Int,
     val options: Map<String, String>

@@ -8,6 +8,7 @@ data class AdminVariantResponse(
     val id: Long,
     val sku: String,
     val price: Double,
+    val discountedPrice: Double? = null,
     val compareAtPrice: Double? = null,
     @SerialName("active")
     val isActive: Boolean,

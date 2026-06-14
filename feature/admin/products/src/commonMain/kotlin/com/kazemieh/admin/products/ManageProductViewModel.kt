@@ -73,12 +73,14 @@ class ManageProductViewModel(
                 intent.options,
                 intent.sku,
                 intent.price,
+                intent.discountedPrice,
                 intent.initialOnHand
             )
             is ManageProductIntent.UpdateVariantInfo -> updateVariant(
                 intent.id,
                 intent.sku,
                 intent.price,
+                intent.discountedPrice,
                 intent.options,
                 intent.isActive,
                 intent.onHand
@@ -98,7 +100,7 @@ class ManageProductViewModel(
             is ManageProductIntent.CreateOptionTypeAndValue -> createOptionTypeAndValue(intent.typeName, intent.valueName)
             is ManageProductIntent.ApplyPropertyToAll -> applyPropertyToAll(intent.options)
             is ManageProductIntent.BulkAddVariants -> bulkAddVariants(intent.combinations)
-            is ManageProductIntent.UpdateVariantInline -> updateVariantField(intent.id, intent.sku, intent.price, intent.onHand)
+            is ManageProductIntent.UpdateVariantInline -> updateVariantField(variantId = intent.id, sku = intent.sku, price = intent.price, onHand = intent.onHand)
         }
     }
 
@@ -110,6 +112,7 @@ class ManageProductViewModel(
                     id = currentMaxId - (index + 1),
                     sku = "",
                     price = state.basePrice,
+                    discountedPrice = null,
                     compareAtPrice = null,
                     isActive = true,
                     onHand = 0,
@@ -138,13 +141,14 @@ class ManageProductViewModel(
         }
     }
 
-    private fun updateVariantField(variantId: Long, sku: String? = null, price: Double? = null, onHand: Int? = null) {
+    private fun updateVariantField(variantId: Long, sku: String? = null, price: Double? = null, discountedPrice: Double? = null, onHand: Int? = null) {
         _state.update { state ->
             val updated = state.variants.map { 
                 if (it.id == variantId) {
                     it.copy(
                         sku = sku ?: it.sku,
                         price = price ?: it.price,
+                        discountedPrice = discountedPrice ?: it.discountedPrice,
                         onHand = onHand ?: it.onHand
                     )
                 } else it
@@ -327,6 +331,7 @@ class ManageProductViewModel(
                             id = variant.id,
                             sku = variant.sku,
                             price = variant.price,
+                            discountedPrice = variant.discountedPrice,
                             options = variant.options.map { AdminVariantOption(it.key, it.value) },
                             isActive = variant.isActive,
                             onHand = variant.onHand
@@ -407,6 +412,7 @@ class ManageProductViewModel(
         options: List<AdminVariantOption>,
         sku: String,
         price: Double,
+        discountedPrice: Double?,
         initialOnHand: Int
     ) {
         if (productId == -1L) {
@@ -415,6 +421,7 @@ class ManageProductViewModel(
                     id = -(it.variants.size + 1).toLong(),
                     sku = sku,
                     price = price,
+                    discountedPrice = discountedPrice,
                     compareAtPrice = null,
                     isActive = true,
                     onHand = initialOnHand,
@@ -433,6 +440,7 @@ class ManageProductViewModel(
                 options = options,
                 sku = sku,
                 price = price,
+                discountedPrice = discountedPrice,
                 compareAtPrice = null,
                 isActive = true,
                 initialOnHand = initialOnHand
@@ -453,6 +461,7 @@ class ManageProductViewModel(
         id: Long,
         sku: String?,
         price: Double?,
+        discountedPrice: Double?,
         options: List<AdminVariantOption>?,
         isActive: Boolean?,
         onHand: Int? = null
@@ -465,6 +474,7 @@ class ManageProductViewModel(
                         v.copy(
                             sku = sku ?: v.sku,
                             price = price ?: v.price,
+                            discountedPrice = discountedPrice ?: v.discountedPrice,
                             options = options?.associate { it.type to it.value } ?: v.options,
                             isActive = isActive ?: v.isActive,
                             onHand = onHand ?: v.onHand
@@ -492,7 +502,7 @@ class ManageProductViewModel(
             val isMaster = _state.value.variants.firstOrNull()?.id == id
             
             // 1. Update the target variant info
-            val result = updateProductVariantUseCase(id, sku, price, null, options, isActive)
+            val result = updateProductVariantUseCase(id, sku, price, discountedPrice, null, options, isActive)
             
             // 2. Update inventory if provided
             if (onHand != null) {
@@ -631,6 +641,7 @@ sealed interface ManageProductIntent {
         val options: List<AdminVariantOption>,
         val sku: String,
         val price: Double,
+        val discountedPrice: Double?,
         val initialOnHand: Int
     ) : ManageProductIntent
 
@@ -638,6 +649,7 @@ sealed interface ManageProductIntent {
         val id: Long,
         val sku: String?,
         val price: Double?,
+        val discountedPrice: Double?,
         val options: List<AdminVariantOption>?,
         val isActive: Boolean?,
         val onHand: Int? = null
@@ -658,7 +670,7 @@ sealed interface ManageProductIntent {
     data class CreateOptionTypeAndValue(val typeName: String, val valueName: String) : ManageProductIntent
     data class ApplyPropertyToAll(val options: List<AdminVariantOption>) : ManageProductIntent
     data class BulkAddVariants(val combinations: List<List<AdminVariantOption>>) : ManageProductIntent
-    data class UpdateVariantInline(val id: Long, val sku: String? = null, val price: Double? = null, val onHand: Int? = null) : ManageProductIntent
+    data class UpdateVariantInline(val id: Long, val sku: String? = null, val price: Double? = null, val discountedPrice: Double? = null, val onHand: Int? = null) : ManageProductIntent
 
     data class UploadImage(val bytes: ByteArray) : ManageProductIntent {
         override fun equals(other: Any?): Boolean {

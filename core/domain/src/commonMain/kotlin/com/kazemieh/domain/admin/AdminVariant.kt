@@ -4,6 +4,7 @@ data class AdminVariant(
     val id: Long,
     val sku: String,
     val price: Double,
+    val discountedPrice: Double? = null,
     val compareAtPrice: Double?,
     val isActive: Boolean,
     val onHand: Int,
@@ -15,6 +16,7 @@ data class AdminCreateVariant(
     val options: List<AdminVariantOption>,
     val sku: String,
     val price: Double,
+    val discountedPrice: Double? = null,
     val compareAtPrice: Double? = null,
     val isActive: Boolean = true,
     val initialOnHand: Int = 0
