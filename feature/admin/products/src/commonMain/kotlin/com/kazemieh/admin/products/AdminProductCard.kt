@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
@@ -69,12 +70,30 @@ fun AdminProductCard(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(Resources.String.PriceFormat, product.basePrice ?: 0.0),
-                fontSize = FontSize.REGULAR,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            val discountedPrice = product.discountedPrice
+            if (discountedPrice != null) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(Resources.String.PriceFormat, discountedPrice),
+                        fontSize = FontSize.REGULAR,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(Resources.String.PriceFormat, product.basePrice ?: 0.0),
+                        fontSize = FontSize.SMALL,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                }
+            } else {
+                Text(
+                    text = stringResource(Resources.String.PriceFormat, product.basePrice ?: 0.0),
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }
