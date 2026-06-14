@@ -15,5 +15,6 @@ data class ProductSummaryResponse(
     val inStock: Boolean = false,
     val categoryId: Long? = null,
     val categoryName: String? = null,
-    val options: Map<String, List<String>> = emptyMap()
+    val options: Map<String, List<String>> = emptyMap(),
+    val isFavorite: Boolean = false
 )

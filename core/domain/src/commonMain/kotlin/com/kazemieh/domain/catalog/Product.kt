@@ -12,7 +12,8 @@ data class ProductSummary(
     val inStock: Boolean,
     val categoryId: Long?,
     val categoryName: String?,
-    val options: Map<String, List<String>>
+    val options: Map<String, List<String>>,
+    val isFavorite: Boolean = false
 )
 
 data class ProductDetail(
@@ -26,7 +27,8 @@ data class ProductDetail(
     val variants: List<ProductVariant>,
     val createdAt: String,
     val basePrice: Double? = null,
-    val discountedPrice: Double? = null
+    val discountedPrice: Double? = null,
+    val isFavorite: Boolean = false
 )
 
 data class ProductImage(

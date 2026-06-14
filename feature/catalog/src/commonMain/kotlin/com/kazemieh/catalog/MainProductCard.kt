@@ -20,6 +20,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,7 +52,8 @@ fun MainProductCard(
     modifier: Modifier = Modifier,
     product: ProductSummary,
     isLarge: Boolean = false,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
+    onFavoriteClick: () -> Unit = {}
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val animatedScale = infiniteTransition.animateFloat(
@@ -88,6 +94,18 @@ fun MainProductCard(
             contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
             contentScale = ContentScale.Crop
         )
+
+        IconButton(
+            onClick = onFavoriteClick,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+        ) {
+            Icon(
+                imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = null,
+                tint = if (product.isFavorite) Color.Red else Color.White
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

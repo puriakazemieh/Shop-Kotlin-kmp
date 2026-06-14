@@ -13,6 +13,7 @@ sealed interface ProductsOverviewIntent {
     data object LoadProducts : ProductsOverviewIntent
     data object Refresh : ProductsOverviewIntent
     data class OnProductClick(val slug: String) : ProductsOverviewIntent
+    data class OnFavoriteClick(val product: ProductSummary) : ProductsOverviewIntent
 }
 
 sealed interface ProductsOverviewEffect {

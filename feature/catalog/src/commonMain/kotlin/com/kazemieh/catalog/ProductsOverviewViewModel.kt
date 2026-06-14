@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetProductsUseCase
+import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProductsOverviewViewModel(
-    private val getProductsUseCase: GetProductsUseCase
+    private val getProductsUseCase: GetProductsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductsOverviewState())
@@ -34,6 +37,30 @@ class ProductsOverviewViewModel(
                     _effect.send(ProductsOverviewEffect.NavigateToDetails(intent.slug))
                 }
             }
+            is ProductsOverviewIntent.OnFavoriteClick -> toggleFavorite(intent.product)
+        }
+    }
+
+    private fun toggleFavorite(product: ProductSummary) {
+        viewModelScope.launch {
+            val isAdding = !product.isFavorite
+            updateProductFavoriteState(product.id, isAdding)
+
+            val result = toggleFavoriteUseCase(product.id, isAdding)
+
+            if (result is AppResult.Error) {
+                updateProductFavoriteState(product.id, !isAdding)
+            }
+        }
+    }
+
+    private fun updateProductFavoriteState(productId: Long, isFavorite: Boolean) {
+        _state.update { currentState ->
+            currentState.copy(
+                products = currentState.products.map {
+                    if (it.id == productId) it.copy(isFavorite = isFavorite) else it
+                }
+            )
         }
     }
 

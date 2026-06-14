@@ -142,9 +142,12 @@ fun ProductsOverviewScreen(
                                     isLarge = isLarge,
                                     onClick = {
                                         viewModel.handleIntent(
-                                            ProductsOverviewIntent.OnProductClick(
-                                                it
-                                            )
+                                            ProductsOverviewIntent.OnProductClick(it)
+                                        )
+                                    },
+                                    onFavoriteClick = {
+                                        viewModel.handleIntent(
+                                            ProductsOverviewIntent.OnFavoriteClick(product)
                                         )
                                     }
                                 )
@@ -177,9 +180,12 @@ fun ProductsOverviewScreen(
                                     product = product,
                                     onClick = {
                                         viewModel.handleIntent(
-                                            ProductsOverviewIntent.OnProductClick(
-                                                it
-                                            )
+                                            ProductsOverviewIntent.OnProductClick(it)
+                                        )
+                                    },
+                                    onFavoriteClick = {
+                                        viewModel.handleIntent(
+                                            ProductsOverviewIntent.OnFavoriteClick(product)
                                         )
                                     }
                                 )

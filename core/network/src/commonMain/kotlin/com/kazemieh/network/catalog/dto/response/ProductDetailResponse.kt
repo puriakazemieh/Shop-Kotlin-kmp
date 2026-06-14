@@ -15,4 +15,5 @@ data class ProductDetailResponse(
     val createdAt: String = "",
     val basePrice: Double? = null,
     val discountedPrice: Double? = null,
+    val isFavorite: Boolean = false
 )

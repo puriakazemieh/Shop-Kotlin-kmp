@@ -11,6 +11,8 @@ import com.kazemieh.network.cart.CartApiImpl
 import com.kazemieh.network.catalog.CatalogApi
 import com.kazemieh.network.catalog.CatalogApiImpl
 import com.kazemieh.network.common.HttpClientFactory
+import com.kazemieh.network.favorite.FavoriteApi
+import com.kazemieh.network.favorite.FavoriteApiImpl
 import com.kazemieh.network.order.OrderApi
 import com.kazemieh.network.order.OrderApiImpl
 import com.kazemieh.network.payment.PaymentApi
@@ -40,6 +42,10 @@ val networkModule = module {
 
     single<CatalogApi> {
         CatalogApiImpl(get())
+    }
+
+    single<FavoriteApi> {
+        FavoriteApiImpl(get())
     }
 
     single<CartApi> {

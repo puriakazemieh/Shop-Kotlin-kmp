@@ -6,6 +6,7 @@ import com.kazemieh.domain.admin.AdminRepository
 import com.kazemieh.domain.auth.AuthRepository
 import com.kazemieh.domain.cart.CartRepository
 import com.kazemieh.domain.catalog.CatalogRepository
+import com.kazemieh.domain.favorite.FavoriteRepository
 import com.kazemieh.domain.order.OrderRepository
 import com.kazemieh.domain.payment.PaymentRepository
 import com.kazemieh.domain.address.AddressRepository
@@ -24,6 +25,9 @@ import com.kazemieh.data.cart.source.CartDataSourceImpl
 import com.kazemieh.data.catalog.repository.CatalogRepositoryImpl
 import com.kazemieh.data.catalog.source.CatalogDataSource
 import com.kazemieh.data.catalog.source.CatalogDataSourceImpl
+import com.kazemieh.data.favorite.repository.FavoriteRepositoryImpl
+import com.kazemieh.data.favorite.source.FavoriteDataSource
+import com.kazemieh.data.favorite.source.FavoriteDataSourceImpl
 import com.kazemieh.data.local.ProfileLocalDataSource
 import com.kazemieh.data.local.TokenManager
 import com.kazemieh.data.order.repository.OrderRepositoryImpl
@@ -91,6 +95,14 @@ val dataModule = module {
 
     single<CatalogDataSource> {
         CatalogDataSourceImpl(get())
+    }
+
+    single<FavoriteRepository> {
+        FavoriteRepositoryImpl(get())
+    }
+
+    single<FavoriteDataSource> {
+        FavoriteDataSourceImpl(get())
     }
 
     single<CartRepository> {

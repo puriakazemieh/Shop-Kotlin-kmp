@@ -31,7 +31,8 @@ fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     inStock = inStock,
     categoryId = categoryId,
     categoryName = categoryName,
-    options = options
+    options = options,
+    isFavorite = isFavorite
 )
 
 fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
@@ -43,7 +44,8 @@ fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
     categoryName = categoryName,
     images = images.map { it.toCatalogDomain() },
     variants = variants.map { it.toCatalogDomain() },
-    createdAt = createdAt
+    createdAt = createdAt,
+    isFavorite = isFavorite
 )
 
 fun ProductImageResponse.toCatalogDomain() = ProductImage(
