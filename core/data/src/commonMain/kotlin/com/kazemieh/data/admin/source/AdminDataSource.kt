@@ -26,6 +26,9 @@ interface AdminDataSource {
     suspend fun reorderImages(productId: Long, request: AdminReorderImagesRequest): AppResult<List<AdminProductImageResponse>>
     suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit>
 
+    suspend fun addVideo(productId: Long, bytes: ByteArray, sortOrder: Int? = null): AppResult<AdminProductVideoResponse>
+    suspend fun deleteVideo(productId: Long, videoId: Long): AppResult<Unit>
+
     suspend fun createVariant(productId: Long, request: AdminCreateVariantRequest): AppResult<AdminVariantResponse>
     suspend fun updateVariant(variantId: Long, request: AdminUpdateVariantRequest): AppResult<AdminVariantResponse>
     suspend fun deleteVariant(variantId: Long): AppResult<Unit>

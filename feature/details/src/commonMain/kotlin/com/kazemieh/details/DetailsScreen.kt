@@ -61,11 +61,18 @@ import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.details.component.VariantChip
+import com.kazemieh.domain.catalog.ProductImage
+import com.kazemieh.domain.catalog.ProductVideo
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+
+sealed interface MediaItem {
+    data class Image(val image: ProductImage) : MediaItem
+    data class Video(val video: ProductVideo) : MediaItem
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -156,7 +163,17 @@ fun DetailsScreen(
                                 .padding(horizontal = 24.dp)
                                 .padding(top = 12.dp)
                         ) {
-                            val pagerState = rememberPagerState(pageCount = { product.images.size.coerceAtLeast(1) })
+                            val mediaItems = remember(product) {
+                                val images = product.images.map { MediaItem.Image(it) }
+                                val videos = product.videos.map { MediaItem.Video(it) }
+                                (images + videos).sortedBy {
+                                    when (it) {
+                                        is MediaItem.Image -> it.image.sortOrder
+                                        is MediaItem.Video -> it.video.sortOrder
+                                    }
+                                }
+                            }
+                            val pagerState = rememberPagerState(pageCount = { mediaItems.size.coerceAtLeast(1) })
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -172,28 +189,44 @@ fun DetailsScreen(
                                     state = pagerState,
                                     modifier = Modifier.fillMaxSize()
                                 ) { page ->
-                                    val imageUrl = product.images.getOrNull(page)?.url ?: ""
-                                    val painter = rememberImagePainter(imageUrl)
-                                    Image(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .clickable {
-                                                if (imageUrl.isNotEmpty()) fullscreenImageUrl = imageUrl
-                                            },
-                                        painter = painter,
-                                        contentDescription = stringResource(Resources.String.ProductImageDesc),
-                                        contentScale = ContentScale.Crop
-                                    )
+                                    when (val item = mediaItems.getOrNull(page)) {
+                                        is MediaItem.Image -> {
+                                            val imageUrl = item.image.url
+                                            val painter = rememberImagePainter(imageUrl)
+                                            Image(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clickable {
+                                                        if (imageUrl.isNotEmpty()) fullscreenImageUrl = imageUrl
+                                                    },
+                                                painter = painter,
+                                                contentDescription = stringResource(Resources.String.ProductImageDesc),
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        }
+
+                                        is MediaItem.Video -> {
+                                            VideoPlayer(
+                                                url = item.video.url,
+                                                modifier = Modifier.fillMaxSize()
+                                            )
+                                        }
+
+                                        null -> {
+                                            // Fallback if no images/videos
+                                            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
+                                        }
+                                    }
                                 }
 
-                                if (product.images.size > 1) {
+                                if (mediaItems.size > 1) {
                                     Row(
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
                                             .padding(bottom = 12.dp),
                                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                                     ) {
-                                        repeat(product.images.size) { iteration ->
+                                        repeat(mediaItems.size) { iteration ->
                                             val color = if (pagerState.currentPage == iteration)
                                                 MaterialTheme.colorScheme.primary
                                             else

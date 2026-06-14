@@ -42,6 +42,10 @@ interface AdminRepository {
     suspend fun reorderImages(productId: Long, items: List<Pair<Long, Int>>): AppResult<List<AdminProductImage>>
     suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit>
 
+    // Videos
+    suspend fun addVideo(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductVideo>
+    suspend fun deleteVideo(productId: Long, videoId: Long): AppResult<Unit>
+
     // Variants
     suspend fun createVariant(productId: Long, options: List<AdminVariantOption>, sku: String, price: Double, discountedPrice: Double?, compareAtPrice: Double?, isActive: Boolean, initialOnHand: Int): AppResult<AdminVariant>
     suspend fun updateVariant(variantId: Long, sku: String?, price: Double?, discountedPrice: Double?, compareAtPrice: Double?, options: List<AdminVariantOption>?, isActive: Boolean?): AppResult<AdminVariant>

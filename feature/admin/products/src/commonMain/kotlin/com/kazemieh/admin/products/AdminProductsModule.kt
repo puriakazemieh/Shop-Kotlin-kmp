@@ -11,6 +11,8 @@ val adminProductsModule = module {
     factory { CreateAdminProductUseCase(get()) }
     factory { UpdateAdminProductUseCase(get()) }
     factory { DeleteAdminProductUseCase(get()) }
+    factory { AddProductVideoUseCase(get()) }
+    factory { DeleteProductVideoUseCase(get()) }
     factory { CreateProductVariantUseCase(get()) }
     factory { UpdateProductVariantUseCase(get()) }
     factory { DeleteProductVariantUseCase(get()) }
@@ -56,6 +58,8 @@ val adminProductsModule = module {
             deleteAdminCategoryUseCase = get(),
             addProductImageUseCase = get(),
             deleteProductImageUseCase = get(),
+            addProductVideoUseCase = get(),
+            deleteProductVideoUseCase = get(),
             getCategoriesUseCase = get(),
             getAdminOptionsUseCase = get(),
             createOptionTypeUseCase = get(),

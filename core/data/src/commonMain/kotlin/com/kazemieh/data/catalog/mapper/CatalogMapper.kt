@@ -43,12 +43,19 @@ fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
     categoryId = categoryId,
     categoryName = categoryName,
     images = images.map { it.toCatalogDomain() },
+    videos = videos.map { it.toCatalogDomain() },
     variants = variants.map { it.toCatalogDomain() },
     createdAt = createdAt,
     isFavorite = isFavorite
 )
 
 fun ProductImageResponse.toCatalogDomain() = ProductImage(
+    id = id ?: 0L,
+    url =  if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
+    sortOrder = sortOrder
+)
+
+fun ProductVideoResponse.toCatalogDomain() = ProductVideo(
     id = id ?: 0L,
     url =  if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
     sortOrder = sortOrder

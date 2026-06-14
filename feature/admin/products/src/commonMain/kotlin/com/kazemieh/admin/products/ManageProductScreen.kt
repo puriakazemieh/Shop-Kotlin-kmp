@@ -44,10 +44,10 @@ fun ManageProductScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<ManageProductViewModel>()
     val state by viewModel.state.collectAsState()
-    val photoPicker = remember { PhotoPicker() }
+    val mediaPicker = remember { PhotoPicker() }
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    photoPicker.InitializePhotoPicker(
+    mediaPicker.InitializePhotoPicker(
         onImageSelect = { bytes ->
             viewModel.handleIntent(ManageProductIntent.UploadImage(bytes))
         }
@@ -378,8 +378,8 @@ fun ManageProductScreen(
                         )
                     }
 
-                    // Images Section
-                    Text(stringResource(Resources.String.Details), fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
+                    // Images & Videos Section
+                    Text("Images & Videos", fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -410,6 +410,37 @@ fun ManageProductScreen(
                                 }
                             }
                         }
+                        items(state.videos) { video ->
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize().background(Color.Black),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painterResource(Resources.Icon.RightArrow),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        viewModel.handleIntent(
+                                            ManageProductIntent.DeleteVideo(
+                                                video.id
+                                            )
+                                        )
+                                    },
+                                    modifier = Modifier.align(Alignment.TopEnd).size(24.dp)
+                                ) {
+                                    Icon(
+                                        painterResource(Resources.Icon.Close),
+                                        contentDescription = null,
+                                        tint = Color.Red
+                                    )
+                                }
+                            }
+                        }
                         items(state.selectedImageBytes) { bytes ->
                             Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
                                 AsyncImage(
@@ -418,6 +449,21 @@ fun ManageProductScreen(
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Crop
                                 )
+                            }
+                        }
+                        items(state.selectedVideoBytes) { bytes ->
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize().background(Color.Gray),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painterResource(Resources.Icon.RightArrow),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
                             }
                         }
                         item {
@@ -430,16 +476,19 @@ fun ManageProductScreen(
                                         MaterialTheme.colorScheme.outline,
                                         RoundedCornerShape(8.dp)
                                     )
-                                    .clickable { photoPicker.open() },
+                                    .clickable { mediaPicker.open() },
                                 contentAlignment = Alignment.Center
                             ) {
                                 if (state.isSaving) {
                                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                                 } else {
-                                    Icon(
-                                        painterResource(Resources.Icon.Plus),
-                                        contentDescription = null
-                                    )
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Icon(
+                                            painterResource(Resources.Icon.Plus),
+                                            contentDescription = null
+                                        )
+                                        Text("Media", fontSize = FontSize.EXTRA_SMALL)
+                                    }
                                 }
                             }
                         }

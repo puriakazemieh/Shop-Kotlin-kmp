@@ -33,6 +33,8 @@ class ManageProductViewModel(
     private val deleteAdminCategoryUseCase: DeleteAdminCategoryUseCase,
     private val addProductImageUseCase: AddProductImageUseCase,
     private val deleteProductImageUseCase: DeleteProductImageUseCase,
+    private val addProductVideoUseCase: AddProductVideoUseCase,
+    private val deleteProductVideoUseCase: DeleteProductVideoUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getAdminOptionsUseCase: GetAdminOptionsUseCase,
     private val createOptionTypeUseCase: CreateOptionTypeUseCase,
@@ -71,6 +73,7 @@ class ManageProductViewModel(
             is ManageProductIntent.SaveProduct -> saveProduct()
             is ManageProductIntent.DeleteProduct -> deleteProduct()
             is ManageProductIntent.DeleteImage -> deleteImage(intent.imageId)
+            is ManageProductIntent.DeleteVideo -> deleteVideo(intent.videoId)
             is ManageProductIntent.AddVariant -> addVariant(
                 intent.options,
                 intent.sku,
@@ -97,6 +100,7 @@ class ManageProductViewModel(
 
             is ManageProductIntent.DeleteCategory -> deleteCategory(intent.id)
             is ManageProductIntent.UploadImage -> uploadImage(intent.bytes)
+            is ManageProductIntent.UploadVideo -> uploadVideo(intent.bytes)
             is ManageProductIntent.CreateOptionType -> createOptionType(intent.name)
             is ManageProductIntent.CreateOptionValue -> createOptionValue(intent.optionTypeId, intent.value)
             is ManageProductIntent.CreateOptionTypeAndValue -> createOptionTypeAndValue(intent.typeName, intent.valueName)
@@ -259,9 +263,17 @@ class ManageProductViewModel(
                             isActive = detail.product.isActive,
                             selectedCategory = it.categories.find { c -> c.id == detail.product.categoryId },
                             images = detail.images.map { img ->
-                                ProductImageUiModel(
+                                ProductMediaUiModel(
                                     img.id,
-                                    img.url.ld("ProductImageUiModel")
+                                    img.url.ld("ProductImageUiModel"),
+                                    isVideo = false
+                                )
+                            },
+                            videos = detail.videos.map { vid ->
+                                ProductMediaUiModel(
+                                    vid.id,
+                                    vid.url.ld("ProductVideoUiModel"),
+                                    isVideo = true
                                 )
                             },
                             variants = syncedVariants,
@@ -358,6 +370,9 @@ class ManageProductViewModel(
                         currentState.selectedImageBytes.forEach { bytes ->
                             addProductImageUseCase(newId, bytes, null)
                         }
+                        currentState.selectedVideoBytes.forEach { bytes ->
+                            addProductVideoUseCase(newId, bytes, null)
+                        }
                     }
                     _effect.send(ManageProductEffect.ShowSuccess(Resources.String.ProductSavedSuccessfully))
                     _effect.send(ManageProductEffect.NavigateBack)
@@ -398,6 +413,24 @@ class ManageProductViewModel(
                 when (val result = deleteProductImageUseCase(productId, imageId)) {
                     is AppResult.Success -> {
                         _effect.send(ManageProductEffect.ShowSuccess(Resources.String.ImageDeleted))
+                        loadProductDetail()
+                    }
+
+                    is AppResult.Error -> _effect.send(ManageProductEffect.ShowError(result.message))
+                    is AppResult.Loading -> {}
+                }
+            }
+        }
+    }
+
+    private fun deleteVideo(videoId: Long) {
+        viewModelScope.launch {
+            if (productId == -1L) {
+                _state.update { it.copy(videos = it.videos.filter { vid -> vid.id != videoId }) }
+            } else {
+                when (val result = deleteProductVideoUseCase(productId, videoId)) {
+                    is AppResult.Success -> {
+                        _effect.send(ManageProductEffect.ShowSuccess("Video deleted successfully"))
                         loadProductDetail()
                     }
 
@@ -602,6 +635,27 @@ class ManageProductViewModel(
             _state.update { it.copy(isSaving = false) }
         }
     }
+
+    private fun uploadVideo(bytes: ByteArray) {
+        viewModelScope.launch {
+            _state.update { it.copy(isSaving = true) }
+            if (productId != -1L) {
+                when (val result = addProductVideoUseCase(productId, bytes, null)) {
+                    is AppResult.Success<*> -> {
+                        _effect.send(ManageProductEffect.ShowSuccess("Video uploaded successfully"))
+                        loadProductDetail()
+                    }
+
+                    is AppResult.Error -> _effect.send(ManageProductEffect.ShowError(result.message))
+                    is AppResult.Loading -> {}
+                }
+            } else {
+                _state.update { it.copy(selectedVideoBytes = it.selectedVideoBytes + bytes) }
+                _effect.send(ManageProductEffect.ShowSuccess("Video selected"))
+            }
+            _state.update { it.copy(isSaving = false) }
+        }
+    }
 }
 
 data class ManageProductState(
@@ -618,15 +672,18 @@ data class ManageProductState(
     val selectedCategory: Category? = null,
     val categories: List<Category> = emptyList(),
     val availableOptions: List<AdminOption> = emptyList(),
-    val images: List<ProductImageUiModel> = emptyList(),
+    val images: List<ProductMediaUiModel> = emptyList(),
+    val videos: List<ProductMediaUiModel> = emptyList(),
     val selectedImageBytes: List<ByteArray> = emptyList(),
+    val selectedVideoBytes: List<ByteArray> = emptyList(),
     val variants: List<AdminVariant> = emptyList(),
     val defaultOptionTypes: List<String> = emptyList()
 )
 
-data class ProductImageUiModel(
+data class ProductMediaUiModel(
     val id: Long,
-    val url: String
+    val url: String,
+    val isVideo: Boolean
 )
 
 sealed interface ManageProductIntent {
@@ -641,6 +698,7 @@ sealed interface ManageProductIntent {
     data object SaveProduct : ManageProductIntent
     data object DeleteProduct : ManageProductIntent
     data class DeleteImage(val imageId: Long) : ManageProductIntent
+    data class DeleteVideo(val videoId: Long) : ManageProductIntent
     data class AddVariant(
         val options: List<AdminVariantOption>,
         val sku: String,
@@ -681,6 +739,19 @@ sealed interface ManageProductIntent {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
             other as UploadImage
+            return bytes.contentEquals(other.bytes)
+        }
+
+        override fun hashCode(): Int {
+            return bytes.contentHashCode()
+        }
+    }
+
+    data class UploadVideo(val bytes: ByteArray) : ManageProductIntent {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+            other as UploadVideo
             return bytes.contentEquals(other.bytes)
         }
 

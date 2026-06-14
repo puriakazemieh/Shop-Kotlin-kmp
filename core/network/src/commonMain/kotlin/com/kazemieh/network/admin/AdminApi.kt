@@ -27,6 +27,10 @@ interface AdminApi {
     suspend fun reorderImages(productId: Long, request: AdminReorderImagesRequest): List<AdminProductImageResponse>
     suspend fun deleteImage(productId: Long, imageId: Long)
 
+    // ---------- Videos ----------
+    suspend fun addVideo(productId: Long, bytes: ByteArray, sortOrder: Int? = null): AdminProductVideoResponse
+    suspend fun deleteVideo(productId: Long, videoId: Long)
+
     // ---------- Variants ----------
     suspend fun createVariant(productId: Long, request: AdminCreateVariantRequest): AdminVariantResponse
     suspend fun updateVariant(variantId: Long, request: AdminUpdateVariantRequest): AdminVariantResponse

@@ -24,6 +24,7 @@ data class ProductDetail(
     val categoryId: Long?,
     val categoryName: String?,
     val images: List<ProductImage>,
+    val videos: List<ProductVideo> = emptyList(),
     val variants: List<ProductVariant>,
     val createdAt: String,
     val basePrice: Double? = null,
@@ -32,6 +33,12 @@ data class ProductDetail(
 )
 
 data class ProductImage(
+    val id: Long,
+    val url: String,
+    val sortOrder: Int
+)
+
+data class ProductVideo(
     val id: Long,
     val url: String,
     val sortOrder: Int

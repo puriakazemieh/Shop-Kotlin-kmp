@@ -94,6 +94,12 @@ class AdminRepositoryImpl(
     override suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit> =
         dataSource.deleteImage(productId, imageId)
 
+    override suspend fun addVideo(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductVideo> =
+        dataSource.addVideo(productId, bytes, sortOrder).map { it.toAdminDomain() }
+
+    override suspend fun deleteVideo(productId: Long, videoId: Long): AppResult<Unit> =
+        dataSource.deleteVideo(productId, videoId)
+
     override suspend fun createVariant(
         productId: Long,
         options: List<AdminVariantOption>,

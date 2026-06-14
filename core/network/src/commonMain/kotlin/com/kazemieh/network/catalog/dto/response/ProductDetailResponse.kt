@@ -11,6 +11,7 @@ data class ProductDetailResponse(
     val categoryId: Long? = null,
     val categoryName: String? = null,
     val images: List<ProductImageResponse> = emptyList(),
+    val videos: List<ProductVideoResponse> = emptyList(),
     val variants: List<ProductVariantResponse> = emptyList(),
     val createdAt: String = "",
     val basePrice: Double? = null,

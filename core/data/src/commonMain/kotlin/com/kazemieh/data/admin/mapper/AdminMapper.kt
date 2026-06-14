@@ -38,6 +38,12 @@ fun AdminProductImageResponse.toAdminDomain() = AdminProductImage(
     sortOrder = sortOrder
 )
 
+fun AdminProductVideoResponse.toAdminDomain() = AdminProductVideo(
+    id = id,
+    url = if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
+    sortOrder = sortOrder
+)
+
 fun AdminVariantResponse.toAdminDomain() = AdminVariant(
     id = id,
     sku = sku,
@@ -60,6 +66,7 @@ fun AdminInventoryResponse.toAdminDomain() = AdminInventory(
 fun AdminProductDetailResponse.toAdminDomain() = AdminProductDetail(
     product = product.toAdminDomain(),
     images = images.map { it.toAdminDomain() },
+    videos = videos.map { it.toAdminDomain() },
     variants = variants.map { it.toAdminDomain() }
 )
 

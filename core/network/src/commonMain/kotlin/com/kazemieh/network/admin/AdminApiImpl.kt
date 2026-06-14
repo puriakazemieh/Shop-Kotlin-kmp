@@ -108,6 +108,30 @@ class AdminApiImpl(
         client.delete("api/admin/products/$productId/images/$imageId")
     }
 
+    override suspend fun addVideo(
+        productId: Long,
+        bytes: ByteArray,
+        sortOrder: Int?
+    ): AdminProductVideoResponse = safeApiCallRaw {
+        client.post("api/admin/products/$productId/videos") {
+            setBody(MultiPartFormDataContent(
+                formData {
+                    append("file", bytes, Headers.build {
+                        append(HttpHeaders.ContentType, "video/mp4")
+                        append(HttpHeaders.ContentDisposition, "filename=\"video.mp4\"")
+                    })
+                    if (sortOrder != null) {
+                        append("sortOrder", sortOrder.toString())
+                    }
+                }
+            ))
+        }
+    }
+
+    override suspend fun deleteVideo(productId: Long, videoId: Long) = safeApiCallRaw<Unit> {
+        client.delete("api/admin/products/$productId/videos/$videoId")
+    }
+
     override suspend fun createVariant(
         productId: Long,
         request: AdminCreateVariantRequest

@@ -63,6 +63,14 @@ class AdminDataSourceImpl(
         api.deleteImage(productId, imageId)
     }
 
+    override suspend fun addVideo(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductVideoResponse> = safeApiCall {
+        api.addVideo(productId, bytes, sortOrder)
+    }
+
+    override suspend fun deleteVideo(productId: Long, videoId: Long): AppResult<Unit> = safeApiCall {
+        api.deleteVideo(productId, videoId)
+    }
+
     override suspend fun createVariant(productId: Long, request: AdminCreateVariantRequest): AppResult<AdminVariantResponse> = safeApiCall {
         api.createVariant(productId, request)
     }
