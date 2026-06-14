@@ -37,3 +37,14 @@ data class CreateQuestionRequestDto(
     val content: String,
     val parentId: Long? = null
 )
+
+@Serializable
+data class UpdateReviewRequest(
+    val rating: Int?,
+    val comment: String
+)
+
+@Serializable
+data class UpdateQuestionRequest(
+    val content: String
+)

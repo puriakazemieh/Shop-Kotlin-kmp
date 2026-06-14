@@ -19,7 +19,7 @@ class InteractionApiImpl(
         }
     }
 
-    override suspend fun updateReview(reviewId: Long, request: CreateReviewRequestDto): ReviewResponse = safeApiCallRaw {
+    override suspend fun updateReview(reviewId: Long, request: UpdateReviewRequest): ReviewResponse = safeApiCallRaw {
         client.put("api/reviews/$reviewId") {
             setBody(request)
         }
@@ -39,7 +39,7 @@ class InteractionApiImpl(
         }
     }
 
-    override suspend fun updateQuestion(questionId: Long, request: CreateQuestionRequestDto): QuestionResponse = safeApiCallRaw {
+    override suspend fun updateQuestion(questionId: Long, request: UpdateQuestionRequest): QuestionResponse = safeApiCallRaw {
         client.put("api/questions/$questionId") {
             setBody(request)
         }

@@ -8,6 +8,8 @@ import com.kazemieh.network.catalog.dto.CreateQuestionRequestDto
 import com.kazemieh.network.catalog.dto.CreateReviewRequestDto
 import com.kazemieh.network.catalog.dto.QuestionResponse
 import com.kazemieh.network.catalog.dto.ReviewResponse
+import com.kazemieh.network.catalog.dto.UpdateQuestionRequest
+import com.kazemieh.network.catalog.dto.UpdateReviewRequest
 
 class InteractionRepositoryImpl(
     private val api: InteractionApi
@@ -31,8 +33,7 @@ class InteractionRepositoryImpl(
     override suspend fun updateReview(reviewId: Long, rating: Int?, comment: String): AppResult<Review> = safeApiCall {
         api.updateReview(
             reviewId,
-            CreateReviewRequestDto(
-                productId = 0, // Not needed for update usually, but depends on backend
+            UpdateReviewRequest(
                 rating = rating,
                 comment = comment
             )
@@ -60,8 +61,7 @@ class InteractionRepositoryImpl(
     override suspend fun updateQuestion(questionId: Long, content: String): AppResult<Question> = safeApiCall {
         api.updateQuestion(
             questionId,
-            CreateQuestionRequestDto(
-                productId = 0,
+            UpdateQuestionRequest(
                 content = content
             )
         ).toDomain()
