@@ -9,6 +9,7 @@ data class AdminCreateProductRequest(
     val slug: String,
     val description: String?,
     val basePrice: Double?,
+    val discountedPrice: Double? = null,
     val isActive: Boolean,
     val variants: List<AdminCreateVariantRequest>? = null
 )

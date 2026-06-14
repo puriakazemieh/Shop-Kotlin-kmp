@@ -10,6 +10,8 @@ data class ProductSummaryResponse(
     val thumbnailUrl: String? = null,
     val minPrice: Double? = null,
     val maxPrice: Double? = null,
+    val minDiscountedPrice: Double? = null,
+    val maxDiscountedPrice: Double? = null,
     val inStock: Boolean = false,
     val categoryId: Long? = null,
     val categoryName: String? = null,

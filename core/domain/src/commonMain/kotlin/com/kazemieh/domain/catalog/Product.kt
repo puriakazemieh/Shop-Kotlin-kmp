@@ -7,6 +7,8 @@ data class ProductSummary(
     val thumbnailUrl: String?,
     val minPrice: Double?,
     val maxPrice: Double?,
+    val minDiscountedPrice: Double? = null,
+    val maxDiscountedPrice: Double? = null,
     val inStock: Boolean,
     val categoryId: Long?,
     val categoryName: String?,

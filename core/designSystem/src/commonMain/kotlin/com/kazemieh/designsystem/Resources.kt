@@ -178,6 +178,7 @@ object Resources {
         val EditProduct = CommonRes.string.edit_product
         val ProductTitlePlaceholder = CommonRes.string.product_title_placeholder
         val BasePricePlaceholder = CommonRes.string.base_price_placeholder
+        val DiscountedPricePlaceholder = CommonRes.string.discounted_price_placeholder
         val AddProduct = CommonRes.string.add_product
         val UpdateProduct = CommonRes.string.update_product
         val OptionType = CommonRes.string.option_type

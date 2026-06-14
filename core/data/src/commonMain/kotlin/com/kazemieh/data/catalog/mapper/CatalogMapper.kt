@@ -26,6 +26,8 @@ fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     thumbnailUrl = if (thumbnailUrl?.startsWith("http") == true) thumbnailUrl else "${PlatformConfig.baseUrl.removeSuffix("/")}$thumbnailUrl",
     minPrice = minPrice,
     maxPrice = maxPrice,
+    minDiscountedPrice = minDiscountedPrice,
+    maxDiscountedPrice = maxDiscountedPrice,
     inStock = inStock,
     categoryId = categoryId,
     categoryName = categoryName,

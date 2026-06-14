@@ -72,6 +72,7 @@
     <string name="edit_product">ویرایش محصول</string>
     <string name="product_title_placeholder">عنوان محصول</string>
     <string name="base_price_placeholder">قیمت پایه</string>
+    <string name="discounted_price_placeholder">قیمت تخفیف‌خورده (اختیاری)</string>
     <string name="add_product">افزودن محصول</string>
     <string name="update_product">بروزرسانی محصول</string>
     <string name="status_updated_successfully">وضعیت با موفقیت بروز شد</string>

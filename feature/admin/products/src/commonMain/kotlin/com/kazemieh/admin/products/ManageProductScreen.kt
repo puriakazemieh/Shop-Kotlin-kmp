@@ -320,19 +320,34 @@ fun ManageProductScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR)
-                            Switch(
-                                checked = state.isActive,
-                                onCheckedChange = {
-                                    viewModel.handleIntent(
-                                        ManageProductIntent.UpdateIsActive(
-                                            it
-                                        )
+                        CustomTextField(
+                            modifier = Modifier.weight(1f),
+                            value = if (state.discountedPrice == 0.0) "" else state.discountedPrice.toString(),
+                            onValueChange = {
+                                val price = it.toDoubleOrNull() ?: 0.0
+                                viewModel.handleIntent(ManageProductIntent.UpdateDiscountedPrice(price))
+                            },
+                            placeholder = stringResource(Resources.String.DiscountedPricePlaceholder),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR)
+                        Switch(
+                            checked = state.isActive,
+                            onCheckedChange = {
+                                viewModel.handleIntent(
+                                    ManageProductIntent.UpdateIsActive(
+                                        it
                                     )
-                                }
-                            )
-                        }
+                                )
+                            }
+                        )
                     }
 
                     // Images Section

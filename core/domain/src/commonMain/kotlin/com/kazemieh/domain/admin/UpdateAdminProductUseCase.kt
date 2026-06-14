@@ -14,8 +14,9 @@ class UpdateAdminProductUseCase(
         slug: String?,
         description: String?,
         basePrice: Double?,
+        discountedPrice: Double? = null,
         isActive: Boolean?
     ): AppResult<AdminProduct> {
-        return repository.updateProduct(id, categoryId, title, slug, description, basePrice, isActive)
+        return repository.updateProduct(id, categoryId, title, slug, description, basePrice, discountedPrice, isActive)
     }
 }

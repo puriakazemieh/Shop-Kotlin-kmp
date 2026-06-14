@@ -26,6 +26,7 @@ fun AdminProductResponse.toAdminDomain() = AdminProduct(
     slug = slug,
     description = description,
     basePrice = basePrice,
+    discountedPrice = discountedPrice,
     isActive = isActive
 )
 

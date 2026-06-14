@@ -9,5 +9,6 @@ data class AdminUpdateProductRequest(
     val slug: String? = null,
     val description: String? = null,
     val basePrice: Double? = null,
+    val discountedPrice: Double? = null,
     val isActive: Boolean? = null
 )

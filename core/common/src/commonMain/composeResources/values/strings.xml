@@ -72,6 +72,7 @@
     <string name="edit_product">Edit Product</string>
     <string name="product_title_placeholder">Product Title</string>
     <string name="base_price_placeholder">Base Price</string>
+    <string name="discounted_price_placeholder">Discounted Price (Optional)</string>
     <string name="add_product">Add Product</string>
     <string name="update_product">Update Product</string>
     <string name="status_updated_successfully">Status updated successfully</string>

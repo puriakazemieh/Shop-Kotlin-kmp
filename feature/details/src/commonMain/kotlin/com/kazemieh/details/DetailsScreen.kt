@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -218,12 +219,48 @@ fun DetailsScreen(
                                     fontSize = FontSize.REGULAR,
                                     color = MaterialTheme.colorScheme.primary
                                 )
-                                Text(
-                                    text = stringResource(Resources.String.PriceFormat, (state.selectedVariant?.price ?: 0.0)),
-                                    fontSize = FontSize.MEDIUM,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    fontWeight = FontWeight.Medium
-                                )
+
+                                val variant = state.selectedVariant
+                                val basePrice = variant?.price ?: product.basePrice ?: 0.0
+                                val discountedPrice = product.discountedPrice // Product-wide discount
+                                val compareAtPrice = variant?.compareAtPrice // Variant-specific original price
+
+                                Column(horizontalAlignment = Alignment.End) {
+                                    if (discountedPrice != null) {
+                                        Text(
+                                            text = stringResource(Resources.String.PriceFormat, discountedPrice),
+                                            fontSize = FontSize.MEDIUM,
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Text(
+                                            text = stringResource(Resources.String.PriceFormat, basePrice),
+                                            fontSize = FontSize.SMALL,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textDecoration = TextDecoration.LineThrough
+                                        )
+                                    } else if (compareAtPrice != null && compareAtPrice > basePrice) {
+                                        Text(
+                                            text = stringResource(Resources.String.PriceFormat, basePrice),
+                                            fontSize = FontSize.MEDIUM,
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Text(
+                                            text = stringResource(Resources.String.PriceFormat, compareAtPrice),
+                                            fontSize = FontSize.SMALL,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textDecoration = TextDecoration.LineThrough
+                                        )
+                                    } else {
+                                        Text(
+                                            text = stringResource(Resources.String.PriceFormat, basePrice),
+                                            fontSize = FontSize.MEDIUM,
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                }
                             }
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(

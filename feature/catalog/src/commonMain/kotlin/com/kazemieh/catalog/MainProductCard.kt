@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.domain.catalog.ProductSummary
@@ -132,22 +133,60 @@ fun MainProductCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val priceText = if (product.minPrice == product.maxPrice) {
-                    stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
-                } else {
-                    stringResource(
-                        Resources.String.PriceRangeFormat,
-                        stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
-                        stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
-                    )
-                }
+                val hasDiscount = product.minDiscountedPrice != null
                 
-                Text(
-                    text = priceText,
-                    fontSize = FontSize.REGULAR,
-                    color = Color.Yellow, // Placeholder for TextBrand
-                    fontWeight = FontWeight.Medium
-                )
+                Column {
+                    if (hasDiscount) {
+                        val discountedPriceText = if (product.minDiscountedPrice == product.maxDiscountedPrice) {
+                            stringResource(Resources.String.PriceFormat, product.minDiscountedPrice ?: 0.0)
+                        } else {
+                            stringResource(
+                                Resources.String.PriceRangeFormat,
+                                stringResource(Resources.String.PriceFormat, product.minDiscountedPrice ?: 0.0),
+                                stringResource(Resources.String.PriceFormat, product.maxDiscountedPrice ?: 0.0)
+                            )
+                        }
+                        Text(
+                            text = discountedPriceText,
+                            fontSize = FontSize.REGULAR,
+                            color = Color.Yellow,
+                            fontWeight = FontWeight.Medium
+                        )
+
+                        val originalPriceText = if (product.minPrice == product.maxPrice) {
+                            stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
+                        } else {
+                            stringResource(
+                                Resources.String.PriceRangeFormat,
+                                stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
+                                stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
+                            )
+                        }
+                        Text(
+                            text = originalPriceText,
+                            fontSize = FontSize.EXTRA_SMALL,
+                            color = Color.White.copy(alpha = Alpha.HALF),
+                            textDecoration = TextDecoration.LineThrough
+                        )
+                    } else {
+                        val priceText = if (product.minPrice == product.maxPrice) {
+                            stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
+                        } else {
+                            stringResource(
+                                Resources.String.PriceRangeFormat,
+                                stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
+                                stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
+                            )
+                        }
+
+                        Text(
+                            text = priceText,
+                            fontSize = FontSize.REGULAR,
+                            color = Color.Yellow, // Placeholder for TextBrand
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
                 
                 if (!product.inStock) {
                     Text(

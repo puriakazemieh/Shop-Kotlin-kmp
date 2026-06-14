@@ -18,11 +18,21 @@ interface AdminRepository {
         slug: String,
         description: String?,
         basePrice: Double?,
+        discountedPrice: Double? = null,
         isActive: Boolean,
         variants: List<AdminCreateVariant>? = null
     ): AppResult<AdminProduct>
     suspend fun getProductDetail(id: Long): AppResult<AdminProductDetail>
-    suspend fun updateProduct(id: Long, categoryId: Long?, title: String?, slug: String?, description: String?, basePrice: Double?, isActive: Boolean?): AppResult<AdminProduct>
+    suspend fun updateProduct(
+        id: Long,
+        categoryId: Long?,
+        title: String?,
+        slug: String?,
+        description: String?,
+        basePrice: Double?,
+        discountedPrice: Double? = null,
+        isActive: Boolean?
+    ): AppResult<AdminProduct>
     suspend fun deleteProduct(id: Long): AppResult<Unit>
 
     // Images

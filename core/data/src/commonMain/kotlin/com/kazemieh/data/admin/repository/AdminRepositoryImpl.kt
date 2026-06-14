@@ -36,6 +36,7 @@ class AdminRepositoryImpl(
         slug: String,
         description: String?,
         basePrice: Double?,
+        discountedPrice: Double?,
         isActive: Boolean,
         variants: List<AdminCreateVariant>?
     ): AppResult<AdminProduct> =
@@ -46,6 +47,7 @@ class AdminRepositoryImpl(
                 slug,
                 description,
                 basePrice,
+                discountedPrice,
                 isActive,
                 variants?.map {
                     AdminCreateVariantRequest(
@@ -70,9 +72,10 @@ class AdminRepositoryImpl(
         slug: String?,
         description: String?,
         basePrice: Double?,
+        discountedPrice: Double?,
         isActive: Boolean?
     ): AppResult<AdminProduct> =
-        dataSource.updateProduct(id, AdminUpdateProductRequest(categoryId, title, slug, description, basePrice, isActive)).map { it.toAdminDomain() }
+        dataSource.updateProduct(id, AdminUpdateProductRequest(categoryId, title, slug, description, basePrice, discountedPrice, isActive)).map { it.toAdminDomain() }
 
     override suspend fun deleteProduct(id: Long): AppResult<Unit> =
         dataSource.deleteProduct(id)

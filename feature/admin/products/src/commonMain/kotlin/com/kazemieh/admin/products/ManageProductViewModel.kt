@@ -63,6 +63,7 @@ class ManageProductViewModel(
 
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
+            is ManageProductIntent.UpdateDiscountedPrice -> _state.update { it.copy(discountedPrice = intent.price) }
             is ManageProductIntent.UpdateIsActive -> _state.update { it.copy(isActive = intent.isActive) }
             is ManageProductIntent.SelectCategory -> _state.update { it.copy(selectedCategory = intent.category) }
             is ManageProductIntent.SaveProduct -> saveProduct()
@@ -246,6 +247,7 @@ class ManageProductViewModel(
                             slug = detail.product.slug,
                             description = detail.product.description ?: "",
                             basePrice = detail.product.basePrice ?: 0.0,
+                            discountedPrice = detail.product.discountedPrice ?: 0.0,
                             isActive = detail.product.isActive,
                             selectedCategory = it.categories.find { c -> c.id == detail.product.categoryId },
                             images = detail.images.map { img ->
@@ -299,6 +301,7 @@ class ManageProductViewModel(
                     slug = currentState.slug,
                     description = currentState.description,
                     basePrice = currentState.basePrice,
+                    discountedPrice = if (currentState.discountedPrice == 0.0) null else currentState.discountedPrice,
                     isActive = currentState.isActive,
                     variants = currentState.variants.map {
                         AdminCreateVariant(
@@ -338,6 +341,7 @@ class ManageProductViewModel(
                     slug = currentState.slug,
                     description = currentState.description,
                     basePrice = currentState.basePrice,
+                    discountedPrice = if (currentState.discountedPrice == 0.0) null else currentState.discountedPrice,
                     isActive = currentState.isActive
                 )
             }
@@ -597,6 +601,7 @@ data class ManageProductState(
     val slug: String = "",
     val description: String = "",
     val basePrice: Double = 0.0,
+    val discountedPrice: Double = 0.0,
     val isActive: Boolean = true,
     val selectedCategory: Category? = null,
     val categories: List<Category> = emptyList(),
@@ -616,6 +621,7 @@ sealed interface ManageProductIntent {
     data class UpdateTitle(val title: String) : ManageProductIntent
     data class UpdateDescription(val description: String) : ManageProductIntent
     data class UpdateBasePrice(val price: Double) : ManageProductIntent
+    data class UpdateDiscountedPrice(val price: Double) : ManageProductIntent
     data class UpdateIsActive(val isActive: Boolean) : ManageProductIntent
     data class SelectCategory(val category: Category) : ManageProductIntent
     data object SaveProduct : ManageProductIntent
