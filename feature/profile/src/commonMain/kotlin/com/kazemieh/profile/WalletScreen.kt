@@ -148,6 +148,8 @@ fun WithdrawDialog(
 ) {
     var amount by remember { mutableStateOf("") }
     var iban by remember { mutableStateOf("") }
+    val isAmountValid = (amount.toDoubleOrNull() ?: 0.0) > 0
+    val isIbanValid = iban.startsWith("IR") && iban.length == 26
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -159,23 +161,34 @@ fun WithdrawDialog(
                     onValueChange = { amount = it },
                     label = { Text(stringResource(Resources.String.Amount), fontFamily = AppFont()) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = amount.isNotEmpty() && !isAmountValid
                 )
                 OutlinedTextField(
                     value = iban,
                     onValueChange = { iban = it },
                     label = { Text(stringResource(Resources.String.Iban), fontFamily = AppFont()) },
                     placeholder = { Text("IR...", fontFamily = AppFont()) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = iban.isNotEmpty() && !isIbanValid,
+                    supportingText = {
+                        if (iban.isNotEmpty() && !isIbanValid) {
+                            Text(text = "فرمت شبا نامعتبر است (۲۶ رقم با IR شروع شود)")
+                        }
+                    }
                 )
             }
         },
         confirmButton = {
             Button(
                 onClick = { amount.toDoubleOrNull()?.let { onConfirm(it, iban) } },
-                enabled = !isLoading && amount.isNotEmpty() && iban.isNotEmpty()
+                enabled = !isLoading && isAmountValid && isIbanValid
             ) {
-                if (isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary)
+                if (isLoading) CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp
+                )
                 else Text(stringResource(Resources.String.Confirm), fontFamily = AppFont())
             }
         },
@@ -257,7 +270,8 @@ fun TransactionItem(transaction: WalletTransaction) {
                 Text(
                     text = transaction.description ?: transaction.type,
                     fontFamily = AppFont(),
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 2
                 )
                 Text(
                     text = transaction.createdAt.take(16).replace("T", " "),
@@ -265,11 +279,12 @@ fun TransactionItem(transaction: WalletTransaction) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(Resources.String.PriceFormat, transaction.amount),
                 fontFamily = AppFont(),
                 fontWeight = FontWeight.Bold,
-                color = if (transaction.amount >= 0) Color(0xFF4CAF50) else Color(0xFFF44336)
+                color = if (transaction.amount >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
         }
     }
@@ -282,7 +297,8 @@ fun TopUpDialog(
     onConfirm: (Double) -> Unit
 ) {
     var amount by remember { mutableStateOf("") }
-    
+    val isValid = (amount.toDoubleOrNull() ?: 0.0) > 0
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Resources.String.TopUp), fontFamily = AppFont()) },
@@ -293,16 +309,22 @@ fun TopUpDialog(
                     onValueChange = { amount = it },
                     label = { Text(stringResource(Resources.String.Amount), fontFamily = AppFont()) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = amount.isNotEmpty() && !isValid
                 )
             }
         },
         confirmButton = {
             Button(
                 onClick = { amount.toDoubleOrNull()?.let { onConfirm(it) } },
-                enabled = !isLoading && amount.isNotEmpty()
+                enabled = !isLoading && isValid
             ) {
-                Text(stringResource(Resources.String.Confirm), fontFamily = AppFont())
+                if (isLoading) CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp
+                )
+                else Text(stringResource(Resources.String.Confirm), fontFamily = AppFont())
             }
         },
         dismissButton = {

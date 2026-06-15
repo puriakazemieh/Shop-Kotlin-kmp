@@ -187,6 +187,19 @@ fun OrderDetailScreen(
                                 )
                             }
 
+                            if ((order.walletPaidAmount ?: 0.0) > 0) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text(stringResource(Resources.String.WalletPaidAmount), fontSize = FontSize.SMALL, fontFamily = AppFont())
+                                    Text(stringResource(Resources.String.PriceFormat, order.walletPaidAmount ?: 0.0), fontSize = FontSize.SMALL, fontFamily = AppFont())
+                                }
+                            }
+                            if ((order.gatewayPaidAmount ?: 0.0) > 0) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text(stringResource(Resources.String.GatewayPaidAmount), fontSize = FontSize.SMALL, fontFamily = AppFont())
+                                    Text(stringResource(Resources.String.PriceFormat, order.gatewayPaidAmount ?: 0.0), fontSize = FontSize.SMALL, fontFamily = AppFont())
+                                }
+                            }
+
                             Spacer(modifier = Modifier.height(32.dp))
 
                             if (order.status == "PLACED" || order.status == "PROCESSING") {

@@ -23,7 +23,9 @@ data class OrderDetail(
     val shippingCarrier: String?,
     val trackingCode: String?,
     val shippedAt: String?,
-    val deliveredAt: String?
+    val deliveredAt: String?,
+    val walletPaidAmount: Double? = null,
+    val gatewayPaidAmount: Double? = null
 )
 
 data class OrderItem(

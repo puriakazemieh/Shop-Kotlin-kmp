@@ -324,4 +324,22 @@
     <string name="success">Success!</string>
     <string name="go_back">Go back</string>
     <string name="nothing_here">Nothing here</string>
+    <string name="wallet">Wallet</string>
+    <string name="my_wallet">My Wallet</string>
+    <string name="wallet_balance">Wallet Balance</string>
+    <string name="transactions">Transactions</string>
+    <string name="top_up">Top Up</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="amount">Amount</string>
+    <string name="iban">IBAN</string>
+    <string name="wallet_empty">No transactions found</string>
+    <string name="wallet_paid_amount">Paid from Wallet</string>
+    <string name="gateway_paid_amount">Online Payment</string>
+    <string name="wallet_top_up_success">Redirecting to payment gateway...</string>
+    <string name="wallet_search_user">Search User</string>
+    <string name="adjust_balance">Adjust Balance</string>
+    <string name="positive_for_charge">Positive for charge, negative for deduction</string>
+    <string name="description">Description</string>
+    <string name="manage_wallets">Manage Wallets</string>
+    <string name="use_wallet_balance">Use Wallet Balance</string>
 </resources>

@@ -346,4 +346,5 @@
     <string name="positive_for_charge">عدد مثبت برای شارژ، منفی برای کسر</string>
     <string name="description">توضیحات</string>
     <string name="manage_wallets">مدیریت کیف پول‌ها</string>
+    <string name="use_wallet_balance">استفاده از موجودی کیف پول</string>
 </resources>

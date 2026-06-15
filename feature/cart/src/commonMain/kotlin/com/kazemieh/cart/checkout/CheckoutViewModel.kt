@@ -29,6 +29,8 @@ data class CheckoutState(
     val country: String = "Iran",
     val addresses: List<Address> = emptyList(),
     val selectedAddressId: Long? = null,
+    val useWallet: Boolean = false,
+    val walletBalance: Double = 0.0,
     val showAddNewAddressForm: Boolean = false,
     val isLoading: Boolean = false,
     val isFormValid: Boolean = false
@@ -43,6 +45,7 @@ sealed interface CheckoutIntent {
     data class UpdatePhoneNumber(val value: String) : CheckoutIntent
     data class UpdateCountry(val value: String) : CheckoutIntent
     data class SelectAddress(val addressId: Long) : CheckoutIntent
+    data class ToggleUseWallet(val use: Boolean) : CheckoutIntent
     data class ToggleAddNewAddress(val show: Boolean) : CheckoutIntent
     data class AddNewAddress(
         val receiverName: String,
@@ -70,7 +73,8 @@ class CheckoutViewModel(
     private val getCartUseCase: GetCartUseCase,
     private val addAddressUseCase: AddAddressUseCase,
     private val getAddressesUseCase: GetAddressesUseCase,
-    private val requestPaymentUseCase: RequestPaymentUseCase
+    private val requestPaymentUseCase: RequestPaymentUseCase,
+    private val getWalletBalanceUseCase: com.kazemieh.domain.wallet.GetWalletBalanceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CheckoutState())
@@ -85,6 +89,7 @@ class CheckoutViewModel(
         loadProfile()
         loadCart()
         loadAddresses()
+        loadWalletBalance()
     }
 
     fun handleIntent(intent: CheckoutIntent) {
@@ -121,6 +126,9 @@ class CheckoutViewModel(
                 _state.update { it.copy(selectedAddressId = intent.addressId, showAddNewAddressForm = false) }
                 validateForm()
             }
+            is CheckoutIntent.ToggleUseWallet -> {
+                _state.update { it.copy(useWallet = intent.use) }
+            }
             is CheckoutIntent.ToggleAddNewAddress -> {
                 _state.update { it.copy(showAddNewAddressForm = intent.show) }
                 validateForm()
@@ -128,6 +136,15 @@ class CheckoutViewModel(
             is CheckoutIntent.AddNewAddress -> addNewAddress(intent)
             CheckoutIntent.PayWithZarinpal -> payWithZarinpal()
             CheckoutIntent.PayOnDelivery -> payOnDelivery()
+        }
+    }
+
+    private fun loadWalletBalance() {
+        viewModelScope.launch {
+            val result = getWalletBalanceUseCase()
+            result.getSuccessValue()?.let { balance ->
+                _state.update { it.copy(walletBalance = balance.balance) }
+            }
         }
     }
 
@@ -232,7 +249,7 @@ class CheckoutViewModel(
 
             _state.update { it.copy(isLoading = true) }
 
-            val orderResult = createOrderUseCase(items, addressId)
+            val orderResult = createOrderUseCase(items, addressId, _state.value.useWallet)
             when (orderResult) {
                 is AppResult.Success -> {
                     val orderId = orderResult.data.id
@@ -273,7 +290,7 @@ class CheckoutViewModel(
                 return@launch
             }
 
-            val result = createOrderUseCase(items, addressId)
+            val result = createOrderUseCase(items, addressId, _state.value.useWallet)
             when (result) {
                 is AppResult.Success -> {
                     CartEventBus.refresh()

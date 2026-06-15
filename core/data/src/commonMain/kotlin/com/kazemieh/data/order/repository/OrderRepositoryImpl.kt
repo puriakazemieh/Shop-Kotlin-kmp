@@ -26,10 +26,11 @@ class OrderRepositoryImpl(
         return dataSource.getOrder(id).map { it.toDomain() }
     }
 
-    override suspend fun createOrder(items: List<Pair<Long, Int>>, addressId: Long?): AppResult<OrderDetail> {
+    override suspend fun createOrder(items: List<Pair<Long, Int>>, addressId: Long?, useWallet: Boolean): AppResult<OrderDetail> {
         val request = CreateOrderRequest(
             items = items.map { OrderItemRequest(it.first, it.second) },
-            addressId = addressId
+            addressId = addressId,
+            useWallet = useWallet
         )
         return dataSource.createOrder(request).map { it.toDomain() }
     }

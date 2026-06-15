@@ -338,5 +338,6 @@ object Resources {
         val PositiveForCharge = CommonRes.string.positive_for_charge
         val Description = CommonRes.string.description
         val ManageWallets = CommonRes.string.manage_wallets
+        val UseWalletBalance = CommonRes.string.use_wallet_balance
     }
 }
