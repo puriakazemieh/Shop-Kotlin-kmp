@@ -176,7 +176,7 @@ class CheckoutViewModel(
                     it.copy(
                         firstName = profile.firstName ?: "",
                         lastName = profile.lastName ?: "",
-                        email = profile.email,
+                        email = profile.email ?: "",
                         city = profile.city ?: "",
                         postalCode = profile.postalCode?.toString() ?: "",
                         phoneNumber = profile.phone ?: ""

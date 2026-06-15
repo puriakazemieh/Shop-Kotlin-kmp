@@ -15,19 +15,31 @@ class AuthDataSourceImpl(
 ) : AuthDataSource {
 
     override suspend fun login(email: String, password: String): AppResult<Auth> = safeApiCall {
-        authApi.login(LoginRequest(email, password)).toDomain()
+        authApi.login(LoginRequest(username = email, password = password)).toDomain()
     }
 
-    override suspend fun register(email: String, password: String): AppResult<Auth> = safeApiCall {
-        authApi.register(RegisterRequest(email, password)).toDomain()
+    override suspend fun register(email: String?, mobile: String?, password: String): AppResult<Auth> = safeApiCall {
+        authApi.register(RegisterRequest(email = email, mobile = mobile, password = password)).toDomain()
     }
 
-    override suspend fun forgotPassword(email: String): AppResult<Unit> = safeApiCall {
-        authApi.forgotPassword(email)
+    override suspend fun forgotPassword(email: String?, mobile: String?): AppResult<Unit> = safeApiCall {
+        authApi.forgotPassword(ForgotPasswordRequest(email = email, mobile = mobile))
     }
 
     override suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit> = safeApiCall {
         authApi.resetPassword(ResetPasswordRequest(token, newPassword))
+    }
+
+    override suspend fun sendLoginOtp(mobile: String): AppResult<Unit> = safeApiCall {
+        authApi.sendLoginOtp(SendLoginOtpRequest(mobile))
+    }
+
+    override suspend fun loginWithOtp(mobile: String, otpCode: String): AppResult<Auth> = safeApiCall {
+        authApi.loginWithOtp(LoginWithOtpRequest(mobile, otpCode)).toDomain()
+    }
+
+    override suspend fun resetPasswordWithOtp(mobile: String, otpCode: String, newPassword: String): AppResult<Unit> = safeApiCall {
+        authApi.resetPasswordWithOtp(ResetPasswordWithOtpRequest(mobile, otpCode, newPassword))
     }
 
 }

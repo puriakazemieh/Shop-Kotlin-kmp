@@ -6,7 +6,7 @@ import com.kazemieh.domain.auth.AuthRepository
 class ForgotPasswordUseCase(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(email: String): AppResult<Unit> {
-        return repository.forgotPassword(email)
+    suspend operator fun invoke(email: String? = null, mobile: String? = null): AppResult<Unit> {
+        return repository.forgotPassword(email, mobile)
     }
 }

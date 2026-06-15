@@ -54,10 +54,11 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun register(
-        email: String,
+        email: String?,
+        mobile: String?,
         password: String
     ): AppResult<Unit> {
-        return authDataSource.register(email, password)
+        return authDataSource.register(email, mobile, password)
             .doOnSuccess { auth ->
                 tokenManager.saveTokens(
                     accessToken = auth.accessToken,
@@ -69,12 +70,37 @@ class AuthRepositoryImpl(
             .map { }
     }
 
-    override suspend fun forgotPassword(email: String): AppResult<Unit> {
-        return authDataSource.forgotPassword(email)
+    override suspend fun forgotPassword(email: String?, mobile: String?): AppResult<Unit> {
+        return authDataSource.forgotPassword(email, mobile)
     }
 
     override suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit> {
         return authDataSource.resetPassword(token, newPassword)
+    }
+
+    override suspend fun sendLoginOtp(mobile: String): AppResult<Unit> {
+        return authDataSource.sendLoginOtp(mobile)
+    }
+
+    override suspend fun loginWithOtp(mobile: String, otpCode: String): AppResult<Unit> {
+        return authDataSource.loginWithOtp(mobile, otpCode)
+            .doOnSuccess { auth ->
+                tokenManager.saveTokens(
+                    accessToken = auth.accessToken,
+                    refreshToken = auth.refreshToken
+                )
+                profileLocalDataSource.saveProfile(auth.profile)
+                _authState.value = AuthState.Authenticated
+            }
+            .map { }
+    }
+
+    override suspend fun resetPasswordWithOtp(
+        mobile: String,
+        otpCode: String,
+        newPassword: String
+    ): AppResult<Unit> {
+        return authDataSource.resetPasswordWithOtp(mobile, otpCode, newPassword)
     }
 
     override suspend fun signOut(): AppResult<Unit> {

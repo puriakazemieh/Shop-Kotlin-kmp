@@ -55,7 +55,8 @@ val cartModule = module {
             getCartUseCase = get(),
             addAddressUseCase = get(),
             getAddressesUseCase = get(),
-            requestPaymentUseCase = get()
+            requestPaymentUseCase = get(),
+            getWalletBalanceUseCase = get()
         )
     }
 

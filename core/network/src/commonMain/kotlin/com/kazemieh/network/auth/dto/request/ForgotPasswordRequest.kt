@@ -1,12 +1,9 @@
 package com.kazemieh.network.auth.dto.request
 
-import com.kazemieh.network.auth.dto.*
-
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegisterRequest(
+data class ForgotPasswordRequest(
     val email: String? = null,
-    val mobile: String? = null,
-    val password: String
+    val mobile: String? = null
 )

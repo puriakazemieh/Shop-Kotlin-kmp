@@ -7,7 +7,7 @@ import com.kazemieh.domain.profile.User
 class RegisterUseCase(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(email: String, password: String): AppResult<Unit> {
-        return repository.register(email, password)
+    suspend operator fun invoke(email: String? = null, mobile: String? = null, password: String): AppResult<Unit> {
+        return repository.register(email, mobile, password)
     }
 }

@@ -15,9 +15,11 @@ fun ProfileResponse.toDomain(): Profile {
     return Profile(
         id = id,
         email = email,
-        firstName = firstName ?: "",
-        lastName = lastName ?: "",
+        firstName = firstName,
+        lastName = lastName,
         phone = phone,
+        mobile = phone,
+        fullName = if (firstName != null && lastName != null) "$firstName $lastName" else firstName ?: lastName,
         city = city,
         role = role,
         postalCode = postalCode,

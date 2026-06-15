@@ -265,6 +265,18 @@ object Resources {
         val PasswordTooShort = CommonRes.string.password_too_short
         val InvalidEmail = CommonRes.string.invalid_email
         val EmailEmpty = CommonRes.string.email_empty
+        val MobileEmpty = CommonRes.string.mobile_empty
+        val InvalidMobile = CommonRes.string.invalid_mobile
+        val OtpCode = CommonRes.string.otp_code
+        val OtpSent = CommonRes.string.otp_sent
+        val ResendOtp = CommonRes.string.resend_otp
+        val LoginWithOtp = CommonRes.string.login_with_otp
+        val LoginWithPassword = CommonRes.string.login_with_password
+        val EnterOtpCode = CommonRes.string.enter_otp_code
+        val MobileAlreadyExists = CommonRes.string.mobile_already_exists
+        val InvalidOtp = CommonRes.string.invalid_otp
+        val UserNotFound = CommonRes.string.user_not_found
+        val InvalidUsername = CommonRes.string.invalid_username
 
         // Home/Drawer
         val Carmilla = CommonRes.string.carmilla

@@ -16,11 +16,13 @@ fun UserResponse.toProfile(): Profile {
     return Profile(
         id = id,
         email = email,
-        firstName = firstName,
-        lastName = lastName,
+        mobile = mobile,
+        fullName = fullName,
+        firstName = fullName?.split(" ")?.firstOrNull(),
+        lastName = fullName?.split(" ")?.getOrNull(1),
+        phone = mobile,
         city = city,
         postalCode = postalCode,
-        phone = phone,
         role = role,
     )
 }

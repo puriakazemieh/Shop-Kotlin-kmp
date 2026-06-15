@@ -47,11 +47,14 @@ fun ResetPasswordScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is AuthEffect.ShowError -> {
-                    if (effect.message == "PASSWORDS_DO_NOT_MATCH") {
-                        messageBarState.addError(passwordsDoNotMatchMessage)
-                    } else {
-                        messageBarState.addError(effect.message ?: "Unknown Error")
+                    val message = when (effect.message) {
+                        "MOBILE_ALREADY_EXISTS" -> Resources.String.MobileAlreadyExists
+                        "INVALID_OTP" -> Resources.String.InvalidOtp
+                        "USER_NOT_FOUND" -> Resources.String.UserNotFound
+                        "PASSWORDS_DO_NOT_MATCH" -> Resources.String.PasswordsDoNotMatch
+                        else -> effect.message
                     }
+                    messageBarState.addError(message ?: "Unknown Error")
                 }
 
                 is AuthEffect.ShowSuccess -> {
@@ -89,6 +92,36 @@ fun ResetPasswordScreen(
                 Text(stringResource(Resources.String.ResetPassword), fontSize = FontSize.LARGE)
 
                 Spacer(Modifier.height(24.dp))
+
+                if (state.isOtpMode) {
+                    AuthTextField(
+                        value = state.mobile,
+                        onValueChange = {
+                            viewModel.handleIntent(AuthIntent.OnMobileChange(it))
+                        },
+                        hint = stringResource(Resources.String.PhoneNumberPlaceholder)
+                    )
+
+                    state.mobileError?.let {
+                        Text(anyToString(it), color = MaterialTheme.colorScheme.error)
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+
+                    AuthTextField(
+                        value = state.otp,
+                        onValueChange = {
+                            viewModel.handleIntent(AuthIntent.OnOtpChange(it))
+                        },
+                        hint = stringResource(Resources.String.EnterOtpCode)
+                    )
+
+                    state.otpError?.let {
+                        Text(anyToString(it), color = MaterialTheme.colorScheme.error)
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+                }
 
                 AuthTextField(
                     value = state.newPassword,

@@ -1,12 +1,7 @@
 package com.kazemieh.auth
 
 import com.kazemieh.auth.screen.AuthViewModel
-import com.kazemieh.domain.auth.ForgotPasswordUseCase
-import com.kazemieh.domain.auth.LoginUseCase
-import com.kazemieh.domain.auth.RegisterUseCase
-import com.kazemieh.domain.auth.ResetPasswordUseCase
-import com.kazemieh.domain.auth.ValidateEmail
-import com.kazemieh.domain.auth.ValidatePassword
+import com.kazemieh.domain.auth.*
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -19,8 +14,13 @@ val authModule = module {
             registerUseCase = get(),
             forgotPasswordUseCase = get(),
             resetPasswordUseCase = get(),
+            sendLoginOtpUseCase = get(),
+            loginWithOtpUseCase = get(),
+            resetPasswordWithOtpUseCase = get(),
             validateEmail = get(),
-            validatePassword = get()
+            validatePassword = get(),
+            validateMobile = get(),
+            validateUsername = get()
         )
     }
 
@@ -29,8 +29,13 @@ val authModule = module {
     factory { RegisterUseCase(get()) }
     factory { ForgotPasswordUseCase(get()) }
     factory { ResetPasswordUseCase(get()) }
+    factory { SendLoginOtpUseCase(get()) }
+    factory { LoginWithOtpUseCase(get()) }
+    factory { ResetPasswordWithOtpUseCase(get()) }
 
     // Validation
     factory { ValidateEmail() }
     factory { ValidatePassword() }
+    factory { ValidateMobile() }
+    factory<ValidateUsername> { ValidateUsername() }
 }

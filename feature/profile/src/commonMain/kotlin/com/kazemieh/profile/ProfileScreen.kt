@@ -182,7 +182,7 @@ fun ProfileScreen(
                                         ProfileIntent.UpdateLastName(value)
                                     )
                                 },
-                                email = profile.email,
+                                email = profile.email ?: "",
                                 phoneNumber = profile.phone,
                                 onPhoneNumberChange = { value ->
                                     viewModel.handleIntent(

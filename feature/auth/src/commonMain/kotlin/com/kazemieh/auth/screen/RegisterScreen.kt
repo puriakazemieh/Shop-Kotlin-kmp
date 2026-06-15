@@ -47,6 +47,13 @@ fun RegisterScreen(
                 }
 
                 is AuthEffect.ShowError -> {
+                    val message = when (effect.message) {
+                        "MOBILE_ALREADY_EXISTS" -> Resources.String.MobileAlreadyExists
+                        "INVALID_OTP" -> Resources.String.InvalidOtp
+                        "USER_NOT_FOUND" -> Resources.String.UserNotFound
+                        else -> effect.message
+                    }
+                    messageBarState.addError(message ?: "Error")
                 }
 
                 else -> {}
@@ -78,14 +85,17 @@ fun RegisterScreen(
                 Spacer(Modifier.height(24.dp))
 
                 AuthTextField(
-                    value = state.email,
+                    value = if (state.isOtpMode) state.mobile else state.email,
                     onValueChange = {
-                        viewModel.handleIntent(AuthIntent.OnEmailChange(it))
+                        if (state.isOtpMode) viewModel.handleIntent(AuthIntent.OnMobileChange(it))
+                        else viewModel.handleIntent(AuthIntent.OnEmailChange(it))
                     },
-                    hint = stringResource(Resources.String.EmailHint)
+                    hint = if (state.isOtpMode) stringResource(Resources.String.PhoneNumberPlaceholder)
+                    else stringResource(Resources.String.EmailHint)
                 )
 
-                state.emailError?.let {
+                val currentError = if (state.isOtpMode) state.mobileError else state.emailError
+                currentError?.let {
                     Text(anyToString(it), color = MaterialTheme.colorScheme.error)
                 }
 
@@ -108,6 +118,15 @@ fun RegisterScreen(
 
                 AuthButton(stringResource(Resources.String.CreateAccount)) {
                     viewModel.handleIntent(AuthIntent.SubmitRegister)
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                TextButton(onClick = { viewModel.handleIntent(AuthIntent.ToggleAuthMode) }) {
+                    Text(
+                        if (state.isOtpMode) stringResource(Resources.String.LoginWithPassword)
+                        else stringResource(Resources.String.LoginWithOtp)
+                    )
                 }
 
                 if (state.isLoading) {
