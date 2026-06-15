@@ -15,5 +15,7 @@ data class OrderDetailResponse(
     val shippingCarrier: String? = null,
     val trackingCode: String? = null,
     val shippedAt: String? = null,
-    val deliveredAt: String? = null
+    val deliveredAt: String? = null,
+    val walletPaidAmount: Double? = null,
+    val gatewayPaidAmount: Double? = null
 )

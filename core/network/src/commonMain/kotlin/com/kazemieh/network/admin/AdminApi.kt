@@ -82,4 +82,10 @@ interface AdminApi {
         page: Int,
         size: Int
     ): PageResponse<AdminInteractionResponse>
+
+    // ---------- Wallet ----------
+    suspend fun searchWalletUsers(query: String): List<AdminWalletUserResponse>
+    suspend fun adjustWalletBalance(request: AdminWalletAdjustRequest)
+    suspend fun listWithdrawals(status: String?): List<AdminWithdrawalResponse>
+    suspend fun processWithdrawal(id: Long, request: AdminProcessWithdrawalRequest)
 }

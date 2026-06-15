@@ -32,6 +32,8 @@ fun AdminPanelScreen(
     navigateToManageOrders: () -> Unit,
     navigateToManageOptions: () -> Unit,
     navigateToManageDiscounts: () -> Unit,
+    navigateToManageWallets: () -> Unit,
+    navigateToManageWithdrawals: () -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
@@ -137,6 +139,20 @@ fun AdminPanelScreen(
                                 Icon(
                                     painter = painterResource(Resources.Icon.Dollar), // Using Dollar icon for discounts
                                     contentDescription = stringResource(Resources.String.CreateDiscount),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            IconButton(onClick = navigateToManageWallets) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Person),
+                                    contentDescription = stringResource(Resources.String.ManageWallets),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            IconButton(onClick = navigateToManageWithdrawals) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Book),
+                                    contentDescription = stringResource(Resources.String.Withdraw),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }

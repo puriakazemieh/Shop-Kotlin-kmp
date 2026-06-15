@@ -2,6 +2,7 @@ package com.kazemieh.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,7 @@ import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.address.Address
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.domain.wallet.WalletBalance
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -74,6 +76,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToMyOrders: () -> Unit,
+    navigateToWallet: () -> Unit,
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
@@ -159,7 +162,7 @@ fun ProfileScreen(
                             modifier = Modifier.fillMaxWidth().height(200.dp),
                             image = Resources.Image.Cat,
                             title = stringResource(Resources.String.Oops),
-                            subtitle = displayState.message
+                            subtitle = anyToString(displayState.message)
                         )
                     }
 
@@ -197,6 +200,13 @@ fun ProfileScreen(
                                 onClick = {
                                     viewModel.handleIntent(ProfileIntent.SaveProfile)
                                 }
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            WalletBalanceCard(
+                                state = state.walletBalanceState,
+                                onClick = navigateToWallet
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))
@@ -316,6 +326,79 @@ fun ProfileScreen(
                 showAddressDialog = false
             }
         )
+    }
+}
+
+@Composable
+fun WalletBalanceCard(
+    state: AppResult<WalletBalance>,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(Resources.Icon.Dollar),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = stringResource(Resources.String.MyWallet),
+                        fontFamily = AppFont(),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    when (state) {
+                        is AppResult.Loading -> {
+                            Text(
+                                text = stringResource(Resources.String.Loading),
+                                fontSize = FontSize.SMALL,
+                                fontFamily = AppFont(),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                            )
+                        }
+                        is AppResult.Success -> {
+                            Text(
+                                text = stringResource(Resources.String.PriceFormat, state.data.balance),
+                                fontSize = FontSize.MEDIUM,
+                                fontFamily = AppFont(),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        is AppResult.Error -> {
+                            Text(
+                                text = anyToString(state.message),
+                                fontSize = FontSize.EXTRA_SMALL,
+                                fontFamily = AppFont(),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
+            }
+            val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+            Icon(
+                painter = painterResource(Resources.Icon.RightArrow),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(20.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+            )
+        }
     }
 }
 

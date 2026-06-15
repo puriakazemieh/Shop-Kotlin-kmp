@@ -67,6 +67,7 @@ kotlin {
             implementation(project(":feature:admin:products"))
             implementation(project(":feature:admin:orders"))
             implementation(project(":feature:admin:options"))
+            implementation(project(":feature:admin:wallet"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))

@@ -14,6 +14,8 @@ import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.address.SetDefaultAddressUseCase
 import com.kazemieh.domain.address.UpdateAddressUseCase
 import com.kazemieh.domain.profile.ValidateProfileUseCase
+import com.kazemieh.domain.wallet.GetWalletBalanceUseCase
+import com.kazemieh.domain.wallet.WalletBalance
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +34,8 @@ class ProfileViewModel(
     private val addAddressUseCase: AddAddressUseCase,
     private val updateAddressUseCase: UpdateAddressUseCase,
     private val deleteAddressUseCase: DeleteAddressUseCase,
-    private val setDefaultAddressUseCase: SetDefaultAddressUseCase
+    private val setDefaultAddressUseCase: SetDefaultAddressUseCase,
+    private val getWalletBalanceUseCase: GetWalletBalanceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -44,12 +47,14 @@ class ProfileViewModel(
     init {
         handleIntent(ProfileIntent.LoadProfile)
         handleIntent(ProfileIntent.LoadAddresses)
+        handleIntent(ProfileIntent.LoadWalletBalance)
         observeProfile()
     }
 
     fun handleIntent(intent: ProfileIntent) {
         when (intent) {
             is ProfileIntent.LoadProfile -> loadProfile()
+            is ProfileIntent.LoadWalletBalance -> loadWalletBalance()
             is ProfileIntent.UpdateFirstName -> updateFirstName(intent.value)
             is ProfileIntent.UpdateLastName -> updateLastName(intent.value)
             is ProfileIntent.UpdateCity -> updateCity(intent.value)
@@ -119,6 +124,14 @@ class ProfileViewModel(
                     }
                 }
             }
+        }
+    }
+
+    private fun loadWalletBalance() {
+        viewModelScope.launch {
+            _state.update { it.copy(walletBalanceState = AppResult.Loading) }
+            val result = getWalletBalanceUseCase()
+            _state.update { it.copy(walletBalanceState = result) }
         }
     }
 
@@ -310,6 +323,7 @@ class ProfileViewModel(
 
 sealed interface ProfileIntent {
     data object LoadProfile : ProfileIntent
+    data object LoadWalletBalance : ProfileIntent
     data class UpdateFirstName(val value: String) : ProfileIntent
     data class UpdateLastName(val value: String) : ProfileIntent
     data class UpdateCity(val value: String) : ProfileIntent
@@ -348,6 +362,7 @@ sealed interface ProfileIntent {
 data class ProfileState(
     val profile: Profile? = null,
     val addresses: List<Address> = emptyList(),
+    val walletBalanceState: AppResult<WalletBalance> = AppResult.Loading,
     val displayState: AppResult<Unit?> = AppResult.Loading,
     val isFormValid: Boolean = false,
     val isSaving: Boolean = false,

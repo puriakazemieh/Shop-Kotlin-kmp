@@ -327,4 +327,23 @@
     <string name="success">موفقیت‌آمیز!</string>
     <string name="go_back">بازگشت</string>
     <string name="nothing_here">چیزی در اینجا نیست</string>
+
+    <!-- Wallet -->
+    <string name="wallet">کیف پول</string>
+    <string name="my_wallet">کیف پول من</string>
+    <string name="wallet_balance">موجودی کیف پول</string>
+    <string name="transactions">تراکنش‌ها</string>
+    <string name="top_up">شارژ کیف پول</string>
+    <string name="withdraw">درخواست برداشت</string>
+    <string name="amount">مبلغ</string>
+    <string name="iban">شماره شبا</string>
+    <string name="wallet_empty">تراکنشی یافت نشد</string>
+    <string name="wallet_paid_amount">پرداخت از کیف پول</string>
+    <string name="gateway_paid_amount">پرداخت آنلاین</string>
+    <string name="wallet_top_up_success">هدایت به درگاه پرداخت...</string>
+    <string name="wallet_search_user">جستجوی کاربر</string>
+    <string name="adjust_balance">تغییر موجودی</string>
+    <string name="positive_for_charge">عدد مثبت برای شارژ، منفی برای کسر</string>
+    <string name="description">توضیحات</string>
+    <string name="manage_wallets">مدیریت کیف پول‌ها</string>
 </resources>

@@ -24,7 +24,9 @@ data class AdminOrderDetailResponse(
     val createdAt: String? = null,
     val updatedAt: String? = null,
     val addressSnapshot: AdminAddressSnapshotResponse = AdminAddressSnapshotResponse(),
-    val items: List<AdminOrderItemResponse> = emptyList()
+    val items: List<AdminOrderItemResponse> = emptyList(),
+    val walletPaidAmount: Double? = null,
+    val gatewayPaidAmount: Double? = null
 )
 
 @Serializable

@@ -9,6 +9,7 @@ import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.address.SetDefaultAddressUseCase
 import com.kazemieh.domain.address.UpdateAddressUseCase
 import com.kazemieh.domain.profile.ValidateProfileUseCase
+import com.kazemieh.domain.wallet.*
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -26,6 +27,16 @@ val profileModule = module {
             updateAddressUseCase = get(),
             deleteAddressUseCase = get(),
             setDefaultAddressUseCase = get(),
+            getWalletBalanceUseCase = get(),
+        )
+    }
+
+    viewModel {
+        WalletViewModel(
+            getWalletBalanceUseCase = get(),
+            getWalletTransactionsUseCase = get(),
+            topUpWalletUseCase = get(),
+            withdrawWalletUseCase = get()
         )
     }
 
@@ -42,4 +53,14 @@ val profileModule = module {
 
     // Validation
     factory { ValidateProfileUseCase() }
+
+    // Wallet
+    factory { GetWalletBalanceUseCase(get()) }
+    factory { GetWalletTransactionsUseCase(get()) }
+    factory { TopUpWalletUseCase(get()) }
+    factory { WithdrawWalletUseCase(get()) }
+    factory { AdminSearchWalletUsersUseCase(get()) }
+    factory { AdminAdjustWalletUseCase(get()) }
+    factory { AdminListWithdrawalsUseCase(get()) }
+    factory { AdminProcessWithdrawalUseCase(get()) }
 }

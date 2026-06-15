@@ -298,4 +298,30 @@ class AdminApiImpl(
             parameter("size", size)
         }
     }
+
+    override suspend fun searchWalletUsers(query: String): List<AdminWalletUserResponse> = safeApiCallRaw {
+        client.get("api/admin/wallet/users/search") {
+            parameter("query", query)
+        }
+    }
+
+    override suspend fun adjustWalletBalance(request: AdminWalletAdjustRequest) = safeApiCallRaw<Unit> {
+        client.post("api/admin/wallet/adjust") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun listWithdrawals(status: String?): List<AdminWithdrawalResponse> = safeApiCallRaw {
+        client.get("api/admin/wallet/withdrawals") {
+            parameter("status", status)
+        }
+    }
+
+    override suspend fun processWithdrawal(id: Long, request: AdminProcessWithdrawalRequest) = safeApiCallRaw<Unit> {
+        client.post("api/admin/wallet/withdrawals/$id/process") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
 }

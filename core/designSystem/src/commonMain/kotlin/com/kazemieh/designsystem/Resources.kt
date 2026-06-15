@@ -319,5 +319,24 @@ object Resources {
         val AddressLine1Placeholder = CommonRes.string.address_line1_placeholder
         val AddressLine2OptionalPlaceholder = CommonRes.string.address_line2_optional_placeholder
         val PostalCodeOptionalPlaceholder = CommonRes.string.postal_code_optional_placeholder
+
+        // Wallet
+        val Wallet = CommonRes.string.wallet
+        val MyWallet = CommonRes.string.my_wallet
+        val WalletBalance = CommonRes.string.wallet_balance
+        val Transactions = CommonRes.string.transactions
+        val TopUp = CommonRes.string.top_up
+        val Withdraw = CommonRes.string.withdraw
+        val Amount = CommonRes.string.amount
+        val Iban = CommonRes.string.iban
+        val WalletEmpty = CommonRes.string.wallet_empty
+        val WalletPaidAmount = CommonRes.string.wallet_paid_amount
+        val GatewayPaidAmount = CommonRes.string.gateway_paid_amount
+        val WalletTopUpSuccess = CommonRes.string.wallet_top_up_success
+        val WalletSearchUser = CommonRes.string.wallet_search_user
+        val AdjustBalance = CommonRes.string.adjust_balance
+        val PositiveForCharge = CommonRes.string.positive_for_charge
+        val Description = CommonRes.string.description
+        val ManageWallets = CommonRes.string.manage_wallets
     }
 }

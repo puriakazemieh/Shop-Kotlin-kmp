@@ -16,6 +16,8 @@ import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
 import com.kazemieh.admin.products.ManageProductScreen
 import com.kazemieh.admin.products.AdminDiscountsScreen
+import com.kazemieh.admin.wallet.AdminWalletScreen
+import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
@@ -26,6 +28,7 @@ import com.kazemieh.support.ContactUsScreen
 import com.kazemieh.catalog.CategorySearchScreen
 import com.kazemieh.cart.checkout.CheckoutScreen
 import com.kazemieh.cart.payment_completed.PaymentCompleted
+import com.kazemieh.profile.WalletScreen
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import com.kazemieh.orders.list.OrderListScreen
@@ -109,7 +112,16 @@ fun AppNavHost(
                 },
                 navigateToMyOrders = {
                     navController.navigate(Screen.MyOrders)
+                },
+                navigateToWallet = {
+                    navController.navigate(Screen.Wallet)
                 }
+            )
+        }
+
+        composable<Screen.Wallet> {
+            WalletScreen(
+                onBackClick = { navController.navigateBack() }
             )
         }
 
@@ -167,7 +179,25 @@ fun AppNavHost(
                 },
                 navigateToManageDiscounts = {
                     navController.navigate(Screen.ManageDiscounts)
+                },
+                navigateToManageWallets = {
+                    navController.navigate(Screen.ManageWallets)
+                },
+                navigateToManageWithdrawals = {
+                    navController.navigate(Screen.ManageWithdrawals)
                 }
+            )
+        }
+
+        composable<Screen.ManageWallets> {
+            AdminWalletScreen(
+                onBackClick = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ManageWithdrawals> {
+            AdminWithdrawalsScreen(
+                onBackClick = { navController.navigateBack() }
             )
         }
 

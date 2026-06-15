@@ -45,10 +45,14 @@ import com.kazemieh.data.profile.source.AddressDataSourceImpl
 import com.kazemieh.data.profile.source.ProfileDataSource
 import com.kazemieh.data.profile.source.ProfileDataSourceImpl
 import com.kazemieh.data.settings.SettingsRepositoryImpl
+import com.kazemieh.data.wallet.repository.WalletRepositoryImpl
+import com.kazemieh.domain.wallet.WalletRepository
 import org.koin.dsl.module
 
 
 val dataModule = module {
+
+    single<WalletRepository> { WalletRepositoryImpl(get(), get()) }
 
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 
