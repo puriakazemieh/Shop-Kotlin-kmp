@@ -21,6 +21,8 @@ import com.kazemieh.network.payment.PaymentApi
 import com.kazemieh.network.payment.PaymentApiImpl
 import com.kazemieh.network.profile.ProfileApi
 import com.kazemieh.network.profile.ProfileApiImpl
+import com.kazemieh.network.story.StoryApi
+import com.kazemieh.network.story.StoryApiImpl
 import com.kazemieh.network.wallet.WalletApi
 import com.kazemieh.network.wallet.WalletApiImpl
 import org.koin.dsl.module
@@ -74,5 +76,9 @@ val networkModule = module {
 
     single<WalletApi> {
         WalletApiImpl(get())
+    }
+
+    single<StoryApi> {
+        StoryApiImpl(get())
     }
 }

@@ -47,12 +47,20 @@ import com.kazemieh.data.profile.source.ProfileDataSourceImpl
 import com.kazemieh.data.settings.SettingsRepositoryImpl
 import com.kazemieh.data.wallet.repository.WalletRepositoryImpl
 import com.kazemieh.domain.wallet.WalletRepository
+import com.kazemieh.domain.story.StoryRepository
+import com.kazemieh.data.story.repository.StoryRepositoryImpl
+import com.kazemieh.data.story.source.StoryDataSource
+import com.kazemieh.data.story.source.StoryDataSourceImpl
 import org.koin.dsl.module
 
 
 val dataModule = module {
 
     single<WalletRepository> { WalletRepositoryImpl(get(), get()) }
+
+    single<StoryRepository> { StoryRepositoryImpl(get(), get()) }
+
+    single<StoryDataSource> { StoryDataSourceImpl(get()) }
 
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 

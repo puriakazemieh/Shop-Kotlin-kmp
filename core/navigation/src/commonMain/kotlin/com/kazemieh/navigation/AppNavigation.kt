@@ -16,6 +16,7 @@ import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
 import com.kazemieh.admin.products.ManageProductScreen
 import com.kazemieh.admin.products.AdminDiscountsScreen
+import com.kazemieh.admin.story.AdminStoryScreen
 import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.common.AuthState
@@ -185,6 +186,9 @@ fun AppNavHost(
                 },
                 navigateToManageWithdrawals = {
                     navController.navigate(Screen.ManageWithdrawals)
+                },
+                navigateToManageStories = {
+                    navController.navigate(Screen.ManageStories)
                 }
             )
         }
@@ -223,6 +227,12 @@ fun AppNavHost(
 
         composable<Screen.ManageDiscounts> {
             AdminDiscountsScreen(
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ManageStories> {
+            AdminStoryScreen(
                 navigateBack = { navController.navigateBack() }
             )
         }

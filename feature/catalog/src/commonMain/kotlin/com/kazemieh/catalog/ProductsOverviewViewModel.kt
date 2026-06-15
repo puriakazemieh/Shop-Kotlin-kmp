@@ -6,16 +6,21 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
+import com.kazemieh.domain.story.GetStoriesUseCase
+import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProductsOverviewViewModel(
     private val getProductsUseCase: GetProductsUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val getStoriesUseCase: GetStoriesUseCase,
+    private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductsOverviewState())
@@ -26,6 +31,7 @@ class ProductsOverviewViewModel(
 
     init {
         handleIntent(ProductsOverviewIntent.LoadProducts)
+        loadStories()
     }
 
     fun handleIntent(intent: ProductsOverviewIntent) {
@@ -38,6 +44,34 @@ class ProductsOverviewViewModel(
                 }
             }
             is ProductsOverviewIntent.OnFavoriteClick -> toggleFavorite(intent.product)
+            is ProductsOverviewIntent.OnStoryClick -> {
+                viewModelScope.launch {
+                    _effect.send(ProductsOverviewEffect.NavigateToStory(intent.index))
+                }
+            }
+            is ProductsOverviewIntent.OnStorySeen -> {
+                viewModelScope.launch {
+                    markStoryAsSeenUseCase(intent.id)
+                }
+            }
+        }
+    }
+
+    private fun loadStories() {
+        viewModelScope.launch {
+            getStoriesUseCase().collectLatest { result ->
+                when (result) {
+                    is AppResult.Success -> {
+                        _state.update { it.copy(stories = result.data, isStoriesLoading = false) }
+                    }
+                    is AppResult.Error -> {
+                        _state.update { it.copy(isStoriesLoading = false) }
+                    }
+                    is AppResult.Loading -> {
+                        _state.update { it.copy(isStoriesLoading = true) }
+                    }
+                }
+            }
         }
     }
 

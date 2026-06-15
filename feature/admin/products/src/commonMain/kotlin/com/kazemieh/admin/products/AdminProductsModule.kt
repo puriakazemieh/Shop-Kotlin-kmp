@@ -1,6 +1,8 @@
 package com.kazemieh.admin.products
 
 import com.kazemieh.domain.admin.*
+import com.kazemieh.domain.story.*
+import com.kazemieh.admin.story.AdminStoryViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -32,9 +34,24 @@ val adminProductsModule = module {
     factory { CreateOptionValueUseCase(get()) }
     factory { SetInventoryUseCase(get()) }
 
+    // Admin Story UseCases
+    factory { GetAdminStoriesUseCase(get()) }
+    factory { CreateStoryUseCase(get()) }
+    factory { UpdateStoryUseCase(get()) }
+    factory { DeleteStoryUseCase(get()) }
+
     viewModel {
         AdminPanelViewModel(
             getAdminProductsUseCase = get()
+        )
+    }
+
+    viewModel {
+        AdminStoryViewModel(
+            getAdminStoriesUseCase = get(),
+            createStoryUseCase = get(),
+            updateStoryUseCase = get(),
+            deleteStoryUseCase = get()
         )
     }
 

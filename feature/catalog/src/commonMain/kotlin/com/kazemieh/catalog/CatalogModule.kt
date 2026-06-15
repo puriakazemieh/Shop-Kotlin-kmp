@@ -4,6 +4,8 @@ import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
+import com.kazemieh.domain.story.GetStoriesUseCase
+import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -14,10 +16,16 @@ val catalogModule = module {
     factory { GetProductDetailUseCase(get()) }
     factory { ToggleFavoriteUseCase(get()) }
 
+    // Story UseCases
+    factory { GetStoriesUseCase(get()) }
+    factory { MarkStoryAsSeenUseCase(get()) }
+
     viewModel {
         ProductsOverviewViewModel(
             getProductsUseCase = get(),
-            toggleFavoriteUseCase = get()
+            toggleFavoriteUseCase = get(),
+            getStoriesUseCase = get(),
+            markStoryAsSeenUseCase = get()
         )
     }
 

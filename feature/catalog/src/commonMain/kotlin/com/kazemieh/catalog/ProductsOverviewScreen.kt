@@ -29,7 +29,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -57,6 +59,9 @@ fun ProductsOverviewScreen(
 
     val pullToRefreshState = rememberPullToRefreshState()
 
+    var showStoryDetail by remember { mutableStateOf(false) }
+    var initialStoryIndex by remember { mutableStateOf(0) }
+
     val centeredIndex: Int? by remember {
         derivedStateOf {
             val layoutInfo = listState.layoutInfo
@@ -73,6 +78,10 @@ fun ProductsOverviewScreen(
             when (effect) {
                 is ProductsOverviewEffect.NavigateToDetails -> {
                     navigateToDetails(effect.slug)
+                }
+                is ProductsOverviewEffect.NavigateToStory -> {
+                    initialStoryIndex = effect.initialIndex
+                    showStoryDetail = true
                 }
             }
         }
@@ -103,8 +112,16 @@ fun ProductsOverviewScreen(
             AnimatedContent(
                 targetState = state.products
             ) { products ->
-                if (products.isNotEmpty()) {
+                if (products.isNotEmpty() || state.stories.isNotEmpty()) {
                     Column(modifier = Modifier.fillMaxSize()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        StoryCircleRow(
+                            stories = state.stories,
+                            isLoading = state.isStoriesLoading,
+                            onStoryClick = { index ->
+                                viewModel.handleIntent(ProductsOverviewIntent.OnStoryClick(index))
+                            }
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             modifier = Modifier
@@ -208,5 +225,20 @@ fun ProductsOverviewScreen(
                 }
             }
         }
+    }
+
+    if (showStoryDetail) {
+        StoryDetailScreen(
+            stories = state.stories,
+            initialIndex = initialStoryIndex,
+            onClose = { showStoryDetail = false },
+            onStorySeen = { id -> viewModel.handleIntent(ProductsOverviewIntent.OnStorySeen(id)) },
+            onProductClick = { id ->
+                showStoryDetail = false
+                // Ideally we should find the slug for this productId
+                // For now, if navigateToDetails supports ID or if we have a way to get slug
+                navigateToDetails(id.toString())
+            }
+        )
     }
 }

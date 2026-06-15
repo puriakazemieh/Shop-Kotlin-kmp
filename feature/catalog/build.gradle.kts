@@ -60,6 +60,16 @@ kotlin {
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
+
+
+                implementation(libs.compose.material.icons.core)
+                implementation(libs.compose.material.icons.extended)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.media3.exoplayer)
+                implementation(libs.androidx.media3.ui)
             }
         }
     }

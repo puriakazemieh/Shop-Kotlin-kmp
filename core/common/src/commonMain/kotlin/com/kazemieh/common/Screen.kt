@@ -69,6 +69,9 @@ sealed class Screen {
     data object ManageWithdrawals : Screen()
 
     @Serializable
+    data object ManageStories : Screen()
+
+    @Serializable
     data object Wallet : Screen()
 
     @Serializable

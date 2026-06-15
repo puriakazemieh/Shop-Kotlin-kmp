@@ -1,11 +1,14 @@
 package com.kazemieh.catalog
 
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.story.Story
 
 data class ProductsOverviewState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val products: List<ProductSummary> = emptyList(),
+    val stories: List<Story> = emptyList(),
+    val isStoriesLoading: Boolean = false,
     val error: Any? = null
 )
 
@@ -14,8 +17,11 @@ sealed interface ProductsOverviewIntent {
     data object Refresh : ProductsOverviewIntent
     data class OnProductClick(val slug: String) : ProductsOverviewIntent
     data class OnFavoriteClick(val product: ProductSummary) : ProductsOverviewIntent
+    data class OnStoryClick(val index: Int) : ProductsOverviewIntent
+    data class OnStorySeen(val id: Long) : ProductsOverviewIntent
 }
 
 sealed interface ProductsOverviewEffect {
     data class NavigateToDetails(val slug: String) : ProductsOverviewEffect
+    data class NavigateToStory(val initialIndex: Int) : ProductsOverviewEffect
 }
