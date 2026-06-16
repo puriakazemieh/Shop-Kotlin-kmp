@@ -20,9 +20,9 @@ enum class BottomBarDestination(
         title = Resources.String.Cart,
         screen = Screen.Cart
     ),
-    Categories(
-        icon = Resources.Icon.Categories,
-        title = Resources.String.Categories,
+    More(
+        icon = Resources.Icon.Menu,
+        title = Resources.String.Profile,
         screen = Screen.Categories
     )
 }
