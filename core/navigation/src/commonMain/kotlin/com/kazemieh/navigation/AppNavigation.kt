@@ -20,6 +20,7 @@ import com.kazemieh.admin.story.AdminStoryScreen
 import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
+import com.kazemieh.admin.blog.ManageBlogScreen
 import com.kazemieh.blog.BlogListScreen
 import com.kazemieh.blog.BlogDetailScreen
 import com.kazemieh.common.AuthState
@@ -265,9 +266,21 @@ fun AppNavHost(
 
         composable<Screen.AdminBlogList> {
             AdminBlogListScreen(
-                navigateToManageBlog = { id ->
-                    navController.navigate(Screen.ManageBlog(id))
+                navigateToManageBlog = { id, slug ->
+                    navController.navigate(Screen.ManageBlog(id, slug))
                 },
+                navigateToManageCategory = { id ->
+                    // Logic for categories if needed
+                },
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ManageBlog> {
+            val args = it.toRoute<Screen.ManageBlog>()
+            ManageBlogScreen(
+                id = args.id,
+                slug = args.slug,
                 navigateBack = { navController.navigateBack() }
             )
         }

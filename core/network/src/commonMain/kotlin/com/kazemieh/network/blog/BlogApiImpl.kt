@@ -23,8 +23,14 @@ class BlogApiImpl(
                 parameter("page", page)
                 parameter("size", size)
                 categoryId?.let { parameter("categoryId", it) }
-                searchQuery?.let { parameter("search", it) }
+                searchQuery?.let { parameter("query", it) } // Documentation uses 'query' not 'search'
             }
+        }
+    }
+
+    override suspend fun getFeaturedBlogs(): List<BlogResponse> {
+        return safeApiCallRaw {
+            httpClient.get("api/blogs/featured")
         }
     }
 
@@ -52,6 +58,12 @@ class BlogApiImpl(
                 parameter("page", page)
                 parameter("size", size)
             }
+        }
+    }
+
+    override suspend fun getAdminBlogDetail(slug: String): BlogResponse {
+        return safeApiCallRaw {
+            httpClient.get("api/admin/blogs/$slug")
         }
     }
 

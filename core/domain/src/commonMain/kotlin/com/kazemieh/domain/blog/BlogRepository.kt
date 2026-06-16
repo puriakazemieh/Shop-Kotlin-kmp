@@ -9,12 +9,14 @@ interface BlogRepository {
         categoryId: Long? = null,
         searchQuery: String? = null
     ): AppResult<BlogList>
+    suspend fun getFeaturedBlogs(): AppResult<List<Blog>>
     suspend fun getBlogDetail(slug: String): AppResult<Blog>
     suspend fun getRelatedBlogs(slug: String): AppResult<List<Blog>>
     suspend fun getCategories(): AppResult<List<BlogCategory>>
     
     // Admin
     suspend fun getAdminBlogs(page: Int, size: Int): AppResult<BlogList>
+    suspend fun getAdminBlogDetail(slug: String): AppResult<Blog>
     suspend fun createBlog(blog: Blog): AppResult<Blog>
     suspend fun updateBlog(id: Long, blog: Blog): AppResult<Blog>
     suspend fun deleteBlog(id: Long): AppResult<Unit>

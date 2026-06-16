@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.blog.usecase.GetBlogCategoriesUseCase
 import com.kazemieh.domain.blog.usecase.GetBlogsUseCase
+import com.kazemieh.domain.blog.usecase.GetFeaturedBlogsUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class BlogListViewModel(
     private val getBlogsUseCase: GetBlogsUseCase,
+    private val getFeaturedBlogsUseCase: GetFeaturedBlogsUseCase,
     private val getBlogCategoriesUseCase: GetBlogCategoriesUseCase
 ) : ViewModel() {
 
@@ -22,12 +24,14 @@ class BlogListViewModel(
 
     init {
         handleIntent(BlogListIntent.LoadBlogs)
+        handleIntent(BlogListIntent.LoadFeaturedBlogs)
         handleIntent(BlogListIntent.LoadCategories)
     }
 
     fun handleIntent(intent: BlogListIntent) {
         when (intent) {
             is BlogListIntent.LoadBlogs -> loadBlogs()
+            is BlogListIntent.LoadFeaturedBlogs -> loadFeaturedBlogs()
             is BlogListIntent.LoadCategories -> loadCategories()
             is BlogListIntent.SelectCategory -> {
                 _state.update { it.copy(selectedCategoryId = intent.categoryId) }
@@ -49,6 +53,17 @@ class BlogListViewModel(
             when (val result = getBlogCategoriesUseCase()) {
                 is AppResult.Success -> {
                     _state.update { it.copy(categories = result.data) }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadFeaturedBlogs() {
+        viewModelScope.launch {
+            when (val result = getFeaturedBlogsUseCase()) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(featuredBlogs = result.data) }
                 }
                 else -> {}
             }

@@ -24,6 +24,7 @@ kotlin {
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
+                implementation(libs.image.loader)
 
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))

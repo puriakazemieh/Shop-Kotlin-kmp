@@ -10,8 +10,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kazemieh.domain.blog.BlogBlock
-import io.github.aakira.napier.Napier // Assuming Napier for logging if needed, or just remove
-// Replace Kamel with ImageLoader if that's what's in libs.versions.toml
 import com.seiko.imageloader.rememberImagePainter
 
 @Composable

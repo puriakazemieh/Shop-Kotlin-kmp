@@ -26,6 +26,10 @@ class BlogRepositoryImpl(
         dataSource.getBlogs(page, size, categoryId, searchQuery).toDomain()
     }
 
+    override suspend fun getFeaturedBlogs(): AppResult<List<Blog>> = safeApiCall {
+        dataSource.getFeaturedBlogs().map { it.toDomain() }
+    }
+
     override suspend fun getBlogDetail(slug: String): AppResult<Blog> = safeApiCall {
         dataSource.getBlogDetail(slug).toDomain()
     }
@@ -40,6 +44,10 @@ class BlogRepositoryImpl(
 
     override suspend fun getAdminBlogs(page: Int, size: Int): AppResult<BlogList> = safeApiCall {
         dataSource.getAdminBlogs(page, size).toDomain()
+    }
+
+    override suspend fun getAdminBlogDetail(slug: String): AppResult<Blog> = safeApiCall {
+        dataSource.getAdminBlogDetail(slug).toDomain()
     }
 
     override suspend fun createBlog(blog: Blog): AppResult<Blog> = safeApiCall {

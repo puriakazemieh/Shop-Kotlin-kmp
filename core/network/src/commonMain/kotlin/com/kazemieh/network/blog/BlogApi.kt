@@ -11,12 +11,15 @@ interface BlogApi {
         searchQuery: String? = null
     ): BlogListResponse
 
+    suspend fun getFeaturedBlogs(): List<BlogResponse>
+
     suspend fun getBlogDetail(slug: String): BlogResponse
     suspend fun getRelatedBlogs(slug: String): List<BlogResponse>
     suspend fun getCategories(): List<BlogCategoryResponse>
 
     // Admin APIs
     suspend fun getAdminBlogs(page: Int, size: Int): BlogListResponse
+    suspend fun getAdminBlogDetail(slug: String): BlogResponse
     suspend fun createBlog(request: CreateBlogRequest): BlogResponse
     suspend fun updateBlog(id: Long, request: UpdateBlogRequest): BlogResponse
     suspend fun deleteBlog(id: Long)

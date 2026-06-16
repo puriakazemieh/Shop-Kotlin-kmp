@@ -84,7 +84,7 @@ sealed class Screen {
     data object AdminBlogList : Screen()
 
     @Serializable
-    data class ManageBlog(val id: Long? = null) : Screen()
+    data class ManageBlog(val id: Long? = null, val slug: String? = null) : Screen()
 
     @Serializable
     data object Wallet : Screen()

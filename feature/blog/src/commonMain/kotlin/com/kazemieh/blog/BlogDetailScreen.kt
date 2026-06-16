@@ -56,13 +56,30 @@ fun BlogDetailScreen(
                 ) {
                     item {
                         Text(text = blog.title, style = MaterialTheme.typography.headlineLarge)
-                        blog.category?.let {
+                        Row(
+                            modifier = Modifier.padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            blog.category?.let {
+                                AssistChip(
+                                    onClick = {},
+                                    label = { Text(it.name) }
+                                )
+                            }
                             AssistChip(
                                 onClick = {},
-                                label = { Text(it.name) },
-                                modifier = Modifier.padding(top = 8.dp)
+                                label = { Text("${blog.viewCount} views") }
+                            )
+                            AssistChip(
+                                onClick = {},
+                                label = { Text("${blog.readingTimeMinutes} min read") }
                             )
                         }
+                        Text(
+                            text = "By ${blog.authorName ?: "Staff"} • ${blog.createdAt}",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
                     blog.content?.let { blocks ->
                         item {
@@ -72,7 +89,7 @@ fun BlogDetailScreen(
 
                     if (state.relatedBlogs.isNotEmpty()) {
                         item {
-                            Divider(modifier = Modifier.padding(vertical = 16.dp))
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                             Text(
                                 text = "Related Articles",
                                 style = MaterialTheme.typography.titleLarge

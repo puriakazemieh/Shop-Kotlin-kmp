@@ -7,6 +7,7 @@ import com.kazemieh.domain.blog.BlogList
 data class BlogListState(
     val isLoading: Boolean = false,
     val blogs: List<Blog> = emptyList(),
+    val featuredBlogs: List<Blog> = emptyList(),
     val categories: List<BlogCategory> = emptyList(),
     val selectedCategoryId: Long? = null,
     val searchQuery: String = "",
@@ -15,6 +16,7 @@ data class BlogListState(
 
 sealed interface BlogListIntent {
     data object LoadBlogs : BlogListIntent
+    data object LoadFeaturedBlogs : BlogListIntent
     data object LoadCategories : BlogListIntent
     data class SelectCategory(val categoryId: Long?) : BlogListIntent
     data class Search(val query: String) : BlogListIntent

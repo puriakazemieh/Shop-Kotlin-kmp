@@ -12,11 +12,20 @@ data class BlogResponse(
     val thumbnailUrl: String? = null,
     val viewCount: Int,
     val readingTimeMinutes: Int,
-    val status: String? = null,
+    val authorName: String? = null,
+    val author: AuthorResponse? = null,
+    val categoryName: String? = null,
     val category: BlogCategoryResponse? = null,
     val isFeatured: Boolean = false,
+    val status: String? = null,
     val metaTitle: String? = null,
     val metaDescription: String? = null,
     val createdAt: String,
     val updatedAt: String? = null
+)
+
+@Serializable
+data class AuthorResponse(
+    val id: Long,
+    val name: String
 )

@@ -14,11 +14,14 @@ class BlogDataSourceImpl(
         searchQuery: String?
     ): BlogListResponse = api.getBlogs(page, size, categoryId, searchQuery)
 
+    override suspend fun getFeaturedBlogs(): List<BlogResponse> = api.getFeaturedBlogs()
+
     override suspend fun getBlogDetail(slug: String): BlogResponse = api.getBlogDetail(slug)
     override suspend fun getRelatedBlogs(slug: String): List<BlogResponse> = api.getRelatedBlogs(slug)
     override suspend fun getCategories(): List<BlogCategoryResponse> = api.getCategories()
 
     override suspend fun getAdminBlogs(page: Int, size: Int): BlogListResponse = api.getAdminBlogs(page, size)
+    override suspend fun getAdminBlogDetail(slug: String): BlogResponse = api.getAdminBlogDetail(slug)
     override suspend fun createBlog(request: CreateBlogRequest): BlogResponse = api.createBlog(request)
     override suspend fun updateBlog(id: Long, request: UpdateBlogRequest): BlogResponse = api.updateBlog(id, request)
     override suspend fun deleteBlog(id: Long) = api.deleteBlog(id)

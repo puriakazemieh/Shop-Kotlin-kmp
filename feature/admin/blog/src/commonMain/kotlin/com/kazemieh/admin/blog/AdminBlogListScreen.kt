@@ -21,7 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminBlogListScreen(
-    navigateToManageBlog: (Long?) -> Unit,
+    navigateToManageBlog: (Long?, String?) -> Unit,
     navigateToManageCategory: (Long?) -> Unit,
     navigateBack: () -> Unit,
     viewModel: AdminBlogListViewModel = koinViewModel()
@@ -40,7 +40,7 @@ fun AdminBlogListScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        if (selectedTab == 0) navigateToManageBlog(null)
+                        if (selectedTab == 0) navigateToManageBlog(null, null)
                         else navigateToManageCategory(null)
                     }) {
                         Icon(Icons.Default.Add, contentDescription = "Add")
@@ -74,7 +74,7 @@ fun AdminBlogListScreen(
 @Composable
 private fun ArticlesList(
     blogs: List<Blog>,
-    navigateToManageBlog: (Long?) -> Unit,
+    navigateToManageBlog: (Long?, String?) -> Unit,
     viewModel: AdminBlogListViewModel
 ) {
     LazyColumn(
@@ -84,26 +84,41 @@ private fun ArticlesList(
         items(blogs) { blog ->
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = blog.title, style = MaterialTheme.typography.titleMedium)
-                    blog.category?.let {
-                        Text(
-                            text = "Category: ${it.name}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = blog.title, style = MaterialTheme.typography.titleMedium)
+                        SuggestionChip(
+                            onClick = {},
+                            label = { Text(blog.status ?: "PUBLISHED") }
                         )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "Views: ${blog.viewCount}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        blog.category?.let {
+                            Text(
+                                text = "Category: ${it.name}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        IconButton(onClick = { navigateToManageBlog(blog.id) }) {
+                        IconButton(onClick = { navigateToManageBlog(blog.id, blog.slug) }) {
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
                         }
                         IconButton(onClick = { viewModel.handleIntent(AdminBlogListIntent.DeleteBlog(blog.id)) }) {
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = "Delete",
-                               有意 = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
                     }
