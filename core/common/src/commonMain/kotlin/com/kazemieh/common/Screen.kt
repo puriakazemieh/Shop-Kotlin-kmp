@@ -24,6 +24,15 @@ sealed class Screen {
     data class HomeGraph(val showCart: Boolean = false) : Screen()
 
     @Serializable
+    data object BlogGraph : Screen()
+
+    @Serializable
+    data object BlogList : Screen()
+
+    @Serializable
+    data class BlogDetail(val slug: String) : Screen()
+
+    @Serializable
     data object ProductsOverview : Screen()
 
     @Serializable
@@ -70,6 +79,12 @@ sealed class Screen {
 
     @Serializable
     data object ManageStories : Screen()
+
+    @Serializable
+    data object AdminBlogList : Screen()
+
+    @Serializable
+    data class ManageBlog(val id: Long? = null) : Screen()
 
     @Serializable
     data object Wallet : Screen()

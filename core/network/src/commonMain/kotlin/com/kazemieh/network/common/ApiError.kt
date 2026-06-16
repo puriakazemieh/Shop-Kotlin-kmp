@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApiError(
     val message: String,
-    val status: String,
-    val code: Int,
+    val status: String? = null,
+    val code: Int? = null,
     val errorCode: String = "UNKNOWN_ERROR",
     val path: String? = null,
     val timestamp: String? = null

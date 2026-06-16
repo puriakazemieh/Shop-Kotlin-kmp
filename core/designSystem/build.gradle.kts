@@ -60,7 +60,9 @@ kotlin {
 
                 implementation(libs.compose.material.icons.core)
                 implementation(libs.compose.material.icons.extended)
+                implementation(libs.image.loader)
                 implementation(project(":core:common"))
+                implementation(project(":core:domain"))
             }
         }
 

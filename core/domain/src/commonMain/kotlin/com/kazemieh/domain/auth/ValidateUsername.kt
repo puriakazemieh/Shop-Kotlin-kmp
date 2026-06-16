@@ -2,12 +2,11 @@ package com.kazemieh.domain.auth
 
 import com.kazemieh.domain.common.EmailValidator.isValid as isEmailValid
 import com.kazemieh.domain.common.ValidationResult
-import com.kazemieh.designsystem.Resources
 
 class ValidateUsername {
     operator fun invoke(username: String): ValidationResult {
         if (username.isBlank()) {
-            return ValidationResult(false, Resources.String.InvalidUsername)
+            return ValidationResult(false, AuthError.EMPTY_USERNAME)
         }
 
         val isEmail = isEmailValid(username)
@@ -15,7 +14,7 @@ class ValidateUsername {
         val isMobile = mobileRegex.matches(username)
 
         if (!isEmail && !isMobile) {
-            return ValidationResult(false, Resources.String.InvalidUsername)
+            return ValidationResult(false, AuthError.INVALID_USERNAME)
         }
 
         return ValidationResult(true)

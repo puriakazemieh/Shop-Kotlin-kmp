@@ -351,5 +351,6 @@ object Resources {
         val Description = CommonRes.string.description
         val ManageWallets = CommonRes.string.manage_wallets
         val UseWalletBalance = CommonRes.string.use_wallet_balance
+        val ManageBlogs = CommonRes.string.manage_blogs
     }
 }

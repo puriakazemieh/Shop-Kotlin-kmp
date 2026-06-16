@@ -98,6 +98,9 @@
     <string name="size_created">سایز ایجاد شد</string>
     <string name="size_updated">سایز بروز شد</string>
     <string name="size_deleted">سایز حذف شد</string>
+    <string name="blog_not_found">مقاله یافت نشد</string>
+    <string name="blog_slug_exists">این نامک قبلاً استفاده شده است</string>
+    <string name="manage_blogs">مدیریت وبلاگ</string>
     <string name="color_created">رنگ ایجاد شد</string>
     <string name="color_updated">رنگ بروز شد</string>
     <string name="color_deleted">رنگ حذف شد</string>

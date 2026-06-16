@@ -19,6 +19,9 @@ import com.kazemieh.admin.products.AdminDiscountsScreen
 import com.kazemieh.admin.story.AdminStoryScreen
 import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
+import com.kazemieh.admin.blog.AdminBlogListScreen
+import com.kazemieh.blog.BlogListScreen
+import com.kazemieh.blog.BlogDetailScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
@@ -189,6 +192,12 @@ fun AppNavHost(
                 },
                 navigateToManageStories = {
                     navController.navigate(Screen.ManageStories)
+                },
+                navigateToBlog = {
+                    navController.navigate(Screen.BlogList)
+                },
+                navigateToAdminBlog = {
+                    navController.navigate(Screen.AdminBlogList)
                 }
             )
         }
@@ -233,6 +242,32 @@ fun AppNavHost(
 
         composable<Screen.ManageStories> {
             AdminStoryScreen(
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.BlogList> {
+            BlogListScreen(
+                navigateToDetail = { slug ->
+                    navController.navigate(Screen.BlogDetail(slug))
+                },
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.BlogDetail> {
+            val args = it.toRoute<Screen.BlogDetail>()
+            BlogDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.AdminBlogList> {
+            AdminBlogListScreen(
+                navigateToManageBlog = { id ->
+                    navController.navigate(Screen.ManageBlog(id))
+                },
                 navigateBack = { navController.navigateBack() }
             )
         }

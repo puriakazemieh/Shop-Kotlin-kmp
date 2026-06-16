@@ -4,6 +4,8 @@ import com.kazemieh.network.address.AddressApi
 import com.kazemieh.network.address.AddressApiImpl
 import com.kazemieh.network.admin.AdminApi
 import com.kazemieh.network.admin.AdminApiImpl
+import com.kazemieh.network.blog.BlogApi
+import com.kazemieh.network.blog.BlogApiImpl
 import com.kazemieh.network.auth.AuthApi
 import com.kazemieh.network.auth.AuthApiImpl
 import com.kazemieh.network.cart.CartApi
@@ -44,6 +46,10 @@ val networkModule = module {
 
     single<AdminApi> {
         AdminApiImpl(get())
+    }
+
+    single<BlogApi> {
+        BlogApiImpl(get())
     }
 
     single<CatalogApi> {

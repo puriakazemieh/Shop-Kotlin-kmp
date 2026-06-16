@@ -98,6 +98,9 @@
     <string name="size_created">Size created</string>
     <string name="size_updated">Size updated</string>
     <string name="size_deleted">Size deleted</string>
+    <string name="blog_not_found">Blog not found</string>
+    <string name="blog_slug_exists">Blog slug already exists</string>
+    <string name="manage_blogs">Manage Blogs</string>
     <string name="color_created">Color created</string>
     <string name="color_updated">Color updated</string>
     <string name="color_deleted">Color deleted</string>

@@ -7,7 +7,9 @@ import com.kazemieh.admin.options.adminOptionsModule
 import com.kazemieh.admin.orders.adminOrdersModule
 import com.kazemieh.admin.products.adminProductsModule
 import com.kazemieh.admin.wallet.adminWalletModule
+import com.kazemieh.admin.blog.adminBlogModule
 import com.kazemieh.auth.authModule
+import com.kazemieh.blog.blogModule
 import com.kazemieh.cart.cartModule
 import com.kazemieh.catalog.catalogModule
 import com.kazemieh.common.AppLanguage
@@ -64,6 +66,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             adminOrdersModule,
             adminOptionsModule,
             adminWalletModule,
+            adminBlogModule,
+            blogModule,
             detailsModule,
             ordersModule
         )

@@ -93,6 +93,10 @@ fun String.toUserMessage(): StringResource {
         "OPTION_VALUE_IN_USE" -> Res.string.option_value_in_use
         "OPTION_TYPE_IN_USE" -> Res.string.option_type_in_use
 
+        // Blog
+        "BLOG_NOT_FOUND" -> Res.string.blog_not_found
+        "BLOG_SLUG_EXISTS" -> Res.string.blog_slug_exists
+
         "UNKNOWN_ERROR" -> Res.string.unknown_error
 
         else -> Res.string.unknown_error
