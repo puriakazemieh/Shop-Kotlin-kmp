@@ -23,6 +23,7 @@ val catalogModule = module {
     viewModel {
         ProductsOverviewViewModel(
             getProductsUseCase = get(),
+            getCategoriesUseCase = get(),
             toggleFavoriteUseCase = get(),
             getStoriesUseCase = get(),
             markStoryAsSeenUseCase = get()

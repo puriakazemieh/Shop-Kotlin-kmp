@@ -283,7 +283,10 @@ fun MainGraphScreen(
                                 startDestination = Screen.ProductsOverview
                             ) {
                                 composable<Screen.ProductsOverview> {
-                                    ProductsOverviewScreen(navigateToDetails = navigateToDetails)
+                                    ProductsOverviewScreen(
+                                        navigateToDetails = navigateToDetails,
+                                        navigateToCategorySearch = navigateToCategorySearch
+                                    )
                                 }
                                 composable<Screen.Cart> {
                                     CartScreen(navigateToCheckout=navigateToCheckout)

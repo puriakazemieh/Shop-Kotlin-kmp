@@ -3,6 +3,7 @@ package com.kazemieh.catalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class ProductsOverviewViewModel(
     private val getProductsUseCase: GetProductsUseCase,
+    private val getCategoriesUseCase: GetCategoriesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val getStoriesUseCase: GetStoriesUseCase,
     private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase
@@ -32,15 +34,24 @@ class ProductsOverviewViewModel(
     init {
         handleIntent(ProductsOverviewIntent.LoadProducts)
         loadStories()
+        loadCategories()
     }
 
     fun handleIntent(intent: ProductsOverviewIntent) {
         when (intent) {
-            is ProductsOverviewIntent.LoadProducts -> loadProducts()
+            is ProductsOverviewIntent.LoadProducts -> {
+                loadProducts()
+                loadCategories()
+            }
             is ProductsOverviewIntent.Refresh -> refresh()
             is ProductsOverviewIntent.OnProductClick -> {
                 viewModelScope.launch {
                     _effect.send(ProductsOverviewEffect.NavigateToDetails(intent.slug))
+                }
+            }
+            is ProductsOverviewIntent.OnCategoryClick -> {
+                viewModelScope.launch {
+                    _effect.send(ProductsOverviewEffect.NavigateToCategory(intent.id, intent.name))
                 }
             }
             is ProductsOverviewIntent.OnFavoriteClick -> toggleFavorite(intent.product)
@@ -52,6 +63,23 @@ class ProductsOverviewViewModel(
             is ProductsOverviewIntent.OnStorySeen -> {
                 viewModelScope.launch {
                     markStoryAsSeenUseCase(intent.id)
+                }
+            }
+        }
+    }
+
+    private fun loadCategories() {
+        viewModelScope.launch {
+            _state.update { it.copy(isCategoriesLoading = true) }
+            when (val result = getCategoriesUseCase()) {
+                is AppResult.Success<*> -> {
+                    _state.update { it.copy(categories = result.data as List<com.kazemieh.domain.catalog.Category>, isCategoriesLoading = false) }
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(isCategoriesLoading = false) }
+                }
+                is AppResult.Loading -> {
+                    _state.update { it.copy(isCategoriesLoading = true) }
                 }
             }
         }
