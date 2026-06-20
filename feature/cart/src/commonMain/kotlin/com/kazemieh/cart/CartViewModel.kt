@@ -63,7 +63,7 @@ class CartViewModel(
 
         viewModelScope.launch {
             _state.update { it.copy(isApplyingDiscount = true) }
-            when (val result = applyDiscountUseCase(code.uppercase().trim())) {
+            when (val result = applyDiscountUseCase(code.trim())) {
                 is AppResult.Success -> {
                     _state.update { it.copy(cartState = result, isApplyingDiscount = false) }
                 }
