@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProfileResponse(
     val id: Long,
-    val email: String,
+    val email: String?,
     val firstName: String?,
     val lastName: String?,
     val phone: String?,
