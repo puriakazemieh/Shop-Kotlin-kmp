@@ -1,6 +1,5 @@
 package com.kazemieh.common
 
-import com.kazemieh.common.Res
 import org.jetbrains.compose.resources.StringResource
 
 fun String.toUserMessage(): StringResource {
@@ -98,6 +97,9 @@ fun String.toUserMessage(): StringResource {
         "BLOG_SLUG_EXISTS" -> Res.string.blog_slug_exists
 
         "UNKNOWN_ERROR" -> Res.string.unknown_error
+
+        // Wallet
+        "INSUFFICIENT_WALLET_BALANCE" -> Res.string.insufficient_wallet_balance
 
         else -> Res.string.unknown_error
     }

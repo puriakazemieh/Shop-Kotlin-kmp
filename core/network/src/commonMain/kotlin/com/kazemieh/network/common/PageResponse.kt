@@ -9,8 +9,15 @@ import kotlinx.serialization.ExperimentalSerializationApi
 data class PageResponse<T>(
     @JsonNames("content")
     val items: List<T>,
-    val page: Int,
+    val page: PageMetadata
+)
+
+@Serializable
+data class PageMetadata(
     val size: Int,
     val totalElements: Long,
-    val totalPages: Int
+    val totalPages: Int,
+    @OptIn(ExperimentalSerializationApi::class)
+    @JsonNames("number")
+    val number: Int
 )

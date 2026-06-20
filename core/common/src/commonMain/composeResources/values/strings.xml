@@ -357,4 +357,5 @@
     <string name="description">Description</string>
     <string name="manage_wallets">Manage Wallets</string>
     <string name="use_wallet_balance">Use Wallet Balance</string>
+    <string name="insufficient_wallet_balance">Insufficient wallet balance</string>
 </resources>

@@ -28,8 +28,11 @@ fun AdminWalletUserResponse.toDomain() = AdminWalletUser(
 fun AdminWithdrawalResponse.toDomain() = AdminWithdrawal(
     id = id,
     userId = userId,
+    userFullName = userFullName,
+    userEmail = userEmail,
     amount = amount,
     iban = iban,
     status = status,
+    adminNote = adminNote,
     createdAt = createdAt
 )

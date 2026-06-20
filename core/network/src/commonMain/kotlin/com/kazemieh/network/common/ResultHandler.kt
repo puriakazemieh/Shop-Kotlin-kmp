@@ -53,6 +53,13 @@ suspend inline fun <reified T> safeApiCallRaw(
                 "Returning Unit".ld("safeApiCallRaw")
                 return Unit as T
             }
+            if (T::class == String::class) {
+                return try {
+                    json.decodeFromString<T>(bodyText)
+                } catch (e: Exception) {
+                    bodyText as T
+                }
+            }
             try {
                 json.decodeFromString<T>(bodyText)
             } catch (e: SerializationException) {

@@ -24,8 +24,11 @@ data class AdminWalletUser(
 data class AdminWithdrawal(
     val id: Long,
     val userId: Long,
+    val userFullName: String?,
+    val userEmail: String?,
     val amount: Double,
     val iban: String,
     val status: String,
+    val adminNote: String?,
     val createdAt: String
 )

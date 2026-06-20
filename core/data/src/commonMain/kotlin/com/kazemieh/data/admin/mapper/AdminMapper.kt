@@ -4,7 +4,6 @@ import com.kazemieh.network.admin.dto.request.*
 import com.kazemieh.network.admin.dto.response.*
 import com.kazemieh.domain.admin.*
 import com.kazemieh.network.common.*
-import com.kazemieh.common.*
 
 
 
@@ -176,8 +175,8 @@ fun UpdateDiscountParam.toRequest() = AdminUpdateDiscountRequest(
 
 fun <T, R> PageResponse<T>.toAdminPage(mapper: (T) -> R) = AdminPage(
     items = items.map(mapper),
-    page = page,
-    size = size,
-    totalElements = totalElements,
-    totalPages = totalPages
+    page = page.number,
+    size = page.size,
+    totalElements = page.totalElements,
+    totalPages = page.totalPages
 )

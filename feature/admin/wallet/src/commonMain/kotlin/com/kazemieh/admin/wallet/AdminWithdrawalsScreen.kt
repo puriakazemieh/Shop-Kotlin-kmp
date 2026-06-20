@@ -130,11 +130,21 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = stringResource(Resources.String.UserIdLabelFormat, withdrawal.userId),
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = AppFont()
-                )
+                Column {
+                    Text(
+                        text = withdrawal.userFullName ?: withdrawal.userEmail ?: stringResource(Resources.String.UserIdLabelFormat, withdrawal.userId),
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = AppFont()
+                    )
+                    if (withdrawal.userFullName != null && withdrawal.userEmail != null) {
+                        Text(
+                            text = withdrawal.userEmail!!,
+                            fontSize = FontSize.EXTRA_SMALL,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontFamily = AppFont()
+                        )
+                    }
+                }
                 Text(
                     text = withdrawal.status,
                     color = Color(0xFFFFB300),
@@ -185,6 +195,8 @@ fun ProcessWithdrawalDialog(
         title = { Text("پردازش درخواست برداشت", fontFamily = AppFont()) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text("کاربر: ${withdrawal.userFullName ?: withdrawal.userId}", fontFamily = AppFont())
+                Text("ایمیل: ${withdrawal.userEmail ?: "-"}", fontFamily = AppFont())
                 Text("مبلغ: ${withdrawal.amount} تومان", fontFamily = AppFont())
                 Text("شبا: ${withdrawal.iban}", fontFamily = AppFont())
                 OutlinedTextField(
