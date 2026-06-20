@@ -13,6 +13,32 @@ kotlin {
         minSdk = 24
     }
 
+    val xcfName = "feature:admin:blog"
+
+    iosX64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    iosArm64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    iosSimulatorArm64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    js {
+        browser()
+    }
+
+    jvm()
+
     sourceSets {
         commonMain {
             dependencies {
@@ -26,6 +52,8 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.image.loader)
 
+                implementation(libs.compose.material.icons.core)
+                implementation(libs.compose.material.icons.extended)
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))

@@ -4,5 +4,9 @@
         <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">miaad.puriademo.ir</domain>
         <domain includeSubdomains="true">milad.puriademo.ir</domain>
+        <domain includeSubdomains="true">https://ins-nsw-chronicles-interactive.trycloudflare.com</domain>
+        <domain includeSubdomains="true">ins-nsw-chronicles-interactive.trycloudflare.com</domain>
+        <domain includeSubdomains="true">zoo-careers-transparency-administrative.trycloudflare.com</domain>
+
     </domain-config>
 </network-security-config>

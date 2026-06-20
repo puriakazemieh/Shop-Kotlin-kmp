@@ -15,8 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.component.CustomTextField
-import com.kazemieh.designsystem.components.AppScaffold
-import com.kazemieh.designsystem.components.LoadingData
+import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.blog.Blog
 import com.seiko.imageloader.rememberImagePainter
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,7 +61,7 @@ fun ManageBlogScreen(
         if (state.isSuccess) navigateBack()
     }
 
-    AppScaffold(
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(if (id == null) "Create Blog" else "Edit Blog") },
@@ -97,7 +96,7 @@ fun ManageBlogScreen(
         }
     ) { padding ->
         if (state.isLoading) {
-            LoadingData()
+            LoadingCard(modifier = Modifier.fillMaxSize())
         } else {
             Column(
                 modifier = Modifier

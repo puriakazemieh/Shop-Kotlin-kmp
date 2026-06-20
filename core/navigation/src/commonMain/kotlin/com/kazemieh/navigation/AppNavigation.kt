@@ -249,7 +249,7 @@ fun AppNavHost(
 
         composable<Screen.BlogList> {
             BlogListScreen(
-                navigateToDetail = { slug ->
+                navigateToDetail = { slug: String ->
                     navController.navigate(Screen.BlogDetail(slug))
                 },
                 navigateBack = { navController.navigateBack() }
@@ -260,16 +260,19 @@ fun AppNavHost(
             val args = it.toRoute<Screen.BlogDetail>()
             BlogDetailScreen(
                 slug = args.slug,
-                navigateBack = { navController.navigateBack() }
+                navigateBack = { navController.navigateBack() },
+                navigateToDetail = { newSlug: String ->
+                    navController.navigate(Screen.BlogDetail(newSlug))
+                }
             )
         }
 
         composable<Screen.AdminBlogList> {
             AdminBlogListScreen(
-                navigateToManageBlog = { id, slug ->
+                navigateToManageBlog = { id: Long?, slug: String? ->
                     navController.navigate(Screen.ManageBlog(id, slug))
                 },
-                navigateToManageCategory = { id ->
+                navigateToManageCategory = { id: Long? ->
                     // Logic for categories if needed
                 },
                 navigateBack = { navController.navigateBack() }

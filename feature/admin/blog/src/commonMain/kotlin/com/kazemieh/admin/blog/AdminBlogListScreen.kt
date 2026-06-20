@@ -14,8 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.domain.blog.Blog
 import com.kazemieh.domain.blog.BlogCategory
-import com.kazemieh.designsystem.components.AppScaffold
-import com.kazemieh.designsystem.components.LoadingData
+import com.kazemieh.designsystem.component.LoadingCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +28,7 @@ fun AdminBlogListScreen(
     val state by viewModel.state.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
 
-    AppScaffold(
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Admin Panel - Blogs") },
@@ -60,7 +59,7 @@ fun AdminBlogListScreen(
             }
 
             if (state.isLoading) {
-                LoadingData()
+                LoadingCard(modifier = Modifier.fillMaxSize())
             } else {
                 when (selectedTab) {
                     0 -> ArticlesList(state.blogs, navigateToManageBlog, viewModel)
@@ -118,7 +117,7 @@ private fun ArticlesList(
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = "Delete",
-                                color = MaterialTheme.colorScheme.error
+                                tint = MaterialTheme.colorScheme.error
                             )
                         }
                     }
@@ -156,7 +155,7 @@ private fun CategoriesList(
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = "Delete",
-                                color = MaterialTheme.colorScheme.error
+                                tint = MaterialTheme.colorScheme.error
                             )
                         }
                     }

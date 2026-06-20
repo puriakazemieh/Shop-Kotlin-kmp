@@ -336,21 +336,6 @@ class ManageProductViewModel(
                     }
                 )
             } else {
-                // Sync variant changes when updating product
-                currentState.variants.forEach { variant ->
-                    if (variant.id > 0) { // Existing variant
-                        updateVariant(
-                            id = variant.id,
-                            sku = variant.sku,
-                            price = variant.price,
-                            discountedPrice = variant.discountedPrice,
-                            options = variant.options.map { AdminVariantOption(it.key, it.value) },
-                            isActive = variant.isActive,
-                            onHand = variant.onHand
-                        )
-                    }
-                }
-                
                 updateAdminProductUseCase(
                     id = productId,
                     categoryId = currentState.selectedCategory?.id,
@@ -375,7 +360,11 @@ class ManageProductViewModel(
                         }
                     }
                     _effect.send(ManageProductEffect.ShowSuccess(Resources.String.ProductSavedSuccessfully))
-                    _effect.send(ManageProductEffect.NavigateBack)
+                    if (productId == -1L) {
+                        _effect.send(ManageProductEffect.NavigateBack)
+                    } else {
+                        loadProductDetail() // Refetch to get updated variant info if it was a simple product
+                    }
                 }
 
                 is AppResult.Error -> {
@@ -543,13 +532,8 @@ class ManageProductViewModel(
             }
             
             if (result is AppResult.Success<*>) {
-                // 3. If Master changed its property structure, we need to ensure consistency.
-                if (isMaster && options != null) {
-                    _effect.send(ManageProductEffect.ShowSuccess(Resources.String.VariantUpdated))
-                }
-                if (onHand == null) { // If it was a deep update from sheet, reload. If from bulk save, maybe redundant.
-                    loadProductDetail()
-                }
+                _effect.send(ManageProductEffect.ShowSuccess(Resources.String.VariantUpdated))
+                loadProductDetail() // Always refetch to ensure IDs and prices are synced
             } else if (result is AppResult.Error) {
                 _effect.send(ManageProductEffect.ShowError(result.message))
             }

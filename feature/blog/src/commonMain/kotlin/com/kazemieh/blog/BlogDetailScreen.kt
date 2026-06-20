@@ -15,8 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.component.BlogContentRenderer
-import com.kazemieh.designsystem.components.AppScaffold
-import com.kazemieh.designsystem.components.LoadingData
+import com.kazemieh.designsystem.component.LoadingCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +32,7 @@ fun BlogDetailScreen(
         viewModel.handleIntent(BlogDetailIntent.LoadBlog(slug))
     }
 
-    AppScaffold(
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(state.blog?.title ?: "Blog Detail") },
@@ -46,7 +45,7 @@ fun BlogDetailScreen(
         }
     ) { padding ->
         if (state.isLoading) {
-            LoadingData()
+            LoadingCard(modifier = Modifier.fillMaxSize())
         } else {
             state.blog?.let { blog ->
                 LazyColumn(

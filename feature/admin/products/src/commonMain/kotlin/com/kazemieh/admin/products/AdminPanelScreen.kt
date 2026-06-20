@@ -35,6 +35,8 @@ fun AdminPanelScreen(
     navigateToManageWallets: () -> Unit,
     navigateToManageWithdrawals: () -> Unit,
     navigateToManageStories: () -> Unit,
+    navigateToBlog: () -> Unit,
+    navigateToAdminBlog: () -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
@@ -161,6 +163,20 @@ fun AdminPanelScreen(
                                 Icon(
                                     painter = painterResource(Resources.Icon.RightArrow), // Using RightArrow for Stories
                                     contentDescription = "Stories",
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            IconButton(onClick = navigateToAdminBlog) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Book),
+                                    contentDescription = stringResource(Resources.String.ManageBlogs),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            IconButton(onClick = navigateToBlog) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Home), // Using Home or something for Public Blog? Maybe not Home.
+                                    contentDescription = stringResource(Resources.String.Blog),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }

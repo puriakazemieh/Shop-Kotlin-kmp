@@ -66,8 +66,10 @@ kotlin {
                 implementation(project(":feature:admin:orders"))
                 implementation(project(":feature:admin:options"))
                 implementation(project(":feature:admin:wallet"))
+                implementation(project(":feature:admin:blog"))
                 implementation(project(":feature:details"))
                 implementation(project(":feature:support"))
+                implementation(project(":feature:blog"))
                 implementation(project(":core:common"))
 
                 implementation(libs.koin.compose)

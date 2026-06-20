@@ -495,47 +495,35 @@ fun ManageProductScreen(
                     }
 
                     // Variants Section
-                    Text(stringResource(Resources.String.Variants), fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
-                    
-                    val masterKeys = state.variants.firstOrNull()?.options?.keys ?: emptySet()
-                    
-                    state.variants.forEach { variant ->
-                        val currentKeys = variant.options.keys
-                        // A variant is only invalid if it LACKS a property that the master variant has.
-                        val isInvalid = !currentKeys.containsAll(masterKeys) && masterKeys.isNotEmpty()
-
-                        VariantItem(
-                            variant = variant,
-                            isInvalid = isInvalid,
-                            onClick = { selectedVariantToEdit = variant },
-                            onFieldUpdate = { sku, price, onHand ->
-                                viewModel.handleIntent(ManageProductIntent.UpdateVariantInline(id = variant.id, sku = sku, price = price, onHand = onHand))
-                            }
+                    if (state.variants.isNotEmpty()) {
+                        Text(
+                            stringResource(Resources.String.Variants),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = FontSize.MEDIUM
                         )
-                    }
 
-                    if (state.variants.isEmpty()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            CustomTextField(
-                                modifier = Modifier.weight(1f),
-                                value = state.sku,
-                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateSku(it)) },
-                                placeholder = stringResource(Resources.String.Sku)
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            CustomTextField(
-                                modifier = Modifier.weight(1f),
-                                value = if (state.initialOnHand == 0) "" else state.initialOnHand.toString(),
-                                onValueChange = {
-                                    val qty = it.toIntOrNull() ?: 0
-                                    viewModel.handleIntent(ManageProductIntent.UpdateInitialOnHand(qty))
-                                },
-                                placeholder = stringResource(Resources.String.InitialStock),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        val masterKeys = state.variants.firstOrNull()?.options?.keys ?: emptySet()
+
+                        state.variants.forEach { variant ->
+                            val currentKeys = variant.options.keys
+                            // A variant is only invalid if it LACKS a property that the master variant has.
+                            val isInvalid =
+                                !currentKeys.containsAll(masterKeys) && masterKeys.isNotEmpty()
+
+                            VariantItem(
+                                variant = variant,
+                                isInvalid = isInvalid,
+                                onClick = { selectedVariantToEdit = variant },
+                                onFieldUpdate = { sku, price, onHand ->
+                                    viewModel.handleIntent(
+                                        ManageProductIntent.UpdateVariantInline(
+                                            id = variant.id,
+                                            sku = sku,
+                                            price = price,
+                                            onHand = onHand
+                                        )
+                                    )
+                                }
                             )
                         }
                     }
@@ -548,16 +536,24 @@ fun ManageProductScreen(
                             onClick = { showBulkVariantDialog = true },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Icon(painterResource(Resources.Icon.Plus), contentDescription = null, modifier = Modifier.size(18.dp))
+                            Icon(
+                                painterResource(Resources.Icon.Plus),
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
                             Spacer(Modifier.width(8.dp))
                             Text(stringResource(Resources.String.BulkAddVariants))
                         }
-                        
+
                         Button(
                             onClick = { showAddVariantDialog = true },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Icon(painterResource(Resources.Icon.Plus), contentDescription = null, modifier = Modifier.size(18.dp))
+                            Icon(
+                                painterResource(Resources.Icon.Plus),
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
                             Spacer(Modifier.width(8.dp))
                             Text(stringResource(Resources.String.AddVariant))
                         }

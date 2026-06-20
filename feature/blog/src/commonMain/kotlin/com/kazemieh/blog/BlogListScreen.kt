@@ -15,8 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.component.CustomTextField
-import com.kazemieh.designsystem.components.AppScaffold
-import com.kazemieh.designsystem.components.LoadingData
+import com.kazemieh.designsystem.component.LoadingCard
 import com.seiko.imageloader.rememberImagePainter
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -30,7 +29,7 @@ fun BlogListScreen(
     val state by viewModel.state.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    AppScaffold(
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Blogs") },
@@ -51,8 +50,7 @@ fun BlogListScreen(
                     viewModel.handleIntent(BlogListIntent.Search(it))
                 },
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                placeholder = "Search blogs...",
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+                placeholder = "Search blogs..."
             )
 
             // Category Selector
@@ -78,7 +76,7 @@ fun BlogListScreen(
             }
 
             if (state.isLoading) {
-                LoadingData()
+                LoadingCard(modifier = Modifier.fillMaxSize())
             } else {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
