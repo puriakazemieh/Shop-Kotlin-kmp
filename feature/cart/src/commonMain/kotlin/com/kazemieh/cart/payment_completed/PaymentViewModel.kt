@@ -22,7 +22,7 @@ class PaymentViewModel(
     val effect = _effect.receiveAsFlow()
 
     init {
-        _state.update { it.copy(result = AppResult.Success(Unit)) }
+        handleIntent(PaymentIntent.ClearCart)
     }
 
     fun handleIntent(intent: PaymentIntent) {

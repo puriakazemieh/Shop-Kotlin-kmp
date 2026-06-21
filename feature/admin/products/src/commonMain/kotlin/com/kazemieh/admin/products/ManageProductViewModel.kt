@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.Res
 import com.kazemieh.common.ld
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.catalog.Category
@@ -107,6 +108,7 @@ class ManageProductViewModel(
             is ManageProductIntent.ApplyPropertyToAll -> applyPropertyToAll(intent.options)
             is ManageProductIntent.BulkAddVariants -> bulkAddVariants(intent.combinations)
             is ManageProductIntent.UpdateVariantInline -> updateVariantField(variantId = intent.id, sku = intent.sku, price = intent.price, onHand = intent.onHand)
+            is ManageProductIntent.DeactivateProduct -> deactivateProduct()
         }
     }
 
@@ -295,6 +297,22 @@ class ManageProductViewModel(
     private fun saveProduct() {
         val currentState = _state.value
         
+        // Validation: Mandatory fields for products without variants
+        if (currentState.variants.isEmpty()) {
+            if (currentState.basePrice <= 0) {
+                viewModelScope.launch {
+                    _effect.send(ManageProductEffect.ShowError(Resources.String.ProductPriceRequired))
+                }
+                return
+            }
+            if (currentState.initialOnHand <= 0) {
+                viewModelScope.launch {
+                    _effect.send(ManageProductEffect.ShowError(Resources.String.ProductInventoryRequired))
+                }
+                return
+            }
+        }
+
         // Validation: All variants must have same keys
         val masterKeys = currentState.variants.firstOrNull()?.options?.keys ?: emptySet()
         val hasInvalidVariants = currentState.variants.any { it.options.keys != masterKeys }
@@ -386,11 +404,40 @@ class ManageProductViewModel(
                 }
 
                 is AppResult.Error -> {
-                    _effect.send(ManageProductEffect.ShowError(result.message))
+                    if (result.message == Resources.String.ProductUsedInOrders) {
+                        _effect.send(ManageProductEffect.ShowDeactivationSuggestion)
+                    } else {
+                        _effect.send(ManageProductEffect.ShowError(result.message))
+                    }
                 }
 
                 is AppResult.Loading -> {}
             }
+        }
+    }
+
+    private fun deactivateProduct() {
+        viewModelScope.launch {
+            _state.update { it.copy(isSaving = true) }
+            val result = updateAdminProductUseCase(
+                id = productId,
+                isActive = false,
+                title = _state.value.title,
+                slug = _state.value.slug,
+                categoryId = _state.value.selectedCategory?.id,
+                description = _state.value.description,
+                basePrice = _state.value.basePrice,
+                discountedPrice = if (_state.value.discountedPrice == 0.0) null else _state.value.discountedPrice
+            )
+            when (result) {
+                is AppResult.Success<*> -> {
+                    _effect.send(ManageProductEffect.ShowSuccess(Resources.String.ProductSavedSuccessfully))
+                    _effect.send(ManageProductEffect.NavigateBack)
+                }
+                is AppResult.Error -> _effect.send(ManageProductEffect.ShowError(result.message))
+                is AppResult.Loading -> {}
+            }
+            _state.update { it.copy(isSaving = false) }
         }
     }
 
@@ -681,6 +728,7 @@ sealed interface ManageProductIntent {
     data class SelectCategory(val category: Category) : ManageProductIntent
     data object SaveProduct : ManageProductIntent
     data object DeleteProduct : ManageProductIntent
+    data object DeactivateProduct : ManageProductIntent
     data class DeleteImage(val imageId: Long) : ManageProductIntent
     data class DeleteVideo(val videoId: Long) : ManageProductIntent
     data class AddVariant(
@@ -748,5 +796,6 @@ sealed interface ManageProductIntent {
 sealed class ManageProductEffect {
     data class ShowError(val message: Any) : ManageProductEffect()
     data class ShowSuccess(val message: Any) : ManageProductEffect()
+    data object ShowDeactivationSuggestion : ManageProductEffect()
     data object NavigateBack : ManageProductEffect()
 }

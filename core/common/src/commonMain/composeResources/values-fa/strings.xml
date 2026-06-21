@@ -333,6 +333,12 @@
 
     <!-- New Error Codes -->
     <string name="productNoActiveVariant">محصول هیچ واریانت فعالی برای فروش ندارد.</string>
+    <string name="productPriceRequired">وارد کردن قیمت پایه برای محصول بدون تنوع الزامی است.</string>
+    <string name="productInventoryRequired">وارد کردن موجودی اولیه برای محصول بدون تنوع الزامی است.</string>
+    <string name="productUsedInOrders">این محصول دارای سابقه فروش است و قابل حذف نیست.</string>
+    <string name="deactivateInstead">غیرفعال‌سازی به جای حذف</string>
+    <string name="deactivate">غیرفعال‌سازی</string>
+    <string name="productDeactivationSuggestion">این محصول سابقه فروش دارد و قابل حذف نیست. آیا مایلید به جای حذف، آن را غیرفعال کنید؟</string>
     <string name="productMultipleVariants">محصول دارای چندین واریانت است. لطفاً یک واریانت انتخاب کنید.</string>
     <string name="missingVariantOrProduct">شناسه محصول یا واریانت ارسال نشده است.</string>
     <string name="variantOptionsRequired">انتخاب ویژگی برای ساخت واریانت الزامی است.</string>

@@ -111,6 +111,12 @@
     <string name="productImageDesc">Product image</string>
     <string name="pleaseSelectVariant">Please select a variant</string>
     <string name="productNoActiveVariant">This product has no active variants for sale.</string>
+    <string name="productPriceRequired">Base price is required for products without variants.</string>
+    <string name="productInventoryRequired">Initial stock is required for products without variants.</string>
+    <string name="productUsedInOrders">This product has sales history and cannot be deleted.</string>
+    <string name="deactivateInstead">Deactivate instead</string>
+    <string name="deactivate">Deactivate</string>
+    <string name="productDeactivationSuggestion">This product has sales history and cannot be deleted. Do you want to deactivate it instead?</string>
     <string name="productMultipleVariants">This product has multiple variants. Please select one.</string>
     <string name="missingVariantOrProduct">Please select a product or variant to add to cart.</string>
     <string name="variantOptionsRequired">Variants must have at least one option.</string>

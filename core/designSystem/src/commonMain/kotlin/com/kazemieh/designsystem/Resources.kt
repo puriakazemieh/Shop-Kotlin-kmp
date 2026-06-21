@@ -232,6 +232,12 @@ object Resources {
         val CheckoutWithQty = CommonRes.string.checkoutWithQty
         val ProductImageDesc = CommonRes.string.productImageDesc
         val PleaseSelectVariant = CommonRes.string.pleaseSelectVariant
+        val ProductPriceRequired = CommonRes.string.productPriceRequired
+        val ProductInventoryRequired = CommonRes.string.productInventoryRequired
+        val ProductUsedInOrders = CommonRes.string.productUsedInOrders
+        val DeactivateInstead = CommonRes.string.deactivateInstead
+        val Deactivate = CommonRes.string.deactivate
+        val ProductDeactivationSuggestion = CommonRes.string.productDeactivationSuggestion
 
         val ItemsLabel = CommonRes.string.itemsLabel
         val SubtotalLabel = CommonRes.string.subtotalLabel

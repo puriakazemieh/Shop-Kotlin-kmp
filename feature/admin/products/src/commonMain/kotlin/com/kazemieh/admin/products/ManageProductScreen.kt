@@ -62,6 +62,7 @@ fun ManageProductScreen(
     var showBulkVariantDialog by remember { mutableStateOf(false) }
     var selectedVariantToEdit by remember { mutableStateOf<AdminVariant?>(null) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
+    var showDeactivationDialog by remember { mutableStateOf(false) }
     var dropdownMenuOpened by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -69,9 +70,33 @@ fun ManageProductScreen(
             when (effect) {
                 is ManageProductEffect.ShowError -> messageBarState.addError(effect.message)
                 is ManageProductEffect.ShowSuccess -> messageBarState.addSuccess(effect.message)
+                is ManageProductEffect.ShowDeactivationSuggestion -> showDeactivationDialog = true
                 is ManageProductEffect.NavigateBack -> navigateBack()
             }
         }
+    }
+
+    if (showDeactivationDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeactivationDialog = false },
+            title = { Text(stringResource(Resources.String.WarningText)) },
+            text = { Text(stringResource(Resources.String.ProductDeactivationSuggestion)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.handleIntent(ManageProductIntent.DeactivateProduct)
+                        showDeactivationDialog = false
+                    }
+                ) {
+                    Text(stringResource(Resources.String.Deactivate))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeactivationDialog = false }) {
+                    Text(stringResource(Resources.String.Cancel))
+                }
+            }
+        )
     }
 
     if (showCategoriesBottomSheet) {

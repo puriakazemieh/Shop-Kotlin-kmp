@@ -24,6 +24,9 @@ fun String.toUserMessage(): StringResource {
         "PRODUCT_SLUG_EXISTS" -> Res.string.productSlugExists
         "PRODUCT_INACTIVE" -> Res.string.productInactive
         "INVALID_PRODUCT_PRICE" -> Res.string.invalidProductPrice
+        "PRODUCT_PRICE_REQUIRED" -> Res.string.productPriceRequired
+        "PRODUCT_INVENTORY_REQUIRED" -> Res.string.productInventoryRequired
+        "PRODUCT_USED_IN_ORDERS" -> Res.string.productUsedInOrders
 
         // New Error Codes
         "PRODUCT_NO_ACTIVE_VARIANT" -> Res.string.productNoActiveVariant
