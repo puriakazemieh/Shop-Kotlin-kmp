@@ -12,6 +12,8 @@ import com.kazemieh.domain.catalog.PostQuestionUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
 import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -28,10 +30,14 @@ val detailsModule = module {
             getQuestionsUseCase = get(),
             postQuestionUseCase = get(),
             updateQuestionUseCase = get(),
-            deleteQuestionUseCase = get()
+            deleteQuestionUseCase = get(),
+            toggleFavoriteUseCase = get(),
+            observeFavoriteIdsUseCase = get()
         )
     }
 
+    factory { ToggleFavoriteUseCase(get()) }
+    factory { ObserveFavoriteIdsUseCase(get()) }
     factory { GetProductDetailUseCase(get()) }
     factory { GetReviewsUseCase(get()) }
     factory { PostReviewUseCase(get()) }

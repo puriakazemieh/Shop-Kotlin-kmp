@@ -32,6 +32,7 @@ sealed interface DetailsIntent {
     data class AddQuestion(val productId: Long, val content: String, val parentId: Long?) : DetailsIntent
     data class UpdateQuestion(val questionId: Long, val productId: Long, val content: String) : DetailsIntent
     data class DeleteQuestion(val questionId: Long, val productId: Long) : DetailsIntent
+    data class ToggleFavorite(val productId: Long, val isFavorite: Boolean) : DetailsIntent
 }
 
 sealed interface DetailsEffect {

@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,8 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -144,7 +145,9 @@ fun DetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            modifier = Modifier.graphicsLayer {
+                                rotationY = if (isRtl) 180f else 0f
+                            },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackDesc),
                             tint = MaterialTheme.colorScheme.onSurface
@@ -153,7 +156,25 @@ fun DetailsScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
-                )
+                ),
+                actions = {
+                    state.product?.let { product ->
+                        IconButton(onClick = {
+                            viewModel.handleIntent(
+                                DetailsIntent.ToggleFavorite(
+                                    product.id,
+                                    product.isFavorite
+                                )
+                            )
+                        }) {
+                            Icon(
+                                imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = null,
+                                tint = if (product.isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
             )
         }
     ) { padding ->
@@ -192,7 +213,8 @@ fun DetailsScreen(
                                     }
                                 }
                             }
-                            val pagerState = rememberPagerState(pageCount = { mediaItems.size.coerceAtLeast(1) })
+                            val pagerState =
+                                rememberPagerState(pageCount = { mediaItems.size.coerceAtLeast(1) })
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -216,7 +238,8 @@ fun DetailsScreen(
                                                 modifier = Modifier
                                                     .fillMaxSize()
                                                     .clickable {
-                                                        if (imageUrl.isNotEmpty()) fullscreenImageUrl = imageUrl
+                                                        if (imageUrl.isNotEmpty()) fullscreenImageUrl =
+                                                            imageUrl
                                                     },
                                                 painter = painter,
                                                 contentDescription = stringResource(Resources.String.ProductImageDesc),
@@ -233,7 +256,10 @@ fun DetailsScreen(
 
                                         null -> {
                                             // Fallback if no images/videos
-                                            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
+                                            Box(
+                                                modifier = Modifier.fillMaxSize()
+                                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                            )
                                         }
                                     }
                                 }
@@ -274,39 +300,55 @@ fun DetailsScreen(
 
                                 val variant = state.selectedVariant
                                 val basePrice = variant?.price ?: product.basePrice ?: 0.0
-                                val discountedPrice = variant?.discountedPrice ?: product.discountedPrice
+                                val discountedPrice =
+                                    variant?.discountedPrice ?: product.discountedPrice
                                 val compareAtPrice = variant?.compareAtPrice
 
                                 Column(horizontalAlignment = Alignment.End) {
                                     if (discountedPrice != null) {
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, discountedPrice),
+                                            text = stringResource(
+                                                Resources.String.PriceFormat,
+                                                discountedPrice
+                                            ),
                                             fontSize = FontSize.MEDIUM,
                                             color = MaterialTheme.colorScheme.secondary,
                                             fontWeight = FontWeight.Medium
                                         )
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, basePrice),
+                                            text = stringResource(
+                                                Resources.String.PriceFormat,
+                                                basePrice
+                                            ),
                                             fontSize = FontSize.SMALL,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             textDecoration = TextDecoration.LineThrough
                                         )
                                     } else if (compareAtPrice != null && compareAtPrice > basePrice) {
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, basePrice),
+                                            text = stringResource(
+                                                Resources.String.PriceFormat,
+                                                basePrice
+                                            ),
                                             fontSize = FontSize.MEDIUM,
                                             color = MaterialTheme.colorScheme.secondary,
                                             fontWeight = FontWeight.Medium
                                         )
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, compareAtPrice),
+                                            text = stringResource(
+                                                Resources.String.PriceFormat,
+                                                compareAtPrice
+                                            ),
                                             fontSize = FontSize.SMALL,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             textDecoration = TextDecoration.LineThrough
                                         )
                                     } else {
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, basePrice),
+                                            text = stringResource(
+                                                Resources.String.PriceFormat,
+                                                basePrice
+                                            ),
                                             fontSize = FontSize.MEDIUM,
                                             color = MaterialTheme.colorScheme.secondary,
                                             fontWeight = FontWeight.Medium
@@ -340,17 +382,17 @@ fun DetailsScreen(
                                 Tab(
                                     selected = selectedTab == 0,
                                     onClick = { selectedTab = 0 },
-                                    text = { Text("جزئیات") }
+                                    text = { Text(stringResource(Resources.String.Details)) }
                                 )
                                 Tab(
                                     selected = selectedTab == 1,
                                     onClick = { selectedTab = 1 },
-                                    text = { Text("نظرات (${state.reviews.size})") }
+                                    text = { Text(stringResource(Resources.String.ReviewsTab, state.reviews.size)) }
                                 )
                                 Tab(
                                     selected = selectedTab == 2,
                                     onClick = { selectedTab = 2 },
-                                    text = { Text("پرسش‌ها (${state.questions.size})") }
+                                    text = { Text(stringResource(Resources.String.QuestionsTab, state.questions.size)) }
                                 )
                             }
 
@@ -382,11 +424,13 @@ fun DetailsScreen(
                                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
                                                 values.forEach { value ->
-                                                    val isSelected = state.selectedOptions[optionName] == value
+                                                    val isSelected =
+                                                        state.selectedOptions[optionName] == value
                                                     // An option is available if it exists in ANY variant of the product
-                                                    val isAvailable = product.variants.any { variant ->
-                                                        variant.options[optionName] == value
-                                                    }
+                                                    val isAvailable =
+                                                        product.variants.any { variant ->
+                                                            variant.options[optionName] == value
+                                                        }
 
                                                     VariantChip(
                                                         label = value,
@@ -394,7 +438,10 @@ fun DetailsScreen(
                                                         enabled = isAvailable,
                                                         onClick = {
                                                             viewModel.handleIntent(
-                                                                DetailsIntent.SelectOption(optionName, value)
+                                                                DetailsIntent.SelectOption(
+                                                                    optionName,
+                                                                    value
+                                                                )
                                                             )
                                                         }
                                                     )
@@ -408,7 +455,7 @@ fun DetailsScreen(
                                 1 -> {
                                     Column(modifier = Modifier.padding(vertical = 16.dp)) {
                                         PrimaryButton(
-                                            text = "ثبت نظر جدید",
+                                            text = stringResource(Resources.String.AddReview),
                                             onClick = {
                                                 activeParentId = null
                                                 showReviewDialog = true
@@ -417,8 +464,9 @@ fun DetailsScreen(
                                         Spacer(modifier = Modifier.height(8.dp))
                                         if (state.reviews.isEmpty()) {
                                             Text(
-                                                "هنوز نظری برای این محصول ثبت نشده است.",
-                                                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                                                stringResource(Resources.String.NoReviewsYet),
+                                                modifier = Modifier.fillMaxWidth()
+                                                    .padding(top = 16.dp),
                                                 textAlign = TextAlign.Center,
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -434,7 +482,12 @@ fun DetailsScreen(
                                                 onEditClick = { editReview = it },
                                                 onDeleteClick = {
                                                     state.product?.id?.let { pid ->
-                                                        viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid))
+                                                        viewModel.handleIntent(
+                                                            DetailsIntent.DeleteReview(
+                                                                it,
+                                                                pid
+                                                            )
+                                                        )
                                                     }
                                                 }
                                             )
@@ -445,7 +498,7 @@ fun DetailsScreen(
                                 2 -> {
                                     Column(modifier = Modifier.padding(vertical = 16.dp)) {
                                         PrimaryButton(
-                                            text = "ثبت پرسش جدید",
+                                            text = stringResource(Resources.String.AddQuestion),
                                             onClick = {
                                                 activeParentId = null
                                                 showQuestionDialog = true
@@ -454,8 +507,9 @@ fun DetailsScreen(
                                         Spacer(modifier = Modifier.height(8.dp))
                                         if (state.questions.isEmpty()) {
                                             Text(
-                                                "هنوز پرسشی برای این محصول ثبت نشده است.",
-                                                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                                                stringResource(Resources.String.NoQuestionsYet),
+                                                modifier = Modifier.fillMaxWidth()
+                                                    .padding(top = 16.dp),
                                                 textAlign = TextAlign.Center,
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -471,7 +525,12 @@ fun DetailsScreen(
                                                 onEditClick = { editQuestion = it },
                                                 onDeleteClick = {
                                                     state.product?.id?.let { pid ->
-                                                        viewModel.handleIntent(DetailsIntent.DeleteQuestion(it, pid))
+                                                        viewModel.handleIntent(
+                                                            DetailsIntent.DeleteQuestion(
+                                                                it,
+                                                                pid
+                                                            )
+                                                        )
                                                     }
                                                 }
                                             )
@@ -512,7 +571,10 @@ fun DetailsScreen(
                                     } else {
                                         PrimaryButton(
                                             modifier = Modifier.weight(1f),
-                                            text = stringResource(Resources.String.CheckoutWithQty, state.quantity),
+                                            text = stringResource(
+                                                Resources.String.CheckoutWithQty,
+                                                state.quantity
+                                            ),
                                             onClick = navigateToCart
                                         )
                                         Spacer(modifier = Modifier.width(12.dp))
@@ -561,7 +623,14 @@ fun DetailsScreen(
             onDismiss = { showReviewDialog = false },
             onSubmit = { rating, comment ->
                 state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId))
+                    viewModel.handleIntent(
+                        DetailsIntent.AddReview(
+                            it,
+                            rating,
+                            comment,
+                            activeParentId
+                        )
+                    )
                 }
                 showReviewDialog = false
             }
@@ -586,7 +655,14 @@ fun DetailsScreen(
             onDismiss = { editReview = null },
             onSubmit = { rating, comment ->
                 state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.UpdateReview(review.id, it, rating, comment))
+                    viewModel.handleIntent(
+                        DetailsIntent.UpdateReview(
+                            review.id,
+                            it,
+                            rating,
+                            comment
+                        )
+                    )
                 }
                 editReview = null
             }

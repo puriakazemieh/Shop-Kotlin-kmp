@@ -17,11 +17,14 @@ import com.kazemieh.domain.catalog.PostQuestionUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
 import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -38,7 +41,9 @@ class DetailsViewModel(
     private val getQuestionsUseCase: GetQuestionsUseCase,
     private val postQuestionUseCase: PostQuestionUseCase,
     private val updateQuestionUseCase: UpdateQuestionUseCase,
-    private val deleteQuestionUseCase: DeleteQuestionUseCase
+    private val deleteQuestionUseCase: DeleteQuestionUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -46,6 +51,22 @@ class DetailsViewModel(
 
     private val _effect = Channel<DetailsEffect>()
     val effect: Flow<DetailsEffect> = _effect.receiveAsFlow()
+
+    init {
+        observeFavorites()
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            observeFavoriteIdsUseCase().collectLatest { ids ->
+                _state.update { state ->
+                    state.product?.let { product ->
+                        state.copy(product = product.copy(isFavorite = ids.contains(product.id)))
+                    } ?: state
+                }
+            }
+        }
+    }
 
     fun handleIntent(intent: DetailsIntent) {
         when (intent) {
@@ -109,6 +130,44 @@ class DetailsViewModel(
             is DetailsIntent.AddQuestion -> addQuestion(intent.productId, intent.content, intent.parentId)
             is DetailsIntent.UpdateQuestion -> updateQuestion(intent.questionId, intent.productId, intent.content)
             is DetailsIntent.DeleteQuestion -> deleteQuestion(intent.questionId, intent.productId)
+            is DetailsIntent.ToggleFavorite -> toggleFavorite(intent.productId, intent.isFavorite)
+        }
+    }
+
+    private fun toggleFavorite(productId: Long, isFavorite: Boolean) {
+        viewModelScope.launch {
+            val isLoggedIn = isUserLoggedInUseCase().first()
+            if (!isLoggedIn) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+
+            // Optimistic UI update
+            _state.update { state ->
+                state.product?.let { product ->
+                    if (product.id == productId) {
+                        state.copy(product = product.copy(isFavorite = !isFavorite))
+                    } else state
+                } ?: state
+            }
+
+            when (val result = toggleFavoriteUseCase(productId, !isFavorite)) {
+                is AppResult.Success -> {
+                    // Success, state already updated optimistically
+                }
+                is AppResult.Error -> {
+                    // Revert on error
+                    _state.update { state ->
+                        state.product?.let { product ->
+                            if (product.id == productId) {
+                                state.copy(product = product.copy(isFavorite = isFavorite))
+                            } else state
+                        } ?: state
+                    }
+                    _effect.send(DetailsEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
         }
     }
 

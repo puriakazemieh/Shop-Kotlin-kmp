@@ -15,6 +15,10 @@ import com.kazemieh.domain.address.SetDefaultAddressUseCase
 import com.kazemieh.domain.address.UpdateAddressUseCase
 import com.kazemieh.domain.profile.ValidateProfileUseCase
 import com.kazemieh.domain.wallet.GetWalletBalanceUseCase
+import com.kazemieh.domain.favorite.GetFavoritesUseCase
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.wallet.WalletBalance
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +39,10 @@ class ProfileViewModel(
     private val updateAddressUseCase: UpdateAddressUseCase,
     private val deleteAddressUseCase: DeleteAddressUseCase,
     private val setDefaultAddressUseCase: SetDefaultAddressUseCase,
-    private val getWalletBalanceUseCase: GetWalletBalanceUseCase
+    private val getWalletBalanceUseCase: GetWalletBalanceUseCase,
+    private val getFavoritesUseCase: GetFavoritesUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -48,7 +55,21 @@ class ProfileViewModel(
         handleIntent(ProfileIntent.LoadProfile)
         handleIntent(ProfileIntent.LoadAddresses)
         handleIntent(ProfileIntent.LoadWalletBalance)
+        handleIntent(ProfileIntent.LoadFavorites)
         observeProfile()
+        observeFavorites()
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            observeFavoriteIdsUseCase().collectLatest { ids ->
+                _state.update { state ->
+                    state.copy(
+                        favorites = state.favorites.filter { ids.contains(it.id) }
+                    )
+                }
+            }
+        }
     }
 
     fun handleIntent(intent: ProfileIntent) {
@@ -68,6 +89,66 @@ class ProfileViewModel(
             is ProfileIntent.UpdateUserAddress -> updateUserAddress(intent)
             is ProfileIntent.DeleteAddress -> deleteAddress(intent.id)
             is ProfileIntent.SetDefaultAddress -> setDefaultAddress(intent.id)
+
+            is ProfileIntent.LoadFavorites -> loadFavorites()
+            is ProfileIntent.ToggleFavorite -> toggleFavorite(intent.product)
+        }
+    }
+
+    private fun loadFavorites() {
+        viewModelScope.launch {
+            _state.update { it.copy(favoritesLoading = true) }
+            when (val result = getFavoritesUseCase()) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(favorites = result.data.items, favoritesLoading = false) }
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(favoritesLoading = false) }
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun toggleFavorite(product: ProductSummary) {
+        viewModelScope.launch {
+            val isFavorite = product.isFavorite
+            // Optimistic update
+            _state.update { state ->
+                state.copy(
+                    favorites = if (isFavorite) {
+                        state.favorites.filter { it.id != product.id }
+                    } else {
+                        // Prevent duplicates
+                        if (state.favorites.any { it.id == product.id }) {
+                            state.favorites.map { if (it.id == product.id) it.copy(isFavorite = true) else it }
+                        } else {
+                            state.favorites + product.copy(isFavorite = true)
+                        }
+                    }
+                )
+            }
+
+            when (val result = toggleFavoriteUseCase(product.id, !isFavorite)) {
+                is AppResult.Success -> {
+                    // Success, state already updated optimistically
+                }
+                is AppResult.Error -> {
+                    // Revert on error
+                    _state.update { state ->
+                        state.copy(
+                            favorites = if (isFavorite) {
+                                state.favorites + product
+                            } else {
+                                state.favorites.filter { it.id != product.id }
+                            }
+                        )
+                    }
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
         }
     }
 
@@ -357,17 +438,22 @@ sealed interface ProfileIntent {
     ) : ProfileIntent
     data class DeleteAddress(val id: Long) : ProfileIntent
     data class SetDefaultAddress(val id: Long) : ProfileIntent
+
+    data object LoadFavorites : ProfileIntent
+    data class ToggleFavorite(val product: ProductSummary) : ProfileIntent
 }
 
 data class ProfileState(
     val profile: Profile? = null,
     val addresses: List<Address> = emptyList(),
+    val favorites: List<ProductSummary> = emptyList(),
     val walletBalanceState: AppResult<WalletBalance> = AppResult.Loading,
     val displayState: AppResult<Unit?> = AppResult.Loading,
     val isFormValid: Boolean = false,
     val isSaving: Boolean = false,
     val addressLoading: Boolean = false,
-    val addressSaving: Boolean = false
+    val addressSaving: Boolean = false,
+    val favoritesLoading: Boolean = false
 )
 
 sealed class ProfileEffect {

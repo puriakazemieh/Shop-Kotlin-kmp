@@ -6,6 +6,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
@@ -21,6 +22,7 @@ class ProductsOverviewViewModel(
     private val getProductsUseCase: GetProductsUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
     private val getStoriesUseCase: GetStoriesUseCase,
     private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase
 ) : ViewModel() {
@@ -35,6 +37,21 @@ class ProductsOverviewViewModel(
         handleIntent(ProductsOverviewIntent.LoadProducts)
         loadStories()
         loadCategories()
+        observeFavorites()
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            observeFavoriteIdsUseCase().collectLatest { ids ->
+                _state.update { state ->
+                    state.copy(
+                        products = state.products.map { product ->
+                            product.copy(isFavorite = ids.contains(product.id))
+                        }
+                    )
+                }
+            }
+        }
     }
 
     fun handleIntent(intent: ProductsOverviewIntent) {

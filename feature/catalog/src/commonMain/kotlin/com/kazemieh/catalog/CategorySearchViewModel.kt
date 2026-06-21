@@ -4,17 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetProductsUseCase
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CategorySearchViewModel(
-    private val getProductsUseCase: GetProductsUseCase
+    private val getProductsUseCase: GetProductsUseCase,
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CategorySearchState())
@@ -22,6 +25,24 @@ class CategorySearchViewModel(
 
     private val _effect = Channel<CategorySearchEffect>()
     val effect: Flow<CategorySearchEffect> = _effect.receiveAsFlow()
+
+    init {
+        observeFavorites()
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            observeFavoriteIdsUseCase().collectLatest { ids ->
+                _state.update { state ->
+                    state.copy(
+                        products = state.products.map { product ->
+                            product.copy(isFavorite = ids.contains(product.id))
+                        }
+                    )
+                }
+            }
+        }
+    }
 
     fun handleIntent(intent: CategorySearchIntent) {
         when (intent) {

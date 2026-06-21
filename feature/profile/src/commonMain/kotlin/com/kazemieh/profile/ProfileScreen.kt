@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -30,13 +31,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,8 +63,8 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.component.ProfileForm
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.domain.address.Address
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.domain.address.Address
 import com.kazemieh.domain.wallet.WalletBalance
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -77,6 +76,7 @@ fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToMyOrders: () -> Unit,
     navigateToWallet: () -> Unit,
+    navigateToFavorites: () -> Unit
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
@@ -115,7 +115,9 @@ fun ProfileScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            modifier = Modifier.graphicsLayer {
+                                rotationY = if (isRtl) 180f else 0f
+                            },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackArrowDesc),
                             tint = MaterialTheme.colorScheme.onSurface
@@ -194,7 +196,9 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.height(12.dp))
 
                             PrimaryButton(
-                                text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(Resources.String.UpdateProfile),
+                                text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(
+                                    Resources.String.UpdateProfile
+                                ),
                                 icon = Resources.Icon.Checkmark,
                                 enabled = state.isFormValid && !state.isSaving,
                                 onClick = {
@@ -215,6 +219,14 @@ fun ProfileScreen(
                                 text = stringResource(Resources.String.ManageOrders),
                                 icon = Resources.Icon.Book,
                                 onClick = navigateToMyOrders
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            PrimaryButton(
+                                text = stringResource(Resources.String.MyFavorites),
+                                imageVector = Icons.Default.Favorite,
+                                onClick = navigateToFavorites
                             )
 
                             Spacer(modifier = Modifier.height(32.dp))
@@ -371,15 +383,20 @@ fun WalletBalanceCard(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                             )
                         }
+
                         is AppResult.Success -> {
                             Text(
-                                text = stringResource(Resources.String.PriceFormat, state.data.balance),
+                                text = stringResource(
+                                    Resources.String.PriceFormat,
+                                    state.data.balance
+                                ),
                                 fontSize = FontSize.MEDIUM,
                                 fontFamily = AppFont(),
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
+
                         is AppResult.Error -> {
                             Text(
                                 text = anyToString(state.message),
@@ -396,7 +413,8 @@ fun WalletBalanceCard(
                 painter = painterResource(Resources.Icon.RightArrow),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(20.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+                modifier = Modifier.size(20.dp)
+                    .graphicsLayer { rotationY = if (isRtl) 180f else 0f }
             )
         }
     }
@@ -482,7 +500,12 @@ fun AddressItem(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(Resources.String.AddressFormat, address.province, address.city, address.addressLine1),
+                text = stringResource(
+                    Resources.String.AddressFormat,
+                    address.province,
+                    address.city,
+                    address.addressLine1
+                ),
                 fontFamily = AppFont(),
                 fontSize = FontSize.MEDIUM
             )

@@ -52,6 +52,9 @@ kotlin {
                 implementation(libs.image.loader)
 
 
+                implementation(libs.compose.material.icons.core)
+                implementation(libs.compose.material.icons.extended)
+
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
 

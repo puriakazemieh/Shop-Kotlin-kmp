@@ -36,6 +36,7 @@ import com.kazemieh.cart.payment_completed.PaymentCompleted
 import com.kazemieh.profile.WalletScreen
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
+import com.kazemieh.profile.FavoritesScreen
 import com.kazemieh.orders.list.OrderListScreen
 import com.kazemieh.orders.detail.OrderDetailScreen
 import com.kazemieh.orders.tracking.OrderTrackingScreen
@@ -120,6 +121,20 @@ fun AppNavHost(
                 },
                 navigateToWallet = {
                     navController.navigate(Screen.Wallet)
+                },
+                navigateToFavorites = {
+                    navController.navigate(Screen.Favorites)
+                }
+            )
+        }
+
+        composable<Screen.Favorites> {
+            FavoritesScreen(
+                navigateBack = {
+                    navController.navigateBack()
+                },
+                navigateToDetail = { slug ->
+                    navController.navigate(Screen.ProductDetail(slug))
                 }
             )
         }

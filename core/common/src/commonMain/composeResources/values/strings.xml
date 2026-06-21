@@ -1,6 +1,7 @@
 <resources>
     <string name="myProfile">My Profile</string>
     <string name="myAddresses">My Addresses</string>
+    <string name="myFavorites">My Favorites</string>
     <string name="noAddressesFound">No addresses found</string>
     <string name="defaultLabel">Default</string>
     <string name="postalCodeLabel">Postal Code: %1$s</string>
@@ -21,6 +22,12 @@
     <string name="searchHere">Search here</string>
     <string name="outOfStock">Out of Stock</string>
     <string name="details">Details</string>
+    <string name="reviewsTab">Reviews (%1$s)</string>
+    <string name="questionsTab">Questions (%1$s)</string>
+    <string name="addReview">Add Review</string>
+    <string name="addQuestion">Add Question</string>
+    <string name="noReviewsYet">No reviews have been posted for this product yet.</string>
+    <string name="noQuestionsYet">No questions have been posted for this product yet.</string>
     <string name="variants">Variants</string>
     <string name="variantsManager">Variants Manager</string>
     <string name="addOptionType">Add Option Type</string>
@@ -122,6 +129,7 @@
     <string name="variantOptionsRequired">Variants must have at least one option.</string>
     <string name="purchaseOnTheWay">Your purchase is on the way.</string>
     <string name="emptyProductList">Empty product list.</string>
+    <string name="favoritesEmpty">Your favorites list is empty.</string>
     <string name="noProductInCategory">We couldn't find any product in this category.</string>
     <string name="addressAddedSuccessfully">Address added successfully</string>
     <string name="paypalNotImplemented">Zarinpal is not implemented yet.</string>

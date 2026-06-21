@@ -9,6 +9,8 @@ import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.address.SetDefaultAddressUseCase
 import com.kazemieh.domain.address.UpdateAddressUseCase
 import com.kazemieh.domain.profile.ValidateProfileUseCase
+import com.kazemieh.domain.favorite.GetFavoritesUseCase
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.wallet.*
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -28,6 +30,9 @@ val profileModule = module {
             deleteAddressUseCase = get(),
             setDefaultAddressUseCase = get(),
             getWalletBalanceUseCase = get(),
+            getFavoritesUseCase = get(),
+            toggleFavoriteUseCase = get(),
+            observeFavoriteIdsUseCase = get()
         )
     }
 
@@ -50,6 +55,9 @@ val profileModule = module {
     factory { UpdateAddressUseCase(get()) }
     factory { DeleteAddressUseCase(get()) }
     factory { SetDefaultAddressUseCase(get()) }
+
+    factory { GetFavoritesUseCase(get()) }
+    factory { ToggleFavoriteUseCase(get()) }
 
     // Validation
     factory { ValidateProfileUseCase() }

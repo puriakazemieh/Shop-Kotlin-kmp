@@ -3,6 +3,7 @@ package com.kazemieh.catalog
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
@@ -25,10 +26,13 @@ val catalogModule = module {
             getProductsUseCase = get(),
             getCategoriesUseCase = get(),
             toggleFavoriteUseCase = get(),
+            observeFavoriteIdsUseCase = get(),
             getStoriesUseCase = get(),
             markStoryAsSeenUseCase = get()
         )
     }
+
+    factory { ObserveFavoriteIdsUseCase(get()) }
 
     viewModel {
         CategoriesViewModel(
@@ -38,7 +42,8 @@ val catalogModule = module {
 
     viewModel {
         CategorySearchViewModel(
-            getProductsUseCase = get()
+            getProductsUseCase = get(),
+            observeFavoriteIdsUseCase = get()
         )
     }
 }

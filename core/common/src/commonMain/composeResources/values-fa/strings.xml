@@ -1,6 +1,7 @@
 <resources>
     <string name="myProfile">پروفایل من</string>
     <string name="myAddresses">آدرس‌های من</string>
+    <string name="myFavorites">علاقه‌مندی‌های من</string>
     <string name="noAddressesFound">آدرسی یافت نشد</string>
     <string name="defaultLabel">پیش‌فرض</string>
     <string name="postalCodeLabel">کد پستی: %1$s</string>
@@ -21,6 +22,12 @@
     <string name="searchHere">جستجو در اینجا...</string>
     <string name="outOfStock">ناموجود</string>
     <string name="details">جزئیات</string>
+    <string name="reviewsTab">نظرات (%1$s)</string>
+    <string name="questionsTab">پرسش‌ها (%1$s)</string>
+    <string name="addReview">ثبت نظر جدید</string>
+    <string name="addQuestion">ثبت پرسش جدید</string>
+    <string name="noReviewsYet">هنوز نظری برای این محصول ثبت نشده است.</string>
+    <string name="noQuestionsYet">هنوز پرسشی برای این محصول ثبت نشده است.</string>
     <string name="variants">انواع</string>
     <string name="variantsManager">مدیریت تنوع</string>
     <string name="addOptionType">افزودن نوع ویژگی</string>
@@ -111,6 +118,7 @@
     <string name="productImageDesc">تصویر محصول</string>
     <string name="purchaseOnTheWay">خرید شما در راه است.</string>
     <string name="emptyProductList">لیست محصولات خالی است.</string>
+    <string name="favoritesEmpty">لیست علاقه‌مندی‌های شما خالی است.</string>
     <string name="noProductInCategory">محصولی در این دسته‌بندی یافت نشد.</string>
     <string name="addressAddedSuccessfully">آدرس با موفقیت اضافه شد</string>
     <string name="paypalNotImplemented">پرداخت زرین پال هنوز پیاده‌سازی نشده است.</string>

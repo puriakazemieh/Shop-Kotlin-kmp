@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -32,6 +33,7 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: Any,
     icon: DrawableResource? = null,
+    imageVector: ImageVector? = null,
     enabled: Boolean = true,
     secondary: Boolean = false,
     onClick: () -> Unit,
@@ -65,8 +67,16 @@ fun PrimaryButton(
                 else if (secondary) MaterialTheme.colorScheme.onSurface
                 else MaterialTheme.colorScheme.onPrimary
             )
+        } else if (imageVector != null) {
+            Icon(
+                modifier = Modifier.size(14.dp),
+                imageVector = imageVector,
+                contentDescription = stringResource(Resources.String.ButtonIconDesc),
+                tint = if (secondary) MaterialTheme.colorScheme.onSurface
+                else MaterialTheme.colorScheme.onPrimary
+            )
         }
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(if (icon != null || imageVector != null) 12.dp else 0.dp))
         Text(
             text = anyToString(text),
             fontSize = FontSize.REGULAR,

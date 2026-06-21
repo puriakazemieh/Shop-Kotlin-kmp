@@ -51,6 +51,7 @@ object Resources {
     object String {
         val MyProfile = CommonRes.string.myProfile
         val MyAddresses = CommonRes.string.myAddresses
+        val MyFavorites = CommonRes.string.myFavorites
         val Settings = CommonRes.string.settings
         val SavedForLater = CommonRes.string.savedForLater
         val MoveToCart = CommonRes.string.moveToCart
@@ -84,6 +85,12 @@ object Resources {
         val SearchHere = CommonRes.string.searchHere
         val OutOfStock = CommonRes.string.outOfStock
         val Details = CommonRes.string.details
+        val ReviewsTab = CommonRes.string.reviewsTab
+        val QuestionsTab = CommonRes.string.questionsTab
+        val AddReview = CommonRes.string.addReview
+        val AddQuestion = CommonRes.string.addQuestion
+        val NoReviewsYet = CommonRes.string.noReviewsYet
+        val NoQuestionsYet = CommonRes.string.noQuestionsYet
         val Variants = CommonRes.string.variants
         val VariantsManager = CommonRes.string.variantsManager
         val AddOptionType = CommonRes.string.addOptionType
@@ -110,6 +117,7 @@ object Resources {
         val PurchaseOnTheWay = CommonRes.string.purchaseOnTheWay
         val NothingHere = CommonRes.string.nothingHere
         val EmptyProductList = CommonRes.string.emptyProductList
+        val FavoritesEmpty = CommonRes.string.favoritesEmpty
         val NoProductInCategory = CommonRes.string.noProductInCategory
         val AddressAddedSuccessfully = CommonRes.string.addressAddedSuccessfully
         val ZarinpalNotImplemented = CommonRes.string.paypalNotImplemented
