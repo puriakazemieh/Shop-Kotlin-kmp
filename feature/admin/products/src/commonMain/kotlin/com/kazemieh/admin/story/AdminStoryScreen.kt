@@ -26,7 +26,7 @@ import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.story.Story
 import com.kazemieh.domain.story.StoryMediaType
-import com.kazemieh.admin.products.PhotoPicker
+import com.kazemieh.admin.products.MediaPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -40,14 +40,16 @@ fun AdminStoryScreen(
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-    val mediaPicker = remember { PhotoPicker() }
+    val mediaPicker = remember { MediaPicker() }
 
     var selectedMediaBytes by remember { mutableStateOf<ByteArray?>(null) }
+    var isVideo by remember { mutableStateOf(false) }
     var showCreateDialog by remember { mutableStateOf(false) }
 
-    mediaPicker.InitializePhotoPicker(
-        onImageSelect = { bytes ->
+    mediaPicker.InitializeMediaPicker(
+        onMediaSelect = { bytes, video ->
             selectedMediaBytes = bytes
+            isVideo = video
             showCreateDialog = true
         }
     )
@@ -71,7 +73,7 @@ fun AdminStoryScreen(
                 viewModel.handleIntent(
                     AdminStoryIntent.CreateStory(
                         selectedMediaBytes!!,
-                        StoryMediaType.IMAGE,
+                        if (isVideo) StoryMediaType.VIDEO else StoryMediaType.IMAGE,
                         productId,
                         title
                     )

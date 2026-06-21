@@ -7,7 +7,7 @@ import com.kazemieh.common.Res
 class ValidatePassword {
     operator fun invoke(password: String): ValidationResult {
         if (password.length < 8) {
-            return ValidationResult(false, Res.string.password_too_short)
+            return ValidationResult(false, Res.string.passwordTooShort)
         }
         return ValidationResult(true)
     }

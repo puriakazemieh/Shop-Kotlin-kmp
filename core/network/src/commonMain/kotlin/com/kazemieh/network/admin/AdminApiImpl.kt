@@ -84,6 +84,7 @@ class AdminApiImpl(
             setBody(MultiPartFormDataContent(
                 formData {
                     append("file", bytes, Headers.build {
+                        append(HttpHeaders.ContentType, "image/jpeg")
                         append(HttpHeaders.ContentDisposition, "filename=\"image.jpg\"")
                     })
                     if (sortOrder != null) {

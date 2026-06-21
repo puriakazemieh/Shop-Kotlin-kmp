@@ -13,6 +13,6 @@ class PaymentDataSourceImpl(
     private val api: PaymentApi
 ) : PaymentDataSource {
     override suspend fun requestPayment(orderId: Long): AppResult<PaymentResponse> = safeApiCall {
-        api.requestPayment(PaymentRequest(orderId.toString()))
+        api.requestPayment(PaymentRequest(orderId))
     }
 }

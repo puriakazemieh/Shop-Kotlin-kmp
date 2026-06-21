@@ -29,7 +29,7 @@ suspend fun <T> safeApiCall(
         )
     } catch (e: Exception) {
         AppResult.Error(
-            message = Res.string.unknown_error,
+            message = Res.string.unknownError,
             code = 0
         )
     }
@@ -65,7 +65,7 @@ suspend inline fun <reified T> safeApiCallRaw(
             } catch (e: SerializationException) {
                 e.ld("SerializationException")
                 throw ApiException(
-                    messageText = Res.string.error_parsing_data,
+                    messageText = Res.string.errorParsingData,
                     code = 0
                 )
             }
@@ -99,7 +99,7 @@ suspend inline fun <reified T> safeApiCallRaw(
         "Exception: ${e::class.simpleName} - ${e.message}".ld("❌ Unexpected Error in safeApiCallRaw")
         e.printStackTrace()
         throw ApiException(
-            messageText = Res.string.unknown_error,
+            messageText = Res.string.unknownError,
             code = 0
         )
     }

@@ -8,11 +8,11 @@ import com.kazemieh.common.Res
 class ValidateEmail {
     operator fun invoke(email: String): ValidationResult {
         if (email.isBlank()) {
-            return ValidationResult(false, Res.string.email_empty)
+            return ValidationResult(false, Res.string.emailEmpty)
         }
 
         if (!isValid(email)) {
-            return ValidationResult(false, Res.string.invalid_email)
+            return ValidationResult(false, Res.string.invalidEmail)
         }
 
         return ValidationResult(true)

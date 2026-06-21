@@ -44,12 +44,16 @@ fun ManageProductScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<ManageProductViewModel>()
     val state by viewModel.state.collectAsState()
-    val mediaPicker = remember { PhotoPicker() }
+    val mediaPicker = remember { MediaPicker() }
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    mediaPicker.InitializePhotoPicker(
-        onImageSelect = { bytes ->
-            viewModel.handleIntent(ManageProductIntent.UploadImage(bytes))
+    mediaPicker.InitializeMediaPicker(
+        onMediaSelect = { bytes, isVideo ->
+            if (isVideo) {
+                viewModel.handleIntent(ManageProductIntent.UploadVideo(bytes))
+            } else {
+                viewModel.handleIntent(ManageProductIntent.UploadImage(bytes))
+            }
         }
     )
 
