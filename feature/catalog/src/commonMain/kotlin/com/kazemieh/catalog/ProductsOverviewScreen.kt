@@ -60,7 +60,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProductsOverviewScreen(
     navigateToDetails: (String) -> Unit,
-    navigateToCategorySearch: (Long, String) -> Unit
+    navigateToCategorySearch: (Long, String) -> Unit,
+    navigateToAuth: () -> Unit
 ) {
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
@@ -94,6 +95,9 @@ fun ProductsOverviewScreen(
                 }
                 is ProductsOverviewEffect.NavigateToCategory -> {
                     navigateToCategorySearch(effect.id, effect.name)
+                }
+                is ProductsOverviewEffect.NavigateToAuth -> {
+                    navigateToAuth()
                 }
             }
         }

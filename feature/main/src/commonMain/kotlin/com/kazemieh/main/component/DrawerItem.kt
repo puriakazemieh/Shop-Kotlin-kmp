@@ -16,10 +16,10 @@ enum class DrawerItem(
         title = Resources.String.Profile,
         icon = Resources.Icon.Person
     ),
-  /*  Blog(
+    Blog(
         title = Resources.String.Blog,
         icon = Resources.Icon.Book
-    ),*/
+    ),
  /*   Locations(
         title = Resources.String.Locations,
         icon = Resources.Icon.MapPin

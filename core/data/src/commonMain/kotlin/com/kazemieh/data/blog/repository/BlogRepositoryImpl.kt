@@ -3,10 +3,7 @@ package com.kazemieh.data.blog.repository
 import com.kazemieh.common.AppResult
 import com.kazemieh.data.blog.mapper.toDomain
 import com.kazemieh.data.blog.source.BlogDataSource
-import com.kazemieh.domain.blog.Blog
-import com.kazemieh.domain.blog.BlogCategory
-import com.kazemieh.domain.blog.BlogList
-import com.kazemieh.domain.blog.BlogRepository
+import com.kazemieh.domain.blog.*
 import com.kazemieh.network.blog.dto.request.*
 import com.kazemieh.network.common.safeApiCall
 import kotlinx.serialization.encodeToString
@@ -54,7 +51,7 @@ class BlogRepositoryImpl(
         dataSource.createBlog(
             CreateBlogRequest(
                 title = blog.title,
-                content = blog.content?.let { Json.encodeToString(it) } ?: "",
+                content = blog.content?.map { it.toDto() } ?: emptyList(),
                 summary = blog.summary,
                 thumbnailUrl = blog.thumbnailUrl,
                 status = blog.status ?: "PUBLISHED",
@@ -71,7 +68,7 @@ class BlogRepositoryImpl(
             id,
             UpdateBlogRequest(
                 title = blog.title,
-                content = blog.content?.let { Json.encodeToString(it) },
+                content = blog.content?.map { it.toDto() },
                 summary = blog.summary,
                 thumbnailUrl = blog.thumbnailUrl,
                 status = blog.status,
@@ -81,6 +78,13 @@ class BlogRepositoryImpl(
                 metaDescription = blog.metaDescription
             )
         ).toDomain()
+    }
+
+    private fun BlogBlock.toDto(): BlogBlockDto = when (this) {
+        is BlogBlock.Header -> BlogBlockDto("header", text, level)
+        is BlogBlock.Paragraph -> BlogBlockDto("paragraph", text)
+        is BlogBlock.Image -> BlogBlockDto("image", url)
+        is BlogBlock.Unknown -> BlogBlockDto(type, "")
     }
 
     override suspend fun deleteBlog(id: Long): AppResult<Unit> = safeApiCall {

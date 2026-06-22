@@ -111,7 +111,7 @@ val dataModule = module {
     }
 
     single<CatalogRepository> {
-        CatalogRepositoryImpl(get())
+        CatalogRepositoryImpl(get(), get())
     }
 
     single<InteractionRepository> {

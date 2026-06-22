@@ -29,4 +29,5 @@ sealed interface ProductsOverviewEffect {
     data class NavigateToDetails(val slug: String) : ProductsOverviewEffect
     data class NavigateToCategory(val id: Long, val name: String) : ProductsOverviewEffect
     data class NavigateToStory(val initialIndex: Int) : ProductsOverviewEffect
+    data object NavigateToAuth : ProductsOverviewEffect
 }

@@ -20,6 +20,9 @@
     <string name="saveAddress">Save Address</string>
     <string name="adminPanel">Admin Panel</string>
     <string name="searchHere">Search here</string>
+    <string name="sortNewest">Newest</string>
+    <string name="sortPriceAsc">Cheapest</string>
+    <string name="sortPriceDesc">Most Expensive</string>
     <string name="outOfStock">Out of Stock</string>
     <string name="details">Details</string>
     <string name="reviewsTab">Reviews (%1$s)</string>
@@ -44,8 +47,6 @@
     <string name="payWithPaypal">Pay with Zarinpal</string>
     <string name="payOnDelivery">Pay on Delivery</string>
     <string name="login">Login</string>
-
-    <!-- Home/Drawer -->
     <string name="selectCategory">Select Category</string>
     <string name="selectColor">Select Color</string>
     <string name="selectSize">Select Size</string>
@@ -154,8 +155,6 @@
     <string name="isActiveLabel">Is Active</string>
     <string name="percentage">Percentage</string>
     <string name="fixedAmount">Fixed Amount</string>
-
-    <!-- Auth -->
     <string name="forgotPassword">Forgot Password</string>
     <string name="resetPassword">Reset Password</string>
     <string name="createAccount">Create Account</string>
@@ -170,8 +169,6 @@
     <string name="passwordResetSuccess">Your password has been changed successfully.</string>
     <string name="invalidResetToken">The reset link is invalid or has expired. Please try again.</string>
     <string name="passwordsDoNotMatch">Passwords do not match</string>
-
-    <!-- Home/Drawer -->
     <string name="carmilla">Carmilla</string>
     <string name="carmillaSlogan">Be BOLD, Be CARMILLA</string>
     <string name="home">Home</string>
@@ -200,8 +197,6 @@
     <string name="categoriesIsEmpty">No Categories Found</string>
     <string name="categoriesIsEmptySubtitle">Please try again later.</string>
     <string name="searchInCategoryFormat">Search in %1$s</string>
-
-    <!-- Content Descriptions -->
     <string name="backDesc">Back</string>
     <string name="closeDesc">Close</string>
     <string name="searchDesc">Search</string>
@@ -224,7 +219,6 @@
     <string name="buttonIconDesc">Button icon</string>
     <string name="infoCardImageDesc">Info card image</string>
     <string name="copy">Copy</string>
-
     <string name="itemsLabel">Items</string>
     <string name="subtotalLabel">Subtotal</string>
     <string name="shippingLabel">Shipping</string>
@@ -239,8 +233,6 @@
     <string name="qtyXPriceFormat">%1$s x %2$s</string>
     <string name="priceRangeFormat">%1$s - %2$s</string>
     <string name="stockReservedFormat">Stock: %1$s (Reserved: %2$s)</string>
-
-    <!-- Form Placeholders -->
     <string name="firstNamePlaceholder">First Name</string>
     <string name="lastNamePlaceholder">Last Name</string>
     <string name="phoneNumberPlaceholder">Phone Number</string>
@@ -251,8 +243,6 @@
     <string name="addressLine1Placeholder">Address Line 1</string>
     <string name="addressLine2OptionalPlaceholder">Address Line 2 (Optional)</string>
     <string name="postalCodeOptionalPlaceholder">Postal Code (Optional)</string>
-
-    <!-- Core/Common User Messages -->
     <string name="userNotFound">User not found</string>
     <string name="emailAlreadyExists">Email already exists</string>
     <string name="userInactive">User is inactive</string>

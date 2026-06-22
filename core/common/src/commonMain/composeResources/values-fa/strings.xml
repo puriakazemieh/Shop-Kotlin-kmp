@@ -1,13 +1,13 @@
 <resources>
     <string name="myProfile">پروفایل من</string>
     <string name="myAddresses">آدرس‌های من</string>
-    <string name="myFavorites">علاقه‌مندی‌های من</string>
+    <string name="myFavorites">لیست علاقه‌مندی</string>
     <string name="noAddressesFound">آدرسی یافت نشد</string>
     <string name="defaultLabel">پیش‌فرض</string>
     <string name="postalCodeLabel">کد پستی: %1$s</string>
     <string name="setAsDefault">تنظیم به عنوان پیش‌فرض</string>
     <string name="updateProfile">بروزرسانی پروفایل</string>
-    <string name="saving">در حال ذخیره...</string>
+    <string name="saving">در حال ذخیره</string>
     <string name="backArrowDesc">آیکون بازگشت</string>
     <string name="addAddress">افزودن آدرس</string>
     <string name="edit">ویرایش</string>
@@ -20,6 +20,9 @@
     <string name="saveAddress">ذخیره آدرس</string>
     <string name="adminPanel">پنل مدیریت</string>
     <string name="searchHere">جستجو در اینجا...</string>
+    <string name="sortNewest">جدیدترین</string>
+    <string name="sortPriceAsc">ارزان‌ترین</string>
+    <string name="sortPriceDesc">گران‌ترین</string>
     <string name="outOfStock">ناموجود</string>
     <string name="details">جزئیات</string>
     <string name="reviewsTab">نظرات (%1$s)</string>
@@ -44,8 +47,6 @@
     <string name="payWithPaypal">پرداخت با زرین پال</string>
     <string name="payOnDelivery">پرداخت هنگام تحویل</string>
     <string name="login">ورود</string>
-
-    <!-- Home/Drawer -->
     <string name="selectCategory">انتخاب دسته‌بندی</string>
     <string name="selectColor">انتخاب رنگ</string>
     <string name="selectSize">انتخاب سایز</string>
@@ -143,8 +144,6 @@
     <string name="isActiveLabel">فعال است</string>
     <string name="percentage">درصدی</string>
     <string name="fixedAmount">مبلغ ثابت</string>
-
-    <!-- Auth -->
     <string name="forgotPassword">فراموشی رمز عبور</string>
     <string name="resetPassword">بازنشانی رمز عبور</string>
     <string name="createAccount">ایجاد حساب کاربری</string>
@@ -159,8 +158,6 @@
     <string name="passwordResetSuccess">رمز عبور شما با موفقیت تغییر کرد</string>
     <string name="invalidResetToken">این لینک بازنشانی نامعتبر است یا منقضی شده. لطفاً دوباره تلاش کنید.</string>
     <string name="passwordsDoNotMatch">رمزهای عبور مطابقت ندارند</string>
-
-    <!-- Home/Drawer -->
     <string name="carmilla">کارمیلا</string>
     <string name="carmillaSlogan">جسور باش، کارمیلا باش</string>
     <string name="home">خانه</string>
@@ -189,8 +186,6 @@
     <string name="categoriesIsEmpty">دسته‌بندی یافت نشد</string>
     <string name="categoriesIsEmptySubtitle">لطفا بعدا تلاش کنید.</string>
     <string name="searchInCategoryFormat">جستجو در %1$s</string>
-
-    <!-- Content Descriptions -->
     <string name="backDesc">بازگشت</string>
     <string name="closeDesc">بستن</string>
     <string name="searchDesc">جستجو</string>
@@ -213,7 +208,6 @@
     <string name="buttonIconDesc">آیکون دکمه</string>
     <string name="infoCardImageDesc">تصویر کارت اطلاعات</string>
     <string name="copy">کپی</string>
-
     <string name="itemsLabel">کالاها</string>
     <string name="subtotalLabel">جمع جزء</string>
     <string name="shippingLabel">هزینه ارسال</string>
@@ -228,8 +222,6 @@
     <string name="qtyXPriceFormat">%1$s عدد x %2$s</string>
     <string name="priceRangeFormat">%1$s - %2$s</string>
     <string name="stockReservedFormat">موجودی: %1$s (رزرو شده: %2$s)</string>
-
-    <!-- Form Placeholders -->
     <string name="firstNamePlaceholder">نام</string>
     <string name="lastNamePlaceholder">نام خانوادگی</string>
     <string name="phoneNumberPlaceholder">شماره تماس</string>
@@ -240,8 +232,6 @@
     <string name="addressLine1Placeholder">آدرس (سطر ۱)</string>
     <string name="addressLine2OptionalPlaceholder">آدرس (سطر ۲ - اختیاری)</string>
     <string name="postalCodeOptionalPlaceholder">کد پستی (اختیاری)</string>
-
-    <!-- Core/Common User Messages (Farsi) -->
     <string name="userNotFound">کاربر یافت نشد</string>
     <string name="emailAlreadyExists">این ایمیل قبلاً ثبت شده است</string>
     <string name="userInactive">حساب کاربری غیرفعال است</string>
@@ -338,8 +328,6 @@
     <string name="discountNotActive">این کد در حال حاضر فعال نیست.</string>
     <string name="discountLimitExceeded">ظرفیت استفاده از این کد تکمیل شده است.</string>
     <string name="discountMinAmountNotMet">مبلغ خرید شما برای این کد کافی نیست.</string>
-
-    <!-- New Error Codes -->
     <string name="productNoActiveVariant">محصول هیچ واریانت فعالی برای فروش ندارد.</string>
     <string name="productPriceRequired">وارد کردن قیمت پایه برای محصول بدون تنوع الزامی است.</string>
     <string name="productInventoryRequired">وارد کردن موجودی اولیه برای محصول بدون تنوع الزامی است.</string>
@@ -351,13 +339,10 @@
     <string name="missingVariantOrProduct">شناسه محصول یا واریانت ارسال نشده است.</string>
     <string name="variantOptionsRequired">انتخاب ویژگی برای ساخت واریانت الزامی است.</string>
     <string name="pleaseSelectVariant">لطفاً ابتدا یک واریانت انتخاب کنید.</string>
-
     <string name="oops">اوپس!</string>
     <string name="success">موفقیت‌آمیز!</string>
     <string name="goBack">بازگشت</string>
     <string name="nothingHere">چیزی در اینجا نیست</string>
-
-    <!-- Wallet -->
     <string name="wallet">کیف پول</string>
     <string name="myWallet">کیف پول من</string>
     <string name="walletBalance">موجودی کیف پول</string>

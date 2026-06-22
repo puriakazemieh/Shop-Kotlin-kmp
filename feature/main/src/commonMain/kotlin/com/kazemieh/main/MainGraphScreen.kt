@@ -51,6 +51,7 @@ fun MainGraphScreen(
     navigateToSettings: () -> Unit,
     navigateToContactUs: () -> Unit,
     navigateToAdminPanel: () -> Unit,
+    navigateToBlog: () -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
     navigateToCheckout: (Double) -> Unit,
@@ -145,7 +146,8 @@ fun MainGraphScreen(
                         composable<Screen.ProductsOverview> {
                             ProductsOverviewScreen(
                                 navigateToDetails = navigateToDetails,
-                                navigateToCategorySearch = navigateToCategorySearch
+                                navigateToCategorySearch = navigateToCategorySearch,
+                                navigateToAuth = navigateToAuth
                             )
                         }
                         composable<Screen.Cart> {
@@ -160,6 +162,7 @@ fun MainGraphScreen(
                                 onContactUsClick = navigateToContactUs,
                                 onSettingsClick = navigateToSettings,
                                 onAdminPanelClick = navigateToAdminPanel,
+                                onBlogClick = navigateToBlog,
                                 onSignOutClick = {
                                     viewModel.handleIntent(MainIntent.SignOut)
                                 }

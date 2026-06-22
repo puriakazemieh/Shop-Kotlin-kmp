@@ -69,6 +69,8 @@ object HttpClientFactory {
                         } else null
                     }
 
+                    sendWithoutRequest { true }
+
                     refreshTokens {
                         val refreshToken = tokenProvider.getRefreshToken()
 
@@ -106,9 +108,9 @@ object HttpClientFactory {
             install(DefaultRequest) {
                 url(PlatformConfig.baseUrl)
                 contentType(ContentType.Application.Json)
-                tokenProvider.getAccessToken()?.let { token ->
-                    header(HttpHeaders.Authorization, "Bearer $token")
-                }
+//                tokenProvider.getAccessToken()?.let { token ->
+//                    header(HttpHeaders.Authorization, "Bearer $token")
+//                }
             }
 
         }

@@ -21,6 +21,12 @@ class FavoriteRepositoryImpl(private val dataSource: FavoriteDataSource) : Favor
         return getFavorites(0, 100).map { Unit }
     }
 
+    override suspend fun updateFavoriteStatus(productId: Long, isFavorite: Boolean) {
+        favoriteIds.update { 
+            if (isFavorite) it + productId else it - productId 
+        }
+    }
+
     override suspend fun addToFavorites(productId: Long): AppResult<Unit> {
         val result = dataSource.addToFavorites(productId)
         if (result is AppResult.Success) {

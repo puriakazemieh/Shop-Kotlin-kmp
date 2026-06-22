@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.domain.story.Story
 
 @Composable
@@ -70,7 +71,7 @@ fun StoryCircleItem(story: Story, onClick: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = story.createdAt,
+            text = formatDateTime(story.createdAt),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

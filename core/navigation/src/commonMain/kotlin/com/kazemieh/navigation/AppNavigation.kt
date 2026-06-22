@@ -99,6 +99,9 @@ fun AppNavHost(
                 navigateToAdminPanel = {
                     navController.navigate(Screen.AdminPanel)
                 },
+                navigateToBlog = {
+                    navController.navigate(Screen.BlogList)
+                },
                 navigateToDetails = { slug ->
                     navController.navigate(Screen.ProductDetail(slug = slug))
                 },
@@ -327,7 +330,10 @@ fun AppNavHost(
                 navigateToDetails = { slug ->
                     navController.navigate(Screen.ProductDetail(slug = slug))
                 },
-                navigateBack = { navController.navigateBack() }
+                navigateBack = { navController.navigateBack() },
+                navigateToAuth = {
+                    navController.navigate(Screen.AuthGraph)
+                }
             )
         }
 

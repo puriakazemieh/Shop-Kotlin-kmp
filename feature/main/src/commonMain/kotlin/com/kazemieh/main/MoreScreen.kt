@@ -36,6 +36,7 @@ fun MoreScreen(
     onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
+    onBlogClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -99,6 +100,7 @@ fun MoreScreen(
                             DrawerItem.Contact -> onContactUsClick()
                             DrawerItem.Settings -> onSettingsClick()
                             DrawerItem.SignOut -> onSignOutClick()
+                            DrawerItem.Blog -> onBlogClick()
                             else -> {}
                         }
                     }

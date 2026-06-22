@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.component.BlogContentRenderer
 import com.kazemieh.designsystem.component.LoadingCard
 import org.koin.compose.viewmodel.koinViewModel
@@ -75,7 +76,7 @@ fun BlogDetailScreen(
                             )
                         }
                         Text(
-                            text = "By ${blog.authorName ?: "Staff"} • ${blog.createdAt}",
+                            text = "By ${blog.authorName ?: "Staff"} • ${formatDateTime(blog.createdAt)}",
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(top = 8.dp)
                         )

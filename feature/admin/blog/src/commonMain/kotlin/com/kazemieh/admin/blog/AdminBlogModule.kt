@@ -11,6 +11,7 @@ val adminBlogModule = module {
     factory { CreateBlogUseCase(get()) }
     factory { UpdateBlogUseCase(get()) }
     factory { DeleteBlogUseCase(get()) }
+    factory { UploadBlogMediaUseCase(get()) }
     
     factory { CreateBlogCategoryUseCase(get()) }
     factory { UpdateBlogCategoryUseCase(get()) }
@@ -19,5 +20,5 @@ val adminBlogModule = module {
     // Checking if it's already defined in blogModule...
 
     viewModel { AdminBlogListViewModel(get(), get(), get(), get()) }
-    viewModel { ManageBlogViewModel(get(), get(), get(), get()) }
+    viewModel { ManageBlogViewModel(get(), get(), get(), get(), get()) }
 }

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateBlogRequest(
     val title: String? = null,
-    val content: String? = null,
+    val content: List<BlogBlockDto>? = null,
     val summary: String? = null,
     val thumbnailUrl: String? = null,
     val status: String? = null,

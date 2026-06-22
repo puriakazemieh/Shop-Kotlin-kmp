@@ -6,6 +6,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.auth.IsUserLoggedInUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
@@ -14,6 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,7 +26,8 @@ class ProductsOverviewViewModel(
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
     private val getStoriesUseCase: GetStoriesUseCase,
-    private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase
+    private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductsOverviewState())
@@ -122,6 +125,12 @@ class ProductsOverviewViewModel(
 
     private fun toggleFavorite(product: ProductSummary) {
         viewModelScope.launch {
+            val isLoggedIn = isUserLoggedInUseCase().first()
+            if (!isLoggedIn) {
+                _effect.send(ProductsOverviewEffect.NavigateToAuth)
+                return@launch
+            }
+
             val isAdding = !product.isFavorite
             updateProductFavoriteState(product.id, isAdding)
 
@@ -154,6 +163,8 @@ class ProductsOverviewViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
             getProducts()
+            loadStories()
+            loadCategories()
             _state.update { it.copy(isRefreshing = false) }
         }
     }

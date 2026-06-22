@@ -11,4 +11,5 @@ interface FavoriteRepository {
     suspend fun getFavorites(page: Int = 0, size: Int = 20): AppResult<AdminPage<ProductSummary>>
     fun observeFavoriteIds(): Flow<Set<Long>>
     suspend fun refreshFavorites(): AppResult<Unit>
+    suspend fun updateFavoriteStatus(productId: Long, isFavorite: Boolean)
 }

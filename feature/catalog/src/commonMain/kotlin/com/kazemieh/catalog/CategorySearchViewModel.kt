@@ -4,20 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetProductsUseCase
+import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.auth.IsUserLoggedInUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CategorySearchViewModel(
     private val getProductsUseCase: GetProductsUseCase,
-    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CategorySearchState())
@@ -66,6 +72,40 @@ class CategorySearchViewModel(
                 }
                 loadProducts()
             }
+            is CategorySearchIntent.UpdateSort -> {
+                _state.update { it.copy(sort = intent.sort) }
+                loadProducts()
+            }
+            is CategorySearchIntent.ToggleFavorite -> toggleFavorite(intent.product)
+        }
+    }
+
+    private fun toggleFavorite(product: ProductSummary) {
+        viewModelScope.launch {
+            val isLoggedIn = isUserLoggedInUseCase().first()
+            if (!isLoggedIn) {
+                _effect.send(CategorySearchEffect.NavigateToAuth)
+                return@launch
+            }
+
+            val isAdding = !product.isFavorite
+            updateProductFavoriteState(product.id, isAdding)
+
+            val result = toggleFavoriteUseCase(product.id, isAdding)
+
+            if (result is AppResult.Error) {
+                updateProductFavoriteState(product.id, !isAdding)
+            }
+        }
+    }
+
+    private fun updateProductFavoriteState(productId: Long, isFavorite: Boolean) {
+        _state.update { currentState ->
+            currentState.copy(
+                products = currentState.products.map {
+                    if (it.id == productId) it.copy(isFavorite = isFavorite) else it
+                }
+            )
         }
     }
 
@@ -76,7 +116,8 @@ class CategorySearchViewModel(
             val result = getProductsUseCase(
                 query = currentState.searchQuery.ifBlank { null },
                 categoryId = currentState.categoryId,
-                options = currentState.selectedOptions.ifEmpty { null }
+                options = currentState.selectedOptions.ifEmpty { null },
+                sort = currentState.sort
             )
             when (result) {
                 is AppResult.Success -> {

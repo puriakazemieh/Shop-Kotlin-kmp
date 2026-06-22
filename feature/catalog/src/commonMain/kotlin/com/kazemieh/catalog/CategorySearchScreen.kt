@@ -21,6 +21,7 @@ import com.kazemieh.catalog.ProductCard
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.common.map
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -30,7 +31,8 @@ fun CategorySearchScreen(
     categoryId: Long,
     categoryName: String,
     navigateBack: () -> Unit,
-    navigateToDetails: (String) -> Unit
+    navigateToDetails: (String) -> Unit,
+    navigateToAuth: () -> Unit
 ) {
     val viewModel = koinViewModel<CategorySearchViewModel>()
     val state by viewModel.state.collectAsState()
@@ -38,6 +40,17 @@ fun CategorySearchScreen(
 
     LaunchedEffect(categoryId, categoryName) {
         viewModel.handleIntent(CategorySearchIntent.Init(categoryId, categoryName))
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is CategorySearchEffect.ShowError -> {} // Handle if needed
+                is CategorySearchEffect.NavigateToAuth -> {
+                    navigateToAuth()
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -121,6 +134,35 @@ fun CategorySearchScreen(
         ) {
             if (state.availableOptions.isNotEmpty()) {
                 Column(modifier = Modifier.padding(horizontal = 12.dp)) {
+                    // Sort options
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(vertical = 4.dp)
+                    ) {
+                        item {
+                            FilterChip(
+                                selected = state.sort == "newest",
+                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("newest")) },
+                                label = { Text(stringResource(Resources.String.SortNewest)) }
+                            )
+                        }
+                        item {
+                            FilterChip(
+                                selected = state.sort == "price_asc",
+                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("price_asc")) },
+                                label = { Text(stringResource(Resources.String.SortPriceAsc)) }
+                            )
+                        }
+                        item {
+                            FilterChip(
+                                selected = state.sort == "price_desc",
+                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("price_desc")) },
+                                label = { Text(stringResource(Resources.String.SortPriceDesc)) }
+                            )
+                        }
+                    }
+                    
                     state.availableOptions.forEach { (key, values) ->
                         Text(
                             text = key,
@@ -169,7 +211,10 @@ fun CategorySearchScreen(
                     items(state.products) { product ->
                         ProductCard(
                             product = product,
-                            onClick = { navigateToDetails(it) }
+                            onClick = { navigateToDetails(it) },
+                            onFavoriteClick = {
+                                viewModel.handleIntent(CategorySearchIntent.ToggleFavorite(product))
+                            }
                         )
                     }
                 }

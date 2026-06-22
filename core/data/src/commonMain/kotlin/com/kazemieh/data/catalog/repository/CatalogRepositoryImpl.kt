@@ -8,13 +8,12 @@ import com.kazemieh.common.*
 import com.kazemieh.data.catalog.mapper.*
 import com.kazemieh.data.admin.mapper.toAdminPage
 import com.kazemieh.data.catalog.source.CatalogDataSource
-
-
-
+import com.kazemieh.domain.favorite.FavoriteRepository
 
 
 class CatalogRepositoryImpl(
-    private val dataSource: CatalogDataSource
+    private val dataSource: CatalogDataSource,
+    private val favoriteRepository: FavoriteRepository
 ) : CatalogRepository {
 
     override suspend fun getCategories(): AppResult<List<Category>> =
@@ -32,8 +31,18 @@ class CatalogRepositoryImpl(
         sort: String?
     ): AppResult<AdminPage<ProductSummary>> =
         dataSource.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort)
-            .map { it.toAdminPage { dto -> dto.toCatalogDomain() } }
+            .map { pageResponse -> 
+                val adminPage = pageResponse.toAdminPage { dto -> dto.toCatalogDomain() }
+                adminPage.items.forEach { 
+                    favoriteRepository.updateFavoriteStatus(it.id, it.isFavorite)
+                }
+                adminPage
+            }
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetail> =
-        dataSource.getProductDetail(slug).map { it.toCatalogDomain() }
+        dataSource.getProductDetail(slug).map { 
+            val product = it.toCatalogDomain()
+            favoriteRepository.updateFavoriteStatus(product.id, product.isFavorite)
+            product
+        }
 }
