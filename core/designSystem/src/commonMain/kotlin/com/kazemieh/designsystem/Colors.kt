@@ -7,90 +7,130 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
+// =====================================================================================
+//  Carmilla Design System — Color Tokens
+//  منبع حقیقت: DesignSystem-Carmilla.dc.html (پالت روشن + متغیرهای دارک)
+//  این توکن‌ها یک‌به‌یک با پروتوتایپ هم‌تراز شده‌اند.
+// =====================================================================================
 
-// --- پایه‌ رنگ‌های تم لایت (روشن و شفاف) ---
-val NavyBlueLight = Color(0xFF171E43)       // سرمه‌ای بسیار عمیق و شیک (پایه اصلی)
-val GoldLight = Color(0xFFBD9563)           // طلایی زنده و باکیفیت (بدون حس کثیفی یا تیرگی)
-val SurfaceVariantLight = Color(0xFFF4F4F2)  // پس‌زمینه ثانویه (مثلاً برای TextField یا آیتم‌های لیست)
-val BgLight = Color(0xFFF5F7FA)       // پس‌زمینه: سفید با هاله بسیار ملایم سرمه‌ای-آبی
-val SurfaceLight = Color(0xFFFFFFFF)  // کارت‌ها: سفید خالص
-val OutlineLight = Color(0xFFE2E8F0)  // خطوط دور المان‌ها
+// --- توکن‌های پایه‌ی تم روشن (Light) ---
+val AccentLight = Color(0xFF20305C)        // --accent  · رنگ برند/اکشن اصلی (سرمه‌ای)
+val Accent2Light = Color(0xFF34487E)       // --accent-2 · گرادیان/حالت ثانویه‌ی برند
+val AccentSoftLight = Color(0xFFEAEDF6)    // --accent-soft · کانتینر ملایم برند
+val GoldLight = Color(0xFFB08D57)          // --gold · لهجه‌ی لاکچری
+val GoldSoftLight = Color(0xFFF3ECE0)      // کانتینر ملایم طلایی (از گرادیان استوری)
+val BgLight = Color(0xFFF6F5F1)            // --bg · پس‌زمینه‌ی گرم کِرِم
+val SurfaceLight = Color(0xFFFFFFFF)       // --surface · سطح کارت
+val SurfaceVariantLight = Color(0xFFF1EFE9) // --surface-2 · سطح فرورفته
+val LineLight = Color(0xFFE7E4DD)          // --line · خط/بوردر
+val OutlineVariantLight = Color(0xFFD9D5CC) // نسخه‌ی پررنگ‌تر خط
+val InkLight = Color(0xFF192038)           // --ink · متن اصلی
+val InkSoftLight = Color(0xFF6B7184)       // --ink-soft · متن ثانویه
 
-// --- پایه‌ رنگ‌های تم دارک (مدرن و ملو) ---
-val NavyBlueDark = Color(0xFF7C8EFF)       // نسخه روشن‌تر و زنده‌تر سرمه‌ای برای دکمه‌های دارک تم
-val GoldDark = Color(0xFFE5C49A)           // طلایی روشن و درخشان برای دارک تم
-val BgDark = Color(0xFF0F111A)             // پس‌زمینه دارک (سرمه‌ای بسیار تیره و شیک، به جای مشکی مطلق)
-val SurfaceDark = Color(0xFF181C2A)        // کارت‌ها در دارک تم
-val SurfaceVariantDark = Color(0xFF24293E) // لایه‌های ثانویه دارک
-val OutlineDark = Color(0xFF2F3652)        // خطوط مرزی دارک
+// --- توکن‌های پایه‌ی تم تاریک (Dark) — از darkVars پروتوتایپ ---
+val AccentDark = Color(0xFF5E73AD)         // --accent
+val Accent2Dark = Color(0xFF7689BE)        // --accent-2
+val AccentSoftDark = Color(0xFF262C44)     // --accent-soft
+val GoldDark = Color(0xFFC9A86A)           // --gold
+val GoldSoftDark = Color(0xFF3A2F1C)       // کانتینر طلایی دارک
+val BgDark = Color(0xFF13151D)             // --bg
+val SurfaceDark = Color(0xFF1B1E29)        // --surface
+val SurfaceVariantDark = Color(0xFF242837) // --surface-2
+val LineDark = Color(0xFF2E3242)           // --line
+val OutlineVariantDark = Color(0xFF3A3F52)
+val InkDark = Color(0xFFECEDF2)            // --ink
+val InkSoftDark = Color(0xFF9AA0B2)        // --ink-soft
 
-// --- رنگ‌های عمومی و اصلاح شده دسته‌بندی‌ها (ملایم و شیک) ---
+// --- رنگ‌های معنایی (Semantic) — مشترک با شدت متفاوت در دو تم ---
+val SaleLight = Color(0xFFD8453B)          // --sale · حراج/خطا
+val SaleDark = Color(0xFFE0584E)
+val StarLight = Color(0xFFE7A93B)          // --star · امتیاز/ستاره
+val StarDark = Color(0xFFE7A93B)
+val OkLight = Color(0xFF1F9D6B)            // --ok · موفق/موجود
+val OkDark = Color(0xFF33B57F)
+
+// --- رنگ‌های دسته‌بندی (حفظ‌شده برای سازگاری با کد فعلی) ---
 val CategoryYellow = Color(0xFFF5B041)
 val CategoryBlue = Color(0xFF4EA8DE)
 val CategoryGreen = Color(0xFF4895EF)
 val CategoryPurple = Color(0xFF9B5DE5)
 val CategoryRed = Color(0xFFF25C54)
-val RedError = Color(0xFFE63946)
 
-// --- پالت لایت (Light Palette) ---
+// =====================================================================================
+//  Material3 ColorScheme — مصرف‌کننده‌های فعلی از طریق MaterialTheme.colorScheme
+// =====================================================================================
+
 val LightAppColorScheme = lightColorScheme(
-    primary = NavyBlueLight,
+    primary = AccentLight,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFE8EAF6),
-    onPrimaryContainer = NavyBlueLight,
+    primaryContainer = AccentSoftLight,
+    onPrimaryContainer = AccentLight,
 
     secondary = GoldLight,
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFFFDF6ED),
+    secondaryContainer = GoldSoftLight,
     onSecondaryContainer = Color(0xFF5C4325),
 
+    tertiary = Accent2Light,
+    onTertiary = Color.White,
+    tertiaryContainer = AccentSoftLight,
+    onTertiaryContainer = AccentLight,
+
     background = BgLight,
-    onBackground = Color(0xFF1A1A1A),
+    onBackground = InkLight,
 
     surface = SurfaceLight,
-    onSurface = Color(0xFF1A1A1A),
+    onSurface = InkLight,
     surfaceVariant = SurfaceVariantLight,
-    onSurfaceVariant = Color(0xFF4A4A4A),
+    onSurfaceVariant = InkSoftLight,
 
-    outline = OutlineLight,
-    outlineVariant = Color(0xFFCBD5E1),
+    outline = LineLight,
+    outlineVariant = OutlineVariantLight,
 
-    error = RedError,
+    error = SaleLight,
     onError = Color.White,
-    errorContainer = Color(0xFFFFEAEB),
-    onErrorContainer = Color(0xFF600004)
+    errorContainer = Color(0xFFFDEAE8),
+    onErrorContainer = Color(0xFF5C1411)
 )
 
-// --- پالت دارک (Dark Palette) ---
 val DarkAppColorScheme = darkColorScheme(
-    primary = NavyBlueDark,
-    onPrimary = Color(0xFF0A1033),
-    primaryContainer = Color(0xFF1E254C),
-    onPrimaryContainer = Color(0xFFE8EAF6),
+    primary = AccentDark,
+    onPrimary = Color(0xFF0F1320),
+    primaryContainer = AccentSoftDark,
+    onPrimaryContainer = Color(0xFFDCE3F6),
 
     secondary = GoldDark,
-    onSecondary = Color(0xFF422F18),
-    secondaryContainer = Color(0xFF5C4325),
-    onSecondaryContainer = Color(0xFFFDF6ED),
+    onSecondary = Color(0xFF2A2113),
+    secondaryContainer = GoldSoftDark,
+    onSecondaryContainer = Color(0xFFF3E6CF),
+
+    tertiary = Accent2Dark,
+    onTertiary = Color(0xFF0F1320),
+    tertiaryContainer = AccentSoftDark,
+    onTertiaryContainer = Color(0xFFDCE3F6),
 
     background = BgDark,
-    onBackground = Color(0xFFE2E8F0),
+    onBackground = InkDark,
 
     surface = SurfaceDark,
-    onSurface = Color(0xFFE2E8F0),
+    onSurface = InkDark,
     surfaceVariant = SurfaceVariantDark,
-    onSurfaceVariant = Color(0xFF94A3B8),
+    onSurfaceVariant = InkSoftDark,
 
-    outline = OutlineDark,
-    outlineVariant = Color(0xFF3F476C),
+    outline = LineDark,
+    outlineVariant = OutlineVariantDark,
 
-    error = Color(0xFFFF6B6B),
-    onError = Color(0xFF600004),
-    errorContainer = Color(0xFF4A0002),
-    onErrorContainer = Color(0xFFFFD8D8)
+    error = SaleDark,
+    onError = Color(0xFF2A0A08),
+    errorContainer = Color(0xFF4A0E0A),
+    onErrorContainer = Color(0xFFFFD9D5)
 )
 
-// --- ساختار داده‌ای AppColors ---
+// =====================================================================================
+//  AppColors — توکن‌های گسترده‌ی برند (شامل معنایی‌هایی که در Material نمی‌گنجند)
+//  برای کامپوننت‌های کارمیلا (Badge/Chip/ProductCard/...) در فازهای بعد استفاده می‌شود.
+// =====================================================================================
+
 data class AppColors(
     val primary: Color,
     val onPrimary: Color,
@@ -110,6 +150,17 @@ data class AppColors(
     val error: Color,
     val onError: Color,
 
+    // توکن‌های برند کارمیلا
+    val accent2: Color,
+    val accentSoft: Color,
+    val gold: Color,
+    val line: Color,
+
+    // معنایی
+    val sale: Color,
+    val star: Color,
+    val ok: Color,
+
     // رنگ‌های دسته‌بندی
     val categoryYellow: Color,
     val categoryBlue: Color,
@@ -125,7 +176,7 @@ val LocalAppColors = compositionLocalOf<AppColors> {
 @Composable
 fun provideAppColors(darkTheme: Boolean): AppColors {
     val colors = if (darkTheme) DarkAppColorScheme else LightAppColorScheme
-    return remember(colors) {
+    return remember(darkTheme) {
         AppColors(
             primary = colors.primary,
             onPrimary = colors.onPrimary,
@@ -144,6 +195,15 @@ fun provideAppColors(darkTheme: Boolean): AppColors {
             outline = colors.outline,
             error = colors.error,
             onError = colors.onError,
+            // توکن‌های برند کارمیلا
+            accent2 = if (darkTheme) Accent2Dark else Accent2Light,
+            accentSoft = if (darkTheme) AccentSoftDark else AccentSoftLight,
+            gold = if (darkTheme) GoldDark else GoldLight,
+            line = if (darkTheme) LineDark else LineLight,
+            // معنایی
+            sale = if (darkTheme) SaleDark else SaleLight,
+            star = if (darkTheme) StarDark else StarLight,
+            ok = if (darkTheme) OkDark else OkLight,
             // دسته‌بندی‌ها
             categoryYellow = CategoryYellow,
             categoryBlue = CategoryBlue,

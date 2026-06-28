@@ -32,6 +32,8 @@ fun AppTheme(
         androidx.compose.runtime.key(language.code) {
             MaterialTheme(
                 colorScheme = colorScheme,
+                typography = AppTypography(),
+                shapes = AppShapes,
                 content = content
             )
         }
