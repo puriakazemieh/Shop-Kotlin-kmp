@@ -24,22 +24,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.VerifiedUser
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
@@ -62,7 +59,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import kotlin.math.roundToInt
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
@@ -90,12 +86,19 @@ import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.roundToInt
 
 sealed interface MediaItem {
     data class Image(val image: ProductImage) : MediaItem
     data class Video(val video: ProductVideo) : MediaItem
 }
 
+/**
+ * صفحه‌ی جزئیات محصول — بازطراحی‌شده مطابق اسپک کارمیلا.
+ * اسکرول پیوسته (بدون تب): بردکرامب ← گالری ← برند/عنوان/امتیاز+موجودی ←
+ * انتخاب ویژگی‌ها ← کارتِ قیمت و اکشن‌ها ← نشان‌های خدمات ← معرفی محصول ←
+ * دیدگاه خریداران ← پرسش و پاسخ.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
@@ -107,21 +110,14 @@ fun DetailsScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val state by viewModel.state.collectAsState()
+    val colors = AppTheme.colors
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     var fullscreenImageUrl by remember { mutableStateOf<String?>(null) }
-    var selectedTab by remember { mutableStateOf(0) }
     var showReviewDialog by remember { mutableStateOf(false) }
     var showQuestionDialog by remember { mutableStateOf(false) }
     var activeParentId by remember { mutableStateOf<Long?>(null) }
     var editReview by remember { mutableStateOf<Review?>(null) }
     var editQuestion by remember { mutableStateOf<Question?>(null) }
-
-    LaunchedEffect(state.isAddedToCart, state.quantity, state.isCounterMode) {
-        if (state.isAddedToCart && state.isCounterMode) {
-            kotlinx.coroutines.delay(5000)
-            viewModel.handleIntent(DetailsIntent.SetCounterMode(false))
-        }
-    }
 
     LaunchedEffect(slug) {
         viewModel.handleIntent(DetailsIntent.LoadProduct(slug))
@@ -139,536 +135,346 @@ fun DetailsScreen(
         }
     }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(Resources.String.Details),
-                        fontSize = FontSize.LARGE,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            modifier = Modifier.graphicsLayer {
-                                rotationY = if (isRtl) 180f else 0f
-                            },
-                            painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = stringResource(Resources.String.BackDesc),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                actions = {
-                    state.product?.let { product ->
-                        IconButton(onClick = {
-                            viewModel.handleIntent(
-                                DetailsIntent.ToggleFavorite(
-                                    product.id,
-                                    product.isFavorite
-                                )
-                            )
-                        }) {
-                            Icon(
-                                imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = null,
-                                tint = if (product.isFavorite) AppTheme.colors.sale else MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                }
-            )
-        }
-    ) { padding ->
+    Scaffold(containerColor = colors.background) { padding ->
         ContentWithMessageBar(
             modifier = Modifier.padding(padding),
             messageBarState = messageBarState,
-            contentBackgroundColor = MaterialTheme.colorScheme.surface
+            contentBackgroundColor = colors.background
         ) {
-            if (state.isLoading) {
-                LoadingCard(modifier = Modifier.fillMaxSize())
-            } else if (state.error != null) {
-                InfoCard(
+            when {
+                state.isLoading -> LoadingCard(modifier = Modifier.fillMaxSize())
+                state.error != null -> InfoCard(
                     image = Resources.Image.Cat,
                     title = stringResource(Resources.String.Oops),
                     subtitle = state.error!!
                 )
-            } else {
-                state.product?.let { product ->
+                else -> state.product?.let { product ->
                     Column(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 12.dp, bottom = 24.dp)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .verticalScroll(rememberScrollState())
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 12.dp)
-                        ) {
-                            val mediaItems = remember(product) {
-                                val images = product.images.map { MediaItem.Image(it) }
-                                val videos = product.videos.map { MediaItem.Video(it) }
-                                (images + videos).sortedBy {
-                                    when (it) {
-                                        is MediaItem.Image -> it.image.sortOrder
-                                        is MediaItem.Video -> it.video.sortOrder
-                                    }
-                                }
-                            }
-                            val pagerState =
-                                rememberPagerState(pageCount = { mediaItems.size.coerceAtLeast(1) })
-                            val galleryDiscountPercent = run {
-                                val b = state.selectedVariant?.price ?: product.basePrice ?: 0.0
-                                val d = state.selectedVariant?.discountedPrice ?: product.discountedPrice
-                                if (d != null && b > 0.0) ((1.0 - d / b) * 100).roundToInt() else 0
-                            }
+                        // ---- بردکرامب ----
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(300.dp)
-                                    .clip(RoundedCornerShape(size = Radius.lg))
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.outline,
-                                        shape = RoundedCornerShape(size = Radius.lg)
-                                    )
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(Radius.sm))
+                                    .background(colors.surface)
+                                    .border(1.dp, colors.line, RoundedCornerShape(Radius.sm))
+                                    .clickable { navigateBack() },
+                                contentAlignment = Alignment.Center
                             ) {
-                                HorizontalPager(
-                                    state = pagerState,
-                                    modifier = Modifier.fillMaxSize()
-                                ) { page ->
-                                    when (val item = mediaItems.getOrNull(page)) {
-                                        is MediaItem.Image -> {
-                                            val imageUrl = item.image.url
-                                            val painter = rememberImagePainter(imageUrl)
-                                            Image(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .clickable {
-                                                        if (imageUrl.isNotEmpty()) fullscreenImageUrl =
-                                                            imageUrl
-                                                    },
-                                                painter = painter,
-                                                contentDescription = stringResource(Resources.String.ProductImageDesc),
-                                                contentScale = ContentScale.Crop
-                                            )
-                                        }
-
-                                        is MediaItem.Video -> {
-                                            VideoPlayer(
-                                                url = item.video.url,
-                                                modifier = Modifier.fillMaxSize()
-                                            )
-                                        }
-
-                                        null -> {
-                                            // Fallback if no images/videos
-                                            Box(
-                                                modifier = Modifier.fillMaxSize()
-                                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                                            )
-                                        }
-                                    }
-                                }
-
-                                if (galleryDiscountPercent > 0) {
-                                    Text(
-                                        text = "$galleryDiscountPercent٪ تخفیف",
-                                        modifier = Modifier
-                                            .align(Alignment.TopEnd)
-                                            .padding(14.dp)
-                                            .clip(RoundedCornerShape(Radius.sm))
-                                            .background(AppTheme.colors.sale)
-                                            .padding(horizontal = 12.dp, vertical = 6.dp),
-                                        color = Color.White,
-                                        fontSize = FontSize.SMALL,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-
-                                if (mediaItems.size > 1) {
-                                    Row(
-                                        modifier = Modifier
-                                            .align(Alignment.BottomCenter)
-                                            .padding(bottom = 12.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                    ) {
-                                        repeat(mediaItems.size) { iteration ->
-                                            val color = if (pagerState.currentPage == iteration)
-                                                MaterialTheme.colorScheme.primary
-                                            else
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                            Box(
-                                                modifier = Modifier
-                                                    .clip(CircleShape)
-                                                    .background(color)
-                                                    .size(8.dp)
-                                            )
-                                        }
-                                    }
-                                }
+                                Icon(
+                                    modifier = Modifier
+                                        .size(19.dp)
+                                        .graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                                    painter = painterResource(Resources.Icon.BackArrow),
+                                    contentDescription = stringResource(Resources.String.BackDesc),
+                                    tint = colors.onSurface
+                                )
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "خانه",
+                                fontSize = FontSize.SMALL,
+                                color = colors.onSurfaceVariant,
+                                modifier = Modifier.clickable { navigateBack() }
+                            )
+                            product.categoryName?.let {
                                 Text(
-                                    text = product.categoryName ?: "",
-                                    fontSize = FontSize.REGULAR,
-                                    color = MaterialTheme.colorScheme.primary
+                                    text = "  /  ",
+                                    fontSize = FontSize.SMALL,
+                                    color = colors.onSurfaceVariant
                                 )
+                                Text(
+                                    text = it,
+                                    fontSize = FontSize.SMALL,
+                                    color = colors.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
 
-                                val variant = state.selectedVariant
-                                val basePrice = variant?.price ?: product.basePrice ?: 0.0
-                                val discountedPrice =
-                                    variant?.discountedPrice ?: product.discountedPrice
-                                val compareAtPrice = variant?.compareAtPrice
+                        Spacer(Modifier.height(16.dp))
 
-                                Column(horizontalAlignment = Alignment.End) {
-                                    if (discountedPrice != null) {
-                                        Text(
-                                            text = stringResource(
-                                                Resources.String.PriceFormat,
-                                                discountedPrice
-                                            ),
-                                            fontSize = FontSize.MEDIUM,
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                        Text(
-                                            text = stringResource(
-                                                Resources.String.PriceFormat,
-                                                basePrice
-                                            ),
-                                            fontSize = FontSize.SMALL,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            textDecoration = TextDecoration.LineThrough
-                                        )
-                                    } else if (compareAtPrice != null && compareAtPrice > basePrice) {
-                                        Text(
-                                            text = stringResource(
-                                                Resources.String.PriceFormat,
-                                                basePrice
-                                            ),
-                                            fontSize = FontSize.MEDIUM,
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                        Text(
-                                            text = stringResource(
-                                                Resources.String.PriceFormat,
-                                                compareAtPrice
-                                            ),
-                                            fontSize = FontSize.SMALL,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            textDecoration = TextDecoration.LineThrough
-                                        )
-                                    } else {
-                                        Text(
-                                            text = stringResource(
-                                                Resources.String.PriceFormat,
-                                                basePrice
-                                            ),
-                                            fontSize = FontSize.MEDIUM,
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            fontWeight = FontWeight.Medium
+                        // ---- گالری ----
+                        val mediaItems = remember(product) {
+                            val images = product.images.map { MediaItem.Image(it) }
+                            val videos = product.videos.map { MediaItem.Video(it) }
+                            (images + videos).sortedBy {
+                                when (it) {
+                                    is MediaItem.Image -> it.image.sortOrder
+                                    is MediaItem.Video -> it.video.sortOrder
+                                }
+                            }
+                        }
+                        val pagerState = rememberPagerState(pageCount = { mediaItems.size.coerceAtLeast(1) })
+                        val variant = state.selectedVariant
+                        val basePrice = variant?.price ?: product.basePrice ?: 0.0
+                        val discountedPrice = variant?.discountedPrice ?: product.discountedPrice
+                        val galleryDiscountPercent =
+                            if (discountedPrice != null && basePrice > 0.0)
+                                ((1.0 - discountedPrice / basePrice) * 100).roundToInt()
+                            else 0
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(340.dp)
+                                .clip(RoundedCornerShape(Radius.lg))
+                                .background(colors.surfaceVariant)
+                                .border(1.dp, colors.line, RoundedCornerShape(Radius.lg))
+                        ) {
+                            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+                                when (val item = mediaItems.getOrNull(page)) {
+                                    is MediaItem.Image -> {
+                                        val imageUrl = item.image.url
+                                        Image(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .clickable { if (imageUrl.isNotEmpty()) fullscreenImageUrl = imageUrl },
+                                            painter = rememberImagePainter(imageUrl),
+                                            contentDescription = stringResource(Resources.String.ProductImageDesc),
+                                            contentScale = ContentScale.Crop
                                         )
                                     }
+                                    is MediaItem.Video -> VideoPlayer(url = item.video.url, modifier = Modifier.fillMaxSize())
+                                    null -> Box(Modifier.fillMaxSize().background(colors.surfaceVariant))
                                 }
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = product.title,
-                                fontSize = FontSize.EXTRA_MEDIUM,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            val ratingValues = state.reviews.mapNotNull { it.rating }
-                            if (ratingValues.isNotEmpty()) {
-                                val avg = (ratingValues.average() * 10).roundToInt() / 10.0
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Default.Star,
-                                        contentDescription = null,
-                                        tint = AppTheme.colors.star,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = avg.toString(),
-                                        fontSize = FontSize.REGULAR,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "(${ratingValues.size} نظر)",
-                                        fontSize = FontSize.SMALL,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(12.dp))
-                            }
-                            Text(
-                                text = product.description ?: "",
-                                fontSize = FontSize.REGULAR,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
 
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            ServiceBadges()
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // Tabs for Details, Reviews, and Questions
-                            PrimaryTabRow(
-                                selectedTabIndex = selectedTab,
-                                containerColor = MaterialTheme.colorScheme.surface
-                            ) {
-                                Tab(
-                                    selected = selectedTab == 0,
-                                    onClick = { selectedTab = 0 },
-                                    text = { Text(stringResource(Resources.String.Details)) }
-                                )
-                                Tab(
-                                    selected = selectedTab == 1,
-                                    onClick = { selectedTab = 1 },
-                                    text = { Text(stringResource(Resources.String.ReviewsTab, state.reviews.size)) }
-                                )
-                                Tab(
-                                    selected = selectedTab == 2,
-                                    onClick = { selectedTab = 2 },
-                                    text = { Text(stringResource(Resources.String.QuestionsTab, state.questions.size)) }
+                            if (galleryDiscountPercent > 0) {
+                                Text(
+                                    text = "$galleryDiscountPercent٪ تخفیف",
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(14.dp)
+                                        .clip(RoundedCornerShape(Radius.sm))
+                                        .background(colors.sale)
+                                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                                    color = Color.White,
+                                    fontSize = FontSize.SMALL,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
 
-                            when (selectedTab) {
-                                0 -> {
-                                    if (product.variants.isNotEmpty()) {
-                                        Spacer(modifier = Modifier.height(24.dp))
-                                        val groupedOptions = remember(product.variants) {
-                                            val map = mutableMapOf<String, MutableSet<String>>()
-                                            product.variants.forEach { variant ->
-                                                variant.options.forEach { (key, value) ->
-                                                    map.getOrPut(key) { mutableSetOf() }.add(value)
-                                                }
-                                            }
-                                            map
-                                        }
-
-                                        groupedOptions.forEach { (optionName, values) ->
-                                            Text(
-                                                text = optionName,
-                                                fontSize = FontSize.MEDIUM,
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.onSurface
-                                            )
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                            FlowRow(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                values.forEach { value ->
-                                                    val isSelected =
-                                                        state.selectedOptions[optionName] == value
-                                                    // An option is available if it exists in ANY variant of the product
-                                                    val isAvailable =
-                                                        product.variants.any { variant ->
-                                                            variant.options[optionName] == value
-                                                        }
-
-                                                    VariantChip(
-                                                        label = value,
-                                                        isSelected = isSelected,
-                                                        enabled = isAvailable,
-                                                        onClick = {
-                                                            viewModel.handleIntent(
-                                                                DetailsIntent.SelectOption(
-                                                                    optionName,
-                                                                    value
-                                                                )
-                                                            )
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                            Spacer(modifier = Modifier.height(16.dp))
-                                        }
-                                    }
-                                }
-
-                                1 -> {
-                                    Column(modifier = Modifier.padding(vertical = 16.dp)) {
-                                        PrimaryButton(
-                                            text = stringResource(Resources.String.AddReview),
-                                            onClick = {
-                                                activeParentId = null
-                                                showReviewDialog = true
-                                            }
+                            if (mediaItems.size > 1) {
+                                Row(
+                                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    repeat(mediaItems.size) { i ->
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(if (pagerState.currentPage == i) colors.primary else colors.primary.copy(alpha = 0.4f))
+                                                .size(8.dp)
                                         )
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        if (state.reviews.isEmpty()) {
-                                            Text(
-                                                stringResource(Resources.String.NoReviewsYet),
-                                                modifier = Modifier.fillMaxWidth()
-                                                    .padding(top = 16.dp),
-                                                textAlign = TextAlign.Center,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
-                                        state.reviews.forEach { review ->
-                                            ReviewItem(
-                                                review = review,
-                                                onReplyClick = {
-                                                    activeParentId = it
-                                                    showReviewDialog = true
-                                                },
-                                                onEditClick = { editReview = it },
-                                                onDeleteClick = {
-                                                    state.product?.id?.let { pid ->
-                                                        viewModel.handleIntent(
-                                                            DetailsIntent.DeleteReview(
-                                                                it,
-                                                                pid
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-
-                                2 -> {
-                                    Column(modifier = Modifier.padding(vertical = 16.dp)) {
-                                        PrimaryButton(
-                                            text = stringResource(Resources.String.AddQuestion),
-                                            onClick = {
-                                                activeParentId = null
-                                                showQuestionDialog = true
-                                            }
-                                        )
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        if (state.questions.isEmpty()) {
-                                            Text(
-                                                stringResource(Resources.String.NoQuestionsYet),
-                                                modifier = Modifier.fillMaxWidth()
-                                                    .padding(top = 16.dp),
-                                                textAlign = TextAlign.Center,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
-                                        state.questions.forEach { question ->
-                                            QuestionItem(
-                                                question = question,
-                                                onReplyClick = {
-                                                    activeParentId = it
-                                                    showQuestionDialog = true
-                                                },
-                                                onEditClick = { editQuestion = it },
-                                                onDeleteClick = {
-                                                    state.product?.id?.let { pid ->
-                                                        viewModel.handleIntent(
-                                                            DetailsIntent.DeleteQuestion(
-                                                                it,
-                                                                pid
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                            )
-                                        }
                                     }
                                 }
                             }
                         }
-                        Column(
-                            modifier = Modifier
-                                .padding(all = 24.dp)
-                        ) {
-                            if (state.isAddedToCart) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (state.isCounterMode) {
-                                        QuantityCounter(
-                                            size = QuantityCounterSize.Medium,
-                                            value = state.quantity,
-                                            onMinusClick = {
-                                                viewModel.handleIntent(
-                                                    DetailsIntent.UpdateQuantity(
-                                                        it
-                                                    )
-                                                )
-                                            },
-                                            onPlusClick = {
-                                                viewModel.handleIntent(
-                                                    DetailsIntent.UpdateQuantity(
-                                                        it
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    } else {
-                                        PrimaryButton(
-                                            modifier = Modifier.weight(1f),
-                                            text = stringResource(
-                                                Resources.String.CheckoutWithQty,
-                                                state.quantity
-                                            ),
-                                            onClick = navigateToCart
-                                        )
-                                        Spacer(modifier = Modifier.width(12.dp))
-                                        Box(
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(size = Radius.md))
-                                                .background(MaterialTheme.colorScheme.secondaryContainer)
-                                                .clickable {
-                                                    viewModel.handleIntent(
-                                                        DetailsIntent.SetCounterMode(
-                                                            true
-                                                        )
-                                                    )
-                                                }
-                                                .padding(all = 16.dp),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Text(
-                                                text = state.quantity.toString(),
-                                                fontSize = FontSize.MEDIUM,
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                                            )
-                                        }
-                                    }
-                                }
-                            } else {
-                                PrimaryButton(
-                                    text = if (state.selectedVariant != null)
-                                        stringResource(Resources.String.AddToCart)
-                                    else
-                                        stringResource(Resources.String.OutOfStock),
-                                    enabled = !state.isLoading && state.selectedVariant != null,
-                                    onClick = { viewModel.handleIntent(DetailsIntent.AddToCart) }
+
+                        Spacer(Modifier.height(18.dp))
+
+                        // ---- برند ----
+                        product.categoryName?.let {
+                            Text(
+                                text = it,
+                                fontSize = FontSize.REGULAR,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.primary
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
+
+                        // ---- عنوان ----
+                        Text(
+                            text = product.title,
+                            fontSize = FontSize.EXTRA_MEDIUM,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.onSurface
+                        )
+
+                        Spacer(Modifier.height(14.dp))
+
+                        // ---- امتیاز + موجودی ----
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            val ratingValues = state.reviews.mapNotNull { it.rating }
+                            if (ratingValues.isNotEmpty()) {
+                                val avg = (ratingValues.average() * 10).roundToInt() / 10.0
+                                Icon(Icons.Default.Star, null, tint = colors.star, modifier = Modifier.size(17.dp))
+                                Spacer(Modifier.width(5.dp))
+                                Text(avg.toString(), fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+                                Spacer(Modifier.width(5.dp))
+                                Text("(${ratingValues.size} نظر)", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                                Spacer(Modifier.width(16.dp))
+                            }
+                            val available = variant?.available ?: 0
+                            if (available > 0) {
+                                Icon(Icons.Default.Check, null, tint = colors.ok, modifier = Modifier.size(15.dp))
+                                Spacer(Modifier.width(5.dp))
+                                Text(
+                                    "$available عدد موجود",
+                                    fontSize = FontSize.SMALL,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = colors.ok
                                 )
                             }
+                        }
+
+                        // ---- انتخاب ویژگی‌ها ----
+                        if (product.variants.isNotEmpty()) {
+                            val groupedOptions = remember(product.variants) {
+                                val map = mutableMapOf<String, MutableSet<String>>()
+                                product.variants.forEach { v ->
+                                    v.options.forEach { (k, value) -> map.getOrPut(k) { mutableSetOf() }.add(value) }
+                                }
+                                map
+                            }
+                            groupedOptions.forEach { (optionName, values) ->
+                                Spacer(Modifier.height(22.dp))
+                                Text(
+                                    text = "انتخاب $optionName",
+                                    fontSize = FontSize.REGULAR,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.onSurface
+                                )
+                                Spacer(Modifier.height(11.dp))
+                                FlowRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(9.dp),
+                                    verticalArrangement = Arrangement.spacedBy(9.dp)
+                                ) {
+                                    values.forEach { value ->
+                                        VariantChip(
+                                            label = value,
+                                            isSelected = state.selectedOptions[optionName] == value,
+                                            enabled = product.variants.any { it.options[optionName] == value },
+                                            onClick = { viewModel.handleIntent(DetailsIntent.SelectOption(optionName, value)) }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(Modifier.height(22.dp))
+
+                        // ---- کارت قیمت و اکشن‌ها ----
+                        PriceActionCard(
+                            basePrice = basePrice,
+                            discountedPrice = discountedPrice,
+                            compareAtPrice = variant?.compareAtPrice,
+                            inStock = (variant?.available ?: 0) > 0,
+                            isAddedToCart = state.isAddedToCart,
+                            quantity = state.quantity,
+                            isFavorite = product.isFavorite,
+                            onAddToCart = { viewModel.handleIntent(DetailsIntent.AddToCart) },
+                            onBuyNow = {
+                                viewModel.handleIntent(DetailsIntent.AddToCart)
+                                navigateToCart()
+                            },
+                            onQuantityChange = { viewModel.handleIntent(DetailsIntent.UpdateQuantity(it)) },
+                            onGoToCart = navigateToCart,
+                            onToggleFavorite = {
+                                viewModel.handleIntent(DetailsIntent.ToggleFavorite(product.id, product.isFavorite))
+                            }
+                        )
+
+                        Spacer(Modifier.height(22.dp))
+
+                        // ---- نشان‌های خدمات ----
+                        ServiceBadges()
+
+                        // ---- معرفی محصول ----
+                        if (!product.description.isNullOrBlank()) {
+                            Spacer(Modifier.height(24.dp))
+                            Text("معرفی محصول", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+                            Spacer(Modifier.height(10.dp))
+                            product.description!!.split("\n").map { it.trim() }.filter { it.isNotEmpty() }.forEach { line ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.Top
+                                ) {
+                                    Icon(Icons.Default.Check, null, tint = colors.primary, modifier = Modifier.size(17.dp).padding(top = 2.dp))
+                                    Spacer(Modifier.width(9.dp))
+                                    Text(line, fontSize = FontSize.REGULAR, color = colors.onSurfaceVariant, lineHeight = FontSize.EXTRA_MEDIUM)
+                                }
+                            }
+                        }
+
+                        // ---- دیدگاه خریداران ----
+                        Spacer(Modifier.height(28.dp))
+                        Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                        Spacer(Modifier.height(24.dp))
+                        Text(
+                            "دیدگاه خریداران (${state.reviews.size})",
+                            fontSize = FontSize.MEDIUM,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.onSurface
+                        )
+                        Spacer(Modifier.height(14.dp))
+                        PrimaryButton(
+                            text = stringResource(Resources.String.AddReview),
+                            onClick = { activeParentId = null; showReviewDialog = true }
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        if (state.reviews.isEmpty()) {
+                            Text(
+                                stringResource(Resources.String.NoReviewsYet),
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                textAlign = TextAlign.Center,
+                                fontSize = FontSize.REGULAR,
+                                color = colors.onSurfaceVariant
+                            )
+                        }
+                        state.reviews.forEach { review ->
+                            ReviewItem(
+                                review = review,
+                                onReplyClick = { activeParentId = it; showReviewDialog = true },
+                                onEditClick = { editReview = it },
+                                onDeleteClick = {
+                                    state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid)) }
+                                }
+                            )
+                        }
+
+                        // ---- پرسش و پاسخ ----
+                        Spacer(Modifier.height(28.dp))
+                        Text(
+                            "پرسش و پاسخ (${state.questions.size})",
+                            fontSize = FontSize.MEDIUM,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.onSurface
+                        )
+                        Spacer(Modifier.height(14.dp))
+                        PrimaryButton(
+                            text = stringResource(Resources.String.AddQuestion),
+                            onClick = { activeParentId = null; showQuestionDialog = true }
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        if (state.questions.isEmpty()) {
+                            Text(
+                                stringResource(Resources.String.NoQuestionsYet),
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                textAlign = TextAlign.Center,
+                                fontSize = FontSize.REGULAR,
+                                color = colors.onSurfaceVariant
+                            )
+                        }
+                        state.questions.forEach { question ->
+                            QuestionItem(
+                                question = question,
+                                onReplyClick = { activeParentId = it; showQuestionDialog = true },
+                                onEditClick = { editQuestion = it },
+                                onDeleteClick = {
+                                    state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteQuestion(it, pid)) }
+                                }
+                            )
                         }
                     }
                 }
@@ -681,14 +487,7 @@ fun DetailsScreen(
             onDismiss = { showReviewDialog = false },
             onSubmit = { rating, comment ->
                 state.product?.id?.let {
-                    viewModel.handleIntent(
-                        DetailsIntent.AddReview(
-                            it,
-                            rating,
-                            comment,
-                            activeParentId
-                        )
-                    )
+                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId))
                 }
                 showReviewDialog = false
             }
@@ -713,14 +512,7 @@ fun DetailsScreen(
             onDismiss = { editReview = null },
             onSubmit = { rating, comment ->
                 state.product?.id?.let {
-                    viewModel.handleIntent(
-                        DetailsIntent.UpdateReview(
-                            review.id,
-                            it,
-                            rating,
-                            comment
-                        )
-                    )
+                    viewModel.handleIntent(DetailsIntent.UpdateReview(review.id, it, rating, comment))
                 }
                 editReview = null
             }
@@ -745,28 +537,153 @@ fun DetailsScreen(
             onDismissRequest = { fullscreenImageUrl = null },
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black)
-            ) {
-                val painter = rememberImagePainter(url)
+            Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
                 Image(
                     modifier = Modifier.fillMaxSize(),
-                    painter = painter,
+                    painter = rememberImagePainter(url),
                     contentDescription = null,
                     contentScale = ContentScale.Fit
                 )
                 IconButton(
                     onClick = { fullscreenImageUrl = null },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp)
+                    modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)
                 ) {
                     Icon(
                         painter = painterResource(Resources.Icon.Close),
                         contentDescription = stringResource(Resources.String.Cancel),
                         tint = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** کارتِ قیمت و اکشن‌های خرید — مطابق اسپک کارمیلا (قیمت + شمارنده + افزودن/خرید فوری + علاقه‌مندی). */
+@Composable
+private fun PriceActionCard(
+    basePrice: Double,
+    discountedPrice: Double?,
+    compareAtPrice: Double?,
+    inStock: Boolean,
+    isAddedToCart: Boolean,
+    quantity: Int,
+    isFavorite: Boolean,
+    onAddToCart: () -> Unit,
+    onBuyNow: () -> Unit,
+    onQuantityChange: (Int) -> Unit,
+    onGoToCart: () -> Unit,
+    onToggleFavorite: () -> Unit
+) {
+    val colors = AppTheme.colors
+    val displayPrice = discountedPrice ?: basePrice
+    val oldPrice = when {
+        discountedPrice != null -> basePrice
+        compareAtPrice != null && compareAtPrice > basePrice -> compareAtPrice
+        else -> null
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+            .padding(18.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                if (oldPrice != null) {
+                    Text(
+                        text = stringResource(Resources.String.PriceFormat, oldPrice),
+                        fontSize = FontSize.SMALL,
+                        color = colors.onSurfaceVariant,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                    Spacer(Modifier.height(3.dp))
+                }
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(
+                        text = stringResource(Resources.String.PriceFormat, displayPrice),
+                        fontSize = FontSize.LARGE,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colors.onSurface
+                    )
+                }
+            }
+            if (inStock && isAddedToCart) {
+                QuantityCounter(
+                    size = QuantityCounterSize.Medium,
+                    value = quantity,
+                    onMinusClick = onQuantityChange,
+                    onPlusClick = onQuantityChange
+                )
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        if (!inStock) {
+            Text(
+                text = stringResource(Resources.String.OutOfStock),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(Radius.button))
+                    .background(colors.surfaceVariant)
+                    .padding(vertical = 15.dp),
+                textAlign = TextAlign.Center,
+                color = colors.sale,
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(11.dp)) {
+                // افزودن به سبد / مشاهده سبد
+                Text(
+                    text = if (isAddedToCart) stringResource(Resources.String.Cart) else stringResource(Resources.String.AddToCart),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.accentSoft)
+                        .clickable { if (isAddedToCart) onGoToCart() else onAddToCart() }
+                        .padding(vertical = 15.dp),
+                    textAlign = TextAlign.Center,
+                    color = colors.primary,
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.Bold
+                )
+                // خرید فوری
+                Text(
+                    text = "خرید فوری",
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.primary)
+                        .clickable { onBuyNow() }
+                        .padding(vertical = 15.dp),
+                    textAlign = TextAlign.Center,
+                    color = colors.onPrimary,
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.Bold
+                )
+                // علاقه‌مندی
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .border(1.dp, colors.line, RoundedCornerShape(Radius.button))
+                        .clickable { onToggleFavorite() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = null,
+                        tint = if (isFavorite) colors.sale else colors.onSurfaceVariant,
+                        modifier = Modifier.size(21.dp)
                     )
                 }
             }
@@ -787,36 +704,28 @@ private fun ServiceBadges(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items.forEach { (icon, label) ->
-            ServiceBadgeTile(
-                icon = icon,
-                label = label,
-                modifier = Modifier.weight(1f)
-            )
+            ServiceBadgeTile(icon = icon, label = label, modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
 private fun ServiceBadgeTile(icon: ImageVector, label: String, modifier: Modifier = Modifier) {
+    val colors = AppTheme.colors
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(Radius.sm))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(Radius.sm))
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.sm))
             .padding(vertical = 14.dp, horizontal = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(22.dp)
-        )
+        Icon(imageVector = icon, contentDescription = null, tint = colors.primary, modifier = Modifier.size(22.dp))
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = label,
             fontSize = FontSize.EXTRA_SMALL,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = colors.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     }
