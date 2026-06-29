@@ -1,54 +1,49 @@
 package com.kazemieh.catalog
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.kazemieh.domain.catalog.ProductSummary
-import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
-import org.jetbrains.compose.resources.stringResource
-import com.kazemieh.designsystem.AppFont
+import com.kazemieh.domain.catalog.ProductSummary
 import com.seiko.imageloader.rememberImagePainter
+import org.jetbrains.compose.resources.stringResource
+import kotlin.math.roundToInt
 
+/**
+ * کارت محصولِ کارمیلا — مطابق اسپک دیزاین (کارت سفید).
+ * تصویر بالا (بَج تخفیف + قلب + پوشش ناموجود)، بدنه: دسته، نام، قیمت + دکمه‌ی افزودن.
+ */
 @Composable
 fun MainProductCard(
     modifier: Modifier = Modifier,
@@ -58,163 +53,144 @@ fun MainProductCard(
     onFavoriteClick: () -> Unit = {}
 ) {
     val colors = AppTheme.colors
-    val infiniteTransition = rememberInfiniteTransition()
-    val animatedScale = infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.25f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(10000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
+    val hasDiscount = product.minDiscountedPrice != null
+    val displayPrice = product.minDiscountedPrice ?: product.minPrice
+    val discountPercent = if (hasDiscount && product.minPrice != null && product.minPrice!! > 0.0) {
+        ((1.0 - (product.minDiscountedPrice!! / product.minPrice!!)) * 100).roundToInt()
+    } else 0
 
-    val animatedRotation = infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 10f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(10000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    Box(
+    Column(
         modifier = modifier
-            .fillMaxHeight()
-            .clip(RoundedCornerShape(size = Radius.md))
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
             .clickable { onClick(product.slug) }
     ) {
-        val painter = rememberImagePainter(product.thumbnailUrl ?: "")
-        Image(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(
-                    if (isLarge) Modifier
-                        .scale(animatedScale.value)
-                        .rotate(animatedRotation.value)
-                    else Modifier
-                ),
-            painter = painter,
-            contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
-            contentScale = ContentScale.Crop
-        )
-
-        IconButton(
-            onClick = onFavoriteClick,
-            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
-        ) {
-            Icon(
-                imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = null,
-                tint = if (product.isFavorite) colors.sale else Color.White
-            )
-        }
-
+        // ---- تصویر ----
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black,
-                            Color.Black.copy(Alpha.ZERO)
-                        ),
-                        startY = Float.POSITIVE_INFINITY,
-                        endY = 0.0f
-                    )
-                )
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(all = 12.dp),
-            verticalArrangement = Arrangement.Bottom
+                .fillMaxWidth()
+                .then(if (isLarge) Modifier.height(220.dp) else Modifier.height(170.dp))
+                .background(colors.surfaceVariant)
         ) {
-            Text(
-                text = product.title,
-                fontSize = FontSize.MEDIUM,
-                fontWeight = FontWeight.Medium,
-                color = Color.White,
-                fontFamily = AppFont(),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = rememberImagePainter(product.thumbnailUrl ?: ""),
+                contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(4.dp))
+
+            if (hasDiscount && discountPercent > 0) {
+                Text(
+                    text = "$discountPercent٪",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(10.dp)
+                        .clip(RoundedCornerShape(Radius.xs))
+                        .background(colors.sale)
+                        .padding(horizontal = 9.dp, vertical = 4.dp),
+                    color = Color.White,
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(9.dp)
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(Radius.sm))
+                    .background(colors.surface)
+                    .clickable { onFavoriteClick() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                    tint = if (product.isFavorite) colors.sale else colors.onSurfaceVariant
+                )
+            }
+
+            if (!product.inStock) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(colors.background.copy(alpha = 0.6f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(Resources.String.OutOfStock),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(Radius.full))
+                            .background(colors.onBackground.copy(alpha = 0.82f))
+                            .padding(horizontal = 16.dp, vertical = 7.dp),
+                        color = colors.surface,
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        // ---- بدنه ----
+        Column(modifier = Modifier.padding(start = 13.dp, end = 13.dp, top = 12.dp, bottom = 14.dp)) {
             product.categoryName?.let {
                 Text(
                     text = it,
-                    fontSize = FontSize.REGULAR,
-                    color = Color.White.copy(alpha = Alpha.HALF),
+                    fontSize = FontSize.EXTRA_SMALL,
+                    color = colors.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                Spacer(Modifier.height(5.dp))
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = product.title,
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurface,
+                lineHeight = FontSize.MEDIUM,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.height(40.dp)
+            )
+            Spacer(Modifier.height(9.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val hasDiscount = product.minDiscountedPrice != null
-                
                 Column {
-                    if (hasDiscount) {
-                        val discountedPriceText = if (product.minDiscountedPrice == product.maxDiscountedPrice) {
-                            stringResource(Resources.String.PriceFormat, product.minDiscountedPrice ?: 0.0)
-                        } else {
-                            stringResource(
-                                Resources.String.PriceRangeFormat,
-                                stringResource(Resources.String.PriceFormat, product.minDiscountedPrice ?: 0.0),
-                                stringResource(Resources.String.PriceFormat, product.maxDiscountedPrice ?: 0.0)
-                            )
-                        }
+                    if (hasDiscount && product.minPrice != null) {
                         Text(
-                            text = discountedPriceText,
-                            fontSize = FontSize.REGULAR,
-                            color = colors.gold,
-                            fontWeight = FontWeight.Medium
-                        )
-
-                        val originalPriceText = if (product.minPrice == product.maxPrice) {
-                            stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
-                        } else {
-                            stringResource(
-                                Resources.String.PriceRangeFormat,
-                                stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
-                                stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
-                            )
-                        }
-                        Text(
-                            text = originalPriceText,
+                            text = stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
                             fontSize = FontSize.EXTRA_SMALL,
-                            color = Color.White.copy(alpha = Alpha.HALF),
+                            color = colors.onSurfaceVariant,
                             textDecoration = TextDecoration.LineThrough
                         )
-                    } else {
-                        val priceText = if (product.minPrice == product.maxPrice) {
-                            stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
-                        } else {
-                            stringResource(
-                                Resources.String.PriceRangeFormat,
-                                stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
-                                stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
-                            )
-                        }
-
-                        Text(
-                            text = priceText,
-                            fontSize = FontSize.REGULAR,
-                            color = colors.gold,
-                            fontWeight = FontWeight.Medium
-                        )
                     }
-                }
-                
-                if (!product.inStock) {
                     Text(
-                        text = stringResource(Resources.String.OutOfStock),
-                        fontSize = FontSize.EXTRA_SMALL,
-                        color = colors.sale,
-                        fontWeight = FontWeight.Bold
+                        text = stringResource(Resources.String.PriceFormat, displayPrice ?: 0.0),
+                        fontSize = FontSize.EXTRA_REGULAR,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colors.onSurface
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(RoundedCornerShape(Radius.sm))
+                        .background(colors.primary)
+                        .clickable { onClick(product.slug) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(17.dp),
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = colors.onPrimary
                     )
                 }
             }
