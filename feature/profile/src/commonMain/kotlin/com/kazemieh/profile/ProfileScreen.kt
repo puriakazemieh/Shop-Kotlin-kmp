@@ -2,6 +2,7 @@ package com.kazemieh.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -180,64 +181,40 @@ fun ProfileScreen(
 
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            ProfileForm(
-                                modifier = Modifier.fillMaxWidth(),
-                                firstName = profile.firstName,
-                                onFirstNameChange = { value ->
-                                    viewModel.handleIntent(
-                                        ProfileIntent.UpdateFirstName(value)
-                                    )
-                                },
-                                lastName = profile.lastName,
-                                onLastNameChange = { value ->
-                                    viewModel.handleIntent(
-                                        ProfileIntent.UpdateLastName(value)
-                                    )
-                                },
-                                email = profile.email ?: "",
-                                phoneNumber = profile.phone,
-                                onPhoneNumberChange = { value ->
-                                    viewModel.handleIntent(
-                                        ProfileIntent.UpdatePhoneNumber(value)
-                                    )
-                                }
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            PrimaryButton(
-                                text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(
-                                    Resources.String.UpdateProfile
-                                ),
-                                icon = Resources.Icon.Checkmark,
-                                enabled = state.isFormValid && !state.isSaving,
-                                onClick = {
-                                    viewModel.handleIntent(ProfileIntent.SaveProfile)
-                                }
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
                             WalletBalanceCard(
                                 state = state.walletBalanceState,
                                 onClick = navigateToWallet
                             )
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
 
-                            PrimaryButton(
-                                text = stringResource(Resources.String.ManageOrders),
-                                icon = Resources.Icon.Book,
+                            MenuRow(
+                                label = stringResource(Resources.String.ManageOrders),
+                                subtitle = "پیگیری و تاریخچه سفارش‌ها",
                                 onClick = navigateToMyOrders
-                            )
+                            ) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Book),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(21.dp)
+                                )
+                            }
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
 
-                            PrimaryButton(
-                                text = stringResource(Resources.String.MyFavorites),
-                                imageVector = Icons.Default.Favorite,
+                            MenuRow(
+                                label = stringResource(Resources.String.MyFavorites),
+                                subtitle = "محصولات نشان‌شده‌ی شما",
                                 onClick = navigateToFavorites
-                            )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(21.dp)
+                                )
+                            }
 
                             Spacer(modifier = Modifier.height(32.dp))
 
@@ -298,6 +275,38 @@ fun ProfileScreen(
                                     Spacer(modifier = Modifier.height(8.dp))
                                 }
                             }
+
+                            Spacer(modifier = Modifier.height(28.dp))
+
+                            Text(
+                                text = stringResource(Resources.String.UpdateProfile),
+                                fontFamily = AppFont(),
+                                fontSize = FontSize.LARGE,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            ProfileForm(
+                                modifier = Modifier.fillMaxWidth(),
+                                firstName = profile.firstName,
+                                onFirstNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateFirstName(value)) },
+                                lastName = profile.lastName,
+                                onLastNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateLastName(value)) },
+                                email = profile.email ?: "",
+                                phoneNumber = profile.phone,
+                                onPhoneNumberChange = { value -> viewModel.handleIntent(ProfileIntent.UpdatePhoneNumber(value)) }
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            PrimaryButton(
+                                text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(Resources.String.UpdateProfile),
+                                icon = Resources.Icon.Checkmark,
+                                enabled = state.isFormValid && !state.isSaving,
+                                onClick = { viewModel.handleIntent(ProfileIntent.SaveProfile) }
+                            )
                         }
                     }
                 }
@@ -398,6 +407,48 @@ private fun ProfileHeader(name: String, phone: String) {
                 color = Color.White.copy(alpha = 0.9f)
             )
         }
+    }
+}
+
+/** ردیفِ منوی پروفایل — مطابق اسپک: کاشیِ آیکن + عنوان + زیرعنوان + فلش. */
+@Composable
+private fun MenuRow(
+    label: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    icon: @Composable () -> Unit
+) {
+    val colors = AppTheme.colors
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(BorderStroke(1.dp, colors.line), RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 15.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(42.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(colors.accentSoft),
+            contentAlignment = Alignment.Center
+        ) { icon() }
+        Spacer(Modifier.width(14.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = label, fontFamily = AppFont(), fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+            Spacer(Modifier.height(3.dp))
+            Text(text = subtitle, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+        }
+        Icon(
+            painter = painterResource(Resources.Icon.RightArrow),
+            contentDescription = null,
+            tint = colors.onSurfaceVariant,
+            modifier = Modifier.size(18.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+        )
     }
 }
 
