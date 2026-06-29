@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -158,11 +159,11 @@ fun OrderCard(
 @Composable
 fun UserStatusBadge(status: String) {
     val color = when (status.uppercase()) {
-        "PLACED" -> androidx.compose.ui.graphics.Color(0xFFFFB300)
-        "PROCESSING" -> androidx.compose.ui.graphics.Color(0xFF4CAF50)
-        "SHIPPING" -> androidx.compose.ui.graphics.Color(0xFF2196F3)
-        "COMPLETED" -> androidx.compose.ui.graphics.Color(0xFF8BC34A)
-        "CANCELLED" -> androidx.compose.ui.graphics.Color(0xFFF44336)
+        "PLACED" -> AppTheme.colors.star
+        "PROCESSING" -> AppTheme.colors.accent2
+        "SHIPPING" -> MaterialTheme.colorScheme.primary
+        "COMPLETED" -> AppTheme.colors.ok
+        "CANCELLED" -> AppTheme.colors.sale
         else -> MaterialTheme.colorScheme.outline
     }
     Surface(

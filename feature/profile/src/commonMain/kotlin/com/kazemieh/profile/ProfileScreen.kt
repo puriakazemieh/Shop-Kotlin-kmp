@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.AddressBottomSheet
@@ -445,7 +446,7 @@ fun AddressItem(
                     Icon(
                         imageVector = if (address.isDefault) Icons.Default.Star else Icons.Default.LocationOn,
                         contentDescription = null,
-                        tint = if (address.isDefault) Color(0xFFFFB300) else MaterialTheme.colorScheme.primary
+                        tint = if (address.isDefault) AppTheme.colors.star else MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
