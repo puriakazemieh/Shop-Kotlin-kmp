@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.component.CarmillaFilterChip
 import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.blog.Blog
@@ -81,10 +82,10 @@ fun ManageBlogScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (id == null) "Create Blog" else "Edit Blog") },
+                title = { Text(if (id == null) "ساخت مقاله" else "ویرایش مقاله") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
                     }
                 },
                 actions = {
@@ -102,7 +103,7 @@ fun ManageBlogScreen(
                             metaDescription = metaDescription
                         )
                     }) {
-                        Icon(Icons.Default.Check, contentDescription = "Save")
+                        Icon(Icons.Default.Check, contentDescription = null)
                     }
                 }
             )
@@ -120,23 +121,23 @@ fun ManageBlogScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // ... Basic Info Section ...
-                Text("Basic Information", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text("اطلاعات پایه", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                 CustomTextField(
                     value = title,
                     onValueChange = { title = it },
-                    placeholder = "Title",
+                    placeholder = "عنوان",
                     modifier = Modifier.fillMaxWidth()
                 )
                 CustomTextField(
                     value = summary,
                     onValueChange = { summary = it },
-                    placeholder = "Summary",
+                    placeholder = "خلاصه",
                     modifier = Modifier.fillMaxWidth()
                 )
-                
+
                 // ... Blocks Editor Section ...
                 HorizontalDivider()
-                Text("Content Blocks", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text("بلوک‌های محتوا", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                 
                 state.contentBlocks.forEachIndexed { index, block ->
                     BlockItem(
@@ -181,12 +182,12 @@ fun ManageBlogScreen(
                 }
 
                 HorizontalDivider()
-                Text("Settings & SEO", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                
+                Text("تنظیمات و سئو", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
                 CustomTextField(
                     value = thumbnailUrl,
                     onValueChange = { thumbnailUrl = it },
-                    placeholder = "Thumbnail URL",
+                    placeholder = "آدرس تصویر شاخص",
                     modifier = Modifier.fillMaxWidth()
                 )
                 
@@ -201,33 +202,33 @@ fun ManageBlogScreen(
                 
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = isFeatured, onCheckedChange = { isFeatured = it })
-                    Text("Featured", modifier = Modifier.padding(start = 8.dp))
+                    Text("مطلب ویژه", modifier = Modifier.padding(start = 8.dp))
                 }
 
-                Text("Status")
+                Text("وضعیت")
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(
+                    CarmillaFilterChip(
+                        text = "منتشرشده",
                         selected = status == "PUBLISHED",
-                        onClick = { status = "PUBLISHED" },
-                        label = { Text("Published") }
+                        onClick = { status = "PUBLISHED" }
                     )
-                    FilterChip(
+                    CarmillaFilterChip(
+                        text = "پیش‌نویس",
                         selected = status == "DRAFT",
-                        onClick = { status = "DRAFT" },
-                        label = { Text("Draft") }
+                        onClick = { status = "DRAFT" }
                     )
                 }
 
                 CustomTextField(
                     value = metaTitle,
                     onValueChange = { metaTitle = it },
-                    placeholder = "Meta Title",
+                    placeholder = "عنوان متا",
                     modifier = Modifier.fillMaxWidth()
                 )
                 CustomTextField(
                     value = metaDescription,
                     onValueChange = { metaDescription = it },
-                    placeholder = "Meta Description",
+                    placeholder = "توضیحات متا",
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -257,10 +258,10 @@ fun BlockItem(
             ) {
                 Text(
                     text = when (block) {
-                        is BlogBlock.Header -> "Header H${block.level}"
-                        is BlogBlock.Paragraph -> "Paragraph"
-                        is BlogBlock.Image -> "Image"
-                        is BlogBlock.Unknown -> "Unknown"
+                        is BlogBlock.Header -> "تیتر H${block.level}"
+                        is BlogBlock.Paragraph -> "پاراگراف"
+                        is BlogBlock.Image -> "تصویر"
+                        is BlogBlock.Unknown -> "نامشخص"
                     },
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
@@ -289,7 +290,7 @@ fun BlockItem(
                     OutlinedTextField(
                         value = block.text,
                         onValueChange = { onUpdate(block.copy(text = it)) },
-                        placeholder = { Text("Header Text") },
+                        placeholder = { Text("متن تیتر") },
                         modifier = Modifier.fillMaxWidth(),
                         textStyle = MaterialTheme.typography.titleLarge
                     )
@@ -298,7 +299,7 @@ fun BlockItem(
                     OutlinedTextField(
                         value = block.text,
                         onValueChange = { onUpdate(block.copy(text = it)) },
-                        placeholder = { Text("Paragraph Content") },
+                        placeholder = { Text("متن پاراگراف") },
                         modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp)
                     )
                 }
@@ -318,12 +319,12 @@ fun BlockItem(
                         ) {
                             Icon(Icons.Default.CloudUpload, null)
                             Spacer(Modifier.width(8.dp))
-                            Text(if (block.url.isEmpty()) "Upload Image" else "Change Image")
+                            Text(if (block.url.isEmpty()) "بارگذاری تصویر" else "تغییر تصویر")
                         }
                     }
                 }
                 is BlogBlock.Unknown -> {
-                    Text("Unsupported block type: ${block.type}")
+                    Text("نوع بلوک پشتیبانی‌نشده: ${block.type}")
                 }
             }
         }

@@ -88,7 +88,7 @@ fun AdminStoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Resources.String.AdminPanel) + " - Stories") },
+                title = { Text("مدیریت استوری‌ها") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
@@ -149,19 +149,19 @@ fun CreateStoryDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create New Story") },
+        title = { Text("استوری جدید") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Title (Optional)") },
+                    label = { Text("عنوان (اختیاری)") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = productId,
                     onValueChange = { if (it.all { char -> char.isDigit() }) productId = it },
-                    label = { Text("Product ID (Optional)") },
+                    label = { Text("شناسه محصول (اختیاری)") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -174,12 +174,12 @@ fun CreateStoryDialog(
                     productId.toLongOrNull()
                 )
             }) {
-                Text("Upload")
+                Text("بارگذاری")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("انصراف")
             }
         }
     )
@@ -206,11 +206,11 @@ fun AdminStoryCard(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = story.title ?: "No Title", style = MaterialTheme.typography.titleMedium)
+                Text(text = story.title ?: "بدون عنوان", style = MaterialTheme.typography.titleMedium)
                 Text(text = story.createdAt, style = MaterialTheme.typography.bodySmall)
                 story.productId?.let {
                     Text(
-                        text = "Linked Product ID: $it",
+                        text = "محصول مرتبط: $it",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )

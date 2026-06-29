@@ -197,8 +197,8 @@ fun DiscountHeader() {
     ) {
         Text(stringResource(Resources.String.DiscountCodeLabel), modifier = Modifier.weight(1.5f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
         Text(stringResource(Resources.String.DiscountValueLabel), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
-        Text("Usage", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
-        Text("Status", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
+        Text("استفاده", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
+        Text("وضعیت", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
         Spacer(modifier = Modifier.width(48.dp))
     }
 }

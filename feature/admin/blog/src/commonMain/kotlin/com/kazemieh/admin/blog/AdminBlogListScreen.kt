@@ -31,10 +31,10 @@ fun AdminBlogListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Admin Panel - Blogs") },
+                title = { Text("مدیریت مجله") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
                     }
                 },
                 actions = {
@@ -42,7 +42,7 @@ fun AdminBlogListScreen(
                         if (selectedTab == 0) navigateToManageBlog(null, null)
                         else navigateToManageCategory(null)
                     }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add")
+                        Icon(Icons.Default.Add, contentDescription = null)
                     }
                 }
             )
@@ -51,10 +51,10 @@ fun AdminBlogListScreen(
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             TabRow(selectedTabIndex = selectedTab) {
                 Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
-                    Text(text = "Articles", modifier = Modifier.padding(16.dp))
+                    Text(text = "مقاله‌ها", modifier = Modifier.padding(16.dp))
                 }
                 Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
-                    Text(text = "Categories", modifier = Modifier.padding(16.dp))
+                    Text(text = "دسته‌بندی‌ها", modifier = Modifier.padding(16.dp))
                 }
             }
 
@@ -95,12 +95,12 @@ private fun ArticlesList(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = "Views: ${blog.viewCount}",
+                            text = "بازدید: ${blog.viewCount}",
                             style = MaterialTheme.typography.bodySmall
                         )
                         blog.category?.let {
                             Text(
-                                text = "Category: ${it.name}",
+                                text = "دسته: ${it.name}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -111,12 +111,12 @@ private fun ArticlesList(
                         horizontalArrangement = Arrangement.End
                     ) {
                         IconButton(onClick = { navigateToManageBlog(blog.id, blog.slug) }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit")
+                            Icon(Icons.Default.Edit, contentDescription = null)
                         }
                         IconButton(onClick = { viewModel.handleIntent(AdminBlogListIntent.DeleteBlog(blog.id)) }) {
                             Icon(
                                 Icons.Default.Delete,
-                                contentDescription = "Delete",
+                                contentDescription = null,
                                 tint = MaterialTheme.colorScheme.error
                             )
                         }
@@ -145,16 +145,16 @@ private fun CategoriesList(
                 ) {
                     Column {
                         Text(text = category.name, style = MaterialTheme.typography.titleMedium)
-                        Text(text = "Blogs: ${category.blogCount}", style = MaterialTheme.typography.bodySmall)
+                        Text(text = "مقالات: ${category.blogCount}", style = MaterialTheme.typography.bodySmall)
                     }
                     Row {
                         IconButton(onClick = { navigateToManageCategory(category.id) }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit")
+                            Icon(Icons.Default.Edit, contentDescription = null)
                         }
                         IconButton(onClick = { viewModel.handleIntent(AdminBlogListIntent.DeleteCategory(category.id)) }) {
                             Icon(
                                 Icons.Default.Delete,
-                                contentDescription = "Delete",
+                                contentDescription = null,
                                 tint = MaterialTheme.colorScheme.error
                             )
                         }

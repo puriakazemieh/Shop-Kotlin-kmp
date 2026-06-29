@@ -410,7 +410,7 @@ fun ManageProductScreen(
                     }
 
                     // Images & Videos Section
-                    Text("Images & Videos", fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
+                    Text("تصاویر و ویدئوها", fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -518,7 +518,7 @@ fun ManageProductScreen(
                                             painterResource(Resources.Icon.Plus),
                                             contentDescription = null
                                         )
-                                        Text("Media", fontSize = FontSize.EXTRA_SMALL)
+                                        Text("رسانه", fontSize = FontSize.EXTRA_SMALL)
                                     }
                                 }
                             }
