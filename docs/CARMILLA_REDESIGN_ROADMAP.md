@@ -76,9 +76,9 @@
 - 🔌 **سرور:** entity/endpoint برای **کمپین/حراج زمان‌دار** (تاریخ پایان) و **بنرها**
 
 ### ۲) لیست/دسته‌بندی — `feature/catalog/CategoriesScreen.kt`, `CategorySearchScreen.kt`
-- [ ] هدر دسته + بردکرامب
-- [ ] نوار فیلتر/مرتب‌سازی با `CarmillaFilterChip`
-- [ ] گرید دو‌ستونه‌ی کارت سفید
+- [ ] هدر دسته + بردکرامب (فعلاً سرچ‌بار حفظ شده)
+- [x] نوار فیلتر/مرتب‌سازی با `CarmillaFilterChip`
+- [x] گرید دو‌ستونه‌ی کارت سفید
 - [ ] پنل فیلتر (BottomSheet): قیمت، رنگ، سایز، موجودی
 
 ### ۳) جزئیات محصول — `feature/details/DetailsScreen.kt`

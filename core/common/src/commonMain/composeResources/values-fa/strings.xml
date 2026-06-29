@@ -21,6 +21,7 @@
     <string name="saveAddress">ذخیره آدرس</string>
     <string name="adminPanel">پنل مدیریت</string>
     <string name="searchHere">جستجو در اینجا...</string>
+    <string name="sortBy">مرتب‌سازی:</string>
     <string name="sortNewest">جدیدترین</string>
     <string name="sortPriceAsc">ارزان‌ترین</string>
     <string name="sortPriceDesc">گران‌ترین</string>

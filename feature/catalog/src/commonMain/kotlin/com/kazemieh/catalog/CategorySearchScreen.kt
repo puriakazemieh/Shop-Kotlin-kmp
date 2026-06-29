@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.CarmillaFilterChip
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.catalog.ProductCard
@@ -138,31 +139,39 @@ fun CategorySearchScreen(
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                         contentPadding = PaddingValues(vertical = 4.dp)
                     ) {
                         item {
-                            FilterChip(
+                            Text(
+                                text = stringResource(Resources.String.SortBy),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        item {
+                            CarmillaFilterChip(
+                                text = stringResource(Resources.String.SortNewest),
                                 selected = state.sort == "newest",
-                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("newest")) },
-                                label = { Text(stringResource(Resources.String.SortNewest)) }
+                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("newest")) }
                             )
                         }
                         item {
-                            FilterChip(
+                            CarmillaFilterChip(
+                                text = stringResource(Resources.String.SortPriceAsc),
                                 selected = state.sort == "price_asc",
-                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("price_asc")) },
-                                label = { Text(stringResource(Resources.String.SortPriceAsc)) }
+                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("price_asc")) }
                             )
                         }
                         item {
-                            FilterChip(
+                            CarmillaFilterChip(
+                                text = stringResource(Resources.String.SortPriceDesc),
                                 selected = state.sort == "price_desc",
-                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("price_desc")) },
-                                label = { Text(stringResource(Resources.String.SortPriceDesc)) }
+                                onClick = { viewModel.handleIntent(CategorySearchIntent.UpdateSort("price_desc")) }
                             )
                         }
                     }
-                    
+
                     state.availableOptions.forEach { (key, values) ->
                         Text(
                             text = key,
@@ -176,10 +185,10 @@ fun CategorySearchScreen(
                         ) {
                             items(values.toList()) { value ->
                                 val isSelected = state.selectedOptions[key] == value
-                                FilterChip(
+                                CarmillaFilterChip(
+                                    text = value,
                                     selected = isSelected,
-                                    onClick = { viewModel.handleIntent(CategorySearchIntent.ToggleOption(key, value)) },
-                                    label = { Text(value) }
+                                    onClick = { viewModel.handleIntent(CategorySearchIntent.ToggleOption(key, value)) }
                                 )
                             }
                         }
@@ -208,14 +217,23 @@ fun CategorySearchScreen(
                     contentPadding = PaddingValues(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(state.products) { product ->
-                        ProductCard(
-                            product = product,
-                            onClick = { navigateToDetails(it) },
-                            onFavoriteClick = {
-                                viewModel.handleIntent(CategorySearchIntent.ToggleFavorite(product))
+                    items(state.products.chunked(2)) { rowItems ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            rowItems.forEach { product ->
+                                MainProductCard(
+                                    modifier = Modifier.weight(1f),
+                                    product = product,
+                                    onClick = { navigateToDetails(it) },
+                                    onFavoriteClick = {
+                                        viewModel.handleIntent(CategorySearchIntent.ToggleFavorite(product))
+                                    }
+                                )
                             }
-                        )
+                            if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
                 }
             }

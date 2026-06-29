@@ -84,6 +84,7 @@ object Resources {
         val Copy = CommonRes.string.copy
         val AdminPanel = CommonRes.string.adminPanel
         val SearchHere = CommonRes.string.searchHere
+        val SortBy = CommonRes.string.sortBy
         val SortNewest = CommonRes.string.sortNewest
         val SortPriceAsc = CommonRes.string.sortPriceAsc
         val SortPriceDesc = CommonRes.string.sortPriceDesc
