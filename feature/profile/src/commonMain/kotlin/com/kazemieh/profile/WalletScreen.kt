@@ -1,6 +1,9 @@
 package com.kazemieh.profile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,8 +17,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextAlign
+import com.kazemieh.designsystem.AppTheme
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -77,19 +84,6 @@ fun WalletScreen(
                     }
                 }
             )
-        },
-        floatingActionButton = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.End) {
-                SmallFloatingActionButton(
-                    onClick = { showWithdrawDialog = true },
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                ) {
-                    Icon(painterResource(Resources.Icon.Book), contentDescription = null, modifier = Modifier.size(20.dp))
-                }
-                FloatingActionButton(onClick = { showTopUpDialog = true }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                }
-            }
         }
     ) { padding ->
         ContentWithMessageBar(
@@ -97,8 +91,12 @@ fun WalletScreen(
             messageBarState = messageBarState
         ) {
             Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                BalanceCard(state.balanceState)
-                
+                BalanceCard(
+                    balanceState = state.balanceState,
+                    onTopUp = { showTopUpDialog = true },
+                    onWithdraw = { showWithdrawDialog = true }
+                )
+
                 Spacer(modifier = Modifier.height(24.dp))
                 
                 Text(
@@ -201,26 +199,81 @@ fun WithdrawDialog(
 }
 
 @Composable
-fun BalanceCard(balanceState: AppResult<com.kazemieh.domain.wallet.WalletBalance>) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+fun BalanceCard(
+    balanceState: AppResult<com.kazemieh.domain.wallet.WalletBalance>,
+    onTopUp: () -> Unit,
+    onWithdraw: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(22.dp))
+            .background(Brush.linearGradient(listOf(colors.primary, colors.accent2)))
+            .padding(24.dp)
     ) {
-        Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(stringResource(Resources.String.WalletBalance), fontFamily = AppFont())
-            Spacer(modifier = Modifier.height(8.dp))
-            when (balanceState) {
-                is AppResult.Loading -> CircularProgressIndicator()
-                is AppResult.Success -> {
-                    Text(
-                        text = stringResource(Resources.String.PriceFormat, balanceState.data.balance),
-                        fontFamily = AppFont(),
-                        fontSize = FontSize.EXTRA_LARGE,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                is AppResult.Error -> Text(anyToString(balanceState.message), color = MaterialTheme.colorScheme.error, fontFamily = AppFont())
+        Text(
+            text = stringResource(Resources.String.WalletBalance),
+            fontFamily = AppFont(),
+            fontSize = FontSize.SMALL,
+            color = Color.White.copy(alpha = 0.9f)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        when (balanceState) {
+            is AppResult.Loading -> CircularProgressIndicator(color = Color.White)
+            is AppResult.Success -> {
+                Text(
+                    text = stringResource(Resources.String.PriceFormat, balanceState.data.balance),
+                    fontFamily = AppFont(),
+                    fontSize = FontSize.EXTRA_LARGE,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.White
+                )
+            }
+            is AppResult.Error -> Text(
+                anyToString(balanceState.message),
+                color = Color.White,
+                fontFamily = AppFont()
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(11.dp)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(Color.White)
+                    .clickable { onTopUp() }
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(Resources.String.TopUp),
+                    fontFamily = AppFont(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.REGULAR,
+                    color = colors.primary,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(Color(0x29FFFFFF))
+                    .border(1.dp, Color(0x4DFFFFFF), RoundedCornerShape(13.dp))
+                    .clickable { onWithdraw() }
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(Resources.String.Withdraw),
+                    fontFamily = AppFont(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.REGULAR,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -259,7 +312,10 @@ fun TransactionsList(state: AppResult<com.kazemieh.domain.admin.AdminPage<Wallet
 fun TransactionItem(transaction: WalletTransaction) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, AppTheme.colors.line),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -283,8 +339,8 @@ fun TransactionItem(transaction: WalletTransaction) {
             Text(
                 text = stringResource(Resources.String.PriceFormat, transaction.amount),
                 fontFamily = AppFont(),
-                fontWeight = FontWeight.Bold,
-                color = if (transaction.amount >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                fontWeight = FontWeight.ExtraBold,
+                color = if (transaction.amount >= 0) AppTheme.colors.ok else AppTheme.colors.sale
             )
         }
     }
