@@ -4,11 +4,13 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,7 +39,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -48,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -67,6 +72,10 @@ fun ProductsOverviewScreen(
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
     val featuredListState = rememberLazyListState()
+    val homeListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    // ایندکس سرتیتر «جدیدترین محصولات» برای اسکرول دکمه‌های هیرو
+    val gridHeaderIndex = if (state.categories.isNotEmpty()) 4 else 3
 
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -131,6 +140,7 @@ fun ProductsOverviewScreen(
             ) { products ->
                 if (products.isNotEmpty() || state.stories.isNotEmpty()) {
                     LazyColumn(
+                        state = homeListState,
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(bottom = 16.dp)
                     ) {
@@ -141,6 +151,19 @@ fun ProductsOverviewScreen(
                                 isLoading = state.isStoriesLoading,
                                 onStoryClick = { index ->
                                     viewModel.handleIntent(ProductsOverviewIntent.OnStoryClick(index))
+                                }
+                            )
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            HomeHero(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                onShopClick = {
+                                    scope.launch { homeListState.animateScrollToItem(gridHeaderIndex) }
+                                },
+                                onDealsClick = {
+                                    scope.launch { homeListState.animateScrollToItem(2) }
                                 }
                             )
                         }
@@ -230,37 +253,45 @@ fun ProductsOverviewScreen(
 
                         item {
                             Spacer(modifier = Modifier.height(24.dp))
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .alpha(Alpha.HALF),
-                                text = stringResource(Resources.String.AllProducts),
-                                fontSize = FontSize.MEDIUM,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Center
+                            HomeSectionHeader(
+                                title = stringResource(Resources.String.NewestProducts),
+                                modifier = Modifier.padding(horizontal = 16.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                         }
 
                         items(
-                            items = products,
-                            key = { it.id }
-                        ) { product ->
-                            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
-                                ProductCard(
-                                    product = product,
-                                    onClick = {
-                                        viewModel.handleIntent(
-                                            ProductsOverviewIntent.OnProductClick(it)
-                                        )
-                                    },
-                                    onFavoriteClick = {
-                                        viewModel.handleIntent(
-                                            ProductsOverviewIntent.OnFavoriteClick(product)
-                                        )
-                                    }
-                                )
+                            items = products.chunked(2),
+                            key = { row -> "grid_${row.first().id}" }
+                        ) { rowItems ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                rowItems.forEach { product ->
+                                    MainProductCard(
+                                        modifier = Modifier.weight(1f),
+                                        product = product,
+                                        onClick = {
+                                            viewModel.handleIntent(
+                                                ProductsOverviewIntent.OnProductClick(it)
+                                            )
+                                        },
+                                        onFavoriteClick = {
+                                            viewModel.handleIntent(
+                                                ProductsOverviewIntent.OnFavoriteClick(product)
+                                            )
+                                        }
+                                    )
+                                }
+                                if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
                             }
+                        }
+
+                        item {
+                            TrustBadges(modifier = Modifier.padding(horizontal = 16.dp))
                         }
                     }
                 } else {
@@ -302,37 +333,38 @@ fun SquareCategoryCard(
 ) {
     Column(
         modifier = Modifier
-            .width(100.dp)
-            .clip(RoundedCornerShape(Radius.md))
-            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
+            .width(96.dp)
+            .clip(RoundedCornerShape(Radius.lg))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(Radius.lg))
             .clickable { onClick() }
-            .padding(8.dp),
+            .padding(vertical = 18.dp, horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
-                .size(60.dp)
+                .size(48.dp)
                 .clip(RoundedCornerShape(Radius.sm))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                .background(AppTheme.colors.accentSoft),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = category.name.take(1).uppercase(),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = category.name,
             fontSize = FontSize.SMALL,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.SemiBold
         )
     }
 }

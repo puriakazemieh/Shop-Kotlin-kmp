@@ -76,6 +76,7 @@ object Resources {
         val Delete = CommonRes.string.delete
         val FeaturedProducts = CommonRes.string.featuredProducts
         val AllProducts = CommonRes.string.allProducts
+        val NewestProducts = CommonRes.string.newestProducts
         val TotalLabel = CommonRes.string.totalLabel
         val Checkout = CommonRes.string.checkout
         val AddNewAddress = CommonRes.string.addNewAddress

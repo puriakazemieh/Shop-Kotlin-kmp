@@ -14,6 +14,7 @@
     <string name="delete">حذف</string>
     <string name="featuredProducts">محصولات ویژه</string>
     <string name="allProducts">همه محصولات</string>
+    <string name="newestProducts">جدیدترین محصولات</string>
     <string name="totalLabel">مجموع:</string>
     <string name="checkout">تسویه حساب</string>
     <string name="addNewAddress">افزودن آدرس جدید</string>

@@ -14,6 +14,7 @@
     <string name="delete">Delete</string>
     <string name="featuredProducts">Featured Products</string>
     <string name="allProducts">All Products</string>
+    <string name="newestProducts">Newest Products</string>
     <string name="totalLabel">Total:</string>
     <string name="checkout">Checkout</string>
     <string name="addNewAddress">Add New Address</string>
