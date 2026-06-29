@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -360,16 +361,16 @@ private fun ProfileHeader(name: String, phone: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(colors.accentSoft)
-            .padding(16.dp),
+            .clip(RoundedCornerShape(22.dp))
+            .background(Brush.linearGradient(listOf(colors.primary, colors.accent2)))
+            .padding(22.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(64.dp)
+                .size(62.dp)
                 .clip(CircleShape)
-                .background(colors.primary),
+                .background(Color.White.copy(alpha = 0.2f)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -377,7 +378,7 @@ private fun ProfileHeader(name: String, phone: String) {
                 fontFamily = AppFont(),
                 fontSize = FontSize.MEDIUM,
                 fontWeight = FontWeight.ExtraBold,
-                color = colors.onPrimary
+                color = Color.White
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
@@ -387,14 +388,14 @@ private fun ProfileHeader(name: String, phone: String) {
                 fontFamily = AppFont(),
                 fontSize = FontSize.MEDIUM,
                 fontWeight = FontWeight.ExtraBold,
-                color = colors.onSurface
+                color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = phone,
                 fontFamily = AppFont(),
                 fontSize = FontSize.REGULAR,
-                color = colors.onSurfaceVariant
+                color = Color.White.copy(alpha = 0.9f)
             )
         }
     }
