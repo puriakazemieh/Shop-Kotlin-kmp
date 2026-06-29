@@ -54,7 +54,7 @@ fun HomeHero(
             .heightIn(min = 220.dp)
             .clip(RoundedCornerShape(Radius.lg))
             .background(
-                Brush.linearGradient(listOf(colors.accent, colors.accent2))
+                Brush.linearGradient(listOf(colors.primary, colors.accent2))
             )
     ) {
         // شیدِ تیره برای خوانایی متن
@@ -107,7 +107,7 @@ fun HomeHero(
                         .background(Color.White)
                         .clickable { onShopClick() }
                         .padding(horizontal = 24.dp, vertical = 13.dp),
-                    color = colors.accent,
+                    color = colors.primary,
                     fontSize = FontSize.REGULAR,
                     fontWeight = FontWeight.Bold
                 )
@@ -225,7 +225,7 @@ private fun TrustBadgeItem(item: TrustItem, modifier: Modifier = Modifier) {
             Icon(
                 imageVector = item.icon,
                 contentDescription = null,
-                tint = colors.accent,
+                tint = colors.primary,
                 modifier = Modifier.size(22.dp)
             )
         }
