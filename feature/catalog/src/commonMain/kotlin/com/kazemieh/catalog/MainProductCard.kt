@@ -41,7 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.designsystem.Alpha
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.AppFont
@@ -55,6 +57,7 @@ fun MainProductCard(
     onClick: (String) -> Unit,
     onFavoriteClick: () -> Unit = {}
 ) {
+    val colors = AppTheme.colors
     val infiniteTransition = rememberInfiniteTransition()
     val animatedScale = infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -77,7 +80,7 @@ fun MainProductCard(
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .clip(RoundedCornerShape(size = 12.dp))
+            .clip(RoundedCornerShape(size = Radius.md))
             .clickable { onClick(product.slug) }
     ) {
         val painter = rememberImagePainter(product.thumbnailUrl ?: "")
@@ -102,7 +105,7 @@ fun MainProductCard(
             Icon(
                 imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = null,
-                tint = if (product.isFavorite) Color.Red else Color.White
+                tint = if (product.isFavorite) colors.sale else Color.White
             )
         }
 
@@ -167,7 +170,7 @@ fun MainProductCard(
                         Text(
                             text = discountedPriceText,
                             fontSize = FontSize.REGULAR,
-                            color = Color.Yellow,
+                            color = colors.gold,
                             fontWeight = FontWeight.Medium
                         )
 
@@ -200,7 +203,7 @@ fun MainProductCard(
                         Text(
                             text = priceText,
                             fontSize = FontSize.REGULAR,
-                            color = Color.Yellow, // Placeholder for TextBrand
+                            color = colors.gold,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -210,7 +213,7 @@ fun MainProductCard(
                     Text(
                         text = stringResource(Resources.String.OutOfStock),
                         fontSize = FontSize.EXTRA_SMALL,
-                        color = Color.Red,
+                        color = colors.sale,
                         fontWeight = FontWeight.Bold
                     )
                 }

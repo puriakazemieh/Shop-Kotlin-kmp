@@ -32,7 +32,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.catalog.ProductSummary
 import com.seiko.imageloader.rememberImagePainter
@@ -48,11 +50,11 @@ fun ProductCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(Radius.md))
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Radius.md)
             )
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onClick(product.slug) }
@@ -64,7 +66,7 @@ fun ProductCard(
             Image(
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(Radius.xs)),
                 painter = painter,
                 contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
                 contentScale = ContentScale.Crop
@@ -76,7 +78,7 @@ fun ProductCard(
                 Icon(
                     imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = null,
-                    tint = if (product.isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface,
+                    tint = if (product.isFavorite) AppTheme.colors.sale else MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(16.dp)
                 )
             }

@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -36,7 +37,7 @@ fun BottomBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(size = 12.dp))
+            .clip(RoundedCornerShape(size = Radius.md))
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(
                 vertical = 8.dp,
@@ -47,14 +48,14 @@ fun BottomBar(
     ) {
         BottomBarDestination.entries.forEach { destination ->
             val animatedTint by animateColorAsState(
-                targetValue = if (selected == destination) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant,
+                targetValue = if (selected == destination) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Box(contentAlignment = Alignment.Center) {
                 if (destination == BottomBarDestination.Cart && cartItemCount > 0) {
                     BadgedBox(
                         badge = {
                             Badge(
-                                containerColor = MaterialTheme.colorScheme.secondary,
+                                containerColor = MaterialTheme.colorScheme.error,
                                 contentColor = Color.White
                             ) {
                                 Text(
@@ -66,7 +67,7 @@ fun BottomBar(
                     ) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(Radius.sm))
                             .clickable { onSelect(destination) }
                             .padding(12.dp),
                         contentAlignment = Alignment.Center
@@ -81,7 +82,7 @@ fun BottomBar(
                 } else {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(Radius.sm))
                             .clickable { onSelect(destination) }
                             .padding(12.dp),
                         contentAlignment = Alignment.Center

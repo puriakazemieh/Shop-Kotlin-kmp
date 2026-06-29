@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.util.formatDateTime
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.domain.story.Story
 
 @Composable
@@ -44,10 +45,11 @@ fun StoryCircleRow(
 
 @Composable
 fun StoryCircleItem(story: Story, onClick: () -> Unit) {
+    val colors = AppTheme.colors
     val borderBrush = if (story.isSeen) {
-        Brush.linearGradient(listOf(Color.LightGray, Color.Gray))
+        Brush.linearGradient(listOf(colors.outline, colors.outline))
     } else {
-        Brush.linearGradient(listOf(Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCAF45)))
+        Brush.linearGradient(listOf(colors.gold, colors.accent2))
     }
 
     Column(
@@ -60,7 +62,7 @@ fun StoryCircleItem(story: Story, onClick: () -> Unit) {
                 .border(2.5.dp, borderBrush, CircleShape)
                 .padding(4.dp)
                 .clip(CircleShape)
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             AsyncImage(
                 model = story.mediaUrl,
