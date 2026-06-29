@@ -32,7 +32,7 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
 
     @OptIn(ExperimentalSettingsApi::class)
     override fun observeThemeMode(): Flow<AppThemeMode> {
-        return flowSettings.getStringFlow(KEY_THEME_MODE, AppThemeMode.SYSTEM.code)
+        return flowSettings.getStringFlow(KEY_THEME_MODE, AppThemeMode.LIGHT.code)
             .map { AppThemeMode.fromCode(it) }
     }
 
@@ -41,7 +41,7 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
     }
 
     override suspend fun getThemeMode(): AppThemeMode {
-        val code = settings.getString(KEY_THEME_MODE, AppThemeMode.SYSTEM.code)
+        val code = settings.getString(KEY_THEME_MODE, AppThemeMode.LIGHT.code)
         return AppThemeMode.fromCode(code)
     }
 

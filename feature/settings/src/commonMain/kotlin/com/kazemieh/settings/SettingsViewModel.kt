@@ -44,7 +44,7 @@ class SettingsViewModel(
 
 data class SettingsState(
     val language: AppLanguage = AppLanguage.ENGLISH,
-    val themeMode: AppThemeMode = AppThemeMode.SYSTEM
+    val themeMode: AppThemeMode = AppThemeMode.LIGHT
 )
 
 sealed interface SettingsIntent {

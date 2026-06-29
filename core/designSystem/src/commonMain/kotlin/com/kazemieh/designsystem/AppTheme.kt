@@ -11,7 +11,7 @@ import com.kazemieh.common.AppThemeMode
 
 @Composable
 fun AppTheme(
-    themeMode: AppThemeMode = AppThemeMode.SYSTEM,
+    themeMode: AppThemeMode = AppThemeMode.LIGHT,
     language: AppLanguage = AppLanguage.ENGLISH,
     content: @Composable () -> Unit
 ) {

@@ -38,7 +38,7 @@ fun App() {
     val observeThemeModeUseCase = koinInject<ObserveThemeModeUseCase>()
 
     val language by observeLanguageUseCase().collectAsState(AppLanguage.ENGLISH)
-    val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.SYSTEM)
+    val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.LIGHT)
 
     AppTheme(
         themeMode = themeMode,
