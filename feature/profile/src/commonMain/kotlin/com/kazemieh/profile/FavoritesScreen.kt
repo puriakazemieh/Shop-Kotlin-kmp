@@ -3,6 +3,8 @@ package com.kazemieh.profile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.kazemieh.catalog.ProductCard
+import com.kazemieh.catalog.MainProductCard
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -96,17 +98,29 @@ fun FavoritesScreen(
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(24.dp),
+                        contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(state.favorites, key = { it.id }) { product ->
-                            ProductCard(
-                                product = product,
-                                onClick = navigateToDetail,
-                                onFavoriteClick = {
-                                    viewModel.handleIntent(ProfileIntent.ToggleFavorite(product))
+                        items(
+                            state.favorites.chunked(2),
+                            key = { row -> "fav_${row.first().id}" }
+                        ) { rowItems ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                rowItems.forEach { product ->
+                                    MainProductCard(
+                                        modifier = Modifier.weight(1f),
+                                        product = product,
+                                        onClick = navigateToDetail,
+                                        onFavoriteClick = {
+                                            viewModel.handleIntent(ProfileIntent.ToggleFavorite(product))
+                                        }
+                                    )
                                 }
-                            )
+                                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                            }
                         }
                     }
                 }
