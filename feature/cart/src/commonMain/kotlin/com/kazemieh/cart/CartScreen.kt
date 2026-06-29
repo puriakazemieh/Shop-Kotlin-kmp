@@ -1,5 +1,7 @@
 package com.kazemieh.cart
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,48 +11,41 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SecondaryTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.kazemieh.designsystem.component.CustomTextField
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -62,27 +57,24 @@ fun CartScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CartViewModel>()
     val state by viewModel.state.collectAsState()
-    val pagerState = rememberPagerState { 2 }
-    val scope = rememberCoroutineScope()
+    val colors = AppTheme.colors
     var discountCode by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is CartEffect.ShowError -> {
-                    messageBarState.addError(effect.message)
-                }
+                is CartEffect.ShowError -> messageBarState.addError(effect.message)
             }
         }
     }
 
     ContentWithMessageBar(
-        contentBackgroundColor = MaterialTheme.colorScheme.surface,
+        contentBackgroundColor = colors.background,
         messageBarState = messageBarState,
-        errorContainerColor = MaterialTheme.colorScheme.error,
-        errorContentColor = MaterialTheme.colorScheme.onError,
-        successContainerColor = MaterialTheme.colorScheme.primary,
-        successContentColor = MaterialTheme.colorScheme.onPrimary
+        errorContainerColor = colors.error,
+        errorContentColor = colors.onError,
+        successContainerColor = colors.primary,
+        successContentColor = colors.onPrimary
     ) {
         PullToRefreshBox(
             isRefreshing = state.isRefreshing,
@@ -90,295 +82,245 @@ fun CartScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             when (val cartResult = state.cartState) {
-                is AppResult.Loading -> {
-                    LoadingCard(modifier = Modifier.fillMaxWidth().height(200.dp))
+                is AppResult.Loading -> LoadingCard(modifier = Modifier.fillMaxWidth().height(200.dp))
+
+                is AppResult.Error -> Box(
+                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    contentAlignment = Alignment.Center
+                ) {
+                    InfoCard(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        image = Resources.Image.Cat,
+                        title = stringResource(Resources.String.Oops),
+                        subtitle = cartResult.message
+                    )
                 }
 
                 is AppResult.Success -> {
                     val cart = cartResult.data
                     Column(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 16.dp, bottom = 24.dp)
                     ) {
-                        SecondaryTabRow(
-                            selectedTabIndex = pagerState.currentPage,
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.primary,
-                            indicator = {
-                                TabRowDefaults.SecondaryIndicator(
-                                    modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            divider = {}
-                        ) {
-                            Tab(
-                                selected = pagerState.currentPage == 0,
-                                onClick = {
-                                    scope.launch { pagerState.animateScrollToPage(0) }
+                        Text(
+                            text = stringResource(Resources.String.Cart),
+                            fontSize = FontSize.EXTRA_MEDIUM,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.onBackground
+                        )
+                        Spacer(Modifier.height(20.dp))
+
+                        if (cart.items.isEmpty() && cart.savedForLater.isEmpty()) {
+                            EmptyCart()
+                        }
+
+                        // ---- اقلام سبد ----
+                        cart.items.forEach { item ->
+                            CartItemCard(
+                                cartItem = item,
+                                onPlusClick = { viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, 1)) },
+                                onMinusClick = { newQty ->
+                                    if (newQty == 0) viewModel.handleIntent(CartIntent.DeleteItem(item.id))
+                                    else viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, -1))
                                 },
-                                text = {
-                                    Text(
-                                        text = stringResource(Resources.String.Cart),
-                                        fontFamily = com.kazemieh.designsystem.AppFont(),
-                                        fontWeight = if (pagerState.currentPage == 0) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
+                                onDeleteClick = { viewModel.handleIntent(CartIntent.DeleteItem(item.id)) },
+                                onMoveToSaveForLaterClick = { viewModel.handleIntent(CartIntent.MoveToSaveForLater(item.id)) }
                             )
-                            Tab(
-                                selected = pagerState.currentPage == 1,
-                                onClick = {
-                                    scope.launch { pagerState.animateScrollToPage(1) }
-                                },
-                                text = {
-                                    Text(
-                                        text = stringResource(Resources.String.SavedForLater),
-                                        fontFamily = com.kazemieh.designsystem.AppFont(),
-                                        fontWeight = if (pagerState.currentPage == 1) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
+                            Spacer(Modifier.height(12.dp))
+                        }
+
+                        // ---- خلاصه سفارش ----
+                        if (cart.items.isNotEmpty()) {
+                            Spacer(Modifier.height(8.dp))
+                            OrderSummaryCard(
+                                subtotal = cart.subtotal,
+                                discountAmount = cart.discountAmount,
+                                total = cart.total,
+                                appliedDiscountCode = cart.appliedDiscountCode,
+                                discountCode = discountCode,
+                                onDiscountCodeChange = { discountCode = it },
+                                isApplyingDiscount = state.isApplyingDiscount,
+                                onApply = { viewModel.handleIntent(CartIntent.ApplyDiscount(discountCode)) },
+                                onRemove = { viewModel.handleIntent(CartIntent.RemoveDiscount) },
+                                onCheckout = { navigateToCheckout(cart.total) }
                             )
                         }
 
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.weight(1f),
-                            verticalAlignment = Alignment.Top,
-                        ) { page ->
-                            if (page == 0) {
-                                if (cart.items.isEmpty()) {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        InfoCard(
-                                            modifier = Modifier.fillMaxWidth().height(200.dp),
-                                            image = Resources.Image.Cat,
-                                            title = stringResource(Resources.String.CartIsEmpty),
-                                            subtitle = stringResource(Resources.String.CartIsEmptySubtitle)
-                                        )
-                                    }
-                                } else {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(12.dp)
-                                    ) {
-                                        LazyColumn(
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            items(
-                                                items = cart.items,
-                                                key = { it.id }
-                                            ) { item ->
-                                                CartItemCard(
-                                                    cartItem = item,
-                                                    onPlusClick = {
-                                                        viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, 1))
-                                                    },
-                                                    onMinusClick = { newQty ->
-                                                        if (newQty == 0) {
-                                                            viewModel.handleIntent(CartIntent.DeleteItem(item.id))
-                                                        } else {
-                                                            viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, -1))
-                                                        }
-                                                    },
-                                                    onDeleteClick = {
-                                                        viewModel.handleIntent(CartIntent.DeleteItem(item.id))
-                                                    },
-                                                    onMoveToSaveForLaterClick = {
-                                                        viewModel.handleIntent(CartIntent.MoveToSaveForLater(item.id))
-                                                    }
-                                                )
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                            }
-                                        }
-
-                                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-
-                                        Text(
-                                            text = stringResource(Resources.String.OrderSummary),
-                                            fontFamily = com.kazemieh.designsystem.AppFont(),
-                                            fontWeight = FontWeight.ExtraBold,
-                                            fontSize = com.kazemieh.designsystem.FontSize.EXTRA_REGULAR,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(bottom = 12.dp)
-                                        )
-
-                                        // Discount Code Section
-                                        Card(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                                            ),
-                                            shape = RoundedCornerShape(Radius.md)
-                                        ) {
-                                            Column (
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(12.dp),
-                                            ) {
-                                                CustomTextField(
-//                                                    modifier = Modifier.weight(1f),
-                                                    value = if (cart.appliedDiscountCode.isNullOrBlank()) discountCode else cart.appliedDiscountCode!!,
-                                                    onValueChange = { discountCode = it },
-                                                    placeholder = Resources.String.DiscountCode,
-                                                    enabled = cart.appliedDiscountCode.isNullOrBlank()
-                                                )
-                                                PrimaryButton(
-                                                    text = if (!cart.appliedDiscountCode.isNullOrBlank()) stringResource(Resources.String.Remove) else stringResource(Resources.String.Apply),
-                                                    onClick = {
-                                                        if (!cart.appliedDiscountCode.isNullOrBlank()) {
-                                                            viewModel.handleIntent(CartIntent.RemoveDiscount)
-                                                        } else {
-                                                            viewModel.handleIntent(CartIntent.ApplyDiscount(discountCode))
-                                                        }
-                                                    },
-                                                    enabled = !state.isApplyingDiscount,
-                                                    modifier = Modifier.height(56.dp)
-                                                )
-                                            }
-                                        }
-
-                                        Spacer(modifier = Modifier.height(16.dp))
-
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                                        ) {
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Text(
-                                                    text = stringResource(Resources.String.SubtotalLabel),
-                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
-                                                Text(
-                                                    text = stringResource(Resources.String.PriceFormat, cart.subtotal),
-                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
-                                            }
-
-                                            if (cart.discountAmount > 0) {
-                                                Row(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(Resources.String.DiscountAmount),
-                                                        fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                        color = MaterialTheme.colorScheme.error
-                                                    )
-                                                    Text(
-                                                        text = "- ${stringResource(Resources.String.PriceFormat, cart.discountAmount)}",
-                                                        fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                        color = MaterialTheme.colorScheme.error
-                                                    )
-                                                }
-                                            }
-
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Text(
-                                                    text = stringResource(Resources.String.TotalLabel),
-                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = MaterialTheme.colorScheme.onSurface
-                                                )
-                                                Text(
-                                                    text = stringResource(Resources.String.PriceFormat, cart.total),
-                                                    fontFamily = com.kazemieh.designsystem.AppFont(),
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontSize = com.kazemieh.designsystem.FontSize.LARGE,
-                                                    color = MaterialTheme.colorScheme.primary
-                                                )
-                                            }
-                                        }
-
-                                        Spacer(modifier = Modifier.height(16.dp))
-
-                                        PrimaryButton(
-                                            text = stringResource(Resources.String.Checkout),
-                                            onClick = { navigateToCheckout(cart.total) },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-
-                                        Text(
-                                            text = stringResource(Resources.String.SecurePayment),
-                                            fontFamily = com.kazemieh.designsystem.AppFont(),
-                                            fontSize = com.kazemieh.designsystem.FontSize.SMALL,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 12.dp)
-                                        )
-                                    }
-                                }
-                            } else {
-                                if (cart.savedForLater.isEmpty()) {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        InfoCard(
-                                            modifier = Modifier.fillMaxWidth().height(200.dp),
-                                            image = Resources.Image.Cat,
-                                            title = stringResource(Resources.String.NothingHere),
-                                            subtitle = stringResource(Resources.String.CategoriesIsEmptySubtitle)
-                                        )
-                                    }
-                                } else {
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(12.dp)
-                                    ) {
-                                        items(
-                                            items = cart.savedForLater,
-                                            key = { "saved_${it.id}" }
-                                        ) { item ->
-                                            CartItemCard(
-                                                cartItem = item,
-                                                onPlusClick = {},
-                                                onMinusClick = {},
-                                                onDeleteClick = {
-                                                    viewModel.handleIntent(CartIntent.DeleteItem(item.id))
-                                                },
-                                                onMoveToCartClick = {
-                                                    viewModel.handleIntent(CartIntent.MoveToCart(item.id))
-                                                }
-                                            )
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                        }
-                                    }
-                                }
+                        // ---- سبد خرید بعدی ----
+                        if (cart.savedForLater.isNotEmpty()) {
+                            Spacer(Modifier.height(28.dp))
+                            Text(
+                                text = stringResource(Resources.String.SavedForLater),
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.onBackground
+                            )
+                            Spacer(Modifier.height(14.dp))
+                            cart.savedForLater.forEach { item ->
+                                CartItemCard(
+                                    cartItem = item,
+                                    onPlusClick = {},
+                                    onMinusClick = {},
+                                    onDeleteClick = { viewModel.handleIntent(CartIntent.DeleteItem(item.id)) },
+                                    onMoveToCartClick = { viewModel.handleIntent(CartIntent.MoveToCart(item.id)) }
+                                )
+                                Spacer(Modifier.height(12.dp))
                             }
                         }
                     }
                 }
-
-                is AppResult.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        InfoCard(
-                            modifier = Modifier.fillMaxWidth().height(200.dp),
-                            image = Resources.Image.Cat,
-                            title = stringResource(Resources.String.Oops),
-                            subtitle = cartResult.message
-                        )
-                    }
-                }
             }
         }
+    }
+}
+
+@Composable
+private fun EmptyCart() {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 60.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier.size(90.dp).clip(CircleShape).background(colors.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(Resources.Icon.ShoppingCart),
+                contentDescription = null,
+                tint = colors.onSurfaceVariant,
+                modifier = Modifier.size(40.dp)
+            )
+        }
+        Spacer(Modifier.height(18.dp))
+        Text(
+            text = stringResource(Resources.String.CartIsEmpty),
+            fontSize = FontSize.EXTRA_REGULAR,
+            fontWeight = FontWeight.Bold,
+            color = colors.onSurface
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = stringResource(Resources.String.CartIsEmptySubtitle),
+            fontSize = FontSize.REGULAR,
+            color = colors.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun OrderSummaryCard(
+    subtotal: Double,
+    discountAmount: Double,
+    total: Double,
+    appliedDiscountCode: String?,
+    discountCode: String,
+    onDiscountCodeChange: (String) -> Unit,
+    isApplyingDiscount: Boolean,
+    onApply: () -> Unit,
+    onRemove: () -> Unit,
+    onCheckout: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.lg))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.lg))
+            .padding(20.dp)
+    ) {
+        Text(
+            text = stringResource(Resources.String.OrderSummary),
+            fontSize = FontSize.EXTRA_REGULAR,
+            fontWeight = FontWeight.ExtraBold,
+            color = colors.onSurface
+        )
+        Spacer(Modifier.height(16.dp))
+
+        SummaryRow(
+            label = stringResource(Resources.String.SubtotalLabel),
+            value = stringResource(Resources.String.PriceFormat, subtotal),
+            valueColor = colors.onSurface
+        )
+        if (discountAmount > 0) {
+            Spacer(Modifier.height(11.dp))
+            SummaryRow(
+                label = stringResource(Resources.String.DiscountAmount),
+                value = "- ${stringResource(Resources.String.PriceFormat, discountAmount)}",
+                valueColor = colors.sale
+            )
+        }
+
+        Spacer(Modifier.height(14.dp))
+
+        // کد تخفیف
+        CustomTextField(
+            value = if (appliedDiscountCode.isNullOrBlank()) discountCode else appliedDiscountCode,
+            onValueChange = onDiscountCodeChange,
+            placeholder = Resources.String.DiscountCode,
+            enabled = appliedDiscountCode.isNullOrBlank()
+        )
+        Spacer(Modifier.height(8.dp))
+        PrimaryButton(
+            text = if (!appliedDiscountCode.isNullOrBlank()) stringResource(Resources.String.Remove) else stringResource(Resources.String.Apply),
+            onClick = { if (!appliedDiscountCode.isNullOrBlank()) onRemove() else onApply() },
+            enabled = !isApplyingDiscount,
+            modifier = Modifier.fillMaxWidth().height(52.dp)
+        )
+
+        Spacer(Modifier.height(15.dp))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+        Spacer(Modifier.height(15.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(Resources.String.TotalLabel),
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.Bold,
+                color = colors.onSurface
+            )
+            Text(
+                text = stringResource(Resources.String.PriceFormat, total),
+                fontSize = FontSize.MEDIUM,
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.primary
+            )
+        }
+
+        Spacer(Modifier.height(18.dp))
+        PrimaryButton(
+            text = stringResource(Resources.String.Checkout),
+            onClick = onCheckout,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Text(
+            text = stringResource(Resources.String.SecurePayment),
+            fontSize = FontSize.SMALL,
+            color = colors.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 14.dp)
+        )
+    }
+}
+
+@Composable
+private fun SummaryRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = label, fontSize = FontSize.REGULAR, color = colors.onSurfaceVariant)
+        Text(text = value, fontSize = FontSize.REGULAR, fontWeight = FontWeight.SemiBold, color = valueColor)
     }
 }
