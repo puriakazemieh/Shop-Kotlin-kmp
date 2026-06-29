@@ -2,12 +2,17 @@ package com.kazemieh.auth.screen
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,10 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -74,13 +84,23 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(Resources.String.Login), fontSize = FontSize.LARGE)
+            AuthBrandHeader()
 
             Spacer(Modifier.height(24.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(1.dp, AppTheme.colors.line, RoundedCornerShape(22.dp))
+                    .padding(24.dp)
+            ) {
 
             if (state.isOtpMode) {
                 if (!state.otpSent) {
@@ -185,6 +205,41 @@ fun LoginScreen(
             TextButton(onClick = onNavigateRegister) {
                 Text(stringResource(Resources.String.CreateAccount))
             }
+            }
         }
+    }
+}
+
+@Composable
+private fun AuthBrandHeader() {
+    val colors = AppTheme.colors
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(RoundedCornerShape(19.dp))
+                .background(colors.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "ک",
+                color = Color.White,
+                fontSize = FontSize.LARGE,
+                fontWeight = FontWeight.ExtraBold
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = "ورود به کارمیلا",
+            fontSize = FontSize.LARGE,
+            fontWeight = FontWeight.ExtraBold,
+            color = colors.onBackground
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "به جامعه‌ی مد و استایل کارمیلا بپیوندید",
+            fontSize = FontSize.SMALL,
+            color = colors.onSurfaceVariant
+        )
     }
 }
