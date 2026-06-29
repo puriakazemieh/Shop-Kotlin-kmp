@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.domain.admin.AdminInteraction
 import org.koin.compose.viewmodel.koinViewModel
@@ -142,7 +143,7 @@ fun AdminInteractionItem(interaction: AdminInteraction) {
                 Text(
                     text = interaction.createdAt,
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             
@@ -158,7 +159,7 @@ fun AdminInteractionItem(interaction: AdminInteraction) {
                     repeat(5) { index ->
                         Text(
                             text = if (index < it) "★" else "☆",
-                            color = if (index < it) Color(0xFFFFB400) else Color.Gray,
+                            color = if (index < it) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

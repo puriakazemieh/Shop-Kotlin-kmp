@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -216,7 +217,7 @@ fun AdminStoryCard(
                 }
             }
             IconButton(onClick = onDelete) {
-                Icon(painterResource(Resources.Icon.Delete), contentDescription = null, tint = Color.Red)
+                Icon(painterResource(Resources.Icon.Delete), contentDescription = null, tint = AppTheme.colors.sale)
             }
         }
     }

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -228,7 +229,7 @@ fun DiscountItem(
                 fontSize = FontSize.REGULAR
             )
             Badge(
-                containerColor = if (discount.isActive) Color(0xFF4CAF50) else Color(0xFFF44336),
+                containerColor = if (discount.isActive) AppTheme.colors.ok else AppTheme.colors.sale,
                 contentColor = Color.White
             ) {
                 Text(if (discount.isActive) "Active" else "Inactive")

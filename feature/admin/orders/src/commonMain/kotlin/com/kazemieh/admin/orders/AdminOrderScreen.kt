@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -222,11 +223,11 @@ fun AdminOrderCard(
 @Composable
 fun StatusBadge(status: String) {
     val color = when (status.uppercase()) {
-        "PLACED" -> Color(0xFFFFB300)
-        "PROCESSING" -> Color(0xFF4CAF50)
-        "SHIPPING" -> Color(0xFF2196F3)
-        "COMPLETED" -> Color(0xFF8BC34A)
-        "CANCELLED" -> Color(0xFFF44336)
+        "PLACED" -> AppTheme.colors.star
+        "PROCESSING" -> AppTheme.colors.accent2
+        "SHIPPING" -> MaterialTheme.colorScheme.primary
+        "COMPLETED" -> AppTheme.colors.ok
+        "CANCELLED" -> AppTheme.colors.sale
         else -> MaterialTheme.colorScheme.outline
     }
     Surface(

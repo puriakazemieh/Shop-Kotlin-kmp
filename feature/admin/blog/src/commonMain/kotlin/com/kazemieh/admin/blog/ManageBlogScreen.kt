@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.LoadingCard
@@ -266,7 +267,7 @@ fun BlockItem(
                 Row {
                     IconButton(onClick = onMoveUp) { Icon(Icons.Default.ArrowUpward, null, Modifier.size(18.dp)) }
                     IconButton(onClick = onMoveDown) { Icon(Icons.Default.ArrowDownward, null, Modifier.size(18.dp)) }
-                    IconButton(onClick = onRemove) { Icon(Icons.Default.Delete, null, Modifier.size(18.dp), tint = Color.Red) }
+                    IconButton(onClick = onRemove) { Icon(Icons.Default.Delete, null, Modifier.size(18.dp), tint = AppTheme.colors.sale) }
                 }
             }
 

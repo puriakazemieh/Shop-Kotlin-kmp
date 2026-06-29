@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.domain.admin.AdminProduct
@@ -28,11 +29,11 @@ fun AdminProductCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(Radius.md))
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Radius.md)
             )
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onClick() }

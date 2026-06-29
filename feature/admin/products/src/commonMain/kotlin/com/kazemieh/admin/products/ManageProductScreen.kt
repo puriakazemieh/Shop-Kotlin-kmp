@@ -21,7 +21,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.AlertTextField
 import com.kazemieh.designsystem.component.CustomTextField
@@ -414,7 +416,7 @@ fun ManageProductScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.images) { image ->
-                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(Radius.xs))) {
                                 AsyncImage(
                                     model = image.url,
                                     contentDescription = null,
@@ -434,13 +436,13 @@ fun ManageProductScreen(
                                     Icon(
                                         painterResource(Resources.Icon.Close),
                                         contentDescription = null,
-                                        tint = Color.Red
+                                        tint = AppTheme.colors.sale
                                     )
                                 }
                             }
                         }
                         items(state.videos) { video ->
-                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(Radius.xs))) {
                                 Box(
                                     modifier = Modifier.fillMaxSize().background(Color.Black),
                                     contentAlignment = Alignment.Center
@@ -465,13 +467,13 @@ fun ManageProductScreen(
                                     Icon(
                                         painterResource(Resources.Icon.Close),
                                         contentDescription = null,
-                                        tint = Color.Red
+                                        tint = AppTheme.colors.sale
                                     )
                                 }
                             }
                         }
                         items(state.selectedImageBytes) { bytes ->
-                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(Radius.xs))) {
                                 AsyncImage(
                                     model = bytes,
                                     contentDescription = null,
@@ -481,9 +483,9 @@ fun ManageProductScreen(
                             }
                         }
                         items(state.selectedVideoBytes) { bytes ->
-                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))) {
+                            Box(modifier = Modifier.size(100.dp).clip(RoundedCornerShape(Radius.xs))) {
                                 Box(
-                                    modifier = Modifier.fillMaxSize().background(Color.Gray),
+                                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
@@ -499,11 +501,11 @@ fun ManageProductScreen(
                             Box(
                                 modifier = Modifier
                                     .size(100.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(Radius.xs))
                                     .border(
                                         1.dp,
                                         MaterialTheme.colorScheme.outline,
-                                        RoundedCornerShape(8.dp)
+                                        RoundedCornerShape(Radius.xs)
                                     )
                                     .clickable { mediaPicker.open() },
                                 contentAlignment = Alignment.Center
