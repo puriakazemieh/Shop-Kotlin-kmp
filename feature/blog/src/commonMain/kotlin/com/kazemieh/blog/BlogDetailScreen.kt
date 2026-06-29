@@ -34,14 +34,26 @@ fun BlogDetailScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
-                title = { Text(state.blog?.title ?: "Blog Detail") },
+                title = {
+                    Text(
+                        text = state.blog?.title ?: "مقاله",
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     ) { padding ->
@@ -68,15 +80,15 @@ fun BlogDetailScreen(
                             }
                             AssistChip(
                                 onClick = {},
-                                label = { Text("${blog.viewCount} views") }
+                                label = { Text("${blog.viewCount} بازدید") }
                             )
                             AssistChip(
                                 onClick = {},
-                                label = { Text("${blog.readingTimeMinutes} min read") }
+                                label = { Text("${blog.readingTimeMinutes} دقیقه مطالعه") }
                             )
                         }
                         Text(
-                            text = "By ${blog.authorName ?: "Staff"} • ${formatDateTime(blog.createdAt)}",
+                            text = "نویسنده: ${blog.authorName ?: "کارمیلا"} • ${formatDateTime(blog.createdAt)}",
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(top = 8.dp)
                         )
@@ -91,7 +103,7 @@ fun BlogDetailScreen(
                         item {
                             HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                             Text(
-                                text = "Related Articles",
+                                text = "مطالب مرتبط",
                                 style = MaterialTheme.typography.titleLarge
                             )
                         }
