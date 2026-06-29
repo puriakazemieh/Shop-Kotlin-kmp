@@ -7,7 +7,9 @@ import com.kazemieh.network.common.safeApiCallRaw
 import com.kazemieh.network.common.PageResponse
 import com.kazemieh.network.catalog.dto.*
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.*
+import io.ktor.http.HttpStatusCode
 
 class CatalogApiImpl(
     private val client: HttpClient
@@ -45,5 +47,11 @@ class CatalogApiImpl(
 
     override suspend fun getProductDetail(slug: String): ProductDetailResponse = safeApiCallRaw {
         client.get("api/products/$slug")
+    }
+
+    override suspend fun getActiveCampaign(): CampaignResponse? {
+        val response = client.get("api/campaigns/active")
+        return if (response.status == HttpStatusCode.NoContent) null
+        else response.body<CampaignResponse>()
     }
 }

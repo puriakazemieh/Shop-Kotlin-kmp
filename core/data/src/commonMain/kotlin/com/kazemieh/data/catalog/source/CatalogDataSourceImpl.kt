@@ -35,4 +35,8 @@ class CatalogDataSourceImpl(
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetailResponse> = safeApiCall {
         api.getProductDetail(slug)
     }
+
+    override suspend fun getActiveCampaign(): AppResult<CampaignResponse?> = safeApiCall {
+        api.getActiveCampaign()
+    }
 }

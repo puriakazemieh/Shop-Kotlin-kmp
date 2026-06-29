@@ -1,5 +1,6 @@
 package com.kazemieh.catalog
 
+import com.kazemieh.domain.catalog.GetActiveCampaignUseCase
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
@@ -15,6 +16,7 @@ val catalogModule = module {
     // Catalog UseCases
     factory { GetCategoriesUseCase(get()) }
     factory { GetProductsUseCase(get()) }
+    factory { GetActiveCampaignUseCase(get()) }
     factory { GetProductDetailUseCase(get()) }
     factory { ToggleFavoriteUseCase(get()) }
 
@@ -25,6 +27,7 @@ val catalogModule = module {
     viewModel {
         ProductsOverviewViewModel(
             getProductsUseCase = get(),
+            getActiveCampaignUseCase = get(),
             getCategoriesUseCase = get(),
             toggleFavoriteUseCase = get(),
             observeFavoriteIdsUseCase = get(),

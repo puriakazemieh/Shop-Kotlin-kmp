@@ -20,4 +20,5 @@ interface CatalogRepository {
         sort: String? = null
     ): AppResult<AdminPage<ProductSummary>>
     suspend fun getProductDetail(slug: String): AppResult<ProductDetail>
+    suspend fun getActiveCampaign(): AppResult<Campaign?>
 }

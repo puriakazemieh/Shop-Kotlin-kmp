@@ -75,7 +75,10 @@ fun ProductsOverviewScreen(
     val homeListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     // ایندکس سرتیتر «جدیدترین محصولات» برای اسکرول دکمه‌های هیرو
-    val gridHeaderIndex = if (state.categories.isNotEmpty()) 4 else 3
+    val hasCampaign = state.campaign?.products?.isNotEmpty() == true
+    val gridHeaderIndex = 3 +
+        (if (hasCampaign) 1 else 0) +
+        (if (state.categories.isNotEmpty()) 1 else 0)
 
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -166,6 +169,28 @@ fun ProductsOverviewScreen(
                                     scope.launch { homeListState.animateScrollToItem(2) }
                                 }
                             )
+                        }
+
+                        state.campaign?.let { campaign ->
+                            if (campaign.products.isNotEmpty()) {
+                                item {
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    AmazingOffersSection(
+                                        campaign = campaign,
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        onProductClick = {
+                                            viewModel.handleIntent(
+                                                ProductsOverviewIntent.OnProductClick(it)
+                                            )
+                                        },
+                                        onFavoriteClick = { product ->
+                                            viewModel.handleIntent(
+                                                ProductsOverviewIntent.OnFavoriteClick(product)
+                                            )
+                                        }
+                                    )
+                                }
+                            }
                         }
 
                         item {

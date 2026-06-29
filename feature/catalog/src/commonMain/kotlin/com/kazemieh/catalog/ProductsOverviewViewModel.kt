@@ -3,6 +3,7 @@ package com.kazemieh.catalog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.catalog.GetActiveCampaignUseCase
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 
 class ProductsOverviewViewModel(
     private val getProductsUseCase: GetProductsUseCase,
+    private val getActiveCampaignUseCase: GetActiveCampaignUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
@@ -40,7 +42,17 @@ class ProductsOverviewViewModel(
         handleIntent(ProductsOverviewIntent.LoadProducts)
         loadStories()
         loadCategories()
+        loadCampaign()
         observeFavorites()
+    }
+
+    private fun loadCampaign() {
+        viewModelScope.launch {
+            when (val result = getActiveCampaignUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(campaign = result.data) }
+                else -> { /* بدون کمپینِ فعال؛ بخش نمایش داده نمی‌شود */ }
+            }
+        }
     }
 
     private fun observeFavorites() {
@@ -165,6 +177,7 @@ class ProductsOverviewViewModel(
             getProducts()
             loadStories()
             loadCategories()
+            loadCampaign()
             _state.update { it.copy(isRefreshing = false) }
         }
     }

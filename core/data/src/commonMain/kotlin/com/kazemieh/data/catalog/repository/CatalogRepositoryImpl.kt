@@ -40,9 +40,12 @@ class CatalogRepositoryImpl(
             }
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetail> =
-        dataSource.getProductDetail(slug).map { 
+        dataSource.getProductDetail(slug).map {
             val product = it.toCatalogDomain()
             favoriteRepository.updateFavoriteStatus(product.id, product.isFavorite)
             product
         }
+
+    override suspend fun getActiveCampaign(): AppResult<Campaign?> =
+        dataSource.getActiveCampaign().map { response -> response?.toCampaignDomain() }
 }

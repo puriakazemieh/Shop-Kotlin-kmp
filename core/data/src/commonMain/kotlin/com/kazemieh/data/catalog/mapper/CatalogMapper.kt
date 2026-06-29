@@ -37,6 +37,14 @@ fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     reviewCount = reviewCount
 )
 
+fun CampaignResponse.toCampaignDomain() = Campaign(
+    id = id,
+    title = title,
+    endsAt = endsAt,
+    remainingSeconds = remainingSeconds,
+    products = products.map { it.toCatalogDomain() }
+)
+
 fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
     id = id,
     title = title,

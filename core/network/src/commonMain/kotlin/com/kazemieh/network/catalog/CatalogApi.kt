@@ -19,4 +19,5 @@ interface CatalogApi {
         sort: String? = null
     ): PageResponse<ProductSummaryResponse>
     suspend fun getProductDetail(slug: String): ProductDetailResponse
+    suspend fun getActiveCampaign(): CampaignResponse?
 }

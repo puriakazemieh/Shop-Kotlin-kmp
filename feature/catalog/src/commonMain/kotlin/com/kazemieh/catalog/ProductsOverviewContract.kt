@@ -1,5 +1,6 @@
 package com.kazemieh.catalog
 
+import com.kazemieh.domain.catalog.Campaign
 import com.kazemieh.domain.catalog.Category
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.story.Story
@@ -8,6 +9,7 @@ data class ProductsOverviewState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val products: List<ProductSummary> = emptyList(),
+    val campaign: Campaign? = null,
     val stories: List<Story> = emptyList(),
     val categories: List<Category> = emptyList(),
     val isStoriesLoading: Boolean = false,
