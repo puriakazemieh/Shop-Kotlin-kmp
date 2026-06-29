@@ -89,12 +89,21 @@ fun FavoritesScreen(
                 if (state.favoritesLoading) {
                     LoadingCard(modifier = Modifier.fillMaxWidth().height(200.dp).padding(24.dp))
                 } else if (state.favorites.isEmpty()) {
-                    InfoCard(
+                    Column(
                         modifier = Modifier.fillMaxSize().padding(24.dp),
-                        image = Resources.Image.Cat,
-                        title = stringResource(Resources.String.Oops),
-                        subtitle = stringResource(Resources.String.FavoritesEmpty)
-                    )
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "🤍", fontSize = FontSize.EXTRA_LARGE)
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = stringResource(Resources.String.FavoritesEmpty),
+                            fontFamily = AppFont(),
+                            fontSize = FontSize.REGULAR,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
