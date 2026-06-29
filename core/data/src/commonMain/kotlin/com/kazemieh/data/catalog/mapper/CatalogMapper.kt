@@ -32,7 +32,9 @@ fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     categoryId = categoryId,
     categoryName = categoryName,
     options = options,
-    isFavorite = isFavorite
+    isFavorite = isFavorite,
+    averageRating = averageRating,
+    reviewCount = reviewCount
 )
 
 fun ProductDetailResponse.toCatalogDomain() = ProductDetail(

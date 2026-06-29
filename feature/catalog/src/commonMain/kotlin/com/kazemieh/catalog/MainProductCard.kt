@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -156,6 +158,32 @@ fun MainProductCard(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.height(40.dp)
             )
+            product.averageRating?.let { rating ->
+                Spacer(Modifier.height(9.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(14.dp),
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = colors.star
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = ((rating * 10).roundToInt() / 10.0).toString(),
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.onSurface
+                    )
+                    if (product.reviewCount > 0) {
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = "(${product.reviewCount})",
+                            fontSize = FontSize.EXTRA_SMALL,
+                            color = colors.onSurfaceVariant
+                        )
+                    }
+                }
+            }
             Spacer(Modifier.height(9.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),

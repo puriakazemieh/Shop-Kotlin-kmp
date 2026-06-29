@@ -13,7 +13,9 @@ data class ProductSummary(
     val categoryId: Long?,
     val categoryName: String?,
     val options: Map<String, List<String>>,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val averageRating: Double? = null,
+    val reviewCount: Long = 0
 )
 
 data class ProductDetail(
