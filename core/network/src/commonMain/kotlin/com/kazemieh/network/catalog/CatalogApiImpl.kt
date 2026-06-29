@@ -54,4 +54,8 @@ class CatalogApiImpl(
         return if (response.status == HttpStatusCode.NoContent) null
         else response.body<CampaignResponse>()
     }
+
+    override suspend fun getBanners(): List<BannerResponse> = safeApiCallRaw {
+        client.get("api/banners")
+    }
 }

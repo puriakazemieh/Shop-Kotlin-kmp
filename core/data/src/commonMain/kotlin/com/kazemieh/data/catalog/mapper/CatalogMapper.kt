@@ -45,6 +45,16 @@ fun CampaignResponse.toCampaignDomain() = Campaign(
     products = products.map { it.toCatalogDomain() }
 )
 
+fun BannerResponse.toBannerDomain() = Banner(
+    id = id,
+    title = title,
+    subtitle = subtitle,
+    imageUrl = imageUrl?.let {
+        if (it.startsWith("http")) it else "${PlatformConfig.baseUrl.removeSuffix("/")}$it"
+    },
+    categoryId = categoryId
+)
+
 fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
     id = id,
     title = title,

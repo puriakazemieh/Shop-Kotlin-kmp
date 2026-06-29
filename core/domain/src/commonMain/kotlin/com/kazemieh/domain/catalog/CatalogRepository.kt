@@ -21,4 +21,5 @@ interface CatalogRepository {
     ): AppResult<AdminPage<ProductSummary>>
     suspend fun getProductDetail(slug: String): AppResult<ProductDetail>
     suspend fun getActiveCampaign(): AppResult<Campaign?>
+    suspend fun getBanners(): AppResult<List<Banner>>
 }

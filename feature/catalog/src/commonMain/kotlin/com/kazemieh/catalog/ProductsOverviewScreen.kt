@@ -315,7 +315,25 @@ fun ProductsOverviewScreen(
                             }
                         }
 
+                        if (state.banners.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                PromoBanners(
+                                    banners = state.banners,
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    onBannerClick = { banner ->
+                                        banner.categoryId?.let { id ->
+                                            viewModel.handleIntent(
+                                                ProductsOverviewIntent.OnCategoryClick(id, banner.title)
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+
                         item {
+                            Spacer(modifier = Modifier.height(24.dp))
                             TrustBadges(modifier = Modifier.padding(horizontal = 16.dp))
                         }
                     }

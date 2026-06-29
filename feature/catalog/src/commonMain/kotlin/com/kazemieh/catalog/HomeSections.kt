@@ -1,5 +1,6 @@
 package com.kazemieh.catalog
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -46,8 +48,10 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Spacing
+import com.kazemieh.domain.catalog.Banner
 import com.kazemieh.domain.catalog.Campaign
 import com.kazemieh.domain.catalog.ProductSummary
+import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.delay
 
 /**
@@ -254,6 +258,85 @@ fun AmazingOffersSection(
                     onClick = onProductClick,
                     onFavoriteClick = { onFavoriteClick(product) }
                 )
+            }
+        }
+    }
+}
+
+/**
+ * بنرهای تبلیغاتیِ میانیِ صفحه‌ی اصلی (S3). هر بنر تصویر پس‌زمینه + برچسب + عنوان + CTA دارد.
+ */
+@Composable
+fun PromoBanners(
+    banners: List<Banner>,
+    modifier: Modifier = Modifier,
+    onBannerClick: (Banner) -> Unit
+) {
+    if (banners.isEmpty()) return
+    val colors = AppTheme.colors
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        banners.forEach { banner ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 160.dp)
+                    .clip(RoundedCornerShape(Radius.lg))
+                    .background(colors.surfaceVariant)
+                    .clickable { onBannerClick(banner) }
+            ) {
+                if (!banner.imageUrl.isNullOrBlank()) {
+                    Image(
+                        modifier = Modifier.matchParentSize(),
+                        painter = rememberImagePainter(banner.imageUrl!!),
+                        contentDescription = banner.title,
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(Color(0xB30F1220), Color(0x000F1220))
+                            )
+                        )
+                )
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(Spacing.xl)
+                ) {
+                    banner.subtitle?.let {
+                        Text(
+                            text = it,
+                            color = Color.White.copy(alpha = 0.9f),
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(Modifier.height(7.dp))
+                    }
+                    Text(
+                        text = banner.title,
+                        color = Color.White,
+                        fontSize = FontSize.MEDIUM,
+                        fontWeight = FontWeight.ExtraBold,
+                        lineHeight = FontSize.LARGE
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    Text(
+                        text = "خرید کنید",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(Radius.button))
+                            .background(Color(0x29FFFFFF))
+                            .padding(horizontal = 15.dp, vertical = 8.dp),
+                        color = Color.White,
+                        fontSize = FontSize.REGULAR,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }

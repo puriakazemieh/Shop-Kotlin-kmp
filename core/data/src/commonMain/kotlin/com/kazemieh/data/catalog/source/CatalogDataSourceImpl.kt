@@ -39,4 +39,8 @@ class CatalogDataSourceImpl(
     override suspend fun getActiveCampaign(): AppResult<CampaignResponse?> = safeApiCall {
         api.getActiveCampaign()
     }
+
+    override suspend fun getBanners(): AppResult<List<BannerResponse>> = safeApiCall {
+        api.getBanners()
+    }
 }

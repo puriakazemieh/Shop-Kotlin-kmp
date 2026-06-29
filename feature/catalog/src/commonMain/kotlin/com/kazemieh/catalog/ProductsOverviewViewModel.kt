@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.catalog.GetActiveCampaignUseCase
+import com.kazemieh.domain.catalog.GetBannersUseCase
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 class ProductsOverviewViewModel(
     private val getProductsUseCase: GetProductsUseCase,
     private val getActiveCampaignUseCase: GetActiveCampaignUseCase,
+    private val getBannersUseCase: GetBannersUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
@@ -43,6 +45,7 @@ class ProductsOverviewViewModel(
         loadStories()
         loadCategories()
         loadCampaign()
+        loadBanners()
         observeFavorites()
     }
 
@@ -51,6 +54,15 @@ class ProductsOverviewViewModel(
             when (val result = getActiveCampaignUseCase()) {
                 is AppResult.Success -> _state.update { it.copy(campaign = result.data) }
                 else -> { /* بدون کمپینِ فعال؛ بخش نمایش داده نمی‌شود */ }
+            }
+        }
+    }
+
+    private fun loadBanners() {
+        viewModelScope.launch {
+            when (val result = getBannersUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(banners = result.data) }
+                else -> { /* بدون بنر؛ بخش نمایش داده نمی‌شود */ }
             }
         }
     }
@@ -178,6 +190,7 @@ class ProductsOverviewViewModel(
             loadStories()
             loadCategories()
             loadCampaign()
+            loadBanners()
             _state.update { it.copy(isRefreshing = false) }
         }
     }

@@ -48,4 +48,7 @@ class CatalogRepositoryImpl(
 
     override suspend fun getActiveCampaign(): AppResult<Campaign?> =
         dataSource.getActiveCampaign().map { response -> response?.toCampaignDomain() }
+
+    override suspend fun getBanners(): AppResult<List<Banner>> =
+        dataSource.getBanners().map { list -> list.map { it.toBannerDomain() } }
 }

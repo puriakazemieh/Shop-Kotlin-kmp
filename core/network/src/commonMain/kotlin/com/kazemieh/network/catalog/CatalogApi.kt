@@ -20,4 +20,5 @@ interface CatalogApi {
     ): PageResponse<ProductSummaryResponse>
     suspend fun getProductDetail(slug: String): ProductDetailResponse
     suspend fun getActiveCampaign(): CampaignResponse?
+    suspend fun getBanners(): List<BannerResponse>
 }
