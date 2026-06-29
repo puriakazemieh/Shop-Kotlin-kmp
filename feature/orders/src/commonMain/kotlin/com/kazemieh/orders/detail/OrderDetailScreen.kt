@@ -1,9 +1,14 @@
 package com.kazemieh.orders.detail
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.ui.draw.clip
+import com.kazemieh.designsystem.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -100,12 +105,14 @@ fun OrderDetailScreen(
                     )
                     is AppResult.Success -> {
                         val order = result.data
+                        val colors = AppTheme.colors
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
+                            // ---- هدر ----
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -113,94 +120,126 @@ fun OrderDetailScreen(
                             ) {
                                 Text(
                                     text = stringResource(Resources.String.OrderIdPrefix, order.id),
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = AppFont()
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = FontSize.MEDIUM,
+                                    fontFamily = AppFont(),
+                                    color = colors.onSurface
                                 )
                                 UserStatusBadge(status = order.status)
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(stringResource(Resources.String.ShippingAddress), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            order.address?.let { address ->
-                                Text(
-                                    text = address.receiverName,
-                                    fontFamily = AppFont(),
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = address.receiverPhone,
-                                    fontFamily = AppFont(),
-                                    fontSize = FontSize.SMALL
-                                )
-                                Text(
-                                    text = stringResource(Resources.String.AddressFormat, address.province, address.city, address.addressLine1),
-                                    fontFamily = AppFont()
-                                )
-                                address.addressLine2?.let { Text(it, fontFamily = AppFont()) }
-                                address.postalCode?.let {
-                                    Text(
-                                        text = stringResource(Resources.String.PostalCodeLabel, it),
-                                        fontFamily = AppFont(),
-                                        fontSize = FontSize.SMALL
-                                    )
+                            // ---- کد رهگیری ----
+                            order.trackingCode?.let { tracking ->
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(colors.accentSoft)
+                                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("کد رهگیری پستی", fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.primary)
+                                    Text(tracking, fontFamily = AppFont(), fontSize = FontSize.REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.primary)
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(stringResource(Resources.String.ItemsLabel), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            order.items.forEach { item ->
-                                Row(
-                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                            // ---- آدرس تحویل ----
+                            order.address?.let { address ->
+                                Spacer(modifier = Modifier.height(18.dp))
+                                Text(stringResource(Resources.String.ShippingAddress), fontWeight = FontWeight.ExtraBold, fontFamily = AppFont(), color = colors.onSurface)
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .background(colors.surface)
+                                        .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+                                        .padding(16.dp)
                                 ) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(item.title, fontWeight = FontWeight.Medium, fontFamily = AppFont())
+                                    Text("${address.receiverName} — ${address.receiverPhone}", fontFamily = AppFont(), fontWeight = FontWeight.Bold, color = colors.onSurface)
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text("${address.province}، ${address.city}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                                    Text(address.addressLine1, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                                    address.postalCode?.let {
+                                        Text(stringResource(Resources.String.PostalCodeLabel, it), fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                                    }
+                                }
+                            }
+
+                            // ---- اقلام سفارش ----
+                            Spacer(modifier = Modifier.height(18.dp))
+                            Text(stringResource(Resources.String.ItemsLabel), fontWeight = FontWeight.ExtraBold, fontFamily = AppFont(), color = colors.onSurface)
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(colors.surface)
+                                    .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+                            ) {
+                                order.items.forEach { item ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 13.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(width = 48.dp, height = 56.dp)
+                                                .clip(RoundedCornerShape(11.dp))
+                                                .background(colors.surfaceVariant)
+                                        )
+                                        Spacer(modifier = Modifier.width(13.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(item.title, fontWeight = FontWeight.SemiBold, fontFamily = AppFont(), color = colors.onSurface)
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = item.options.entries.joinToString(" · ") { "${it.key}: ${it.value}" } + " · تعداد ${item.qty}",
+                                                fontSize = FontSize.SMALL,
+                                                fontFamily = AppFont(),
+                                                color = colors.onSurfaceVariant
+                                            )
+                                        }
                                         Text(
-                                            text = item.options.entries.joinToString(", ") { "${it.key}: ${it.value}" },
+                                            text = stringResource(Resources.String.PriceFormat, item.unitPrice),
+                                            fontWeight = FontWeight.ExtraBold,
                                             fontSize = FontSize.SMALL,
+                                            fontFamily = AppFont(),
+                                            color = colors.onSurface
+                                        )
+                                    }
+                                    HorizontalDivider(color = colors.line)
+                                }
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, order.subtotalPrice))
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, order.shippingPrice))
+                                    if ((order.walletPaidAmount ?: 0.0) > 0) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        OrderSummaryLine(stringResource(Resources.String.WalletPaidAmount), stringResource(Resources.String.PriceFormat, order.walletPaidAmount ?: 0.0))
+                                    }
+                                    if ((order.gatewayPaidAmount ?: 0.0) > 0) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        OrderSummaryLine(stringResource(Resources.String.GatewayPaidAmount), stringResource(Resources.String.PriceFormat, order.gatewayPaidAmount ?: 0.0))
+                                    }
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                        Text(stringResource(Resources.String.TotalLabelSimple), fontWeight = FontWeight.Bold, fontFamily = AppFont(), color = colors.onSurface)
+                                        Text(
+                                            stringResource(Resources.String.PriceFormat, order.totalPrice),
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = FontSize.EXTRA_REGULAR,
+                                            color = colors.primary,
                                             fontFamily = AppFont()
                                         )
                                     }
-                                    Text(
-                                        stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, item.unitPrice)),
-                                        fontFamily = AppFont()
-                                    )
                                 }
                             }
 
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(stringResource(Resources.String.SubtotalLabel), fontFamily = AppFont())
-                                Text(stringResource(Resources.String.PriceFormat, order.subtotalPrice), fontFamily = AppFont())
-                            }
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(stringResource(Resources.String.ShippingLabel), fontFamily = AppFont())
-                                Text(stringResource(Resources.String.PriceFormat, order.shippingPrice), fontFamily = AppFont())
-                            }
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(stringResource(Resources.String.TotalLabelSimple), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                                Text(
-                                    stringResource(Resources.String.PriceFormat, order.totalPrice),
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontFamily = AppFont()
-                                )
-                            }
-
-                            if ((order.walletPaidAmount ?: 0.0) > 0) {
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Text(stringResource(Resources.String.WalletPaidAmount), fontSize = FontSize.SMALL, fontFamily = AppFont())
-                                    Text(stringResource(Resources.String.PriceFormat, order.walletPaidAmount ?: 0.0), fontSize = FontSize.SMALL, fontFamily = AppFont())
-                                }
-                            }
-                            if ((order.gatewayPaidAmount ?: 0.0) > 0) {
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Text(stringResource(Resources.String.GatewayPaidAmount), fontSize = FontSize.SMALL, fontFamily = AppFont())
-                                    Text(stringResource(Resources.String.PriceFormat, order.gatewayPaidAmount ?: 0.0), fontSize = FontSize.SMALL, fontFamily = AppFont())
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
 
                             if (order.status == "PLACED" || order.status == "PROCESSING") {
                                 PrimaryButton(
@@ -221,5 +260,14 @@ fun OrderDetailScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun OrderSummaryLine(label: String, value: String) {
+    val colors = AppTheme.colors
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(label, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+        Text(value, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface)
     }
 }
