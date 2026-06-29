@@ -32,6 +32,7 @@ import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.CarmillaFilterChip
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -160,10 +161,18 @@ fun StatusFilterRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(statuses) { status ->
-            FilterChip(
+            CarmillaFilterChip(
+                text = when (status) {
+                    null -> stringResource(Resources.String.AllLabel)
+                    "PLACED" -> stringResource(Resources.String.OrderStatusPlaced)
+                    "PROCESSING" -> stringResource(Resources.String.OrderStatusProcessing)
+                    "SHIPPING" -> stringResource(Resources.String.OrderStatusShipping)
+                    "COMPLETED" -> stringResource(Resources.String.OrderStatusCompleted)
+                    "CANCELLED" -> stringResource(Resources.String.OrderStatusCancelled)
+                    else -> status
+                },
                 selected = selectedStatus == status,
-                onClick = { onStatusSelected(status) },
-                label = { Text(status ?: stringResource(Resources.String.AllLabel), fontFamily = AppFont()) }
+                onClick = { onStatusSelected(status) }
             )
         }
     }

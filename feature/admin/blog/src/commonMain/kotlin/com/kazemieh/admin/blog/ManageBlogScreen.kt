@@ -177,7 +177,7 @@ fun ManageBlogScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(Icons.Default.Image, null)
-                        Text("Img")
+                        Text("تصویر")
                     }
                 }
 

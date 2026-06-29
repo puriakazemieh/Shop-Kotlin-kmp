@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
+import com.kazemieh.designsystem.component.CarmillaFilterChip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -91,20 +92,20 @@ fun FilterSection(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(Icons.Default.FilterList, contentDescription = null)
-        FilterChip(
+        CarmillaFilterChip(
+            text = "همه",
             selected = isNewFilter == null,
-            onClick = { onNewFilterChange(null) },
-            label = { Text("همه") }
+            onClick = { onNewFilterChange(null) }
         )
-        FilterChip(
+        CarmillaFilterChip(
+            text = "جدید",
             selected = isNewFilter == true,
-            onClick = { onNewFilterChange(true) },
-            label = { Text("جدید") }
+            onClick = { onNewFilterChange(true) }
         )
-        FilterChip(
+        CarmillaFilterChip(
+            text = "بررسی شده",
             selected = isNewFilter == false,
-            onClick = { onNewFilterChange(false) },
-            label = { Text("بررسی شده") }
+            onClick = { onNewFilterChange(false) }
         )
     }
 }

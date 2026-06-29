@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
+import com.kazemieh.designsystem.component.CarmillaFilterChip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -137,14 +138,14 @@ fun BulkVariantBottomSheet(
                     ) {
                         option.values.forEach { valObj ->
                             val isSelected = selectedOptions[option.id]?.contains(valObj.id) == true
-                            FilterChip(
+                            CarmillaFilterChip(
+                                text = valObj.value,
                                 selected = isSelected,
                                 onClick = {
                                     val currentSet = selectedOptions[option.id] ?: emptySet()
                                     val newSet = if (isSelected) currentSet - valObj.id else currentSet + valObj.id
                                     selectedOptions = selectedOptions + (option.id to newSet)
-                                },
-                                label = { Text(valObj.value) }
+                                }
                             )
                         }
                     }
