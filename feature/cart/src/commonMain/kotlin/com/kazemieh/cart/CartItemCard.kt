@@ -56,7 +56,7 @@ fun CartItemCard(
         modifier = modifier
             .fillMaxWidth()
             .height(120.dp)
-            .clip(RoundedCornerShape(size = 12.dp))
+            .clip(RoundedCornerShape(Radius.md))
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
@@ -69,11 +69,11 @@ fun CartItemCard(
             modifier = Modifier
                 .width(120.dp)
                 .height(120.dp)
-                .clip(RoundedCornerShape(size = 12.dp))
+                .clip(RoundedCornerShape(Radius.md))
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(size = 12.dp)
+                    shape = RoundedCornerShape(Radius.md)
                 ),
             painter = painter,
             contentDescription = stringResource(Resources.String.ProductThumbnailDesc),
@@ -101,12 +101,12 @@ fun CartItemCard(
                 Spacer(modifier = Modifier.width(12.dp))
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(size = 6.dp))
+                        .clip(RoundedCornerShape(Radius.xs))
                         .background(MaterialTheme.colorScheme.surface)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.outlineVariant,
-                            shape = RoundedCornerShape(size = 6.dp)
+                            shape = RoundedCornerShape(Radius.xs)
                         )
                         .clickable { onDeleteClick() }
                         .padding(all = 8.dp),
@@ -123,12 +123,12 @@ fun CartItemCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(size = 6.dp))
+                            .clip(RoundedCornerShape(Radius.xs))
                             .background(MaterialTheme.colorScheme.surface)
                             .border(
                                 width = 1.dp,
                                 color = MaterialTheme.colorScheme.outlineVariant,
-                                shape = RoundedCornerShape(size = 6.dp)
+                                shape = RoundedCornerShape(Radius.xs)
                             )
                             .clickable { it() }
                             .padding(all = 8.dp),
@@ -146,12 +146,12 @@ fun CartItemCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(size = 6.dp))
+                            .clip(RoundedCornerShape(Radius.xs))
                             .background(MaterialTheme.colorScheme.surface)
                             .border(
                                 width = 1.dp,
                                 color = MaterialTheme.colorScheme.outlineVariant,
-                                shape = RoundedCornerShape(size = 6.dp)
+                                shape = RoundedCornerShape(Radius.xs)
                             )
                             .clickable { it() }
                             .padding(all = 8.dp),

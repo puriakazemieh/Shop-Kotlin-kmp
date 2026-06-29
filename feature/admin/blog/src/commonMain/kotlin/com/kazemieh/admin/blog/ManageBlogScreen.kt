@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.blog.Blog
@@ -193,7 +194,7 @@ fun ManageBlogScreen(
                     Image(
                         painter = rememberImagePainter(thumbnailUrl),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(8.dp)),
+                        modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(Radius.xs)),
                         contentScale = ContentScale.Crop
                     )
                 }

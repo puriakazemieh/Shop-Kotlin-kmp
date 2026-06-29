@@ -35,6 +35,7 @@ import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -98,7 +99,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Radius.md)
             ) {
                 Column {
                     AppLanguage.entries.forEachIndexed { index, language ->
@@ -131,7 +132,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Radius.md)
             ) {
                 Column {
                     AppThemeMode.entries.forEachIndexed { index, mode ->

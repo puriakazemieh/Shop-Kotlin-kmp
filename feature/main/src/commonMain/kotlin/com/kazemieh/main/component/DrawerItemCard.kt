@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -32,7 +33,7 @@ fun DrawerItemCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(size = 99.dp))
+            .clip(RoundedCornerShape(size = Radius.full))
             .clickable { onClick() }
             .padding(
                 vertical = 12.dp,

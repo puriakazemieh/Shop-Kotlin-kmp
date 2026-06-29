@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 
 @Composable
 fun VariantChip(
@@ -25,7 +26,7 @@ fun VariantChip(
 ) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(size = 12.dp))
+            .clip(RoundedCornerShape(Radius.sm))
             .clickable(enabled = enabled) { onClick() }
             .background(
                 when {
@@ -41,7 +42,7 @@ fun VariantChip(
                     !enabled -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     else -> MaterialTheme.colorScheme.outline
                 },
-                shape = RoundedCornerShape(size = 12.dp)
+                shape = RoundedCornerShape(Radius.sm)
             )
             .padding(vertical = 8.dp, horizontal = 16.dp),
         contentAlignment = Alignment.Center

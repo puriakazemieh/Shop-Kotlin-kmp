@@ -59,6 +59,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -220,11 +221,11 @@ fun DetailsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(300.dp)
-                                    .clip(RoundedCornerShape(size = 12.dp))
+                                    .clip(RoundedCornerShape(size = Radius.md))
                                     .border(
                                         width = 1.dp,
                                         color = MaterialTheme.colorScheme.outline,
-                                        shape = RoundedCornerShape(size = 12.dp)
+                                        shape = RoundedCornerShape(size = Radius.md)
                                     )
                             ) {
                                 HorizontalPager(
@@ -581,7 +582,7 @@ fun DetailsScreen(
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Box(
                                             modifier = Modifier
-                                                .clip(RoundedCornerShape(size = 12.dp))
+                                                .clip(RoundedCornerShape(size = Radius.md))
                                                 .background(MaterialTheme.colorScheme.secondaryContainer)
                                                 .clickable {
                                                     viewModel.handleIntent(

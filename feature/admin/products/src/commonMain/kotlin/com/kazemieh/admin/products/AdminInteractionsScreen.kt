@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.domain.admin.AdminInteraction
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -112,7 +113,7 @@ fun FilterSection(
 fun AdminInteractionItem(interaction: AdminInteraction) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(Radius.xs),
         colors = CardDefaults.cardColors(
             containerColor = if (interaction.isNew) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) 
             else MaterialTheme.colorScheme.surface
