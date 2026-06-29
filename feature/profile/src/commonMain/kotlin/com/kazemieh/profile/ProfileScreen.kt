@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -171,6 +172,13 @@ fun ProfileScreen(
 
                     is AppResult.Success -> {
                         state.profile?.let { profile ->
+                            ProfileHeader(
+                                name = "${profile.firstName} ${profile.lastName}",
+                                phone = profile.phone
+                            )
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
                             ProfileForm(
                                 modifier = Modifier.fillMaxWidth(),
                                 firstName = profile.firstName,
@@ -343,6 +351,56 @@ fun ProfileScreen(
 }
 
 @Composable
+private fun ProfileHeader(name: String, phone: String) {
+    val colors = AppTheme.colors
+    val initials = name.trim().split(" ")
+        .mapNotNull { it.firstOrNull()?.toString() }
+        .take(2)
+        .joinToString("")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.accentSoft)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+                .background(colors.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = initials,
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM,
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.onPrimary
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(
+                text = name.trim().ifBlank { stringResource(Resources.String.MyProfile) },
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM,
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.onSurface
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = phone,
+                fontFamily = AppFont(),
+                fontSize = FontSize.REGULAR,
+                color = colors.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
 fun WalletBalanceCard(
     state: AppResult<WalletBalance>,
     onClick: () -> Unit
@@ -352,9 +410,10 @@ fun WalletBalanceCard(
             .fillMaxWidth()
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(1.dp, AppTheme.colors.line),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -362,18 +421,27 @@ fun WalletBalanceCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(Resources.Icon.Dollar),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(AppTheme.colors.accentSoft),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(Resources.Icon.Dollar),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
                     Text(
                         text = stringResource(Resources.String.MyWallet),
                         fontFamily = AppFont(),
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     when (state) {
                         is AppResult.Loading -> {
@@ -381,7 +449,7 @@ fun WalletBalanceCard(
                                 text = stringResource(Resources.String.Loading),
                                 fontSize = FontSize.SMALL,
                                 fontFamily = AppFont(),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
@@ -413,7 +481,7 @@ fun WalletBalanceCard(
             Icon(
                 painter = painterResource(Resources.Icon.RightArrow),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
                     .graphicsLayer { rotationY = if (isRtl) 180f else 0f }
             )
@@ -431,10 +499,21 @@ fun AddressItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = if (address.isDefault) {
+                AppTheme.colors.accentSoft
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
         ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(
+            if (address.isDefault) 1.5.dp else 1.dp,
+            if (address.isDefault) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                AppTheme.colors.line
+            }
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -458,14 +537,14 @@ fun AddressItem(
                         Spacer(modifier = Modifier.width(8.dp))
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                                .clip(RoundedCornerShape(999.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Text(
                                 text = stringResource(Resources.String.Default),
-                                fontSize = FontSize.SMALL,
-                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = FontSize.EXTRA_SMALL,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 fontFamily = AppFont()
                             )
                         }
