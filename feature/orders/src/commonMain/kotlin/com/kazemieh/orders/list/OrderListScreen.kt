@@ -1,10 +1,12 @@
 package com.kazemieh.orders.list
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,7 +14,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -117,44 +122,74 @@ fun OrderCard(
     order: Order,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, AppTheme.colors.line),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(18.dp))
+            .clickable { onClick() }
+            .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(Resources.String.OrderIdPrefix, order.id),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = FontSize.MEDIUM,
-                    fontFamily = AppFont()
-                )
-                UserStatusBadge(status = order.status)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = formatDateTime(order.createdAt),
-                    fontSize = FontSize.SMALL,
-                    fontFamily = AppFont()
-                )
-                Text(
-                    text = stringResource(Resources.String.PriceFormat, order.totalPrice),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = AppFont()
-                )
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(Resources.String.OrderIdPrefix, order.id),
+                fontWeight = FontWeight.Bold,
+                fontSize = FontSize.REGULAR,
+                fontFamily = AppFont(),
+                color = colors.onSurface
+            )
+            UserStatusBadge(status = order.status)
         }
+        Spacer(modifier = Modifier.height(13.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(width = 48.dp, height = 56.dp)
+                    .clip(RoundedCornerShape(11.dp))
+                    .background(colors.surfaceVariant)
+            )
+            Spacer(modifier = Modifier.width(13.dp))
+            Text(
+                modifier = Modifier.weight(1f),
+                text = formatDateTime(order.createdAt),
+                fontSize = FontSize.SMALL,
+                fontFamily = AppFont(),
+                color = colors.onSurfaceVariant
+            )
+            Text(
+                text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = FontSize.EXTRA_REGULAR,
+                color = colors.onSurface,
+                fontFamily = AppFont()
+            )
+        }
+        Spacer(modifier = Modifier.height(14.dp))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+        Spacer(modifier = Modifier.height(13.dp))
+        Text(
+            text = "جزئیات و رهگیری",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(11.dp))
+                .background(colors.accentSoft)
+                .clickable { onClick() }
+                .padding(vertical = 10.dp),
+            textAlign = TextAlign.Center,
+            fontSize = FontSize.SMALL,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.primary,
+            fontFamily = AppFont()
+        )
     }
 }
 
@@ -176,17 +211,15 @@ fun UserStatusBadge(status: String) {
         "CANCELLED" -> stringResource(Resources.String.OrderStatusCancelled)
         else -> status
     }
-    Surface(
-        color = color.copy(alpha = 0.12f),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(999.dp)
-    ) {
-        Text(
-            text = label,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-            fontSize = FontSize.EXTRA_SMALL,
-            color = color,
-            fontWeight = FontWeight.Bold,
-            fontFamily = AppFont()
-        )
-    }
+    Text(
+        text = label,
+        modifier = Modifier
+            .clip(RoundedCornerShape(9.dp))
+            .background(color)
+            .padding(horizontal = 11.dp, vertical = 4.dp),
+        fontSize = FontSize.EXTRA_SMALL,
+        color = Color.White,
+        fontWeight = FontWeight.Bold,
+        fontFamily = AppFont()
+    )
 }
