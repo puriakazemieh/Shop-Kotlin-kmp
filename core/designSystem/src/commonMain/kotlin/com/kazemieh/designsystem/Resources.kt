@@ -78,6 +78,8 @@ object Resources {
         val AllProducts = CommonRes.string.allProducts
         val NewestProducts = CommonRes.string.newestProducts
         val TotalLabel = CommonRes.string.totalLabel
+        val OrderSummary = CommonRes.string.orderSummary
+        val SecurePayment = CommonRes.string.securePayment
         val Checkout = CommonRes.string.checkout
         val AddNewAddress = CommonRes.string.addNewAddress
         val SaveAddress = CommonRes.string.saveAddress

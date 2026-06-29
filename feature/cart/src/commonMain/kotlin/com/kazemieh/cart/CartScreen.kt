@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.Radius
@@ -194,6 +195,15 @@ fun CartScreen(
 
                                         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
+                                        Text(
+                                            text = stringResource(Resources.String.OrderSummary),
+                                            fontFamily = com.kazemieh.designsystem.AppFont(),
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = com.kazemieh.designsystem.FontSize.EXTRA_REGULAR,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.padding(bottom = 12.dp)
+                                        )
+
                                         // Discount Code Section
                                         Card(
                                             modifier = Modifier.fillMaxWidth(),
@@ -298,6 +308,17 @@ fun CartScreen(
                                             text = stringResource(Resources.String.Checkout),
                                             onClick = { navigateToCheckout(cart.total) },
                                             modifier = Modifier.fillMaxWidth()
+                                        )
+
+                                        Text(
+                                            text = stringResource(Resources.String.SecurePayment),
+                                            fontFamily = com.kazemieh.designsystem.AppFont(),
+                                            fontSize = com.kazemieh.designsystem.FontSize.SMALL,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 12.dp)
                                         )
                                     }
                                 }

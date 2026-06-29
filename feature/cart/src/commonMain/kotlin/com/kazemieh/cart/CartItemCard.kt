@@ -62,7 +62,7 @@ fun CartItemCard(
                 color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(Radius.md)
             )
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         val painter = rememberImagePainter(cartItem.imageUrl ?: "")
         Image(
@@ -175,8 +175,8 @@ fun CartItemCard(
                     Text(
                         text = stringResource(Resources.String.PriceFormat, cartItem.lineTotal),
                         fontSize = FontSize.EXTRA_REGULAR,
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.ExtraBold,
                         maxLines = 1
                     )
                     Text(

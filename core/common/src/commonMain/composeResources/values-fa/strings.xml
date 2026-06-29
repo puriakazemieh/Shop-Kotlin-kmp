@@ -16,6 +16,8 @@
     <string name="allProducts">همه محصولات</string>
     <string name="newestProducts">جدیدترین محصولات</string>
     <string name="totalLabel">مجموع:</string>
+    <string name="orderSummary">خلاصه سفارش</string>
+    <string name="securePayment">پرداخت امن و رمزنگاری‌شده</string>
     <string name="checkout">تسویه حساب</string>
     <string name="addNewAddress">افزودن آدرس جدید</string>
     <string name="saveAddress">ذخیره آدرس</string>

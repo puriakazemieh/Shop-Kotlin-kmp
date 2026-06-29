@@ -1,6 +1,7 @@
 package com.kazemieh.cart.checkout
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -291,8 +292,16 @@ fun AddressItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Radius.xs))
-            .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) else Color.Transparent)
+            .clip(RoundedCornerShape(Radius.md))
+            .background(
+                if (isSelected) com.kazemieh.designsystem.AppTheme.colors.accentSoft
+                else MaterialTheme.colorScheme.surface
+            )
+            .border(
+                width = if (isSelected) 1.5.dp else 1.dp,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(Radius.md)
+            )
             .clickable { onClick() }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
