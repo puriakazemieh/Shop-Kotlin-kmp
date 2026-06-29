@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -199,7 +200,7 @@ fun CartScreen(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                             ),
-                                            shape = RoundedCornerShape(12.dp)
+                                            shape = RoundedCornerShape(Radius.md)
                                         ) {
                                             Column (
                                                 modifier = Modifier

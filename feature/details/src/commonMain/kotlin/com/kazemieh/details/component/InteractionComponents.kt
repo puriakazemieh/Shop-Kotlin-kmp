@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.domain.catalog.Question
 import com.kazemieh.domain.catalog.Review
 
@@ -28,7 +30,7 @@ fun ReviewItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = paddingStart, top = 8.dp, bottom = 4.dp)
-            .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(Radius.xs))
             .padding(12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -65,7 +67,7 @@ fun ReviewItem(
             TextButton(
                 onClick = { onDeleteClick(review.id) },
                 contentPadding = PaddingValues(horizontal = 8.dp),
-                colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
+                colors = ButtonDefaults.textButtonColors(contentColor = AppTheme.colors.sale)
             ) {
                 Text("حذف", style = MaterialTheme.typography.labelMedium)
             }
@@ -98,7 +100,7 @@ fun QuestionItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = paddingStart, top = 8.dp, bottom = 4.dp)
-            .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(Radius.xs))
             .padding(12.dp)
     ) {
         Text(
@@ -129,7 +131,7 @@ fun QuestionItem(
             TextButton(
                 onClick = { onDeleteClick(question.id) },
                 contentPadding = PaddingValues(horizontal = 8.dp),
-                colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
+                colors = ButtonDefaults.textButtonColors(contentColor = AppTheme.colors.sale)
             ) {
                 Text("حذف", style = MaterialTheme.typography.labelMedium)
             }
@@ -154,7 +156,7 @@ fun RatingDisplay(rating: Int) {
         repeat(5) { index ->
             Text(
                 text = if (index < rating) "★" else "☆",
-                color = if (index < rating) Color(0xFFFFB400) else Color.Gray,
+                color = if (index < rating) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -172,7 +174,7 @@ fun AddReviewDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(Radius.md)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -185,7 +187,7 @@ fun AddReviewDialog(
                         IconButton(onClick = { rating = index + 1 }) {
                             Text(
                                 text = if (index < rating) "★" else "☆",
-                                color = if (index < rating) Color(0xFFFFB400) else Color.Gray,
+                                color = if (index < rating) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.headlineSmall
                             )
                         }
@@ -227,7 +229,7 @@ fun AddQuestionDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(Radius.md)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("ثبت پرسش", style = MaterialTheme.typography.titleMedium)
@@ -269,7 +271,7 @@ fun EditReviewDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(Radius.md)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -282,7 +284,7 @@ fun EditReviewDialog(
                         IconButton(onClick = { rating = index + 1 }) {
                             Text(
                                 text = if (index < rating) "★" else "☆",
-                                color = if (index < rating) Color(0xFFFFB400) else Color.Gray,
+                                color = if (index < rating) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.headlineSmall
                             )
                         }
@@ -325,7 +327,7 @@ fun EditQuestionDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(Radius.md)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("ویرایش پرسش", style = MaterialTheme.typography.titleMedium)

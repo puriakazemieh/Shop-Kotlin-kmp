@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -170,7 +171,7 @@ fun DetailsScreen(
                             Icon(
                                 imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = null,
-                                tint = if (product.isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+                                tint = if (product.isFavorite) AppTheme.colors.sale else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }

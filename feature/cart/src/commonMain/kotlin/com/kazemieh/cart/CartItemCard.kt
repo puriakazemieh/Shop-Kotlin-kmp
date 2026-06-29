@@ -33,6 +33,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kazemieh.common.ld
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.component.QuantityCounter
@@ -59,7 +60,7 @@ fun CartItemCard(
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Radius.md)
             )
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
