@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -21,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,8 @@ import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.main.component.BottomBar
 import com.kazemieh.main.component.BottomBarDestination
+import com.kazemieh.main.component.HomeTopBar
+import com.kazemieh.main.component.TitleTopBar
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -104,27 +108,12 @@ fun MainGraphScreen(
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
-                CenterAlignedTopAppBar(
-                    title = {
-                        AnimatedContent(
-                            targetState = selectedDestination
-                        ) { destination ->
-                            Text(
-                                text = stringResource(destination.title),
-                                fontFamily = AppFont(),
-                                fontSize = FontSize.LARGE,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                        actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                when (selectedDestination) {
+                    BottomBarDestination.ProductsOverview -> HomeTopBar(
+                        onSearchClick = { navigateToCategorySearch(0L, "جستجو") }
                     )
-                )
+                    else -> TitleTopBar(title = stringResource(selectedDestination.title))
+                }
             }
         ) { padding ->
             ContentWithMessageBar(
@@ -173,7 +162,9 @@ fun MainGraphScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                     Box(
                         modifier = Modifier
-                            .padding(all = 12.dp)
+                            .fillMaxWidth()
+                            .padding(all = 12.dp),
+                        contentAlignment = Alignment.Center
                     ) {
                         BottomBar(
                             cartItemCount = state.cartItemCount,
