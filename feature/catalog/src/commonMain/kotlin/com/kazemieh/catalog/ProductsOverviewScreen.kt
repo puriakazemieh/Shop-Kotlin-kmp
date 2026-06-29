@@ -71,30 +71,18 @@ fun ProductsOverviewScreen(
 ) {
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
-    val featuredListState = rememberLazyListState()
     val homeListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    // ایندکس سرتیتر «جدیدترین محصولات» برای اسکرول دکمه‌های هیرو
+    // ترتیب آیتم‌های خانه مطابق اسپک: 0=استوری، 1=هیرو، (دسته‌ها)، (پیشنهاد شگفت‌انگیز)، سرتیتر جدیدترین
     val hasCampaign = state.campaign?.products?.isNotEmpty() == true
-    val gridHeaderIndex = 3 +
-        (if (hasCampaign) 1 else 0) +
-        (if (state.categories.isNotEmpty()) 1 else 0)
+    val hasCategories = state.categories.isNotEmpty()
+    val newestHeaderIndex = 2 + (if (hasCategories) 1 else 0) + (if (hasCampaign) 1 else 0)
+    val dealsIndex = if (hasCampaign) 2 + (if (hasCategories) 1 else 0) else newestHeaderIndex
 
     val pullToRefreshState = rememberPullToRefreshState()
 
     var showStoryDetail by remember { mutableStateOf(false) }
     var initialStoryIndex by remember { mutableStateOf(0) }
-
-    val centeredIndex: Int? by remember {
-        derivedStateOf {
-            val layoutInfo = featuredListState.layoutInfo
-            val viewportCenter = layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset / 2
-            layoutInfo.visibleItemsInfo.minByOrNull { item ->
-                val itemCenter = item.offset + item.size / 2
-                kotlin.math.abs(itemCenter - viewportCenter)
-            }?.index
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -163,18 +151,52 @@ fun ProductsOverviewScreen(
                             HomeHero(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 onShopClick = {
-                                    scope.launch { homeListState.animateScrollToItem(gridHeaderIndex) }
+                                    scope.launch { homeListState.animateScrollToItem(newestHeaderIndex) }
                                 },
                                 onDealsClick = {
-                                    scope.launch { homeListState.animateScrollToItem(2) }
+                                    scope.launch { homeListState.animateScrollToItem(dealsIndex) }
                                 }
                             )
                         }
 
+                        // دسته‌ها — گرید کاشی‌ها، بلافاصله بعد از هیرو (مطابق اسپک)
+                        if (hasCategories) {
+                            item {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    state.categories.chunked(3).forEach { rowItems ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                        ) {
+                                            rowItems.forEach { category ->
+                                                SquareCategoryCard(
+                                                    modifier = Modifier.weight(1f),
+                                                    category = category,
+                                                    onClick = {
+                                                        viewModel.handleIntent(
+                                                            ProductsOverviewIntent.OnCategoryClick(category.id, category.name)
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                            repeat(3 - rowItems.size) {
+                                                Spacer(modifier = Modifier.weight(1f))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // پیشنهاد شگفت‌انگیز (کمپین) — بعد از دسته‌ها
                         state.campaign?.let { campaign ->
                             if (campaign.products.isNotEmpty()) {
                                 item {
-                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Spacer(modifier = Modifier.height(34.dp))
                                     AmazingOffersSection(
                                         campaign = campaign,
                                         modifier = Modifier.padding(horizontal = 16.dp),
@@ -193,91 +215,9 @@ fun ProductsOverviewScreen(
                             }
                         }
 
+                        // جدیدترین محصولات — گرید دو ستونه
                         item {
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                text = stringResource(Resources.String.FeaturedProducts),
-                                fontSize = FontSize.LARGE,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            LazyRow(
-                                state = featuredListState,
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp)
-                            ) {
-                                itemsIndexed(
-                                    items = products.take(6),
-                                    key = { _, item -> "featured_${item.id}" }
-                                ) { index, product ->
-                                    val isLarge = index == centeredIndex
-                                    val animatedScale by animateFloatAsState(
-                                        targetValue = if (isLarge) 1f else 0.85f,
-                                        animationSpec = tween(300)
-                                    )
-
-                                    MainProductCard(
-                                        modifier = Modifier
-                                            .scale(animatedScale)
-                                            .height(350.dp)
-                                            .fillParentMaxWidth(0.7f),
-                                        product = product,
-                                        isLarge = isLarge,
-                                        onClick = {
-                                            viewModel.handleIntent(
-                                                ProductsOverviewIntent.OnProductClick(it)
-                                            )
-                                        },
-                                        onFavoriteClick = {
-                                            viewModel.handleIntent(
-                                                ProductsOverviewIntent.OnFavoriteClick(product)
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                        }
-
-                        if (state.categories.isNotEmpty()) {
-                            item {
-                                Spacer(modifier = Modifier.height(24.dp))
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    text = stringResource(Resources.String.Categories),
-                                    fontSize = FontSize.LARGE,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)
-                                ) {
-                                    items(state.categories) { category ->
-                                        SquareCategoryCard(
-                                            category = category,
-                                            onClick = {
-                                                viewModel.handleIntent(
-                                                    ProductsOverviewIntent.OnCategoryClick(category.id, category.name)
-                                                )
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(36.dp))
                             HomeSectionHeader(
                                 title = stringResource(Resources.String.NewestProducts),
                                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -371,12 +311,12 @@ fun ProductsOverviewScreen(
 
 @Composable
 fun SquareCategoryCard(
+    modifier: Modifier = Modifier,
     category: Category,
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .width(96.dp)
+        modifier = modifier
             .clip(RoundedCornerShape(Radius.lg))
             .background(MaterialTheme.colorScheme.surface)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(Radius.lg))
