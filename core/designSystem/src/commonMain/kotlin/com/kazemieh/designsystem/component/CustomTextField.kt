@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.util.anyToString
 
 @Composable
@@ -44,9 +45,9 @@ fun CustomTextField(
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(size = 6.dp)
+                shape = RoundedCornerShape(size = Radius.button)
             )
-            .clip(RoundedCornerShape(size = 6.dp)),
+            .clip(RoundedCornerShape(size = Radius.button)),
         enabled = enabled,
         value = value,
         onValueChange = onValueChange,
@@ -59,7 +60,7 @@ fun CustomTextField(
             }
         } else null,
         singleLine = !expanded,
-        shape = RoundedCornerShape(size = 6.dp),
+        shape = RoundedCornerShape(size = Radius.button),
         keyboardOptions = keyboardOptions,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,

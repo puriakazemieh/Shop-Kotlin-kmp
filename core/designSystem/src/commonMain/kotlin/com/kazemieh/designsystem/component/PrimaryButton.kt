@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.DrawableResource
@@ -43,7 +44,7 @@ fun PrimaryButton(
         modifier = modifier.fillMaxWidth(),
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(size = 6.dp),
+        shape = RoundedCornerShape(size = Radius.button),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (secondary) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
             contentColor = if (secondary) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,

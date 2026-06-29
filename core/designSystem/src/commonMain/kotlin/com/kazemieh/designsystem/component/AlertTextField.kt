@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.DrawableResource
@@ -37,9 +38,9 @@ fun AlertTextField(
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(size = 6.dp)
+                shape = RoundedCornerShape(size = Radius.button)
             )
-            .clip(RoundedCornerShape(6.dp))
+            .clip(RoundedCornerShape(Radius.button))
             .clickable { onClick() }
             .padding(
                 vertical = 16.dp,
