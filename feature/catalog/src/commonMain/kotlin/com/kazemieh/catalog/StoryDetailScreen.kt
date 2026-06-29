@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -198,6 +199,17 @@ fun StoryItemDisplay(
             )
         }
 
+        // Scrim پایین برای خوانایی متن روی تصویر
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(240.dp)
+                .background(
+                    Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC0B0E18)))
+                )
+        )
+
         // Title and Product Button
         Column(
             modifier = Modifier
@@ -218,9 +230,10 @@ fun StoryItemDisplay(
             story.productId?.let { id ->
                 Button(
                     onClick = { onProductClick(id) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.8f))
+                    shape = RoundedCornerShape(999.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
-                    Text("مشاهده محصول", color = Color.Black)
+                    Text("مشاهده محصول", color = Color(0xFF192038))
                 }
             }
         }
