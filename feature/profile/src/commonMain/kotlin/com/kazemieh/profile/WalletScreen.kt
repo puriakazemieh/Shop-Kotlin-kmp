@@ -310,39 +310,56 @@ fun TransactionsList(state: AppResult<com.kazemieh.domain.admin.AdminPage<Wallet
 
 @Composable
 fun TransactionItem(transaction: WalletTransaction) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, AppTheme.colors.line),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    val colors = AppTheme.colors
+    val isCredit = transaction.amount >= 0
+    val accent = if (isCredit) colors.ok else colors.sale
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(14.dp))
+            .padding(14.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(RoundedCornerShape(11.dp))
+                .background(accent.copy(alpha = 0.12f)),
+            contentAlignment = Alignment.Center
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = transaction.description ?: transaction.type,
-                    fontFamily = AppFont(),
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 2
-                )
-                Text(
-                    text = transaction.createdAt.take(16).replace("T", " "),
-                    fontSize = FontSize.SMALL,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(Resources.String.PriceFormat, transaction.amount),
+                text = if (isCredit) "+" else "−",
                 fontFamily = AppFont(),
                 fontWeight = FontWeight.ExtraBold,
-                color = if (transaction.amount >= 0) AppTheme.colors.ok else AppTheme.colors.sale
+                fontSize = FontSize.MEDIUM,
+                color = accent
             )
         }
+        Spacer(modifier = Modifier.width(13.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = transaction.description ?: transaction.type,
+                fontFamily = AppFont(),
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurface,
+                maxLines = 2
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = transaction.createdAt.take(16).replace("T", " "),
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(Resources.String.PriceFormat, transaction.amount),
+            fontFamily = AppFont(),
+            fontWeight = FontWeight.ExtraBold,
+            color = accent
+        )
     }
 }
 
