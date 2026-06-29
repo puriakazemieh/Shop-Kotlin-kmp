@@ -116,25 +116,9 @@ fun BlogListScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    if (state.featuredBlogs.isNotEmpty()) {
+                    state.featuredBlogs.firstOrNull()?.let { featured ->
                         item {
-                            Text(
-                                text = "مطالب ویژه",
-                                fontFamily = AppFont(),
-                                fontSize = FontSize.MEDIUM,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                contentPadding = PaddingValues(bottom = 8.dp)
-                            ) {
-                                items(state.featuredBlogs) { blog ->
-                                    FeaturedBlogItem(blog = blog, onClick = { navigateToDetail(blog.slug) })
-                                }
-                            }
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                            FeaturedBlogHero(blog = featured, onClick = { navigateToDetail(featured.slug) })
                         }
                     }
 
@@ -147,44 +131,65 @@ fun BlogListScreen(
     }
 }
 
+/** کارتِ هیروی مطلبِ ویژه — مطابق اسپک: کارتِ گرادیانیِ بزرگ با بَجِ «مطلب ویژه». */
 @Composable
-fun FeaturedBlogItem(blog: com.kazemieh.domain.blog.Blog, onClick: () -> Unit) {
+fun FeaturedBlogHero(blog: com.kazemieh.domain.blog.Blog, onClick: () -> Unit) {
     val colors = AppTheme.colors
-    Card(
-        modifier = Modifier.width(280.dp).clickable { onClick() },
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, colors.line),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp)
+            .clip(RoundedCornerShape(22.dp))
+            .background(
+                androidx.compose.ui.graphics.Brush.linearGradient(listOf(colors.primary, colors.accent2))
+            )
+            .clickable { onClick() }
     ) {
-        Column {
+        blog.thumbnailUrl?.let {
+            Image(
+                painter = rememberImagePainter(it),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop
+            )
             Box(
-                modifier = Modifier.fillMaxWidth().height(140.dp).background(colors.surfaceVariant)
-            ) {
-                blog.thumbnailUrl?.let {
-                    Image(
-                        painter = rememberImagePainter(it),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        androidx.compose.ui.graphics.Brush.horizontalGradient(
+                            listOf(Color(0xCC0F1220), Color(0x330F1220))
+                        )
                     )
-                }
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
+            )
+        }
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(
+                text = "مطلب ویژه",
+                modifier = Modifier
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(Color.White.copy(alpha = 0.18f))
+                    .padding(horizontal = 12.dp, vertical = 5.dp),
+                fontFamily = AppFont(),
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(
+                text = blog.title,
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White,
+                maxLines = 3
+            )
+            blog.summary?.let {
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = blog.categoryName ?: blog.category?.name ?: "عمومی",
-                    fontFamily = AppFont(),
-                    fontSize = FontSize.EXTRA_SMALL,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colors.primary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = blog.title,
+                    text = it,
                     fontFamily = AppFont(),
                     fontSize = FontSize.REGULAR,
-                    fontWeight = FontWeight.Bold,
-                    color = colors.onSurface,
+                    color = Color.White.copy(alpha = 0.9f),
                     maxLines = 2
                 )
             }
