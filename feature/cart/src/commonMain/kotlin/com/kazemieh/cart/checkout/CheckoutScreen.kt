@@ -12,25 +12,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,8 +42,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -60,6 +58,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,10 +70,12 @@ fun CheckoutScreen(
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CheckoutViewModel>()
     val state by viewModel.state.collectAsState()
+    val colors = AppTheme.colors
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val uriHandler = LocalUriHandler.current
 
     var showAddressBottomSheet by remember { mutableStateOf(false) }
+    var selectedMethod by remember { mutableStateOf(0) } // 0 = درگاه، 1 = در محل
     val addressAddedSuccessMessage = stringResource(Resources.String.AddressAddedSuccessfully)
 
     LaunchedEffect(Unit) {
@@ -84,115 +85,92 @@ fun CheckoutScreen(
                     showAddressBottomSheet = false
                     messageBarState.addSuccess(addressAddedSuccessMessage)
                 }
-                is CheckoutEffect.NavigateToPaymentCompleted -> {
-                    navigateToPaymentCompleted(effect.success, effect.error)
-                }
-                is CheckoutEffect.OpenZarinpal -> {
-                    uriHandler.openUri(effect.url)
-                }
-                is CheckoutEffect.ShowError -> {
-                    messageBarState.addError(effect.message)
-                }
+                is CheckoutEffect.NavigateToPaymentCompleted -> navigateToPaymentCompleted(effect.success, effect.error)
+                is CheckoutEffect.OpenZarinpal -> uriHandler.openUri(effect.url)
+                is CheckoutEffect.ShowError -> messageBarState.addError(effect.message)
             }
         }
     }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(Resources.String.Checkout),
-                        fontSize = FontSize.LARGE,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                actions = {
-                    Text(
-                        text = stringResource(Resources.String.PriceFormat, totalAmount),
-                        fontSize = FontSize.EXTRA_MEDIUM,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
-                            painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = stringResource(Resources.String.BackArrowDesc),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
-    ) { padding ->
+    val walletUsed = if (state.useWallet) min(state.walletBalance, totalAmount) else 0.0
+    val remaining = (totalAmount - walletUsed).coerceAtLeast(0.0)
+
+    Scaffold(containerColor = colors.background) { padding ->
         ContentWithMessageBar(
-            contentBackgroundColor = MaterialTheme.colorScheme.surface,
-            modifier = Modifier
-                .padding(
-                    top = padding.calculateTopPadding(),
-                    bottom = padding.calculateBottomPadding()
-                ),
+            contentBackgroundColor = colors.background,
+            modifier = Modifier.padding(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding()),
             messageBarState = messageBarState,
             errorMaxLines = 2,
-            errorContainerColor = MaterialTheme.colorScheme.errorContainer,
-            errorContentColor = MaterialTheme.colorScheme.onErrorContainer,
-            successContainerColor = MaterialTheme.colorScheme.primary,
-            successContentColor = MaterialTheme.colorScheme.onPrimary
+            errorContainerColor = colors.error,
+            errorContentColor = colors.onError,
+            successContainerColor = colors.primary,
+            successContentColor = colors.onPrimary
         ) {
-            val scrollState = rememberScrollState()
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 24.dp)
-                        .verticalScroll(scrollState),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp, bottom = 24.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    if (state.addresses.isNotEmpty()) {
+                    // ---- هدر ----
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(Radius.button))
+                                .background(colors.surface)
+                                .border(1.dp, colors.line, RoundedCornerShape(Radius.button))
+                                .clickable { navigateBack() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(20.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                                painter = painterResource(Resources.Icon.BackArrow),
+                                contentDescription = stringResource(Resources.String.BackArrowDesc),
+                                tint = colors.onSurface
+                            )
+                        }
+                        Spacer(Modifier.width(12.dp))
                         Text(
-                            text = stringResource(Resources.String.SelectAddress),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = FontSize.MEDIUM
+                            text = stringResource(Resources.String.Checkout),
+                            fontSize = FontSize.EXTRA_MEDIUM,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.onBackground
                         )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    // ---- نشانگر مراحل ----
+                    StepIndicator()
+
+                    Spacer(Modifier.height(24.dp))
+
+                    // ---- آدرس تحویل ----
+                    SectionTitle("آدرس تحویل")
+                    Spacer(Modifier.height(11.dp))
+                    if (state.addresses.isNotEmpty()) {
                         state.addresses.forEach { address ->
                             AddressItem(
                                 address = address,
                                 isSelected = state.selectedAddressId == address.id,
                                 onClick = { viewModel.handleIntent(CheckoutIntent.SelectAddress(address.id)) }
                             )
+                            Spacer(Modifier.height(10.dp))
                         }
-
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { showAddressBottomSheet = true }
-                                .padding(vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().clickable { showAddressBottomSheet = true }.padding(vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(Icons.Default.Add, null, tint = colors.primary, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(6.dp))
                             Text(
                                 text = stringResource(Resources.String.AddNewAddress),
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Medium
+                                color = colors.primary,
+                                fontSize = FontSize.REGULAR,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     } else if (!state.isLoading) {
@@ -203,13 +181,21 @@ fun CheckoutScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    Spacer(Modifier.height(22.dp))
+
+                    // ---- پرداخت از کیف پول ----
+                    SectionTitle(stringResource(Resources.String.UseWalletBalance))
+                    Spacer(Modifier.height(11.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(Radius.md))
+                            .background(colors.surface)
+                            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+                            .padding(15.dp)
                     ) {
                         Row(
-                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -217,12 +203,14 @@ fun CheckoutScreen(
                                 Text(
                                     text = stringResource(Resources.String.UseWalletBalance),
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = FontSize.MEDIUM
+                                    fontSize = FontSize.REGULAR,
+                                    color = colors.onSurface
                                 )
+                                Spacer(Modifier.height(2.dp))
                                 Text(
                                     text = stringResource(Resources.String.WalletBalance) + ": " + stringResource(Resources.String.PriceFormat, state.walletBalance),
                                     fontSize = FontSize.SMALL,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = colors.onSurfaceVariant
                                 )
                             }
                             Switch(
@@ -230,31 +218,69 @@ fun CheckoutScreen(
                                 onCheckedChange = { viewModel.handleIntent(CheckoutIntent.ToggleUseWallet(it)) }
                             )
                         }
+                        if (state.useWallet) {
+                            Spacer(Modifier.height(14.dp))
+                            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                            Spacer(Modifier.height(12.dp))
+                            SummaryRow("از کیف پول", stringResource(Resources.String.PriceFormat, walletUsed), colors.ok)
+                            Spacer(Modifier.height(7.dp))
+                            SummaryRow("باقی‌مانده از درگاه", stringResource(Resources.String.PriceFormat, remaining), colors.onSurface)
+                        }
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(Modifier.height(22.dp))
+
+                    // ---- شیوه پرداخت ----
+                    SectionTitle("شیوه پرداخت")
+                    Spacer(Modifier.height(11.dp))
+                    PaymentOption(
+                        label = stringResource(Resources.String.PayWithZarinpal),
+                        selected = selectedMethod == 0,
+                        onClick = { selectedMethod = 0 }
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    PaymentOption(
+                        label = stringResource(Resources.String.PayOnDelivery),
+                        selected = selectedMethod == 1,
+                        onClick = { selectedMethod = 1 }
+                    )
+
+                    Spacer(Modifier.height(22.dp))
+
+                    // ---- خلاصه ----
                     Column(
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(Radius.md))
+                            .background(colors.surface)
+                            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+                            .padding(18.dp)
                     ) {
-                        PrimaryButton(
-                            text = stringResource(Resources.String.PayWithZarinpal),
-                            icon = Resources.Image.ZarinpalLogo,
-                            enabled = state.isFormValid,
-                            onClick = {
-                                viewModel.handleIntent(CheckoutIntent.PayWithZarinpal)
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        PrimaryButton(
-                            text = stringResource(Resources.String.PayOnDelivery),
-                            icon = Resources.Icon.ShoppingCart,
-                            secondary = true,
-                            enabled = state.isFormValid,
-                            onClick = {
-                                viewModel.handleIntent(CheckoutIntent.PayOnDelivery)
-                            }
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("قابل پرداخت", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+                            Text(
+                                text = stringResource(Resources.String.PriceFormat, totalAmount),
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.primary
+                            )
+                        }
                     }
+
+                    Spacer(Modifier.height(18.dp))
+
+                    PrimaryButton(
+                        text = "پرداخت و ثبت سفارش",
+                        enabled = state.isFormValid,
+                        onClick = {
+                            if (selectedMethod == 0) viewModel.handleIntent(CheckoutIntent.PayWithZarinpal)
+                            else viewModel.handleIntent(CheckoutIntent.PayOnDelivery)
+                        }
+                    )
                 }
 
                 if (state.isLoading) {
@@ -263,6 +289,7 @@ fun CheckoutScreen(
             }
         }
     }
+
     if (showAddressBottomSheet) {
         AddressBottomSheet(
             onDismiss = { showAddressBottomSheet = false },
@@ -284,49 +311,128 @@ fun CheckoutScreen(
 }
 
 @Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        fontSize = FontSize.REGULAR,
+        fontWeight = FontWeight.Bold,
+        color = AppTheme.colors.onBackground
+    )
+}
+
+@Composable
+private fun SummaryRow(label: String, value: String, valueColor: Color) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+        Text(value, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = valueColor)
+    }
+}
+
+/** نشانگر مراحلِ خرید: آدرس ← پرداخت ← ثبت (مطابق اسپک). */
+@Composable
+private fun StepIndicator() {
+    val colors = AppTheme.colors
+    val steps = listOf("۱" to "آدرس", "۲" to "پرداخت", "۳" to "ثبت")
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        steps.forEachIndexed { index, (num, label) ->
+            val active = index <= 1
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(if (active) colors.primary else colors.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(num, color = if (active) colors.onPrimary else colors.onSurfaceVariant, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR)
+                }
+                Text(label, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
+            }
+            if (index < steps.lastIndex) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(2.dp)
+                        .padding(bottom = 18.dp)
+                        .background(if (index < 1) colors.primary else colors.line)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PaymentOption(label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.button))
+            .background(if (selected) colors.accentSoft else colors.surface)
+            .border(
+                width = if (selected) 1.5.dp else 1.dp,
+                color = if (selected) colors.primary else colors.line,
+                shape = RoundedCornerShape(Radius.button)
+            )
+            .clickable { onClick() }
+            .padding(14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(selected = selected, onClick = onClick)
+        Spacer(Modifier.width(6.dp))
+        Text(label, fontSize = FontSize.REGULAR, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
+    }
+}
+
+@Composable
 fun AddressItem(
     address: Address,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val colors = AppTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(Radius.md))
-            .background(
-                if (isSelected) com.kazemieh.designsystem.AppTheme.colors.accentSoft
-                else MaterialTheme.colorScheme.surface
-            )
+            .background(if (isSelected) colors.accentSoft else colors.surface)
             .border(
                 width = if (isSelected) 1.5.dp else 1.dp,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                color = if (isSelected) colors.primary else colors.line,
                 shape = RoundedCornerShape(Radius.md)
             )
             .clickable { onClick() }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(
-            selected = isSelected,
-            onClick = onClick
-        )
+        RadioButton(selected = isSelected, onClick = onClick)
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(
                 text = address.receiverName,
                 fontWeight = FontWeight.Bold,
-                fontSize = FontSize.MEDIUM,
-                color = MaterialTheme.colorScheme.onSurface
+                fontSize = FontSize.REGULAR,
+                color = colors.onSurface
             )
+            Spacer(Modifier.height(2.dp))
             Text(
                 text = stringResource(Resources.String.CityProvinceFormat, address.province, address.city),
                 fontSize = FontSize.SMALL,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = colors.onSurfaceVariant
             )
             Text(
                 text = address.addressLine1,
                 fontSize = FontSize.SMALL,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = colors.onSurfaceVariant
             )
         }
     }
