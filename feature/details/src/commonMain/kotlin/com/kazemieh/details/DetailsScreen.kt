@@ -23,8 +23,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,6 +62,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import kotlin.math.roundToInt
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
@@ -217,15 +223,20 @@ fun DetailsScreen(
                             }
                             val pagerState =
                                 rememberPagerState(pageCount = { mediaItems.size.coerceAtLeast(1) })
+                            val galleryDiscountPercent = run {
+                                val b = state.selectedVariant?.price ?: product.basePrice ?: 0.0
+                                val d = state.selectedVariant?.discountedPrice ?: product.discountedPrice
+                                if (d != null && b > 0.0) ((1.0 - d / b) * 100).roundToInt() else 0
+                            }
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(300.dp)
-                                    .clip(RoundedCornerShape(size = Radius.md))
+                                    .clip(RoundedCornerShape(size = Radius.lg))
                                     .border(
                                         width = 1.dp,
                                         color = MaterialTheme.colorScheme.outline,
-                                        shape = RoundedCornerShape(size = Radius.md)
+                                        shape = RoundedCornerShape(size = Radius.lg)
                                     )
                             ) {
                                 HorizontalPager(
@@ -264,6 +275,21 @@ fun DetailsScreen(
                                             )
                                         }
                                     }
+                                }
+
+                                if (galleryDiscountPercent > 0) {
+                                    Text(
+                                        text = "$galleryDiscountPercent٪ تخفیف",
+                                        modifier = Modifier
+                                            .align(Alignment.TopEnd)
+                                            .padding(14.dp)
+                                            .clip(RoundedCornerShape(Radius.sm))
+                                            .background(AppTheme.colors.sale)
+                                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                                        color = Color.White,
+                                        fontSize = FontSize.SMALL,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
 
                                 if (mediaItems.size > 1) {
@@ -368,11 +394,41 @@ fun DetailsScreen(
                                 overflow = TextOverflow.Ellipsis
                             )
                             Spacer(modifier = Modifier.height(12.dp))
+                            val ratingValues = state.reviews.mapNotNull { it.rating }
+                            if (ratingValues.isNotEmpty()) {
+                                val avg = (ratingValues.average() * 10).roundToInt() / 10.0
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = null,
+                                        tint = AppTheme.colors.star,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = avg.toString(),
+                                        fontSize = FontSize.REGULAR,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "(${ratingValues.size} نظر)",
+                                        fontSize = FontSize.SMALL,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(12.dp))
+                            }
                             Text(
                                 text = product.description ?: "",
                                 fontSize = FontSize.REGULAR,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            ServiceBadges()
 
                             Spacer(modifier = Modifier.height(24.dp))
 
@@ -715,5 +771,53 @@ fun DetailsScreen(
                 }
             }
         }
+    }
+}
+
+/** سه نشانِ خدماتِ محصول — استاتیک، مطابق اسپک کارمیلا. */
+@Composable
+private fun ServiceBadges(modifier: Modifier = Modifier) {
+    val items = listOf(
+        Icons.Default.VerifiedUser to "ضمانت اصالت",
+        Icons.Default.Autorenew to "۷ روز بازگشت",
+        Icons.Default.LocalShipping to "ارسال سریع"
+    )
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items.forEach { (icon, label) ->
+            ServiceBadgeTile(
+                icon = icon,
+                label = label,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ServiceBadgeTile(icon: ImageVector, label: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(Radius.sm))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(Radius.sm))
+            .padding(vertical = 14.dp, horizontal = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(22.dp)
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = label,
+            fontSize = FontSize.EXTRA_SMALL,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
     }
 }
