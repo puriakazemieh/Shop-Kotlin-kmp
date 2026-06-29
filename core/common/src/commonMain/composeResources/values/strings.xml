@@ -17,6 +17,11 @@
     <string name="newestProducts">Newest Products</string>
     <string name="totalLabel">Total:</string>
     <string name="orderSummary">Order Summary</string>
+    <string name="orderStatusPlaced">Placed</string>
+    <string name="orderStatusProcessing">Processing</string>
+    <string name="orderStatusShipping">Shipping</string>
+    <string name="orderStatusCompleted">Delivered</string>
+    <string name="orderStatusCancelled">Cancelled</string>
     <string name="securePayment">Secure, encrypted payment</string>
     <string name="checkout">Checkout</string>
     <string name="addNewAddress">Add New Address</string>

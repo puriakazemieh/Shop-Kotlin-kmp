@@ -79,6 +79,11 @@ object Resources {
         val NewestProducts = CommonRes.string.newestProducts
         val TotalLabel = CommonRes.string.totalLabel
         val OrderSummary = CommonRes.string.orderSummary
+        val OrderStatusPlaced = CommonRes.string.orderStatusPlaced
+        val OrderStatusProcessing = CommonRes.string.orderStatusProcessing
+        val OrderStatusShipping = CommonRes.string.orderStatusShipping
+        val OrderStatusCompleted = CommonRes.string.orderStatusCompleted
+        val OrderStatusCancelled = CommonRes.string.orderStatusCancelled
         val SecurePayment = CommonRes.string.securePayment
         val Checkout = CommonRes.string.checkout
         val AddNewAddress = CommonRes.string.addNewAddress

@@ -119,8 +119,10 @@ fun OrderCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, AppTheme.colors.line),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -166,14 +168,21 @@ fun UserStatusBadge(status: String) {
         "CANCELLED" -> AppTheme.colors.sale
         else -> MaterialTheme.colorScheme.outline
     }
+    val label = when (status.uppercase()) {
+        "PLACED" -> stringResource(Resources.String.OrderStatusPlaced)
+        "PROCESSING" -> stringResource(Resources.String.OrderStatusProcessing)
+        "SHIPPING" -> stringResource(Resources.String.OrderStatusShipping)
+        "COMPLETED" -> stringResource(Resources.String.OrderStatusCompleted)
+        "CANCELLED" -> stringResource(Resources.String.OrderStatusCancelled)
+        else -> status
+    }
     Surface(
-        color = color.copy(alpha = 0.1f),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, color.copy(alpha = 0.5f))
+        color = color.copy(alpha = 0.12f),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(999.dp)
     ) {
         Text(
-            text = status,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            text = label,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
             fontSize = FontSize.EXTRA_SMALL,
             color = color,
             fontWeight = FontWeight.Bold,
