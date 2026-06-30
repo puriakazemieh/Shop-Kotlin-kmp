@@ -548,128 +548,121 @@ fun AddressItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (address.isDefault) {
-                AppTheme.colors.accentSoft
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        ),
-        border = BorderStroke(
-            if (address.isDefault) 1.5.dp else 1.dp,
-            if (address.isDefault) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                AppTheme.colors.line
-            }
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .background(colors.surface)
+            .border(
+                width = if (address.isDefault) 1.5.dp else 1.dp,
+                color = if (address.isDefault) colors.primary else colors.line,
+                shape = RoundedCornerShape(18.dp)
+            )
+            .padding(17.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = if (address.isDefault) Icons.Default.Star else Icons.Default.LocationOn,
-                        contentDescription = null,
-                        tint = if (address.isDefault) AppTheme.colors.star else MaterialTheme.colorScheme.primary
-                    )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = colors.primary,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(9.dp))
+                Text(
+                    text = address.receiverName,
+                    fontFamily = AppFont(),
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onSurface
+                )
+                if (address.isDefault) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = address.receiverName,
-                        fontFamily = AppFont(),
-                        fontWeight = FontWeight.Bold
+                        text = stringResource(Resources.String.Default),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(7.dp))
+                            .background(colors.accentSoft)
+                            .padding(horizontal = 9.dp, vertical = 3.dp),
+                        fontSize = FontSize.EXTRA_SMALL,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.primary,
+                        fontFamily = AppFont()
                     )
-                    if (address.isDefault) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(999.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                                .padding(horizontal = 8.dp, vertical = 3.dp)
-                        ) {
-                            Text(
-                                text = stringResource(Resources.String.Default),
-                                fontSize = FontSize.EXTRA_SMALL,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontFamily = AppFont()
-                            )
-                        }
-                    }
-                }
-
-                Row {
-                    IconButton(onClick = onEdit) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = stringResource(Resources.String.Edit),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    IconButton(onClick = onDelete) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(Resources.String.Delete),
-                            tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
                 }
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = address.receiverPhone,
-                fontFamily = AppFont(),
-                fontSize = FontSize.MEDIUM,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(
-                    Resources.String.AddressFormat,
-                    address.province,
-                    address.city,
-                    address.addressLine1
-                ),
-                fontFamily = AppFont(),
-                fontSize = FontSize.MEDIUM
-            )
-            address.addressLine2?.let {
-                Text(
-                    text = it,
-                    fontFamily = AppFont(),
-                    fontSize = FontSize.MEDIUM
-                )
-            }
-            address.postalCode?.let {
-                Text(
-                    text = stringResource(Resources.String.PostalCodeLabel, it),
-                    fontFamily = AppFont(),
-                    fontSize = FontSize.MEDIUM,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            if (!address.isDefault) {
-                Spacer(modifier = Modifier.height(12.dp))
-                TextButton(
-                    onClick = onSetDefault,
-                    modifier = Modifier.align(Alignment.End)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.accentSoft)
+                        .clickable { onEdit() },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = stringResource(Resources.String.SetAsDefault),
-                        fontFamily = AppFont(),
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    Icon(Icons.Default.Edit, contentDescription = stringResource(Resources.String.Edit), tint = colors.primary, modifier = Modifier.size(15.dp))
+                }
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.sale.copy(alpha = 0.1f))
+                        .clickable { onDelete() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(Resources.String.Delete), tint = colors.sale, modifier = Modifier.size(15.dp))
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = "${address.receiverName} — ${address.receiverPhone}",
+            fontFamily = AppFont(),
+            fontSize = FontSize.SMALL,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.onSurface
+        )
+        Spacer(modifier = Modifier.height(3.dp))
+        Text(
+            text = "${address.province}، ${address.city}",
+            fontFamily = AppFont(),
+            fontSize = FontSize.SMALL,
+            color = colors.onSurfaceVariant
+        )
+        Text(
+            text = address.addressLine1,
+            fontFamily = AppFont(),
+            fontSize = FontSize.SMALL,
+            color = colors.onSurfaceVariant
+        )
+        address.addressLine2?.let {
+            Text(it, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+        }
+        address.postalCode?.let {
+            Text(
+                text = stringResource(Resources.String.PostalCodeLabel, it),
+                fontFamily = AppFont(),
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant
+            )
+        }
+
+        if (!address.isDefault) {
+            Spacer(modifier = Modifier.height(11.dp))
+            Text(
+                text = stringResource(Resources.String.SetAsDefault),
+                modifier = Modifier.clickable { onSetDefault() },
+                fontFamily = AppFont(),
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.primary
+            )
         }
     }
 }
