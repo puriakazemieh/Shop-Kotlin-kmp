@@ -1,9 +1,14 @@
 package com.kazemieh.admin.products
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
@@ -124,62 +129,6 @@ fun AdminPanelScreen(
                             }
                         },
                         actions = {
-                            IconButton(onClick = navigateToManageOptions) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.VerticalMenu), // Using VerticalMenu icon as a placeholder for Options
-                                    contentDescription = stringResource(Resources.String.Settings),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToManageOrders) {
-                                Icon(
-                                    imageVector = Icons.Default.ShoppingCart,
-                                    contentDescription = stringResource(Resources.String.OrdersIconDesc),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToManageDiscounts) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Dollar), // Using Dollar icon for discounts
-                                    contentDescription = stringResource(Resources.String.CreateDiscount),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToManageWallets) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Person),
-                                    contentDescription = stringResource(Resources.String.ManageWallets),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToManageWithdrawals) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Book),
-                                    contentDescription = stringResource(Resources.String.Withdraw),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToManageStories) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.RightArrow), // Using RightArrow for Stories
-                                    contentDescription = "Stories",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToAdminBlog) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Book),
-                                    contentDescription = stringResource(Resources.String.ManageBlogs),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            IconButton(onClick = navigateToBlog) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Home), // Using Home or something for Public Blog? Maybe not Home.
-                                    contentDescription = stringResource(Resources.String.Blog),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
                             IconButton(onClick = { searchBarVisible = true }) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Search),
@@ -214,10 +163,30 @@ fun AdminPanelScreen(
         }
     ) { padding ->
         val result = state.productsState
+        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+            Text(
+                text = "خوش آمدید، مدیر فروشگاه کارمیلا",
+                fontSize = FontSize.SMALL,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            AdminNavChips(
+                onProducts = {},
+                onVariants = navigateToManageOptions,
+                onOrders = navigateToManageOrders,
+                onDiscounts = navigateToManageDiscounts,
+                onStories = navigateToManageStories,
+                onBlog = navigateToAdminBlog,
+                onWallets = navigateToManageWallets,
+                onWithdrawals = navigateToManageWithdrawals
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(color = com.kazemieh.designsystem.AppTheme.colors.line)
         PullToRefreshBox(
             isRefreshing = state.isRefreshing,
             onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
-            modifier = Modifier.padding(padding).fillMaxSize()
+            modifier = Modifier.weight(1f).fillMaxWidth()
         ) {
             when (result) {
                 is AppResult.Loading -> LoadingCard(modifier = Modifier.fillMaxSize())
@@ -258,5 +227,54 @@ fun AdminPanelScreen(
                 }
             }
         }
+        }
     }
+}
+
+/** نوار چیپ‌های پیمایشِ پنل مدیریت — مطابق اسپک. */
+@Composable
+private fun AdminNavChips(
+    onProducts: () -> Unit,
+    onVariants: () -> Unit,
+    onOrders: () -> Unit,
+    onDiscounts: () -> Unit,
+    onStories: () -> Unit,
+    onBlog: () -> Unit,
+    onWallets: () -> Unit,
+    onWithdrawals: () -> Unit
+) {
+    val colors = com.kazemieh.designsystem.AppTheme.colors
+    androidx.compose.foundation.lazy.LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        item { AdminNavChip("محصولات", selected = true, onClick = onProducts) }
+        item { AdminNavChip("واریانت‌ها", selected = false, onClick = onVariants) }
+        item { AdminNavChip("سفارش‌ها", selected = false, onClick = onOrders) }
+        item { AdminNavChip("کد تخفیف", selected = false, onClick = onDiscounts) }
+        item { AdminNavChip("استوری", selected = false, onClick = onStories) }
+        item { AdminNavChip("بلاگ", selected = false, onClick = onBlog) }
+        item { AdminNavChip("کیف پول‌ها", selected = false, onClick = onWallets) }
+        item { AdminNavChip("برداشت‌ها", selected = false, onClick = onWithdrawals) }
+    }
+}
+
+@Composable
+private fun AdminNavChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = com.kazemieh.designsystem.AppTheme.colors
+    Text(
+        text = label,
+        modifier = Modifier
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+            .then(
+                if (selected) Modifier.background(colors.primary)
+                else Modifier.background(colors.surface).border(1.dp, colors.line, androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 18.dp, vertical = 9.dp),
+        fontSize = FontSize.REGULAR,
+        fontWeight = FontWeight.Bold,
+        color = if (selected) colors.onPrimary else colors.onSurfaceVariant
+    )
 }
