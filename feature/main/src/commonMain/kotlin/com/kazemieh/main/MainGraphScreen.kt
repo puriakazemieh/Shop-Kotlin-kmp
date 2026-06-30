@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kazemieh.cart.CartScreen
+import com.kazemieh.catalog.CategorySearchScreen
 import com.kazemieh.catalog.ProductsOverviewScreen
 import com.kazemieh.common.Screen
 import com.kazemieh.designsystem.AppFont
@@ -79,6 +80,7 @@ fun MainGraphScreen(
             val route = currentRoute.value?.destination?.route.toString()
             when {
                 route.contains(BottomBarDestination.ProductsOverview.screen.toString()) -> BottomBarDestination.ProductsOverview
+                route.contains(BottomBarDestination.Search.screen.toString()) -> BottomBarDestination.Search
                 route.contains(BottomBarDestination.Cart.screen.toString()) -> BottomBarDestination.Cart
                 route.contains(BottomBarDestination.More.screen.toString()) -> BottomBarDestination.More
                 else -> BottomBarDestination.ProductsOverview
@@ -109,9 +111,9 @@ fun MainGraphScreen(
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 when (selectedDestination) {
-                    BottomBarDestination.ProductsOverview -> HomeTopBar(
-                        onSearchClick = { navigateToCategorySearch(0L, "جستجو") }
-                    )
+                    BottomBarDestination.ProductsOverview -> HomeTopBar()
+                    // صفحه‌ی جستجو هدر و فیلدِ جستجوی خودش را دارد
+                    BottomBarDestination.Search -> {}
                     else -> TitleTopBar(title = stringResource(selectedDestination.title))
                 }
             }
@@ -136,6 +138,15 @@ fun MainGraphScreen(
                             ProductsOverviewScreen(
                                 navigateToDetails = navigateToDetails,
                                 navigateToCategorySearch = navigateToCategorySearch,
+                                navigateToAuth = navigateToAuth
+                            )
+                        }
+                        composable<Screen.Search> {
+                            CategorySearchScreen(
+                                categoryId = 0L,
+                                categoryName = "جستجو",
+                                navigateBack = { navController.popBackStack() },
+                                navigateToDetails = navigateToDetails,
                                 navigateToAuth = navigateToAuth
                             )
                         }

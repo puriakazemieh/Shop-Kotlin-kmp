@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
@@ -116,29 +117,39 @@ fun HomeHero(
                 lineHeight = FontSize.MEDIUM
             )
             Spacer(Modifier.height(22.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "مشاهده کالکشن",
                     modifier = Modifier
+                        .weight(1f)
                         .clip(RoundedCornerShape(Radius.button))
                         .background(Color.White)
                         .clickable { onShopClick() }
-                        .padding(horizontal = 24.dp, vertical = 13.dp),
+                        .padding(vertical = 13.dp),
                     color = colors.primary,
                     fontSize = FontSize.REGULAR,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = "پیشنهاد شگفت‌انگیز",
                     modifier = Modifier
+                        .weight(1f)
                         .clip(RoundedCornerShape(Radius.button))
                         .background(Color(0x24FFFFFF))
                         .border(1.dp, Color(0x4DFFFFFF), RoundedCornerShape(Radius.button))
                         .clickable { onDealsClick() }
-                        .padding(horizontal = 22.dp, vertical = 13.dp),
+                        .padding(vertical = 13.dp),
                     color = Color.White,
                     fontSize = FontSize.REGULAR,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center
                 )
             }
         }

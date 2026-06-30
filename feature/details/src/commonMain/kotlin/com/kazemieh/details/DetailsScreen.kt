@@ -67,7 +67,6 @@ import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
-import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -122,6 +121,7 @@ fun DetailsScreen(
     var editQuestion by remember { mutableStateOf<Question?>(null) }
     var newReviewRating by remember { mutableStateOf(5) }
     var newReviewText by remember { mutableStateOf("") }
+    var newQuestionText by remember { mutableStateOf("") }
 
     LaunchedEffect(slug) {
         viewModel.handleIntent(DetailsIntent.LoadProduct(slug))
@@ -411,6 +411,34 @@ fun DetailsScreen(
                             }
                         }
 
+                        // ---- مشخصات / ویژگی‌های محصول ----
+                        val specs: List<Pair<String, String>> = remember(product) {
+                            buildList {
+                                product.categoryName?.takeIf { it.isNotBlank() }
+                                    ?.let { add("دسته‌بندی" to it) }
+                                // گزینه‌های واریانت‌ها (سایز، رنگ، …) را تجمیع می‌کنیم
+                                val optionMap = linkedMapOf<String, LinkedHashSet<String>>()
+                                product.variants.forEach { v ->
+                                    v.options.forEach { (k, value) ->
+                                        if (value.isNotBlank()) {
+                                            optionMap.getOrPut(k) { linkedSetOf() }.add(value)
+                                        }
+                                    }
+                                }
+                                optionMap.forEach { (k, values) ->
+                                    add(k to values.joinToString("، "))
+                                }
+                                val totalAvailable = product.variants.sumOf { it.available }
+                                add("وضعیت موجودی" to if (totalAvailable > 0) "موجود در انبار" else "ناموجود")
+                            }
+                        }
+                        if (specs.isNotEmpty()) {
+                            Spacer(Modifier.height(22.dp))
+                            Text("مشخصات", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+                            Spacer(Modifier.height(10.dp))
+                            ProductSpecsCard(specs = specs)
+                        }
+
                         // ---- دیدگاه خریداران ----
                         Spacer(Modifier.height(28.dp))
                         Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
@@ -475,11 +503,18 @@ fun DetailsScreen(
                             color = colors.onSurface
                         )
                         Spacer(Modifier.height(14.dp))
-                        PrimaryButton(
-                            text = stringResource(Resources.String.AddQuestion),
-                            onClick = { activeParentId = null; showQuestionDialog = true }
+                        // ---- ثبت پرسشِ اینلاین (مثل بخش دیدگاه‌ها) ----
+                        WriteQuestionCard(
+                            text = newQuestionText,
+                            onTextChange = { newQuestionText = it },
+                            onSubmit = {
+                                state.product?.id?.let { pid ->
+                                    viewModel.handleIntent(DetailsIntent.AddQuestion(pid, newQuestionText, null))
+                                    newQuestionText = ""
+                                }
+                            }
                         )
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(16.dp))
                         if (state.questions.isEmpty()) {
                             Text(
                                 stringResource(Resources.String.NoQuestionsYet),
@@ -820,6 +855,93 @@ private fun WriteReviewCard(
         Spacer(Modifier.height(12.dp))
         Text(
             text = "ثبت دیدگاه",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Radius.button))
+                .background(if (text.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = text.isNotBlank()) { onSubmit() }
+                .padding(vertical = 13.dp),
+            textAlign = TextAlign.Center,
+            color = colors.onPrimary,
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+/** کارتِ مشخصاتِ محصول — ردیف‌های کلید/مقدار با خط جداکننده (مطابق اسپک). */
+@Composable
+private fun ProductSpecsCard(specs: List<Pair<String, String>>) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+    ) {
+        specs.forEachIndexed { index, (key, value) ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 13.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(key, fontSize = FontSize.REGULAR, color = colors.onSurfaceVariant)
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    value,
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.onSurface,
+                    textAlign = TextAlign.End
+                )
+            }
+            if (index < specs.lastIndex) {
+                Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+            }
+        }
+    }
+}
+
+/** کارتِ ثبتِ پرسشِ اینلاین — متن + دکمه (هم‌سبک با بخش دیدگاه‌ها، به‌جای دیالوگ). */
+@Composable
+private fun WriteQuestionCard(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSubmit: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+            .padding(16.dp)
+    ) {
+        Text("پرسش خود را بنویسید", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+        Spacer(Modifier.height(11.dp))
+        OutlinedTextField(
+            value = text,
+            onValueChange = onTextChange,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("پرسش خود درباره این محصول را بنویسید…", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+            minLines = 2,
+            shape = RoundedCornerShape(Radius.sm),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = colors.surfaceVariant,
+                unfocusedContainerColor = colors.surfaceVariant,
+                focusedBorderColor = colors.primary,
+                unfocusedBorderColor = colors.line,
+                cursorColor = colors.primary,
+                focusedTextColor = colors.onSurface,
+                unfocusedTextColor = colors.onSurface
+            )
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = "ثبت پرسش",
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(Radius.button))

@@ -15,6 +15,11 @@ enum class BottomBarDestination(
         title = Resources.String.Home,
         screen = Screen.ProductsOverview
     ),
+    Search(
+        icon = Resources.Icon.Search,
+        title = Resources.String.SearchTab,
+        screen = Screen.Search
+    ),
     Cart(
         icon = Resources.Icon.ShoppingCart,
         title = Resources.String.Cart,

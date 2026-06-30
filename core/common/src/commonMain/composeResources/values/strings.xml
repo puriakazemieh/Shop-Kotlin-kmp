@@ -28,6 +28,7 @@
     <string name="saveAddress">Save Address</string>
     <string name="adminPanel">Admin Panel</string>
     <string name="searchHere">Search here</string>
+    <string name="searchTab">Search</string>
     <string name="sortBy">Sort by:</string>
     <string name="sortNewest">Newest</string>
     <string name="sortPriceAsc">Cheapest</string>

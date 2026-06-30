@@ -18,9 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.domain.story.Story
 
@@ -71,11 +71,14 @@ fun StoryCircleItem(story: Story, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxSize()
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = formatDateTime(story.createdAt),
+            text = story.title?.takeIf { it.isNotBlank() } ?: "کارمیلا",
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = colors.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.widthIn(max = 64.dp)
         )
     }
 }

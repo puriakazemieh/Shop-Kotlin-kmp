@@ -42,6 +42,9 @@ sealed class Screen {
     data object Categories : Screen()
 
     @Serializable
+    data object Search : Screen()
+
+    @Serializable
     data object Profile : Screen()
 
     @Serializable
