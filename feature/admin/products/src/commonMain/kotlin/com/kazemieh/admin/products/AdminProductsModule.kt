@@ -9,6 +9,7 @@ import org.koin.dsl.module
 val adminProductsModule = module {
     // Admin Product UseCases
     factory { GetAdminProductsUseCase(get()) }
+    factory { GetAdminStatsUseCase(get()) }
     factory { GetAdminProductDetailUseCase(get()) }
     factory { CreateAdminProductUseCase(get()) }
     factory { UpdateAdminProductUseCase(get()) }
@@ -42,7 +43,8 @@ val adminProductsModule = module {
 
     viewModel {
         AdminPanelViewModel(
-            getAdminProductsUseCase = get()
+            getAdminProductsUseCase = get(),
+            getAdminStatsUseCase = get()
         )
     }
 

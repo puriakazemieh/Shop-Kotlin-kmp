@@ -6,9 +6,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
+import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.domain.admin.AdminStats
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
@@ -183,6 +187,10 @@ fun AdminPanelScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider(color = com.kazemieh.designsystem.AppTheme.colors.line)
+            (state.statsState as? AppResult.Success)?.data?.let { stats ->
+                AdminDashboard(stats = stats)
+                HorizontalDivider(color = com.kazemieh.designsystem.AppTheme.colors.line)
+            }
         PullToRefreshBox(
             isRefreshing = state.isRefreshing,
             onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
@@ -228,6 +236,96 @@ fun AdminPanelScreen(
             }
         }
         }
+    }
+}
+
+/** داشبورد مدیریت — کارت‌های آمار + نمودار فروشِ ۷ روز اخیر (مطابق اسپک). */
+@Composable
+private fun AdminDashboard(stats: AdminStats) {
+    val colors = AppTheme.colors
+    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            item { StatCard("درآمد کل", stringResource(Resources.String.PriceFormat, stats.totalRevenue), "تومان") }
+            item { StatCard("سفارش‌ها", stats.totalOrders.toString(), "عدد") }
+            item { StatCard("محصولات", stats.totalProducts.toString(), "عدد") }
+            item { StatCard("مشتریان", stats.totalCustomers.toString(), "نفر") }
+        }
+        Spacer(Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(colors.surface)
+                .border(1.dp, colors.line, RoundedCornerShape(20.dp))
+                .padding(20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+            ) {
+                Text("نمودار فروش هفتگی", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+                Text("۷ روز اخیر", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+            }
+            Spacer(Modifier.height(16.dp))
+            val maxSale = stats.weeklySales.maxOfOrNull { it.total }?.takeIf { it > 0.0 } ?: 1.0
+            Row(
+                modifier = Modifier.fillMaxWidth().height(140.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = androidx.compose.ui.Alignment.Bottom
+            ) {
+                stats.weeklySales.forEach { day ->
+                    Column(
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        val fraction = (day.total / maxSale).toFloat().coerceIn(0.02f, 1f)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(fraction)
+                                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                                .background(Brush.verticalGradient(listOf(colors.accent2, colors.primary)))
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = day.date.takeLast(2),
+                            fontSize = FontSize.EXTRA_SMALL,
+                            color = colors.onSurfaceVariant,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatCard(label: String, value: String, sub: String) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .width(150.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(18.dp))
+            .padding(18.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(colors.accentSoft),
+            contentAlignment = androidx.compose.ui.Alignment.Center
+        ) {
+            Text(value.take(1), color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+        }
+        Spacer(Modifier.height(14.dp))
+        Text(value, fontSize = FontSize.MEDIUM, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, maxLines = 1)
+        Spacer(Modifier.height(4.dp))
+        Text("$label · $sub", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant, maxLines = 1)
     }
 }
 

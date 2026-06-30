@@ -218,4 +218,15 @@ class AdminRepositoryImpl(
         size: Int
     ): AppResult<AdminPage<AdminInteraction>> =
         dataSource.listQuestions(productId, isNew, page, size).map { it.toAdminPage { dto -> dto.toAdminDomain() } }
+
+    override suspend fun getStats(): AppResult<AdminStats> =
+        dataSource.getStats().map { dto ->
+            AdminStats(
+                totalRevenue = dto.totalRevenue,
+                totalOrders = dto.totalOrders,
+                totalProducts = dto.totalProducts,
+                totalCustomers = dto.totalCustomers,
+                weeklySales = dto.weeklySales.map { DailySales(date = it.date, total = it.total) }
+            )
+        }
 }

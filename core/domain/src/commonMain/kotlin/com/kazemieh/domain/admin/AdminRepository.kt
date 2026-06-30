@@ -97,4 +97,7 @@ interface AdminRepository {
         page: Int = 0,
         size: Int = 20
     ): AppResult<AdminPage<AdminInteraction>>
+
+    // Stats
+    suspend fun getStats(): AppResult<AdminStats>
 }

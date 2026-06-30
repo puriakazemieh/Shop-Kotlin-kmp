@@ -17,7 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AdminPanelViewModel(
-    private val getAdminProductsUseCase: GetAdminProductsUseCase
+    private val getAdminProductsUseCase: GetAdminProductsUseCase,
+    private val getAdminStatsUseCase: GetAdminStatsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminPanelState())
@@ -29,6 +30,7 @@ class AdminPanelViewModel(
     init {
         // Initial load
         loadProducts()
+        loadStats()
 
         _state
             .map { it.searchQuery }
@@ -61,6 +63,14 @@ class AdminPanelViewModel(
             )
             _state.update { it.copy(productsState = result, isRefreshing = false) }
         }
+        loadStats()
+    }
+
+    private fun loadStats() {
+        viewModelScope.launch {
+            _state.update { it.copy(statsState = AppResult.Loading) }
+            _state.update { it.copy(statsState = getAdminStatsUseCase()) }
+        }
     }
 
     private fun loadProducts(query: String? = null) {
@@ -74,6 +84,7 @@ class AdminPanelViewModel(
 
 data class AdminPanelState(
     val productsState: AppResult<AdminPage<AdminProduct>> = AppResult.Loading,
+    val statsState: AppResult<AdminStats> = AppResult.Loading,
     val searchQuery: String = "",
     val isRefreshing: Boolean = false
 )

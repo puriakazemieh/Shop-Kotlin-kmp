@@ -88,4 +88,7 @@ interface AdminApi {
     suspend fun adjustWalletBalance(request: AdminWalletAdjustRequest)
     suspend fun listWithdrawals(status: String?): List<AdminWithdrawalResponse>
     suspend fun processWithdrawal(id: Long, request: AdminProcessWithdrawalRequest)
+
+    // ---------- Stats ----------
+    suspend fun getStats(): AdminStatsResponse
 }

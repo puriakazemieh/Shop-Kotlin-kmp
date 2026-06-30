@@ -77,4 +77,7 @@ interface AdminDataSource {
         page: Int,
         size: Int
     ): AppResult<PageResponse<AdminInteractionResponse>>
+
+    // Stats
+    suspend fun getStats(): AppResult<AdminStatsResponse>
 }

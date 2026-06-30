@@ -325,4 +325,8 @@ class AdminApiImpl(
             setBody(request)
         }
     }
+
+    override suspend fun getStats(): AdminStatsResponse = safeApiCallRaw {
+        client.get("api/admin/stats")
+    }
 }

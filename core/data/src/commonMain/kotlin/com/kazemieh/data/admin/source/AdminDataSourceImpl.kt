@@ -176,4 +176,8 @@ class AdminDataSourceImpl(
     ): AppResult<PageResponse<AdminInteractionResponse>> = safeApiCall {
         api.listQuestions(productId, isNew, page, size)
     }
+
+    override suspend fun getStats(): AppResult<AdminStatsResponse> = safeApiCall {
+        api.getStats()
+    }
 }
