@@ -1,17 +1,22 @@
 package com.kazemieh.admin.wallet
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
@@ -122,62 +127,109 @@ fun AdminWithdrawalsScreen(
 
 @Composable
 fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    val colors = AppTheme.colors
+    val statusUpper = withdrawal.status.uppercase()
+    val statusColor = when (statusUpper) {
+        "PAID" -> colors.ok
+        "REJECTED" -> colors.sale
+        else -> colors.gold
+    }
+    val statusLabel = when (statusUpper) {
+        "PAID" -> "پرداخت‌شده"
+        "REJECTED" -> "ردشده"
+        else -> "در انتظار"
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = withdrawal.userFullName ?: withdrawal.userEmail ?: stringResource(Resources.String.UserIdLabelFormat, withdrawal.userId),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = AppFont(),
+                    color = colors.onSurface
+                )
+                if (withdrawal.userFullName != null && withdrawal.userEmail != null) {
+                    Spacer(modifier = Modifier.height(3.dp))
                     Text(
-                        text = withdrawal.userFullName ?: withdrawal.userEmail ?: stringResource(Resources.String.UserIdLabelFormat, withdrawal.userId),
-                        fontWeight = FontWeight.Bold,
+                        text = withdrawal.userEmail!!,
+                        fontSize = FontSize.EXTRA_SMALL,
+                        color = colors.onSurfaceVariant,
                         fontFamily = AppFont()
                     )
-                    if (withdrawal.userFullName != null && withdrawal.userEmail != null) {
-                        Text(
-                            text = withdrawal.userEmail!!,
-                            fontSize = FontSize.EXTRA_SMALL,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontFamily = AppFont()
-                        )
-                    }
                 }
-                Text(
-                    text = withdrawal.status,
-                    color = AppTheme.colors.star,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = FontSize.EXTRA_SMALL,
-                    fontFamily = AppFont()
-                )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${stringResource(Resources.String.Iban)}: ${withdrawal.iban}",
-                fontSize = FontSize.SMALL,
+                text = statusLabel,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(statusColor)
+                    .padding(horizontal = 11.dp, vertical = 4.dp),
+                fontSize = FontSize.EXTRA_SMALL,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
                 fontFamily = AppFont()
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = withdrawal.createdAt.take(16).replace("T", " "),
-                    fontSize = FontSize.EXTRA_SMALL,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = AppFont()
-                )
-                Text(
-                    text = stringResource(Resources.String.PriceFormat, withdrawal.amount),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = AppFont()
-                )
-            }
+        }
+        Spacer(modifier = Modifier.height(11.dp))
+        Text(
+            text = withdrawal.iban,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(colors.surfaceVariant)
+                .padding(horizontal = 12.dp, vertical = 9.dp),
+            fontSize = FontSize.SMALL,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.onSurfaceVariant,
+            fontFamily = AppFont()
+        )
+        Spacer(modifier = Modifier.height(11.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = withdrawal.createdAt.take(16).replace("T", " "),
+                fontSize = FontSize.EXTRA_SMALL,
+                color = colors.onSurfaceVariant,
+                fontFamily = AppFont()
+            )
+            Text(
+                text = stringResource(Resources.String.PriceFormat, withdrawal.amount),
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = FontSize.EXTRA_REGULAR,
+                color = colors.onSurface,
+                fontFamily = AppFont()
+            )
+        }
+        if (statusUpper == "PENDING") {
+            Spacer(modifier = Modifier.height(13.dp))
+            Text(
+                text = "بررسی و پردازش درخواست",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.primary)
+                    .clickable { onClick() }
+                    .padding(vertical = 12.dp),
+                textAlign = TextAlign.Center,
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.Bold,
+                color = colors.onPrimary,
+                fontFamily = AppFont()
+            )
         }
     }
 }
