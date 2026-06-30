@@ -8,9 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,7 +27,6 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.admin.AdminOption
-import com.kazemieh.domain.admin.AdminOptionValue
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -45,10 +43,7 @@ fun ManageOptionsScreen(
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    var showAddTypeDialog by remember { mutableStateOf(false) }
-    var typeToEdit by remember { mutableStateOf<AdminOption?>(null) }
-    var valueToEdit by remember { mutableStateOf<Pair<Long, AdminOptionValue>?>(null) } // typeId to value
-    var showAddValueDialogForType by remember { mutableStateOf<Long?>(null) }
+    var newTypeName by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -61,15 +56,6 @@ fun ManageOptionsScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
-        floatingActionButton = {
-            if (embedded) {
-                FloatingActionButton(
-                    onClick = { showAddTypeDialog = true },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) { Icon(Icons.Default.Add, contentDescription = null) }
-            }
-        },
         topBar = {
             if (!embedded) TopAppBar(
                 title = {
@@ -85,15 +71,6 @@ fun ManageOptionsScreen(
                             modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = stringResource(Resources.String.BackDesc),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { showAddTypeDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -114,17 +91,45 @@ fun ManageOptionsScreen(
             if (state.isLoading) {
                 LoadingCard(modifier = Modifier.fillMaxSize())
             } else {
+                val colors = AppTheme.colors
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
+                    item {
+                        Text(
+                            text = "مدیریت ویژگی‌ها و واریانت‌ها",
+                            fontSize = FontSize.EXTRA_REGULAR,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.onSurface
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = "ویژگی‌هایی مثل رنگ، سایز و جنس و مقدارهایشان را اینجا تعریف کنید؛ این مقادیر هنگام ساخت واریانت برای هر محصول در دسترس قرار می‌گیرند.",
+                            fontSize = FontSize.SMALL,
+                            color = colors.onSurfaceVariant,
+                            lineHeight = FontSize.EXTRA_MEDIUM
+                        )
+                        Spacer(Modifier.height(14.dp))
+                        // ردیفِ افزودنِ ویژگیِ جدید (inline)
+                        InlineAddRow(
+                            value = newTypeName,
+                            onValueChange = { newTypeName = it },
+                            placeholder = "نام ویژگی جدید (مثلاً طرح)",
+                            buttonLabel = "افزودن ویژگی",
+                            onSubmit = {
+                                if (newTypeName.isNotBlank()) {
+                                    viewModel.handleIntent(ManageOptionsIntent.CreateOptionType(newTypeName.trim()))
+                                    newTypeName = ""
+                                }
+                            }
+                        )
+                    }
                     items(state.options) { option ->
                         OptionTypeItem(
                             option = option,
-                            onEditType = { typeToEdit = option },
                             onDeleteType = { viewModel.handleIntent(ManageOptionsIntent.DeleteOptionType(option.id)) },
-                            onAddValue = { showAddValueDialogForType = option.id },
-                            onEditValue = { value -> valueToEdit = option.id to value },
+                            onAddValue = { value -> viewModel.handleIntent(ManageOptionsIntent.CreateOptionValue(option.id, value)) },
                             onDeleteValue = { valueId -> viewModel.handleIntent(ManageOptionsIntent.DeleteOptionValue(valueId)) }
                         )
                     }
@@ -132,64 +137,17 @@ fun ManageOptionsScreen(
             }
         }
     }
-
-    if (showAddTypeDialog) {
-        OptionNameDialog(
-            title = stringResource(Resources.String.AddOptionType),
-            onDismiss = { showAddTypeDialog = false },
-            onConfirm = { name ->
-                viewModel.handleIntent(ManageOptionsIntent.CreateOptionType(name))
-                showAddTypeDialog = false
-            }
-        )
-    }
-
-    typeToEdit?.let { type ->
-        OptionNameDialog(
-            title = stringResource(Resources.String.EditOptionType),
-            initialValue = type.name,
-            onDismiss = { typeToEdit = null },
-            onConfirm = { name ->
-                viewModel.handleIntent(ManageOptionsIntent.UpdateOptionType(type.id, name))
-                typeToEdit = null
-            }
-        )
-    }
-
-    showAddValueDialogForType?.let { typeId ->
-        OptionNameDialog(
-            title = stringResource(Resources.String.AddOptionValue),
-            onDismiss = { showAddValueDialogForType = null },
-            onConfirm = { value ->
-                viewModel.handleIntent(ManageOptionsIntent.CreateOptionValue(typeId, value))
-                showAddValueDialogForType = null
-            }
-        )
-    }
-
-    valueToEdit?.let { (typeId, value) ->
-        OptionNameDialog(
-            title = stringResource(Resources.String.EditOptionValue),
-            initialValue = value.value,
-            onDismiss = { valueToEdit = null },
-            onConfirm = { newValue ->
-                viewModel.handleIntent(ManageOptionsIntent.UpdateOptionValue(value.id, typeId, newValue))
-                valueToEdit = null
-            }
-        )
-    }
 }
 
 @Composable
 fun OptionTypeItem(
     option: AdminOption,
-    onEditType: () -> Unit,
     onDeleteType: () -> Unit,
-    onAddValue: () -> Unit,
-    onEditValue: (AdminOptionValue) -> Unit,
+    onAddValue: (String) -> Unit,
     onDeleteValue: (Long) -> Unit
 ) {
     val colors = AppTheme.colors
+    var valInput by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -217,9 +175,6 @@ fun OptionTypeItem(
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(text = "${option.values.size} مقدار", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
             }
-            IconButton(onClick = onEditType) {
-                Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp), tint = colors.onSurfaceVariant)
-            }
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -231,78 +186,92 @@ fun OptionTypeItem(
                 Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale)
             }
         }
-        Spacer(modifier = Modifier.height(13.dp))
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            option.values.forEach { value ->
-                Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(colors.surfaceVariant)
-                        .border(1.dp, colors.line, RoundedCornerShape(10.dp))
-                        .clickable { onEditValue(value) }
-                        .padding(horizontal = 11.dp, vertical = 7.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(value.value, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        modifier = Modifier.size(13.dp).clickable { onDeleteValue(value.id) },
-                        tint = colors.onSurfaceVariant
-                    )
+        if (option.values.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(13.dp))
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                option.values.forEach { value ->
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(colors.surfaceVariant)
+                            .border(1.dp, colors.line, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 11.dp, vertical = 7.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(value.value, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            modifier = Modifier.size(13.dp).clickable { onDeleteValue(value.id) },
+                            tint = colors.onSurfaceVariant
+                        )
+                    }
                 }
             }
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(colors.accentSoft)
-                    .clickable { onAddValue() }
-                    .padding(horizontal = 11.dp, vertical = 7.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp), tint = colors.primary)
-            }
         }
+        Spacer(modifier = Modifier.height(13.dp))
+        InlineAddRow(
+            value = valInput,
+            onValueChange = { valInput = it },
+            placeholder = "افزودن مقدار جدید",
+            buttonLabel = "افزودن",
+            onSubmit = {
+                if (valInput.isNotBlank()) {
+                    onAddValue(valInput.trim())
+                    valInput = ""
+                }
+            }
+        )
     }
 }
 
+/** ردیفِ افزودنِ اینلاین: فیلد + دکمه (مطابق اسپک). */
 @Composable
-fun OptionNameDialog(
-    title: String,
-    initialValue: String = "",
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+private fun InlineAddRow(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    buttonLabel: String,
+    onSubmit: () -> Unit
 ) {
-    var name by remember { mutableStateOf(initialValue) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
-        title = { Text(title) },
-        text = {
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text(stringResource(Resources.String.Name)) },
-                modifier = Modifier.fillMaxWidth()
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.weight(1f),
+            placeholder = { Text(placeholder, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = colors.surfaceVariant,
+                unfocusedContainerColor = colors.surfaceVariant,
+                focusedBorderColor = colors.primary,
+                unfocusedBorderColor = colors.line,
+                cursorColor = colors.primary,
+                focusedTextColor = colors.onSurface,
+                unfocusedTextColor = colors.onSurface
             )
-        },
-        confirmButton = {
-            Button(
-                enabled = name.isNotBlank(),
-                onClick = { onConfirm(name) }
-            ) {
-                Text(stringResource(Resources.String.Confirm))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(Resources.String.Cancel))
-            }
+        )
+        Box(
+            modifier = Modifier
+                .height(56.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(if (value.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = value.isNotBlank()) { onSubmit() }
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(buttonLabel, color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, maxLines = 1)
         }
-    )
+    }
 }

@@ -315,75 +315,120 @@ fun OrderDetailDialog(
                     )
                     is AppResult.Success -> {
                         val order = result.data
+                        val colors = AppTheme.colors
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            Text(stringResource(Resources.String.CustomerInformation), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            Text(stringResource(Resources.String.EmailLabelFormat, order.userEmail), fontFamily = AppFont())
-                            Text(stringResource(Resources.String.UserIdLabelFormat, order.userId), fontFamily = AppFont())
-                            
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(stringResource(Resources.String.ShippingAddress), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            Text(order.addressSnapshot.receiverName, fontFamily = AppFont())
-                            Text(order.addressSnapshot.receiverPhone, fontFamily = AppFont())
-                            Text(stringResource(Resources.String.CityProvinceFormat, order.addressSnapshot.province, order.addressSnapshot.city), fontFamily = AppFont())
-                            Text(order.addressSnapshot.addressLine1, fontFamily = AppFont())
-                            order.addressSnapshot.addressLine2?.let { Text(it, fontFamily = AppFont()) }
-                            
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(stringResource(Resources.String.ItemsLabel), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                            order.items.forEach { item ->
-                                Row(
-                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(item.titleSnapshot, fontWeight = FontWeight.Medium, fontFamily = AppFont())
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(Resources.String.OrderIdPrefix, order.id),
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = FontSize.REGULAR,
+                                    color = colors.onSurface,
+                                    fontFamily = AppFont()
+                                )
+                                StatusBadge(status = order.status)
+                            }
+                            Spacer(Modifier.height(16.dp))
+
+                            OrderCard(title = stringResource(Resources.String.CustomerInformation)) {
+                                OrderLine(stringResource(Resources.String.EmailLabelFormat, order.userEmail))
+                                OrderLine(stringResource(Resources.String.UserIdLabelFormat, order.userId))
+                            }
+                            Spacer(Modifier.height(14.dp))
+
+                            OrderCard(title = stringResource(Resources.String.ShippingAddress)) {
+                                Text(
+                                    text = "${order.addressSnapshot.receiverName} — ${order.addressSnapshot.receiverPhone}",
+                                    fontFamily = AppFont(),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = FontSize.SMALL,
+                                    color = colors.onSurface
+                                )
+                                Spacer(Modifier.height(3.dp))
+                                OrderLine(stringResource(Resources.String.CityProvinceFormat, order.addressSnapshot.province, order.addressSnapshot.city))
+                                OrderLine(order.addressSnapshot.addressLine1)
+                                order.addressSnapshot.addressLine2?.let { OrderLine(it) }
+                            }
+                            Spacer(Modifier.height(14.dp))
+
+                            OrderCard(title = stringResource(Resources.String.ItemsLabel)) {
+                                order.items.forEach { item ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.Top
+                                    ) {
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(item.titleSnapshot, fontWeight = FontWeight.SemiBold, fontSize = FontSize.SMALL, color = colors.onSurface, fontFamily = AppFont())
+                                            if (item.optionsSnapshot.isNotEmpty()) {
+                                                Spacer(Modifier.height(2.dp))
+                                                Text(
+                                                    text = item.optionsSnapshot.entries.joinToString("، ") { "${it.key}: ${it.value}" },
+                                                    fontSize = FontSize.EXTRA_SMALL,
+                                                    color = colors.onSurfaceVariant,
+                                                    fontFamily = AppFont()
+                                                )
+                                            }
+                                        }
+                                        Spacer(Modifier.width(8.dp))
                                         Text(
-                                            text = item.optionsSnapshot.entries.joinToString(", ") { "${it.key}: ${it.value}" },
+                                            text = stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, item.unitPriceSnapshot)),
                                             fontSize = FontSize.SMALL,
+                                            color = colors.onSurface,
                                             fontFamily = AppFont()
                                         )
                                     }
-                                    Text(stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, item.unitPriceSnapshot)), fontFamily = AppFont())
                                 }
+                                Spacer(Modifier.height(8.dp))
+                                Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                                Spacer(Modifier.height(10.dp))
+                                OrderSummaryRow(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, order.subtotalPrice), colors.onSurface)
+                                Spacer(Modifier.height(7.dp))
+                                OrderSummaryRow(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, order.shippingPrice), colors.onSurface)
+                                Spacer(Modifier.height(7.dp))
+                                OrderSummaryRow(stringResource(Resources.String.TotalLabelSimple), stringResource(Resources.String.PriceFormat, order.totalPrice), colors.primary, bold = true)
                             }
-                            
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(stringResource(Resources.String.SubtotalLabel), fontFamily = AppFont())
-                                Text(stringResource(Resources.String.PriceFormat, order.subtotalPrice), fontFamily = AppFont())
-                            }
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(stringResource(Resources.String.ShippingLabel), fontFamily = AppFont())
-                                Text(stringResource(Resources.String.PriceFormat, order.shippingPrice), fontFamily = AppFont())
-                            }
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(stringResource(Resources.String.TotalLabelSimple), fontWeight = FontWeight.Bold, fontFamily = AppFont())
-                                Text(stringResource(Resources.String.PriceFormat, order.totalPrice), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontFamily = AppFont())
-                            }
+                            Spacer(Modifier.height(18.dp))
 
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Text(stringResource(Resources.String.UpdateStatus), fontWeight = FontWeight.Bold, fontFamily = AppFont())
+                            Text(
+                                text = stringResource(Resources.String.UpdateStatus),
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = FontSize.REGULAR,
+                                color = colors.onSurface,
+                                fontFamily = AppFont()
+                            )
+                            Spacer(Modifier.height(12.dp))
                             val statuses = listOf("PLACED", "PROCESSING", "SHIPPING", "COMPLETED", "CANCELLED")
                             FlowRow(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 statuses.forEach { status ->
-                                    Button(
-                                        onClick = { onUpdateStatus(status) },
-                                        enabled = !state.isUpdatingStatus && order.status != status,
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = if (order.status == status) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                                        ),
-                                        modifier = Modifier.padding(vertical = 4.dp)
-                                    ) {
-                                        Text(status, fontSize = FontSize.EXTRA_SMALL, fontFamily = AppFont())
-                                    }
+                                    val isCurrent = order.status.equals(status, ignoreCase = true)
+                                    Text(
+                                        text = statusLabel(status),
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(11.dp))
+                                            .then(
+                                                if (isCurrent) Modifier.background(colors.primary)
+                                                else Modifier.background(colors.surfaceVariant).border(1.dp, colors.line, RoundedCornerShape(11.dp))
+                                            )
+                                            .clickable(enabled = !state.isUpdatingStatus && !isCurrent) { onUpdateStatus(status) }
+                                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                                        fontSize = FontSize.SMALL,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isCurrent) colors.onPrimary else colors.onSurfaceVariant,
+                                        fontFamily = AppFont()
+                                    )
                                 }
                             }
                         }
@@ -393,4 +438,59 @@ fun OrderDetailDialog(
             }
         }
     }
+}
+
+/** کارتِ بخشِ جزئیات سفارش — عنوان + محتوای کارتِ سفید با حاشیه. */
+@Composable
+private fun OrderCard(title: String, content: @Composable () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        text = title,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = FontSize.REGULAR,
+        color = colors.onSurface,
+        fontFamily = AppFont(),
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(16.dp)
+    ) { content() }
+}
+
+@Composable
+private fun OrderLine(text: String) {
+    Text(
+        text = text,
+        fontFamily = AppFont(),
+        fontSize = FontSize.SMALL,
+        color = AppTheme.colors.onSurfaceVariant,
+        modifier = Modifier.padding(vertical = 1.dp)
+    )
+}
+
+@Composable
+private fun OrderSummaryRow(label: String, value: String, valueColor: Color, bold: Boolean = false) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(label, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant, fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
+        Text(value, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = valueColor, fontWeight = if (bold) FontWeight.ExtraBold else FontWeight.SemiBold)
+    }
+}
+
+@Composable
+private fun statusLabel(status: String): String = when (status.uppercase()) {
+    "PLACED" -> stringResource(Resources.String.OrderStatusPlaced)
+    "PROCESSING" -> stringResource(Resources.String.OrderStatusProcessing)
+    "SHIPPING" -> stringResource(Resources.String.OrderStatusShipping)
+    "COMPLETED" -> stringResource(Resources.String.OrderStatusCompleted)
+    "CANCELLED" -> stringResource(Resources.String.OrderStatusCancelled)
+    else -> status
 }

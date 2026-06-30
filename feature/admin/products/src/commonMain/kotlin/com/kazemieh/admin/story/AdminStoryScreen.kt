@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -109,41 +112,58 @@ fun AdminStoryScreen(
                     }
                 }
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { mediaPicker.open() }) {
-                Icon(painterResource(Resources.Icon.Plus), contentDescription = null)
-            }
         }
     ) { padding ->
-        ContentWithMessageBar(
-            modifier = Modifier.padding(padding),
-            messageBarState = messageBarState
-        ) {
-            PullToRefreshBox(
-                isRefreshing = state.isLoading,
-                onRefresh = { viewModel.handleIntent(AdminStoryIntent.Refresh) }
+        val colors = AppTheme.colors
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            // هدر: عنوان + دکمه‌ی افزودنِ استوری (مطابق اسپک)
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (state.stories.isEmpty() && !state.isLoading) {
-                    InfoCard(
-                        image = Resources.Image.Cat,
-                        title = stringResource(Resources.String.Oops),
-                        subtitle = stringResource(Resources.String.NothingHere)
-                    )
-                } else {
-                    FlowRow(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        state.stories.forEach { story ->
-                            AdminStoryCircle(
-                                story = story,
-                                onDelete = { viewModel.handleIntent(AdminStoryIntent.DeleteStory(story.id)) }
-                            )
+                Text(
+                    text = "استوری‌های فعال",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = FontSize.EXTRA_REGULAR,
+                    color = colors.onSurface
+                )
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(colors.primary)
+                        .clickable { mediaPicker.open() }
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(painterResource(Resources.Icon.Plus), contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
+                    Text("استوری جدید", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                }
+            }
+            ContentWithMessageBar(messageBarState = messageBarState) {
+                PullToRefreshBox(
+                    isRefreshing = state.isLoading,
+                    onRefresh = { viewModel.handleIntent(AdminStoryIntent.Refresh) }
+                ) {
+                    if (state.stories.isEmpty() && !state.isLoading) {
+                        InfoCard(
+                            image = Resources.Image.Cat,
+                            title = stringResource(Resources.String.Oops),
+                            subtitle = stringResource(Resources.String.NothingHere)
+                        )
+                    } else {
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(state.stories) { story ->
+                                AdminStoryCircle(
+                                    story = story,
+                                    onDelete = { viewModel.handleIntent(AdminStoryIntent.DeleteStory(story.id)) }
+                                )
+                            }
                         }
                     }
                 }
