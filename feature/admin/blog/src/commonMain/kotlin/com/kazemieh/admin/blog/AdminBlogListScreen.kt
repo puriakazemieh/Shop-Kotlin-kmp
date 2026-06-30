@@ -1,8 +1,13 @@
 package com.kazemieh.admin.blog
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -10,11 +15,19 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.FontSize
 import com.kazemieh.domain.blog.Blog
 import com.kazemieh.domain.blog.BlogCategory
 import com.kazemieh.designsystem.component.LoadingCard
+import com.seiko.imageloader.rememberImagePainter
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,47 +94,78 @@ private fun ArticlesList(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(blogs) { blog ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(text = blog.title, style = MaterialTheme.typography.titleMedium)
-                        SuggestionChip(
-                            onClick = {},
-                            label = { Text(blog.status ?: "PUBLISHED") }
+            val colors = AppTheme.colors
+            val published = (blog.status ?: "PUBLISHED").uppercase() == "PUBLISHED"
+            val statusColor = if (published) colors.ok else colors.star
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.surface)
+                    .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 54.dp, height = 40.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.surfaceVariant)
+                        .clickable { navigateToManageBlog(blog.id, blog.slug) }
+                ) {
+                    blog.thumbnailUrl?.let {
+                        Image(
+                            painter = rememberImagePainter(it),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
                         )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Text(
-                            text = "بازدید: ${blog.viewCount}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        blog.category?.let {
-                            Text(
-                                text = "دسته: ${it.name}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        IconButton(onClick = { navigateToManageBlog(blog.id, blog.slug) }) {
-                            Icon(Icons.Default.Edit, contentDescription = null)
-                        }
-                        IconButton(onClick = { viewModel.handleIntent(AdminBlogListIntent.DeleteBlog(blog.id)) }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
                     }
                 }
+                Spacer(modifier = Modifier.width(11.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = blog.title,
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    blog.category?.let {
+                        Spacer(modifier = Modifier.height(3.dp))
+                        Text(text = it.name, fontSize = FontSize.EXTRA_SMALL, color = colors.primary)
+                    }
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = if (published) "منتشرشده" else "پیش‌نویس",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(statusColor.copy(alpha = 0.12f))
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                    fontSize = FontSize.EXTRA_SMALL,
+                    fontWeight = FontWeight.Bold,
+                    color = statusColor
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.accentSoft)
+                        .clickable { navigateToManageBlog(blog.id, blog.slug) },
+                    contentAlignment = Alignment.Center
+                ) { Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.primary) }
+                Spacer(modifier = Modifier.width(6.dp))
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.sale.copy(alpha = 0.1f))
+                        .clickable { viewModel.handleIntent(AdminBlogListIntent.DeleteBlog(blog.id)) },
+                    contentAlignment = Alignment.Center
+                ) { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale) }
             }
         }
     }
@@ -138,28 +182,38 @@ private fun CategoriesList(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(categories) { category ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(text = category.name, style = MaterialTheme.typography.titleMedium)
-                        Text(text = "مقالات: ${category.blogCount}", style = MaterialTheme.typography.bodySmall)
-                    }
-                    Row {
-                        IconButton(onClick = { navigateToManageCategory(category.id) }) {
-                            Icon(Icons.Default.Edit, contentDescription = null)
-                        }
-                        IconButton(onClick = { viewModel.handleIntent(AdminBlogListIntent.DeleteCategory(category.id)) }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    }
+            val colors = AppTheme.colors
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(colors.surface)
+                    .border(1.dp, colors.line, RoundedCornerShape(14.dp))
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = category.name, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Text(text = "${category.blogCount} مقاله", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
                 }
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.accentSoft)
+                        .clickable { navigateToManageCategory(category.id) },
+                    contentAlignment = Alignment.Center
+                ) { Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.primary) }
+                Spacer(modifier = Modifier.width(6.dp))
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(colors.sale.copy(alpha = 0.1f))
+                        .clickable { viewModel.handleIntent(AdminBlogListIntent.DeleteCategory(category.id)) },
+                    contentAlignment = Alignment.Center
+                ) { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale) }
             }
         }
     }
