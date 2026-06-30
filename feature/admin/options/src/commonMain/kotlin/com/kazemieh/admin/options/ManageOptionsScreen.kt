@@ -1,10 +1,12 @@
 package com.kazemieh.admin.options
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -19,6 +21,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.LoadingCard
@@ -176,58 +179,83 @@ fun OptionTypeItem(
     onEditValue: (AdminOptionValue) -> Unit,
     onDeleteValue: (Long) -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(18.dp))
+            .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(11.dp))
+                    .background(colors.accentSoft),
+                contentAlignment = Alignment.Center
             ) {
-                Text(text = option.name, fontWeight = FontWeight.Bold, fontSize = FontSize.MEDIUM)
-                Row {
-                    IconButton(onClick = onEditType) {
-                        Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(20.dp))
-                    }
-                    IconButton(onClick = onDeleteType) {
-                        Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.error)
-                    }
+                Text(option.name.take(1).uppercase(), fontWeight = FontWeight.ExtraBold, color = colors.primary, fontSize = FontSize.REGULAR)
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = option.name, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.REGULAR, color = colors.onSurface)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(text = "${option.values.size} مقدار", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            }
+            IconButton(onClick = onEditType) {
+                Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp), tint = colors.onSurfaceVariant)
+            }
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(9.dp))
+                    .background(colors.sale.copy(alpha = 0.1f))
+                    .clickable { onDeleteType() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale)
+            }
+        }
+        Spacer(modifier = Modifier.height(13.dp))
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            option.values.forEach { value ->
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.surfaceVariant)
+                        .border(1.dp, colors.line, RoundedCornerShape(10.dp))
+                        .clickable { onEditValue(value) }
+                        .padding(horizontal = 11.dp, vertical = 7.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(value.value, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        modifier = Modifier.size(13.dp).clickable { onDeleteValue(value.id) },
+                        tint = colors.onSurfaceVariant
+                    )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.accentSoft)
+                    .clickable { onAddValue() }
+                    .padding(horizontal = 11.dp, vertical = 7.dp),
+                contentAlignment = Alignment.Center
             ) {
-                option.values.forEach { value ->
-                    Surface(
-                        modifier = Modifier.clip(MaterialTheme.shapes.small).clickable { onEditValue(value) },
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text(value.value, fontSize = FontSize.SMALL)
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp).clickable { onDeleteValue(value.id) },
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    }
-                }
-                IconButton(onClick = onAddValue) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                }
+                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp), tint = colors.primary)
             }
         }
     }
