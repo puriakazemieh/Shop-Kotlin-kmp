@@ -84,6 +84,10 @@ class BlogRepositoryImpl(
         is BlogBlock.Header -> BlogBlockDto("header", text, level)
         is BlogBlock.Paragraph -> BlogBlockDto("paragraph", text)
         is BlogBlock.Image -> BlogBlockDto("image", url)
+        is BlogBlock.Button -> BlogBlockDto("button", text, url = url)
+        is BlogBlock.ListBlock -> BlogBlockDto("list", items = items)
+        is BlogBlock.Quote -> BlogBlockDto("quote", text)
+        is BlogBlock.Divider -> BlogBlockDto("divider")
         is BlogBlock.Unknown -> BlogBlockDto(type, "")
     }
 

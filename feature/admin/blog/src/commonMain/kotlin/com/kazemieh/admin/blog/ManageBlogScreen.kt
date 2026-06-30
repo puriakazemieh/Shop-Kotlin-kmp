@@ -30,7 +30,7 @@ import com.kazemieh.domain.blog.BlogBlock
 import com.seiko.imageloader.rememberImagePainter
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ManageBlogScreen(
     id: Long?,
@@ -136,6 +136,23 @@ fun ManageBlogScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                if (state.categories.isNotEmpty()) {
+                    Text("دسته‌بندی", fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL, color = AppTheme.colors.onSurface)
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        state.categories.forEach { cat ->
+                            CarmillaFilterChip(
+                                text = cat.name,
+                                selected = categoryId == cat.id,
+                                onClick = { categoryId = cat.id }
+                            )
+                        }
+                    }
+                }
+
                 // ... Blocks Editor Section ...
                 HorizontalDivider()
                 Text("بلوک‌های محتوا", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
@@ -155,31 +172,19 @@ fun ManageBlogScreen(
                     )
                 }
                 
-                Row(
+                Text("افزودن بلوک جدید", fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR, color = AppTheme.colors.onSurface)
+                FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Button(
-                        onClick = { viewModel.addBlock(BlogBlock.Header("", 1)) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(Icons.Default.Title, null)
-                        Text("H")
-                    }
-                    Button(
-                        onClick = { viewModel.addBlock(BlogBlock.Paragraph("")) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.Notes, null)
-                        Text("P")
-                    }
-                    Button(
-                        onClick = { viewModel.addBlock(BlogBlock.Image("")) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(Icons.Default.Image, null)
-                        Text("تصویر")
-                    }
+                    CarmillaFilterChip(text = "تیتر", selected = false, onClick = { viewModel.addBlock(BlogBlock.Header("", 2)) })
+                    CarmillaFilterChip(text = "پاراگراف", selected = false, onClick = { viewModel.addBlock(BlogBlock.Paragraph("")) })
+                    CarmillaFilterChip(text = "تصویر", selected = false, onClick = { viewModel.addBlock(BlogBlock.Image("")) })
+                    CarmillaFilterChip(text = "دکمه", selected = false, onClick = { viewModel.addBlock(BlogBlock.Button("", "")) })
+                    CarmillaFilterChip(text = "فهرست", selected = false, onClick = { viewModel.addBlock(BlogBlock.ListBlock(emptyList())) })
+                    CarmillaFilterChip(text = "نقل‌قول", selected = false, onClick = { viewModel.addBlock(BlogBlock.Quote("")) })
+                    CarmillaFilterChip(text = "جداکننده", selected = false, onClick = { viewModel.addBlock(BlogBlock.Divider) })
                 }
 
                 HorizontalDivider()
@@ -264,6 +269,10 @@ fun BlockItem(
                         is BlogBlock.Header -> "تیتر H${block.level}"
                         is BlogBlock.Paragraph -> "پاراگراف"
                         is BlogBlock.Image -> "تصویر"
+                        is BlogBlock.Button -> "دکمه"
+                        is BlogBlock.ListBlock -> "فهرست"
+                        is BlogBlock.Quote -> "نقل‌قول"
+                        is BlogBlock.Divider -> "جداکننده"
                         is BlogBlock.Unknown -> "نامشخص"
                     },
                     style = MaterialTheme.typography.labelMedium,
@@ -325,6 +334,42 @@ fun BlockItem(
                             Text(if (block.url.isEmpty()) "بارگذاری تصویر" else "تغییر تصویر")
                         }
                     }
+                }
+                is BlogBlock.Button -> {
+                    OutlinedTextField(
+                        value = block.text,
+                        onValueChange = { onUpdate(block.copy(text = it)) },
+                        placeholder = { Text("متن دکمه") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = block.url,
+                        onValueChange = { onUpdate(block.copy(url = it)) },
+                        placeholder = { Text("لینک دکمه") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                is BlogBlock.ListBlock -> {
+                    OutlinedTextField(
+                        value = block.items.joinToString("\n"),
+                        onValueChange = { text ->
+                            onUpdate(BlogBlock.ListBlock(text.split("\n").map { it }.let { it }))
+                        },
+                        placeholder = { Text("هر آیتم در یک خط") },
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp)
+                    )
+                }
+                is BlogBlock.Quote -> {
+                    OutlinedTextField(
+                        value = block.text,
+                        onValueChange = { onUpdate(block.copy(text = it)) },
+                        placeholder = { Text("متن نقل‌قول") },
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 80.dp)
+                    )
+                }
+                is BlogBlock.Divider -> {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 }
                 is BlogBlock.Unknown -> {
                     Text("نوع بلوک پشتیبانی‌نشده: ${block.type}")

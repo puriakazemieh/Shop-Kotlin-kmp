@@ -32,6 +32,14 @@ sealed interface BlogBlock {
     @Serializable
     data class Image(val url: String, val caption: String? = null) : BlogBlock
     @Serializable
+    data class Button(val text: String, val url: String) : BlogBlock
+    @Serializable
+    data class ListBlock(val items: List<String>) : BlogBlock
+    @Serializable
+    data class Quote(val text: String) : BlogBlock
+    @Serializable
+    data object Divider : BlogBlock
+    @Serializable
     data class Unknown(val type: String) : BlogBlock
 }
 

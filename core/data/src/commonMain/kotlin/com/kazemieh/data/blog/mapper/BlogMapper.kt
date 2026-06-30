@@ -22,6 +22,17 @@ fun BlogResponse.toDomain(): Blog {
             "image" -> BlogBlock.Image(
                 url = block.content
             )
+            "button" -> BlogBlock.Button(
+                text = block.content,
+                url = block.url ?: ""
+            )
+            "list" -> BlogBlock.ListBlock(
+                items = block.items ?: block.content.split("\n").map { it.trim() }.filter { it.isNotEmpty() }
+            )
+            "quote" -> BlogBlock.Quote(
+                text = block.content
+            )
+            "divider" -> BlogBlock.Divider
             else -> BlogBlock.Unknown(block.type)
         }
     }
