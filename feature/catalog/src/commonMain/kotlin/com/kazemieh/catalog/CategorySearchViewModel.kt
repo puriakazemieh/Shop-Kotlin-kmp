@@ -130,6 +130,7 @@ class CategorySearchViewModel(
                         it.copy(
                             isLoading = false,
                             products = result.data.items,
+                            totalCount = result.data.totalElements,
                             availableOptions = availableOptions,
                             error = null
                         )

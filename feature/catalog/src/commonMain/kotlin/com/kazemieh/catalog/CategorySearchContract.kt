@@ -5,6 +5,7 @@ import com.kazemieh.domain.catalog.ProductSummary
 data class CategorySearchState(
     val isLoading: Boolean = false,
     val products: List<ProductSummary> = emptyList(),
+    val totalCount: Long = 0,
     val error: Any? = null,
     val searchQuery: String = "",
     val categoryId: Long? = null,

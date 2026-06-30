@@ -131,7 +131,7 @@ fun CategorySearchScreen(
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
-                        text = "${displayProducts.size} کالا",
+                        text = "${if (onlyDiscounted) displayProducts.size.toLong() else state.totalCount} کالا",
                         fontSize = FontSize.SMALL,
                         color = colors.onSurfaceVariant
                     )
