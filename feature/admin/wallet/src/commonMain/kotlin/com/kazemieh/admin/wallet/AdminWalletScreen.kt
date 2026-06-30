@@ -1,9 +1,13 @@
 package com.kazemieh.admin.wallet
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -11,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +24,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -133,26 +139,44 @@ fun AdminWalletScreen(
 
 @Composable
 fun AdminUserWalletItem(user: AdminWalletUser, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(colors.accentSoft),
+            contentAlignment = Alignment.Center
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(user.fullName, fontFamily = AppFont(), fontWeight = FontWeight.Bold)
-                Text(user.email, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
             Text(
-                text = stringResource(Resources.String.PriceFormat, user.balance),
+                text = user.fullName.take(1).uppercase(),
                 fontFamily = AppFont(),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.primary
             )
         }
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(user.fullName, fontFamily = AppFont(), fontWeight = FontWeight.Bold, color = colors.onSurface)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(user.email, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = stringResource(Resources.String.PriceFormat, user.balance),
+            fontFamily = AppFont(),
+            fontWeight = FontWeight.ExtraBold,
+            color = colors.primary
+        )
     }
 }
 
