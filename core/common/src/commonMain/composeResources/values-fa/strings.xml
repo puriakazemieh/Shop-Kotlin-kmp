@@ -222,6 +222,10 @@
     <string name="copy">کپی</string>
     <string name="itemsLabel">کالاها</string>
     <string name="subtotalLabel">جمع جزء</string>
+    <string name="itemsPriceLabel">قیمت کالاها</string>
+    <string name="yourSavingsLabel">سود شما از خرید</string>
+    <string name="payableAmountLabel">مبلغ قابل پرداخت</string>
+    <string name="freeShipping">رایگان</string>
     <string name="shippingLabel">هزینه ارسال</string>
     <string name="totalLabelSimple">جمع کل</string>
     <string name="emailLabelFormat">ایمیل: %1$s</string>

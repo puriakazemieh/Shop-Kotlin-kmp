@@ -233,6 +233,10 @@
     <string name="copy">Copy</string>
     <string name="itemsLabel">Items</string>
     <string name="subtotalLabel">Subtotal</string>
+    <string name="itemsPriceLabel">Items price</string>
+    <string name="yourSavingsLabel">Your savings</string>
+    <string name="payableAmountLabel">Payable amount</string>
+    <string name="freeShipping">Free</string>
     <string name="shippingLabel">Shipping</string>
     <string name="totalLabelSimple">Total</string>
     <string name="emailLabelFormat">Email: %1$s</string>

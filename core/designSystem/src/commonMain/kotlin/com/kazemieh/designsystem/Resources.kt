@@ -264,6 +264,10 @@ object Resources {
 
         val ItemsLabel = CommonRes.string.itemsLabel
         val SubtotalLabel = CommonRes.string.subtotalLabel
+        val ItemsPriceLabel = CommonRes.string.itemsPriceLabel
+        val YourSavingsLabel = CommonRes.string.yourSavingsLabel
+        val PayableAmountLabel = CommonRes.string.payableAmountLabel
+        val FreeShipping = CommonRes.string.freeShipping
         val ShippingLabel = CommonRes.string.shippingLabel
         val TotalLabelSimple = CommonRes.string.totalLabelSimple
         val EmailLabelFormat = CommonRes.string.emailLabelFormat

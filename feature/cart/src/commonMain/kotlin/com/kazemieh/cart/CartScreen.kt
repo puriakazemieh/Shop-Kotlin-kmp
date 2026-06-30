@@ -148,8 +148,13 @@ fun CartScreen(
                                     Spacer(Modifier.height(12.dp))
                                 }
                                 Spacer(Modifier.height(8.dp))
+                                val savings = cart.items.sumOf { item ->
+                                    val cmp = item.compareAtPrice
+                                    if (cmp != null && cmp > item.price) (cmp - item.price) * item.qty else 0.0
+                                }
                                 OrderSummaryCard(
                                     subtotal = cart.subtotal,
+                                    savings = savings,
                                     discountAmount = cart.discountAmount,
                                     total = cart.total,
                                     appliedDiscountCode = cart.appliedDiscountCode,
@@ -314,6 +319,7 @@ private fun EmptyCart() {
 @Composable
 private fun OrderSummaryCard(
     subtotal: Double,
+    savings: Double,
     discountAmount: Double,
     total: Double,
     appliedDiscountCode: String?,
@@ -342,9 +348,23 @@ private fun OrderSummaryCard(
         Spacer(Modifier.height(16.dp))
 
         SummaryRow(
-            label = stringResource(Resources.String.SubtotalLabel),
+            label = stringResource(Resources.String.ItemsPriceLabel),
             value = stringResource(Resources.String.PriceFormat, subtotal),
             valueColor = colors.onSurface
+        )
+        if (savings > 0) {
+            Spacer(Modifier.height(11.dp))
+            SummaryRow(
+                label = stringResource(Resources.String.YourSavingsLabel),
+                value = "- ${stringResource(Resources.String.PriceFormat, savings)}",
+                valueColor = colors.sale
+            )
+        }
+        Spacer(Modifier.height(11.dp))
+        SummaryRow(
+            label = stringResource(Resources.String.ShippingLabel),
+            value = stringResource(Resources.String.FreeShipping),
+            valueColor = colors.ok
         )
         if (discountAmount > 0) {
             Spacer(Modifier.height(11.dp))
@@ -443,7 +463,7 @@ private fun OrderSummaryCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(Resources.String.TotalLabel),
+                text = stringResource(Resources.String.PayableAmountLabel),
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.Bold,
                 color = colors.onSurface
