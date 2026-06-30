@@ -3,6 +3,8 @@ package com.kazemieh.admin.wallet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -88,16 +90,77 @@ fun AdminWithdrawalsScreen(
                     image = Resources.Image.Cat
                 )
                 is AppResult.Success -> {
-                    val withdrawals = result.data
-                    if (withdrawals.isEmpty()) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(stringResource(Resources.String.NothingHere), fontFamily = AppFont())
+                    val colors = AppTheme.colors
+                    val all = result.data
+                    val pendingCount = all.count { it.status.uppercase() == "PENDING" }
+                    var selectedWStatus by remember { mutableStateOf<String?>(null) }
+                    val withdrawals = if (selectedWStatus == null) all
+                        else all.filter { it.status.uppercase() == selectedWStatus }
+                    val chips = listOf(
+                        null to "همه",
+                        "PENDING" to "در انتظار",
+                        "PAID" to "پرداخت‌شده",
+                        "REJECTED" to "ردشده"
+                    )
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        if (pendingCount > 0) {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(colors.gold.copy(alpha = 0.12f))
+                                        .border(1.dp, colors.gold.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+                                        .padding(14.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    Text("⚠", color = colors.gold, fontSize = FontSize.MEDIUM)
+                                    Text(
+                                        text = "$pendingCount درخواست برداشت در انتظار بررسی شماست",
+                                        fontSize = FontSize.SMALL,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.gold,
+                                        fontFamily = AppFont()
+                                    )
+                                }
+                            }
                         }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                chips.forEach { (value, label) ->
+                                    val sel = selectedWStatus == value
+                                    Text(
+                                        text = label,
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(11.dp))
+                                            .then(
+                                                if (sel) Modifier.background(colors.primary)
+                                                else Modifier.background(colors.surface).border(1.dp, colors.line, RoundedCornerShape(11.dp))
+                                            )
+                                            .clickable { selectedWStatus = value }
+                                            .padding(horizontal = 14.dp, vertical = 8.dp),
+                                        fontSize = FontSize.SMALL,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (sel) colors.onPrimary else colors.onSurfaceVariant,
+                                        fontFamily = AppFont()
+                                    )
+                                }
+                            }
+                        }
+                        if (withdrawals.isEmpty()) {
+                            item {
+                                Box(Modifier.fillMaxWidth().padding(top = 40.dp), contentAlignment = Alignment.Center) {
+                                    Text(stringResource(Resources.String.NothingHere), fontFamily = AppFont(), color = colors.onSurfaceVariant)
+                                }
+                            }
+                        } else {
                             items(withdrawals) { withdrawal ->
                                 WithdrawalItem(
                                     withdrawal = withdrawal,

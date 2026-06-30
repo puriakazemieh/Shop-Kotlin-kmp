@@ -238,13 +238,22 @@ fun AdminStoryCircle(
                     .padding(2.5.dp)
                     .clip(CircleShape)
                     .background(colors.surface)
-                    .padding(2.dp),
+                    .padding(2.dp)
+                    .clip(CircleShape)
+                    .background(colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
+                // حرفِ اولِ عنوان به‌عنوان جایگزین وقتی تصویر نیست (مطابق اسپک)
+                Text(
+                    text = story.title?.trim()?.firstOrNull()?.toString() ?: "ک",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = FontSize.EXTRA_MEDIUM,
+                    color = colors.onSurfaceVariant
+                )
                 AsyncImage(
                     model = story.mediaUrl,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize().clip(CircleShape).background(colors.surfaceVariant),
+                    modifier = Modifier.fillMaxSize().clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
