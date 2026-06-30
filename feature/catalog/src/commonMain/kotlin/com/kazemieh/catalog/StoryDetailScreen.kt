@@ -23,8 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.kazemieh.domain.story.Story
+import com.kazemieh.domain.story.StoryLinkType
 import com.kazemieh.domain.story.StoryMediaType
 import kotlinx.coroutines.launch
 
@@ -34,7 +37,39 @@ fun StoryDetailScreen(
     initialIndex: Int,
     onClose: () -> Unit,
     onStorySeen: (Long) -> Unit,
-    onProductClick: (Long) -> Unit
+    onProductClick: (Long) -> Unit,
+    onCategoryClick: (Long) -> Unit,
+    onBlogClick: (String) -> Unit
+) {
+    Dialog(
+        onDismissRequest = onClose,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false
+        )
+    ) {
+        StoryDetailContent(
+            stories = stories,
+            initialIndex = initialIndex,
+            onClose = onClose,
+            onStorySeen = onStorySeen,
+            onProductClick = onProductClick,
+            onCategoryClick = onCategoryClick,
+            onBlogClick = onBlogClick
+        )
+    }
+}
+
+@Composable
+private fun StoryDetailContent(
+    stories: List<Story>,
+    initialIndex: Int,
+    onClose: () -> Unit,
+    onStorySeen: (Long) -> Unit,
+    onProductClick: (Long) -> Unit,
+    onCategoryClick: (Long) -> Unit,
+    onBlogClick: (String) -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = initialIndex) { stories.size }
     val coroutineScope = rememberCoroutineScope()
@@ -65,6 +100,8 @@ fun StoryDetailScreen(
                 },
                 onStorySeen = { onStorySeen(stories[page].id) },
                 onProductClick = onProductClick,
+                onCategoryClick = onCategoryClick,
+                onBlogClick = onBlogClick,
                 onPauseStateChange = { isGlobalPaused = it }
             )
         }
@@ -127,6 +164,8 @@ fun StoryItemDisplay(
     onPrevious: () -> Unit,
     onStorySeen: () -> Unit,
     onProductClick: (Long) -> Unit,
+    onCategoryClick: (Long) -> Unit,
+    onBlogClick: (String) -> Unit,
     onPauseStateChange: (Boolean) -> Unit
 ) {
     var isPausedByInteraction by remember { mutableStateOf(false) }
@@ -227,16 +266,40 @@ fun StoryItemDisplay(
                 )
             }
 
-            story.productId?.let { id ->
-                Button(
-                    onClick = { onProductClick(id) },
-                    shape = RoundedCornerShape(999.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                ) {
-                    Text("مشاهده محصول", color = Color(0xFF192038))
+            // CTA بر اساس نوع لینک استوری (محصول / دسته‌بندی / مقاله)
+            // برای استوری‌های قدیمی که فقط productId دارند هم محصول را نشان می‌دهیم
+            val effectiveLinkType = when {
+                story.linkType != StoryLinkType.NONE -> story.linkType
+                story.productId != null -> StoryLinkType.PRODUCT
+                else -> StoryLinkType.NONE
+            }
+            when (effectiveLinkType) {
+                StoryLinkType.PRODUCT -> story.productId?.let { id ->
+                    StoryCtaButton(text = "مشاهده محصول", onClick = { onProductClick(id) })
                 }
+                StoryLinkType.CATEGORY -> story.categoryId?.let { id ->
+                    StoryCtaButton(text = "مشاهده دسته‌بندی", onClick = { onCategoryClick(id) })
+                }
+                StoryLinkType.BLOG -> story.blogSlug?.takeIf { it.isNotBlank() }?.let { slug ->
+                    StoryCtaButton(text = "مشاهده مقاله", onClick = { onBlogClick(slug) })
+                }
+                StoryLinkType.NONE -> {}
             }
         }
+    }
+}
+
+@Composable
+private fun StoryCtaButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(999.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+    ) {
+        Text(text, color = Color(0xFF192038))
     }
 }
 

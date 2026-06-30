@@ -67,6 +67,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ProductsOverviewScreen(
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
+    navigateToBlogDetail: (String) -> Unit,
     navigateToAuth: () -> Unit
 ) {
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
@@ -301,9 +302,17 @@ fun ProductsOverviewScreen(
             initialIndex = initialStoryIndex,
             onClose = { showStoryDetail = false },
             onStorySeen = { id -> viewModel.handleIntent(ProductsOverviewIntent.OnStorySeen(id)) },
-            onProductClick = { slug ->
+            onProductClick = { id ->
                 showStoryDetail = false
-                navigateToDetails(slug.toString())
+                navigateToDetails(id.toString())
+            },
+            onCategoryClick = { id ->
+                showStoryDetail = false
+                navigateToCategorySearch(id, "")
+            },
+            onBlogClick = { slug ->
+                showStoryDetail = false
+                navigateToBlogDetail(slug)
             }
         )
     }

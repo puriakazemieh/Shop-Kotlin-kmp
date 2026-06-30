@@ -102,6 +102,9 @@ fun AppNavHost(
                 navigateToBlog = {
                     navController.navigate(Screen.BlogList)
                 },
+                navigateToBlogDetail = { slug ->
+                    navController.navigate(Screen.BlogDetail(slug))
+                },
                 navigateToDetails = { slug ->
                     navController.navigate(Screen.ProductDetail(slug = slug))
                 },

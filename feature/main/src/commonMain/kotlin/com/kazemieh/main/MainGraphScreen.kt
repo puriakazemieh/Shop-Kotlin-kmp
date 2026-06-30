@@ -57,6 +57,7 @@ fun MainGraphScreen(
     navigateToContactUs: () -> Unit,
     navigateToAdminPanel: () -> Unit,
     navigateToBlog: () -> Unit,
+    navigateToBlogDetail: (String) -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
     navigateToCheckout: (Double) -> Unit,
@@ -138,6 +139,7 @@ fun MainGraphScreen(
                             ProductsOverviewScreen(
                                 navigateToDetails = navigateToDetails,
                                 navigateToCategorySearch = navigateToCategorySearch,
+                                navigateToBlogDetail = navigateToBlogDetail,
                                 navigateToAuth = navigateToAuth
                             )
                         }
