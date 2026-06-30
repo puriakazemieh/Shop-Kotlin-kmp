@@ -58,7 +58,7 @@ fun CreateDiscountDialog(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = if (discount == null) stringResource(Resources.String.CreateDiscount) else "Edit Discount",
+                    text = if (discount == null) stringResource(Resources.String.CreateDiscount) else "ویرایش کد تخفیف",
                     fontSize = FontSize.LARGE,
                     fontWeight = FontWeight.Bold
                 )
