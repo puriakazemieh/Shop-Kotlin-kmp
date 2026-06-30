@@ -34,6 +34,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -118,6 +120,8 @@ fun DetailsScreen(
     var activeParentId by remember { mutableStateOf<Long?>(null) }
     var editReview by remember { mutableStateOf<Review?>(null) }
     var editQuestion by remember { mutableStateOf<Question?>(null) }
+    var newReviewRating by remember { mutableStateOf(5) }
+    var newReviewText by remember { mutableStateOf("") }
 
     LaunchedEffect(slug) {
         viewModel.handleIntent(DetailsIntent.LoadProduct(slug))
@@ -417,12 +421,31 @@ fun DetailsScreen(
                             fontWeight = FontWeight.ExtraBold,
                             color = colors.onSurface
                         )
-                        Spacer(Modifier.height(14.dp))
-                        PrimaryButton(
-                            text = stringResource(Resources.String.AddReview),
-                            onClick = { activeParentId = null; showReviewDialog = true }
+                        Spacer(Modifier.height(16.dp))
+
+                        // ---- خلاصه‌ی امتیاز (میانگین + نمودار میله‌ای) ----
+                        val ratings = state.reviews.mapNotNull { it.rating }
+                        if (ratings.isNotEmpty()) {
+                            ReviewSummary(ratings = ratings)
+                            Spacer(Modifier.height(16.dp))
+                        }
+
+                        // ---- ثبت دیدگاهِ اینلاین ----
+                        WriteReviewCard(
+                            rating = newReviewRating,
+                            onRatingChange = { newReviewRating = it },
+                            text = newReviewText,
+                            onTextChange = { newReviewText = it },
+                            onSubmit = {
+                                state.product?.id?.let { pid ->
+                                    viewModel.handleIntent(DetailsIntent.AddReview(pid, newReviewRating, newReviewText, null))
+                                    newReviewText = ""
+                                    newReviewRating = 5
+                                }
+                            }
                         )
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(16.dp))
+
                         if (state.reviews.isEmpty()) {
                             Text(
                                 stringResource(Resources.String.NoReviewsYet),
@@ -688,6 +711,126 @@ private fun PriceActionCard(
                 }
             }
         }
+    }
+}
+
+/** خلاصه‌ی امتیازِ نظرات — میانگینِ درشت + نمودار میله‌ایِ ۵→۱ ستاره (مطابق اسپک). */
+@Composable
+private fun ReviewSummary(ratings: List<Int>) {
+    val colors = AppTheme.colors
+    val avg = (ratings.average() * 10).roundToInt() / 10.0
+    val total = ratings.size
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(avg.toString(), fontSize = FontSize.EXTRA_LARGE, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+            Row {
+                repeat(5) { i ->
+                    Icon(
+                        Icons.Default.Star,
+                        contentDescription = null,
+                        tint = if (i < avg.roundToInt()) colors.star else colors.line,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(5.dp))
+            Text("$total دیدگاه", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        }
+        Spacer(Modifier.width(18.dp))
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            for (star in 5 downTo 1) {
+                val count = ratings.count { it == star }
+                val fraction = if (total > 0) count.toFloat() / total else 0f
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("$star", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant, modifier = Modifier.width(10.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Icon(Icons.Default.Star, contentDescription = null, tint = colors.star, modifier = Modifier.size(11.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(Radius.full))
+                            .background(colors.surfaceVariant)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction)
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(Radius.full))
+                                .background(colors.star)
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Text("$count", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant, modifier = Modifier.width(22.dp))
+                }
+            }
+        }
+    }
+}
+
+/** کارتِ ثبتِ دیدگاهِ اینلاین — انتخاب ستاره + متن + دکمه (مطابق اسپک). */
+@Composable
+private fun WriteReviewCard(
+    rating: Int,
+    onRatingChange: (Int) -> Unit,
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSubmit: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+            .padding(16.dp)
+    ) {
+        Text("دیدگاه خود را بنویسید", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+        Spacer(Modifier.height(11.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            repeat(5) { i ->
+                Icon(
+                    Icons.Default.Star,
+                    contentDescription = null,
+                    tint = if (i < rating) colors.star else colors.line,
+                    modifier = Modifier.size(26.dp).clickable { onRatingChange(i + 1) }
+                )
+            }
+        }
+        Spacer(Modifier.height(11.dp))
+        OutlinedTextField(
+            value = text,
+            onValueChange = onTextChange,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("تجربه‌تان از این محصول را بنویسید…", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+            minLines = 2,
+            shape = RoundedCornerShape(Radius.sm),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = colors.surfaceVariant,
+                unfocusedContainerColor = colors.surfaceVariant,
+                focusedBorderColor = colors.primary,
+                unfocusedBorderColor = colors.line,
+                cursorColor = colors.primary,
+                focusedTextColor = colors.onSurface,
+                unfocusedTextColor = colors.onSurface
+            )
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = "ثبت دیدگاه",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Radius.button))
+                .background(if (text.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = text.isNotBlank()) { onSubmit() }
+                .padding(vertical = 13.dp),
+            textAlign = TextAlign.Center,
+            color = colors.onPrimary,
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
