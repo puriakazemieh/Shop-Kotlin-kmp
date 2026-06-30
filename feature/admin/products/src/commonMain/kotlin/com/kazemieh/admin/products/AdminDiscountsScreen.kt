@@ -1,19 +1,23 @@
 package com.kazemieh.admin.products
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
@@ -128,11 +132,8 @@ fun AdminDiscountsScreen(
                         } else {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize().padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                verticalArrangement = Arrangement.spacedBy(11.dp)
                             ) {
-                                item {
-                                    DiscountHeader()
-                                }
                                 items(discounts) { discount ->
                                     DiscountItem(
                                         discount = discount,
@@ -190,52 +191,86 @@ fun AdminDiscountsScreen(
 }
 
 @Composable
-fun DiscountHeader() {
-    Row(
-        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant).padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(stringResource(Resources.String.DiscountCodeLabel), modifier = Modifier.weight(1.5f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
-        Text(stringResource(Resources.String.DiscountValueLabel), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
-        Text("استفاده", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
-        Text("وضعیت", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
-        Spacer(modifier = Modifier.width(48.dp))
-    }
-}
-
-@Composable
 fun DiscountItem(
     discount: Discount,
     onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    val colors = AppTheme.colors
+    val valueLabel = if (discount.type == DiscountType.PERCENTAGE) "${discount.value}٪" else "${discount.value}"
+    val typeLabel = if (discount.type == DiscountType.PERCENTAGE) "درصدی" else "تومان"
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(15.dp))
+            .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(discount.code, modifier = Modifier.weight(1.5f), fontSize = FontSize.REGULAR)
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = if (discount.type == DiscountType.PERCENTAGE) "${discount.value}%" else "${discount.value}",
-                modifier = Modifier.weight(1f),
-                fontSize = FontSize.REGULAR
+                text = discount.code,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(9.dp))
+                    .background(colors.accentSoft)
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.primary
             )
-            Text(
-                text = "${discount.usageCount}/${discount.usageLimit ?: "∞"}",
-                modifier = Modifier.weight(1f),
-                fontSize = FontSize.REGULAR
-            )
-            Badge(
-                containerColor = if (discount.isActive) AppTheme.colors.ok else AppTheme.colors.sale,
-                contentColor = Color.White
-            ) {
-                Text(if (discount.isActive) "Active" else "Inactive")
+            Spacer(Modifier.width(10.dp))
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.Bottom) {
+                Text(valueLabel, fontSize = FontSize.REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+                Spacer(Modifier.width(4.dp))
+                Text(typeLabel, fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
             }
-            IconButton(onClick = onDelete) {
-                Icon(painter = painterResource(Resources.Icon.Delete), contentDescription = null, tint = MaterialTheme.colorScheme.error)
+            val statusColor = if (discount.isActive) colors.ok else colors.sale
+            Text(
+                text = if (discount.isActive) "فعال" else "غیرفعال",
+                modifier = Modifier
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(statusColor.copy(alpha = 0.12f))
+                    .padding(horizontal = 10.dp, vertical = 4.dp),
+                fontSize = FontSize.EXTRA_SMALL,
+                fontWeight = FontWeight.Bold,
+                color = statusColor
+            )
+        }
+        Spacer(Modifier.height(11.dp))
+        Text(
+            text = "استفاده: ${discount.usageCount} از ${discount.usageLimit ?: "∞"}",
+            fontSize = FontSize.EXTRA_SMALL,
+            color = colors.onSurfaceVariant
+        )
+        Spacer(Modifier.height(11.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(Resources.String.Edit),
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(9.dp))
+                    .background(colors.accentSoft)
+                    .clickable { onClick() }
+                    .padding(vertical = 8.dp),
+                textAlign = TextAlign.Center,
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.primary
+            )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(9.dp))
+                    .background(colors.sale.copy(alpha = 0.1f))
+                    .clickable { onDelete() }
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(Resources.Icon.Delete),
+                    contentDescription = stringResource(Resources.String.Delete),
+                    tint = colors.sale,
+                    modifier = Modifier.size(16.dp)
+                )
             }
         }
     }
