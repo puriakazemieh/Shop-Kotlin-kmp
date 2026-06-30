@@ -30,8 +30,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
+import androidx.compose.ui.window.Dialog
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -79,6 +81,8 @@ fun AdminStoryScreen(
 
     if (showCreateDialog && selectedMediaBytes != null) {
         CreateStoryDialog(
+            mediaBytes = selectedMediaBytes,
+            onPickMedia = { mediaPicker.open() },
             onDismiss = {
                 showCreateDialog = false
                 selectedMediaBytes = null
@@ -174,47 +178,152 @@ fun AdminStoryScreen(
 
 @Composable
 fun CreateStoryDialog(
+    mediaBytes: ByteArray?,
+    onPickMedia: () -> Unit,
     onDismiss: () -> Unit,
     onConfirm: (title: String?, productId: Long?) -> Unit
 ) {
+    val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
     var productId by remember { mutableStateOf("") }
+    var linkToProduct by remember { mutableStateOf(false) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("استوری جدید") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("عنوان (اختیاری)") },
-                    modifier = Modifier.fillMaxWidth()
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Radius.lg))
+                .background(colors.surface)
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text("استوری جدید", fontWeight = FontWeight.ExtraBold, fontSize = FontSize.EXTRA_MEDIUM, color = colors.onSurface)
+            Spacer(Modifier.height(16.dp))
+
+            // کادرِ آپلود / پیش‌نمایش
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(Radius.md))
+                    .background(colors.surfaceVariant)
+                    .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+                    .clickable { onPickMedia() },
+                contentAlignment = Alignment.Center
+            ) {
+                if (mediaBytes != null) {
+                    AsyncImage(
+                        model = mediaBytes,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(Radius.md)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text("آپلود تصویر یا ویدیو استوری", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Text("عنوان استوری", fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL, color = colors.onSurface)
+            Spacer(Modifier.height(8.dp))
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                placeholder = { Text("مثلاً حراج پاییز", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+                shape = RoundedCornerShape(Radius.sm),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = colors.surfaceVariant,
+                    unfocusedContainerColor = colors.surfaceVariant,
+                    focusedBorderColor = colors.primary,
+                    unfocusedBorderColor = colors.line,
+                    cursorColor = colors.primary,
+                    focusedTextColor = colors.onSurface,
+                    unfocusedTextColor = colors.onSurface
                 )
+            )
+
+            Spacer(Modifier.height(16.dp))
+            Text("لینک استوری به", fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL, color = colors.onSurface)
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                StoryLinkChip("بدون لینک", selected = !linkToProduct) { linkToProduct = false; productId = "" }
+                StoryLinkChip("محصول", selected = linkToProduct) { linkToProduct = true }
+            }
+            if (linkToProduct) {
+                Spacer(Modifier.height(10.dp))
                 OutlinedTextField(
                     value = productId,
-                    onValueChange = { if (it.all { char -> char.isDigit() }) productId = it },
-                    label = { Text("شناسه محصول (اختیاری)") },
+                    onValueChange = { if (it.all { ch -> ch.isDigit() }) productId = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    placeholder = { Text("شناسه محصول", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(Radius.sm),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = colors.surfaceVariant,
+                        unfocusedContainerColor = colors.surfaceVariant,
+                        focusedBorderColor = colors.primary,
+                        unfocusedBorderColor = colors.line,
+                        cursorColor = colors.primary,
+                        focusedTextColor = colors.onSurface,
+                        unfocusedTextColor = colors.onSurface
+                    )
                 )
             }
-        },
-        confirmButton = {
-            Button(onClick = {
-                onConfirm(
-                    title.ifBlank { null },
-                    productId.toLongOrNull()
+
+            Spacer(Modifier.height(20.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = "انتشار استوری",
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(if (mediaBytes != null) colors.primary else colors.line)
+                        .clickable(enabled = mediaBytes != null) {
+                            onConfirm(title.ifBlank { null }, if (linkToProduct) productId.toLongOrNull() else null)
+                        }
+                        .padding(vertical = 13.dp),
+                    textAlign = TextAlign.Center,
+                    color = colors.onPrimary,
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.Bold
                 )
-            }) {
-                Text("بارگذاری")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("انصراف")
+                Text(
+                    text = "انصراف",
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .border(1.dp, colors.line, RoundedCornerShape(Radius.button))
+                        .clickable { onDismiss() }
+                        .padding(vertical = 13.dp),
+                    textAlign = TextAlign.Center,
+                    color = colors.onSurfaceVariant,
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun StoryLinkChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        text = label,
+        modifier = Modifier
+            .clip(RoundedCornerShape(11.dp))
+            .then(
+                if (selected) Modifier.background(colors.primary)
+                else Modifier.background(colors.surface).border(1.dp, colors.line, RoundedCornerShape(11.dp))
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 9.dp),
+        fontSize = FontSize.SMALL,
+        fontWeight = FontWeight.Bold,
+        color = if (selected) colors.onPrimary else colors.onSurfaceVariant
     )
 }
 
