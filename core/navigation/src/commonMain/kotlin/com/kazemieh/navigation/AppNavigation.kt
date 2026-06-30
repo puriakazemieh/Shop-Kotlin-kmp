@@ -194,29 +194,11 @@ fun AppNavHost(
                 navigateToManageProduct = { id ->
                     navController.navigate(Screen.ManageProduct(id))
                 },
-                navigateToManageOrders = {
-                    navController.navigate(Screen.ManageOrders)
+                navigateToManageBlog = { id: Long?, slug: String? ->
+                    navController.navigate(Screen.ManageBlog(id, slug))
                 },
-                navigateToManageOptions = {
-                    navController.navigate(Screen.ManageOptions)
-                },
-                navigateToManageDiscounts = {
-                    navController.navigate(Screen.ManageDiscounts)
-                },
-                navigateToManageWallets = {
-                    navController.navigate(Screen.ManageWallets)
-                },
-                navigateToManageWithdrawals = {
-                    navController.navigate(Screen.ManageWithdrawals)
-                },
-                navigateToManageStories = {
-                    navController.navigate(Screen.ManageStories)
-                },
-                navigateToBlog = {
-                    navController.navigate(Screen.BlogList)
-                },
-                navigateToAdminBlog = {
-                    navController.navigate(Screen.AdminBlogList)
+                navigateToManageCategory = { _: Long? ->
+                    // مدیریت دسته‌بندی مجله (در صورت نیاز)
                 }
             )
         }

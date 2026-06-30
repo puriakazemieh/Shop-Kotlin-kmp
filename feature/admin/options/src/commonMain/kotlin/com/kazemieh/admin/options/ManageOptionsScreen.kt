@@ -37,7 +37,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageOptionsScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<ManageOptionsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -60,8 +61,17 @@ fun ManageOptionsScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
+        floatingActionButton = {
+            if (embedded) {
+                FloatingActionButton(
+                    onClick = { showAddTypeDialog = true },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) { Icon(Icons.Default.Add, contentDescription = null) }
+            }
+        },
         topBar = {
-            TopAppBar(
+            if (!embedded) TopAppBar(
                 title = {
                     Text(
                         text = stringResource(Resources.String.VariantsManager),

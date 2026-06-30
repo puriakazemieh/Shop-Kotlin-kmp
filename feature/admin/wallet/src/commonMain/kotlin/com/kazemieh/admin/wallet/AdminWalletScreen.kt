@@ -40,7 +40,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminWalletScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<AdminWalletViewModel>()
     val state by viewModel.state.collectAsState()
@@ -64,7 +65,7 @@ fun AdminWalletScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            if (!embedded) TopAppBar(
                 title = { Text(stringResource(Resources.String.ManageWallets), fontFamily = AppFont()) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {

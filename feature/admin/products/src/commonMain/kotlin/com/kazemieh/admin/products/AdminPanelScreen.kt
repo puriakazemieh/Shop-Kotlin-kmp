@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -30,6 +31,12 @@ import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.admin.options.ManageOptionsScreen
+import com.kazemieh.admin.orders.AdminOrderScreen
+import com.kazemieh.admin.wallet.AdminWalletScreen
+import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
+import com.kazemieh.admin.blog.AdminBlogListScreen
+import com.kazemieh.admin.story.AdminStoryScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,203 +46,159 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
-    navigateToManageOrders: () -> Unit,
-    navigateToManageOptions: () -> Unit,
-    navigateToManageDiscounts: () -> Unit,
-    navigateToManageWallets: () -> Unit,
-    navigateToManageWithdrawals: () -> Unit,
-    navigateToManageStories: () -> Unit,
-    navigateToBlog: () -> Unit,
-    navigateToAdminBlog: () -> Unit,
+    navigateToManageBlog: (Long?, String?) -> Unit,
+    navigateToManageCategory: (Long?) -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
-    var searchBarVisible by mutableStateOf(false)
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val colors = AppTheme.colors
+    var selectedTab by remember { mutableStateOf(0) }
+
+    val tabs = listOf(
+        "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
+        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
+    )
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is AdminPanelEffect.ShowError -> {
-                    // Handle error
-                }
+                is AdminPanelEffect.ShowError -> {}
                 else -> {}
             }
         }
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = colors.surface,
         topBar = {
-            AnimatedContent(
-                targetState = searchBarVisible
-            ) { visible ->
-                if (visible) {
-                    SearchBar(
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .fillMaxWidth(),
-                        inputField = {
-                            SearchBarDefaults.InputField(
-                                modifier = Modifier.fillMaxWidth(),
-                                query = state.searchQuery,
-                                onQueryChange = { viewModel.handleIntent(AdminPanelIntent.SearchProducts(it)) },
-                                expanded = false,
-                                onExpandedChange = {},
-                                onSearch = {},
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(Resources.String.SearchHere),
-                                        fontSize = FontSize.REGULAR,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                },
-                                trailingIcon = {
-                                    IconButton(
-                                        modifier = Modifier.size(14.dp),
-                                        onClick = {
-                                            if (state.searchQuery.isNotEmpty()) viewModel.handleIntent(AdminPanelIntent.SearchProducts(""))
-                                            else searchBarVisible = false
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(Resources.Icon.Close),
-                                            contentDescription = stringResource(Resources.String.CloseIconDesc)
-                                        )
-                                    }
-                                }
-                            )
-                        },
-                        colors = SearchBarColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            dividerColor = MaterialTheme.colorScheme.outline
-                        ),
-                        expanded = false,
-                        onExpandedChange = {},
-                        content = {}
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(Resources.String.AdminPanel),
+                        fontSize = FontSize.LARGE,
+                        color = colors.onSurface
                     )
-                } else {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(Resources.String.AdminPanel),
-                                fontSize = FontSize.LARGE,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = navigateBack) {
-                                Icon(
-                                    modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
-                                    painter = painterResource(Resources.Icon.BackArrow),
-                                    contentDescription = stringResource(Resources.String.BackArrowIconDesc),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = { searchBarVisible = true }) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Search),
-                                    contentDescription = stringResource(Resources.String.SearchIconDesc),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                            titleContentColor = MaterialTheme.colorScheme.onSurface,
-                            actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            painter = painterResource(Resources.Icon.BackArrow),
+                            contentDescription = stringResource(Resources.String.BackArrowIconDesc),
+                            tint = colors.onSurface
                         )
-                    )
-                }
-            }
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = colors.surface,
+                    scrolledContainerColor = colors.surface,
+                    navigationIconContentColor = colors.onSurface,
+                    titleContentColor = colors.onSurface
+                )
+            )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navigateToManageProduct(null) },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                content = {
+            // فقط در تبِ محصولات؛ بقیه‌ی تب‌ها FAB/اکشنِ خودشان را دارند
+            if (selectedTab == 1) {
+                FloatingActionButton(
+                    onClick = { navigateToManageProduct(null) },
+                    containerColor = colors.primary,
+                    contentColor = colors.onPrimary
+                ) {
                     Icon(
                         painter = painterResource(Resources.Icon.Plus),
                         contentDescription = stringResource(Resources.String.AddIconDesc)
                     )
                 }
-            )
+            }
         }
     ) { padding ->
-        val result = state.productsState
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            Text(
-                text = "خوش آمدید، مدیر فروشگاه کارمیلا",
-                fontSize = FontSize.SMALL,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp)
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            AdminNavChips(
-                onProducts = {},
-                onVariants = navigateToManageOptions,
-                onOrders = navigateToManageOrders,
-                onDiscounts = navigateToManageDiscounts,
-                onStories = navigateToManageStories,
-                onBlog = navigateToAdminBlog,
-                onWallets = navigateToManageWallets,
-                onWithdrawals = navigateToManageWithdrawals
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(color = com.kazemieh.designsystem.AppTheme.colors.line)
-            (state.statsState as? AppResult.Success)?.data?.let { stats ->
-                AdminDashboard(stats = stats)
-                HorizontalDivider(color = com.kazemieh.designsystem.AppTheme.colors.line)
+            if (selectedTab == 0) {
+                Text(
+                    text = "خوش آمدید، مدیر فروشگاه کارمیلا",
+                    fontSize = FontSize.SMALL,
+                    color = colors.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
             }
-        PullToRefreshBox(
-            isRefreshing = state.isRefreshing,
-            onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
-            modifier = Modifier.weight(1f).fillMaxWidth()
-        ) {
-            when (result) {
-                is AppResult.Loading -> LoadingCard(modifier = Modifier.fillMaxSize())
-                is AppResult.Success -> {
-                    val products = result.data.items
-                    if (products.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(all = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            items(
-                                items = products,
-                                key = { it.id }
-                            ) { product ->
-                                AdminProductCard(
-                                    product = product,
-                                    onClick = { navigateToManageProduct(product.id) }
-                                )
-                            }
-                        }
-                    } else {
-                        InfoCard(
-                            image = Resources.Image.Cat,
-                            title = stringResource(Resources.String.Oops),
-                            subtitle = stringResource(Resources.String.NothingHere)
-                        )
-                    }
-                }
 
-                is AppResult.Error -> {
+            AdminNavChips(selected = selectedTab, tabs = tabs, onSelect = { selectedTab = it })
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(color = colors.line)
+
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                when (selectedTab) {
+                    0 -> {
+                        val stats = (state.statsState as? AppResult.Success)?.data
+                        if (stats != null) AdminDashboard(stats = stats)
+                        else LoadingCard(modifier = Modifier.fillMaxSize())
+                    }
+                    1 -> ProductsTab(
+                        state = state,
+                        onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
+                        onProductClick = { id -> navigateToManageProduct(id) }
+                    )
+                    2 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    3 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    4 -> AdminDiscountsScreen(navigateBack = { selectedTab = 1 }, embedded = true)
+                    5 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
+                    6 -> AdminBlogListScreen(
+                        navigateToManageBlog = navigateToManageBlog,
+                        navigateToManageCategory = navigateToManageCategory,
+                        navigateBack = { selectedTab = 1 },
+                        embedded = true
+                    )
+                    7 -> AdminWalletScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProductsTab(
+    state: AdminPanelState,
+    onRefresh: () -> Unit,
+    onProductClick: (Long) -> Unit
+) {
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        when (val result = state.productsState) {
+            is AppResult.Loading -> LoadingCard(modifier = Modifier.fillMaxSize())
+            is AppResult.Success -> {
+                val products = result.data.items
+                if (products.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(all = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(items = products, key = { it.id }) { product ->
+                            AdminProductCard(product = product, onClick = { onProductClick(product.id) })
+                        }
+                    }
+                } else {
                     InfoCard(
                         image = Resources.Image.Cat,
                         title = stringResource(Resources.String.Oops),
-                        subtitle = result.message
+                        subtitle = stringResource(Resources.String.NothingHere)
                     )
                 }
             }
-        }
+            is AppResult.Error -> InfoCard(
+                image = Resources.Image.Cat,
+                title = stringResource(Resources.String.Oops),
+                subtitle = result.message
+            )
         }
     }
 }
@@ -333,29 +296,18 @@ private fun StatCard(label: String, value: String, sub: String) {
 /** نوار چیپ‌های پیمایشِ پنل مدیریت — مطابق اسپک. */
 @Composable
 private fun AdminNavChips(
-    onProducts: () -> Unit,
-    onVariants: () -> Unit,
-    onOrders: () -> Unit,
-    onDiscounts: () -> Unit,
-    onStories: () -> Unit,
-    onBlog: () -> Unit,
-    onWallets: () -> Unit,
-    onWithdrawals: () -> Unit
+    selected: Int,
+    tabs: List<String>,
+    onSelect: (Int) -> Unit
 ) {
-    val colors = com.kazemieh.designsystem.AppTheme.colors
-    androidx.compose.foundation.lazy.LazyRow(
+    LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item { AdminNavChip("محصولات", selected = true, onClick = onProducts) }
-        item { AdminNavChip("واریانت‌ها", selected = false, onClick = onVariants) }
-        item { AdminNavChip("سفارش‌ها", selected = false, onClick = onOrders) }
-        item { AdminNavChip("کد تخفیف", selected = false, onClick = onDiscounts) }
-        item { AdminNavChip("استوری", selected = false, onClick = onStories) }
-        item { AdminNavChip("بلاگ", selected = false, onClick = onBlog) }
-        item { AdminNavChip("کیف پول‌ها", selected = false, onClick = onWallets) }
-        item { AdminNavChip("برداشت‌ها", selected = false, onClick = onWithdrawals) }
+        itemsIndexed(tabs) { index, label ->
+            AdminNavChip(label = label, selected = selected == index, onClick = { onSelect(index) })
+        }
     }
 }
 

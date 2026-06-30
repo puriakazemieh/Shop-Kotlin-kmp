@@ -37,7 +37,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminWithdrawalsScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<AdminWithdrawalsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -61,7 +62,7 @@ fun AdminWithdrawalsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            if (!embedded) TopAppBar(
                 title = { Text(stringResource(Resources.String.Withdraw), fontFamily = AppFont()) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {

@@ -58,6 +58,10 @@ kotlin {
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
+                implementation(project(":feature:admin:options"))
+                implementation(project(":feature:admin:orders"))
+                implementation(project(":feature:admin:wallet"))
+                implementation(project(":feature:admin:blog"))
             }
         }
     }

@@ -46,7 +46,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminOrderScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<AdminOrderViewModel>()
     val state by viewModel.state.collectAsState()
@@ -67,7 +68,7 @@ fun AdminOrderScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopAppBar(
+            if (!embedded) TopAppBar(
                 title = {
                     Text(
                         text = stringResource(Resources.String.ManageOrders),

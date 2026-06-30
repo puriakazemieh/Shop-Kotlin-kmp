@@ -44,7 +44,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AdminStoryScreen(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<AdminStoryViewModel>()
     val state by viewModel.state.collectAsState()
@@ -96,7 +97,7 @@ fun AdminStoryScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            if (!embedded) TopAppBar(
                 title = { Text("مدیریت استوری‌ها") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {

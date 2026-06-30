@@ -37,7 +37,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminDiscountsScreen(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<AdminDiscountsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -59,7 +60,8 @@ fun AdminDiscountsScreen(
 
     ContentWithMessageBar(messageBarState = messageBarState) {
         Scaffold(
-            topBar = {
+            topBar = topBarSlot@{
+                if (embedded) return@topBarSlot
                 if (searchVisible) {
                     SearchBar(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),

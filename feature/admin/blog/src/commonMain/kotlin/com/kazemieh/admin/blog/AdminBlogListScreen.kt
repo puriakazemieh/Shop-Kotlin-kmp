@@ -36,13 +36,25 @@ fun AdminBlogListScreen(
     navigateToManageBlog: (Long?, String?) -> Unit,
     navigateToManageCategory: (Long?) -> Unit,
     navigateBack: () -> Unit,
+    embedded: Boolean = false,
     viewModel: AdminBlogListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
-        topBar = {
+        floatingActionButton = {
+            if (embedded) {
+                FloatingActionButton(onClick = {
+                    if (selectedTab == 0) navigateToManageBlog(null, null)
+                    else navigateToManageCategory(null)
+                }) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                }
+            }
+        },
+        topBar = topBarSlot@{
+            if (embedded) return@topBarSlot
             TopAppBar(
                 title = { Text("مدیریت مجله") },
                 navigationIcon = {
