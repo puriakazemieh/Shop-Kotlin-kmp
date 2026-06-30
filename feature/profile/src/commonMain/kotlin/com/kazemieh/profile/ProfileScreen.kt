@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -181,132 +181,120 @@ fun ProfileScreen(
 
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            WalletBalanceCard(
-                                state = state.walletBalanceState,
-                                onClick = navigateToWallet
-                            )
+                            var selectedTab by remember { mutableStateOf(0) }
+                            ProfileTabs(selected = selectedTab, onSelect = { selectedTab = it })
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                            MenuRow(
-                                label = stringResource(Resources.String.ManageOrders),
-                                subtitle = "پیگیری و تاریخچه سفارش‌ها",
-                                onClick = navigateToMyOrders
-                            ) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.Book),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(21.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            MenuRow(
-                                label = stringResource(Resources.String.MyFavorites),
-                                subtitle = "محصولات نشان‌شده‌ی شما",
-                                onClick = navigateToFavorites
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Favorite,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(21.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(32.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = stringResource(Resources.String.MyAddresses),
-                                    fontFamily = AppFont(),
-                                    fontSize = FontSize.LARGE,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-
-                                IconButton(onClick = {
-                                    addressToEdit = null
-                                    showAddressDialog = true
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = stringResource(Resources.String.AddAddress),
-                                        tint = MaterialTheme.colorScheme.primary
+                            when (selectedTab) {
+                                // ---- اطلاعات شخصی ----
+                                0 -> {
+                                    ProfileForm(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        firstName = profile.firstName,
+                                        onFirstNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateFirstName(value)) },
+                                        lastName = profile.lastName,
+                                        onLastNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateLastName(value)) },
+                                        email = profile.email ?: "",
+                                        phoneNumber = profile.phone,
+                                        onPhoneNumberChange = { value -> viewModel.handleIntent(ProfileIntent.UpdatePhoneNumber(value)) }
+                                    )
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    PrimaryButton(
+                                        text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(Resources.String.UpdateProfile),
+                                        icon = Resources.Icon.Checkmark,
+                                        enabled = state.isFormValid && !state.isSaving,
+                                        onClick = { viewModel.handleIntent(ProfileIntent.SaveProfile) }
                                     )
                                 }
-                            }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            if (state.addressLoading) {
-                                LoadingCard(modifier = Modifier.fillMaxWidth().height(100.dp))
-                            } else if (state.addresses.isEmpty()) {
-                                Text(
-                                    text = stringResource(Resources.String.NoAddressesFound),
-                                    fontFamily = AppFont(),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            } else {
-                                state.addresses.forEach { address ->
-                                    AddressItem(
-                                        address = address,
-                                        onSetDefault = {
-                                            viewModel.handleIntent(
-                                                ProfileIntent.SetDefaultAddress(address.id)
+                                // ---- آدرس‌ها ----
+                                1 -> {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                addressToEdit = null
+                                                showAddressDialog = true
+                                            }
+                                            .padding(vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.width(6.dp))
+                                        Text(
+                                            text = stringResource(Resources.String.AddNewAddress),
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontFamily = AppFont(),
+                                            fontSize = FontSize.REGULAR,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    if (state.addressLoading) {
+                                        LoadingCard(modifier = Modifier.fillMaxWidth().height(100.dp))
+                                    } else if (state.addresses.isEmpty()) {
+                                        Text(
+                                            text = stringResource(Resources.String.NoAddressesFound),
+                                            fontFamily = AppFont(),
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    } else {
+                                        state.addresses.forEach { address ->
+                                            AddressItem(
+                                                address = address,
+                                                onSetDefault = { viewModel.handleIntent(ProfileIntent.SetDefaultAddress(address.id)) },
+                                                onEdit = {
+                                                    addressToEdit = address
+                                                    showAddressDialog = true
+                                                },
+                                                onDelete = { viewModel.handleIntent(ProfileIntent.DeleteAddress(address.id)) }
                                             )
-                                        },
-                                        onEdit = {
-                                            addressToEdit = address
-                                            showAddressDialog = true
-                                        },
-                                        onDelete = {
-                                            viewModel.handleIntent(
-                                                ProfileIntent.DeleteAddress(address.id)
-                                            )
+                                            Spacer(modifier = Modifier.height(10.dp))
                                         }
+                                    }
+                                }
+
+                                // ---- کیف پول ----
+                                2 -> {
+                                    WalletBalanceCard(
+                                        state = state.walletBalanceState,
+                                        onClick = navigateToWallet
                                     )
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+
+                                // ---- سفارش‌ها ----
+                                3 -> {
+                                    MenuRow(
+                                        label = stringResource(Resources.String.ManageOrders),
+                                        subtitle = "پیگیری و تاریخچه سفارش‌ها",
+                                        onClick = navigateToMyOrders
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(Resources.Icon.Book),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(21.dp)
+                                        )
+                                    }
+                                }
+
+                                // ---- علاقه‌مندی‌ها ----
+                                else -> {
+                                    MenuRow(
+                                        label = stringResource(Resources.String.MyFavorites),
+                                        subtitle = "محصولات نشان‌شده‌ی شما",
+                                        onClick = navigateToFavorites
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Favorite,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(21.dp)
+                                        )
+                                    }
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(28.dp))
-
-                            Text(
-                                text = stringResource(Resources.String.UpdateProfile),
-                                fontFamily = AppFont(),
-                                fontSize = FontSize.LARGE,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            ProfileForm(
-                                modifier = Modifier.fillMaxWidth(),
-                                firstName = profile.firstName,
-                                onFirstNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateFirstName(value)) },
-                                lastName = profile.lastName,
-                                onLastNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateLastName(value)) },
-                                email = profile.email ?: "",
-                                phoneNumber = profile.phone,
-                                onPhoneNumberChange = { value -> viewModel.handleIntent(ProfileIntent.UpdatePhoneNumber(value)) }
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            PrimaryButton(
-                                text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(Resources.String.UpdateProfile),
-                                icon = Resources.Icon.Checkmark,
-                                enabled = state.isFormValid && !state.isSaving,
-                                onClick = { viewModel.handleIntent(ProfileIntent.SaveProfile) }
-                            )
                         }
                     }
                 }
@@ -408,6 +396,47 @@ private fun ProfileHeader(name: String, phone: String) {
             )
         }
     }
+}
+
+/** ردیفِ تب‌های پروفایل (مثل پنل ادمین): اطلاعات شخصی / آدرس‌ها / کیف پول / … */
+@Composable
+private fun ProfileTabs(selected: Int, onSelect: (Int) -> Unit) {
+    val tabs = listOf("اطلاعات شخصی", "آدرس‌ها", "کیف پول", "سفارش‌ها", "علاقه‌مندی‌ها")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        tabs.forEachIndexed { index, label ->
+            ProfileTabChip(
+                label = label,
+                selected = selected == index,
+                onClick = { onSelect(index) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileTabChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        text = label,
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .then(
+                if (selected) Modifier.background(colors.primary)
+                else Modifier.background(colors.surface).border(1.dp, colors.line, RoundedCornerShape(12.dp))
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 9.dp),
+        fontFamily = AppFont(),
+        fontSize = FontSize.REGULAR,
+        fontWeight = FontWeight.Bold,
+        color = if (selected) colors.onPrimary else colors.onSurfaceVariant,
+        maxLines = 1
+    )
 }
 
 /** ردیفِ منوی پروفایل — مطابق اسپک: کاشیِ آیکن + عنوان + زیرعنوان + فلش. */
