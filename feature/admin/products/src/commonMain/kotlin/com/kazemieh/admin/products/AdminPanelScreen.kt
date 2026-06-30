@@ -99,19 +99,7 @@ fun AdminPanelScreen(
             )
         },
         floatingActionButton = {
-            // فقط در تبِ محصولات؛ بقیه‌ی تب‌ها FAB/اکشنِ خودشان را دارند
-            if (selectedTab == 1) {
-                FloatingActionButton(
-                    onClick = { navigateToManageProduct(null) },
-                    containerColor = colors.primary,
-                    contentColor = colors.onPrimary
-                ) {
-                    Icon(
-                        painter = painterResource(Resources.Icon.Plus),
-                        contentDescription = stringResource(Resources.String.AddIconDesc)
-                    )
-                }
-            }
+            // هر تب اکشنِ افزودنِ خودش را به‌صورت اینلاین دارد (مطابق مرجع)
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
@@ -141,7 +129,8 @@ fun AdminPanelScreen(
                     1 -> ProductsTab(
                         state = state,
                         onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
-                        onProductClick = { id -> navigateToManageProduct(id) }
+                        onProductClick = { id -> navigateToManageProduct(id) },
+                        onAdd = { navigateToManageProduct(null) }
                     )
                     2 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     3 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
@@ -166,8 +155,10 @@ fun AdminPanelScreen(
 private fun ProductsTab(
     state: AdminPanelState,
     onRefresh: () -> Unit,
-    onProductClick: (Long) -> Unit
+    onProductClick: (Long) -> Unit,
+    onAdd: () -> Unit
 ) {
+    val colors = AppTheme.colors
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
         onRefresh = onRefresh,
@@ -177,21 +168,50 @@ private fun ProductsTab(
             is AppResult.Loading -> LoadingCard(modifier = Modifier.fillMaxSize())
             is AppResult.Success -> {
                 val products = result.data.items
-                if (products.isNotEmpty()) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(all = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(all = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // هدرِ مدیریت محصولات + دکمه‌ی افزودن (مطابق مرجع)
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "مدیریت محصولات (${result.data.totalElements} کالا)",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = FontSize.REGULAR,
+                                color = colors.onSurface
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(11.dp))
+                                    .background(colors.primary)
+                                    .clickable { onAdd() }
+                                    .padding(horizontal = 14.dp, vertical = 9.dp),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(painterResource(Resources.Icon.Plus), contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
+                                Text("افزودن محصول", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                    if (products.isEmpty()) {
+                        item {
+                            InfoCard(
+                                image = Resources.Image.Cat,
+                                title = stringResource(Resources.String.Oops),
+                                subtitle = stringResource(Resources.String.NothingHere)
+                            )
+                        }
+                    } else {
                         items(items = products, key = { it.id }) { product ->
                             AdminProductCard(product = product, onClick = { onProductClick(product.id) })
                         }
                     }
-                } else {
-                    InfoCard(
-                        image = Resources.Image.Cat,
-                        title = stringResource(Resources.String.Oops),
-                        subtitle = stringResource(Resources.String.NothingHere)
-                    )
                 }
             }
             is AppResult.Error -> InfoCard(

@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -25,7 +26,6 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
-import com.kazemieh.designsystem.component.AlertTextField
 import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
@@ -37,7 +37,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ManageProductScreen(
     id: Long?,
@@ -331,11 +331,26 @@ fun ManageProductScreen(
                         expanded = true
                     )
 
-                    AlertTextField(
+                    // ---- دسته‌بندی (چیپ‌های انتخابی، مطابق مرجع) ----
+                    FieldLabel(stringResource(Resources.String.SelectCategory))
+                    FlowRow(
                         modifier = Modifier.fillMaxWidth(),
-                        text = state.selectedCategory?.name ?: stringResource(Resources.String.SelectCategory),
-                        onClick = { showCategoriesBottomSheet = true }
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        state.categories.forEach { category ->
+                            CategoryChip(
+                                label = category.name,
+                                selected = state.selectedCategory?.id == category.id,
+                                onClick = { viewModel.handleIntent(ManageProductIntent.SelectCategory(category)) }
+                            )
+                        }
+                        CategoryChip(
+                            label = "+ دسته جدید",
+                            selected = false,
+                            onClick = { showCreateCategoryDialog = true }
+                        )
+                    }
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -525,77 +540,95 @@ fun ManageProductScreen(
                         }
                     }
 
-                    // Variants Section
-                    if (state.variants.isNotEmpty()) {
-                        Text(
-                            stringResource(Resources.String.Variants),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = FontSize.MEDIUM
-                        )
-
-                        val masterKeys = state.variants.firstOrNull()?.options?.keys ?: emptySet()
-
-                        state.variants.forEach { variant ->
-                            val currentKeys = variant.options.keys
-                            // A variant is only invalid if it LACKS a property that the master variant has.
-                            val isInvalid =
-                                !currentKeys.containsAll(masterKeys) && masterKeys.isNotEmpty()
-
-                            VariantItem(
-                                variant = variant,
-                                isInvalid = isInvalid,
-                                onClick = { selectedVariantToEdit = variant },
-                                onFieldUpdate = { sku, price, onHand ->
-                                    viewModel.handleIntent(
-                                        ManageProductIntent.UpdateVariantInline(
-                                            id = variant.id,
-                                            sku = sku,
-                                            price = price,
-                                            onHand = onHand
-                                        )
-                                    )
-                                }
-                            )
-                        }
-                    }
-
+                    // ---- تنوع محصول (واریانت‌ها) — مطابق مرجع ----
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        OutlinedButton(
-                            onClick = { showBulkVariantDialog = true },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Icon(
-                                painterResource(Resources.Icon.Plus),
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "تنوع محصول (واریانت‌ها) ${state.variants.size} مورد",
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = FontSize.EXTRA_REGULAR,
+                                color = AppTheme.colors.onSurface
                             )
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(Resources.String.BulkAddVariants))
+                            Spacer(Modifier.height(3.dp))
+                            Text(
+                                text = "برای هر ترکیب رنگ/سایز/جنس، قیمت و موجودی جداگانه تعریف کنید.",
+                                fontSize = FontSize.SMALL,
+                                color = AppTheme.colors.onSurfaceVariant
+                            )
                         }
+                        Spacer(Modifier.width(10.dp))
+                        Text(
+                            text = "+ افزودن واریانت",
+                            modifier = Modifier.clickable { showAddVariantDialog = true },
+                            color = AppTheme.colors.primary,
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                        Button(
-                            onClick = { showAddVariantDialog = true },
-                            modifier = Modifier.weight(1f)
+                    if (state.variants.isEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(Radius.md))
+                                .border(1.dp, AppTheme.colors.line, RoundedCornerShape(Radius.md))
+                                .clickable { showAddVariantDialog = true }
+                                .padding(vertical = 28.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Icon(
-                                painterResource(Resources.Icon.Plus),
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(Resources.String.AddVariant))
+                            Text("هنوز واریانتی تعریف نشده", fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR, color = AppTheme.colors.onSurface)
+                            Spacer(Modifier.height(5.dp))
+                            Text("برای افزودن رنگ، سایز و موجودی روی این کادر بزنید", fontSize = FontSize.SMALL, color = AppTheme.colors.onSurfaceVariant)
                         }
+                    } else {
+                        val masterKeys = state.variants.firstOrNull()?.options?.keys ?: emptySet()
+                        state.variants.forEach { variant ->
+                            val isInvalid = !variant.options.keys.containsAll(masterKeys) && masterKeys.isNotEmpty()
+                            VariantDisplayCard(
+                                variant = variant,
+                                isInvalid = isInvalid,
+                                onEdit = { selectedVariantToEdit = variant },
+                                onDelete = { viewModel.handleIntent(ManageProductIntent.DeleteVariant(variant.id)) }
+                            )
+                        }
+                        Text(
+                            text = "+ تولید گروهیِ واریانت‌ها",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showBulkVariantDialog = true }
+                                .padding(vertical = 6.dp),
+                            color = AppTheme.colors.primary,
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    PrimaryButton(
-                        text = if (id == null) stringResource(Resources.String.AddProduct) else stringResource(Resources.String.UpdateProduct),
-                        enabled = !state.isSaving,
-                        onClick = { viewModel.handleIntent(ManageProductIntent.SaveProduct) }
-                    )
+                    // ---- ذخیره / انصراف ----
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        PrimaryButton(
+                            modifier = Modifier.weight(1f),
+                            text = if (id == null) stringResource(Resources.String.AddProduct) else stringResource(Resources.String.UpdateProduct),
+                            enabled = !state.isSaving,
+                            onClick = { viewModel.handleIntent(ManageProductIntent.SaveProduct) }
+                        )
+                        OutlinedButton(
+                            onClick = navigateBack,
+                            modifier = Modifier.weight(0.5f).height(52.dp)
+                        ) {
+                            Text(stringResource(Resources.String.Cancel))
+                        }
+                    }
                     Spacer(modifier = Modifier.height(32.dp))
                 }
             }
@@ -603,79 +636,101 @@ fun ManageProductScreen(
     }
 }
 
+/** برچسبِ بالای فیلد (مطابق مرجع). */
 @Composable
-fun VariantItem(
-    variant: AdminVariant, 
-    isInvalid: Boolean = false, 
-    onClick: () -> Unit,
-    onFieldUpdate: (sku: String?, price: Double?, onHand: Int?) -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth().then(
-            if (isInvalid) Modifier.border(2.dp, MaterialTheme.colorScheme.error, CardDefaults.shape)
-            else Modifier
-        ),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, AppTheme.colors.line),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = variant.options.entries.joinToString(", ") { "${it.key}: ${it.value}" },
-                    fontSize = FontSize.MEDIUM,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f).clickable { onClick() }
-                )
-                val discountedPrice = variant.discountedPrice
-                if (discountedPrice != null) {
-                    Text(
-                        text = stringResource(Resources.String.PriceFormat, discountedPrice),
-                        fontSize = FontSize.SMALL,
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                IconButton(onClick = onClick, modifier = Modifier.size(24.dp)) {
-                    Icon(painterResource(Resources.Icon.Edit), contentDescription = null, modifier = Modifier.size(16.dp))
-                }
-            }
+private fun FieldLabel(text: String) {
+    Text(
+        text = text,
+        fontWeight = FontWeight.Bold,
+        fontSize = FontSize.SMALL,
+        color = AppTheme.colors.onSurface
+    )
+}
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                OutlinedTextField(
-                    value = variant.sku,
-                    onValueChange = { onFieldUpdate(it, null, null) },
-                    label = { Text(stringResource(Resources.String.Sku), fontSize = FontSize.EXTRA_SMALL) },
-                    modifier = Modifier.weight(1f),
-                    textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = if (variant.price == 0.0) "" else variant.price.toString(),
-                    onValueChange = { onFieldUpdate(null, it.toDoubleOrNull() ?: 0.0, null) },
-                    label = { Text(stringResource(Resources.String.Price), fontSize = FontSize.EXTRA_SMALL) },
-                    modifier = Modifier.weight(1f),
-                    textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = variant.onHand.toString(),
-                    onValueChange = { onFieldUpdate(null, null, it.toIntOrNull() ?: 0) },
-                    label = { Text(stringResource(Resources.String.InitialStock), fontSize = FontSize.EXTRA_SMALL) },
-                    modifier = Modifier.weight(0.8f),
-                    textStyle = LocalTextStyle.current.copy(fontSize = FontSize.SMALL),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
-                )
-            }
+/** چیپِ انتخابِ دسته‌بندی. */
+@Composable
+private fun CategoryChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        text = label,
+        modifier = Modifier
+            .clip(RoundedCornerShape(11.dp))
+            .then(
+                if (selected) Modifier.background(colors.primary)
+                else Modifier.background(colors.surface).border(1.dp, colors.line, RoundedCornerShape(11.dp))
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 9.dp),
+        fontSize = FontSize.SMALL,
+        fontWeight = FontWeight.Bold,
+        color = if (selected) colors.onPrimary else colors.onSurfaceVariant,
+        maxLines = 1
+    )
+}
+
+/** کارتِ نمایشِ واریانت — مطابق مرجع: عنوان + نشانِ فعال + ویرایش/حذف + خط SKU/قیمت/موجودی. */
+@Composable
+private fun VariantDisplayCard(
+    variant: AdminVariant,
+    isInvalid: Boolean,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    val colors = AppTheme.colors
+    val priceText = stringResource(Resources.String.PriceFormat, variant.discountedPrice ?: variant.price)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(
+                width = if (isInvalid) 1.5.dp else 1.dp,
+                color = if (isInvalid) colors.sale else colors.line,
+                shape = RoundedCornerShape(Radius.md)
+            )
+            .padding(14.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = variant.options.entries.joinToString(" · ") { "${it.key}: ${it.value}" }.ifBlank { variant.sku },
+                modifier = Modifier.weight(1f),
+                fontWeight = FontWeight.Bold,
+                fontSize = FontSize.SMALL,
+                color = colors.onSurface
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = if (variant.isActive) "فعال" else "غیرفعال",
+                modifier = Modifier
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(if (variant.isActive) colors.ok.copy(alpha = 0.12f) else colors.surfaceVariant)
+                    .padding(horizontal = 9.dp, vertical = 4.dp),
+                fontSize = FontSize.EXTRA_SMALL,
+                fontWeight = FontWeight.Bold,
+                color = if (variant.isActive) colors.ok else colors.onSurfaceVariant
+            )
+            Spacer(Modifier.width(8.dp))
+            Box(
+                modifier = Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(colors.accentSoft).clickable { onEdit() },
+                contentAlignment = Alignment.Center
+            ) { Icon(painterResource(Resources.Icon.Edit), contentDescription = null, tint = colors.primary, modifier = Modifier.size(15.dp)) }
+            Spacer(Modifier.width(6.dp))
+            Box(
+                modifier = Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(colors.sale.copy(alpha = 0.1f)).clickable { onDelete() },
+                contentAlignment = Alignment.Center
+            ) { Icon(painterResource(Resources.Icon.Delete), contentDescription = null, tint = colors.sale, modifier = Modifier.size(15.dp)) }
+        }
+        Spacer(Modifier.height(9.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            Text("SKU: ${variant.sku}", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            Text("قیمت: $priceText", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            Text("موجودی: ${variant.onHand}", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
         }
     }
 }
