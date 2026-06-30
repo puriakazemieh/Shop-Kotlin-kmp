@@ -17,6 +17,8 @@ interface AdminRepository {
         title: String,
         slug: String,
         description: String?,
+        brand: String? = null,
+        attributes: List<com.kazemieh.domain.catalog.ProductAttribute>? = null,
         basePrice: Double?,
         discountedPrice: Double? = null,
         sku: String? = null,
@@ -31,6 +33,8 @@ interface AdminRepository {
         title: String?,
         slug: String?,
         description: String?,
+        brand: String? = null,
+        attributes: List<com.kazemieh.domain.catalog.ProductAttribute>? = null,
         basePrice: Double?,
         discountedPrice: Double? = null,
         isActive: Boolean?

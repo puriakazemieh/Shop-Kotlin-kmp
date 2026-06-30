@@ -13,6 +13,8 @@ class CreateAdminProductUseCase(
         title: String,
         slug: String,
         description: String?,
+        brand: String? = null,
+        attributes: List<com.kazemieh.domain.catalog.ProductAttribute>? = null,
         basePrice: Double?,
         discountedPrice: Double? = null,
         sku: String? = null,
@@ -20,6 +22,6 @@ class CreateAdminProductUseCase(
         isActive: Boolean,
         variants: List<AdminCreateVariant>? = null
     ): AppResult<AdminProduct> {
-        return repository.createProduct(categoryId, title, slug, description, basePrice, discountedPrice, sku, initialOnHand, isActive, variants)
+        return repository.createProduct(categoryId, title, slug, description, brand, attributes, basePrice, discountedPrice, sku, initialOnHand, isActive, variants)
     }
 }

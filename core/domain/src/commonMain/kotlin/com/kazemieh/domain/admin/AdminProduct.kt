@@ -6,6 +6,8 @@ data class AdminProduct(
     val title: String,
     val slug: String,
     val description: String?,
+    val brand: String? = null,
+    val attributes: List<com.kazemieh.domain.catalog.ProductAttribute> = emptyList(),
     val basePrice: Double?,
     val discountedPrice: Double? = null,
     val sku: String? = null,

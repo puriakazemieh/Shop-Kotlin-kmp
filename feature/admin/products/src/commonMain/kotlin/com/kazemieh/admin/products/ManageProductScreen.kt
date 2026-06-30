@@ -318,6 +318,12 @@ fun ManageProductScreen(
                     )
 
                     CustomTextField(
+                        value = state.brand,
+                        onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateBrand(it)) },
+                        placeholder = "برند (مثلاً سیلک‌رز)"
+                    )
+
+                    CustomTextField(
                         modifier = Modifier.height(120.dp),
                         value = state.description,
                         onValueChange = {
@@ -536,6 +542,67 @@ fun ManageProductScreen(
                                         Text("رسانه", fontSize = FontSize.EXTRA_SMALL)
                                     }
                                 }
+                            }
+                        }
+                    }
+
+                    // ---- مشخصات محصول (specs) — مطابق مرجع ----
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "مشخصات محصول",
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = FontSize.EXTRA_REGULAR,
+                                color = AppTheme.colors.onSurface
+                            )
+                            Spacer(Modifier.height(3.dp))
+                            Text(
+                                text = "این مشخصات در صفحه‌ی محصول به مشتری نمایش داده می‌شود.",
+                                fontSize = FontSize.SMALL,
+                                color = AppTheme.colors.onSurfaceVariant
+                            )
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        Text(
+                            text = "+ افزودن مشخصه",
+                            modifier = Modifier.clickable { viewModel.handleIntent(ManageProductIntent.AddAttribute) },
+                            color = AppTheme.colors.primary,
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    state.attributes.forEachIndexed { index, attr ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                value = attr.name,
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateAttribute(index, it, attr.value)) },
+                                placeholder = "نام (مثلاً جنس)"
+                            )
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                value = attr.value,
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateAttribute(index, attr.name, it)) },
+                                placeholder = "مقدار (مثلاً نخی)"
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(RoundedCornerShape(Radius.sm))
+                                    .background(AppTheme.colors.sale.copy(alpha = 0.1f))
+                                    .clickable { viewModel.handleIntent(ManageProductIntent.RemoveAttribute(index)) },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(painterResource(Resources.Icon.Delete), contentDescription = null, tint = AppTheme.colors.sale, modifier = Modifier.size(16.dp))
                             }
                         }
                     }

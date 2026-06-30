@@ -414,22 +414,28 @@ fun DetailsScreen(
                         // ---- مشخصات / ویژگی‌های محصول ----
                         val specs: List<Pair<String, String>> = remember(product) {
                             buildList {
-                                product.categoryName?.takeIf { it.isNotBlank() }
-                                    ?.let { add("دسته‌بندی" to it) }
-                                // گزینه‌های واریانت‌ها (سایز، رنگ، …) را تجمیع می‌کنیم
-                                val optionMap = linkedMapOf<String, LinkedHashSet<String>>()
-                                product.variants.forEach { v ->
-                                    v.options.forEach { (k, value) ->
-                                        if (value.isNotBlank()) {
-                                            optionMap.getOrPut(k) { linkedSetOf() }.add(value)
+                                product.brand?.takeIf { it.isNotBlank() }?.let { add("برند" to it) }
+                                if (product.attributes.isNotEmpty()) {
+                                    // مشخصاتِ واقعیِ ثبت‌شده توسط ادمین
+                                    product.attributes.forEach { add(it.name to it.value) }
+                                } else {
+                                    product.categoryName?.takeIf { it.isNotBlank() }
+                                        ?.let { add("دسته‌بندی" to it) }
+                                    // گزینه‌های واریانت‌ها (سایز، رنگ، …) را تجمیع می‌کنیم
+                                    val optionMap = linkedMapOf<String, LinkedHashSet<String>>()
+                                    product.variants.forEach { v ->
+                                        v.options.forEach { (k, value) ->
+                                            if (value.isNotBlank()) {
+                                                optionMap.getOrPut(k) { linkedSetOf() }.add(value)
+                                            }
                                         }
                                     }
+                                    optionMap.forEach { (k, values) ->
+                                        add(k to values.joinToString("، "))
+                                    }
+                                    val totalAvailable = product.variants.sumOf { it.available }
+                                    add("وضعیت موجودی" to if (totalAvailable > 0) "موجود در انبار" else "ناموجود")
                                 }
-                                optionMap.forEach { (k, values) ->
-                                    add(k to values.joinToString("، "))
-                                }
-                                val totalAvailable = product.variants.sumOf { it.available }
-                                add("وضعیت موجودی" to if (totalAvailable > 0) "موجود در انبار" else "ناموجود")
                             }
                         }
                         if (specs.isNotEmpty()) {

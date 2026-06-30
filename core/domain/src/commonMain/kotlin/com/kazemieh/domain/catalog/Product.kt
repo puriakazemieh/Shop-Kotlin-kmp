@@ -18,11 +18,18 @@ data class ProductSummary(
     val reviewCount: Long = 0
 )
 
+data class ProductAttribute(
+    val name: String,
+    val value: String
+)
+
 data class ProductDetail(
     val id: Long,
     val title: String,
     val slug: String,
     val description: String?,
+    val brand: String? = null,
+    val attributes: List<ProductAttribute> = emptyList(),
     val categoryId: Long?,
     val categoryName: String?,
     val images: List<ProductImage>,

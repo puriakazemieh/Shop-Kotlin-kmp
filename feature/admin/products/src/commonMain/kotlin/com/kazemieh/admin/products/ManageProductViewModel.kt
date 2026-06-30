@@ -65,6 +65,18 @@ class ManageProductViewModel(
             }
 
             is ManageProductIntent.UpdateDescription -> _state.update { it.copy(description = intent.description) }
+            is ManageProductIntent.UpdateBrand -> _state.update { it.copy(brand = intent.brand) }
+            is ManageProductIntent.AddAttribute -> _state.update {
+                it.copy(attributes = it.attributes + com.kazemieh.domain.catalog.ProductAttribute("", ""))
+            }
+            is ManageProductIntent.UpdateAttribute -> _state.update { st ->
+                st.copy(attributes = st.attributes.mapIndexed { i, a ->
+                    if (i == intent.index) com.kazemieh.domain.catalog.ProductAttribute(intent.name, intent.value) else a
+                })
+            }
+            is ManageProductIntent.RemoveAttribute -> _state.update { st ->
+                st.copy(attributes = st.attributes.filterIndexed { i, _ -> i != intent.index })
+            }
             is ManageProductIntent.UpdateBasePrice -> _state.update { it.copy(basePrice = intent.price) }
             is ManageProductIntent.UpdateDiscountedPrice -> _state.update { it.copy(discountedPrice = intent.price) }
             is ManageProductIntent.UpdateSku -> _state.update { it.copy(sku = intent.sku) }
@@ -258,6 +270,8 @@ class ManageProductViewModel(
                             title = detail.product.title,
                             slug = detail.product.slug,
                             description = detail.product.description ?: "",
+                            brand = detail.product.brand ?: "",
+                            attributes = detail.product.attributes,
                             basePrice = detail.product.basePrice ?: 0.0,
                             discountedPrice = detail.product.discountedPrice ?: 0.0,
                             sku = detail.product.sku ?: "",
@@ -332,6 +346,8 @@ class ManageProductViewModel(
                     title = currentState.title,
                     slug = currentState.slug,
                     description = currentState.description,
+                    brand = currentState.brand.ifBlank { null },
+                    attributes = currentState.attributes,
                     basePrice = currentState.basePrice,
                     discountedPrice = if (currentState.discountedPrice == 0.0) null else currentState.discountedPrice,
                     sku = currentState.sku.ifBlank { null },
@@ -360,6 +376,8 @@ class ManageProductViewModel(
                     title = currentState.title,
                     slug = currentState.slug,
                     description = currentState.description,
+                    brand = currentState.brand.ifBlank { null },
+                    attributes = currentState.attributes,
                     basePrice = currentState.basePrice,
                     discountedPrice = if (currentState.discountedPrice == 0.0) null else currentState.discountedPrice,
                     isActive = currentState.isActive
@@ -695,6 +713,8 @@ data class ManageProductState(
     val title: String = "",
     val slug: String = "",
     val description: String = "",
+    val brand: String = "",
+    val attributes: List<com.kazemieh.domain.catalog.ProductAttribute> = emptyList(),
     val basePrice: Double = 0.0,
     val discountedPrice: Double = 0.0,
     val sku: String = "",
@@ -720,6 +740,10 @@ data class ProductMediaUiModel(
 sealed interface ManageProductIntent {
     data class UpdateTitle(val title: String) : ManageProductIntent
     data class UpdateDescription(val description: String) : ManageProductIntent
+    data class UpdateBrand(val brand: String) : ManageProductIntent
+    data object AddAttribute : ManageProductIntent
+    data class UpdateAttribute(val index: Int, val name: String, val value: String) : ManageProductIntent
+    data class RemoveAttribute(val index: Int) : ManageProductIntent
     data class UpdateBasePrice(val price: Double) : ManageProductIntent
     data class UpdateSku(val sku: String) : ManageProductIntent
     data class UpdateInitialOnHand(val onHand: Int) : ManageProductIntent

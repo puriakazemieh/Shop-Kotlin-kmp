@@ -35,6 +35,8 @@ class AdminRepositoryImpl(
         title: String,
         slug: String,
         description: String?,
+        brand: String?,
+        attributes: List<com.kazemieh.domain.catalog.ProductAttribute>?,
         basePrice: Double?,
         discountedPrice: Double?,
         sku: String?,
@@ -44,16 +46,18 @@ class AdminRepositoryImpl(
     ): AppResult<AdminProduct> =
         dataSource.createProduct(
             AdminCreateProductRequest(
-                categoryId,
-                title,
-                slug,
-                description,
-                basePrice,
-                discountedPrice,
-                sku,
-                initialOnHand,
-                isActive,
-                variants?.map {
+                categoryId = categoryId,
+                title = title,
+                slug = slug,
+                description = description,
+                brand = brand,
+                attributes = attributes?.map { com.kazemieh.network.catalog.dto.response.ProductAttributeDto(it.name, it.value) },
+                basePrice = basePrice,
+                discountedPrice = discountedPrice,
+                sku = sku,
+                initialOnHand = initialOnHand,
+                isActive = isActive,
+                variants = variants?.map {
                     AdminCreateVariantRequest(
                         it.options.map { option -> AdminVariantOptionRequest(option.type, option.value) },
                         it.sku,
@@ -76,11 +80,26 @@ class AdminRepositoryImpl(
         title: String?,
         slug: String?,
         description: String?,
+        brand: String?,
+        attributes: List<com.kazemieh.domain.catalog.ProductAttribute>?,
         basePrice: Double?,
         discountedPrice: Double?,
         isActive: Boolean?
     ): AppResult<AdminProduct> =
-        dataSource.updateProduct(id, AdminUpdateProductRequest(categoryId, title, slug, description, basePrice, discountedPrice, isActive)).map { it.toAdminDomain() }
+        dataSource.updateProduct(
+            id,
+            AdminUpdateProductRequest(
+                categoryId = categoryId,
+                title = title,
+                slug = slug,
+                description = description,
+                brand = brand,
+                attributes = attributes?.map { com.kazemieh.network.catalog.dto.response.ProductAttributeDto(it.name, it.value) },
+                basePrice = basePrice,
+                discountedPrice = discountedPrice,
+                isActive = isActive
+            )
+        ).map { it.toAdminDomain() }
 
     override suspend fun deleteProduct(id: Long): AppResult<Unit> =
         dataSource.deleteProduct(id)

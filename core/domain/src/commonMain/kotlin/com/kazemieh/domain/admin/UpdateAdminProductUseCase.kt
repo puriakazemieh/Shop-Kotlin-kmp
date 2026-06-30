@@ -13,10 +13,12 @@ class UpdateAdminProductUseCase(
         title: String?,
         slug: String?,
         description: String?,
+        brand: String? = null,
+        attributes: List<com.kazemieh.domain.catalog.ProductAttribute>? = null,
         basePrice: Double?,
         discountedPrice: Double? = null,
         isActive: Boolean?
     ): AppResult<AdminProduct> {
-        return repository.updateProduct(id, categoryId, title, slug, description, basePrice, discountedPrice, isActive)
+        return repository.updateProduct(id, categoryId, title, slug, description, brand, attributes, basePrice, discountedPrice, isActive)
     }
 }
