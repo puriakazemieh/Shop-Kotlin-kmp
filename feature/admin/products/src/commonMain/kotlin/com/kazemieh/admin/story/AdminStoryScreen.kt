@@ -1,19 +1,28 @@
 package com.kazemieh.admin.story
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -32,7 +41,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AdminStoryScreen(
     navigateBack: () -> Unit
@@ -121,13 +130,16 @@ fun AdminStoryScreen(
                         subtitle = stringResource(Resources.String.NothingHere)
                     )
                 } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(state.stories) { story ->
-                            AdminStoryCard(
+                        state.stories.forEach { story ->
+                            AdminStoryCircle(
                                 story = story,
                                 onDelete = { viewModel.handleIntent(AdminStoryIntent.DeleteStory(story.id)) }
                             )
@@ -186,39 +198,55 @@ fun CreateStoryDialog(
 }
 
 @Composable
-fun AdminStoryCard(
+fun AdminStoryCircle(
     story: Story,
     onDelete: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.width(74.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = story.mediaUrl,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = story.title ?: "بدون عنوان", style = MaterialTheme.typography.titleMedium)
-                Text(text = story.createdAt, style = MaterialTheme.typography.bodySmall)
-                story.productId?.let {
-                    Text(
-                        text = "محصول مرتبط: $it",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+        Box(contentAlignment = Alignment.TopStart) {
+            // حلقه‌ی استوری
+            Box(
+                modifier = Modifier
+                    .size(66.dp)
+                    .clip(CircleShape)
+                    .background(Brush.linearGradient(listOf(colors.gold, colors.primary)))
+                    .padding(2.5.dp)
+                    .clip(CircleShape)
+                    .background(colors.surface)
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = story.mediaUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize().clip(CircleShape).background(colors.surfaceVariant),
+                    contentScale = ContentScale.Crop
+                )
             }
-            IconButton(onClick = onDelete) {
-                Icon(painterResource(Resources.Icon.Delete), contentDescription = null, tint = AppTheme.colors.sale)
+            // دکمه‌ی حذف
+            Box(
+                modifier = Modifier
+                    .size(20.dp)
+                    .clip(CircleShape)
+                    .background(colors.sale)
+                    .clickable { onDelete() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text("×", color = Color.White, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
             }
         }
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = story.title ?: "بدون عنوان",
+            fontSize = FontSize.EXTRA_SMALL,
+            color = colors.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
+        )
     }
 }
