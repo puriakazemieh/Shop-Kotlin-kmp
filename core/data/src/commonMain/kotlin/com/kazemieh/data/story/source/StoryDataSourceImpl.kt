@@ -20,17 +20,23 @@ class StoryDataSourceImpl(
         bytes: ByteArray,
         mediaType: String,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String,
+        categoryId: Long?,
+        blogSlug: String?
     ): AppResult<StoryResponse> = safeApiCall {
-        api.createStory(bytes, mediaType, productId, title)
+        api.createStory(bytes, mediaType, productId, title, linkType, categoryId, blogSlug)
     }
 
     override suspend fun updateStory(
         id: Long,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String?,
+        categoryId: Long?,
+        blogSlug: String?
     ): AppResult<StoryResponse> = safeApiCall {
-        api.updateStory(id, productId, title)
+        api.updateStory(id, productId, title, linkType, categoryId, blogSlug)
     }
 
     override suspend fun deleteStory(id: Long): AppResult<Unit> = safeApiCall {

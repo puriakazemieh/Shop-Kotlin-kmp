@@ -31,7 +31,7 @@ class AdminStoryViewModel(
     fun handleIntent(intent: AdminStoryIntent) {
         when (intent) {
             is AdminStoryIntent.Refresh -> loadStories()
-            is AdminStoryIntent.CreateStory -> createStory(intent.bytes, intent.mediaType, intent.productId, intent.title)
+            is AdminStoryIntent.CreateStory -> createStory(intent.bytes, intent.mediaType, intent.productId, intent.title, intent.linkType, intent.categoryId, intent.blogSlug)
             is AdminStoryIntent.UpdateStory -> updateStory(intent.id, intent.productId, intent.title)
             is AdminStoryIntent.DeleteStory -> deleteStory(intent.id)
         }
@@ -51,10 +51,18 @@ class AdminStoryViewModel(
         }
     }
 
-    private fun createStory(bytes: ByteArray, mediaType: StoryMediaType, productId: Long?, title: String?) {
+    private fun createStory(
+        bytes: ByteArray,
+        mediaType: StoryMediaType,
+        productId: Long?,
+        title: String?,
+        linkType: StoryLinkType,
+        categoryId: Long?,
+        blogSlug: String?
+    ) {
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true) }
-            when (val result = createStoryUseCase(bytes, mediaType, productId, title)) {
+            when (val result = createStoryUseCase(bytes, mediaType, productId, title, linkType, categoryId, blogSlug)) {
                 is AppResult.Success -> {
                     _effect.send(AdminStoryEffect.ShowSuccess("Story created successfully"))
                     loadStories()
@@ -103,7 +111,15 @@ data class AdminStoryState(
 
 sealed interface AdminStoryIntent {
     data object Refresh : AdminStoryIntent
-    data class CreateStory(val bytes: ByteArray, val mediaType: StoryMediaType, val productId: Long?, val title: String?) : AdminStoryIntent
+    data class CreateStory(
+        val bytes: ByteArray,
+        val mediaType: StoryMediaType,
+        val productId: Long?,
+        val title: String?,
+        val linkType: StoryLinkType = StoryLinkType.NONE,
+        val categoryId: Long? = null,
+        val blogSlug: String? = null
+    ) : AdminStoryIntent
     data class UpdateStory(val id: Long, val productId: Long?, val title: String?) : AdminStoryIntent
     data class DeleteStory(val id: Long) : AdminStoryIntent
 }

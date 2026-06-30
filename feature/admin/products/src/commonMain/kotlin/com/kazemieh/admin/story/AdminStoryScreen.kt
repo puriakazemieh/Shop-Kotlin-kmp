@@ -40,6 +40,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.story.Story
+import com.kazemieh.domain.story.StoryLinkType
 import com.kazemieh.domain.story.StoryMediaType
 import com.kazemieh.admin.products.MediaPicker
 import org.jetbrains.compose.resources.painterResource
@@ -87,13 +88,16 @@ fun AdminStoryScreen(
                 showCreateDialog = false
                 selectedMediaBytes = null
             },
-            onConfirm = { title, productId ->
+            onConfirm = { title, linkType, productId, categoryId, blogSlug ->
                 viewModel.handleIntent(
                     AdminStoryIntent.CreateStory(
                         selectedMediaBytes!!,
                         if (isVideo) StoryMediaType.VIDEO else StoryMediaType.IMAGE,
                         productId,
-                        title
+                        title,
+                        linkType,
+                        categoryId,
+                        blogSlug
                     )
                 )
                 showCreateDialog = false
@@ -176,17 +180,20 @@ fun AdminStoryScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CreateStoryDialog(
     mediaBytes: ByteArray?,
     onPickMedia: () -> Unit,
     onDismiss: () -> Unit,
-    onConfirm: (title: String?, productId: Long?) -> Unit
+    onConfirm: (title: String?, linkType: StoryLinkType, productId: Long?, categoryId: Long?, blogSlug: String?) -> Unit
 ) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
     var productId by remember { mutableStateOf("") }
-    var linkToProduct by remember { mutableStateOf(false) }
+    var categoryId by remember { mutableStateOf("") }
+    var blogSlug by remember { mutableStateOf("") }
+    var linkType by remember { mutableStateOf(StoryLinkType.NONE) }
 
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -247,30 +254,44 @@ fun CreateStoryDialog(
             Spacer(Modifier.height(16.dp))
             Text("لینک استوری به", fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL, color = colors.onSurface)
             Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                StoryLinkChip("بدون لینک", selected = !linkToProduct) { linkToProduct = false; productId = "" }
-                StoryLinkChip("محصول", selected = linkToProduct) { linkToProduct = true }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                StoryLinkChip("بدون لینک", selected = linkType == StoryLinkType.NONE) { linkType = StoryLinkType.NONE }
+                StoryLinkChip("محصول", selected = linkType == StoryLinkType.PRODUCT) { linkType = StoryLinkType.PRODUCT }
+                StoryLinkChip("دسته‌بندی", selected = linkType == StoryLinkType.CATEGORY) { linkType = StoryLinkType.CATEGORY }
+                StoryLinkChip("مقاله", selected = linkType == StoryLinkType.BLOG) { linkType = StoryLinkType.BLOG }
             }
-            if (linkToProduct) {
-                Spacer(Modifier.height(10.dp))
-                OutlinedTextField(
-                    value = productId,
-                    onValueChange = { if (it.all { ch -> ch.isDigit() }) productId = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    placeholder = { Text("شناسه محصول", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    shape = RoundedCornerShape(Radius.sm),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = colors.surfaceVariant,
-                        unfocusedContainerColor = colors.surfaceVariant,
-                        focusedBorderColor = colors.primary,
-                        unfocusedBorderColor = colors.line,
-                        cursorColor = colors.primary,
-                        focusedTextColor = colors.onSurface,
-                        unfocusedTextColor = colors.onSurface
+            when (linkType) {
+                StoryLinkType.PRODUCT -> {
+                    Spacer(Modifier.height(10.dp))
+                    StoryLinkField(
+                        value = productId,
+                        onValueChange = { if (it.all { ch -> ch.isDigit() }) productId = it },
+                        placeholder = "شناسه محصول",
+                        numeric = true,
+                        colors = colors
                     )
-                )
+                }
+                StoryLinkType.CATEGORY -> {
+                    Spacer(Modifier.height(10.dp))
+                    StoryLinkField(
+                        value = categoryId,
+                        onValueChange = { if (it.all { ch -> ch.isDigit() }) categoryId = it },
+                        placeholder = "شناسه دسته‌بندی",
+                        numeric = true,
+                        colors = colors
+                    )
+                }
+                StoryLinkType.BLOG -> {
+                    Spacer(Modifier.height(10.dp))
+                    StoryLinkField(
+                        value = blogSlug,
+                        onValueChange = { blogSlug = it },
+                        placeholder = "نامک مقاله (slug)",
+                        numeric = false,
+                        colors = colors
+                    )
+                }
+                StoryLinkType.NONE -> {}
             }
 
             Spacer(Modifier.height(20.dp))
@@ -282,7 +303,13 @@ fun CreateStoryDialog(
                         .clip(RoundedCornerShape(Radius.button))
                         .background(if (mediaBytes != null) colors.primary else colors.line)
                         .clickable(enabled = mediaBytes != null) {
-                            onConfirm(title.ifBlank { null }, if (linkToProduct) productId.toLongOrNull() else null)
+                            onConfirm(
+                                title.ifBlank { null },
+                                linkType,
+                                if (linkType == StoryLinkType.PRODUCT) productId.toLongOrNull() else null,
+                                if (linkType == StoryLinkType.CATEGORY) categoryId.toLongOrNull() else null,
+                                if (linkType == StoryLinkType.BLOG) blogSlug.ifBlank { null } else null
+                            )
                         }
                         .padding(vertical = 13.dp),
                     textAlign = TextAlign.Center,
@@ -306,6 +333,34 @@ fun CreateStoryDialog(
             }
         }
     }
+}
+
+@Composable
+private fun StoryLinkField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    numeric: Boolean,
+    colors: com.kazemieh.designsystem.AppColors
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        placeholder = { Text(placeholder, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+        keyboardOptions = if (numeric) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
+        shape = RoundedCornerShape(Radius.sm),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = colors.surfaceVariant,
+            unfocusedContainerColor = colors.surfaceVariant,
+            focusedBorderColor = colors.primary,
+            unfocusedBorderColor = colors.line,
+            cursorColor = colors.primary,
+            focusedTextColor = colors.onSurface,
+            unfocusedTextColor = colors.onSurface
+        )
+    )
 }
 
 @Composable

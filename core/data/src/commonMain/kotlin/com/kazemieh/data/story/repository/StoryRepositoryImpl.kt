@@ -50,17 +50,27 @@ class StoryRepositoryImpl(
         bytes: ByteArray,
         mediaType: com.kazemieh.domain.story.StoryMediaType,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: com.kazemieh.domain.story.StoryLinkType,
+        categoryId: Long?,
+        blogSlug: String?
     ): AppResult<Story> {
-        return dataSource.createStory(bytes, mediaType.name, productId, title).map { it.toDomain(false) }
+        return dataSource.createStory(
+            bytes, mediaType.name, productId, title, linkType.name, categoryId, blogSlug
+        ).map { it.toDomain(false) }
     }
 
     override suspend fun updateStory(
         id: Long,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: com.kazemieh.domain.story.StoryLinkType?,
+        categoryId: Long?,
+        blogSlug: String?
     ): AppResult<Story> {
-        return dataSource.updateStory(id, productId, title).map { it.toDomain(false) }
+        return dataSource.updateStory(
+            id, productId, title, linkType?.name, categoryId, blogSlug
+        ).map { it.toDomain(false) }
     }
 
     override suspend fun deleteStory(id: Long): AppResult<Unit> {

@@ -7,11 +7,18 @@ enum class StoryMediaType {
     IMAGE, VIDEO
 }
 
+enum class StoryLinkType {
+    NONE, PRODUCT, CATEGORY, BLOG
+}
+
 data class Story(
     val id: Long,
     val mediaUrl: String,
     val mediaType: StoryMediaType,
     val productId: Long?,
+    val linkType: StoryLinkType = StoryLinkType.NONE,
+    val categoryId: Long? = null,
+    val blogSlug: String? = null,
     val title: String?,
     val createdAt: String,
     val isSeen: Boolean = false
@@ -27,13 +34,19 @@ interface StoryRepository {
         bytes: ByteArray,
         mediaType: StoryMediaType,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: StoryLinkType = StoryLinkType.NONE,
+        categoryId: Long? = null,
+        blogSlug: String? = null
     ): AppResult<Story>
 
     suspend fun updateStory(
         id: Long,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: StoryLinkType? = null,
+        categoryId: Long? = null,
+        blogSlug: String? = null
     ): AppResult<Story>
 
     suspend fun deleteStory(id: Long): AppResult<Unit>

@@ -11,12 +11,18 @@ interface StoryApi {
         bytes: ByteArray,
         mediaType: String,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String,
+        categoryId: Long?,
+        blogSlug: String?
     ): StoryResponse
     suspend fun updateStory(
         id: Long,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String?,
+        categoryId: Long?,
+        blogSlug: String?
     ): StoryResponse
     suspend fun deleteStory(id: Long)
 }

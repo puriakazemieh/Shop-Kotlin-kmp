@@ -10,13 +10,19 @@ interface StoryDataSource {
         bytes: ByteArray,
         mediaType: String,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String,
+        categoryId: Long?,
+        blogSlug: String?
     ): AppResult<StoryResponse>
 
     suspend fun updateStory(
         id: Long,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String?,
+        categoryId: Long?,
+        blogSlug: String?
     ): AppResult<StoryResponse>
 
     suspend fun deleteStory(id: Long): AppResult<Unit>

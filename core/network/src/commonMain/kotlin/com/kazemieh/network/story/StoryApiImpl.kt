@@ -23,7 +23,10 @@ class StoryApiImpl(
         bytes: ByteArray,
         mediaType: String,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String,
+        categoryId: Long?,
+        blogSlug: String?
     ): StoryResponse = safeApiCallRaw {
         client.post("api/admin/stories") {
             setBody(MultiPartFormDataContent(
@@ -35,7 +38,10 @@ class StoryApiImpl(
                         append(HttpHeaders.ContentDisposition, "filename=\"story.$extension\"")
                     })
                     append("mediaType", mediaType)
+                    append("linkType", linkType)
                     productId?.let { append("productId", it.toString()) }
+                    categoryId?.let { append("categoryId", it.toString()) }
+                    blogSlug?.let { append("blogSlug", it) }
                     title?.let { append("title", it) }
                 }
             ))
@@ -45,14 +51,20 @@ class StoryApiImpl(
     override suspend fun updateStory(
         id: Long,
         productId: Long?,
-        title: String?
+        title: String?,
+        linkType: String?,
+        categoryId: Long?,
+        blogSlug: String?
     ): StoryResponse = safeApiCallRaw {
         client.patch("api/admin/stories/$id") {
             contentType(ContentType.Application.Json)
-            setBody(mapOf(
-                "productId" to productId,
-                "title" to title
-            ))
+            setBody(buildMap<String, Any?> {
+                put("productId", productId)
+                put("title", title)
+                linkType?.let { put("linkType", it) }
+                put("categoryId", categoryId)
+                put("blogSlug", blogSlug)
+            })
         }
     }
 

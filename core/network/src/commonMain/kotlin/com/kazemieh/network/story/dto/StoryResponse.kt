@@ -8,6 +8,9 @@ data class StoryResponse(
     val mediaUrl: String,
     val mediaType: String,
     val productId: Long? = null,
+    val linkType: String = "NONE",
+    val categoryId: Long? = null,
+    val blogSlug: String? = null,
     val title: String? = null,
     val createdAt: String
 )

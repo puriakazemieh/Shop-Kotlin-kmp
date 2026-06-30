@@ -11,16 +11,22 @@ class CreateStoryUseCase(private val repository: StoryRepository) {
         bytes: ByteArray,
         mediaType: StoryMediaType,
         productId: Long?,
-        title: String?
-    ): AppResult<Story> = repository.createStory(bytes, mediaType, productId, title)
+        title: String?,
+        linkType: StoryLinkType = StoryLinkType.NONE,
+        categoryId: Long? = null,
+        blogSlug: String? = null
+    ): AppResult<Story> = repository.createStory(bytes, mediaType, productId, title, linkType, categoryId, blogSlug)
 }
 
 class UpdateStoryUseCase(private val repository: StoryRepository) {
     suspend operator fun invoke(
         id: Long,
         productId: Long?,
-        title: String?
-    ): AppResult<Story> = repository.updateStory(id, productId, title)
+        title: String?,
+        linkType: StoryLinkType? = null,
+        categoryId: Long? = null,
+        blogSlug: String? = null
+    ): AppResult<Story> = repository.updateStory(id, productId, title, linkType, categoryId, blogSlug)
 }
 
 class DeleteStoryUseCase(private val repository: StoryRepository) {
