@@ -32,10 +32,10 @@ fun AdminProductCard(
             .clip(RoundedCornerShape(Radius.md))
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
+                color = com.kazemieh.designsystem.AppTheme.colors.line,
                 shape = RoundedCornerShape(Radius.md)
             )
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable { onClick() }
     ) {
         Column(
