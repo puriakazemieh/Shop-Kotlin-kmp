@@ -183,49 +183,52 @@ fun AdminOrderCard(
     order: AdminOrderSummary,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    val colors = AppTheme.colors
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(Resources.String.OrderIdPrefix, order.id),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = FontSize.MEDIUM,
-                    fontFamily = AppFont()
-                )
-                StatusBadge(status = order.status)
-            }
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = order.userEmail,
-                fontSize = FontSize.SMALL,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontFamily = AppFont()
+                text = stringResource(Resources.String.OrderIdPrefix, order.id),
+                fontWeight = FontWeight.Bold,
+                fontSize = FontSize.REGULAR,
+                fontFamily = AppFont(),
+                color = colors.onSurface
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = order.createdAt?.take(10) ?: "",
-                    fontSize = FontSize.SMALL,
-                    fontFamily = AppFont()
-                )
-                Text(
-                    text = stringResource(Resources.String.PriceFormat, order.totalPrice),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = AppFont()
-                )
-            }
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = "${order.userEmail} · ${order.createdAt?.take(10) ?: ""}",
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant,
+                fontFamily = AppFont(),
+                maxLines = 1
+            )
         }
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = FontSize.SMALL,
+            color = colors.onSurface,
+            fontFamily = AppFont()
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        StatusBadge(status = order.status)
+        Spacer(modifier = Modifier.width(6.dp))
+        Icon(
+            painter = painterResource(Resources.Icon.RightArrow),
+            contentDescription = null,
+            tint = colors.onSurfaceVariant,
+            modifier = Modifier.size(16.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+        )
     }
 }
 
@@ -239,20 +242,25 @@ fun StatusBadge(status: String) {
         "CANCELLED" -> AppTheme.colors.sale
         else -> MaterialTheme.colorScheme.outline
     }
-    Surface(
-        color = color.copy(alpha = 0.1f),
-        shape = RoundedCornerShape(4.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.5f))
-    ) {
-        Text(
-            text = status,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-            fontSize = FontSize.EXTRA_SMALL,
-            color = color,
-            fontWeight = FontWeight.Bold,
-            fontFamily = AppFont()
-        )
+    val label = when (status.uppercase()) {
+        "PLACED" -> stringResource(Resources.String.OrderStatusPlaced)
+        "PROCESSING" -> stringResource(Resources.String.OrderStatusProcessing)
+        "SHIPPING" -> stringResource(Resources.String.OrderStatusShipping)
+        "COMPLETED" -> stringResource(Resources.String.OrderStatusCompleted)
+        "CANCELLED" -> stringResource(Resources.String.OrderStatusCancelled)
+        else -> status
     }
+    Text(
+        text = label,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(color)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        fontSize = FontSize.EXTRA_SMALL,
+        color = Color.White,
+        fontWeight = FontWeight.Bold,
+        fontFamily = AppFont()
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
