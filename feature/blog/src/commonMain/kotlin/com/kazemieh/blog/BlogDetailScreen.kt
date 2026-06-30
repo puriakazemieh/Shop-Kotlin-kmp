@@ -72,12 +72,12 @@ fun BlogDetailScreen(
             LoadingCard(modifier = Modifier.fillMaxSize())
         } else {
             state.blog?.let { blog ->
+                val colors = AppTheme.colors
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    val colors = AppTheme.colors
                     blog.thumbnailUrl?.let { url ->
                         item {
                             Image(
