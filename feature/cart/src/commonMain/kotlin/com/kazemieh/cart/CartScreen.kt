@@ -2,6 +2,7 @@ package com.kazemieh.cart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -38,7 +45,6 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
-import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
@@ -98,6 +104,7 @@ fun CartScreen(
 
                 is AppResult.Success -> {
                     val cart = cartResult.data
+                    var selectedTab by remember { mutableStateOf(0) }
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -111,69 +118,161 @@ fun CartScreen(
                             fontWeight = FontWeight.ExtraBold,
                             color = colors.onBackground
                         )
+                        Spacer(Modifier.height(16.dp))
+
+                        // ---- تب‌ها: سبد جاری / سبد بعدی ----
+                        CartTabs(
+                            selected = selectedTab,
+                            currentCount = cart.items.size,
+                            savedCount = cart.savedForLater.size,
+                            onSelect = { selectedTab = it }
+                        )
                         Spacer(Modifier.height(20.dp))
 
-                        if (cart.items.isEmpty() && cart.savedForLater.isEmpty()) {
-                            EmptyCart()
-                        }
-
-                        // ---- اقلام سبد ----
-                        cart.items.forEach { item ->
-                            CartItemCard(
-                                cartItem = item,
-                                onPlusClick = { viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, 1)) },
-                                onMinusClick = { newQty ->
-                                    if (newQty == 0) viewModel.handleIntent(CartIntent.DeleteItem(item.id))
-                                    else viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, -1))
-                                },
-                                onDeleteClick = { viewModel.handleIntent(CartIntent.DeleteItem(item.id)) },
-                                onMoveToSaveForLaterClick = { viewModel.handleIntent(CartIntent.MoveToSaveForLater(item.id)) }
-                            )
-                            Spacer(Modifier.height(12.dp))
-                        }
-
-                        // ---- خلاصه سفارش ----
-                        if (cart.items.isNotEmpty()) {
-                            Spacer(Modifier.height(8.dp))
-                            OrderSummaryCard(
-                                subtotal = cart.subtotal,
-                                discountAmount = cart.discountAmount,
-                                total = cart.total,
-                                appliedDiscountCode = cart.appliedDiscountCode,
-                                discountCode = discountCode,
-                                onDiscountCodeChange = { discountCode = it },
-                                isApplyingDiscount = state.isApplyingDiscount,
-                                onApply = { viewModel.handleIntent(CartIntent.ApplyDiscount(discountCode)) },
-                                onRemove = { viewModel.handleIntent(CartIntent.RemoveDiscount) },
-                                onCheckout = { navigateToCheckout(cart.total) }
-                            )
-                        }
-
-                        // ---- سبد خرید بعدی ----
-                        if (cart.savedForLater.isNotEmpty()) {
-                            Spacer(Modifier.height(28.dp))
-                            Text(
-                                text = stringResource(Resources.String.SavedForLater),
-                                fontSize = FontSize.MEDIUM,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = colors.onBackground
-                            )
-                            Spacer(Modifier.height(14.dp))
-                            cart.savedForLater.forEach { item ->
-                                CartItemCard(
-                                    cartItem = item,
-                                    onPlusClick = {},
-                                    onMinusClick = {},
-                                    onDeleteClick = { viewModel.handleIntent(CartIntent.DeleteItem(item.id)) },
-                                    onMoveToCartClick = { viewModel.handleIntent(CartIntent.MoveToCart(item.id)) }
+                        if (selectedTab == 0) {
+                            // ---- سبد خرید جاری ----
+                            if (cart.items.isEmpty()) {
+                                EmptyCart()
+                            } else {
+                                cart.items.forEach { item ->
+                                    CartItemCard(
+                                        cartItem = item,
+                                        onPlusClick = { viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, 1)) },
+                                        onMinusClick = { newQty ->
+                                            if (newQty == 0) viewModel.handleIntent(CartIntent.DeleteItem(item.id))
+                                            else viewModel.handleIntent(CartIntent.AdjustQuantity(item.variantId, -1))
+                                        },
+                                        onDeleteClick = { viewModel.handleIntent(CartIntent.DeleteItem(item.id)) },
+                                        onMoveToSaveForLaterClick = { viewModel.handleIntent(CartIntent.MoveToSaveForLater(item.id)) }
+                                    )
+                                    Spacer(Modifier.height(12.dp))
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                OrderSummaryCard(
+                                    subtotal = cart.subtotal,
+                                    discountAmount = cart.discountAmount,
+                                    total = cart.total,
+                                    appliedDiscountCode = cart.appliedDiscountCode,
+                                    discountCode = discountCode,
+                                    onDiscountCodeChange = { discountCode = it },
+                                    isApplyingDiscount = state.isApplyingDiscount,
+                                    onApply = { viewModel.handleIntent(CartIntent.ApplyDiscount(discountCode)) },
+                                    onRemove = { viewModel.handleIntent(CartIntent.RemoveDiscount) },
+                                    onCheckout = { navigateToCheckout(cart.total) }
                                 )
-                                Spacer(Modifier.height(12.dp))
+                            }
+                        } else {
+                            // ---- سبد خرید بعدی ----
+                            if (cart.savedForLater.isEmpty()) {
+                                EmptySaved()
+                            } else {
+                                cart.savedForLater.forEach { item ->
+                                    CartItemCard(
+                                        cartItem = item,
+                                        onPlusClick = {},
+                                        onMinusClick = {},
+                                        onDeleteClick = { viewModel.handleIntent(CartIntent.DeleteItem(item.id)) },
+                                        onMoveToCartClick = { viewModel.handleIntent(CartIntent.MoveToCart(item.id)) }
+                                    )
+                                    Spacer(Modifier.height(12.dp))
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+/** نوارِ دوتاییِ تب: سبد خرید جاری / سبد خرید بعدی (سگمنت‌کنترلِ پیل‌شکل). */
+@Composable
+private fun CartTabs(
+    selected: Int,
+    currentCount: Int,
+    savedCount: Int,
+    onSelect: (Int) -> Unit
+) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.button))
+            .background(colors.surfaceVariant)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.button))
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        CartTab(
+            label = stringResource(Resources.String.CartCurrentTab),
+            count = currentCount,
+            selected = selected == 0,
+            modifier = Modifier.weight(1f),
+            onClick = { onSelect(0) }
+        )
+        CartTab(
+            label = stringResource(Resources.String.CartNextTab),
+            count = savedCount,
+            selected = selected == 1,
+            modifier = Modifier.weight(1f),
+            onClick = { onSelect(1) }
+        )
+    }
+}
+
+@Composable
+private fun CartTab(
+    label: String,
+    count: Int,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(Radius.sm))
+            .background(if (selected) colors.surface else androidx.compose.ui.graphics.Color.Transparent)
+            .clickable { onClick() }
+            .padding(vertical = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = if (count > 0) "$label ($count)" else label,
+            fontSize = FontSize.SMALL,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+            color = if (selected) colors.primary else colors.onSurfaceVariant,
+            maxLines = 1,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun EmptySaved() {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 50.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier.size(80.dp).clip(CircleShape).background(colors.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.BookmarkBorder,
+                contentDescription = null,
+                tint = colors.onSurfaceVariant,
+                modifier = Modifier.size(34.dp)
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = "موردی برای بعد ذخیره نشده است",
+            fontSize = FontSize.REGULAR,
+            color = colors.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -258,20 +357,81 @@ private fun OrderSummaryCard(
 
         Spacer(Modifier.height(14.dp))
 
-        // کد تخفیف
-        CustomTextField(
-            value = if (appliedDiscountCode.isNullOrBlank()) discountCode else appliedDiscountCode,
-            onValueChange = onDiscountCodeChange,
-            placeholder = Resources.String.DiscountCode,
-            enabled = appliedDiscountCode.isNullOrBlank()
-        )
-        Spacer(Modifier.height(8.dp))
-        PrimaryButton(
-            text = if (!appliedDiscountCode.isNullOrBlank()) stringResource(Resources.String.Remove) else stringResource(Resources.String.Apply),
-            onClick = { if (!appliedDiscountCode.isNullOrBlank()) onRemove() else onApply() },
-            enabled = !isApplyingDiscount,
-            modifier = Modifier.fillMaxWidth().height(52.dp)
-        )
+        // ---- کد تخفیف ----
+        if (!appliedDiscountCode.isNullOrBlank()) {
+            // چیپِ کدِ اعمال‌شده
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(Radius.sm))
+                    .background(colors.accentSoft)
+                    .padding(horizontal = 13.dp, vertical = 11.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)
+                ) {
+                    Icon(Icons.Default.Check, null, tint = colors.primary, modifier = Modifier.size(16.dp))
+                    Text(
+                        text = "کد «$appliedDiscountCode» اعمال شد",
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.primary,
+                        maxLines = 1
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(Resources.String.Remove),
+                    tint = colors.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp).clickable(enabled = !isApplyingDiscount) { onRemove() }
+                )
+            }
+        } else {
+            // فیلدِ کد تخفیف + دکمه‌ی اعمال (اینلاین، مطابق اسپک)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = discountCode,
+                    onValueChange = onDiscountCodeChange,
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text(stringResource(Resources.String.DiscountCode), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(Radius.sm),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = colors.surfaceVariant,
+                        unfocusedContainerColor = colors.surfaceVariant,
+                        focusedBorderColor = colors.primary,
+                        unfocusedBorderColor = colors.line,
+                        cursorColor = colors.primary,
+                        focusedTextColor = colors.onSurface,
+                        unfocusedTextColor = colors.onSurface
+                    )
+                )
+                Box(
+                    modifier = Modifier
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(if (discountCode.isNotBlank() && !isApplyingDiscount) colors.primary else colors.line)
+                        .clickable(enabled = discountCode.isNotBlank() && !isApplyingDiscount) { onApply() }
+                        .padding(horizontal = 22.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(Resources.String.Apply),
+                        color = colors.onPrimary,
+                        fontSize = FontSize.REGULAR,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
 
         Spacer(Modifier.height(15.dp))
         Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))

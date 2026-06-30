@@ -202,6 +202,8 @@
     <string name="cartIsEmpty">Cart is Empty</string>
     <string name="cartIsEmptySubtitle">You haven\'t added any items to your cart yet.</string>
     <string name="savedForLater">Saved for Later</string>
+    <string name="cartCurrentTab">Current Cart</string>
+    <string name="cartNextTab">Saved Cart</string>
     <string name="moveToCart">Move to Cart</string>
     <string name="saveForLater">Save for Later</string>
     <string name="categoriesIsEmpty">No Categories Found</string>

@@ -54,6 +54,8 @@ object Resources {
         val MyFavorites = CommonRes.string.myFavorites
         val Settings = CommonRes.string.settings
         val SavedForLater = CommonRes.string.savedForLater
+        val CartCurrentTab = CommonRes.string.cartCurrentTab
+        val CartNextTab = CommonRes.string.cartNextTab
         val MoveToCart = CommonRes.string.moveToCart
         val SaveForLater = CommonRes.string.saveForLater
         val Language = CommonRes.string.language

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -140,11 +139,6 @@ fun CheckoutScreen(
                             color = colors.onBackground
                         )
                     }
-
-                    Spacer(Modifier.height(24.dp))
-
-                    // ---- نشانگر مراحل ----
-                    StepIndicator()
 
                     Spacer(Modifier.height(24.dp))
 
@@ -330,43 +324,6 @@ private fun SummaryRow(label: String, value: String, valueColor: Color) {
     ) {
         Text(label, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
         Text(value, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = valueColor)
-    }
-}
-
-/** نشانگر مراحلِ خرید: آدرس ← پرداخت ← ثبت (مطابق اسپک). */
-@Composable
-private fun StepIndicator() {
-    val colors = AppTheme.colors
-    val steps = listOf("۱" to "آدرس", "۲" to "پرداخت", "۳" to "ثبت")
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        steps.forEachIndexed { index, (num, label) ->
-            val active = index <= 1
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(34.dp)
-                        .clip(CircleShape)
-                        .background(if (active) colors.primary else colors.surfaceVariant),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(num, color = if (active) colors.onPrimary else colors.onSurfaceVariant, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR)
-                }
-                Text(label, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
-            }
-            if (index < steps.lastIndex) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(2.dp)
-                        .padding(bottom = 18.dp)
-                        .background(if (index < 1) colors.primary else colors.line)
-                )
-            }
-        }
     }
 }
 

@@ -191,6 +191,8 @@
     <string name="cartIsEmpty">سبد خرید خالی است</string>
     <string name="cartIsEmptySubtitle">هنوز هیچ کالایی به سبد خود اضافه نکرده‌اید.</string>
     <string name="savedForLater">ذخیره شده برای بعد</string>
+    <string name="cartCurrentTab">سبد خرید جاری</string>
+    <string name="cartNextTab">سبد خرید بعدی</string>
     <string name="moveToCart">انتقال به سبد خرید</string>
     <string name="saveForLater">ذخیره برای بعد</string>
     <string name="categoriesIsEmpty">دسته‌بندی یافت نشد</string>
