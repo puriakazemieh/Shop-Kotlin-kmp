@@ -17,10 +17,11 @@ class GetProductsUseCase(
         inStock: Boolean? = null,
         page: Int = 0,
         size: Int = 20,
-        sort: String? = null
+        sort: String? = null,
+        discountedOnly: Boolean = false
     ): AppResult<AdminPage<ProductSummary>> {
         return repository.getProducts(
-            query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort
+            query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort, discountedOnly
         )
     }
 }

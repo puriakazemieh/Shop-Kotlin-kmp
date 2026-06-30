@@ -16,7 +16,8 @@ interface CatalogApi {
         inStock: Boolean? = null,
         page: Int = 0,
         size: Int = 20,
-        sort: String? = null
+        sort: String? = null,
+        discountedOnly: Boolean = false
     ): PageResponse<ProductSummaryResponse>
     suspend fun getProductDetail(slug: String): ProductDetailResponse
     suspend fun getActiveCampaign(): CampaignResponse?

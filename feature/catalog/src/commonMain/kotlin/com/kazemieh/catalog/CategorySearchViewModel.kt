@@ -76,6 +76,10 @@ class CategorySearchViewModel(
                 _state.update { it.copy(sort = intent.sort) }
                 loadProducts()
             }
+            is CategorySearchIntent.SetDiscountedOnly -> {
+                _state.update { it.copy(discountedOnly = intent.value) }
+                loadProducts()
+            }
             is CategorySearchIntent.ToggleFavorite -> toggleFavorite(intent.product)
         }
     }
@@ -117,7 +121,8 @@ class CategorySearchViewModel(
                 query = currentState.searchQuery.ifBlank { null },
                 categoryId = currentState.categoryId,
                 options = currentState.selectedOptions.ifEmpty { null },
-                sort = currentState.sort
+                sort = currentState.sort,
+                discountedOnly = currentState.discountedOnly
             )
             when (result) {
                 is AppResult.Success -> {

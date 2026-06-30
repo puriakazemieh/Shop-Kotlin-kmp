@@ -17,7 +17,8 @@ interface CatalogRepository {
         inStock: Boolean? = null,
         page: Int = 0,
         size: Int = 20,
-        sort: String? = null
+        sort: String? = null,
+        discountedOnly: Boolean = false
     ): AppResult<AdminPage<ProductSummary>>
     suspend fun getProductDetail(slug: String): AppResult<ProductDetail>
     suspend fun getActiveCampaign(): AppResult<Campaign?>

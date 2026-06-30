@@ -27,9 +27,10 @@ class CatalogDataSourceImpl(
         inStock: Boolean?,
         page: Int,
         size: Int,
-        sort: String?
+        sort: String?,
+        discountedOnly: Boolean
     ): AppResult<PageResponse<ProductSummaryResponse>> = safeApiCall {
-        api.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort)
+        api.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort, discountedOnly)
     }
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetailResponse> = safeApiCall {

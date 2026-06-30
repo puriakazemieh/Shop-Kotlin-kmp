@@ -28,7 +28,8 @@ class CatalogApiImpl(
         inStock: Boolean?,
         page: Int,
         size: Int,
-        sort: String?
+        sort: String?,
+        discountedOnly: Boolean
     ): PageResponse<ProductSummaryResponse> = safeApiCallRaw {
         client.get("api/products") {
             parameter("q", query)
@@ -42,6 +43,7 @@ class CatalogApiImpl(
             parameter("page", page)
             parameter("size", size)
             parameter("sort", sort)
+            if (discountedOnly) parameter("discountedOnly", true)
         }
     }
 

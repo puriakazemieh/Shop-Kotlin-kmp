@@ -12,7 +12,8 @@ data class CategorySearchState(
     val categoryName: String = "",
     val selectedOptions: Map<String, String> = emptyMap(),
     val availableOptions: Map<String, Set<String>> = emptyMap(),
-    val sort: String = "newest"
+    val sort: String = "newest",
+    val discountedOnly: Boolean = false
 )
 
 sealed interface CategorySearchIntent {
@@ -20,6 +21,7 @@ sealed interface CategorySearchIntent {
     data class UpdateSearchQuery(val query: String) : CategorySearchIntent
     data class ToggleOption(val key: String, val value: String) : CategorySearchIntent
     data class UpdateSort(val sort: String) : CategorySearchIntent
+    data class SetDiscountedOnly(val value: Boolean) : CategorySearchIntent
     data class ToggleFavorite(val product: ProductSummary) : CategorySearchIntent
 }
 

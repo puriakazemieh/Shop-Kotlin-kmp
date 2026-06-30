@@ -28,9 +28,10 @@ class CatalogRepositoryImpl(
         inStock: Boolean?,
         page: Int,
         size: Int,
-        sort: String?
+        sort: String?,
+        discountedOnly: Boolean
     ): AppResult<AdminPage<ProductSummary>> =
-        dataSource.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort)
+        dataSource.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort, discountedOnly)
             .map { pageResponse -> 
                 val adminPage = pageResponse.toAdminPage { dto -> dto.toCatalogDomain() }
                 adminPage.items.forEach { 

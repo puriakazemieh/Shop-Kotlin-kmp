@@ -20,7 +20,8 @@ interface CatalogDataSource {
         inStock: Boolean?,
         page: Int,
         size: Int,
-        sort: String?
+        sort: String?,
+        discountedOnly: Boolean
     ): AppResult<PageResponse<ProductSummaryResponse>>
     suspend fun getProductDetail(slug: String): AppResult<ProductDetailResponse>
     suspend fun getActiveCampaign(): AppResult<CampaignResponse?>

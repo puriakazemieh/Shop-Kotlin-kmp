@@ -72,8 +72,6 @@ fun CategorySearchScreen(
     val colors = AppTheme.colors
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    var onlyDiscounted by remember { mutableStateOf(false) }
-
     LaunchedEffect(categoryId, categoryName) {
         viewModel.handleIntent(CategorySearchIntent.Init(categoryId, categoryName))
     }
@@ -87,9 +85,7 @@ fun CategorySearchScreen(
         }
     }
 
-    val displayProducts = remember(state.products, onlyDiscounted) {
-        if (onlyDiscounted) state.products.filter { it.minDiscountedPrice != null } else state.products
-    }
+    val displayProducts = state.products
 
     LazyColumn(
         modifier = Modifier
@@ -131,7 +127,7 @@ fun CategorySearchScreen(
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
-                        text = "${if (onlyDiscounted) displayProducts.size.toLong() else state.totalCount} کالا",
+                        text = "${state.totalCount} کالا",
                         fontSize = FontSize.SMALL,
                         color = colors.onSurfaceVariant
                     )
@@ -235,8 +231,8 @@ fun CategorySearchScreen(
                     item {
                         CarmillaFilterChip(
                             text = "🏷️ فقط تخفیف‌دار",
-                            selected = onlyDiscounted,
-                            onClick = { onlyDiscounted = !onlyDiscounted }
+                            selected = state.discountedOnly,
+                            onClick = { viewModel.handleIntent(CategorySearchIntent.SetDiscountedOnly(!state.discountedOnly)) }
                         )
                     }
                 }
