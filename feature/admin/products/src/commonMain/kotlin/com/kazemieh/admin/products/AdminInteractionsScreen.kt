@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
@@ -13,13 +14,19 @@ import com.kazemieh.designsystem.component.CarmillaFilterChip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.admin.AdminInteraction
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,8 +42,13 @@ fun AdminInteractionsScreen(
             TopAppBar(
                 title = { Text("مدیریت نظرات و پرسش‌ها") },
                 navigationIcon = {
+                    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
                     IconButton(onClick = navigateBack) {
-                        Text("←") // Or a proper icon
+                        Icon(
+                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
+                            painter = painterResource(Resources.Icon.BackArrow),
+                            contentDescription = null
+                        )
                     }
                 }
             )
@@ -112,67 +124,87 @@ fun FilterSection(
 
 @Composable
 fun AdminInteractionItem(interaction: AdminInteraction) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(Radius.xs),
-        colors = CardDefaults.cardColors(
-            containerColor = if (interaction.isNew) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) 
-            else MaterialTheme.colorScheme.surface
-        )
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, if (interaction.isNew) colors.primary else colors.line, RoundedCornerShape(16.dp))
+            .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(colors.accentSoft),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    text = interaction.userName,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyMedium
+                    text = interaction.userName.take(1).uppercase(),
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.primary,
+                    fontSize = FontSize.SMALL
                 )
-                if (interaction.isNew) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Surface(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = interaction.userName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = FontSize.SMALL,
+                        color = colors.onSurface
+                    )
+                    if (interaction.isNew) {
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             "جدید",
-                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(7.dp))
+                                .background(colors.primary)
+                                .padding(horizontal = 8.dp, vertical = 2.dp),
                             color = Color.White,
-                            style = MaterialTheme.typography.labelSmall
+                            fontSize = FontSize.EXTRA_SMALL,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = interaction.createdAt,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontSize = FontSize.EXTRA_SMALL,
+                    color = colors.onSurfaceVariant
                 )
             }
-            
-            Text(
-                text = "محصول: ${interaction.productTitle}",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(top = 4.dp)
-            )
+        }
 
-            interaction.rating?.let {
-                Row(modifier = Modifier.padding(top = 4.dp)) {
-                    repeat(5) { index ->
-                        Text(
-                            text = if (index < it) "★" else "☆",
-                            color = if (index < it) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
+        Text(
+            text = "محصول: ${interaction.productTitle}",
+            fontSize = FontSize.EXTRA_SMALL,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.primary,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+
+        interaction.rating?.let {
+            Row(modifier = Modifier.padding(top = 6.dp)) {
+                repeat(5) { index ->
+                    Text(
+                        text = if (index < it) "★" else "☆",
+                        color = if (index < it) colors.star else colors.onSurfaceVariant,
+                        fontSize = FontSize.REGULAR
+                    )
                 }
             }
-
-            Text(
-                text = interaction.content,
-                modifier = Modifier.padding(top = 8.dp),
-                style = MaterialTheme.typography.bodySmall
-            )
         }
+
+        Text(
+            text = interaction.content,
+            modifier = Modifier.padding(top = 8.dp),
+            fontSize = FontSize.SMALL,
+            color = colors.onSurface
+        )
     }
 }
