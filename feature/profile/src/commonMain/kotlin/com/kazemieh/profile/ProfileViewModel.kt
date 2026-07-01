@@ -20,6 +20,8 @@ import com.kazemieh.domain.favorite.GetFavoritesUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.order.GetMyOrdersUseCase
+import com.kazemieh.domain.order.Order
 import com.kazemieh.domain.wallet.WalletBalance
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +46,7 @@ class ProfileViewModel(
     private val getFavoritesUseCase: GetFavoritesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val getMyOrdersUseCase: GetMyOrdersUseCase,
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
@@ -60,6 +63,20 @@ class ProfileViewModel(
         handleIntent(ProfileIntent.LoadFavorites)
         observeProfile()
         observeFavorites()
+        observeOrders()
+    }
+
+    private fun observeOrders() {
+        viewModelScope.launch {
+            _state.update { it.copy(ordersLoading = true) }
+            getMyOrdersUseCase().collectLatest { result ->
+                when (result) {
+                    is AppResult.Success -> _state.update { it.copy(orders = result.data, ordersLoading = false) }
+                    is AppResult.Error -> _state.update { it.copy(ordersLoading = false) }
+                    is AppResult.Loading -> _state.update { it.copy(ordersLoading = true) }
+                }
+            }
+        }
     }
 
     private fun observeFavorites() {
@@ -461,6 +478,8 @@ data class ProfileState(
     val profile: Profile? = null,
     val addresses: List<Address> = emptyList(),
     val favorites: List<ProductSummary> = emptyList(),
+    val orders: List<Order> = emptyList(),
+    val ordersLoading: Boolean = false,
     val walletBalanceState: AppResult<WalletBalance> = AppResult.Loading,
     val displayState: AppResult<Unit?> = AppResult.Loading,
     val isFormValid: Boolean = false,

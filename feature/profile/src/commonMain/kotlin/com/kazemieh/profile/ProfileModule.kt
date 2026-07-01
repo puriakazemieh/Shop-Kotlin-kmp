@@ -33,6 +33,7 @@ val profileModule = module {
             getFavoritesUseCase = get(),
             toggleFavoriteUseCase = get(),
             observeFavoriteIdsUseCase = get(),
+            getMyOrdersUseCase = get(),
             signOutUseCase = get()
         )
     }

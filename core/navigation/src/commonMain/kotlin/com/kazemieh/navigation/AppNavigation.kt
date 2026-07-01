@@ -135,14 +135,11 @@ fun AppNavHost(
                 navigateBack = {
                     navController.navigateBack()
                 },
-                navigateToMyOrders = {
-                    navController.navigate(Screen.MyOrders)
+                navigateToDetail = { slug ->
+                    navController.navigate(Screen.ProductDetail(slug = slug))
                 },
-                navigateToWallet = {
-                    navController.navigate(Screen.Wallet)
-                },
-                navigateToFavorites = {
-                    navController.navigate(Screen.Favorites)
+                navigateToOrderDetail = { id ->
+                    navController.navigate(Screen.OrderDetail(id))
                 },
                 onSignedOut = {
                     navController.navigate(Screen.HomeGraph()) {

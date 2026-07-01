@@ -55,6 +55,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalUriHandler
+import com.kazemieh.catalog.MainProductCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
@@ -64,11 +66,13 @@ import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
-import com.kazemieh.designsystem.component.ProfileForm
+import com.kazemieh.designsystem.component.ProfileEditBottomSheet
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
+import com.kazemieh.designsystem.messagebar.MessageBarState
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
 import com.kazemieh.domain.address.Address
+import com.kazemieh.domain.order.Order
 import com.kazemieh.domain.wallet.WalletBalance
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -78,9 +82,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileScreen(
     navigateBack: () -> Unit,
-    navigateToMyOrders: () -> Unit,
-    navigateToWallet: () -> Unit,
-    navigateToFavorites: () -> Unit,
+    navigateToDetail: (String) -> Unit = {},
+    navigateToOrderDetail: (Long) -> Unit = {},
     onSignedOut: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
@@ -90,6 +93,7 @@ fun ProfileScreen(
 
     var showAddressDialog by remember { mutableStateOf(false) }
     var addressToEdit by remember { mutableStateOf<Address?>(null) }
+    var showEditSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -179,9 +183,8 @@ fun ProfileScreen(
                         state.profile?.let { profile ->
                             var selectedTab by remember { mutableStateOf(0) }
                             ProfileHeader(
-                                name = "${profile.firstName} ${profile.lastName}",
-                                phone = profile.phone,
-                                onEdit = { selectedTab = 0 }
+                                name = "${profile.firstName.orEmpty()} ${profile.lastName.orEmpty()}",
+                                phone = profile.phone
                             )
 
                             Spacer(modifier = Modifier.height(20.dp))
@@ -193,23 +196,33 @@ fun ProfileScreen(
                             when (selectedTab) {
                                 // ---- اطلاعات شخصی ----
                                 0 -> {
-                                    ProfileForm(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        firstName = profile.firstName,
-                                        onFirstNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateFirstName(value)) },
-                                        lastName = profile.lastName,
-                                        onLastNameChange = { value -> viewModel.handleIntent(ProfileIntent.UpdateLastName(value)) },
-                                        email = profile.email ?: "",
-                                        phoneNumber = profile.phone,
-                                        onPhoneNumberChange = { value -> viewModel.handleIntent(ProfileIntent.UpdatePhoneNumber(value)) }
-                                    )
+                                    // دکمه‌ی ویرایش (مثل بخش آدرس‌ها) که باتم‌شیت ویرایش را باز می‌کند
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { showEditSheet = true }
+                                            .padding(vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.Edit, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.width(6.dp))
+                                        Text(
+                                            text = "ویرایش اطلاعات",
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontFamily = AppFont(),
+                                            fontSize = FontSize.REGULAR,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
                                     Spacer(modifier = Modifier.height(12.dp))
-                                    PrimaryButton(
-                                        text = if (state.isSaving) stringResource(Resources.String.Saving) else stringResource(Resources.String.UpdateProfile),
-                                        icon = Resources.Icon.Checkmark,
-                                        enabled = state.isFormValid && !state.isSaving,
-                                        onClick = { viewModel.handleIntent(ProfileIntent.SaveProfile) }
-                                    )
+                                    // آیتم‌های اطلاعات به‌صورت متنِ فقط‌خواندنی
+                                    InfoField(label = "نام", value = profile.firstName)
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    InfoField(label = "نام خانوادگی", value = profile.lastName)
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    InfoField(label = "ایمیل", value = profile.email)
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    InfoField(label = "شماره موبایل", value = profile.phone)
                                     Spacer(modifier = Modifier.height(20.dp))
                                     SignOutRow(onClick = { viewModel.handleIntent(ProfileIntent.SignOut) })
                                 }
@@ -261,43 +274,49 @@ fun ProfileScreen(
                                     }
                                 }
 
-                                // ---- کیف پول ----
+                                // ---- کیف پول (موجودی و تراکنش‌ها به‌صورت درجا) ----
                                 2 -> {
-                                    WalletBalanceCard(
-                                        state = state.walletBalanceState,
-                                        onClick = navigateToWallet
-                                    )
+                                    ProfileWalletTab(messageBarState = messageBarState)
                                 }
 
-                                // ---- سفارش‌ها ----
+                                // ---- سفارش‌ها (فهرست درجا) ----
                                 3 -> {
-                                    MenuRow(
-                                        label = stringResource(Resources.String.ManageOrders),
-                                        subtitle = "پیگیری و تاریخچه سفارش‌ها",
-                                        onClick = navigateToMyOrders
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(Resources.Icon.Book),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(21.dp)
-                                        )
+                                    if (state.ordersLoading) {
+                                        LoadingCard(modifier = Modifier.fillMaxWidth().height(120.dp))
+                                    } else if (state.orders.isEmpty()) {
+                                        EmptyTabHint(text = "هنوز سفارشی ثبت نکرده‌اید.")
+                                    } else {
+                                        state.orders.forEach { order ->
+                                            OrderRow(order = order, onClick = { navigateToOrderDetail(order.id) })
+                                            Spacer(modifier = Modifier.height(10.dp))
+                                        }
                                     }
                                 }
 
-                                // ---- علاقه‌مندی‌ها ----
+                                // ---- علاقه‌مندی‌ها (شبکه‌ی درجا) ----
                                 else -> {
-                                    MenuRow(
-                                        label = stringResource(Resources.String.MyFavorites),
-                                        subtitle = "محصولات نشان‌شده‌ی شما",
-                                        onClick = navigateToFavorites
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Favorite,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(21.dp)
-                                        )
+                                    if (state.favoritesLoading) {
+                                        LoadingCard(modifier = Modifier.fillMaxWidth().height(120.dp))
+                                    } else if (state.favorites.isEmpty()) {
+                                        EmptyTabHint(text = stringResource(Resources.String.FavoritesEmpty))
+                                    } else {
+                                        state.favorites.chunked(2).forEach { rowItems ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                            ) {
+                                                rowItems.forEach { product ->
+                                                    MainProductCard(
+                                                        modifier = Modifier.weight(1f),
+                                                        product = product,
+                                                        onClick = navigateToDetail,
+                                                        onFavoriteClick = { viewModel.handleIntent(ProfileIntent.ToggleFavorite(product)) }
+                                                    )
+                                                }
+                                                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                                            }
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                        }
                                     }
                                 }
                             }
@@ -352,10 +371,207 @@ fun ProfileScreen(
             }
         )
     }
+
+    if (showEditSheet) {
+        state.profile?.let { profile ->
+            ProfileEditBottomSheet(
+                initialFirstName = profile.firstName.orEmpty(),
+                initialLastName = profile.lastName.orEmpty(),
+                email = profile.email ?: "",
+                initialPhone = profile.phone ?: "",
+                isSaving = state.isSaving,
+                onDismiss = { showEditSheet = false },
+                onConfirm = { firstName, lastName, phone ->
+                    viewModel.handleIntent(ProfileIntent.UpdateFirstName(firstName))
+                    viewModel.handleIntent(ProfileIntent.UpdateLastName(lastName))
+                    viewModel.handleIntent(ProfileIntent.UpdatePhoneNumber(phone))
+                    viewModel.handleIntent(ProfileIntent.SaveProfile)
+                    showEditSheet = false
+                }
+            )
+        }
+    }
+}
+
+/** یک ردیفِ اطلاعاتِ فقط‌خواندنی: برچسب + مقدار. */
+@Composable
+private fun InfoField(label: String, value: String?) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(colors.surface)
+            .border(BorderStroke(1.dp, colors.line), RoundedCornerShape(14.dp))
+            .padding(horizontal = 16.dp, vertical = 13.dp)
+    ) {
+        Text(
+            text = label,
+            fontFamily = AppFont(),
+            fontSize = FontSize.SMALL,
+            color = colors.onSurfaceVariant
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = value?.takeIf { it.isNotBlank() } ?: "—",
+            fontFamily = AppFont(),
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.onSurface
+        )
+    }
+}
+
+/** پیام خالی‌بودنِ یک تب. */
+@Composable
+private fun EmptyTabHint(text: String) {
+    Text(
+        text = text,
+        fontFamily = AppFont(),
+        fontSize = FontSize.REGULAR,
+        color = AppTheme.colors.onSurfaceVariant,
+        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+    )
+}
+
+/** کارتِ خلاصه‌ی سفارش برای نمایشِ درجا در تب سفارش‌ها. */
+@Composable
+private fun OrderRow(order: Order, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(BorderStroke(1.dp, colors.line), RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "سفارش #${order.id}",
+                fontFamily = AppFont(),
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.Bold,
+                color = colors.onSurface
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "${orderStatusLabel(order.status)} • ${order.createdAt.take(10)}",
+                fontFamily = AppFont(),
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant
+            )
+        }
+        Text(
+            text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+            fontFamily = AppFont(),
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.ExtraBold,
+            color = colors.primary
+        )
+        Spacer(Modifier.width(8.dp))
+        Icon(
+            painter = painterResource(Resources.Icon.RightArrow),
+            contentDescription = null,
+            tint = colors.onSurfaceVariant,
+            modifier = Modifier.size(18.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+        )
+    }
+}
+
+private fun orderStatusLabel(status: String): String = when (status.uppercase()) {
+    "PENDING", "AWAITING_PAYMENT" -> "در انتظار پرداخت"
+    "PAID", "PROCESSING" -> "در حال پردازش"
+    "SHIPPED" -> "ارسال‌شده"
+    "DELIVERED" -> "تحویل‌شده"
+    "CANCELLED", "CANCELED" -> "لغوشده"
+    else -> status
+}
+
+/** محتوای تب کیف پول به‌صورت درجا: موجودی + شارژ/برداشت + تراکنش‌ها. */
+@Composable
+private fun ProfileWalletTab(messageBarState: MessageBarState) {
+    val vm = koinViewModel<WalletViewModel>()
+    val st by vm.state.collectAsState()
+    val uriHandler = LocalUriHandler.current
+    var showTopUp by remember { mutableStateOf(false) }
+    var showWithdraw by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        vm.effect.collect { effect ->
+            when (effect) {
+                is WalletEffect.ShowError -> messageBarState.addError(effect.message)
+                is WalletEffect.ShowSuccess -> messageBarState.addSuccess(effect.message)
+                is WalletEffect.NavigateToPayment -> uriHandler.openUri(effect.url)
+            }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        BalanceCard(
+            balanceState = st.balanceState,
+            onTopUp = { showTopUp = true },
+            onWithdraw = { showWithdraw = true }
+        )
+        Spacer(Modifier.height(20.dp))
+        Text(
+            text = stringResource(Resources.String.Transactions),
+            fontFamily = AppFont(),
+            fontSize = FontSize.EXTRA_REGULAR,
+            fontWeight = FontWeight.ExtraBold,
+            color = AppTheme.colors.onSurface
+        )
+        Spacer(Modifier.height(12.dp))
+        when (val ts = st.transactionsState) {
+            is AppResult.Loading -> LoadingCard(Modifier.fillMaxWidth().height(120.dp))
+            is AppResult.Error -> InfoCard(
+                modifier = Modifier.fillMaxWidth().height(140.dp),
+                title = stringResource(Resources.String.Oops),
+                subtitle = anyToString(ts.message),
+                image = Resources.Image.Cat
+            )
+            is AppResult.Success -> {
+                val txs = ts.data.items
+                if (txs.isEmpty()) {
+                    EmptyTabHint(text = stringResource(Resources.String.WalletEmpty))
+                } else {
+                    txs.forEach { tx ->
+                        TransactionItem(tx)
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+            }
+        }
+    }
+
+    if (showTopUp) {
+        TopUpDialog(
+            isLoading = st.isTopUpLoading,
+            onDismiss = { showTopUp = false },
+            onConfirm = { amount ->
+                vm.handleIntent(WalletIntent.TopUp(amount))
+                showTopUp = false
+            }
+        )
+    }
+    if (showWithdraw) {
+        WithdrawDialog(
+            isLoading = st.isWithdrawLoading,
+            onDismiss = { showWithdraw = false },
+            onConfirm = { amount, iban ->
+                vm.handleIntent(WalletIntent.Withdraw(amount, iban))
+                showWithdraw = false
+            }
+        )
+    }
 }
 
 @Composable
-private fun ProfileHeader(name: String, phone: String?, onEdit: () -> Unit) {
+private fun ProfileHeader(name: String, phone: String?) {
     val colors = AppTheme.colors
     val initials = name.trim().split(" ")
         .mapNotNull { it.firstOrNull()?.toString() }
@@ -403,18 +619,6 @@ private fun ProfileHeader(name: String, phone: String?, onEdit: () -> Unit) {
                 )
             }
         }
-        Text(
-            text = stringResource(Resources.String.Edit),
-            modifier = Modifier
-                .clip(RoundedCornerShape(999.dp))
-                .background(Color.White.copy(alpha = 0.2f))
-                .clickable { onEdit() }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            fontFamily = AppFont(),
-            fontSize = FontSize.SMALL,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
     }
 }
 
