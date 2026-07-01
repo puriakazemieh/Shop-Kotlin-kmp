@@ -75,7 +75,7 @@ fun CartScreen(
     }
 
     ContentWithMessageBar(
-        contentBackgroundColor = colors.background,
+        contentBackgroundColor = colors.surface,
         messageBarState = messageBarState,
         errorContainerColor = colors.error,
         errorContentColor = colors.onError,
@@ -112,13 +112,8 @@ fun CartScreen(
                             .padding(horizontal = 16.dp)
                             .padding(top = 16.dp, bottom = 24.dp)
                     ) {
-                        Text(
-                            text = stringResource(Resources.String.Cart),
-                            fontSize = FontSize.EXTRA_MEDIUM,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = colors.onBackground
-                        )
-                        Spacer(Modifier.height(16.dp))
+                        // عنوانِ صفحه از تاپ‌باری که MainGraphScreen می‌سازد می‌آید؛
+                        // این‌جا فقط تب‌ها و محتوا را می‌گذاریم تا «سبد خرید» دوبار نوشته نشود.
 
                         // ---- تب‌ها: سبد جاری / سبد بعدی ----
                         CartTabs(

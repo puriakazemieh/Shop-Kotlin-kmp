@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -54,10 +53,6 @@ fun MoreScreen(
     userPhone: String = "",
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
-    onOrdersClick: () -> Unit,
-    onFavoritesClick: () -> Unit,
-    onAddressesClick: () -> Unit,
-    onWalletClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
     onSupportClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -78,33 +73,8 @@ fun MoreScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ---- آیتم‌های پروفایل ----
-        if (isLoggedIn) {
-            AccountRow(
-                title = "سفارش‌های من",
-                subtitle = "پیگیری و سوابق خرید",
-                onClick = onOrdersClick
-            ) { AccountIcon(painter = Resources.Icon.Book) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "علاقه‌مندی‌ها",
-                subtitle = "محصولات نشان‌شده‌ی شما",
-                onClick = onFavoritesClick
-            ) { AccountIcon(vector = Icons.Default.Favorite) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "آدرس‌های من",
-                subtitle = "آدرس‌های ثبت‌شده",
-                onClick = onAddressesClick
-            ) { AccountIcon(painter = Resources.Icon.MapPin) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "کیف پول کارمیلا",
-                subtitle = "موجودی و تراکنش‌ها",
-                onClick = onWalletClick
-            ) { AccountIcon(painter = Resources.Icon.Dollar) }
-            Spacer(Modifier.height(12.dp))
-        }
+        // آیتم‌های پروفایل (سفارش‌ها، علاقه‌مندی‌ها، آدرس‌ها، کیف پول) به داخل
+        // صفحه‌ی «مشخصات» منتقل شده‌اند و از طریق کارت هدر بالا در دسترس‌اند.
 
         // ---- (اگر ادمین) پنل مدیریت فروشگاه ----
         if (isAdmin) {
