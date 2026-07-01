@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.domain.admin.AdminProduct
 import com.kazemieh.domain.admin.AdminStats
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -54,6 +55,7 @@ fun AdminPanelScreen(
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val colors = AppTheme.colors
     var selectedTab by remember { mutableStateOf(0) }
+    var productToDelete by remember { mutableStateOf<com.kazemieh.domain.admin.AdminProduct?>(null) }
 
     val tabs = listOf(
         "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
@@ -129,7 +131,9 @@ fun AdminPanelScreen(
                     1 -> ProductsTab(
                         state = state,
                         onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
-                        onProductClick = { id -> navigateToManageProduct(id) },
+                        onEdit = { id -> navigateToManageProduct(id) },
+                        onVariants = { id -> navigateToManageProduct(id) },
+                        onDelete = { product -> productToDelete = product },
                         onAdd = { navigateToManageProduct(null) }
                     )
                     2 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
@@ -148,6 +152,23 @@ fun AdminPanelScreen(
             }
         }
     }
+
+    productToDelete?.let { product ->
+        AlertDialog(
+            onDismissRequest = { productToDelete = null },
+            title = { Text("حذف محصول") },
+            text = { Text("آیا از حذف «${product.title}» مطمئن هستید؟ این عمل قابل بازگشت نیست.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.handleIntent(AdminPanelIntent.DeleteProduct(product.id))
+                    productToDelete = null
+                }) { Text("حذف", color = colors.sale, fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = {
+                TextButton(onClick = { productToDelete = null }) { Text("انصراف") }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,7 +176,9 @@ fun AdminPanelScreen(
 private fun ProductsTab(
     state: AdminPanelState,
     onRefresh: () -> Unit,
-    onProductClick: (Long) -> Unit,
+    onEdit: (Long) -> Unit,
+    onVariants: (Long) -> Unit,
+    onDelete: (AdminProduct) -> Unit,
     onAdd: () -> Unit
 ) {
     val colors = AppTheme.colors
@@ -209,7 +232,12 @@ private fun ProductsTab(
                         }
                     } else {
                         items(items = products, key = { it.id }) { product ->
-                            AdminProductCard(product = product, onClick = { onProductClick(product.id) })
+                            AdminProductCard(
+                                product = product,
+                                onEdit = { onEdit(product.id) },
+                                onVariants = { onVariants(product.id) },
+                                onDelete = { onDelete(product) }
+                            )
                         }
                     }
                 }

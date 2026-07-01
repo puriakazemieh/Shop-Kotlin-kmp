@@ -17,6 +17,9 @@ data class AdminProductResponse(
     val discountedPrice: Double? = null,
     val sku: String? = null,
     val initialOnHand: Int? = null,
+    val categoryName: String? = null,
+    val thumbnailUrl: String? = null,
+    val stock: Int = 0,
     val createdAt: String? = null,
     val updatedAt: String? = null,
     @SerialName("active")
