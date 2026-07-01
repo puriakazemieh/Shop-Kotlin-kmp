@@ -9,6 +9,7 @@ import com.kazemieh.domain.catalog.GetCategoriesUseCase
 import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.auth.IsUserLoggedInUseCase
+import com.kazemieh.domain.blog.usecase.GetBlogsUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
@@ -31,6 +32,7 @@ class ProductsOverviewViewModel(
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
     private val getStoriesUseCase: GetStoriesUseCase,
     private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase,
+    private val getBlogsUseCase: GetBlogsUseCase,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
 
@@ -46,7 +48,17 @@ class ProductsOverviewViewModel(
         loadCategories()
         loadCampaign()
         loadBanners()
+        loadBlogPosts()
         observeFavorites()
+    }
+
+    private fun loadBlogPosts() {
+        viewModelScope.launch {
+            when (val result = getBlogsUseCase(page = 0, size = 6)) {
+                is AppResult.Success -> _state.update { it.copy(blogPosts = result.data.content) }
+                else -> { /* بدون مقاله؛ بخش نمایش داده نمی‌شود */ }
+            }
+        }
     }
 
     private fun loadCampaign() {
@@ -191,6 +203,7 @@ class ProductsOverviewViewModel(
             loadCategories()
             loadCampaign()
             loadBanners()
+            loadBlogPosts()
             _state.update { it.copy(isRefreshing = false) }
         }
     }

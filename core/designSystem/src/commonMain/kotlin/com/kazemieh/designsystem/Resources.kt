@@ -79,6 +79,7 @@ object Resources {
         val FeaturedProducts = CommonRes.string.featuredProducts
         val AllProducts = CommonRes.string.allProducts
         val NewestProducts = CommonRes.string.newestProducts
+        val BlogTeaserTitle = CommonRes.string.blogTeaserTitle
         val TotalLabel = CommonRes.string.totalLabel
         val OrderSummary = CommonRes.string.orderSummary
         val OrderStatusPlaced = CommonRes.string.orderStatusPlaced

@@ -36,6 +36,7 @@ val catalogModule = module {
             observeFavoriteIdsUseCase = get(),
             getStoriesUseCase = get(),
             markStoryAsSeenUseCase = get(),
+            getBlogsUseCase = get(),
             isUserLoggedInUseCase = get()
         )
     }

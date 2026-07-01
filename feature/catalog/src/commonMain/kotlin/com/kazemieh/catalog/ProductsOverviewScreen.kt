@@ -3,6 +3,7 @@ package com.kazemieh.catalog
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,7 +60,9 @@ import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.domain.blog.Blog
 import com.kazemieh.domain.catalog.Category
+import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -273,6 +277,30 @@ fun ProductsOverviewScreen(
                             }
                         }
 
+                        // مجله/بلاگ — تیزرِ آخرین مقالات (مطابق اسپک)
+                        if (state.blogPosts.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                HomeSectionHeader(
+                                    title = stringResource(Resources.String.BlogTeaserTitle),
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(horizontal = 16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    items(state.blogPosts, key = { it.id }) { post ->
+                                        BlogTeaserCard(
+                                            post = post,
+                                            onClick = { navigateToBlogDetail(post.slug) }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                         item {
                             Spacer(modifier = Modifier.height(24.dp))
                             TrustBadges(modifier = Modifier.padding(horizontal = 16.dp))
@@ -358,5 +386,60 @@ fun SquareCategoryCard(
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.SemiBold
         )
+    }
+}
+
+/** کارتِ تیزرِ مقاله در صفحه‌ی اصلی — تصویر + عنوان + دسته/زمانِ مطالعه. */
+@Composable
+private fun BlogTeaserCard(
+    post: Blog,
+    onClick: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .width(230.dp)
+            .clip(RoundedCornerShape(Radius.lg))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.lg))
+            .clickable { onClick() }
+            .padding(10.dp)
+    ) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clip(RoundedCornerShape(Radius.sm)),
+            painter = rememberImagePainter(post.thumbnailUrl ?: ""),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = post.title,
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.Bold,
+            color = colors.onSurface,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.height(44.dp)
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            post.categoryName?.takeIf { it.isNotBlank() }?.let {
+                Text(
+                    text = it,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.primary
+                )
+                Spacer(Modifier.width(8.dp))
+            }
+            Text(
+                text = "${post.readingTimeMinutes} دقیقه مطالعه",
+                fontSize = FontSize.EXTRA_SMALL,
+                color = colors.onSurfaceVariant
+            )
+        }
     }
 }
