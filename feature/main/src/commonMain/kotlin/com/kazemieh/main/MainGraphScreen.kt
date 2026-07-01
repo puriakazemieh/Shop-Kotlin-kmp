@@ -61,6 +61,10 @@ fun MainGraphScreen(
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
     navigateToCheckout: (Double) -> Unit,
+    navigateToMyOrders: () -> Unit,
+    navigateToWallet: () -> Unit,
+    navigateToFavorites: () -> Unit,
+    navigateToCustomerClub: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -159,15 +163,18 @@ fun MainGraphScreen(
                             MoreScreen(
                                 isLoggedIn = state.isLoggedIn,
                                 isAdmin = state.isAdmin,
+                                userName = state.userName,
+                                userPhone = state.userPhone,
                                 onLoginClick = navigateToAuth,
-                                onProfileClick = navigateToProfile,
-                                onContactUsClick = navigateToContactUs,
+                                onEditProfileClick = navigateToProfile,
+                                onOrdersClick = navigateToMyOrders,
+                                onFavoritesClick = navigateToFavorites,
+                                onAddressesClick = navigateToProfile,
+                                onWalletClick = navigateToWallet,
+                                onCustomerClubClick = navigateToCustomerClub,
+                                onSupportClick = navigateToContactUs,
                                 onSettingsClick = navigateToSettings,
-                                onAdminPanelClick = navigateToAdminPanel,
-                                onBlogClick = navigateToBlog,
-                                onSignOutClick = {
-                                    viewModel.handleIntent(MainIntent.SignOut)
-                                }
+                                onAdminPanelClick = navigateToAdminPanel
                             )
                         }
                     }

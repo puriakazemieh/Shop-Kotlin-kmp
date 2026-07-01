@@ -80,7 +80,8 @@ fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToMyOrders: () -> Unit,
     navigateToWallet: () -> Unit,
-    navigateToFavorites: () -> Unit
+    navigateToFavorites: () -> Unit,
+    onSignedOut: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
@@ -100,6 +101,8 @@ fun ProfileScreen(
                 is ProfileEffect.ShowError -> {
                     messageBarState.addError(effect.message)
                 }
+
+                is ProfileEffect.SignedOut -> onSignedOut()
             }
         }
     }
@@ -206,6 +209,8 @@ fun ProfileScreen(
                                         enabled = state.isFormValid && !state.isSaving,
                                         onClick = { viewModel.handleIntent(ProfileIntent.SaveProfile) }
                                     )
+                                    Spacer(modifier = Modifier.height(20.dp))
+                                    SignOutRow(onClick = { viewModel.handleIntent(ProfileIntent.SignOut) })
                                 }
 
                                 // ---- آدرس‌ها ----
@@ -437,6 +442,39 @@ private fun ProfileTabChip(label: String, selected: Boolean, onClick: () -> Unit
         color = if (selected) colors.onPrimary else colors.onSurfaceVariant,
         maxLines = 1
     )
+}
+
+/** دکمهٔ خروج از حساب — داخل بخش مشخصاتِ پروفایل (مطابق درخواست). */
+@Composable
+private fun SignOutRow(onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.sale.copy(alpha = 0.08f))
+            .border(BorderStroke(1.dp, colors.sale.copy(alpha = 0.4f)), RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+            .padding(vertical = 15.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(Resources.Icon.SignOut),
+            contentDescription = null,
+            tint = colors.sale,
+            modifier = Modifier.size(19.dp).graphicsLayer { rotationY = if (isRtl) 180f else 0f }
+        )
+        Spacer(Modifier.width(9.dp))
+        Text(
+            text = stringResource(Resources.String.SignOut),
+            fontFamily = AppFont(),
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.Bold,
+            color = colors.sale
+        )
+    }
 }
 
 /** ردیفِ منوی پروفایل — مطابق اسپک: کاشیِ آیکن + عنوان + زیرعنوان + فلش. */

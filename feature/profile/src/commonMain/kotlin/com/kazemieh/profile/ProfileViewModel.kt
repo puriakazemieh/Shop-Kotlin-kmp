@@ -14,6 +14,7 @@ import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.address.SetDefaultAddressUseCase
 import com.kazemieh.domain.address.UpdateAddressUseCase
 import com.kazemieh.domain.profile.ValidateProfileUseCase
+import com.kazemieh.domain.auth.SignOutUseCase
 import com.kazemieh.domain.wallet.GetWalletBalanceUseCase
 import com.kazemieh.domain.favorite.GetFavoritesUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
@@ -42,7 +43,8 @@ class ProfileViewModel(
     private val getWalletBalanceUseCase: GetWalletBalanceUseCase,
     private val getFavoritesUseCase: GetFavoritesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -92,6 +94,17 @@ class ProfileViewModel(
 
             is ProfileIntent.LoadFavorites -> loadFavorites()
             is ProfileIntent.ToggleFavorite -> toggleFavorite(intent.product)
+            is ProfileIntent.SignOut -> signOut()
+        }
+    }
+
+    private fun signOut() {
+        viewModelScope.launch {
+            when (val result = signOutUseCase()) {
+                is AppResult.Success -> _effect.send(ProfileEffect.SignedOut)
+                is AppResult.Error -> _effect.send(ProfileEffect.ShowError(result.message))
+                else -> {}
+            }
         }
     }
 
@@ -441,6 +454,7 @@ sealed interface ProfileIntent {
 
     data object LoadFavorites : ProfileIntent
     data class ToggleFavorite(val product: ProductSummary) : ProfileIntent
+    data object SignOut : ProfileIntent
 }
 
 data class ProfileState(
@@ -459,4 +473,5 @@ data class ProfileState(
 sealed class ProfileEffect {
     data class ShowError(val message: Any) : ProfileEffect()
     data class ShowSuccess(val message: Any) : ProfileEffect()
+    data object SignedOut : ProfileEffect()
 }

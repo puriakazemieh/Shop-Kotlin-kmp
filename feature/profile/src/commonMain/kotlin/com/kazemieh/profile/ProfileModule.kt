@@ -32,7 +32,14 @@ val profileModule = module {
             getWalletBalanceUseCase = get(),
             getFavoritesUseCase = get(),
             toggleFavoriteUseCase = get(),
-            observeFavoriteIdsUseCase = get()
+            observeFavoriteIdsUseCase = get(),
+            signOutUseCase = get()
+        )
+    }
+
+    viewModel {
+        com.kazemieh.profile.club.CustomerClubViewModel(
+            getMyOrdersUseCase = get()
         )
     }
 

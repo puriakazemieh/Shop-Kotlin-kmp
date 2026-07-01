@@ -57,7 +57,14 @@ class MainViewModel(
         viewModelScope.launch {
             observeProfileUseCase().collect { result ->
                 if (result is AppResult.Success) {
-                    _state.update { it.copy(isAdmin = result.data.role == "ADMIN") }
+                    val p = result.data
+                    _state.update {
+                        it.copy(
+                            isAdmin = p.role == "ADMIN",
+                            userName = "${p.firstName.orEmpty()} ${p.lastName.orEmpty()}".trim(),
+                            userPhone = p.phone ?: p.mobile ?: ""
+                        )
+                    }
                 }
             }
         }
@@ -103,6 +110,8 @@ data class MainState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
     val isAdmin: Boolean = false,
+    val userName: String = "",
+    val userPhone: String = "",
     val cartItemCount: Int = 0,
     val error: Any? = null
 )

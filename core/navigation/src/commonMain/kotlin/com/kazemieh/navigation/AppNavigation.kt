@@ -37,6 +37,7 @@ import com.kazemieh.profile.WalletScreen
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import com.kazemieh.profile.FavoritesScreen
+import com.kazemieh.profile.club.CustomerClubScreen
 import com.kazemieh.orders.list.OrderListScreen
 import com.kazemieh.orders.detail.OrderDetailScreen
 import com.kazemieh.orders.tracking.OrderTrackingScreen
@@ -114,6 +115,18 @@ fun AppNavHost(
                 navigateToCheckout = { totalAmount ->
                     navController.navigate(Screen.Checkout(totalAmount))
                 },
+                navigateToMyOrders = {
+                    navController.navigate(Screen.MyOrders)
+                },
+                navigateToWallet = {
+                    navController.navigate(Screen.Wallet)
+                },
+                navigateToFavorites = {
+                    navController.navigate(Screen.Favorites)
+                },
+                navigateToCustomerClub = {
+                    navController.navigate(Screen.CustomerClub)
+                },
             )
         }
 
@@ -130,7 +143,18 @@ fun AppNavHost(
                 },
                 navigateToFavorites = {
                     navController.navigate(Screen.Favorites)
+                },
+                onSignedOut = {
+                    navController.navigate(Screen.HomeGraph()) {
+                        popUpTo<Screen.HomeGraph> { inclusive = true }
+                    }
                 }
+            )
+        }
+
+        composable<Screen.CustomerClub> {
+            CustomerClubScreen(
+                navigateBack = { navController.navigateBack() }
             )
         }
 

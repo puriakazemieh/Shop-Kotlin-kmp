@@ -110,4 +110,7 @@ sealed class Screen {
     @Serializable
     data class ProductDetail(val slug: String) : Screen()
 
+    @Serializable
+    data object CustomerClub : Screen()
+
 }
