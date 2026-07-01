@@ -19,6 +19,6 @@ val adminBlogModule = module {
     // GetBlogCategoriesUseCase is likely already in blogModule, but for Admin we might need it too if not shared
     // Checking if it's already defined in blogModule...
 
-    viewModel { AdminBlogListViewModel(get(), get(), get(), get()) }
+    viewModel { AdminBlogListViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ManageBlogViewModel(get(), get(), get(), get(), get()) }
 }

@@ -15,10 +15,13 @@ sealed interface AdminBlogListIntent {
     data object LoadCategories : AdminBlogListIntent
     data class DeleteBlog(val id: Long) : AdminBlogListIntent
     data class DeleteCategory(val id: Long) : AdminBlogListIntent
+    data class CreateCategory(val name: String, val description: String?) : AdminBlogListIntent
+    data class UpdateCategory(val id: Long, val name: String, val description: String?) : AdminBlogListIntent
 }
 
 sealed interface AdminBlogListEffect {
     data class ShowError(val message: Any) : AdminBlogListEffect
     data object BlogDeleted : AdminBlogListEffect
     data object CategoryDeleted : AdminBlogListEffect
+    data object CategorySaved : AdminBlogListEffect
 }

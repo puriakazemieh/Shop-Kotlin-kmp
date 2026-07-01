@@ -22,11 +22,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.domain.blog.Blog
 import com.kazemieh.domain.blog.BlogCategory
 import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
+import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.seiko.imageloader.rememberImagePainter
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,14 +44,38 @@ fun AdminBlogListScreen(
 ) {
     val state by viewModel.state.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
+    val messageBarState = rememberMessageBarState()
+
+    // دیالوگ‌های محلی: ساخت/ویرایش دسته‌بندی و تأییدِ حذف
+    var showCategoryDialog by remember { mutableStateOf(false) }
+    var categoryToEdit by remember { mutableStateOf<BlogCategory?>(null) }
+    var blogToDelete by remember { mutableStateOf<Blog?>(null) }
+    var categoryToDelete by remember { mutableStateOf<BlogCategory?>(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is AdminBlogListEffect.ShowError -> messageBarState.addError(effect.message)
+                is AdminBlogListEffect.BlogDeleted -> messageBarState.addSuccess("مقاله حذف شد")
+                is AdminBlogListEffect.CategoryDeleted -> messageBarState.addSuccess("دسته‌بندی حذف شد")
+                is AdminBlogListEffect.CategorySaved -> messageBarState.addSuccess("دسته‌بندی ذخیره شد")
+            }
+        }
+    }
+
+    val onAdd = {
+        if (selectedTab == 0) {
+            navigateToManageBlog(null, null)
+        } else {
+            categoryToEdit = null
+            showCategoryDialog = true
+        }
+    }
 
     Scaffold(
         floatingActionButton = {
             if (embedded) {
-                FloatingActionButton(onClick = {
-                    if (selectedTab == 0) navigateToManageBlog(null, null)
-                    else navigateToManageCategory(null)
-                }) {
+                FloatingActionButton(onClick = onAdd) {
                     Icon(Icons.Default.Add, contentDescription = null)
                 }
             }
@@ -63,43 +90,141 @@ fun AdminBlogListScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        if (selectedTab == 0) navigateToManageBlog(null, null)
-                        else navigateToManageCategory(null)
-                    }) {
+                    IconButton(onClick = onAdd) {
                         Icon(Icons.Default.Add, contentDescription = null)
                     }
                 }
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            TabRow(selectedTabIndex = selectedTab) {
-                Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
-                    Text(text = "مقاله‌ها", modifier = Modifier.padding(16.dp))
+        ContentWithMessageBar(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            messageBarState = messageBarState
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                TabRow(selectedTabIndex = selectedTab) {
+                    Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
+                        Text(text = "مقاله‌ها", modifier = Modifier.padding(16.dp))
+                    }
+                    Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
+                        Text(text = "دسته‌بندی‌ها", modifier = Modifier.padding(16.dp))
+                    }
                 }
-                Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
-                    Text(text = "دسته‌بندی‌ها", modifier = Modifier.padding(16.dp))
-                }
-            }
 
-            if (state.isLoading) {
-                LoadingCard(modifier = Modifier.fillMaxSize())
-            } else {
-                when (selectedTab) {
-                    0 -> ArticlesList(state.blogs, navigateToManageBlog, viewModel)
-                    1 -> CategoriesList(state.categories, navigateToManageCategory, viewModel)
+                if (state.isLoading) {
+                    LoadingCard(modifier = Modifier.fillMaxSize())
+                } else {
+                    when (selectedTab) {
+                        0 -> ArticlesList(
+                            blogs = state.blogs,
+                            navigateToManageBlog = navigateToManageBlog,
+                            onDeleteBlog = { blog -> blogToDelete = blog }
+                        )
+                        1 -> CategoriesList(
+                            categories = state.categories,
+                            onEditCategory = { category ->
+                                categoryToEdit = category
+                                showCategoryDialog = true
+                            },
+                            onDeleteCategory = { category -> categoryToDelete = category }
+                        )
+                    }
                 }
             }
         }
     }
+
+    if (showCategoryDialog) {
+        BlogCategoryDialog(
+            category = categoryToEdit,
+            onDismiss = { showCategoryDialog = false },
+            onConfirm = { name, description ->
+                val editing = categoryToEdit
+                if (editing == null) {
+                    viewModel.handleIntent(AdminBlogListIntent.CreateCategory(name, description))
+                } else {
+                    viewModel.handleIntent(AdminBlogListIntent.UpdateCategory(editing.id, name, description))
+                }
+                showCategoryDialog = false
+            }
+        )
+    }
+
+    blogToDelete?.let { blog ->
+        AlertDialog(
+            onDismissRequest = { blogToDelete = null },
+            title = { Text("حذف مقاله") },
+            text = { Text("آیا از حذف «${blog.title}» مطمئن هستید؟") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.handleIntent(AdminBlogListIntent.DeleteBlog(blog.id))
+                    blogToDelete = null
+                }) { Text("حذف", color = AppTheme.colors.sale, fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = { TextButton(onClick = { blogToDelete = null }) { Text("انصراف") } }
+        )
+    }
+
+    categoryToDelete?.let { category ->
+        AlertDialog(
+            onDismissRequest = { categoryToDelete = null },
+            title = { Text("حذف دسته‌بندی") },
+            text = { Text("آیا از حذف دسته‌بندی «${category.name}» مطمئن هستید؟") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.handleIntent(AdminBlogListIntent.DeleteCategory(category.id))
+                    categoryToDelete = null
+                }) { Text("حذف", color = AppTheme.colors.sale, fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = { TextButton(onClick = { categoryToDelete = null }) { Text("انصراف") } }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BlogCategoryDialog(
+    category: BlogCategory?,
+    onDismiss: () -> Unit,
+    onConfirm: (name: String, description: String?) -> Unit
+) {
+    var name by remember { mutableStateOf(category?.name ?: "") }
+    var description by remember { mutableStateOf(category?.description ?: "") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (category == null) "دسته‌بندی جدید" else "ویرایش دسته‌بندی", fontFamily = AppFont()) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("نام دسته‌بندی", fontFamily = AppFont()) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("توضیحات (اختیاری)", fontFamily = AppFont()) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirm(name.trim(), description.trim().takeIf { it.isNotBlank() }) },
+                enabled = name.trim().length >= 2
+            ) { Text("ذخیره", fontWeight = FontWeight.Bold) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } }
+    )
 }
 
 @Composable
 private fun ArticlesList(
     blogs: List<Blog>,
     navigateToManageBlog: (Long?, String?) -> Unit,
-    viewModel: AdminBlogListViewModel
+    onDeleteBlog: (Blog) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
@@ -175,7 +300,7 @@ private fun ArticlesList(
                         .size(30.dp)
                         .clip(RoundedCornerShape(9.dp))
                         .background(colors.sale.copy(alpha = 0.1f))
-                        .clickable { viewModel.handleIntent(AdminBlogListIntent.DeleteBlog(blog.id)) },
+                        .clickable { onDeleteBlog(blog) },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale) }
             }
@@ -186,8 +311,8 @@ private fun ArticlesList(
 @Composable
 private fun CategoriesList(
     categories: List<BlogCategory>,
-    navigateToManageCategory: (Long?) -> Unit,
-    viewModel: AdminBlogListViewModel
+    onEditCategory: (BlogCategory) -> Unit,
+    onDeleteCategory: (BlogCategory) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
@@ -214,7 +339,7 @@ private fun CategoriesList(
                         .size(30.dp)
                         .clip(RoundedCornerShape(9.dp))
                         .background(colors.accentSoft)
-                        .clickable { navigateToManageCategory(category.id) },
+                        .clickable { onEditCategory(category) },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.primary) }
                 Spacer(modifier = Modifier.width(6.dp))
@@ -223,7 +348,7 @@ private fun CategoriesList(
                         .size(30.dp)
                         .clip(RoundedCornerShape(9.dp))
                         .background(colors.sale.copy(alpha = 0.1f))
-                        .clickable { viewModel.handleIntent(AdminBlogListIntent.DeleteCategory(category.id)) },
+                        .clickable { onDeleteCategory(category) },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale) }
             }
