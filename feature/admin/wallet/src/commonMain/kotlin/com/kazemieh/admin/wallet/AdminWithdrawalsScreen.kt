@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -199,9 +201,9 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
         else -> colors.gold
     }
     val statusLabel = when (statusUpper) {
-        "PAID" -> "پرداخت‌شده"
-        "REJECTED" -> "ردشده"
-        else -> "در انتظار"
+        "PAID" -> "پرداخت شد"
+        "REJECTED" -> "رد شد"
+        else -> "در انتظار بررسی"
     }
     Column(
         modifier = Modifier
@@ -246,18 +248,30 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
             )
         }
         Spacer(modifier = Modifier.height(11.dp))
-        Text(
-            text = withdrawal.iban,
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(10.dp))
                 .background(colors.surfaceVariant)
                 .padding(horizontal = 12.dp, vertical = 9.dp),
-            fontSize = FontSize.SMALL,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.onSurfaceVariant,
-            fontFamily = AppFont()
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = withdrawal.iban,
+                modifier = Modifier.weight(1f),
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurfaceVariant,
+                fontFamily = AppFont()
+            )
+            Icon(
+                imageVector = Icons.Default.CreditCard,
+                contentDescription = null,
+                tint = colors.onSurfaceVariant,
+                modifier = Modifier.size(18.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(11.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -292,6 +306,21 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
                 fontSize = FontSize.SMALL,
                 fontWeight = FontWeight.Bold,
                 color = colors.onPrimary,
+                fontFamily = AppFont()
+            )
+        } else {
+            val note = withdrawal.adminNote?.takeIf { it.isNotBlank() }
+                ?: if (statusUpper == "PAID") "پرداخت شد" else "—"
+            Spacer(modifier = Modifier.height(11.dp))
+            Text(
+                text = "یادداشت: $note",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.surfaceVariant)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant,
                 fontFamily = AppFont()
             )
         }

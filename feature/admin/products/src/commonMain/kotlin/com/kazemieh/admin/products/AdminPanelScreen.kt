@@ -34,7 +34,6 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
-import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
@@ -59,7 +58,7 @@ fun AdminPanelScreen(
 
     val tabs = listOf(
         "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
-        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
+        "کد تخفیف", "استوری", "بلاگ", "مالی و برداشت"
     )
 
     LaunchedEffect(Unit) {
@@ -146,8 +145,7 @@ fun AdminPanelScreen(
                         navigateBack = { selectedTab = 1 },
                         embedded = true
                     )
-                    7 -> AdminWalletScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    7 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }
