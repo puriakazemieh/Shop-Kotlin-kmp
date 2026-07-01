@@ -78,7 +78,9 @@ class InteractionRepositoryImpl(
         rating = rating,
         comment = comment,
         replies = replies.map { it.toDomain() },
-        createdAt = createdAt
+        createdAt = createdAt,
+        isSupport = isSupport,
+        verifiedPurchase = verifiedPurchase
     )
 
     private fun QuestionResponse.toDomain(): Question = Question(
@@ -87,6 +89,7 @@ class InteractionRepositoryImpl(
         userName = userName,
         content = content,
         replies = replies.map { it.toDomain() },
-        createdAt = createdAt
+        createdAt = createdAt,
+        isSupport = isSupport
     )
 }

@@ -10,7 +10,9 @@ data class ReviewResponse(
     val rating: Int?,
     val comment: String,
     val replies: List<ReviewResponse>,
-    val createdAt: String
+    val createdAt: String,
+    val isSupport: Boolean = false,
+    val verifiedPurchase: Boolean = false
 )
 
 @Serializable
@@ -28,7 +30,8 @@ data class QuestionResponse(
     val userName: String,
     val content: String,
     val replies: List<QuestionResponse>,
-    val createdAt: String
+    val createdAt: String,
+    val isSupport: Boolean = false
 )
 
 @Serializable

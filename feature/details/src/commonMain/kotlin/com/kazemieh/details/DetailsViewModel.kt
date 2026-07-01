@@ -22,6 +22,7 @@ import com.kazemieh.domain.catalog.ProductDetail
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
+import com.kazemieh.domain.profile.GetProfileUseCase
 import com.kazemieh.domain.recentlyviewed.AddRecentlyViewedUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +50,8 @@ class DetailsViewModel(
     private val deleteQuestionUseCase: DeleteQuestionUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
-    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase
+    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase,
+    private val getProfileUseCase: GetProfileUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -60,6 +62,17 @@ class DetailsViewModel(
 
     init {
         observeFavorites()
+        loadCurrentUser()
+    }
+
+    private fun loadCurrentUser() {
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) return@launch
+            when (val result = getProfileUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(currentUserId = result.data.id) }
+                else -> {}
+            }
+        }
     }
 
     private fun observeFavorites() {

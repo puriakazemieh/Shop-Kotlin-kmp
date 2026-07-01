@@ -18,3 +18,25 @@ fun formatDateTime(isoString: String?): String {
         isoString
     }
 }
+
+/** ارقام لاتین را به ارقام فارسی تبدیل می‌کند. */
+fun String.toPersianDigits(): String {
+    val fa = charArrayOf('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹')
+    return buildString {
+        for (c in this@toPersianDigits) {
+            if (c in '0'..'9') append(fa[c - '0']) else append(c)
+        }
+    }
+}
+
+/** تاریخِ کوتاهِ فارسی برای نمایش کنارِ نظرها/پرسش‌ها (بدون ساعت). */
+fun formatShortDateFa(isoString: String?): String {
+    if (isoString.isNullOrBlank()) return ""
+    return try {
+        val datePart = isoString.split("T").firstOrNull() ?: return ""
+        val p = datePart.split("-")
+        if (p.size < 3) datePart.toPersianDigits() else "${p[0]}/${p[1]}/${p[2]}".toPersianDigits()
+    } catch (e: Exception) {
+        ""
+    }
+}

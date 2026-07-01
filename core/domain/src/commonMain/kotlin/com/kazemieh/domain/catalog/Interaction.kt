@@ -7,7 +7,9 @@ data class Review(
     val rating: Int?,
     val comment: String,
     val replies: List<Review>,
-    val createdAt: String
+    val createdAt: String,
+    val isSupport: Boolean = false,
+    val verifiedPurchase: Boolean = false
 )
 
 data class CreateReviewRequest(
@@ -23,7 +25,8 @@ data class Question(
     val userName: String,
     val content: String,
     val replies: List<Question>,
-    val createdAt: String
+    val createdAt: String,
+    val isSupport: Boolean = false
 )
 
 data class CreateQuestionRequest(
