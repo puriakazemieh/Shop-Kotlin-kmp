@@ -1,6 +1,7 @@
 package com.kazemieh.details
 
 import com.kazemieh.domain.catalog.ProductDetail
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.ProductVariant
 import com.kazemieh.domain.catalog.Question
 import com.kazemieh.domain.catalog.Review
@@ -10,6 +11,7 @@ data class DetailsState(
     val product: ProductDetail? = null,
     val reviews: List<Review> = emptyList(),
     val questions: List<Question> = emptyList(),
+    val similarProducts: List<ProductSummary> = emptyList(),
     val error: Any? = null,
     val quantity: Int = 1,
     val selectedVariant: ProductVariant? = null,

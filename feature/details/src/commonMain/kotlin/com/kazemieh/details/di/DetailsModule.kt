@@ -6,6 +6,7 @@ import com.kazemieh.domain.cart.AddToCartUseCase
 import com.kazemieh.domain.catalog.DeleteQuestionUseCase
 import com.kazemieh.domain.catalog.DeleteReviewUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
+import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.GetQuestionsUseCase
 import com.kazemieh.domain.catalog.GetReviewsUseCase
 import com.kazemieh.domain.catalog.PostQuestionUseCase
@@ -21,6 +22,7 @@ val detailsModule = module {
     viewModel {
         DetailsViewModel(
             getProductDetailUseCase = get(),
+            getProductsUseCase = get(),
             addToCartUseCase = get(),
             isUserLoggedInUseCase = get(),
             getReviewsUseCase = get(),
@@ -39,6 +41,7 @@ val detailsModule = module {
     factory { ToggleFavoriteUseCase(get()) }
     factory { ObserveFavoriteIdsUseCase(get()) }
     factory { GetProductDetailUseCase(get()) }
+    factory { GetProductsUseCase(get()) }
     factory { GetReviewsUseCase(get()) }
     factory { PostReviewUseCase(get()) }
     factory { UpdateReviewUseCase(get()) }

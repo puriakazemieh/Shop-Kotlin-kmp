@@ -303,6 +303,9 @@ fun AppNavHost(
                 },
                 navigateToAuth = {
                     navController.navigate(Screen.AuthGraph)
+                },
+                navigateToDetails = { slug ->
+                    navController.navigate(Screen.ProductDetail(slug = slug))
                 }
             )
         }

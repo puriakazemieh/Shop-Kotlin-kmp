@@ -11,6 +11,7 @@ import com.kazemieh.domain.catalog.CreateReviewRequest
 import com.kazemieh.domain.catalog.DeleteQuestionUseCase
 import com.kazemieh.domain.catalog.DeleteReviewUseCase
 import com.kazemieh.domain.catalog.GetProductDetailUseCase
+import com.kazemieh.domain.catalog.GetProductsUseCase
 import com.kazemieh.domain.catalog.GetQuestionsUseCase
 import com.kazemieh.domain.catalog.GetReviewsUseCase
 import com.kazemieh.domain.catalog.PostQuestionUseCase
@@ -32,6 +33,7 @@ import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     private val getProductDetailUseCase: GetProductDetailUseCase,
+    private val getProductsUseCase: GetProductsUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
@@ -188,6 +190,7 @@ class DetailsViewModel(
                         )
                     }
                     loadInteractions(product.id)
+                    product.categoryId?.let { loadSimilarProducts(it, product.id) }
                 }
                 is AppResult.Error -> {
                     _state.update {
@@ -197,6 +200,18 @@ class DetailsViewModel(
                         )
                     }
                     _effect.send(DetailsEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadSimilarProducts(categoryId: Long, excludeId: Long) {
+        viewModelScope.launch {
+            when (val result = getProductsUseCase(categoryId = categoryId, size = 12)) {
+                is AppResult.Success -> {
+                    val items = result.data.items.filter { it.id != excludeId }.take(10)
+                    _state.update { it.copy(similarProducts = items) }
                 }
                 else -> {}
             }

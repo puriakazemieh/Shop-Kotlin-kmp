@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -28,6 +31,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +48,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,11 +84,13 @@ import com.kazemieh.details.component.QuestionItem
 import com.kazemieh.details.component.ReviewItem
 import com.kazemieh.details.component.VariantChip
 import com.kazemieh.domain.catalog.ProductImage
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.ProductVideo
 import com.kazemieh.domain.catalog.Question
 import com.kazemieh.domain.catalog.Review
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -106,14 +113,17 @@ fun DetailsScreen(
     slug: String,
     navigateBack: () -> Unit,
     navigateToCart: () -> Unit,
-    navigateToAuth: () -> Unit
+    navigateToAuth: () -> Unit,
+    navigateToDetails: (String) -> Unit = {}
 ) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val galleryScope = rememberCoroutineScope()
     var fullscreenImageUrl by remember { mutableStateOf<String?>(null) }
+    var showSizeGuide by remember { mutableStateOf(false) }
     var showReviewDialog by remember { mutableStateOf(false) }
     var showQuestionDialog by remember { mutableStateOf(false) }
     var activeParentId by remember { mutableStateOf<Long?>(null) }
@@ -283,6 +293,23 @@ fun DetailsScreen(
                             }
                         }
 
+                        // ---- نوار بندانگشتی (تصاویر + ویدیو) ----
+                        if (mediaItems.size > 1) {
+                            Spacer(Modifier.height(12.dp))
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                itemsIndexed(mediaItems) { index, item ->
+                                    MediaThumbnail(
+                                        item = item,
+                                        selected = pagerState.currentPage == index,
+                                        onClick = { galleryScope.launch { pagerState.animateScrollToPage(index) } }
+                                    )
+                                }
+                            }
+                        }
+
                         Spacer(Modifier.height(18.dp))
 
                         // ---- برند ----
@@ -341,13 +368,30 @@ fun DetailsScreen(
                                 map
                             }
                             groupedOptions.forEach { (optionName, values) ->
+                                val isColor = optionName.contains("رنگ") || optionName.contains("color", ignoreCase = true)
+                                val isSize = optionName.contains("سایز") || optionName.contains("size", ignoreCase = true)
                                 Spacer(Modifier.height(22.dp))
-                                Text(
-                                    text = "انتخاب $optionName",
-                                    fontSize = FontSize.REGULAR,
-                                    fontWeight = FontWeight.Bold,
-                                    color = colors.onSurface
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "انتخاب $optionName",
+                                        fontSize = FontSize.REGULAR,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.onSurface
+                                    )
+                                    if (isSize) {
+                                        Text(
+                                            text = "راهنمای سایز",
+                                            fontSize = FontSize.SMALL,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = colors.primary,
+                                            modifier = Modifier.clickable { showSizeGuide = true }
+                                        )
+                                    }
+                                }
                                 Spacer(Modifier.height(11.dp))
                                 FlowRow(
                                     modifier = Modifier.fillMaxWidth(),
@@ -355,12 +399,24 @@ fun DetailsScreen(
                                     verticalArrangement = Arrangement.spacedBy(9.dp)
                                 ) {
                                     values.forEach { value ->
-                                        VariantChip(
-                                            label = value,
-                                            isSelected = state.selectedOptions[optionName] == value,
-                                            enabled = product.variants.any { it.options[optionName] == value },
-                                            onClick = { viewModel.handleIntent(DetailsIntent.SelectOption(optionName, value)) }
-                                        )
+                                        val enabled = product.variants.any { it.options[optionName] == value }
+                                        val selected = state.selectedOptions[optionName] == value
+                                        val swatch = if (isColor) colorForName(value) else null
+                                        if (swatch != null) {
+                                            ColorSwatch(
+                                                color = swatch,
+                                                isSelected = selected,
+                                                enabled = enabled,
+                                                onClick = { viewModel.handleIntent(DetailsIntent.SelectOption(optionName, value)) }
+                                            )
+                                        } else {
+                                            VariantChip(
+                                                label = value,
+                                                isSelected = selected,
+                                                enabled = enabled,
+                                                onClick = { viewModel.handleIntent(DetailsIntent.SelectOption(optionName, value)) }
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -540,10 +596,39 @@ fun DetailsScreen(
                                 }
                             )
                         }
+
+                        // ---- محصولات مشابه ----
+                        if (state.similarProducts.isNotEmpty()) {
+                            Spacer(Modifier.height(28.dp))
+                            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                            Spacer(Modifier.height(24.dp))
+                            Text(
+                                "محصولات مشابه",
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.onSurface
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(state.similarProducts) { similar ->
+                                    SimilarProductCard(
+                                        product = similar,
+                                        onClick = { navigateToDetails(similar.slug) }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    if (showSizeGuide) {
+        SizeGuideDialog(onDismiss = { showSizeGuide = false })
     }
 
     if (showReviewDialog) {
@@ -976,6 +1061,222 @@ private fun ServiceBadges(modifier: Modifier = Modifier) {
     ) {
         items.forEach { (icon, label) ->
             ServiceBadgeTile(icon = icon, label = label, modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+/** بندانگشتیِ گالری — تصویر یا ویدیو (با برچسب «ویدیو»)، با قابِ فعال هنگام انتخاب. */
+@Composable
+private fun MediaThumbnail(
+    item: MediaItem,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Box(
+        modifier = Modifier
+            .size(66.dp)
+            .clip(RoundedCornerShape(Radius.sm))
+            .background(colors.surfaceVariant)
+            .border(
+                width = if (selected) 2.dp else 1.dp,
+                color = if (selected) colors.primary else colors.line,
+                shape = RoundedCornerShape(Radius.sm)
+            )
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        when (item) {
+            is MediaItem.Image -> Image(
+                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(Radius.sm)),
+                painter = rememberImagePainter(item.image.url),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+            is MediaItem.Video -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        tint = colors.primary,
+                        modifier = Modifier.size(24.dp).align(Alignment.Center)
+                    )
+                    Text(
+                        text = "ویدیو",
+                        fontSize = FontSize.EXTRA_SMALL,
+                        color = Color.White,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .background(Color(0xCC0B0E18))
+                            .padding(vertical = 2.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** دایره‌ی انتخاب رنگ — مطابق اسپک؛ هنگام انتخاب حلقه‌ی دور آن پررنگ می‌شود. */
+@Composable
+private fun ColorSwatch(
+    color: Color,
+    isSelected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Box(
+        modifier = Modifier
+            .size(44.dp)
+            .clip(CircleShape)
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                color = if (isSelected) colors.primary else colors.line,
+                shape = CircleShape
+            )
+            .clickable(enabled = enabled) { onClick() }
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
+                .background(if (enabled) color else color.copy(alpha = 0.35f))
+                .border(1.dp, colors.line, CircleShape)
+        )
+    }
+}
+
+/** نگاشتِ نامِ فارسیِ رنگ به کد رنگ؛ برای رنگ‌های ناشناخته null برمی‌گرداند تا چیپِ متنی نمایش داده شود. */
+private fun colorForName(name: String): Color? {
+    val n = name.trim()
+    return when {
+        n.contains("مشکی") || n.contains("سیاه") -> Color(0xFF1A1A1A)
+        n.contains("سفید") -> Color(0xFFFFFFFF)
+        n.contains("سرمه") || n.contains("نیوی") -> Color(0xFF1F2A44)
+        n.contains("آبی") -> Color(0xFF2563EB)
+        n.contains("قرمز") || n.contains("قرمزی") -> Color(0xFFDC2626)
+        n.contains("سبز") -> Color(0xFF16A34A)
+        n.contains("زرد") -> Color(0xFFEAB308)
+        n.contains("نارنجی") -> Color(0xFFEA580C)
+        n.contains("صورتی") -> Color(0xFFEC4899)
+        n.contains("بنفش") -> Color(0xFF7C3AED)
+        n.contains("قهوه") -> Color(0xFF6B4226)
+        n.contains("کرم") -> Color(0xFFD9C7A3)
+        n.contains("بژ") -> Color(0xFFE8D9C0)
+        n.contains("طلای") -> Color(0xFFC9A227)
+        n.contains("نقره") -> Color(0xFFC0C0C0)
+        n.contains("خاکستری") || n.contains("طوسی") -> Color(0xFF9CA3AF)
+        else -> null
+    }
+}
+
+/** کارتِ محصولِ مشابه — کارتِ عمودیِ کوچک برای ردیفِ افقی (تصویر + عنوان + قیمت). */
+@Composable
+private fun SimilarProductCard(
+    product: ProductSummary,
+    onClick: () -> Unit
+) {
+    val colors = AppTheme.colors
+    val price = product.minDiscountedPrice ?: product.minPrice
+    Column(
+        modifier = Modifier
+            .width(150.dp)
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+            .clickable { onClick() }
+            .padding(8.dp)
+    ) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+                .clip(RoundedCornerShape(Radius.sm)),
+            painter = rememberImagePainter(product.thumbnailUrl ?: ""),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = product.title,
+            fontSize = FontSize.SMALL,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.onSurface,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.height(38.dp)
+        )
+        Spacer(Modifier.height(6.dp))
+        if (price != null) {
+            Text(
+                text = stringResource(Resources.String.PriceFormat, price),
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.onSurface
+            )
+        }
+    }
+}
+
+/** دیالوگِ راهنمای سایز — جدولِ استانداردِ اندازه‌ها (مطابق اسپک). */
+@Composable
+private fun SizeGuideDialog(onDismiss: () -> Unit) {
+    val colors = AppTheme.colors
+    val rows = listOf(
+        Triple("S", "88-92", "72-76"),
+        Triple("M", "92-96", "76-80"),
+        Triple("L", "96-100", "80-84"),
+        Triple("XL", "100-104", "84-88"),
+        Triple("XXL", "104-108", "88-92")
+    )
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Radius.lg))
+                .background(colors.surface)
+                .border(1.dp, colors.line, RoundedCornerShape(Radius.lg))
+                .padding(20.dp)
+        ) {
+            Text("راهنمای سایز", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+            Spacer(Modifier.height(6.dp))
+            Text("اندازه‌ها بر حسب سانتی‌متر", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            Spacer(Modifier.height(14.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("سایز", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.onSurface, modifier = Modifier.weight(1f))
+                Text("دور سینه", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.onSurface, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Text("دور کمر", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.onSurface, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+            }
+            Spacer(Modifier.height(8.dp))
+            rows.forEach { (size, chest, waist) ->
+                Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(size, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold, color = colors.onSurface, modifier = Modifier.weight(1f))
+                    Text(chest, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text(waist, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(Resources.String.Cancel),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(Radius.button))
+                    .background(colors.primary)
+                    .clickable { onDismiss() }
+                    .padding(vertical = 13.dp),
+                textAlign = TextAlign.Center,
+                color = colors.onPrimary,
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
