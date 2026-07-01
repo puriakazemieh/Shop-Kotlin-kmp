@@ -34,7 +34,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
-import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
+import com.kazemieh.admin.wallet.AdminFinanceScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
 import org.jetbrains.compose.resources.stringResource
@@ -145,7 +145,7 @@ fun AdminPanelScreen(
                         navigateBack = { selectedTab = 1 },
                         embedded = true
                     )
-                    7 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    7 -> AdminFinanceScreen(onBackClick = { selectedTab = 1 })
                 }
             }
         }
