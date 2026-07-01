@@ -61,13 +61,14 @@ fun AdminStoryScreen(
 
     var selectedMediaBytes by remember { mutableStateOf<ByteArray?>(null) }
     var isVideo by remember { mutableStateOf(false) }
-    var showCreateDialog by remember { mutableStateOf(false) }
+    var showCreateSheet by remember { mutableStateOf(false) }
+    var storyToDelete by remember { mutableStateOf<Story?>(null) }
 
     mediaPicker.InitializeMediaPicker(
         onMediaSelect = { bytes, video ->
+            // فقط رسانه را نگه می‌داریم؛ باتم‌شیت از قبل باز است.
             selectedMediaBytes = bytes
             isVideo = video
-            showCreateDialog = true
         }
     )
 
@@ -80,12 +81,12 @@ fun AdminStoryScreen(
         }
     }
 
-    if (showCreateDialog && selectedMediaBytes != null) {
-        CreateStoryDialog(
+    if (showCreateSheet) {
+        CreateStorySheet(
             mediaBytes = selectedMediaBytes,
             onPickMedia = { mediaPicker.open() },
             onDismiss = {
-                showCreateDialog = false
+                showCreateSheet = false
                 selectedMediaBytes = null
             },
             onConfirm = { title, linkType, productId, categoryId, blogSlug ->
@@ -100,8 +101,25 @@ fun AdminStoryScreen(
                         blogSlug
                     )
                 )
-                showCreateDialog = false
+                showCreateSheet = false
                 selectedMediaBytes = null
+            }
+        )
+    }
+
+    storyToDelete?.let { story ->
+        AlertDialog(
+            onDismissRequest = { storyToDelete = null },
+            title = { Text("حذف استوری") },
+            text = { Text("آیا از حذف این استوری مطمئن هستید؟ این عمل قابل بازگشت نیست.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.handleIntent(AdminStoryIntent.DeleteStory(story.id))
+                    storyToDelete = null
+                }) { Text("حذف", color = AppTheme.colors.sale, fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = {
+                TextButton(onClick = { storyToDelete = null }) { Text("انصراف") }
             }
         )
     }
@@ -140,7 +158,10 @@ fun AdminStoryScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(11.dp))
                         .background(colors.primary)
-                        .clickable { mediaPicker.open() }
+                        .clickable {
+                            selectedMediaBytes = null
+                            showCreateSheet = true
+                        }
                         .padding(horizontal = 14.dp, vertical = 9.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -169,7 +190,7 @@ fun AdminStoryScreen(
                             items(state.stories) { story ->
                                 AdminStoryCircle(
                                     story = story,
-                                    onDelete = { viewModel.handleIntent(AdminStoryIntent.DeleteStory(story.id)) }
+                                    onDelete = { storyToDelete = story }
                                 )
                             }
                         }
@@ -180,9 +201,9 @@ fun AdminStoryScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun CreateStoryDialog(
+fun CreateStorySheet(
     mediaBytes: ByteArray?,
     onPickMedia: () -> Unit,
     onDismiss: () -> Unit,
@@ -194,20 +215,24 @@ fun CreateStoryDialog(
     var categoryId by remember { mutableStateOf("") }
     var blogSlug by remember { mutableStateOf("") }
     var linkType by remember { mutableStateOf(StoryLinkType.NONE) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    Dialog(onDismissRequest = onDismiss) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = colors.surface
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Radius.lg))
-                .background(colors.surface)
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Text("استوری جدید", fontWeight = FontWeight.ExtraBold, fontSize = FontSize.EXTRA_MEDIUM, color = colors.onSurface)
             Spacer(Modifier.height(16.dp))
 
-            // کادرِ آپلود / پیش‌نمایش
+            // کادرِ آپلود / پیش‌نمایش — با زدنِ روی آن، گالریِ کاربر باز می‌شود
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -226,7 +251,11 @@ fun CreateStoryDialog(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    Text("آپلود تصویر یا ویدیو استوری", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(painterResource(Resources.Icon.Plus), contentDescription = null, tint = colors.primary, modifier = Modifier.size(28.dp))
+                        Spacer(Modifier.height(8.dp))
+                        Text("انتخاب تصویر یا ویدیو از گالری", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                    }
                 }
             }
 
