@@ -18,8 +18,11 @@ import com.kazemieh.domain.catalog.PostQuestionUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
 import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.catalog.ProductDetail
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
+import com.kazemieh.domain.recentlyviewed.AddRecentlyViewedUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +48,8 @@ class DetailsViewModel(
     private val updateQuestionUseCase: UpdateQuestionUseCase,
     private val deleteQuestionUseCase: DeleteQuestionUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -191,6 +195,7 @@ class DetailsViewModel(
                     }
                     loadInteractions(product.id)
                     product.categoryId?.let { loadSimilarProducts(it, product.id) }
+                    recordRecentlyViewed(product)
                 }
                 is AppResult.Error -> {
                     _state.update {
@@ -203,6 +208,28 @@ class DetailsViewModel(
                 }
                 else -> {}
             }
+        }
+    }
+
+    private fun recordRecentlyViewed(product: ProductDetail) {
+        viewModelScope.launch {
+            val prices = product.variants.map { it.price }
+            val discounted = product.variants.mapNotNull { it.discountedPrice }
+            val summary = ProductSummary(
+                id = product.id,
+                title = product.title,
+                slug = product.slug,
+                thumbnailUrl = product.images.firstOrNull()?.url,
+                minPrice = prices.minOrNull() ?: product.basePrice,
+                maxPrice = prices.maxOrNull() ?: product.basePrice,
+                minDiscountedPrice = discounted.minOrNull() ?: product.discountedPrice,
+                maxDiscountedPrice = discounted.maxOrNull() ?: product.discountedPrice,
+                inStock = product.variants.isEmpty() || product.variants.any { it.available > 0 },
+                categoryId = product.categoryId,
+                categoryName = product.categoryName,
+                options = emptyMap()
+            )
+            addRecentlyViewedUseCase(summary)
         }
     }
 

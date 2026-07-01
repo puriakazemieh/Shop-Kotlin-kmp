@@ -16,6 +16,7 @@ data class ProductsOverviewState(
     val stories: List<Story> = emptyList(),
     val categories: List<Category> = emptyList(),
     val blogPosts: List<Blog> = emptyList(),
+    val recentlyViewed: List<ProductSummary> = emptyList(),
     val isStoriesLoading: Boolean = false,
     val isCategoriesLoading: Boolean = false,
     val error: Any? = null

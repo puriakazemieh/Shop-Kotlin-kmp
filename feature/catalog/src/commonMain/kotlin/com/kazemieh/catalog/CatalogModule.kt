@@ -10,6 +10,7 @@ import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
+import com.kazemieh.domain.recentlyviewed.GetRecentlyViewedUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -26,6 +27,9 @@ val catalogModule = module {
     factory { GetStoriesUseCase(get()) }
     factory { MarkStoryAsSeenUseCase(get()) }
 
+    // Recently viewed
+    factory { GetRecentlyViewedUseCase(get()) }
+
     viewModel {
         ProductsOverviewViewModel(
             getProductsUseCase = get(),
@@ -37,6 +41,7 @@ val catalogModule = module {
             getStoriesUseCase = get(),
             markStoryAsSeenUseCase = get(),
             getBlogsUseCase = get(),
+            getRecentlyViewedUseCase = get(),
             isUserLoggedInUseCase = get()
         )
     }

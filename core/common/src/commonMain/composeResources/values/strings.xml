@@ -16,6 +16,7 @@
     <string name="allProducts">All Products</string>
     <string name="newestProducts">Newest Products</string>
     <string name="blogTeaserTitle">From the magazine</string>
+    <string name="recentlyViewedTitle">Recently viewed</string>
     <string name="totalLabel">Total:</string>
     <string name="orderSummary">Order Summary</string>
     <string name="orderStatusPlaced">Placed</string>

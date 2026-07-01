@@ -11,6 +11,7 @@ import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.auth.IsUserLoggedInUseCase
 import com.kazemieh.domain.blog.usecase.GetBlogsUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
+import com.kazemieh.domain.recentlyviewed.GetRecentlyViewedUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
@@ -33,6 +34,7 @@ class ProductsOverviewViewModel(
     private val getStoriesUseCase: GetStoriesUseCase,
     private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase,
     private val getBlogsUseCase: GetBlogsUseCase,
+    private val getRecentlyViewedUseCase: GetRecentlyViewedUseCase,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
 
@@ -49,7 +51,16 @@ class ProductsOverviewViewModel(
         loadCampaign()
         loadBanners()
         loadBlogPosts()
+        observeRecentlyViewed()
         observeFavorites()
+    }
+
+    private fun observeRecentlyViewed() {
+        viewModelScope.launch {
+            getRecentlyViewedUseCase().collectLatest { items ->
+                _state.update { it.copy(recentlyViewed = items) }
+            }
+        }
     }
 
     private fun loadBlogPosts() {

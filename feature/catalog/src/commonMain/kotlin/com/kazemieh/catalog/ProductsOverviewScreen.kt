@@ -301,6 +301,36 @@ fun ProductsOverviewScreen(
                             }
                         }
 
+                        // بازدیدهای اخیر شما — تاریخچه‌ی محلیِ محصولاتِ بازدیدشده (مطابق اسپک)
+                        if (state.recentlyViewed.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                HomeSectionHeader(
+                                    title = stringResource(Resources.String.RecentlyViewedTitle),
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(horizontal = 16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    items(state.recentlyViewed, key = { it.id }) { item ->
+                                        MainProductCard(
+                                            modifier = Modifier.width(170.dp),
+                                            product = item,
+                                            onClick = {
+                                                viewModel.handleIntent(ProductsOverviewIntent.OnProductClick(it))
+                                            },
+                                            onFavoriteClick = {
+                                                viewModel.handleIntent(ProductsOverviewIntent.OnFavoriteClick(item))
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                         item {
                             Spacer(modifier = Modifier.height(24.dp))
                             TrustBadges(modifier = Modifier.padding(horizontal = 16.dp))
