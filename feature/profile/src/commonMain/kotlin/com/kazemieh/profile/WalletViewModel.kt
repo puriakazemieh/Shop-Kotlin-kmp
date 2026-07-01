@@ -28,7 +28,7 @@ sealed interface WalletIntent {
 }
 
 sealed interface WalletEffect {
-    data class ShowError(val message: String) : WalletEffect
+    data class ShowError(val message: Any) : WalletEffect
     data class ShowSuccess(val message: String) : WalletEffect
     data class NavigateToPayment(val url: String) : WalletEffect
 }
@@ -82,7 +82,7 @@ class WalletViewModel(
                     _effect.emit(WalletEffect.NavigateToPayment(result.data))
                 }
                 is AppResult.Error -> {
-                    _effect.emit(WalletEffect.ShowError(result.message.toString()))
+                    _effect.emit(WalletEffect.ShowError(result.message))
                 }
                 else -> {}
             }
@@ -101,7 +101,7 @@ class WalletViewModel(
                     loadWallet()
                 }
                 is AppResult.Error -> {
-                    _effect.emit(WalletEffect.ShowError(result.message.toString()))
+                    _effect.emit(WalletEffect.ShowError(result.message))
                 }
                 else -> {}
             }

@@ -22,7 +22,7 @@ sealed interface AdminWithdrawalsIntent {
 }
 
 sealed interface AdminWithdrawalsEffect {
-    data class ShowError(val message: String) : AdminWithdrawalsEffect
+    data class ShowError(val message: Any) : AdminWithdrawalsEffect
     data object ProcessSuccess : AdminWithdrawalsEffect
 }
 
@@ -68,7 +68,7 @@ class AdminWithdrawalsViewModel(
                     loadWithdrawals()
                 }
                 is AppResult.Error -> {
-                    _effect.emit(AdminWithdrawalsEffect.ShowError(result.message.toString()))
+                    _effect.emit(AdminWithdrawalsEffect.ShowError(result.message))
                 }
                 else -> {}
             }

@@ -275,7 +275,7 @@ fun CategorySearchScreen(
                 InfoCard(
                     image = Resources.Image.Cat,
                     title = stringResource(Resources.String.Oops),
-                    subtitle = state.error.toString()
+                    subtitle = state.error
                 )
             }
             displayProducts.isEmpty() -> item {

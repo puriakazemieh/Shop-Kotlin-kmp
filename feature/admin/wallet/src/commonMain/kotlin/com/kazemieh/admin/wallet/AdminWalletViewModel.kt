@@ -23,7 +23,7 @@ sealed interface AdminWalletIntent {
 }
 
 sealed interface AdminWalletEffect {
-    data class ShowError(val message: String) : AdminWalletEffect
+    data class ShowError(val message: Any) : AdminWalletEffect
     data object AdjustSuccess : AdminWalletEffect
 }
 
@@ -70,7 +70,7 @@ class AdminWalletViewModel(
                     searchUsers(_state.value.searchQuery)
                 }
                 is AppResult.Error -> {
-                    _effect.emit(AdminWalletEffect.ShowError(result.message.toString()))
+                    _effect.emit(AdminWalletEffect.ShowError(result.message))
                 }
                 else -> {}
             }
