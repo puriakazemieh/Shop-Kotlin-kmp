@@ -213,6 +213,7 @@ class DetailsViewModel(
 
     private fun recordRecentlyViewed(product: ProductDetail) {
         viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) return@launch
             val prices = product.variants.map { it.price }
             val discounted = product.variants.mapNotNull { it.discountedPrice }
             val summary = ProductSummary(

@@ -57,6 +57,8 @@ import com.kazemieh.data.blog.source.BlogDataSource
 import com.kazemieh.data.blog.source.BlogDataSourceImpl
 import com.kazemieh.domain.recentlyviewed.RecentlyViewedRepository
 import com.kazemieh.data.recentlyviewed.RecentlyViewedRepositoryImpl
+import com.kazemieh.data.recentlyviewed.source.RecentlyViewedDataSource
+import com.kazemieh.data.recentlyviewed.source.RecentlyViewedDataSourceImpl
 import org.koin.dsl.module
 
 
@@ -73,6 +75,7 @@ val dataModule = module {
 
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 
+    single<RecentlyViewedDataSource> { RecentlyViewedDataSourceImpl(get()) }
     single<RecentlyViewedRepository> { RecentlyViewedRepositoryImpl(get()) }
 
     single<AuthRepository> {
