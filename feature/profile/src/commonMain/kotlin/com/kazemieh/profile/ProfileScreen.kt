@@ -177,14 +177,15 @@ fun ProfileScreen(
 
                     is AppResult.Success -> {
                         state.profile?.let { profile ->
+                            var selectedTab by remember { mutableStateOf(0) }
                             ProfileHeader(
                                 name = "${profile.firstName} ${profile.lastName}",
-                                phone = profile.phone
+                                phone = profile.phone,
+                                onEdit = { selectedTab = 0 }
                             )
 
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            var selectedTab by remember { mutableStateOf(0) }
                             ProfileTabs(selected = selectedTab, onSelect = { selectedTab = it })
 
                             Spacer(modifier = Modifier.height(20.dp))
@@ -354,7 +355,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileHeader(name: String, phone: String) {
+private fun ProfileHeader(name: String, phone: String?, onEdit: () -> Unit) {
     val colors = AppTheme.colors
     val initials = name.trim().split(" ")
         .mapNotNull { it.firstOrNull()?.toString() }
@@ -376,7 +377,7 @@ private fun ProfileHeader(name: String, phone: String) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = initials,
+                text = initials.ifBlank { "؟" },
                 fontFamily = AppFont(),
                 fontSize = FontSize.MEDIUM,
                 fontWeight = FontWeight.ExtraBold,
@@ -384,7 +385,7 @@ private fun ProfileHeader(name: String, phone: String) {
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = name.trim().ifBlank { stringResource(Resources.String.MyProfile) },
                 fontFamily = AppFont(),
@@ -392,14 +393,28 @@ private fun ProfileHeader(name: String, phone: String) {
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = phone,
-                fontFamily = AppFont(),
-                fontSize = FontSize.REGULAR,
-                color = Color.White.copy(alpha = 0.9f)
-            )
+            if (!phone.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = phone,
+                    fontFamily = AppFont(),
+                    fontSize = FontSize.REGULAR,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+            }
         }
+        Text(
+            text = stringResource(Resources.String.Edit),
+            modifier = Modifier
+                .clip(RoundedCornerShape(999.dp))
+                .background(Color.White.copy(alpha = 0.2f))
+                .clickable { onEdit() }
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            fontFamily = AppFont(),
+            fontSize = FontSize.SMALL,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
     }
 }
 

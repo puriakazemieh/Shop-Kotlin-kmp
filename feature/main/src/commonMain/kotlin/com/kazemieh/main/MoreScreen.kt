@@ -152,6 +152,7 @@ private fun AccountHeader(name: String, phone: String, onEditClick: () -> Unit) 
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
             .background(Brush.linearGradient(listOf(colors.primary, colors.accent2)))
+            .clickable { onEditClick() }
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -186,18 +187,6 @@ private fun AccountHeader(name: String, phone: String, onEditClick: () -> Unit) 
                 )
             }
         }
-        Text(
-            text = "ویرایش",
-            modifier = Modifier
-                .clip(RoundedCornerShape(999.dp))
-                .background(Color.White.copy(alpha = 0.2f))
-                .clickable { onEditClick() }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            fontFamily = AppFont(),
-            fontSize = FontSize.SMALL,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
     }
 }
 
