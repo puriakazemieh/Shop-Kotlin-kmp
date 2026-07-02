@@ -1,0 +1,11 @@
+package com.kazemieh.domain.academy
+
+import com.kazemieh.common.AppResult
+
+interface AcademyRepository {
+    suspend fun getCourses(): AppResult<List<CourseSummary>>
+    suspend fun getCourse(slug: String): AppResult<CourseDetail>
+    suspend fun getMyCourses(): AppResult<List<CourseSummary>>
+    suspend fun enroll(courseId: Long): AppResult<CourseDetail>
+    suspend fun updateLessonProgress(lessonId: Long, completed: Boolean?, lastPositionSeconds: Int?): AppResult<CourseProgress>
+}

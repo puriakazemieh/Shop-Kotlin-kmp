@@ -57,6 +57,7 @@ fun MoreScreen(
     onSupportClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
+    onMyCoursesClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -89,6 +90,13 @@ fun MoreScreen(
                 subtitle = "امتیازها و مزایای شما",
                 onClick = onCustomerClubClick
             ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "دوره‌های من",
+                subtitle = "آموزش‌های خریداری‌شده و پیشرفت",
+                onClick = onMyCoursesClick
+            ) { AccountIcon(painter = Resources.Icon.Book) }
             Spacer(Modifier.height(12.dp))
         }
         AccountRow(

@@ -41,6 +41,9 @@ import com.kazemieh.profile.club.CustomerClubScreen
 import com.kazemieh.orders.list.OrderListScreen
 import com.kazemieh.orders.detail.OrderDetailScreen
 import com.kazemieh.orders.tracking.OrderTrackingScreen
+import com.kazemieh.academy.list.CourseListScreen
+import com.kazemieh.academy.detail.CourseDetailScreen
+import com.kazemieh.academy.learn.CourseLearnScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -127,6 +130,9 @@ fun AppNavHost(
                 navigateToCustomerClub = {
                     navController.navigate(Screen.CustomerClub)
                 },
+                navigateToMyCourses = {
+                    navController.navigate(Screen.MyCourses)
+                },
             )
         }
 
@@ -151,6 +157,42 @@ fun AppNavHost(
 
         composable<Screen.CustomerClub> {
             CustomerClubScreen(
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- Academy (vertical) ----
+        composable<Screen.CourseCatalog> {
+            CourseListScreen(
+                mine = false,
+                title = "دوره‌ها",
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        composable<Screen.MyCourses> {
+            CourseListScreen(
+                mine = true,
+                title = "دوره‌های من",
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        composable<Screen.CourseDetail> {
+            val args = it.toRoute<Screen.CourseDetail>()
+            CourseDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToLearn = { slug -> navController.navigate(Screen.CourseLearn(slug)) }
+            )
+        }
+
+        composable<Screen.CourseLearn> {
+            val args = it.toRoute<Screen.CourseLearn>()
+            CourseLearnScreen(
+                slug = args.slug,
                 navigateBack = { navController.navigateBack() }
             )
         }

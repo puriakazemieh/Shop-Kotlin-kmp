@@ -31,6 +31,8 @@ import com.kazemieh.network.wallet.WalletApi
 import com.kazemieh.network.wallet.WalletApiImpl
 import com.kazemieh.network.support.SupportApi
 import com.kazemieh.network.support.SupportApiImpl
+import com.kazemieh.network.academy.AcademyApi
+import com.kazemieh.network.academy.AcademyApiImpl
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -98,5 +100,9 @@ val networkModule = module {
 
     single<SupportApi> {
         SupportApiImpl(get())
+    }
+
+    single<AcademyApi> {
+        AcademyApiImpl(get())
     }
 }

@@ -65,6 +65,7 @@ fun MainGraphScreen(
     navigateToWallet: () -> Unit,
     navigateToFavorites: () -> Unit,
     navigateToCustomerClub: () -> Unit,
+    navigateToMyCourses: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -167,7 +168,8 @@ fun MainGraphScreen(
                                 onCustomerClubClick = navigateToCustomerClub,
                                 onSupportClick = navigateToContactUs,
                                 onSettingsClick = navigateToSettings,
-                                onAdminPanelClick = navigateToAdminPanel
+                                onAdminPanelClick = navigateToAdminPanel,
+                                onMyCoursesClick = navigateToMyCourses
                             )
                         }
                     }

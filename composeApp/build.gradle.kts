@@ -71,6 +71,7 @@ kotlin {
             implementation(project(":feature:admin:blog"))
             implementation(project(":feature:blog"))
             implementation(project(":feature:support"))
+            implementation(project(":feature:academy"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))

@@ -61,6 +61,8 @@ import com.kazemieh.data.recentlyviewed.source.RecentlyViewedDataSource
 import com.kazemieh.data.recentlyviewed.source.RecentlyViewedDataSourceImpl
 import com.kazemieh.domain.support.SupportRepository
 import com.kazemieh.data.support.repository.SupportRepositoryImpl
+import com.kazemieh.domain.academy.AcademyRepository
+import com.kazemieh.data.academy.repository.AcademyRepositoryImpl
 import org.koin.dsl.module
 
 
@@ -167,6 +169,10 @@ val dataModule = module {
 
     single<SupportRepository> {
         SupportRepositoryImpl(get())
+    }
+
+    single<AcademyRepository> {
+        AcademyRepositoryImpl(get())
     }
 
     single { TokenManager(settings = get()) }

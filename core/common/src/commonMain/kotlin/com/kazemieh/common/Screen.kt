@@ -113,4 +113,17 @@ sealed class Screen {
     @Serializable
     data object CustomerClub : Screen()
 
+    // ---- Academy (vertical) ----
+    @Serializable
+    data object CourseCatalog : Screen()
+
+    @Serializable
+    data object MyCourses : Screen()
+
+    @Serializable
+    data class CourseDetail(val slug: String) : Screen()
+
+    @Serializable
+    data class CourseLearn(val slug: String) : Screen()
+
 }
