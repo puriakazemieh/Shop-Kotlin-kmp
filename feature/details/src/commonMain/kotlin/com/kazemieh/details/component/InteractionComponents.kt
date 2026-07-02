@@ -22,6 +22,7 @@ fun ReviewItem(
     onReplyClick: (Long) -> Unit,
     onEditClick: (Review) -> Unit,
     onDeleteClick: (Long) -> Unit,
+    onHelpfulClick: (Long) -> Unit,
     depth: Int = 0
 ) {
     val paddingStart = if (depth < 3) (depth * 16).dp else (3 * 16).dp
@@ -51,7 +52,10 @@ fun ReviewItem(
             style = MaterialTheme.typography.bodySmall
         )
 
-        Row(modifier = Modifier.padding(top = 8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             TextButton(
                 onClick = { onReplyClick(review.id) },
                 contentPadding = PaddingValues(end = 8.dp)
@@ -71,6 +75,21 @@ fun ReviewItem(
             ) {
                 Text("حذف", style = MaterialTheme.typography.labelMedium)
             }
+            Spacer(modifier = Modifier.weight(1f))
+            // رأیِ «مفید بود» — فقط روی نظرهای سطح‌اول (نه پاسخ‌ها)
+            if (depth == 0) {
+                val helpfulColor = if (review.helpfulByMe) AppTheme.colors.ok else MaterialTheme.colorScheme.onSurfaceVariant
+                TextButton(
+                    onClick = { onHelpfulClick(review.id) },
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    colors = ButtonDefaults.textButtonColors(contentColor = helpfulColor)
+                ) {
+                    Text(
+                        text = if (review.helpfulCount > 0) "👍 مفید بود (${review.helpfulCount})" else "👍 مفید بود",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
         }
 
         // Recursive replies
@@ -80,6 +99,7 @@ fun ReviewItem(
                 onReplyClick = onReplyClick,
                 onEditClick = onEditClick,
                 onDeleteClick = onDeleteClick,
+                onHelpfulClick = onHelpfulClick,
                 depth = depth + 1
             )
         }

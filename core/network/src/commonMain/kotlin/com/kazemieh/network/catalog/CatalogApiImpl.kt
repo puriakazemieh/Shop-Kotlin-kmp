@@ -60,4 +60,10 @@ class CatalogApiImpl(
     override suspend fun getBanners(): List<BannerResponse> = safeApiCallRaw {
         client.get("api/banners")
     }
+
+    override suspend fun requestBackInStock(productId: Long, variantId: Long): Unit = safeApiCallRaw {
+        client.post("api/stock-notifications") {
+            setBody(StockNotificationRequestDto(productId = productId, variantId = variantId))
+        }
+    }
 }

@@ -10,6 +10,8 @@ data class ReviewResponse(
     val rating: Int?,
     val comment: String,
     val replies: List<ReviewResponse>,
+    val helpfulCount: Int = 0,
+    val helpfulByMe: Boolean = false,
     val createdAt: String
 )
 

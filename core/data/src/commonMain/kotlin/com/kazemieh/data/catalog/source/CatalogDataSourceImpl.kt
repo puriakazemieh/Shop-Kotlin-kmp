@@ -44,4 +44,8 @@ class CatalogDataSourceImpl(
     override suspend fun getBanners(): AppResult<List<BannerResponse>> = safeApiCall {
         api.getBanners()
     }
+
+    override suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit> = safeApiCall {
+        api.requestBackInStock(productId, variantId)
+    }
 }

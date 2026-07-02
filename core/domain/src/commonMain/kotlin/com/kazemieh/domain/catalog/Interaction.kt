@@ -7,6 +7,8 @@ data class Review(
     val rating: Int?,
     val comment: String,
     val replies: List<Review>,
+    val helpfulCount: Int = 0,
+    val helpfulByMe: Boolean = false,
     val createdAt: String
 )
 

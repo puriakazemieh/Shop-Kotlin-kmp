@@ -17,7 +17,9 @@ data class DetailsState(
     val selectedVariant: ProductVariant? = null,
     val selectedOptions: Map<String, String> = emptyMap(),
     val isAddedToCart: Boolean = false,
-    val isCounterMode: Boolean = true
+    val isCounterMode: Boolean = true,
+    val notifyRequested: Boolean = false,
+    val defaultCity: String? = null
 )
 
 sealed interface DetailsIntent {
@@ -35,6 +37,8 @@ sealed interface DetailsIntent {
     data class UpdateQuestion(val questionId: Long, val productId: Long, val content: String) : DetailsIntent
     data class DeleteQuestion(val questionId: Long, val productId: Long) : DetailsIntent
     data class ToggleFavorite(val productId: Long, val isFavorite: Boolean) : DetailsIntent
+    data class ToggleReviewHelpful(val reviewId: Long) : DetailsIntent
+    data object RequestBackInStock : DetailsIntent
 }
 
 sealed interface DetailsEffect {

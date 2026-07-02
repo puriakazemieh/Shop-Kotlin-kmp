@@ -83,6 +83,7 @@ import com.kazemieh.details.component.EditReviewDialog
 import com.kazemieh.details.component.QuestionItem
 import com.kazemieh.details.component.ReviewItem
 import com.kazemieh.details.component.VariantChip
+import com.kazemieh.domain.catalog.ProductAttribute
 import com.kazemieh.domain.catalog.ProductImage
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.ProductVideo
@@ -433,6 +434,8 @@ fun DetailsScreen(
                             isAddedToCart = state.isAddedToCart,
                             quantity = state.quantity,
                             isFavorite = product.isFavorite,
+                            notifyRequested = state.notifyRequested,
+                            onNotifyMe = { viewModel.handleIntent(DetailsIntent.RequestBackInStock) },
                             onAddToCart = { viewModel.handleIntent(DetailsIntent.AddToCart) },
                             onBuyNow = {
                                 viewModel.handleIntent(DetailsIntent.AddToCart)
@@ -449,6 +452,10 @@ fun DetailsScreen(
 
                         // ---- نشان‌های خدمات ----
                         ServiceBadges()
+
+                        // ---- تخمین زمان ارسال + اطلاعات فیت مدل ----
+                        Spacer(Modifier.height(12.dp))
+                        ShippingAndFitInfo(city = state.defaultCity, attributes = product.attributes)
 
                         // ---- معرفی محصول ----
                         if (!product.description.isNullOrBlank()) {
@@ -552,7 +559,8 @@ fun DetailsScreen(
                                 onEditClick = { editReview = it },
                                 onDeleteClick = {
                                     state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid)) }
-                                }
+                                },
+                                onHelpfulClick = { viewModel.handleIntent(DetailsIntent.ToggleReviewHelpful(it)) }
                             )
                         }
 
@@ -718,6 +726,8 @@ private fun PriceActionCard(
     isAddedToCart: Boolean,
     quantity: Int,
     isFavorite: Boolean,
+    notifyRequested: Boolean,
+    onNotifyMe: () -> Unit,
     onAddToCart: () -> Unit,
     onBuyNow: () -> Unit,
     onQuantityChange: (Int) -> Unit,
@@ -789,6 +799,42 @@ private fun PriceActionCard(
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.Bold
             )
+            Spacer(Modifier.height(11.dp))
+            // «موجود شد خبرم کن» — اشتراکِ اطلاع‌رسانیِ موجودی
+            if (notifyRequested) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.accentSoft)
+                        .padding(vertical = 15.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Check, null, tint = colors.ok, modifier = Modifier.size(17.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        text = "به‌محضِ موجود شدن خبرتان می‌کنیم",
+                        color = colors.primary,
+                        fontSize = FontSize.REGULAR,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            } else {
+                Text(
+                    text = "موجود شد خبرم کن",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.primary)
+                        .clickable { onNotifyMe() }
+                        .padding(vertical = 15.dp),
+                    textAlign = TextAlign.Center,
+                    color = colors.onPrimary,
+                    fontSize = FontSize.REGULAR,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         } else {
             Row(horizontalArrangement = Arrangement.spacedBy(11.dp)) {
                 // افزودن به سبد / مشاهده سبد
@@ -1061,6 +1107,65 @@ private fun ServiceBadges(modifier: Modifier = Modifier) {
     ) {
         items.forEach { (icon, label) ->
             ServiceBadgeTile(icon = icon, label = label, modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+/**
+ * تخمینِ زمانِ ارسال (بر اساسِ شهرِ آدرسِ پیش‌فرض) + اطلاعاتِ فیتِ مدل (از attributes).
+ * کلاینت‌ساید است؛ برای وایت‌لیبل، فیت به‌صورتِ جنریک از attributes خوانده می‌شود.
+ */
+@Composable
+private fun ShippingAndFitInfo(
+    city: String?,
+    attributes: List<ProductAttribute>,
+    modifier: Modifier = Modifier
+) {
+    val colors = AppTheme.colors
+    val estimate = when {
+        city == null -> "۲ تا ۴ روز کاری"
+        city.contains("تهران") -> "۱ تا ۲ روز کاری"
+        else -> "۲ تا ۴ روز کاری"
+    }
+    val fit = attributes.firstOrNull {
+        it.name.contains("فیت") || it.name.contains("قد مدل") ||
+            it.name.contains("fit", ignoreCase = true) || it.name.contains("سایز مدل")
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+            .padding(14.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.LocalShipping, null, tint = colors.primary, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(9.dp))
+            Text("تخمین زمان ارسال", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = estimate + if (city != null) " • $city" else "",
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurfaceVariant
+            )
+        }
+        if (fit != null) {
+            Spacer(Modifier.height(10.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("📏", fontSize = FontSize.REGULAR)
+                Spacer(Modifier.width(9.dp))
+                Text("اطلاعات فیت مدل", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = fit.value,
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.onSurfaceVariant
+                )
+            }
         }
     }
 }

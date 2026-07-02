@@ -22,4 +22,5 @@ interface CatalogApi {
     suspend fun getProductDetail(slug: String): ProductDetailResponse
     suspend fun getActiveCampaign(): CampaignResponse?
     suspend fun getBanners(): List<BannerResponse>
+    suspend fun requestBackInStock(productId: Long, variantId: Long)
 }

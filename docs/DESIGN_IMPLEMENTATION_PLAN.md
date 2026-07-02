@@ -102,7 +102,7 @@
 
 ### فاز A — تکمیلِ صفحه‌ی محصول (بیشترین ارزشِ دیزاین)
 
-- [ ] **A1 🔌 سرور — رأی «مفید بود»**
+- [x] **A1 🔌 سرور — رأی «مفید بود»**
   - `catalog/persistence/entity/ProductReviewEntity.kt`: افزودنِ `helpfulCount: Int = 0`.
   - entity جدید `ProductReviewHelpfulEntity(reviewId, userId)` با قیدِ یکتای `(reviewId, userId)`.
   - `catalog/api/ReviewController.kt`: `POST /api/reviews/{reviewId}/helpful` (toggle) →
@@ -110,7 +110,7 @@
   - migration در `db/init/` (فایلِ شماره‌دارِ بعدی) + مپ در `ReviewResponse`/mapper.
   - **پذیرش:** رأیِ تکراریِ یک کاربر شمارش را دوباره بالا نبرد؛ toggle درست کار کند.
 
-- [ ] **A2 کلاینت — دکمه‌ی «مفید بود»**
+- [x] **A2 کلاینت — دکمه‌ی «مفید بود»**
   - `core/network`: متد `markReviewHelpful(reviewId)` در `InteractionApi`(+Impl).
   - `core/domain`: مدلِ `Review` + `helpfulCount/helpfulByMe`، usecaseِ `MarkReviewHelpfulUseCase`.
   - `core/data`: مپ در `InteractionRepositoryImpl`.
@@ -118,21 +118,23 @@
   - `feature/details/…/DetailsViewModel.kt`: intent + state.
   - **پذیرش:** تپ روی دکمه شمارنده را عوض کند و پس از رفرش پایدار بماند.
 
-- [ ] **A3 🔌 سرور — «موجود شد خبرم کن»**
+- [x] **A3 🔌 سرور — «موجود شد خبرم کن»**
   - entity `StockNotificationEntity(userId, variantId, createdAt, notified=false)`.
   - `POST /api/products/{productId}/notify-me?variantId=…` → ثبتِ اشتراک (اگر ناموجود بود).
-  - در سرویسِ افزایشِ موجودی (`AdminVariantController`/inventory service): وقتی `onHand` از صفر بالا رفت،
-    اشتراک‌های `notified=false` را علامت بزن (فعلاً فقط علامت‌گذاری؛ ارسالِ SMS/ایمیل اختیاری/بعدی).
-  - migration + (اختیاری) مپ در `ProductDetailResponse` برای `notifyRequestedByMe`.
-  - **پذیرش:** ثبتِ اشتراکِ تکراری خطا ندهد؛ رکورد ساخته شود.
+  - در `AdminCatalogService.setInventory`/`adjustInventory`: هنگامِ گذرِ واریانت از ناموجود به موجود،
+    `StockNotificationService.onVariantRestocked` اشتراک‌های `notified=false` را علامت می‌زند
+    (فعلاً فقط علامت‌گذاری؛ ارسالِ SMS/ایمیل اختیاری/بعدی).
+  - **مسیرِ نهایی:** `POST /api/stock-notifications` (به‌جای زیرمسیرِ عمومیِ `/api/products/**` تا احراز هویت تضمین شود).
+  - migration `019_add_stock_notifications.sql`.
+  - **پذیرش:** ثبتِ اشتراکِ تکراری خطا ندهد؛ رکورد ساخته شود. ✓
 
-- [ ] **A4 کلاینت — دکمه‌ی «موجود شد خبرم کن»**
+- [x] **A4 کلاینت — دکمه‌ی «موجود شد خبرم کن»**
   - api/usecase مشابهِ A2 (`RequestBackInStockUseCase`).
   - `DetailsScreen.kt`: وقتی واریانتِ انتخابی ناموجود است، به‌جای «افزودن به سبد»
     دکمه‌ی «موجود شد خبرم کن» نشان بده؛ پس از ثبت، حالتِ «ثبت شد» + Snackbar.
   - **پذیرش:** برای واریانتِ ناموجود دکمه ظاهر و پس از تپ، وضعیت عوض شود.
 
-- [ ] **A5 کلاینت — فیت مدل + تخمین زمان ارسال**
+- [x] **A5 کلاینت — فیت مدل + تخمین زمان ارسال**
   - «اطلاعاتِ فیتِ مدل»: از `product.attributes` (JSON موجود) بخوان؛ اگر کلیدِ فیت بود نشان بده.
   - «تخمینِ زمانِ ارسال»: کلاینت‌ساید از شهرِ آدرسِ پیش‌فرض (`GetDefaultAddressUseCase`) یک بازه‌ی روز نشان بده.
   - محلِ درج: `DetailsScreen.kt`، نزدیکِ بلوکِ نشان‌های خدمات.

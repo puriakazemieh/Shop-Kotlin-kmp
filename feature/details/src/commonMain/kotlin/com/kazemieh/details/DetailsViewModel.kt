@@ -18,8 +18,12 @@ import com.kazemieh.domain.catalog.PostQuestionUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
 import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
+import com.kazemieh.domain.catalog.RequestBackInStockUseCase
 import com.kazemieh.domain.catalog.ProductDetail
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.catalog.Review
+import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.recentlyviewed.AddRecentlyViewedUseCase
@@ -49,7 +53,10 @@ class DetailsViewModel(
     private val deleteQuestionUseCase: DeleteQuestionUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
-    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase
+    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase,
+    private val toggleReviewHelpfulUseCase: ToggleReviewHelpfulUseCase,
+    private val requestBackInStockUseCase: RequestBackInStockUseCase,
+    private val getAddressesUseCase: GetAddressesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -94,7 +101,8 @@ class DetailsViewModel(
                         selectedOptions = intent.variant.options,
                         isAddedToCart = false,
                         quantity = 1,
-                        isCounterMode = true
+                        isCounterMode = true,
+                        notifyRequested = false
                     )
                 }
             }
@@ -121,7 +129,8 @@ class DetailsViewModel(
                         selectedVariant = matchingVariant,
                         isAddedToCart = false,
                         quantity = 1,
-                        isCounterMode = true
+                        isCounterMode = true,
+                        notifyRequested = false
                     )
                 }
             }
@@ -137,6 +146,67 @@ class DetailsViewModel(
             is DetailsIntent.UpdateQuestion -> updateQuestion(intent.questionId, intent.productId, intent.content)
             is DetailsIntent.DeleteQuestion -> deleteQuestion(intent.questionId, intent.productId)
             is DetailsIntent.ToggleFavorite -> toggleFavorite(intent.productId, intent.isFavorite)
+            is DetailsIntent.ToggleReviewHelpful -> toggleReviewHelpful(intent.reviewId)
+            is DetailsIntent.RequestBackInStock -> requestBackInStock()
+        }
+    }
+
+    private fun toggleReviewHelpful(reviewId: Long) {
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = toggleReviewHelpfulUseCase(reviewId)) {
+                is AppResult.Success -> {
+                    val updated = result.data
+                    _state.update { it.copy(reviews = it.reviews.updateHelpful(updated)) }
+                }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    /** به‌روزرسانیِ بازگشتیِ helpfulCount/helpfulByMe برای نظرِ مطابق (شاملِ پاسخ‌ها). */
+    private fun List<Review>.updateHelpful(updated: Review): List<Review> = map { review ->
+        when {
+            review.id == updated.id -> review.copy(
+                helpfulCount = updated.helpfulCount,
+                helpfulByMe = updated.helpfulByMe,
+                replies = review.replies.updateHelpful(updated)
+            )
+            else -> review.copy(replies = review.replies.updateHelpful(updated))
+        }
+    }
+
+    private fun requestBackInStock() {
+        val product = _state.value.product ?: return
+        val variantId = _state.value.selectedVariant?.id ?: return
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = requestBackInStockUseCase(product.id, variantId)) {
+                is AppResult.Success -> _state.update { it.copy(notifyRequested = true) }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadDefaultCity() {
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) return@launch
+            when (val result = getAddressesUseCase()) {
+                is AppResult.Success -> {
+                    val city = result.data.firstOrNull { it.isDefault }?.city
+                        ?: result.data.firstOrNull()?.city
+                    if (city != null) _state.update { it.copy(defaultCity = city) }
+                }
+                else -> {}
+            }
         }
     }
 
@@ -196,6 +266,7 @@ class DetailsViewModel(
                     loadInteractions(product.id)
                     product.categoryId?.let { loadSimilarProducts(it, product.id) }
                     recordRecentlyViewed(product)
+                    loadDefaultCity()
                 }
                 is AppResult.Error -> {
                     _state.update {

@@ -8,6 +8,7 @@ interface InteractionApi {
     suspend fun postReview(request: CreateReviewRequestDto): ReviewResponse
     suspend fun updateReview(reviewId: Long, request: UpdateReviewRequest): ReviewResponse
     suspend fun deleteReview(reviewId: Long)
+    suspend fun markReviewHelpful(reviewId: Long): ReviewResponse
 
     // Questions
     suspend fun getQuestions(productId: Long): List<QuestionResponse>

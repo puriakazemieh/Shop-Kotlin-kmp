@@ -52,4 +52,7 @@ class CatalogRepositoryImpl(
 
     override suspend fun getBanners(): AppResult<List<Banner>> =
         dataSource.getBanners().map { list -> list.map { it.toBannerDomain() } }
+
+    override suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit> =
+        dataSource.requestBackInStock(productId, variantId)
 }

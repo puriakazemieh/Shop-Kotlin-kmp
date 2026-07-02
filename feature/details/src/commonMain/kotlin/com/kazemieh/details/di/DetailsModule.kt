@@ -13,6 +13,9 @@ import com.kazemieh.domain.catalog.PostQuestionUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
 import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
+import com.kazemieh.domain.catalog.RequestBackInStockUseCase
+import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.recentlyviewed.AddRecentlyViewedUseCase
@@ -36,7 +39,10 @@ val detailsModule = module {
             deleteQuestionUseCase = get(),
             toggleFavoriteUseCase = get(),
             observeFavoriteIdsUseCase = get(),
-            addRecentlyViewedUseCase = get()
+            addRecentlyViewedUseCase = get(),
+            toggleReviewHelpfulUseCase = get(),
+            requestBackInStockUseCase = get(),
+            getAddressesUseCase = get()
         )
     }
 
@@ -55,4 +61,7 @@ val detailsModule = module {
     factory { DeleteQuestionUseCase(get()) }
     factory { AddToCartUseCase(get()) }
     factory { IsUserLoggedInUseCase(get()) }
+    factory { ToggleReviewHelpfulUseCase(get()) }
+    factory { RequestBackInStockUseCase(get()) }
+    factory { GetAddressesUseCase(get()) }
 }

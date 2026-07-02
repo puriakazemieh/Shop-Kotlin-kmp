@@ -44,6 +44,10 @@ class InteractionRepositoryImpl(
         api.deleteReview(reviewId)
     }
 
+    override suspend fun toggleReviewHelpful(reviewId: Long): AppResult<Review> = safeApiCall {
+        api.markReviewHelpful(reviewId).toDomain()
+    }
+
     override suspend fun getQuestions(productId: Long): AppResult<List<Question>> = safeApiCall {
         api.getQuestions(productId).map { it.toDomain() }
     }
@@ -78,6 +82,8 @@ class InteractionRepositoryImpl(
         rating = rating,
         comment = comment,
         replies = replies.map { it.toDomain() },
+        helpfulCount = helpfulCount,
+        helpfulByMe = helpfulByMe,
         createdAt = createdAt
     )
 
