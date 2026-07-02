@@ -29,6 +29,8 @@ import com.kazemieh.network.story.StoryApi
 import com.kazemieh.network.story.StoryApiImpl
 import com.kazemieh.network.wallet.WalletApi
 import com.kazemieh.network.wallet.WalletApiImpl
+import com.kazemieh.network.support.SupportApi
+import com.kazemieh.network.support.SupportApiImpl
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -92,5 +94,9 @@ val networkModule = module {
 
     single<StoryApi> {
         StoryApiImpl(get())
+    }
+
+    single<SupportApi> {
+        SupportApiImpl(get())
     }
 }

@@ -150,7 +150,7 @@
 
 ### فاز C — چت پشتیبانی
 
-- [ ] **C1 🔌 سرور — دامنه‌ی پشتیبانی**
+- [x] **C1 🔌 سرور — دامنه‌ی پشتیبانی**
   - ماژول/پکیجِ `support`: `SupportTicketEntity(userId,subject,status,createdAt)` +
     `SupportMessageEntity(ticketId,senderRole,body,createdAt)`.
   - endpointها: `POST /api/support/tickets`, `GET /api/support/tickets`,
@@ -158,7 +158,7 @@
   - ادمین: `GET /api/admin/support/tickets` + پاسخ‌دادن. migration + DTO/mapper.
   - **پذیرش:** کاربر تیکت بسازد و پیام رد و بدل شود؛ ادمین ببیند و پاسخ دهد.
 
-- [ ] **C2 کلاینت — رابطِ چت**
+- [x] **C2 کلاینت — رابطِ چت**
   - api/usecase/repository برای پشتیبانی در `core/*`.
   - `feature/support/…/ContactUsScreen.kt`: تبدیل به لیستِ حبابیِ پیام (فرستنده/گیرنده) + نوارِ ورودی پایین.
   - (اختیاری) صفحه‌ی ادمینِ پشتیبانی زیرِ `feature/admin`.

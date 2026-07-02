@@ -26,6 +26,7 @@ import com.kazemieh.network.di.networkModule
 import com.kazemieh.orders.di.ordersModule
 import com.kazemieh.profile.profileModule
 import com.kazemieh.settings.settingsModule
+import com.kazemieh.support.supportModule
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
@@ -69,7 +70,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             adminBlogModule,
             blogModule,
             detailsModule,
-            ordersModule
+            ordersModule,
+            supportModule
         )
     }
 }

@@ -70,6 +70,7 @@ kotlin {
             implementation(project(":feature:admin:wallet"))
             implementation(project(":feature:admin:blog"))
             implementation(project(":feature:blog"))
+            implementation(project(":feature:support"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))
