@@ -102,6 +102,31 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        // برندِ پیش‌فرض؛ هر فلِیور می‌تواند override کند.
+        buildConfigField("String", "BRAND", "\"carmila\"")
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    // ---- White-label: هر فلِیور یک اپِ جدا با applicationId و برندِ خودش ----
+    flavorDimensions += "brand"
+    productFlavors {
+        create("carmila") {
+            dimension = "brand"
+            // برندِ پیش‌فرض؛ از app_name و آیکنِ main استفاده می‌کند.
+        }
+        create("atris") {
+            dimension = "brand"
+            applicationIdSuffix = ".atris"
+            versionNameSuffix = "-atris"
+            buildConfigField("String", "BRAND", "\"atris\"")
+        }
+        create("chronos") {
+            dimension = "brand"
+            applicationIdSuffix = ".chronos"
+            versionNameSuffix = "-chronos"
+            buildConfigField("String", "BRAND", "\"chronos\"")
+        }
     }
     packaging {
         resources {

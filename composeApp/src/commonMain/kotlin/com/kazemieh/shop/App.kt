@@ -17,6 +17,9 @@ import com.kazemieh.common.AppThemeMode
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.brand.BrandConfig
+import com.kazemieh.designsystem.brand.BrandRegistry
+import com.kazemieh.network.common.ApiConfig
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.settings.ObserveThemeModeUseCase
@@ -41,19 +44,25 @@ fun App() {
     val language by observeLanguageUseCase().collectAsState(AppLanguage.ENGLISH)
     val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.LIGHT)
 
+    val brand = koinInject<BrandConfig>()
+
     AppTheme(
         themeMode = themeMode,
-        language = language
+        language = language,
+        brandColors = brand.colors
     ) {
         AppNavHost()
     }
 }
 
-fun initKoin(config: KoinAppDeclaration? = null) {
+fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclaration? = null) {
+    // اگر برند BASE_URL اختصاصی داشته باشد، شبکه از آن استفاده می‌کند.
+    ApiConfig.baseUrlOverride = brand.apiBaseUrl
     startKoin {
         printLogger()
         config?.invoke(this)
         modules(
+            org.koin.dsl.module { single { brand } },
             platformModule(),
             networkModule,
             dataModule,
