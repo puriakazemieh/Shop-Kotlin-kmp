@@ -23,8 +23,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,7 +88,10 @@ fun CategorySearchScreen(
     }
 
     val displayProducts = state.products
+    var showFilters by remember { mutableStateOf(false) }
+    val hasActiveFilters = state.minPrice != null || state.maxPrice != null || state.inStockOnly
 
+    Box(modifier = Modifier.fillMaxSize().background(colors.background)) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -235,6 +240,13 @@ fun CategorySearchScreen(
                             onClick = { viewModel.handleIntent(CategorySearchIntent.SetDiscountedOnly(!state.discountedOnly)) }
                         )
                     }
+                    item {
+                        CarmillaFilterChip(
+                            text = if (hasActiveFilters) "⚙️ فیلترها •" else "⚙️ فیلترها",
+                            selected = hasActiveFilters,
+                            onClick = { showFilters = true }
+                        )
+                    }
                 }
             }
 
@@ -303,6 +315,108 @@ fun CategorySearchScreen(
                     if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
                 }
             }
+        }
+    }
+
+        if (showFilters) {
+            FilterBottomSheet(
+                initialMin = state.minPrice,
+                initialMax = state.maxPrice,
+                initialInStock = state.inStockOnly,
+                onDismiss = { showFilters = false },
+                onApply = { min, max, inStock ->
+                    viewModel.handleIntent(CategorySearchIntent.ApplyPriceStock(min, max, inStock))
+                    showFilters = false
+                },
+                onReset = {
+                    viewModel.handleIntent(CategorySearchIntent.ApplyPriceStock(null, null, false))
+                    showFilters = false
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FilterBottomSheet(
+    initialMin: Double?,
+    initialMax: Double?,
+    initialInStock: Boolean,
+    onDismiss: () -> Unit,
+    onApply: (Double?, Double?, Boolean) -> Unit,
+    onReset: () -> Unit
+) {
+    val colors = AppTheme.colors
+    val sheetState = rememberModalBottomSheetState()
+    var minText by remember { mutableStateOf(initialMin?.toLong()?.toString() ?: "") }
+    var maxText by remember { mutableStateOf(initialMax?.toLong()?.toString() ?: "") }
+    var inStock by remember { mutableStateOf(initialInStock) }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = colors.surface
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+            Text("فیلترها", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+            Spacer(Modifier.height(16.dp))
+            Text("محدوده‌ی قیمت (تومان)", fontSize = FontSize.REGULAR, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = minText,
+                    onValueChange = { v -> minText = v.filter { it.isDigit() } },
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text("از") },
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = maxText,
+                    onValueChange = { v -> maxText = v.filter { it.isDigit() } },
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text("تا") },
+                    singleLine = true
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CarmillaFilterChip(
+                    text = "فقط کالاهای موجود",
+                    selected = inStock,
+                    onClick = { inStock = !inStock }
+                )
+            }
+            Spacer(Modifier.height(20.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = "حذف فیلتر",
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.surfaceVariant)
+                        .clickable { onReset() }
+                        .padding(vertical = 14.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = colors.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "اعمال فیلتر",
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.primary)
+                        .clickable {
+                            onApply(minText.toDoubleOrNull(), maxText.toDoubleOrNull(), inStock)
+                        }
+                        .padding(vertical = 14.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = colors.onPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(Modifier.height(12.dp))
         }
     }
 }
