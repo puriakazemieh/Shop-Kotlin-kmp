@@ -8,5 +8,12 @@ data class OrderTrackingResponse(
     val status: String,
     val trackingCode: String?,
     val orderedAt: String,
-    val shippedAt: String?
+    val shippedAt: String?,
+    val history: List<OrderStatusHistoryItemDto> = emptyList()
+)
+
+@Serializable
+data class OrderStatusHistoryItemDto(
+    val status: String,
+    val at: String
 )

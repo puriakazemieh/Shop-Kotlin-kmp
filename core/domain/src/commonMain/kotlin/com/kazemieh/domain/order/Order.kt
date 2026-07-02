@@ -42,5 +42,11 @@ data class OrderTracking(
     val status: String,
     val trackingCode: String?,
     val orderedAt: String,
-    val shippedAt: String?
+    val shippedAt: String?,
+    val history: List<OrderStatusHistoryItem> = emptyList()
+)
+
+data class OrderStatusHistoryItem(
+    val status: String,
+    val at: String
 )

@@ -57,5 +57,6 @@ fun OrderTrackingResponse.toDomain(): OrderTracking = OrderTracking(
     status = status,
     trackingCode = trackingCode,
     orderedAt = orderedAt,
-    shippedAt = shippedAt
+    shippedAt = shippedAt,
+    history = history.map { OrderStatusHistoryItem(status = it.status, at = it.at) }
 )
