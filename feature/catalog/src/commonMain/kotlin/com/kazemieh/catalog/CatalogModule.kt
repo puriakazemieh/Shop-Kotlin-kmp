@@ -11,6 +11,9 @@ import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
 import com.kazemieh.domain.recentlyviewed.GetRecentlyViewedUseCase
+import com.kazemieh.domain.settings.GetRecentSearchesUseCase
+import com.kazemieh.domain.settings.AddRecentSearchUseCase
+import com.kazemieh.domain.settings.ClearRecentSearchesUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -60,6 +63,23 @@ val catalogModule = module {
             observeFavoriteIdsUseCase = get(),
             toggleFavoriteUseCase = get(),
             isUserLoggedInUseCase = get()
+        )
+    }
+
+    // Standalone search
+    factory { GetRecentSearchesUseCase(get()) }
+    factory { AddRecentSearchUseCase(get()) }
+    factory { ClearRecentSearchesUseCase(get()) }
+
+    viewModel {
+        SearchViewModel(
+            getProductsUseCase = get(),
+            observeFavoriteIdsUseCase = get(),
+            toggleFavoriteUseCase = get(),
+            isUserLoggedInUseCase = get(),
+            getRecentSearchesUseCase = get(),
+            addRecentSearchUseCase = get(),
+            clearRecentSearchesUseCase = get()
         )
     }
 }

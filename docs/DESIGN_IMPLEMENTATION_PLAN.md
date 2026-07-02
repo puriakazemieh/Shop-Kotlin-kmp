@@ -142,7 +142,7 @@
 
 ### فاز B — تجربه‌ی جستجوی مستقل
 
-- [ ] **B1 کلاینت — صفحه‌ی جستجو**
+- [x] **B1 کلاینت — صفحه‌ی جستجو**
   - `feature/catalog`: `SearchScreen.kt` + `SearchViewModel` (استفاده از همان `GetProductsUseCase` با پارامترِ `q`).
   - `core/navigation/…/AppNavigation.kt`: وصل‌کردنِ `composable<Screen.Search>` + ورودی از هدرِ خانه.
   - اجزاء: سرچ‌بار، گریدِ نتیجه (`MainProductCard`)، حالتِ خالی (`InfoCard`)، «جستجوهای اخیر» (ذخیره‌ی محلی با `multiplatform-settings`).

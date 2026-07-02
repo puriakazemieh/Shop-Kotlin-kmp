@@ -31,7 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kazemieh.cart.CartScreen
-import com.kazemieh.catalog.CategorySearchScreen
+import com.kazemieh.catalog.SearchScreen
 import com.kazemieh.catalog.ProductsOverviewScreen
 import com.kazemieh.common.Screen
 import com.kazemieh.designsystem.AppFont
@@ -148,10 +148,7 @@ fun MainGraphScreen(
                             )
                         }
                         composable<Screen.Search> {
-                            CategorySearchScreen(
-                                categoryId = 0L,
-                                categoryName = "جستجو",
-                                navigateBack = { navController.popBackStack() },
+                            SearchScreen(
                                 navigateToDetails = navigateToDetails,
                                 navigateToAuth = navigateToAuth
                             )
