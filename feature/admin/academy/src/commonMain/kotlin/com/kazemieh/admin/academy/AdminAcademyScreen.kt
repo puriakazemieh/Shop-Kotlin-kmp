@@ -104,7 +104,9 @@ fun AdminAcademyScreen(
                             fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
                         )
                         Spacer(Modifier.height(14.dp))
-                        AddCourseForm(onSubmit = viewModel::createCourse)
+                        AddCourseForm(onSubmit = { t, s, p, pid, ct, fmt, loc, cap ->
+                            viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap)
+                        })
                     }
                     items(state.courses) { course ->
                         CourseCard(
@@ -126,13 +128,28 @@ fun AdminAcademyScreen(
     }
 }
 
+private val COURSE_TYPES = listOf("COURSE" to "دوره", "SEMINAR" to "سمینار", "WORKSHOP" to "کارگاه")
+private val COURSE_FORMATS = listOf(
+    "ONLINE_RECORDED" to "آنلاین (ضبط‌شده)",
+    "ONLINE_LIVE" to "آنلاین (زنده)",
+    "IN_PERSON" to "حضوری",
+    "OFFLINE" to "آفلاین"
+)
+
 @Composable
-private fun AddCourseForm(onSubmit: (title: String, slug: String, price: String, productId: String) -> Unit) {
+private fun AddCourseForm(
+    onSubmit: (title: String, slug: String, price: String, productId: String, courseType: String, format: String, location: String, capacity: String) -> Unit
+) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
     var slug by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var productId by remember { mutableStateOf("") }
+    var courseType by remember { mutableStateOf("COURSE") }
+    var format by remember { mutableStateOf("ONLINE_RECORDED") }
+    var location by remember { mutableStateOf("") }
+    var capacity by remember { mutableStateOf("") }
+    val isInPerson = format == "IN_PERSON" || format == "OFFLINE"
 
     Column(
         modifier = Modifier
@@ -156,18 +173,57 @@ private fun AddCourseForm(onSubmit: (title: String, slug: String, price: String,
             }
         }
         Spacer(Modifier.height(10.dp))
+        Text("نوعِ فعالیت", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        Spacer(Modifier.height(4.dp))
+        ChipSelector(options = COURSE_TYPES, selected = courseType, onSelect = { courseType = it })
+        Spacer(Modifier.height(10.dp))
+        Text("شکلِ برگزاری", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        Spacer(Modifier.height(4.dp))
+        ChipSelector(options = COURSE_FORMATS, selected = format, onSelect = { format = it })
+        // فیلدهای مکان/ظرفیت فقط برای حضوری/آفلاین
+        if (isInPerson) {
+            Spacer(Modifier.height(8.dp))
+            AdminTextField(value = location, onValueChange = { location = it }, label = "مکانِ برگزاری")
+            Spacer(Modifier.height(8.dp))
+            AdminTextField(value = capacity, onValueChange = { capacity = it }, label = "ظرفیتِ کلاس (نفر)")
+        }
+        Spacer(Modifier.height(10.dp))
         Text(
             "ساخت دوره",
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .background(if (title.isNotBlank() && slug.isNotBlank()) colors.primary else colors.line)
                 .clickable(enabled = title.isNotBlank() && slug.isNotBlank()) {
-                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim())
-                    title = ""; slug = ""; price = ""; productId = ""
+                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim(), courseType, format, location.trim(), capacity.trim())
+                    title = ""; slug = ""; price = ""; productId = ""; courseType = "COURSE"
+                    format = "ONLINE_RECORDED"; location = ""; capacity = ""
                 }
                 .padding(horizontal = 16.dp, vertical = 11.dp),
             color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
         )
+    }
+}
+
+/** ردیفِ چیپ‌های انتخابِ تکیِ (value→label). */
+@Composable
+private fun ChipSelector(options: List<Pair<String, String>>, selected: String, onSelect: (String) -> Unit) {
+    val colors = AppTheme.colors
+    androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        options.forEach { (value, label) ->
+            val active = value == selected
+            Text(
+                label,
+                fontSize = FontSize.EXTRA_SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = if (active) colors.onPrimary else colors.onSurfaceVariant,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(if (active) colors.primary else colors.surface)
+                    .border(1.dp, if (active) colors.primary else colors.line, RoundedCornerShape(50))
+                    .clickable { onSelect(value) }
+                    .padding(horizontal = 12.dp, vertical = 7.dp)
+            )
+        }
     }
 }
 

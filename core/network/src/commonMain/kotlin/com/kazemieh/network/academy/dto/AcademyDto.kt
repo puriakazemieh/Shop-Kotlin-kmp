@@ -12,7 +12,13 @@ data class CourseSummaryResponse(
     val price: Double,
     val discountedPrice: Double? = null,
     val lessonCount: Int,
-    val enrolled: Boolean = false
+    val enrolled: Boolean = false,
+    val courseType: String = "COURSE",
+    val format: String = "ONLINE_RECORDED",
+    val isOnline: Boolean = true,
+    val level: String? = null,
+    val jobMarketBadge: Boolean = false,
+    val freeUpdateBadge: Boolean = false
 )
 
 @Serializable
@@ -45,7 +51,19 @@ data class CourseDetailResponse(
     val discountedPrice: Double? = null,
     val enrolled: Boolean,
     val progressPercent: Int,
-    val sections: List<SectionResponse>
+    val sections: List<SectionResponse>,
+    val courseType: String = "COURSE",
+    val format: String = "ONLINE_RECORDED",
+    val isOnline: Boolean = true,
+    val level: String? = null,
+    val location: String? = null,
+    val capacity: Int? = null,
+    val seatsTaken: Int = 0,
+    val seatsRemaining: Int? = null,
+    val jobMarketBadge: Boolean = false,
+    val freeUpdateBadge: Boolean = false,
+    val instructorBio: String? = null,
+    val instructorSkills: List<String> = emptyList()
 )
 
 @Serializable

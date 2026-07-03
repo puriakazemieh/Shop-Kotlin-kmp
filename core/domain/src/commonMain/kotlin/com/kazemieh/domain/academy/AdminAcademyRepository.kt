@@ -11,7 +11,16 @@ data class AdminCourseParams(
     val price: Double = 0.0,
     val discountedPrice: Double? = null,
     val productId: Long? = null,
-    val isPublished: Boolean = true
+    val isPublished: Boolean = true,
+    val courseType: String = "COURSE",
+    val format: String = "ONLINE_RECORDED",
+    val level: String? = null,
+    val location: String? = null,
+    val capacity: Int? = null,
+    val jobMarketBadge: Boolean = false,
+    val freeUpdateBadge: Boolean = false,
+    val instructorBio: String? = null,
+    val instructorSkills: String? = null
 )
 
 data class AdminCourseUpdateParams(

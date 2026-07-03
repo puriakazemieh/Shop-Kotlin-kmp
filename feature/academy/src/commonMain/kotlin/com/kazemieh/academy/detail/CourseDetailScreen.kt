@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -98,11 +100,13 @@ fun CourseDetailScreen(
                 ) {
                     item {
                         Text(course.title, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.EXTRA_REGULAR, color = colors.onSurface)
+                        Spacer(Modifier.height(8.dp))
+                        CourseBadgesRow(course)
                         if (!course.instructor.isNullOrBlank()) {
-                            Spacer(Modifier.height(4.dp))
+                            Spacer(Modifier.height(6.dp))
                             Text("مدرس: ${course.instructor}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                         }
-                        if (course.enrolled && course.progressPercent > 0) {
+                        if (course.enrolled && course.isOnline && course.progressPercent > 0) {
                             Spacer(Modifier.height(10.dp))
                             LinearProgressIndicator(
                                 progress = { course.progressPercent / 100f },
@@ -114,23 +118,121 @@ fun CourseDetailScreen(
                             Text("${course.progressPercent}% تکمیل", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                         }
                     }
+                    // ---- دوره‌ی حضوری/آفلاین: کارتِ مکان و ظرفیت (به‌جای فهرستِ درس‌ها) ----
+                    if (!course.isOnline) {
+                        item { InPersonInfoCard(course) }
+                    }
+                    if (!course.instructorBio.isNullOrBlank() || course.instructorSkills.isNotEmpty()) {
+                        item { InstructorCard(course) }
+                    }
                     if (!course.description.isNullOrBlank()) {
                         item {
                             Text(course.description!!, color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR)
                         }
                     }
-                    course.sections.forEach { section ->
-                        item {
-                            Spacer(Modifier.height(6.dp))
-                            Text(section.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-                        }
-                        items(section.lessons.size) { idx ->
-                            LessonRow(section.lessons[idx], course.enrolled)
+                    // ---- سرفصل‌ها فقط برای دوره‌های آنلاین (محتوایِ قابلِ‌پخش) ----
+                    if (course.isOnline) {
+                        course.sections.forEach { section ->
+                            item {
+                                Spacer(Modifier.height(6.dp))
+                                Text(section.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+                            }
+                            items(section.lessons.size) { idx ->
+                                LessonRow(section.lessons[idx], course.enrolled)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+/** ردیفِ چیپ‌های نوع/فرمت/سطح + نشان‌های ویژه (بازار کار / بروزرسانی رایگان). */
+@Composable
+private fun CourseBadgesRow(course: CourseDetail) {
+    val colors = AppTheme.colors
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Chip(course.courseType.label, colors.accentSoft, colors.primary)
+        Chip(course.format.label, colors.surfaceVariant, colors.onSurfaceVariant)
+        course.level?.let { lvl ->
+            val label = when (lvl) { "BEGINNER" -> "مقدماتی"; "INTERMEDIATE" -> "متوسط"; "ADVANCED" -> "پیشرفته"; else -> lvl }
+            Chip(label, colors.surfaceVariant, colors.onSurfaceVariant)
+        }
+        if (course.jobMarketBadge) Chip("پل ورود به بازار کار", colors.gold.copy(alpha = 0.15f), colors.gold)
+        if (course.freeUpdateBadge) Chip("بروزرسانی رایگان", colors.ok.copy(alpha = 0.15f), colors.ok)
+    }
+}
+
+@Composable
+private fun Chip(text: String, bg: androidx.compose.ui.graphics.Color, fg: androidx.compose.ui.graphics.Color) {
+    Text(
+        text,
+        fontSize = FontSize.EXTRA_SMALL,
+        fontWeight = FontWeight.SemiBold,
+        color = fg,
+        modifier = Modifier
+            .clip(RoundedCornerShape(Radius.full))
+            .background(bg)
+            .padding(horizontal = 10.dp, vertical = 5.dp)
+    )
+}
+
+/** کارتِ اطلاعاتِ دوره‌ی حضوری/آفلاین: مکان و ظرفیت. */
+@Composable
+private fun InPersonInfoCard(course: CourseDetail) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text("اطلاعاتِ برگزاری", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+        if (!course.location.isNullOrBlank()) {
+            InfoLine("مکان", course.location!!)
+        }
+        val cap = course.capacity
+        if (cap != null) {
+            val remaining = course.seatsRemaining ?: (cap - course.seatsTaken).coerceAtLeast(0)
+            InfoLine("ظرفیت", "$cap نفر")
+            InfoLine("صندلی‌های باقی‌مانده", if (remaining > 0) "$remaining نفر" else "تکمیل")
+        }
+    }
+}
+
+@Composable
+private fun InstructorCard(course: CourseDetail) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text("درباره‌ی مدرس", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+        if (!course.instructorBio.isNullOrBlank()) {
+            Text(course.instructorBio!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        }
+        if (course.instructorSkills.isNotEmpty()) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                course.instructorSkills.forEach { Chip(it, colors.surfaceVariant, colors.onSurfaceVariant) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InfoLine(label: String, value: String) {
+    val colors = AppTheme.colors
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(label, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        Spacer(Modifier.width(8.dp))
+        Text(value, color = colors.onSurface, fontWeight = FontWeight.SemiBold, fontSize = FontSize.SMALL)
     }
 }
 
@@ -173,19 +275,29 @@ private fun CourseBottomAction(
     onContinue: () -> Unit
 ) {
     val colors = AppTheme.colors
+    // برای دوره‌ی حضوری/آفلاینِ پرشده، ثبت‌نام غیرفعال است.
+    val classFull = !course.isOnline && course.capacity != null &&
+        (course.seatsRemaining ?: (course.capacity!! - course.seatsTaken)) <= 0 && !course.enrolled
     val label = when {
         enrolling -> "در حال ثبت‌نام…"
-        course.enrolled -> "ادامه‌ی یادگیری"
+        classFull -> "ظرفیت تکمیل است"
+        course.enrolled && course.isOnline -> "ادامه‌ی یادگیری"
+        course.enrolled -> "ثبت‌نامِ شما تأیید شده"
+        !course.isOnline -> "رزرو صندلی"
         else -> "ثبت‌نام در دوره"
     }
+    val clickable = !enrolling && !classFull && !(course.enrolled && !course.isOnline)
+    val bg = if (classFull) colors.onSurfaceVariant else colors.primary
     Box(modifier = Modifier.fillMaxWidth().background(colors.surface).padding(16.dp)) {
         Text(
             text = label,
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(Radius.button))
-                .background(colors.primary)
-                .clickable(enabled = !enrolling) { if (course.enrolled) onContinue() else onEnroll() }
+                .background(bg)
+                .clickable(enabled = clickable) {
+                    if (course.enrolled && course.isOnline) onContinue() else onEnroll()
+                }
                 .padding(vertical = 15.dp),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             color = colors.onPrimary,

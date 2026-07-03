@@ -81,13 +81,26 @@ class AdminAcademyViewModel(
         }
     }
 
-    fun createCourse(title: String, slug: String, price: String, productId: String) {
+    fun createCourse(
+        title: String,
+        slug: String,
+        price: String,
+        productId: String,
+        courseType: String = "COURSE",
+        format: String = "ONLINE_RECORDED",
+        location: String = "",
+        capacity: String = ""
+    ) {
         viewModelScope.launch {
             val params = AdminCourseParams(
                 title = title,
                 slug = slug,
                 price = price.toDoubleOrNull() ?: 0.0,
-                productId = productId.toLongOrNull()
+                productId = productId.toLongOrNull(),
+                courseType = courseType,
+                format = format,
+                location = location.ifBlank { null },
+                capacity = capacity.toIntOrNull()
             )
             when (val result = createCourseUseCase(params)) {
                 is AppResult.Success -> {

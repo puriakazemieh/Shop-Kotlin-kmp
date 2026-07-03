@@ -3,9 +3,11 @@ package com.kazemieh.data.academy.repository
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.AcademyRepository
 import com.kazemieh.domain.academy.CourseDetail
+import com.kazemieh.domain.academy.CourseFormat
 import com.kazemieh.domain.academy.CourseProgress
 import com.kazemieh.domain.academy.CourseSection
 import com.kazemieh.domain.academy.CourseSummary
+import com.kazemieh.domain.academy.CourseType
 import com.kazemieh.domain.academy.Lesson
 import com.kazemieh.network.academy.AcademyApi
 import com.kazemieh.network.academy.dto.CourseDetailResponse
@@ -46,7 +48,9 @@ class AcademyRepositoryImpl(
 
     private fun CourseSummaryResponse.toDomain() = CourseSummary(
         id = id, title = title, slug = slug, thumbnailUrl = thumbnailUrl, instructor = instructor,
-        price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled
+        price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled,
+        courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
+        level = level, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge
     )
 
     private fun LessonResponse.toDomain() = Lesson(
@@ -61,7 +65,11 @@ class AcademyRepositoryImpl(
     private fun CourseDetailResponse.toDomain() = CourseDetail(
         id = id, title = title, slug = slug, description = description, thumbnailUrl = thumbnailUrl,
         instructor = instructor, price = price, discountedPrice = discountedPrice,
-        enrolled = enrolled, progressPercent = progressPercent, sections = sections.map { it.toDomain() }
+        enrolled = enrolled, progressPercent = progressPercent, sections = sections.map { it.toDomain() },
+        courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
+        level = level, location = location, capacity = capacity, seatsTaken = seatsTaken,
+        seatsRemaining = seatsRemaining, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge,
+        instructorBio = instructorBio, instructorSkills = instructorSkills
     )
 
     private fun ProgressResponse.toDomain() = CourseProgress(

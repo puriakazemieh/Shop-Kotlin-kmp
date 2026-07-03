@@ -508,6 +508,15 @@ fun DetailsScreen(
                             ProductSpecsCard(specs = specs)
                         }
 
+                        // ---- هرمِ رایحه (فقط عطر: وقتی نُت‌های آغازین/میانی/پایه ثبت شده باشند) ----
+                        val scent = remember(product) { extractScentPyramid(product.attributes) }
+                        if (scent != null) {
+                            Spacer(Modifier.height(22.dp))
+                            Text("هرم رایحه", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
+                            Spacer(Modifier.height(10.dp))
+                            ScentPyramid(pyramid = scent)
+                        }
+
                         // ---- دیدگاه خریداران ----
                         Spacer(Modifier.height(28.dp))
                         Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
@@ -1036,6 +1045,82 @@ private fun ProductSpecsCard(specs: List<Pair<String, String>>) {
             }
             if (index < specs.lastIndex) {
                 Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+            }
+        }
+    }
+}
+
+/** سه لایه‌ی هرمِ رایحه‌ی یک عطر (نُت‌های آغازین/میانی/پایه). */
+private data class ScentPyramidData(
+    val top: List<String>,
+    val heart: List<String>,
+    val base: List<String>
+)
+
+/**
+ * از میانِ attributesِ جنریکِ محصول، نُت‌های عطر را استخراج می‌کند.
+ * کلیدها به‌صورتِ منعطف تطبیق داده می‌شوند (فارسی یا انگلیسیِ HANDOFF عطر:
+ * notesTop/notesHeart/notesBase یا «نُت آغازین/میانی/پایه»). اگر هیچ‌کدام نبود null.
+ */
+private fun extractScentPyramid(attributes: List<ProductAttribute>): ScentPyramidData? {
+    fun find(vararg keys: String): List<String> {
+        val attr = attributes.firstOrNull { a ->
+            keys.any { k -> a.name.replace(" ", "").equals(k.replace(" ", ""), ignoreCase = true) }
+        } ?: return emptyList()
+        return attr.value.split("،", ",", "/").map { it.trim() }.filter { it.isNotEmpty() }
+    }
+    val top = find("notesTop", "نُت آغازین", "نت آغازین", "نت‌های آغازین", "نُت‌های آغازین")
+    val heart = find("notesHeart", "نُت میانی", "نت میانی", "نت‌های میانی", "نُت‌های میانی")
+    val base = find("notesBase", "نُت پایه", "نت پایه", "نت‌های پایه", "نُت‌های پایه")
+    return if (top.isEmpty() && heart.isEmpty() && base.isEmpty()) null
+    else ScentPyramidData(top, heart, base)
+}
+
+/** رندرِ گرافیکیِ هرمِ رایحه در سه ردیف با چیپ‌های نُت. */
+@Composable
+private fun ScentPyramid(pyramid: ScentPyramidData) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+            .padding(vertical = 4.dp)
+    ) {
+        ScentLayer(title = "نُت‌های آغازین", notes = pyramid.top, accent = colors.primary)
+        if (pyramid.heart.isNotEmpty() || pyramid.base.isNotEmpty()) {
+            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+        }
+        ScentLayer(title = "نُت‌های میانی", notes = pyramid.heart, accent = colors.gold)
+        if (pyramid.base.isNotEmpty()) {
+            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+        }
+        ScentLayer(title = "نُت‌های پایه", notes = pyramid.base, accent = colors.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun ScentLayer(title: String, notes: List<String>, accent: Color) {
+    if (notes.isEmpty()) return
+    val colors = AppTheme.colors
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(8.dp).clip(CircleShape).background(accent))
+            Spacer(Modifier.width(8.dp))
+            Text(title, fontSize = FontSize.REGULAR, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
+        }
+        Spacer(Modifier.height(8.dp))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            notes.forEach { note ->
+                Text(
+                    note,
+                    fontSize = FontSize.SMALL,
+                    color = colors.onSurfaceVariant,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Radius.full))
+                        .background(colors.surfaceVariant)
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                )
             }
         }
     }

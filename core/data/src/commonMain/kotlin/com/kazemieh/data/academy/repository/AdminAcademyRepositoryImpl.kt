@@ -5,8 +5,10 @@ import com.kazemieh.domain.academy.AdminAcademyRepository
 import com.kazemieh.domain.academy.AdminCourseParams
 import com.kazemieh.domain.academy.AdminCourseUpdateParams
 import com.kazemieh.domain.academy.CourseDetail
+import com.kazemieh.domain.academy.CourseFormat
 import com.kazemieh.domain.academy.CourseSection
 import com.kazemieh.domain.academy.CourseSummary
+import com.kazemieh.domain.academy.CourseType
 import com.kazemieh.domain.academy.Lesson
 import com.kazemieh.network.academy.AdminAcademyApi
 import com.kazemieh.network.academy.dto.AdminCreateCourseRequestDto
@@ -42,7 +44,16 @@ class AdminAcademyRepositoryImpl(
                 price = params.price,
                 discountedPrice = params.discountedPrice,
                 productId = params.productId,
-                isPublished = params.isPublished
+                isPublished = params.isPublished,
+                courseType = params.courseType,
+                format = params.format,
+                level = params.level,
+                location = params.location,
+                capacity = params.capacity,
+                jobMarketBadge = params.jobMarketBadge,
+                freeUpdateBadge = params.freeUpdateBadge,
+                instructorBio = params.instructorBio,
+                instructorSkills = params.instructorSkills
             )
         )
     }
@@ -90,7 +101,9 @@ class AdminAcademyRepositoryImpl(
 
     private fun CourseSummaryResponse.toDomain() = CourseSummary(
         id = id, title = title, slug = slug, thumbnailUrl = thumbnailUrl, instructor = instructor,
-        price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled
+        price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled,
+        courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
+        level = level, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge
     )
 
     private fun LessonResponse.toDomain() = Lesson(
@@ -105,6 +118,10 @@ class AdminAcademyRepositoryImpl(
     private fun CourseDetailResponse.toDomain() = CourseDetail(
         id = id, title = title, slug = slug, description = description, thumbnailUrl = thumbnailUrl,
         instructor = instructor, price = price, discountedPrice = discountedPrice,
-        enrolled = enrolled, progressPercent = progressPercent, sections = sections.map { it.toDomain() }
+        enrolled = enrolled, progressPercent = progressPercent, sections = sections.map { it.toDomain() },
+        courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
+        level = level, location = location, capacity = capacity, seatsTaken = seatsTaken,
+        seatsRemaining = seatsRemaining, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge,
+        instructorBio = instructorBio, instructorSkills = instructorSkills
     )
 }
