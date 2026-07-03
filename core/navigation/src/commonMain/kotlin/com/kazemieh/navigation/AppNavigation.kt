@@ -48,6 +48,7 @@ import com.kazemieh.academy.quiz.CourseQuizScreen
 import com.kazemieh.academy.cert.CertificatesScreen
 import com.kazemieh.psychtest.list.PsychTestListScreen
 import com.kazemieh.psychtest.take.TakeTestScreen
+import com.kazemieh.comparison.ComparisonScreen
 import com.kazemieh.clinic.list.TherapistListScreen
 import com.kazemieh.clinic.detail.TherapistDetailScreen
 import com.kazemieh.clinic.appointments.MyAppointmentsScreen
@@ -154,6 +155,9 @@ fun AppNavHost(
                 },
                 navigateToPsychTests = {
                     navController.navigate(Screen.PsychTestCatalog)
+                },
+                navigateToComparison = {
+                    navController.navigate(Screen.Comparison)
                 },
             )
         }
@@ -283,6 +287,14 @@ fun AppNavHost(
             TakeTestScreen(
                 userTestId = args.userTestId,
                 navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- Product comparison ----
+        composable<Screen.Comparison> {
+            ComparisonScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToDetail = { slug -> navController.navigate(Screen.ProductDetail(slug)) }
             )
         }
 

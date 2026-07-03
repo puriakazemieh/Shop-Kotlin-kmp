@@ -149,4 +149,8 @@ sealed class Screen {
     @Serializable
     data class TakeTest(val userTestId: Long) : Screen()
 
+    // ---- Product comparison (general feature) ----
+    @Serializable
+    data object Comparison : Screen()
+
 }

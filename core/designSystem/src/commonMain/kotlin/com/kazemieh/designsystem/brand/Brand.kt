@@ -130,8 +130,8 @@ val CarmilaBrand = BrandConfig(
     appName = "کارمیلا",
     colors = CarmilaBrandColors,
     currency = "تومان",
-    // برندِ نمایشیِ اصلی؛ هر دو عمودیِ آموزشگاه و مشاوره برای دمو روشن‌اند.
-    features = BrandFeatures(academy = true, clinic = true)
+    // برندِ نمایشیِ اصلی؛ هر دو عمودیِ آموزشگاه و مشاوره + مقایسه‌ی محصول برای دمو روشن‌اند.
+    features = BrandFeatures(academy = true, clinic = true, productComparison = true)
 )
 
 /** نمونه‌ی برندِ دومِ عطرفروشی «آتریس» — پالتِ گرم/طلایی. */

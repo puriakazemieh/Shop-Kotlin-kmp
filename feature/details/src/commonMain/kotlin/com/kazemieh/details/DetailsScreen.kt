@@ -89,11 +89,14 @@ import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.ProductVideo
 import com.kazemieh.domain.catalog.Question
 import com.kazemieh.domain.catalog.Review
+import com.kazemieh.common.ComparisonStore
+import com.kazemieh.designsystem.brand.BrandConfig
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
@@ -450,7 +453,30 @@ fun DetailsScreen(
 
                         Spacer(Modifier.height(22.dp))
 
+                        // ---- افزودن به مقایسه (فقط وقتی برند این فیچر را روشن کرده) ----
+                        val brand = koinInject<BrandConfig>()
+                        if (brand.features.productComparison) {
+                            val comparedSlugs by ComparisonStore.slugs.collectAsState()
+                            val inComparison = comparedSlugs.contains(product.slug)
+                            Spacer(Modifier.height(12.dp))
+                            Text(
+                                if (inComparison) "✓ در فهرستِ مقایسه" else "افزودن به مقایسه",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(Radius.button))
+                                    .border(1.dp, if (inComparison) colors.primary else colors.line, RoundedCornerShape(Radius.button))
+                                    .background(if (inComparison) colors.accentSoft else colors.surface)
+                                    .clickable { ComparisonStore.toggle(product.slug) }
+                                    .padding(vertical = 12.dp),
+                                textAlign = TextAlign.Center,
+                                color = if (inComparison) colors.primary else colors.onSurface,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = FontSize.SMALL
+                            )
+                        }
+
                         // ---- نشان‌های خدمات ----
+                        Spacer(Modifier.height(12.dp))
                         ServiceBadges()
 
                         // ---- تخمین زمان ارسال + اطلاعات فیت مدل ----

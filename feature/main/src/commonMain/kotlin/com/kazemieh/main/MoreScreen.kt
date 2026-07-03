@@ -54,6 +54,7 @@ fun MoreScreen(
     showAcademy: Boolean = true,
     showClinic: Boolean = true,
     showPsychTests: Boolean = false,
+    showComparison: Boolean = false,
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
@@ -66,6 +67,7 @@ fun MoreScreen(
     onMyAppointmentsClick: () -> Unit = {},
     onBrowseTherapistsClick: () -> Unit = {},
     onPsychTestsClick: () -> Unit = {},
+    onComparisonClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -152,6 +154,16 @@ fun MoreScreen(
                 title = "تست‌های روان‌شناسی",
                 subtitle = "خرید و انجامِ تست‌های خودارزیابی",
                 onClick = onPsychTestsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- مقایسه‌ی محصولات — فیچرِ عمومی، پشتِ پرچمِ برند ----
+        if (showComparison) {
+            AccountRow(
+                title = "مقایسه‌ی محصولات",
+                subtitle = "بررسیِ کنارِهمِ مشخصاتِ محصولات",
+                onClick = onComparisonClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
