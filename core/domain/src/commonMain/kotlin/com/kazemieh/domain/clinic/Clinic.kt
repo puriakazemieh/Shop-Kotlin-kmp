@@ -35,7 +35,8 @@ data class TherapistDetail(
     val productSlug: String?,
     val sessionCredits: Int,
     val mode: String = "ONLINE",
-    val location: String? = null
+    val location: String? = null,
+    val productId: Long? = null
 ) {
     /** آیا کاربر می‌تواند همین حالا رزرو کند (رایگان است یا اعتبارِ کافی دارد). */
     val canBook: Boolean get() = !requiresPurchase || sessionCredits > 0

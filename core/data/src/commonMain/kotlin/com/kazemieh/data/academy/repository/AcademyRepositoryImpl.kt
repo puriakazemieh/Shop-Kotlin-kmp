@@ -15,6 +15,7 @@ import com.kazemieh.domain.academy.QuizOption
 import com.kazemieh.domain.academy.QuizQuestion
 import com.kazemieh.domain.academy.QuizResult
 import com.kazemieh.domain.academy.VideoVariant
+import com.kazemieh.domain.academy.WaitlistResult
 import com.kazemieh.network.academy.AcademyApi
 import com.kazemieh.network.academy.dto.CertificateResponse
 import com.kazemieh.network.academy.dto.CourseDetailResponse
@@ -26,6 +27,7 @@ import com.kazemieh.network.academy.dto.QuizResultResponse
 import com.kazemieh.network.academy.dto.SectionResponse
 import com.kazemieh.network.academy.dto.SubmitQuizRequestDto
 import com.kazemieh.network.academy.dto.UpdateProgressRequestDto
+import com.kazemieh.network.academy.dto.WaitlistResponse
 import com.kazemieh.network.common.safeApiCall
 
 class AcademyRepositoryImpl(
@@ -68,6 +70,10 @@ class AcademyRepositoryImpl(
         api.getCertificates().map { it.toDomain() }
     }
 
+    override suspend fun joinWaitlist(courseId: Long): AppResult<WaitlistResult> = safeApiCall {
+        api.joinWaitlist(courseId).toDomain()
+    }
+
     private fun CourseSummaryResponse.toDomain() = CourseSummary(
         id = id, title = title, slug = slug, thumbnailUrl = thumbnailUrl, instructor = instructor,
         price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled,
@@ -92,8 +98,11 @@ class AcademyRepositoryImpl(
         courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
         level = level, location = location, capacity = capacity, seatsTaken = seatsTaken,
         seatsRemaining = seatsRemaining, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge,
-        instructorBio = instructorBio, instructorSkills = instructorSkills
+        instructorBio = instructorBio, instructorSkills = instructorSkills,
+        isFull = isFull, onWaitlist = onWaitlist, productId = productId
     )
+
+    private fun WaitlistResponse.toDomain() = WaitlistResult(courseId = courseId, joined = joined, position = position)
 
     private fun ProgressResponse.toDomain() = CourseProgress(
         courseId = courseId, totalLessons = totalLessons,

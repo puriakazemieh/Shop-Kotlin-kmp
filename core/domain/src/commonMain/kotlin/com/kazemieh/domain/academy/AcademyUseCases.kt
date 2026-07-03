@@ -32,3 +32,7 @@ class SubmitQuizUseCase(private val repository: AcademyRepository) {
 class GetCertificatesUseCase(private val repository: AcademyRepository) {
     suspend operator fun invoke() = repository.getCertificates()
 }
+
+class JoinWaitlistUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.joinWaitlist(courseId)
+}

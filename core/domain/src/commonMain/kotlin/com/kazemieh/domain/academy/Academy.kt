@@ -80,7 +80,10 @@ data class CourseDetail(
     val jobMarketBadge: Boolean = false,
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
-    val instructorSkills: List<String> = emptyList()
+    val instructorSkills: List<String> = emptyList(),
+    val isFull: Boolean = false,
+    val onWaitlist: Boolean = false,
+    val productId: Long? = null
 )
 
 data class CourseProgress(
@@ -113,6 +116,13 @@ data class QuizResult(
     val passed: Boolean,
     val passScore: Int,
     val certificateNumber: String?
+)
+
+// ---------- Waitlist ----------
+data class WaitlistResult(
+    val courseId: Long,
+    val joined: Boolean,
+    val position: Int?
 )
 
 // ---------- Certificate ----------

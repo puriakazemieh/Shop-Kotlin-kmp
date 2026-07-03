@@ -11,4 +11,5 @@ interface AcademyApi {
     suspend fun getQuiz(courseId: Long): QuizResponse
     suspend fun submitQuiz(courseId: Long, request: SubmitQuizRequestDto): QuizResultResponse
     suspend fun getCertificates(): List<CertificateResponse>
+    suspend fun joinWaitlist(courseId: Long): WaitlistResponse
 }

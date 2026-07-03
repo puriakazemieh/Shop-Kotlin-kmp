@@ -60,6 +60,8 @@ kotlin {
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
+                // بازاستفاده از بخشِ نظرات (ProductReviewsSection)
+                implementation(project(":feature:details"))
             }
         }
     }

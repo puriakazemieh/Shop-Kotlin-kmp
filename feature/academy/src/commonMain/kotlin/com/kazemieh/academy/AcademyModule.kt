@@ -11,6 +11,7 @@ import com.kazemieh.domain.academy.GetCourseDetailUseCase
 import com.kazemieh.domain.academy.GetCoursesUseCase
 import com.kazemieh.domain.academy.GetMyCoursesUseCase
 import com.kazemieh.domain.academy.GetQuizUseCase
+import com.kazemieh.domain.academy.JoinWaitlistUseCase
 import com.kazemieh.domain.academy.SubmitQuizUseCase
 import com.kazemieh.domain.academy.UpdateLessonProgressUseCase
 import org.koin.core.module.dsl.viewModel
@@ -25,9 +26,10 @@ val academyModule = module {
     factory { GetQuizUseCase(get()) }
     factory { SubmitQuizUseCase(get()) }
     factory { GetCertificatesUseCase(get()) }
+    factory { JoinWaitlistUseCase(get()) }
 
     viewModel { CourseListViewModel(get(), get()) }
-    viewModel { CourseDetailViewModel(get(), get()) }
+    viewModel { CourseDetailViewModel(get(), get(), get()) }
     viewModel { CourseLearnViewModel(get(), get()) }
     viewModel { CourseQuizViewModel(get(), get()) }
     viewModel { CertificatesViewModel(get()) }

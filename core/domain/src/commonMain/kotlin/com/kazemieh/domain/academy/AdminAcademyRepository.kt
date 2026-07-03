@@ -40,6 +40,14 @@ data class AdminQuizQuestion(
     val correctIndex: Int
 )
 
+data class AdminWaitlistEntry(
+    val id: Long,
+    val userId: Long,
+    val notified: Boolean,
+    val createdAt: String,
+    val notifiedAt: String?
+)
+
 interface AdminAcademyRepository {
     suspend fun listCourses(): AppResult<List<CourseSummary>>
     suspend fun getCourseDetail(id: Long): AppResult<CourseDetail>
@@ -62,4 +70,7 @@ interface AdminAcademyRepository {
         passScore: Int,
         questions: List<AdminQuizQuestion>
     ): AppResult<Unit>
+    suspend fun listWaitlist(courseId: Long): AppResult<List<AdminWaitlistEntry>>
+    /** خروجی: نفرِ مطلع‌شده، یا null اگر صف خالی بود. */
+    suspend fun notifyNextInWaitlist(courseId: Long): AppResult<AdminWaitlistEntry?>
 }

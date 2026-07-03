@@ -11,4 +11,5 @@ interface AcademyRepository {
     suspend fun getQuiz(courseId: Long): AppResult<Quiz>
     suspend fun submitQuiz(courseId: Long, answers: Map<Int, Int>): AppResult<QuizResult>
     suspend fun getCertificates(): AppResult<List<Certificate>>
+    suspend fun joinWaitlist(courseId: Long): AppResult<WaitlistResult>
 }

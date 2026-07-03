@@ -44,4 +44,8 @@ class AcademyApiImpl(
     override suspend fun getCertificates(): List<CertificateResponse> = safeApiCallRaw {
         client.get("api/academy/certificates")
     }
+
+    override suspend fun joinWaitlist(courseId: Long): WaitlistResponse = safeApiCallRaw {
+        client.post("api/academy/courses/$courseId/waitlist")
+    }
 }

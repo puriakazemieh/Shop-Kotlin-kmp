@@ -61,3 +61,19 @@ data class AdminUpsertQuizRequestDto(
     val passScore: Int = 60,
     val questions: List<QuizQuestionResponse> = emptyList()
 )
+
+// ---------- Admin waitlist ----------
+@Serializable
+data class AdminWaitlistEntryResponse(
+    val id: Long,
+    val userId: Long,
+    val notified: Boolean,
+    val createdAt: String,
+    val notifiedAt: String? = null
+)
+
+@Serializable
+data class AdminNotifyNextResponse(
+    val found: Boolean,
+    val entry: AdminWaitlistEntryResponse? = null
+)

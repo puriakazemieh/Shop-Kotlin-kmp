@@ -116,6 +116,7 @@ fun AdminAcademyScreen(
                             detail = if (state.expandedCourseId == course.id) state.expandedCourseDetail else null,
                             loadingDetail = state.loadingDetail && state.expandedCourseId == course.id,
                             quizCount = state.quizQuestionsByCourse[course.id]?.size ?: 0,
+                            waitlist = state.waitlistByCourse[course.id].orEmpty(),
                             onToggle = { viewModel.toggleExpand(course.id) },
                             onDelete = { viewModel.deleteCourse(course.id) },
                             onAddSection = { title -> viewModel.addSection(course.id, title) },
@@ -124,7 +125,8 @@ fun AdminAcademyScreen(
                             },
                             onAddQuizQuestion = { passScore, text, options, correct ->
                                 viewModel.addQuizQuestion(course.id, passScore, text, options, correct)
-                            }
+                            },
+                            onNotifyNextWaitlist = { viewModel.notifyNext(course.id) }
                         )
                     }
                 }
@@ -239,11 +241,13 @@ private fun CourseCard(
     detail: CourseDetail?,
     loadingDetail: Boolean,
     quizCount: Int,
+    waitlist: List<com.kazemieh.domain.academy.AdminWaitlistEntry>,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
     onAddSection: (String) -> Unit,
     onAddLesson: (sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit,
-    onAddQuizQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit
+    onAddQuizQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit,
+    onNotifyNextWaitlist: () -> Unit
 ) {
     val colors = AppTheme.colors
     Column(
@@ -290,9 +294,52 @@ private fun CourseCard(
                     AddSectionForm(onSubmit = onAddSection)
                     Spacer(Modifier.height(12.dp))
                     QuizBuilder(quizCount = quizCount, onAddQuestion = onAddQuizQuestion)
+                    // ---- لیستِ انتظارِ کلاسِ حضوریِ پرشده (فقط اگر عضوی داشته باشد) ----
+                    if (detail.isFull || waitlist.isNotEmpty()) {
+                        Spacer(Modifier.height(12.dp))
+                        WaitlistSection(waitlist = waitlist, onNotifyNext = onNotifyNextWaitlist)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun WaitlistSection(waitlist: List<com.kazemieh.domain.academy.AdminWaitlistEntry>, onNotifyNext: () -> Unit) {
+    val colors = AppTheme.colors
+    val pending = waitlist.count { !it.notified }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surfaceVariant)
+            .padding(12.dp)
+    ) {
+        Text("لیستِ انتظارِ کلاسِ پرشده", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+        Spacer(Modifier.height(4.dp))
+        Text("$pending نفر در انتظار", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+        if (waitlist.isNotEmpty()) {
+            Spacer(Modifier.height(6.dp))
+            waitlist.forEach { entry ->
+                Text(
+                    "کاربر #${entry.userId}" + if (entry.notified) " — مطلع شد ✓" else " — در انتظار",
+                    color = if (entry.notified) colors.ok else colors.onSurfaceVariant,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    modifier = Modifier.padding(vertical = 2.dp)
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "اطلاع‌رسانی به نفرِ بعدی",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (pending > 0) colors.primary else colors.line)
+                .clickable(enabled = pending > 0) { onNotifyNext() }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+        )
     }
 }
 

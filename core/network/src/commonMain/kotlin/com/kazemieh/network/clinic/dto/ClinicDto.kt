@@ -40,7 +40,8 @@ data class TherapistDetailResponse(
     val productSlug: String? = null,
     val sessionCredits: Int = 0,
     val mode: String = "ONLINE",
-    val location: String? = null
+    val location: String? = null,
+    val productId: Long? = null
 )
 
 @Serializable

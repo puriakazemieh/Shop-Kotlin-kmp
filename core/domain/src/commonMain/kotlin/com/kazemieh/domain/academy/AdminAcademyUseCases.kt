@@ -41,3 +41,11 @@ class UpsertCourseQuizUseCase(private val repository: AdminAcademyRepository) {
     suspend operator fun invoke(courseId: Long, title: String, passScore: Int, questions: List<AdminQuizQuestion>) =
         repository.upsertQuiz(courseId, title, passScore, questions)
 }
+
+class GetAdminWaitlistUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.listWaitlist(courseId)
+}
+
+class NotifyNextInWaitlistUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.notifyNextInWaitlist(courseId)
+}

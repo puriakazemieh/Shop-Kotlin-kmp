@@ -183,6 +183,14 @@ fun TherapistDetailScreen(
                                 )
                             }
                         }
+
+                        // ---- نظرِ مراجعان (فقط اگر خدمت به محصول لینک شده باشد) ----
+                        therapist.productId?.let { pid ->
+                            item {
+                                Spacer(Modifier.height(16.dp))
+                                com.kazemieh.details.component.ProductReviewsSection(productId = pid, title = "نظرِ مراجعان")
+                            }
+                        }
                     }
                 }
             }

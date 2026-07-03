@@ -54,7 +54,7 @@ class ClinicRepositoryImpl(
         sessionPrice = sessionPrice, sessionDurationMinutes = sessionDurationMinutes,
         slots = slots.map { it.toDomain() },
         requiresPurchase = requiresPurchase, productSlug = productSlug, sessionCredits = sessionCredits,
-        mode = mode, location = location
+        mode = mode, location = location, productId = productId
     )
 
     private fun AppointmentResponse.toDomain() = Appointment(

@@ -6,6 +6,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.EnrollCourseUseCase
 import com.kazemieh.domain.academy.GetCourseDetailUseCase
+import com.kazemieh.domain.academy.JoinWaitlistUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,17 +19,20 @@ import kotlinx.coroutines.launch
 data class CourseDetailState(
     val isLoading: Boolean = false,
     val isEnrolling: Boolean = false,
+    val isJoiningWaitlist: Boolean = false,
     val course: CourseDetail? = null,
     val error: Any? = null
 )
 
 sealed interface CourseDetailEffect {
     data class ShowError(val message: Any) : CourseDetailEffect
+    data class ShowSuccess(val message: Any) : CourseDetailEffect
 }
 
 class CourseDetailViewModel(
     private val getCourseDetailUseCase: GetCourseDetailUseCase,
-    private val enrollCourseUseCase: EnrollCourseUseCase
+    private val enrollCourseUseCase: EnrollCourseUseCase,
+    private val joinWaitlistUseCase: JoinWaitlistUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CourseDetailState())
@@ -59,6 +63,26 @@ class CourseDetailViewModel(
                 is AppResult.Success -> _state.update { it.copy(isEnrolling = false, course = result.data) }
                 is AppResult.Error -> {
                     _state.update { it.copy(isEnrolling = false) }
+                    _effect.send(CourseDetailEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun joinWaitlist() {
+        val course = _state.value.course ?: return
+        _state.update { it.copy(isJoiningWaitlist = true) }
+        viewModelScope.launch {
+            when (val result = joinWaitlistUseCase(course.id)) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(isJoiningWaitlist = false, course = course.copy(onWaitlist = true)) }
+                    val msg = result.data.position?.let { "به لیستِ انتظار پیوستید (جایگاه: $it)" }
+                        ?: "به لیستِ انتظار پیوستید"
+                    _effect.send(CourseDetailEffect.ShowSuccess(msg))
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(isJoiningWaitlist = false) }
                     _effect.send(CourseDetailEffect.ShowError(result.message))
                 }
                 else -> {}

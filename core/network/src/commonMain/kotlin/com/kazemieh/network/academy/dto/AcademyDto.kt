@@ -70,7 +70,10 @@ data class CourseDetailResponse(
     val jobMarketBadge: Boolean = false,
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
-    val instructorSkills: List<String> = emptyList()
+    val instructorSkills: List<String> = emptyList(),
+    val isFull: Boolean = false,
+    val onWaitlist: Boolean = false,
+    val productId: Long? = null
 )
 
 @Serializable
@@ -122,6 +125,14 @@ data class QuizResultResponse(
     val passed: Boolean,
     val passScore: Int,
     val certificateNumber: String? = null
+)
+
+// ---------- Waitlist ----------
+@Serializable
+data class WaitlistResponse(
+    val courseId: Long,
+    val joined: Boolean,
+    val position: Int? = null
 )
 
 // ---------- Certificate ----------

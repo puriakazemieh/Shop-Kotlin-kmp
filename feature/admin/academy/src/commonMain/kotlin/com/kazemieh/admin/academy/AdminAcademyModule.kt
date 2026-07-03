@@ -6,6 +6,8 @@ import com.kazemieh.domain.academy.CreateCourseUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
 import com.kazemieh.domain.academy.GetAdminCourseDetailUseCase
 import com.kazemieh.domain.academy.GetAdminCoursesUseCase
+import com.kazemieh.domain.academy.GetAdminWaitlistUseCase
+import com.kazemieh.domain.academy.NotifyNextInWaitlistUseCase
 import com.kazemieh.domain.academy.UpdateCourseUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import org.koin.core.module.dsl.viewModel
@@ -20,6 +22,8 @@ val adminAcademyModule = module {
     factory { AddCourseSectionUseCase(get()) }
     factory { AddCourseLessonUseCase(get()) }
     factory { UpsertCourseQuizUseCase(get()) }
+    factory { GetAdminWaitlistUseCase(get()) }
+    factory { NotifyNextInWaitlistUseCase(get()) }
 
     viewModel {
         AdminAcademyViewModel(
@@ -29,7 +33,9 @@ val adminAcademyModule = module {
             deleteCourseUseCase = get(),
             addCourseSectionUseCase = get(),
             addCourseLessonUseCase = get(),
-            upsertCourseQuizUseCase = get()
+            upsertCourseQuizUseCase = get(),
+            getAdminWaitlistUseCase = get(),
+            notifyNextInWaitlistUseCase = get()
         )
     }
 }

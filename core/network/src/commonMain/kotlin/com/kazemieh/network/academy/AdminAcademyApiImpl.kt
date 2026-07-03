@@ -43,4 +43,12 @@ class AdminAcademyApiImpl(
     override suspend fun upsertQuiz(courseId: Long, request: AdminUpsertQuizRequestDto): Unit = safeApiCallRaw {
         client.put("api/admin/courses/$courseId/quiz") { setBody(request) }
     }
+
+    override suspend fun listWaitlist(courseId: Long): List<AdminWaitlistEntryResponse> = safeApiCallRaw {
+        client.get("api/admin/courses/$courseId/waitlist")
+    }
+
+    override suspend fun notifyNextInWaitlist(courseId: Long): AdminNotifyNextResponse = safeApiCallRaw {
+        client.post("api/admin/courses/$courseId/waitlist/notify-next")
+    }
 }

@@ -5,6 +5,7 @@ import com.kazemieh.domain.academy.AdminAcademyRepository
 import com.kazemieh.domain.academy.AdminCourseParams
 import com.kazemieh.domain.academy.AdminCourseUpdateParams
 import com.kazemieh.domain.academy.AdminQuizQuestion
+import com.kazemieh.domain.academy.AdminWaitlistEntry
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseFormat
 import com.kazemieh.domain.academy.CourseSection
@@ -17,6 +18,7 @@ import com.kazemieh.network.academy.dto.AdminCreateLessonRequestDto
 import com.kazemieh.network.academy.dto.AdminCreateSectionRequestDto
 import com.kazemieh.network.academy.dto.AdminUpdateCourseRequestDto
 import com.kazemieh.network.academy.dto.AdminUpsertQuizRequestDto
+import com.kazemieh.network.academy.dto.AdminWaitlistEntryResponse
 import com.kazemieh.network.academy.dto.CourseDetailResponse
 import com.kazemieh.network.academy.dto.CourseSummaryResponse
 import com.kazemieh.network.academy.dto.LessonResponse
@@ -127,6 +129,18 @@ class AdminAcademyRepositoryImpl(
         )
     }
 
+    override suspend fun listWaitlist(courseId: Long): AppResult<List<AdminWaitlistEntry>> = safeApiCall {
+        api.listWaitlist(courseId).map { it.toDomain() }
+    }
+
+    override suspend fun notifyNextInWaitlist(courseId: Long): AppResult<AdminWaitlistEntry?> = safeApiCall {
+        api.notifyNextInWaitlist(courseId).entry?.toDomain()
+    }
+
+    private fun AdminWaitlistEntryResponse.toDomain() = AdminWaitlistEntry(
+        id = id, userId = userId, notified = notified, createdAt = createdAt, notifiedAt = notifiedAt
+    )
+
     private fun CourseSummaryResponse.toDomain() = CourseSummary(
         id = id, title = title, slug = slug, thumbnailUrl = thumbnailUrl, instructor = instructor,
         price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled,
@@ -150,6 +164,7 @@ class AdminAcademyRepositoryImpl(
         courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
         level = level, location = location, capacity = capacity, seatsTaken = seatsTaken,
         seatsRemaining = seatsRemaining, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge,
-        instructorBio = instructorBio, instructorSkills = instructorSkills
+        instructorBio = instructorBio, instructorSkills = instructorSkills,
+        isFull = isFull, onWaitlist = onWaitlist, productId = productId
     )
 }

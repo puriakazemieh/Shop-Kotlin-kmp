@@ -43,8 +43,12 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
+import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.details.component.ProductReviewsSection
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.Lesson
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,8 +61,17 @@ fun CourseDetailScreen(
     val viewModel = koinViewModel<CourseDetailViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
+    val messageBarState = rememberMessageBarState()
 
     LaunchedEffect(slug) { viewModel.load(slug) }
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is CourseDetailEffect.ShowError -> messageBarState.addError(effect.message)
+                is CourseDetailEffect.ShowSuccess -> messageBarState.addSuccess(effect.message)
+            }
+        }
+    }
 
     Scaffold(
         containerColor = colors.background,
@@ -83,13 +96,16 @@ fun CourseDetailScreen(
                 CourseBottomAction(
                     course = course,
                     enrolling = state.isEnrolling,
+                    joiningWaitlist = state.isJoiningWaitlist,
                     onEnroll = { viewModel.enroll() },
-                    onContinue = { navigateToLearn(course.slug) }
+                    onContinue = { navigateToLearn(course.slug) },
+                    onJoinWaitlist = { viewModel.joinWaitlist() }
                 )
             }
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+        ContentWithMessageBar(modifier = Modifier.padding(padding), messageBarState = messageBarState) {
+        Box(modifier = Modifier.fillMaxSize()) {
             val course = state.course
             when {
                 state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
@@ -142,8 +158,16 @@ fun CourseDetailScreen(
                             }
                         }
                     }
+                    // ---- نظرِ شاگردان (فقط اگر دوره به محصول لینک شده باشد) ----
+                    course.productId?.let { pid ->
+                        item {
+                            Spacer(Modifier.height(16.dp))
+                            ProductReviewsSection(productId = pid, title = "نظرِ شاگردان")
+                        }
+                    }
                 }
             }
+        }
         }
     }
 }
@@ -271,23 +295,31 @@ private fun LessonRow(lesson: Lesson, enrolled: Boolean) {
 private fun CourseBottomAction(
     course: CourseDetail,
     enrolling: Boolean,
+    joiningWaitlist: Boolean,
     onEnroll: () -> Unit,
-    onContinue: () -> Unit
+    onContinue: () -> Unit,
+    onJoinWaitlist: () -> Unit
 ) {
     val colors = AppTheme.colors
-    // برای دوره‌ی حضوری/آفلاینِ پرشده، ثبت‌نام غیرفعال است.
-    val classFull = !course.isOnline && course.capacity != null &&
-        (course.seatsRemaining ?: (course.capacity!! - course.seatsTaken)) <= 0 && !course.enrolled
+    // برای دوره‌ی حضوری/آفلاینِ پرشده، ثبت‌نام غیرفعال است و به‌جایش لیستِ انتظار پیشنهاد می‌شود.
+    val classFull = course.isFull && !course.enrolled
     val label = when {
         enrolling -> "در حال ثبت‌نام…"
-        classFull -> "ظرفیت تکمیل است"
+        joiningWaitlist -> "در حال پیوستن به لیستِ انتظار…"
+        classFull && course.onWaitlist -> "در لیستِ انتظار هستید ✓"
+        classFull -> "پیوستن به لیستِ انتظار"
         course.enrolled && course.isOnline -> "ادامه‌ی یادگیری"
         course.enrolled -> "ثبت‌نامِ شما تأیید شده"
         !course.isOnline -> "رزرو صندلی"
         else -> "ثبت‌نام در دوره"
     }
-    val clickable = !enrolling && !classFull && !(course.enrolled && !course.isOnline)
-    val bg = if (classFull) colors.onSurfaceVariant else colors.primary
+    val clickable = when {
+        enrolling || joiningWaitlist -> false
+        classFull -> !course.onWaitlist
+        course.enrolled -> course.isOnline
+        else -> true
+    }
+    val bg = if (classFull && course.onWaitlist) colors.onSurfaceVariant else colors.primary
     Box(modifier = Modifier.fillMaxWidth().background(colors.surface).padding(16.dp)) {
         Text(
             text = label,
@@ -296,7 +328,11 @@ private fun CourseBottomAction(
                 .clip(RoundedCornerShape(Radius.button))
                 .background(bg)
                 .clickable(enabled = clickable) {
-                    if (course.enrolled && course.isOnline) onContinue() else onEnroll()
+                    when {
+                        classFull -> onJoinWaitlist()
+                        course.enrolled && course.isOnline -> onContinue()
+                        else -> onEnroll()
+                    }
                 }
                 .padding(vertical = 15.dp),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,

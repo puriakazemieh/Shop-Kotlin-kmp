@@ -7,12 +7,15 @@ import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
 import com.kazemieh.domain.academy.AdminCourseParams
 import com.kazemieh.domain.academy.AdminQuizQuestion
+import com.kazemieh.domain.academy.AdminWaitlistEntry
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.academy.CreateCourseUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
 import com.kazemieh.domain.academy.GetAdminCourseDetailUseCase
 import com.kazemieh.domain.academy.GetAdminCoursesUseCase
+import com.kazemieh.domain.academy.GetAdminWaitlistUseCase
+import com.kazemieh.domain.academy.NotifyNextInWaitlistUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +33,10 @@ data class AdminAcademyState(
     val expandedCourseDetail: CourseDetail? = null,
     val loadingDetail: Boolean = false,
     /** سؤالاتِ آزمونِ ساخته‌شده در همین سشن، per courseId (برای نمایشِ شمارنده). */
-    val quizQuestionsByCourse: Map<Long, List<AdminQuizQuestion>> = emptyMap()
+    val quizQuestionsByCourse: Map<Long, List<AdminQuizQuestion>> = emptyMap(),
+    /** لیستِ انتظارِ کلاسِ حضوریِ باز (per courseId). */
+    val waitlistByCourse: Map<Long, List<AdminWaitlistEntry>> = emptyMap(),
+    val loadingWaitlist: Boolean = false
 )
 
 sealed interface AdminAcademyEffect {
@@ -45,7 +51,9 @@ class AdminAcademyViewModel(
     private val deleteCourseUseCase: DeleteCourseUseCase,
     private val addCourseSectionUseCase: AddCourseSectionUseCase,
     private val addCourseLessonUseCase: AddCourseLessonUseCase,
-    private val upsertCourseQuizUseCase: UpsertCourseQuizUseCase
+    private val upsertCourseQuizUseCase: UpsertCourseQuizUseCase,
+    private val getAdminWaitlistUseCase: GetAdminWaitlistUseCase,
+    private val notifyNextInWaitlistUseCase: NotifyNextInWaitlistUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminAcademyState())
@@ -81,6 +89,37 @@ class AdminAcademyViewModel(
                     _state.update { it.copy(loadingDetail = false) }
                     _effect.send(AdminAcademyEffect.ShowError(result.message))
                 }
+                else -> {}
+            }
+        }
+        loadWaitlist(courseId)
+    }
+
+    fun loadWaitlist(courseId: Long) {
+        _state.update { it.copy(loadingWaitlist = true) }
+        viewModelScope.launch {
+            when (val result = getAdminWaitlistUseCase(courseId)) {
+                is AppResult.Success -> _state.update {
+                    it.copy(loadingWaitlist = false, waitlistByCourse = it.waitlistByCourse + (courseId to result.data))
+                }
+                is AppResult.Error -> _state.update { it.copy(loadingWaitlist = false) }
+                else -> {}
+            }
+        }
+    }
+
+    fun notifyNext(courseId: Long) {
+        viewModelScope.launch {
+            when (val result = notifyNextInWaitlistUseCase(courseId)) {
+                is AppResult.Success -> {
+                    if (result.data != null) {
+                        _effect.send(AdminAcademyEffect.ShowSuccess("نفرِ اولِ صف مطلع شد."))
+                    } else {
+                        _effect.send(AdminAcademyEffect.ShowSuccess("صفِ انتظار خالی است."))
+                    }
+                    loadWaitlist(courseId)
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
                 else -> {}
             }
         }
