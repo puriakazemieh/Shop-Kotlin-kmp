@@ -31,6 +31,7 @@ import com.kazemieh.profile.profileModule
 import com.kazemieh.settings.settingsModule
 import com.kazemieh.support.supportModule
 import com.kazemieh.academy.academyModule
+import com.kazemieh.clinic.clinicModule
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
@@ -82,7 +83,8 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
             detailsModule,
             ordersModule,
             supportModule,
-            academyModule
+            academyModule,
+            clinicModule
         )
     }
 }

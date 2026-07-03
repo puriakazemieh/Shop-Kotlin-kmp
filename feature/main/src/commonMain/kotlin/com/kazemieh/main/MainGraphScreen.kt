@@ -66,6 +66,9 @@ fun MainGraphScreen(
     navigateToFavorites: () -> Unit,
     navigateToCustomerClub: () -> Unit,
     navigateToMyCourses: () -> Unit = {},
+    navigateToCourseCatalog: () -> Unit = {},
+    navigateToMyAppointments: () -> Unit = {},
+    navigateToTherapistCatalog: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -169,7 +172,10 @@ fun MainGraphScreen(
                                 onSupportClick = navigateToContactUs,
                                 onSettingsClick = navigateToSettings,
                                 onAdminPanelClick = navigateToAdminPanel,
-                                onMyCoursesClick = navigateToMyCourses
+                                onMyCoursesClick = navigateToMyCourses,
+                                onBrowseCoursesClick = navigateToCourseCatalog,
+                                onMyAppointmentsClick = navigateToMyAppointments,
+                                onBrowseTherapistsClick = navigateToTherapistCatalog
                             )
                         }
                     }

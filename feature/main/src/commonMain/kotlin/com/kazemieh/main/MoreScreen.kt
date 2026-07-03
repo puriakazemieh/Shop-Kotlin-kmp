@@ -58,6 +58,9 @@ fun MoreScreen(
     onSettingsClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
     onMyCoursesClick: () -> Unit = {},
+    onBrowseCoursesClick: () -> Unit = {},
+    onMyAppointmentsClick: () -> Unit = {},
+    onBrowseTherapistsClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -98,7 +101,31 @@ fun MoreScreen(
                 onClick = onMyCoursesClick
             ) { AccountIcon(painter = Resources.Icon.Book) }
             Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "نوبت‌های من",
+                subtitle = "مشاوره‌های رزروشده و ورود به جلسه",
+                onClick = onMyAppointmentsClick
+            ) { AccountIcon(painter = Resources.Icon.Clock) }
+            Spacer(Modifier.height(12.dp))
         }
+
+        // ---- آموزشگاه (مرور و خرید دوره‌ها) — برای همه در دسترس ----
+        AccountRow(
+            title = "دوره‌های آموزشی",
+            subtitle = "مشاهده و خرید دوره‌ها",
+            onClick = onBrowseCoursesClick
+        ) { AccountIcon(painter = Resources.Icon.Book) }
+        Spacer(Modifier.height(12.dp))
+
+        // ---- مشاوره و روان‌شناسی (رزرو نوبت) — برای همه در دسترس ----
+        AccountRow(
+            title = "مشاوره و روان‌شناسی",
+            subtitle = "انتخابِ درمانگر و رزرو نوبت",
+            onClick = onBrowseTherapistsClick
+        ) { AccountIcon(painter = Resources.Icon.Person) }
+        Spacer(Modifier.height(12.dp))
+
         AccountRow(
             title = "پشتیبانی و سؤالات",
             subtitle = "پاسخگویی ۲۴ ساعته",

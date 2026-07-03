@@ -33,6 +33,8 @@ import com.kazemieh.network.support.SupportApi
 import com.kazemieh.network.support.SupportApiImpl
 import com.kazemieh.network.academy.AcademyApi
 import com.kazemieh.network.academy.AcademyApiImpl
+import com.kazemieh.network.clinic.ClinicApi
+import com.kazemieh.network.clinic.ClinicApiImpl
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -104,5 +106,9 @@ val networkModule = module {
 
     single<AcademyApi> {
         AcademyApiImpl(get())
+    }
+
+    single<ClinicApi> {
+        ClinicApiImpl(get())
     }
 }

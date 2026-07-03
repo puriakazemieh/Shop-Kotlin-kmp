@@ -71,6 +71,7 @@ kotlin {
                 implementation(project(":feature:support"))
                 implementation(project(":feature:blog"))
                 implementation(project(":feature:academy"))
+                implementation(project(":feature:clinic"))
                 implementation(project(":core:common"))
 
                 implementation(libs.koin.compose)

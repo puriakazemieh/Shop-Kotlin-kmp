@@ -126,4 +126,14 @@ sealed class Screen {
     @Serializable
     data class CourseLearn(val slug: String) : Screen()
 
+    // ---- Clinic (vertical) ----
+    @Serializable
+    data object TherapistCatalog : Screen()
+
+    @Serializable
+    data object MyAppointments : Screen()
+
+    @Serializable
+    data class TherapistDetail(val slug: String) : Screen()
+
 }

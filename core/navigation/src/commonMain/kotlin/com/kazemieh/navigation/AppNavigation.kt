@@ -44,6 +44,9 @@ import com.kazemieh.orders.tracking.OrderTrackingScreen
 import com.kazemieh.academy.list.CourseListScreen
 import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
+import com.kazemieh.clinic.list.TherapistListScreen
+import com.kazemieh.clinic.detail.TherapistDetailScreen
+import com.kazemieh.clinic.appointments.MyAppointmentsScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -133,6 +136,15 @@ fun AppNavHost(
                 navigateToMyCourses = {
                     navController.navigate(Screen.MyCourses)
                 },
+                navigateToCourseCatalog = {
+                    navController.navigate(Screen.CourseCatalog)
+                },
+                navigateToMyAppointments = {
+                    navController.navigate(Screen.MyAppointments)
+                },
+                navigateToTherapistCatalog = {
+                    navController.navigate(Screen.TherapistCatalog)
+                },
             )
         }
 
@@ -176,7 +188,8 @@ fun AppNavHost(
                 mine = true,
                 title = "دوره‌های من",
                 navigateBack = { navController.navigateBack() },
-                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) },
+                navigateToCatalog = { navController.navigate(Screen.CourseCatalog) }
             )
         }
 
@@ -194,6 +207,34 @@ fun AppNavHost(
             CourseLearnScreen(
                 slug = args.slug,
                 navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- Clinic (vertical) ----
+        composable<Screen.TherapistCatalog> {
+            TherapistListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToTherapist = { slug -> navController.navigate(Screen.TherapistDetail(slug)) }
+            )
+        }
+
+        composable<Screen.TherapistDetail> {
+            val args = it.toRoute<Screen.TherapistDetail>()
+            TherapistDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToMyAppointments = {
+                    navController.navigate(Screen.MyAppointments) {
+                        popUpTo<Screen.TherapistCatalog> { inclusive = false }
+                    }
+                }
+            )
+        }
+
+        composable<Screen.MyAppointments> {
+            MyAppointmentsScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToCatalog = { navController.navigate(Screen.TherapistCatalog) }
             )
         }
 
