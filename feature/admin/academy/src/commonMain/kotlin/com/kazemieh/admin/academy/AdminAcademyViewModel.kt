@@ -6,12 +6,14 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
 import com.kazemieh.domain.academy.AdminCourseParams
+import com.kazemieh.domain.academy.AdminQuizQuestion
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.academy.CreateCourseUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
 import com.kazemieh.domain.academy.GetAdminCourseDetailUseCase
 import com.kazemieh.domain.academy.GetAdminCoursesUseCase
+import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +28,9 @@ data class AdminAcademyState(
     val courses: List<CourseSummary> = emptyList(),
     val expandedCourseId: Long? = null,
     val expandedCourseDetail: CourseDetail? = null,
-    val loadingDetail: Boolean = false
+    val loadingDetail: Boolean = false,
+    /** سؤالاتِ آزمونِ ساخته‌شده در همین سشن، per courseId (برای نمایشِ شمارنده). */
+    val quizQuestionsByCourse: Map<Long, List<AdminQuizQuestion>> = emptyMap()
 )
 
 sealed interface AdminAcademyEffect {
@@ -40,7 +44,8 @@ class AdminAcademyViewModel(
     private val createCourseUseCase: CreateCourseUseCase,
     private val deleteCourseUseCase: DeleteCourseUseCase,
     private val addCourseSectionUseCase: AddCourseSectionUseCase,
-    private val addCourseLessonUseCase: AddCourseLessonUseCase
+    private val addCourseLessonUseCase: AddCourseLessonUseCase,
+    private val upsertCourseQuizUseCase: UpsertCourseQuizUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminAcademyState())
@@ -153,6 +158,20 @@ class AdminAcademyViewModel(
                     _effect.send(AdminAcademyEffect.ShowSuccess("درس اضافه شد."))
                     refreshExpanded(courseId)
                 }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    /** ذخیره/به‌روزرسانیِ آزمونِ پایانِ دوره با یک سؤالِ جدید (افزودنِ ساده). */
+    fun addQuizQuestion(courseId: Long, passScore: String, text: String, options: List<String>, correctIndex: Int) {
+        val existing = _state.value.quizQuestionsByCourse[courseId].orEmpty()
+        val updated = existing + AdminQuizQuestion(text = text, options = options.filter { it.isNotBlank() }, correctIndex = correctIndex)
+        _state.update { it.copy(quizQuestionsByCourse = it.quizQuestionsByCourse + (courseId to updated)) }
+        viewModelScope.launch {
+            when (val result = upsertCourseQuizUseCase(courseId, "آزمونِ پایانِ دوره", passScore.toIntOrNull() ?: 60, updated)) {
+                is AppResult.Success -> _effect.send(AdminAcademyEffect.ShowSuccess("سؤال به آزمون اضافه شد."))
                 is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
                 else -> {}
             }

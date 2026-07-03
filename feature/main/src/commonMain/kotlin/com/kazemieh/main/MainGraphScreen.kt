@@ -69,6 +69,7 @@ fun MainGraphScreen(
     navigateToCustomerClub: () -> Unit,
     navigateToMyCourses: () -> Unit = {},
     navigateToCourseCatalog: () -> Unit = {},
+    navigateToCertificates: () -> Unit = {},
     navigateToMyAppointments: () -> Unit = {},
     navigateToTherapistCatalog: () -> Unit = {},
 ) {
@@ -179,6 +180,7 @@ fun MainGraphScreen(
                                 onAdminPanelClick = navigateToAdminPanel,
                                 onMyCoursesClick = navigateToMyCourses,
                                 onBrowseCoursesClick = navigateToCourseCatalog,
+                                onCertificatesClick = navigateToCertificates,
                                 onMyAppointmentsClick = navigateToMyAppointments,
                                 onBrowseTherapistsClick = navigateToTherapistCatalog
                             )

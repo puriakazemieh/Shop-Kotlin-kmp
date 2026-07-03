@@ -10,4 +10,5 @@ interface AdminAcademyApi {
     suspend fun deleteCourse(id: Long)
     suspend fun addSection(courseId: Long, request: AdminCreateSectionRequestDto): Long
     suspend fun addLesson(courseId: Long, sectionId: Long, request: AdminCreateLessonRequestDto): Long
+    suspend fun upsertQuiz(courseId: Long, request: AdminUpsertQuizRequestDto)
 }

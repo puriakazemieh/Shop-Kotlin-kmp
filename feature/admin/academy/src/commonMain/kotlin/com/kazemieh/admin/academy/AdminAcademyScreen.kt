@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -114,11 +115,15 @@ fun AdminAcademyScreen(
                             expanded = state.expandedCourseId == course.id,
                             detail = if (state.expandedCourseId == course.id) state.expandedCourseDetail else null,
                             loadingDetail = state.loadingDetail && state.expandedCourseId == course.id,
+                            quizCount = state.quizQuestionsByCourse[course.id]?.size ?: 0,
                             onToggle = { viewModel.toggleExpand(course.id) },
                             onDelete = { viewModel.deleteCourse(course.id) },
                             onAddSection = { title -> viewModel.addSection(course.id, title) },
                             onAddLesson = { sectionId, title, url, minutes, free ->
                                 viewModel.addLesson(course.id, sectionId, title, url, minutes, free)
+                            },
+                            onAddQuizQuestion = { passScore, text, options, correct ->
+                                viewModel.addQuizQuestion(course.id, passScore, text, options, correct)
                             }
                         )
                     }
@@ -233,10 +238,12 @@ private fun CourseCard(
     expanded: Boolean,
     detail: CourseDetail?,
     loadingDetail: Boolean,
+    quizCount: Int,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
     onAddSection: (String) -> Unit,
-    onAddLesson: (sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit
+    onAddLesson: (sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit,
+    onAddQuizQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit
 ) {
     val colors = AppTheme.colors
     Column(
@@ -281,9 +288,69 @@ private fun CourseCard(
                     }
                     Spacer(Modifier.height(10.dp))
                     AddSectionForm(onSubmit = onAddSection)
+                    Spacer(Modifier.height(12.dp))
+                    QuizBuilder(quizCount = quizCount, onAddQuestion = onAddQuizQuestion)
                 }
             }
         }
+    }
+}
+
+/** فرمِ ساده‌ی تست‌ساز: افزودنِ سؤالِ چهارگزینه‌ای با علامت‌زدنِ گزینه‌ی درست + حدِ نصاب. */
+@Composable
+private fun QuizBuilder(
+    quizCount: Int,
+    onAddQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit
+) {
+    val colors = AppTheme.colors
+    var passScore by remember { mutableStateOf("60") }
+    var question by remember { mutableStateOf("") }
+    val options = remember { mutableStateListOf("", "", "", "") }
+    var correctIndex by remember { mutableStateOf(0) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surfaceVariant)
+            .padding(12.dp)
+    ) {
+        Text("آزمونِ پایانِ دوره", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+        if (quizCount > 0) {
+            Spacer(Modifier.height(4.dp))
+            Text("$quizCount سؤال در این سشن اضافه شد", color = colors.ok, fontSize = FontSize.EXTRA_SMALL)
+        }
+        Spacer(Modifier.height(8.dp))
+        AdminTextField(value = passScore, onValueChange = { passScore = it }, label = "حدِ نصابِ قبولی (٪)")
+        Spacer(Modifier.height(6.dp))
+        AdminTextField(value = question, onValueChange = { question = it }, label = "متنِ سؤال")
+        Spacer(Modifier.height(6.dp))
+        options.forEachIndexed { i, opt ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.weight(1f)) {
+                    AdminTextField(value = opt, onValueChange = { options[i] = it }, label = "گزینه‌ی ${i + 1}")
+                }
+                Spacer(Modifier.size(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = correctIndex == i, onCheckedChange = { if (it) correctIndex = i })
+                    Text("درست", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                }
+            }
+            Spacer(Modifier.height(4.dp))
+        }
+        val canAdd = question.isNotBlank() && options.count { it.isNotBlank() } >= 2
+        Text(
+            "افزودنِ سؤال به آزمون",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (canAdd) colors.primary else colors.line)
+                .clickable(enabled = canAdd) {
+                    onAddQuestion(passScore.trim(), question.trim(), options.toList(), correctIndex)
+                    question = ""; options[0] = ""; options[1] = ""; options[2] = ""; options[3] = ""; correctIndex = 0
+                }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+        )
     }
 }
 

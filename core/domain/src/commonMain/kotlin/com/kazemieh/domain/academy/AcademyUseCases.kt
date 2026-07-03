@@ -20,3 +20,15 @@ class UpdateLessonProgressUseCase(private val repository: AcademyRepository) {
     suspend operator fun invoke(lessonId: Long, completed: Boolean? = null, lastPositionSeconds: Int? = null) =
         repository.updateLessonProgress(lessonId, completed, lastPositionSeconds)
 }
+
+class GetQuizUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.getQuiz(courseId)
+}
+
+class SubmitQuizUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long, answers: Map<Int, Int>) = repository.submitQuiz(courseId, answers)
+}
+
+class GetCertificatesUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke() = repository.getCertificates()
+}

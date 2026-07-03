@@ -30,4 +30,18 @@ class AcademyApiImpl(
             setBody(request)
         }
     }
+
+    override suspend fun getQuiz(courseId: Long): QuizResponse = safeApiCallRaw {
+        client.get("api/academy/courses/$courseId/quiz")
+    }
+
+    override suspend fun submitQuiz(courseId: Long, request: SubmitQuizRequestDto): QuizResultResponse = safeApiCallRaw {
+        client.post("api/academy/courses/$courseId/quiz/submit") {
+            setBody(request)
+        }
+    }
+
+    override suspend fun getCertificates(): List<CertificateResponse> = safeApiCallRaw {
+        client.get("api/academy/certificates")
+    }
 }

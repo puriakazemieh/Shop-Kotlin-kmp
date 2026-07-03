@@ -35,6 +35,11 @@ data class CourseSummary(
     val freeUpdateBadge: Boolean = false
 )
 
+data class VideoVariant(
+    val quality: String,
+    val url: String
+)
+
 data class Lesson(
     val id: Long,
     val title: String,
@@ -42,7 +47,8 @@ data class Lesson(
     val isFreePreview: Boolean,
     val videoUrl: String?,
     val completed: Boolean,
-    val lastPositionSeconds: Int
+    val lastPositionSeconds: Int,
+    val videoVariants: List<VideoVariant> = emptyList()
 )
 
 data class CourseSection(
@@ -82,4 +88,39 @@ data class CourseProgress(
     val totalLessons: Int,
     val completedLessons: Int,
     val progressPercent: Int
+)
+
+// ---------- Quiz ----------
+data class QuizOption(val text: String)
+
+data class QuizQuestion(
+    val index: Int,
+    val text: String,
+    val options: List<QuizOption>
+)
+
+data class Quiz(
+    val courseId: Long,
+    val title: String,
+    val passScore: Int,
+    val questions: List<QuizQuestion>,
+    val alreadyPassed: Boolean
+)
+
+data class QuizResult(
+    val courseId: Long,
+    val score: Int,
+    val passed: Boolean,
+    val passScore: Int,
+    val certificateNumber: String?
+)
+
+// ---------- Certificate ----------
+data class Certificate(
+    val id: Long,
+    val courseId: Long,
+    val courseTitle: String,
+    val certNumber: String,
+    val issuedAt: String,
+    val userName: String?
 )

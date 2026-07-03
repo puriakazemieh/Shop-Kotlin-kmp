@@ -44,6 +44,8 @@ import com.kazemieh.orders.tracking.OrderTrackingScreen
 import com.kazemieh.academy.list.CourseListScreen
 import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
+import com.kazemieh.academy.quiz.CourseQuizScreen
+import com.kazemieh.academy.cert.CertificatesScreen
 import com.kazemieh.clinic.list.TherapistListScreen
 import com.kazemieh.clinic.detail.TherapistDetailScreen
 import com.kazemieh.clinic.appointments.MyAppointmentsScreen
@@ -139,6 +141,9 @@ fun AppNavHost(
                 navigateToCourseCatalog = {
                     navController.navigate(Screen.CourseCatalog)
                 },
+                navigateToCertificates = {
+                    navController.navigate(Screen.Certificates)
+                },
                 navigateToMyAppointments = {
                     navController.navigate(Screen.MyAppointments)
                 },
@@ -206,8 +211,26 @@ fun AppNavHost(
             val args = it.toRoute<Screen.CourseLearn>()
             CourseLearnScreen(
                 slug = args.slug,
-                navigateBack = { navController.navigateBack() }
+                navigateBack = { navController.navigateBack() },
+                navigateToQuiz = { courseId -> navController.navigate(Screen.CourseQuiz(courseId)) }
             )
+        }
+
+        composable<Screen.CourseQuiz> {
+            val args = it.toRoute<Screen.CourseQuiz>()
+            CourseQuizScreen(
+                courseId = args.courseId,
+                navigateBack = { navController.navigateBack() },
+                navigateToCertificates = {
+                    navController.navigate(Screen.Certificates) {
+                        popUpTo<Screen.CourseQuiz> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<Screen.Certificates> {
+            CertificatesScreen(navigateBack = { navController.navigateBack() })
         }
 
         // ---- Clinic (vertical) ----

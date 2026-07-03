@@ -39,4 +39,8 @@ class AdminAcademyApiImpl(
         safeApiCallRaw<IdResponse> {
             client.post("api/admin/courses/$courseId/sections/$sectionId/lessons") { setBody(request) }
         }.id
+
+    override suspend fun upsertQuiz(courseId: Long, request: AdminUpsertQuizRequestDto): Unit = safeApiCallRaw {
+        client.put("api/admin/courses/$courseId/quiz") { setBody(request) }
+    }
 }

@@ -61,6 +61,7 @@ fun MoreScreen(
     onAdminPanelClick: () -> Unit,
     onMyCoursesClick: () -> Unit = {},
     onBrowseCoursesClick: () -> Unit = {},
+    onCertificatesClick: () -> Unit = {},
     onMyAppointmentsClick: () -> Unit = {},
     onBrowseTherapistsClick: () -> Unit = {},
 ) {
@@ -103,6 +104,13 @@ fun MoreScreen(
                     subtitle = "آموزش‌های خریداری‌شده و پیشرفت",
                     onClick = onMyCoursesClick
                 ) { AccountIcon(painter = Resources.Icon.Book) }
+                Spacer(Modifier.height(12.dp))
+
+                AccountRow(
+                    title = "گواهی‌های من",
+                    subtitle = "گواهیِ دوره‌های تکمیل‌شده",
+                    onClick = onCertificatesClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
                 Spacer(Modifier.height(12.dp))
             }
 

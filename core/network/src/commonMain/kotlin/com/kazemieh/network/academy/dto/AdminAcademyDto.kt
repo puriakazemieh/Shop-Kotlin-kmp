@@ -50,5 +50,14 @@ data class AdminCreateLessonRequestDto(
     val videoUrl: String? = null,
     val durationSeconds: Int = 0,
     val sortOrder: Int = 0,
-    val isFreePreview: Boolean = false
+    val isFreePreview: Boolean = false,
+    val videoVariants: List<VideoVariantResponse> = emptyList()
+)
+
+// ---------- Admin quiz builder ----------
+@Serializable
+data class AdminUpsertQuizRequestDto(
+    val title: String = "آزمونِ پایانِ دوره",
+    val passScore: Int = 60,
+    val questions: List<QuizQuestionResponse> = emptyList()
 )

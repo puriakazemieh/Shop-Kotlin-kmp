@@ -8,4 +8,7 @@ interface AcademyApi {
     suspend fun getMyCourses(): List<CourseSummaryResponse>
     suspend fun enroll(courseId: Long): CourseDetailResponse
     suspend fun updateLessonProgress(lessonId: Long, request: UpdateProgressRequestDto): ProgressResponse
+    suspend fun getQuiz(courseId: Long): QuizResponse
+    suspend fun submitQuiz(courseId: Long, request: SubmitQuizRequestDto): QuizResultResponse
+    suspend fun getCertificates(): List<CertificateResponse>
 }

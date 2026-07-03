@@ -4,6 +4,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.AdminAcademyRepository
 import com.kazemieh.domain.academy.AdminCourseParams
 import com.kazemieh.domain.academy.AdminCourseUpdateParams
+import com.kazemieh.domain.academy.AdminQuizQuestion
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseFormat
 import com.kazemieh.domain.academy.CourseSection
@@ -15,9 +16,12 @@ import com.kazemieh.network.academy.dto.AdminCreateCourseRequestDto
 import com.kazemieh.network.academy.dto.AdminCreateLessonRequestDto
 import com.kazemieh.network.academy.dto.AdminCreateSectionRequestDto
 import com.kazemieh.network.academy.dto.AdminUpdateCourseRequestDto
+import com.kazemieh.network.academy.dto.AdminUpsertQuizRequestDto
 import com.kazemieh.network.academy.dto.CourseDetailResponse
 import com.kazemieh.network.academy.dto.CourseSummaryResponse
 import com.kazemieh.network.academy.dto.LessonResponse
+import com.kazemieh.network.academy.dto.QuizOptionResponse
+import com.kazemieh.network.academy.dto.QuizQuestionResponse
 import com.kazemieh.network.academy.dto.SectionResponse
 import com.kazemieh.network.common.safeApiCall
 
@@ -95,6 +99,30 @@ class AdminAcademyRepositoryImpl(
             AdminCreateLessonRequestDto(
                 title = title, videoUrl = videoUrl, durationSeconds = durationSeconds,
                 sortOrder = sortOrder, isFreePreview = isFreePreview
+            )
+        )
+    }
+
+    override suspend fun upsertQuiz(
+        courseId: Long,
+        title: String,
+        passScore: Int,
+        questions: List<AdminQuizQuestion>
+    ): AppResult<Unit> = safeApiCall {
+        api.upsertQuiz(
+            courseId,
+            AdminUpsertQuizRequestDto(
+                title = title,
+                passScore = passScore,
+                questions = questions.mapIndexed { i, q ->
+                    QuizQuestionResponse(
+                        index = i,
+                        text = q.text,
+                        options = q.options.mapIndexed { oi, opt ->
+                            QuizOptionResponse(text = opt, correct = oi == q.correctIndex)
+                        }
+                    )
+                }
             )
         )
     }

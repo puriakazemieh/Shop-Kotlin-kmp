@@ -36,3 +36,8 @@ class AddCourseLessonUseCase(private val repository: AdminAcademyRepository) {
         isFreePreview: Boolean = false
     ) = repository.addLesson(courseId, sectionId, title, videoUrl, durationSeconds, sortOrder, isFreePreview)
 }
+
+class UpsertCourseQuizUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(courseId: Long, title: String, passScore: Int, questions: List<AdminQuizQuestion>) =
+        repository.upsertQuiz(courseId, title, passScore, questions)
+}

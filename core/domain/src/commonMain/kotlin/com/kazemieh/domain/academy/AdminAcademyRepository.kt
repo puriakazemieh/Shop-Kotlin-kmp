@@ -33,6 +33,13 @@ data class AdminCourseUpdateParams(
     val isPublished: Boolean? = null
 )
 
+/** یک سؤالِ آزمون در فرمِ تست‌سازِ ادمین: متن + گزینه‌ها + ایندکسِ گزینه‌ی درست. */
+data class AdminQuizQuestion(
+    val text: String,
+    val options: List<String>,
+    val correctIndex: Int
+)
+
 interface AdminAcademyRepository {
     suspend fun listCourses(): AppResult<List<CourseSummary>>
     suspend fun getCourseDetail(id: Long): AppResult<CourseDetail>
@@ -49,4 +56,10 @@ interface AdminAcademyRepository {
         sortOrder: Int,
         isFreePreview: Boolean
     ): AppResult<Long>
+    suspend fun upsertQuiz(
+        courseId: Long,
+        title: String,
+        passScore: Int,
+        questions: List<AdminQuizQuestion>
+    ): AppResult<Unit>
 }

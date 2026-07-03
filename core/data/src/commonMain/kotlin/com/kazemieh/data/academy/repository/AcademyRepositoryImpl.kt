@@ -2,6 +2,7 @@ package com.kazemieh.data.academy.repository
 
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.AcademyRepository
+import com.kazemieh.domain.academy.Certificate
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseFormat
 import com.kazemieh.domain.academy.CourseProgress
@@ -9,12 +10,21 @@ import com.kazemieh.domain.academy.CourseSection
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.academy.CourseType
 import com.kazemieh.domain.academy.Lesson
+import com.kazemieh.domain.academy.Quiz
+import com.kazemieh.domain.academy.QuizOption
+import com.kazemieh.domain.academy.QuizQuestion
+import com.kazemieh.domain.academy.QuizResult
+import com.kazemieh.domain.academy.VideoVariant
 import com.kazemieh.network.academy.AcademyApi
+import com.kazemieh.network.academy.dto.CertificateResponse
 import com.kazemieh.network.academy.dto.CourseDetailResponse
 import com.kazemieh.network.academy.dto.CourseSummaryResponse
 import com.kazemieh.network.academy.dto.LessonResponse
 import com.kazemieh.network.academy.dto.ProgressResponse
+import com.kazemieh.network.academy.dto.QuizResponse
+import com.kazemieh.network.academy.dto.QuizResultResponse
 import com.kazemieh.network.academy.dto.SectionResponse
+import com.kazemieh.network.academy.dto.SubmitQuizRequestDto
 import com.kazemieh.network.academy.dto.UpdateProgressRequestDto
 import com.kazemieh.network.common.safeApiCall
 
@@ -46,6 +56,18 @@ class AcademyRepositoryImpl(
         api.updateLessonProgress(lessonId, UpdateProgressRequestDto(completed, lastPositionSeconds)).toDomain()
     }
 
+    override suspend fun getQuiz(courseId: Long): AppResult<Quiz> = safeApiCall {
+        api.getQuiz(courseId).toDomain()
+    }
+
+    override suspend fun submitQuiz(courseId: Long, answers: Map<Int, Int>): AppResult<QuizResult> = safeApiCall {
+        api.submitQuiz(courseId, SubmitQuizRequestDto(answers)).toDomain()
+    }
+
+    override suspend fun getCertificates(): AppResult<List<Certificate>> = safeApiCall {
+        api.getCertificates().map { it.toDomain() }
+    }
+
     private fun CourseSummaryResponse.toDomain() = CourseSummary(
         id = id, title = title, slug = slug, thumbnailUrl = thumbnailUrl, instructor = instructor,
         price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled,
@@ -55,7 +77,8 @@ class AcademyRepositoryImpl(
 
     private fun LessonResponse.toDomain() = Lesson(
         id = id, title = title, durationSeconds = durationSeconds, isFreePreview = isFreePreview,
-        videoUrl = videoUrl, completed = completed, lastPositionSeconds = lastPositionSeconds
+        videoUrl = videoUrl, completed = completed, lastPositionSeconds = lastPositionSeconds,
+        videoVariants = videoVariants.map { VideoVariant(it.quality, it.url) }
     )
 
     private fun SectionResponse.toDomain() = CourseSection(
@@ -75,5 +98,22 @@ class AcademyRepositoryImpl(
     private fun ProgressResponse.toDomain() = CourseProgress(
         courseId = courseId, totalLessons = totalLessons,
         completedLessons = completedLessons, progressPercent = progressPercent
+    )
+
+    private fun QuizResponse.toDomain() = Quiz(
+        courseId = courseId, title = title, passScore = passScore, alreadyPassed = alreadyPassed,
+        questions = questions.map { q ->
+            QuizQuestion(index = q.index, text = q.text, options = q.options.map { QuizOption(it.text) })
+        }
+    )
+
+    private fun QuizResultResponse.toDomain() = QuizResult(
+        courseId = courseId, score = score, passed = passed, passScore = passScore,
+        certificateNumber = certificateNumber
+    )
+
+    private fun CertificateResponse.toDomain() = Certificate(
+        id = id, courseId = courseId, courseTitle = courseTitle, certNumber = certNumber,
+        issuedAt = issuedAt, userName = userName
     )
 }

@@ -22,6 +22,12 @@ data class CourseSummaryResponse(
 )
 
 @Serializable
+data class VideoVariantResponse(
+    val quality: String,
+    val url: String
+)
+
+@Serializable
 data class LessonResponse(
     val id: Long,
     val title: String,
@@ -29,7 +35,8 @@ data class LessonResponse(
     val isFreePreview: Boolean,
     val videoUrl: String? = null,
     val completed: Boolean = false,
-    val lastPositionSeconds: Int = 0
+    val lastPositionSeconds: Int = 0,
+    val videoVariants: List<VideoVariantResponse> = emptyList()
 )
 
 @Serializable
@@ -78,4 +85,52 @@ data class ProgressResponse(
 data class UpdateProgressRequestDto(
     val completed: Boolean? = null,
     val lastPositionSeconds: Int? = null
+)
+
+// ---------- Quiz ----------
+@Serializable
+data class QuizOptionResponse(
+    val text: String,
+    val correct: Boolean? = null
+)
+
+@Serializable
+data class QuizQuestionResponse(
+    val index: Int,
+    val text: String,
+    val options: List<QuizOptionResponse>
+)
+
+@Serializable
+data class QuizResponse(
+    val courseId: Long,
+    val title: String,
+    val passScore: Int,
+    val questions: List<QuizQuestionResponse>,
+    val alreadyPassed: Boolean = false
+)
+
+@Serializable
+data class SubmitQuizRequestDto(
+    val answers: Map<Int, Int> = emptyMap()
+)
+
+@Serializable
+data class QuizResultResponse(
+    val courseId: Long,
+    val score: Int,
+    val passed: Boolean,
+    val passScore: Int,
+    val certificateNumber: String? = null
+)
+
+// ---------- Certificate ----------
+@Serializable
+data class CertificateResponse(
+    val id: Long,
+    val courseId: Long,
+    val courseTitle: String,
+    val certNumber: String,
+    val issuedAt: String,
+    val userName: String? = null
 )
