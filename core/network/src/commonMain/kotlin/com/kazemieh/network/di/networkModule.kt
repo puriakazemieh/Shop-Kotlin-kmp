@@ -35,6 +35,10 @@ import com.kazemieh.network.academy.AcademyApi
 import com.kazemieh.network.academy.AcademyApiImpl
 import com.kazemieh.network.academy.AdminAcademyApi
 import com.kazemieh.network.academy.AdminAcademyApiImpl
+import com.kazemieh.network.psychtest.PsychTestApi
+import com.kazemieh.network.psychtest.PsychTestApiImpl
+import com.kazemieh.network.psychtest.AdminPsychTestApi
+import com.kazemieh.network.psychtest.AdminPsychTestApiImpl
 import com.kazemieh.network.clinic.ClinicApi
 import com.kazemieh.network.clinic.ClinicApiImpl
 import com.kazemieh.network.clinic.AdminClinicApi
@@ -122,5 +126,13 @@ val networkModule = module {
 
     single<AdminClinicApi> {
         AdminClinicApiImpl(get())
+    }
+
+    single<PsychTestApi> {
+        PsychTestApiImpl(get())
+    }
+
+    single<AdminPsychTestApi> {
+        AdminPsychTestApiImpl(get())
     }
 }

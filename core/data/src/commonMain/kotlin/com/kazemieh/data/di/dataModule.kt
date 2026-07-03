@@ -65,6 +65,10 @@ import com.kazemieh.domain.academy.AcademyRepository
 import com.kazemieh.data.academy.repository.AcademyRepositoryImpl
 import com.kazemieh.domain.academy.AdminAcademyRepository
 import com.kazemieh.data.academy.repository.AdminAcademyRepositoryImpl
+import com.kazemieh.domain.psychtest.PsychTestRepository
+import com.kazemieh.data.psychtest.repository.PsychTestRepositoryImpl
+import com.kazemieh.domain.psychtest.AdminPsychTestRepository
+import com.kazemieh.data.psychtest.repository.AdminPsychTestRepositoryImpl
 import com.kazemieh.domain.clinic.ClinicRepository
 import com.kazemieh.data.clinic.repository.ClinicRepositoryImpl
 import com.kazemieh.domain.clinic.AdminClinicRepository
@@ -191,6 +195,14 @@ val dataModule = module {
 
     single<AdminClinicRepository> {
         AdminClinicRepositoryImpl(get())
+    }
+
+    single<PsychTestRepository> {
+        PsychTestRepositoryImpl(get())
+    }
+
+    single<AdminPsychTestRepository> {
+        AdminPsychTestRepositoryImpl(get())
     }
 
     single { TokenManager(settings = get()) }

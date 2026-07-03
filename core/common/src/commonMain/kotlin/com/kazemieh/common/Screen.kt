@@ -142,4 +142,11 @@ sealed class Screen {
     @Serializable
     data class TherapistDetail(val slug: String) : Screen()
 
+    // ---- Psychology tests (vertical) ----
+    @Serializable
+    data object PsychTestCatalog : Screen()
+
+    @Serializable
+    data class TakeTest(val userTestId: Long) : Screen()
+
 }

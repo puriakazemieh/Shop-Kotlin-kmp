@@ -9,12 +9,12 @@ plugins {
 
 kotlin {
     androidLibrary {
-        namespace = "com.kazemieh.admin.products"
+        namespace = "com.kazemieh.psychtest"
         compileSdk = 36
         minSdk = 24
     }
 
-    val xcfName = "feature:admin:products"
+    val xcfName = "feature:psychtest"
 
     iosX64 {
         binaries.framework {
@@ -49,22 +49,16 @@ kotlin {
                 implementation(libs.compose.ui)
                 implementation(libs.compose.components.resources)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
+
                 implementation(libs.compose.material.icons.core)
                 implementation(libs.compose.material.icons.extended)
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
-                implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
-                implementation(project(":feature:admin:options"))
-                implementation(project(":feature:admin:orders"))
-                implementation(project(":feature:admin:wallet"))
-                implementation(project(":feature:admin:blog"))
-                implementation(project(":feature:admin:academy"))
-                implementation(project(":feature:admin:clinic"))
-                implementation(project(":feature:admin:psychtest"))
             }
         }
     }

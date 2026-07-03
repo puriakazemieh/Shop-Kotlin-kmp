@@ -46,6 +46,8 @@ import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
 import com.kazemieh.academy.quiz.CourseQuizScreen
 import com.kazemieh.academy.cert.CertificatesScreen
+import com.kazemieh.psychtest.list.PsychTestListScreen
+import com.kazemieh.psychtest.take.TakeTestScreen
 import com.kazemieh.clinic.list.TherapistListScreen
 import com.kazemieh.clinic.detail.TherapistDetailScreen
 import com.kazemieh.clinic.appointments.MyAppointmentsScreen
@@ -149,6 +151,9 @@ fun AppNavHost(
                 },
                 navigateToTherapistCatalog = {
                     navController.navigate(Screen.TherapistCatalog)
+                },
+                navigateToPsychTests = {
+                    navController.navigate(Screen.PsychTestCatalog)
                 },
             )
         }
@@ -261,6 +266,23 @@ fun AppNavHost(
             MyAppointmentsScreen(
                 navigateBack = { navController.navigateBack() },
                 navigateToCatalog = { navController.navigate(Screen.TherapistCatalog) }
+            )
+        }
+
+        // ---- Psychology tests (vertical) ----
+        composable<Screen.PsychTestCatalog> {
+            PsychTestListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToProduct = { productSlug -> navController.navigate(Screen.ProductDetail(slug = productSlug)) },
+                navigateToTakeTest = { userTestId -> navController.navigate(Screen.TakeTest(userTestId)) }
+            )
+        }
+
+        composable<Screen.TakeTest> {
+            val args = it.toRoute<Screen.TakeTest>()
+            TakeTestScreen(
+                userTestId = args.userTestId,
+                navigateBack = { navController.navigateBack() }
             )
         }
 

@@ -75,6 +75,8 @@ kotlin {
             implementation(project(":feature:support"))
             implementation(project(":feature:academy"))
             implementation(project(":feature:clinic"))
+            implementation(project(":feature:psychtest"))
+            implementation(project(":feature:admin:psychtest"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))

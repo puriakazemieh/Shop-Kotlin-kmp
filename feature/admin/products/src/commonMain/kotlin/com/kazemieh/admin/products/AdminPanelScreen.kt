@@ -39,6 +39,7 @@ import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
 import com.kazemieh.admin.academy.AdminAcademyScreen
 import com.kazemieh.admin.clinic.AdminClinicScreen
+import com.kazemieh.admin.psychtest.AdminPsychTestScreen
 import com.kazemieh.designsystem.brand.BrandConfig
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -71,9 +72,11 @@ fun AdminPanelScreen(
         )
         if (brand.features.academy) add("آموزشگاه")
         if (brand.features.clinic) add("مشاوره")
+        if (brand.features.psychTests) add("تست‌ها")
     }
     val academyTabIndex = if (brand.features.academy) tabs.indexOf("آموزشگاه") else -1
     val clinicTabIndex = if (brand.features.clinic) tabs.indexOf("مشاوره") else -1
+    val psychTabIndex = if (brand.features.psychTests) tabs.indexOf("تست‌ها") else -1
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -161,6 +164,7 @@ fun AdminPanelScreen(
                     8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     academyTabIndex -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     clinicTabIndex -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    psychTabIndex -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }

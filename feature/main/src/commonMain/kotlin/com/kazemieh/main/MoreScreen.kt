@@ -53,6 +53,7 @@ fun MoreScreen(
     userPhone: String = "",
     showAcademy: Boolean = true,
     showClinic: Boolean = true,
+    showPsychTests: Boolean = false,
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
@@ -64,6 +65,7 @@ fun MoreScreen(
     onCertificatesClick: () -> Unit = {},
     onMyAppointmentsClick: () -> Unit = {},
     onBrowseTherapistsClick: () -> Unit = {},
+    onPsychTestsClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -141,6 +143,16 @@ fun MoreScreen(
                 subtitle = "انتخابِ درمانگر و رزرو نوبت",
                 onClick = onBrowseTherapistsClick
             ) { AccountIcon(painter = Resources.Icon.Person) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- تست‌های روان‌شناسی — فقط وقتی برند این عمودی را روشن کرده ----
+        if (showPsychTests) {
+            AccountRow(
+                title = "تست‌های روان‌شناسی",
+                subtitle = "خرید و انجامِ تست‌های خودارزیابی",
+                onClick = onPsychTestsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
 
