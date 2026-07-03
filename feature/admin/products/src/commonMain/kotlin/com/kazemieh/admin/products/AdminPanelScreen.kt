@@ -255,6 +255,16 @@ private fun AdminDashboard(stats: AdminStats) {
             item { StatCard("محصولات", stats.totalProducts.toString(), "عدد") }
             item { StatCard("مشتریان", stats.totalCustomers.toString(), "نفر") }
         }
+        // ---- ردِپای عمودی‌ها (فقط وقتی محتوایی وجود دارد) ----
+        val vc = stats.verticalCounts
+        if (vc.courses > 0 || vc.therapists > 0 || vc.psychTests > 0) {
+            Spacer(Modifier.height(12.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (vc.courses > 0) item { StatCard("دوره‌ها", vc.courses.toString(), "عدد") }
+                if (vc.therapists > 0) item { StatCard("درمانگرها", vc.therapists.toString(), "نفر") }
+                if (vc.psychTests > 0) item { StatCard("تست‌ها", vc.psychTests.toString(), "عدد") }
+            }
+        }
         Spacer(Modifier.height(16.dp))
         Column(
             modifier = Modifier

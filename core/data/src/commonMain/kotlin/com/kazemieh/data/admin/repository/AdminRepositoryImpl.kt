@@ -245,7 +245,12 @@ class AdminRepositoryImpl(
                 totalOrders = dto.totalOrders,
                 totalProducts = dto.totalProducts,
                 totalCustomers = dto.totalCustomers,
-                weeklySales = dto.weeklySales.map { DailySales(date = it.date, total = it.total) }
+                weeklySales = dto.weeklySales.map { DailySales(date = it.date, total = it.total) },
+                verticalCounts = com.kazemieh.domain.admin.VerticalCounts(
+                    courses = dto.verticalCounts.courses,
+                    therapists = dto.verticalCounts.therapists,
+                    psychTests = dto.verticalCounts.psychTests
+                )
             )
         }
 }
