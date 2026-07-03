@@ -62,13 +62,27 @@ data class BrandColors(
     val dark: BrandPalette
 )
 
-/** پرچم‌های فعال/غیرفعالِ قابلیت‌ها per brand (برای مخفی/نمایشِ بخش‌ها). */
+/**
+ * پرچم‌های فعال/غیرفعالِ قابلیت‌ها per brand (برای مخفی/نمایشِ بخش‌ها).
+ * عمودی‌های اختیاری (آموزشگاه/مشاوره/تست روان‌شناسی/مقایسه‌ی محصول) هرکدام
+ * مستقل روشن/خاموش می‌شوند تا هر برند فقط فیچرهایی را که نیاز دارد نشان دهد
+ * (مثلاً فروشگاه ساعت هیچ‌کدام را نمی‌خواهد، آموزشگاه فقط `academy` را می‌خواهد،
+ * مرکز مشاوره هر سه‌ی `academy`/`clinic`/`psychTests` را می‌خواهد).
+ */
 data class BrandFeatures(
     val wallet: Boolean = true,
     val blog: Boolean = true,
     val stories: Boolean = true,
     val support: Boolean = true,
-    val customerClub: Boolean = true
+    val customerClub: Boolean = true,
+    /** عمودیِ آموزشگاه (دوره/سمینار/کارگاه + پخش‌کننده + آزمون + گواهی). */
+    val academy: Boolean = false,
+    /** عمودیِ مشاوره/نوبت‌دهی (درمانگرها + رزرو + اعتبار جلسه). */
+    val clinic: Boolean = false,
+    /** عمودیِ تست‌های روان‌شناسیِ قابل‌خرید (تفسیر خودکار یا توسط مشاور). */
+    val psychTests: Boolean = false,
+    /** مقایسه‌ی محصولات (فیچرِ عمومیِ فروشگاهی، مستقل از عمودی‌ها). */
+    val productComparison: Boolean = false
 )
 
 /**
@@ -115,7 +129,9 @@ val CarmilaBrand = BrandConfig(
     id = "carmila",
     appName = "کارمیلا",
     colors = CarmilaBrandColors,
-    currency = "تومان"
+    currency = "تومان",
+    // برندِ نمایشیِ اصلی؛ هر دو عمودیِ آموزشگاه و مشاوره برای دمو روشن‌اند.
+    features = BrandFeatures(academy = true, clinic = true)
 )
 
 /** نمونه‌ی برندِ دومِ عطرفروشی «آتریس» — پالتِ گرم/طلایی. */
@@ -176,13 +192,74 @@ val ChronosBrand = BrandConfig(
     currency = "تومان"
 )
 
+/** برندِ آموزشگاه «کاظمیه» — پالتِ آبی، فقط عمودیِ آموزشگاه روشن است. */
+val AcademyBrandColors = BrandColors(
+    light = BrandPalette(
+        accent = Color(0xFF1E3A6E), accent2 = Color(0xFF2E5090), accentSoft = Color(0xFFE7EDF7),
+        gold = Color(0xFFC9A45C), goldSoft = Color(0xFFF3ECDA),
+        bg = Color(0xFFF5F7FA), surface = Color(0xFFFFFFFF), surfaceVariant = Color(0xFFEDF1F7),
+        line = Color(0xFFDEE5EF), outlineVariant = Color(0xFFCBD5E3),
+        ink = Color(0xFF16223A), inkSoft = Color(0xFF66748F),
+        sale = Color(0xFFD8453B), star = Color(0xFFE7A93B), ok = Color(0xFF1F9D6B),
+        onAccent = Color.White, onGold = Color.White
+    ),
+    dark = BrandPalette(
+        accent = Color(0xFF7C97D6), accent2 = Color(0xFF93AAE0), accentSoft = Color(0xFF1C2740),
+        gold = Color(0xFFD8B872), goldSoft = Color(0xFF352C1C),
+        bg = Color(0xFF0E1420), surface = Color(0xFF161E30), surfaceVariant = Color(0xFF1E2A40),
+        line = Color(0xFF2A374F), outlineVariant = Color(0xFF37455E),
+        ink = Color(0xFFE8ECF5), inkSoft = Color(0xFF9BA8C2),
+        sale = Color(0xFFE06B62), star = Color(0xFFE7A93B), ok = Color(0xFF3EB07E),
+        onAccent = Color(0xFF0E1420), onGold = Color(0xFF2A2113)
+    )
+)
+
+val AcademyBrand = BrandConfig(
+    id = "academy",
+    appName = "آموزشگاه کاظمیه",
+    colors = AcademyBrandColors,
+    currency = "تومان",
+    features = BrandFeatures(academy = true, clinic = false, productComparison = false)
+)
+
+/** برندِ مرکزِ مشاوره «مهرجو» — پالتِ زرشکی/طلایی، عمودی‌های آموزشگاه+مشاوره+تست روشن‌اند. */
+val PsychBrandColors = BrandColors(
+    light = BrandPalette(
+        accent = Color(0xFF6E1E2E), accent2 = Color(0xFF8A2E40), accentSoft = Color(0xFFF3E4E7),
+        gold = Color(0xFFC9A227), goldSoft = Color(0xFFF6EFD6),
+        bg = Color(0xFFFAF6F1), surface = Color(0xFFFFFFFF), surfaceVariant = Color(0xFFF2E9E7),
+        line = Color(0xFFE7DAD6), outlineVariant = Color(0xFFD8C6C1),
+        ink = Color(0xFF2C1418), inkSoft = Color(0xFF7A5E62),
+        sale = Color(0xFFC1392B), star = Color(0xFFE0B93B), ok = Color(0xFF2E8B57),
+        onAccent = Color.White, onGold = Color(0xFF2C1418)
+    ),
+    dark = BrandPalette(
+        accent = Color(0xFFD68A9A), accent2 = Color(0xFFE0A0AD), accentSoft = Color(0xFF33181E),
+        gold = Color(0xFFE0C25A), goldSoft = Color(0xFF3A311C),
+        bg = Color(0xFF1A1114), surface = Color(0xFF23181C), surfaceVariant = Color(0xFF2D2024),
+        line = Color(0xFF3A2A2F), outlineVariant = Color(0xFF48353B),
+        ink = Color(0xFFF3E7E9), inkSoft = Color(0xFFC2A6AC),
+        sale = Color(0xFFE0654E), star = Color(0xFFE0C25A), ok = Color(0xFF43B57F),
+        onAccent = Color(0xFF1A1114), onGold = Color(0xFF2A2113)
+    )
+)
+
+val PsychBrand = BrandConfig(
+    id = "psych",
+    appName = "مرکز مشاوره مهرجو",
+    colors = PsychBrandColors,
+    currency = "تومان",
+    features = BrandFeatures(academy = true, clinic = true, psychTests = true, productComparison = false)
+)
+
 /**
  * رجیستریِ برندها. انتخابِ برندِ فعال در زمانِ اجرا بر اساسِ شناسه (از فلِیور/آرگومان).
  */
 object BrandRegistry {
     val default: BrandConfig = CarmilaBrand
 
-    private val all: List<BrandConfig> = listOf(CarmilaBrand, AtrisBrand, ChronosBrand)
+    private val all: List<BrandConfig> =
+        listOf(CarmilaBrand, AtrisBrand, ChronosBrand, AcademyBrand, PsychBrand)
 
     fun byId(id: String?): BrandConfig =
         all.firstOrNull { it.id.equals(id, ignoreCase = true) } ?: default

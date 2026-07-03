@@ -51,6 +51,8 @@ fun MoreScreen(
     isAdmin: Boolean = false,
     userName: String = "",
     userPhone: String = "",
+    showAcademy: Boolean = true,
+    showClinic: Boolean = true,
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
@@ -95,36 +97,44 @@ fun MoreScreen(
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
 
-            AccountRow(
-                title = "دوره‌های من",
-                subtitle = "آموزش‌های خریداری‌شده و پیشرفت",
-                onClick = onMyCoursesClick
-            ) { AccountIcon(painter = Resources.Icon.Book) }
-            Spacer(Modifier.height(12.dp))
+            if (showAcademy) {
+                AccountRow(
+                    title = "دوره‌های من",
+                    subtitle = "آموزش‌های خریداری‌شده و پیشرفت",
+                    onClick = onMyCoursesClick
+                ) { AccountIcon(painter = Resources.Icon.Book) }
+                Spacer(Modifier.height(12.dp))
+            }
 
+            if (showClinic) {
+                AccountRow(
+                    title = "نوبت‌های من",
+                    subtitle = "مشاوره‌های رزروشده و ورود به جلسه",
+                    onClick = onMyAppointmentsClick
+                ) { AccountIcon(painter = Resources.Icon.Clock) }
+                Spacer(Modifier.height(12.dp))
+            }
+        }
+
+        // ---- آموزشگاه (مرور و خرید دوره‌ها) — فقط وقتی برند این عمودی را روشن کرده ----
+        if (showAcademy) {
             AccountRow(
-                title = "نوبت‌های من",
-                subtitle = "مشاوره‌های رزروشده و ورود به جلسه",
-                onClick = onMyAppointmentsClick
-            ) { AccountIcon(painter = Resources.Icon.Clock) }
+                title = "دوره‌های آموزشی",
+                subtitle = "مشاهده و خرید دوره‌ها",
+                onClick = onBrowseCoursesClick
+            ) { AccountIcon(painter = Resources.Icon.Book) }
             Spacer(Modifier.height(12.dp))
         }
 
-        // ---- آموزشگاه (مرور و خرید دوره‌ها) — برای همه در دسترس ----
-        AccountRow(
-            title = "دوره‌های آموزشی",
-            subtitle = "مشاهده و خرید دوره‌ها",
-            onClick = onBrowseCoursesClick
-        ) { AccountIcon(painter = Resources.Icon.Book) }
-        Spacer(Modifier.height(12.dp))
-
-        // ---- مشاوره و روان‌شناسی (رزرو نوبت) — برای همه در دسترس ----
-        AccountRow(
-            title = "مشاوره و روان‌شناسی",
-            subtitle = "انتخابِ درمانگر و رزرو نوبت",
-            onClick = onBrowseTherapistsClick
-        ) { AccountIcon(painter = Resources.Icon.Person) }
-        Spacer(Modifier.height(12.dp))
+        // ---- مشاوره و روان‌شناسی (رزرو نوبت) — فقط وقتی برند این عمودی را روشن کرده ----
+        if (showClinic) {
+            AccountRow(
+                title = "مشاوره و روان‌شناسی",
+                subtitle = "انتخابِ درمانگر و رزرو نوبت",
+                onClick = onBrowseTherapistsClick
+            ) { AccountIcon(painter = Resources.Icon.Person) }
+            Spacer(Modifier.height(12.dp))
+        }
 
         AccountRow(
             title = "پشتیبانی و سؤالات",

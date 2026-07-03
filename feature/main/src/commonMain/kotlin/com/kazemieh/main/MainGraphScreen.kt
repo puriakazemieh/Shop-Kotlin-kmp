@@ -42,8 +42,10 @@ import com.kazemieh.main.component.BottomBar
 import com.kazemieh.main.component.BottomBarDestination
 import com.kazemieh.main.component.HomeTopBar
 import com.kazemieh.main.component.TitleTopBar
+import com.kazemieh.designsystem.brand.BrandConfig
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -71,6 +73,7 @@ fun MainGraphScreen(
     navigateToTherapistCatalog: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
+    val brand = koinInject<BrandConfig>()
     val navController = rememberNavController()
 
     // Switch to cart if needed when screen is loaded
@@ -166,6 +169,8 @@ fun MainGraphScreen(
                                 isAdmin = state.isAdmin,
                                 userName = state.userName,
                                 userPhone = state.userPhone,
+                                showAcademy = brand.features.academy,
+                                showClinic = brand.features.clinic,
                                 onLoginClick = navigateToAuth,
                                 onEditProfileClick = navigateToProfile,
                                 onCustomerClubClick = navigateToCustomerClub,

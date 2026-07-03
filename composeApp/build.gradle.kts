@@ -131,6 +131,18 @@ android {
             versionNameSuffix = "-chronos"
             buildConfigField("String", "BRAND", "\"chronos\"")
         }
+        create("academy") {
+            dimension = "brand"
+            applicationIdSuffix = ".academy"
+            versionNameSuffix = "-academy"
+            buildConfigField("String", "BRAND", "\"academy\"")
+        }
+        create("psych") {
+            dimension = "brand"
+            applicationIdSuffix = ".psych"
+            versionNameSuffix = "-psych"
+            buildConfigField("String", "BRAND", "\"psych\"")
+        }
     }
     packaging {
         resources {

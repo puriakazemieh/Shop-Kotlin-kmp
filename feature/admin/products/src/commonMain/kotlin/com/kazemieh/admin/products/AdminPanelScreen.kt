@@ -39,8 +39,10 @@ import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
 import com.kazemieh.admin.academy.AdminAcademyScreen
 import com.kazemieh.admin.clinic.AdminClinicScreen
+import com.kazemieh.designsystem.brand.BrandConfig
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,13 +57,23 @@ fun AdminPanelScreen(
     val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val colors = AppTheme.colors
+    val brand = koinInject<BrandConfig>()
     var selectedTab by remember { mutableStateOf(0) }
 
-    val tabs = listOf(
-        "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
-        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها",
-        "آموزشگاه", "مشاوره"
-    )
+    // تب‌های عمودی (آموزشگاه/مشاوره) فقط وقتی در تنظیماتِ برند روشن باشند نمایش داده می‌شوند
+    // تا مدیریتِ فروشگاه دقیقاً همان بخش‌هایی را ببیند که سمتِ کاربر هم فعال است.
+    val tabs = buildList {
+        addAll(
+            listOf(
+                "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
+                "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
+            )
+        )
+        if (brand.features.academy) add("آموزشگاه")
+        if (brand.features.clinic) add("مشاوره")
+    }
+    val academyTabIndex = if (brand.features.academy) tabs.indexOf("آموزشگاه") else -1
+    val clinicTabIndex = if (brand.features.clinic) tabs.indexOf("مشاوره") else -1
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -147,8 +159,8 @@ fun AdminPanelScreen(
                     )
                     7 -> AdminWalletScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    9 -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    10 -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    academyTabIndex -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    clinicTabIndex -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }

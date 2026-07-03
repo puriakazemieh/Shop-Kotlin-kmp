@@ -10,11 +10,12 @@
 
 ### زیرساختِ پیاده‌سازی‌شده
 - **`core/designSystem/brand/Brand.kt`**: `BrandConfig` (اسم، پالت، currency، `apiBaseUrl`، `BrandFeatures`) + `BrandColors`/`BrandPalette` + رجیستریِ برندها.
-  - سه برندِ نمونه: `CarmilaBrand` (پیش‌فرض)، `AtrisBrand` (عطر)، `ChronosBrand` (ساعت).
+  - پنج برندِ نمونه: `CarmilaBrand` (پیش‌فرض، پوشاک)، `AtrisBrand` (عطر)، `ChronosBrand` (ساعت)، `AcademyBrand` (آموزشگاه)، `PsychBrand` (مرکز مشاوره).
+- **`BrandFeatures` — پرچمِ عمودی‌های داینامیک**: `academy` / `clinic` / `psychTests` / `productComparison` (به‌علاوه‌ی `wallet`/`blog`/`stories`/`support`/`customerClub` قبلی). هر برند فقط عمودی‌هایی را که لازم دارد روشن می‌کند؛ بقیه از UI کاربر (`MoreScreen`) **و** تب‌های پنلِ ادمین (`AdminPanelScreen`) به‌طور خودکار حذف می‌شوند — بدون تغییرِ کد، فقط با تغییرِ `BrandConfig`. جزئیات در سندِ [`MULTI_VERTICAL_PLATFORM_PLAN.md`](./MULTI_VERTICAL_PLATFORM_PLAN.md).
 - **`AppTheme(brandColors = …)`**: تم از پالتِ برندِ فعال ساخته می‌شود (کارمیلا بدونِ تغییرِ بصری).
 - **`ApiConfig.baseUrlOverride`** (در `core/network`): اگر برند `apiBaseUrl` داشته باشد، BASE_URL را override می‌کند.
 - **`initKoin(brand)`**: `BrandConfig` را در Koin ثبت می‌کند و override آدرس را ست می‌کند؛ `App()` رنگِ برند را اعمال می‌کند.
-- **اندروید — Product Flavors**: `carmila` / `atris` / `chronos` هر کدام `applicationId` و برچسبِ لانچرِ جدا + `BuildConfig.BRAND`. `ShopApplication` برند را از `BuildConfig.BRAND` انتخاب می‌کند.
+- **اندروید — Product Flavors**: `carmila` / `atris` / `chronos` / `academy` / `psych` هر کدام `applicationId` و برچسبِ لانچرِ جدا + `BuildConfig.BRAND`. `ShopApplication` برند را از `BuildConfig.BRAND` انتخاب می‌کند.
 - **دسکتاپ**: انتخابِ برند با `-Dbrand=<id>`.
 
 ### هفت مرحله‌ی وایت‌لیبل — وضعیت
