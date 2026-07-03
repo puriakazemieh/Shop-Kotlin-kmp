@@ -227,6 +227,9 @@ fun AppNavHost(
                     navController.navigate(Screen.MyAppointments) {
                         popUpTo<Screen.TherapistCatalog> { inclusive = false }
                     }
+                },
+                navigateToProduct = { productSlug ->
+                    navController.navigate(Screen.ProductDetail(slug = productSlug))
                 }
             )
         }

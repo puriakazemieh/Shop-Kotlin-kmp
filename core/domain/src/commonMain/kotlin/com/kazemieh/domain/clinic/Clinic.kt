@@ -7,7 +7,10 @@ data class TherapistSummary(
     val specialty: String?,
     val photoUrl: String?,
     val sessionPrice: Double,
-    val availableSlotCount: Int
+    val availableSlotCount: Int,
+    val requiresPurchase: Boolean,
+    val productSlug: String?,
+    val sessionCredits: Int
 )
 
 data class AvailabilitySlot(
@@ -27,8 +30,14 @@ data class TherapistDetail(
     val photoUrl: String?,
     val sessionPrice: Double,
     val sessionDurationMinutes: Int,
-    val slots: List<AvailabilitySlot>
-)
+    val slots: List<AvailabilitySlot>,
+    val requiresPurchase: Boolean,
+    val productSlug: String?,
+    val sessionCredits: Int
+) {
+    /** آیا کاربر می‌تواند همین حالا رزرو کند (رایگان است یا اعتبارِ کافی دارد). */
+    val canBook: Boolean get() = !requiresPurchase || sessionCredits > 0
+}
 
 enum class AppointmentStatus { PENDING, CONFIRMED, COMPLETED, CANCELLED, UNKNOWN }
 

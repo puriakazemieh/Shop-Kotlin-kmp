@@ -10,7 +10,10 @@ data class TherapistSummaryResponse(
     val specialty: String? = null,
     val photoUrl: String? = null,
     val sessionPrice: Double,
-    val availableSlotCount: Int
+    val availableSlotCount: Int,
+    val requiresPurchase: Boolean = false,
+    val productSlug: String? = null,
+    val sessionCredits: Int = 0
 )
 
 @Serializable
@@ -32,7 +35,10 @@ data class TherapistDetailResponse(
     val photoUrl: String? = null,
     val sessionPrice: Double,
     val sessionDurationMinutes: Int,
-    val slots: List<SlotResponse>
+    val slots: List<SlotResponse>,
+    val requiresPurchase: Boolean = false,
+    val productSlug: String? = null,
+    val sessionCredits: Int = 0
 )
 
 @Serializable

@@ -69,6 +69,8 @@ kotlin {
             implementation(project(":feature:admin:options"))
             implementation(project(":feature:admin:wallet"))
             implementation(project(":feature:admin:blog"))
+            implementation(project(":feature:admin:academy"))
+            implementation(project(":feature:admin:clinic"))
             implementation(project(":feature:blog"))
             implementation(project(":feature:support"))
             implementation(project(":feature:academy"))

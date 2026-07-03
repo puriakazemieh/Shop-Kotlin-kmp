@@ -37,6 +37,8 @@ import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
+import com.kazemieh.admin.academy.AdminAcademyScreen
+import com.kazemieh.admin.clinic.AdminClinicScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -57,7 +59,8 @@ fun AdminPanelScreen(
 
     val tabs = listOf(
         "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
-        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
+        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها",
+        "آموزشگاه", "مشاوره"
     )
 
     LaunchedEffect(Unit) {
@@ -144,6 +147,8 @@ fun AdminPanelScreen(
                     )
                     7 -> AdminWalletScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    9 -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    10 -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }

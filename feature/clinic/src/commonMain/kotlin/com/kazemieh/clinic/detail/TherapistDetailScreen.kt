@@ -52,7 +52,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun TherapistDetailScreen(
     slug: String,
     navigateBack: () -> Unit,
-    navigateToMyAppointments: () -> Unit
+    navigateToMyAppointments: () -> Unit,
+    navigateToProduct: (String) -> Unit = {}
 ) {
     val viewModel = koinViewModel<TherapistDetailViewModel>()
     val state by viewModel.state.collectAsState()
@@ -138,6 +139,16 @@ fun TherapistDetailScreen(
                             item { Text(therapist.bio!!, color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR) }
                         }
 
+                        if (therapist.requiresPurchase) {
+                            item {
+                                PurchaseGateCard(
+                                    sessionCredits = therapist.sessionCredits,
+                                    productSlug = therapist.productSlug,
+                                    onBuyClick = { therapist.productSlug?.let(navigateToProduct) }
+                                )
+                            }
+                        }
+
                         item {
                             Spacer(Modifier.height(4.dp))
                             Text("انتخابِ زمانِ نوبت", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
@@ -157,13 +168,56 @@ fun TherapistDetailScreen(
                                 SlotRow(
                                     slot = slot,
                                     booking = state.bookingSlotId == slot.id,
-                                    enabled = state.bookingSlotId == null,
+                                    enabled = state.bookingSlotId == null && therapist.canBook,
                                     onBook = { viewModel.book(slot.id) }
                                 )
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+/** بنرِ وضعیتِ خرید: اگر این درمانگر نیازمندِ بسته‌ی خریداری‌شده باشد و اعتباری نمانده، دکمه‌ی خرید را نشان بده. */
+@Composable
+private fun PurchaseGateCard(
+    sessionCredits: Int,
+    productSlug: String?,
+    onBuyClick: () -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.accentSoft)
+            .padding(14.dp)
+    ) {
+        if (sessionCredits > 0) {
+            Text(
+                "شما $sessionCredits جلسه‌ی خریداری‌شده برای این مشاور دارید.",
+                color = colors.onSurface, fontWeight = FontWeight.SemiBold, fontSize = FontSize.SMALL
+            )
+        } else {
+            Text(
+                "برای رزروِ نوبت با این مشاور، ابتدا باید بسته‌ی جلسه را از فروشگاه خریداری کنید.",
+                color = colors.onSurface, fontWeight = FontWeight.SemiBold, fontSize = FontSize.SMALL
+            )
+            if (productSlug != null) {
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = "خریدِ بسته و رزرو",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.primary)
+                        .clickable { onBuyClick() }
+                        .padding(horizontal = 18.dp, vertical = 9.dp),
+                    color = colors.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.SMALL
+                )
             }
         }
     }

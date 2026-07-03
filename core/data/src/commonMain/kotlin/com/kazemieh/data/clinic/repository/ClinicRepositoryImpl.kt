@@ -41,7 +41,8 @@ class ClinicRepositoryImpl(
 
     private fun TherapistSummaryResponse.toDomain() = TherapistSummary(
         id = id, name = name, slug = slug, specialty = specialty, photoUrl = photoUrl,
-        sessionPrice = sessionPrice, availableSlotCount = availableSlotCount
+        sessionPrice = sessionPrice, availableSlotCount = availableSlotCount,
+        requiresPurchase = requiresPurchase, productSlug = productSlug, sessionCredits = sessionCredits
     )
 
     private fun SlotResponse.toDomain() = AvailabilitySlot(
@@ -51,7 +52,8 @@ class ClinicRepositoryImpl(
     private fun TherapistDetailResponse.toDomain() = TherapistDetail(
         id = id, name = name, slug = slug, specialty = specialty, bio = bio, photoUrl = photoUrl,
         sessionPrice = sessionPrice, sessionDurationMinutes = sessionDurationMinutes,
-        slots = slots.map { it.toDomain() }
+        slots = slots.map { it.toDomain() },
+        requiresPurchase = requiresPurchase, productSlug = productSlug, sessionCredits = sessionCredits
     )
 
     private fun AppointmentResponse.toDomain() = Appointment(

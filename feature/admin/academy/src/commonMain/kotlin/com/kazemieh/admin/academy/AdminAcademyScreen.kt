@@ -1,0 +1,319 @@
+package com.kazemieh.admin.academy
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
+import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.domain.academy.CourseDetail
+import com.kazemieh.domain.academy.CourseSummary
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.compose.viewmodel.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AdminAcademyScreen(
+    onBackClick: () -> Unit,
+    embedded: Boolean = false
+) {
+    val viewModel = koinViewModel<AdminAcademyViewModel>()
+    val state by viewModel.state.collectAsState()
+    val colors = AppTheme.colors
+    val messageBarState = rememberMessageBarState()
+
+    LaunchedEffect(Unit) { viewModel.load() }
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is AdminAcademyEffect.ShowError -> messageBarState.addError(effect.message)
+                is AdminAcademyEffect.ShowSuccess -> messageBarState.addSuccess(effect.message)
+            }
+        }
+    }
+
+    Scaffold(
+        containerColor = colors.surface,
+        topBar = {
+            if (!embedded) TopAppBar(
+                title = { Text("مدیریتِ آموزشگاه", fontSize = FontSize.LARGE, color = colors.onSurface) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colors.onSurface)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.surface, titleContentColor = colors.onSurface)
+            )
+        }
+    ) { padding ->
+        ContentWithMessageBar(modifier = Modifier.padding(padding), messageBarState = messageBarState) {
+            if (state.isLoading && state.courses.isEmpty()) {
+                LoadingCard(modifier = Modifier.fillMaxSize())
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                ) {
+                    item {
+                        Text(
+                            "دوره‌های آموزشی", fontSize = FontSize.EXTRA_REGULAR,
+                            fontWeight = FontWeight.ExtraBold, color = colors.onSurface
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "دوره بساز، سپس با بازکردنِ آن، بخش و درس اضافه کن. لینکِ ویدیو باید مستقیم و قابلِ پخش باشد.",
+                            fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(14.dp))
+                        AddCourseForm(onSubmit = viewModel::createCourse)
+                    }
+                    items(state.courses) { course ->
+                        CourseCard(
+                            course = course,
+                            expanded = state.expandedCourseId == course.id,
+                            detail = if (state.expandedCourseId == course.id) state.expandedCourseDetail else null,
+                            loadingDetail = state.loadingDetail && state.expandedCourseId == course.id,
+                            onToggle = { viewModel.toggleExpand(course.id) },
+                            onDelete = { viewModel.deleteCourse(course.id) },
+                            onAddSection = { title -> viewModel.addSection(course.id, title) },
+                            onAddLesson = { sectionId, title, url, minutes, free ->
+                                viewModel.addLesson(course.id, sectionId, title, url, minutes, free)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddCourseForm(onSubmit: (title: String, slug: String, price: String, productId: String) -> Unit) {
+    val colors = AppTheme.colors
+    var title by remember { mutableStateOf("") }
+    var slug by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+    var productId by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surfaceVariant)
+            .padding(14.dp)
+    ) {
+        Text("افزودنِ دوره‌ی جدید", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+        Spacer(Modifier.height(10.dp))
+        AdminTextField(value = title, onValueChange = { title = it }, label = "عنوانِ دوره")
+        Spacer(Modifier.height(8.dp))
+        AdminTextField(value = slug, onValueChange = { slug = it }, label = "اسلاگ (لاتین، یکتا)")
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(modifier = Modifier.weight(1f)) {
+                AdminTextField(value = price, onValueChange = { price = it }, label = "قیمت (تومان)")
+            }
+            Box(modifier = Modifier.weight(1f)) {
+                AdminTextField(value = productId, onValueChange = { productId = it }, label = "شناسه‌ی محصول (اختیاری)")
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Text(
+            "ساخت دوره",
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(if (title.isNotBlank() && slug.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = title.isNotBlank() && slug.isNotBlank()) {
+                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim())
+                    title = ""; slug = ""; price = ""; productId = ""
+                }
+                .padding(horizontal = 16.dp, vertical = 11.dp),
+            color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+        )
+    }
+}
+
+@Composable
+private fun CourseCard(
+    course: CourseSummary,
+    expanded: Boolean,
+    detail: CourseDetail?,
+    loadingDetail: Boolean,
+    onToggle: () -> Unit,
+    onDelete: () -> Unit,
+    onAddSection: (String) -> Unit,
+    onAddLesson: (sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(14.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth().clickable { onToggle() }, verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(course.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+                Spacer(Modifier.height(3.dp))
+                Text("${course.lessonCount} درس · اسلاگ: ${course.slug}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+            }
+            Box(
+                modifier = Modifier.size(32.dp).clip(RoundedCornerShape(9.dp)).background(colors.sale.copy(alpha = 0.1f)).clickable { onDelete() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale)
+            }
+        }
+
+        if (expanded) {
+            Spacer(Modifier.height(12.dp))
+            when {
+                loadingDetail -> Text("در حالِ بارگذاری…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                detail != null -> {
+                    detail.sections.forEach { section ->
+                        Spacer(Modifier.height(8.dp))
+                        Text(section.title, fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
+                        section.lessons.forEach { lesson ->
+                            Text(
+                                "· ${lesson.title}" + if (lesson.isFreePreview) " (پیش‌نمایش)" else "",
+                                color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL,
+                                modifier = Modifier.padding(start = 8.dp, top = 2.dp)
+                            )
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        AddLessonForm(onSubmit = { title, url, minutes, free -> onAddLesson(section.id, title, url, minutes, free) })
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    AddSectionForm(onSubmit = onAddSection)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddSectionForm(onSubmit: (String) -> Unit) {
+    val colors = AppTheme.colors
+    var title by remember { mutableStateOf("") }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(modifier = Modifier.weight(1f)) {
+            AdminTextField(value = title, onValueChange = { title = it }, label = "عنوانِ بخشِ جدید")
+        }
+        Text(
+            "افزودنِ بخش",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (title.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = title.isNotBlank()) { onSubmit(title.trim()); title = "" }
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun AddLessonForm(onSubmit: (title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit) {
+    val colors = AppTheme.colors
+    var title by remember { mutableStateOf("") }
+    var url by remember { mutableStateOf("") }
+    var minutes by remember { mutableStateOf("") }
+    var free by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, top = 4.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(colors.surfaceVariant)
+            .padding(10.dp)
+    ) {
+        AdminTextField(value = title, onValueChange = { title = it }, label = "عنوانِ درس")
+        Spacer(Modifier.height(6.dp))
+        AdminTextField(value = url, onValueChange = { url = it }, label = "لینکِ ویدیو (mp4/hls)")
+        Spacer(Modifier.height(6.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(modifier = Modifier.weight(1f)) {
+                AdminTextField(value = minutes, onValueChange = { minutes = it }, label = "مدت (دقیقه)")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = free, onCheckedChange = { free = it })
+                Text("پیش‌نمایشِ رایگان", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "افزودنِ درس",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (title.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = title.isNotBlank()) {
+                    onSubmit(title.trim(), url.trim(), minutes.trim(), free)
+                    title = ""; url = ""; minutes = ""; free = false
+                }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun AdminTextField(value: String, onValueChange: (String) -> Unit, label: String) {
+    val colors = AppTheme.colors
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(label, fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant) },
+        singleLine = true,
+        shape = RoundedCornerShape(10.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = colors.surface,
+            unfocusedContainerColor = colors.surface,
+            focusedBorderColor = colors.primary,
+            unfocusedBorderColor = colors.line,
+            cursorColor = colors.primary,
+            focusedTextColor = colors.onSurface,
+            unfocusedTextColor = colors.onSurface
+        )
+    )
+}

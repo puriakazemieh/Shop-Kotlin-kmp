@@ -8,6 +8,8 @@ import com.kazemieh.admin.orders.adminOrdersModule
 import com.kazemieh.admin.products.adminProductsModule
 import com.kazemieh.admin.wallet.adminWalletModule
 import com.kazemieh.admin.blog.adminBlogModule
+import com.kazemieh.admin.academy.adminAcademyModule
+import com.kazemieh.admin.clinic.adminClinicModule
 import com.kazemieh.auth.authModule
 import com.kazemieh.blog.blogModule
 import com.kazemieh.cart.cartModule
@@ -79,6 +81,8 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
             adminOptionsModule,
             adminWalletModule,
             adminBlogModule,
+            adminAcademyModule,
+            adminClinicModule,
             blogModule,
             detailsModule,
             ordersModule,

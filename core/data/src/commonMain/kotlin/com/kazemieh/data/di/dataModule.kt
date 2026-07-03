@@ -63,8 +63,12 @@ import com.kazemieh.domain.support.SupportRepository
 import com.kazemieh.data.support.repository.SupportRepositoryImpl
 import com.kazemieh.domain.academy.AcademyRepository
 import com.kazemieh.data.academy.repository.AcademyRepositoryImpl
+import com.kazemieh.domain.academy.AdminAcademyRepository
+import com.kazemieh.data.academy.repository.AdminAcademyRepositoryImpl
 import com.kazemieh.domain.clinic.ClinicRepository
 import com.kazemieh.data.clinic.repository.ClinicRepositoryImpl
+import com.kazemieh.domain.clinic.AdminClinicRepository
+import com.kazemieh.data.clinic.repository.AdminClinicRepositoryImpl
 import org.koin.dsl.module
 
 
@@ -179,6 +183,14 @@ val dataModule = module {
 
     single<ClinicRepository> {
         ClinicRepositoryImpl(get())
+    }
+
+    single<AdminAcademyRepository> {
+        AdminAcademyRepositoryImpl(get())
+    }
+
+    single<AdminClinicRepository> {
+        AdminClinicRepositoryImpl(get())
     }
 
     single { TokenManager(settings = get()) }
