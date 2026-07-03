@@ -31,6 +31,11 @@ class AdminClinicApiImpl(
             client.post("api/admin/therapists/$therapistId/slots") { setBody(request) }
         }.id
 
+    override suspend fun generateSlots(therapistId: Long, request: AdminGenerateSlotsRequestDto): Int =
+        safeApiCallRaw<CreatedCountResponse> {
+            client.post("api/admin/therapists/$therapistId/generate-slots") { setBody(request) }
+        }.created
+
     override suspend fun listSlots(therapistId: Long): List<AdminSlotResponse> = safeApiCallRaw {
         client.get("api/admin/therapists/$therapistId/slots")
     }

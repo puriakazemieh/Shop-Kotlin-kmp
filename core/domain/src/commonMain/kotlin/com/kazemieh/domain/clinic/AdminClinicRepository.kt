@@ -11,7 +11,9 @@ data class AdminTherapistParams(
     val sessionPrice: Double = 0.0,
     val sessionDurationMinutes: Int = 45,
     val productId: Long? = null,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val mode: String = "ONLINE",
+    val location: String? = null
 )
 
 data class AdminTherapistUpdateParams(
@@ -52,6 +54,8 @@ interface AdminClinicRepository {
     suspend fun deleteTherapist(id: Long): AppResult<Unit>
     /** startTime/endTime باید در قالبِ ISO-8601 با آفستِ زمانی باشند (مثلاً 2026-07-10T14:00:00+03:30). */
     suspend fun addSlot(therapistId: Long, startTime: String, endTime: String): AppResult<Long>
+    /** تولیدِ خودکارِ بازه‌ها از یک بازه‌ی کاری (ISO-8601). خروجی: تعدادِ بازه‌ی ساخته‌شده. */
+    suspend fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?): AppResult<Int>
     suspend fun listSlots(therapistId: Long): AppResult<List<AdminSlot>>
     suspend fun listAppointments(): AppResult<List<AdminAppointment>>
     suspend fun confirmAppointment(id: Long, videoRoomUrl: String): AppResult<Unit>

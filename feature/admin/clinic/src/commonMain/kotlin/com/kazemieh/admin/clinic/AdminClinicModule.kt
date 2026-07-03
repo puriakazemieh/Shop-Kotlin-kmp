@@ -5,6 +5,7 @@ import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
 import com.kazemieh.domain.clinic.ConfirmAppointmentUseCase
 import com.kazemieh.domain.clinic.CreateTherapistUseCase
 import com.kazemieh.domain.clinic.DeleteTherapistUseCase
+import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
@@ -18,6 +19,7 @@ val adminClinicModule = module {
     factory { UpdateTherapistUseCase(get()) }
     factory { DeleteTherapistUseCase(get()) }
     factory { AddSlotUseCase(get()) }
+    factory { GenerateSlotsUseCase(get()) }
     factory { GetAdminSlotsUseCase(get()) }
     factory { GetAdminAppointmentsUseCase(get()) }
     factory { ConfirmAppointmentUseCase(get()) }

@@ -13,6 +13,7 @@ import com.kazemieh.network.clinic.dto.AdminAddSlotRequestDto
 import com.kazemieh.network.clinic.dto.AdminAppointmentResponse
 import com.kazemieh.network.clinic.dto.AdminConfirmAppointmentRequestDto
 import com.kazemieh.network.clinic.dto.AdminCreateTherapistRequestDto
+import com.kazemieh.network.clinic.dto.AdminGenerateSlotsRequestDto
 import com.kazemieh.network.clinic.dto.AdminSlotResponse
 import com.kazemieh.network.clinic.dto.AdminUpdateTherapistRequestDto
 import com.kazemieh.network.clinic.dto.TherapistSummaryResponse
@@ -37,7 +38,9 @@ class AdminClinicRepositoryImpl(
                 sessionPrice = params.sessionPrice,
                 sessionDurationMinutes = params.sessionDurationMinutes,
                 productId = params.productId,
-                isActive = params.isActive
+                isActive = params.isActive,
+                mode = params.mode,
+                location = params.location
             )
         )
     }
@@ -63,6 +66,10 @@ class AdminClinicRepositoryImpl(
 
     override suspend fun addSlot(therapistId: Long, startTime: String, endTime: String): AppResult<Long> = safeApiCall {
         api.addSlot(therapistId, AdminAddSlotRequestDto(startTime = startTime, endTime = endTime))
+    }
+
+    override suspend fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?): AppResult<Int> = safeApiCall {
+        api.generateSlots(therapistId, AdminGenerateSlotsRequestDto(windowStart = windowStart, windowEnd = windowEnd, slotMinutes = slotMinutes))
     }
 
     override suspend fun listSlots(therapistId: Long): AppResult<List<AdminSlot>> = safeApiCall {

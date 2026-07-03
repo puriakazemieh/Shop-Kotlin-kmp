@@ -130,7 +130,17 @@ fun TherapistDetailScreen(
                                         Text(therapist.specialty!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                                     }
                                     Spacer(Modifier.height(4.dp))
-                                    Text("هر جلسه ${therapist.sessionDurationMinutes} دقیقه", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                                    Text("هر جلسه ${therapist.sessionDurationMinutes} دقیقه · ${therapist.modeLabel}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                                }
+                            }
+                        }
+
+                        // ---- جلسه‌ی حضوری: نشانیِ محلِ برگزاری ----
+                        if (therapist.isInPerson && !therapist.location.isNullOrBlank()) {
+                            item {
+                                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                                    Text("محلِ برگزاری: ", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
+                                    Text(therapist.location!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                                 }
                             }
                         }

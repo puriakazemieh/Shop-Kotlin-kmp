@@ -38,7 +38,9 @@ data class TherapistDetailResponse(
     val slots: List<SlotResponse>,
     val requiresPurchase: Boolean = false,
     val productSlug: String? = null,
-    val sessionCredits: Int = 0
+    val sessionCredits: Int = 0,
+    val mode: String = "ONLINE",
+    val location: String? = null
 )
 
 @Serializable

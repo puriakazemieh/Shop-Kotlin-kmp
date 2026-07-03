@@ -33,10 +33,18 @@ data class TherapistDetail(
     val slots: List<AvailabilitySlot>,
     val requiresPurchase: Boolean,
     val productSlug: String?,
-    val sessionCredits: Int
+    val sessionCredits: Int,
+    val mode: String = "ONLINE",
+    val location: String? = null
 ) {
     /** آیا کاربر می‌تواند همین حالا رزرو کند (رایگان است یا اعتبارِ کافی دارد). */
     val canBook: Boolean get() = !requiresPurchase || sessionCredits > 0
+
+    /** برچسبِ فارسیِ نحوه‌ی برگزاری. */
+    val modeLabel: String get() = when (mode) {
+        "IN_PERSON" -> "حضوری"; "PHONE" -> "تلفنی"; else -> "آنلاین"
+    }
+    val isInPerson: Boolean get() = mode == "IN_PERSON"
 }
 
 enum class AppointmentStatus { PENDING, CONFIRMED, COMPLETED, CANCELLED, UNKNOWN }

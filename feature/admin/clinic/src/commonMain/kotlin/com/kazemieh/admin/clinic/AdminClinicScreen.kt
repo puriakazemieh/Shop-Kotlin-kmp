@@ -104,8 +104,9 @@ fun AdminClinicScreen(
                         state = state,
                         onToggle = viewModel::toggleExpand,
                         onDelete = viewModel::deleteTherapist,
-                        onCreate = viewModel::createTherapist,
-                        onAddSlot = viewModel::addSlot
+                        onCreate = { n, s, p, d, pid, mode, loc -> viewModel.createTherapist(n, s, p, d, pid, mode, loc) },
+                        onAddSlot = viewModel::addSlot,
+                        onGenerateSlots = viewModel::generateSlots
                     )
                     1 -> AppointmentsTab(
                         state = state,
@@ -138,8 +139,9 @@ private fun TherapistsTab(
     state: AdminClinicState,
     onToggle: (Long) -> Unit,
     onDelete: (Long) -> Unit,
-    onCreate: (name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String) -> Unit,
-    onAddSlot: (therapistId: Long, startTime: String, endTime: String) -> Unit
+    onCreate: (name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String, mode: String, location: String) -> Unit,
+    onAddSlot: (therapistId: Long, startTime: String, endTime: String) -> Unit,
+    onGenerateSlots: (therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: String) -> Unit
 ) {
     val colors = AppTheme.colors
     if (state.isLoading && state.therapists.isEmpty()) {
@@ -166,20 +168,23 @@ private fun TherapistsTab(
                 loadingSlots = state.loadingSlots && state.expandedTherapistId == therapist.id,
                 onToggle = { onToggle(therapist.id) },
                 onDelete = { onDelete(therapist.id) },
-                onAddSlot = { start, end -> onAddSlot(therapist.id, start, end) }
+                onAddSlot = { start, end -> onAddSlot(therapist.id, start, end) },
+                onGenerateSlots = { ws, we, sm -> onGenerateSlots(therapist.id, ws, we, sm) }
             )
         }
     }
 }
 
 @Composable
-private fun AddTherapistForm(onSubmit: (name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String) -> Unit) {
+private fun AddTherapistForm(onSubmit: (name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String, mode: String, location: String) -> Unit) {
     val colors = AppTheme.colors
     var name by remember { mutableStateOf("") }
     var slug by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var duration by remember { mutableStateOf("45") }
     var productId by remember { mutableStateOf("") }
+    var mode by remember { mutableStateOf("ONLINE") }
+    var location by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -205,19 +210,46 @@ private fun AddTherapistForm(onSubmit: (name: String, slug: String, sessionPrice
         Spacer(Modifier.height(8.dp))
         AdminTextField(value = productId, onValueChange = { productId = it }, label = "شناسه‌ی محصول (اختیاری — برای گیتِ خرید)")
         Spacer(Modifier.height(10.dp))
+        Text("نحوه‌ی برگزاری", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        Spacer(Modifier.height(4.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            ModeChip("آنلاین", mode == "ONLINE") { mode = "ONLINE" }
+            ModeChip("حضوری", mode == "IN_PERSON") { mode = "IN_PERSON" }
+            ModeChip("تلفنی", mode == "PHONE") { mode = "PHONE" }
+        }
+        if (mode == "IN_PERSON") {
+            Spacer(Modifier.height(8.dp))
+            AdminTextField(value = location, onValueChange = { location = it }, label = "نشانیِ محلِ برگزاری")
+        }
+        Spacer(Modifier.height(10.dp))
         Text(
             "ساختِ درمانگر",
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .background(if (name.isNotBlank() && slug.isNotBlank()) colors.primary else colors.line)
                 .clickable(enabled = name.isNotBlank() && slug.isNotBlank()) {
-                    onSubmit(name.trim(), slug.trim(), price.trim(), duration.trim(), productId.trim())
-                    name = ""; slug = ""; price = ""; duration = "45"; productId = ""
+                    onSubmit(name.trim(), slug.trim(), price.trim(), duration.trim(), productId.trim(), mode, location.trim())
+                    name = ""; slug = ""; price = ""; duration = "45"; productId = ""; mode = "ONLINE"; location = ""
                 }
                 .padding(horizontal = 16.dp, vertical = 11.dp),
             color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
         )
     }
+}
+
+@Composable
+private fun ModeChip(label: String, active: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        label, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold,
+        color = if (active) colors.onPrimary else colors.onSurfaceVariant,
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(if (active) colors.primary else colors.surface)
+            .border(1.dp, if (active) colors.primary else colors.line, RoundedCornerShape(50))
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 7.dp)
+    )
 }
 
 @Composable
@@ -228,7 +260,8 @@ private fun TherapistCard(
     loadingSlots: Boolean,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
-    onAddSlot: (startTime: String, endTime: String) -> Unit
+    onAddSlot: (startTime: String, endTime: String) -> Unit,
+    onGenerateSlots: (windowStart: String, windowEnd: String, slotMinutes: String) -> Unit
 ) {
     val colors = AppTheme.colors
     Column(
@@ -273,9 +306,48 @@ private fun TherapistCard(
                     }
                     Spacer(Modifier.height(10.dp))
                     AddSlotForm(onSubmit = onAddSlot)
+                    Spacer(Modifier.height(10.dp))
+                    GenerateSlotsForm(onSubmit = onGenerateSlots)
                 }
             }
         }
+    }
+}
+
+/** فرمِ تولیدِ خودکارِ بازه‌ها از یک بازه‌ی کاری. */
+@Composable
+private fun GenerateSlotsForm(onSubmit: (windowStart: String, windowEnd: String, slotMinutes: String) -> Unit) {
+    val colors = AppTheme.colors
+    var start by remember { mutableStateOf("") }
+    var end by remember { mutableStateOf("") }
+    var minutes by remember { mutableStateOf("") }
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(colors.surfaceVariant).padding(10.dp)
+    ) {
+        Text("تولیدِ خودکارِ بازه‌ها", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "بازه‌ی کاری را وارد کن؛ سرور آن را به بازه‌های کوچک تقسیم می‌کند. فرمتِ ISO با آفست، مثلاً 2026-07-10T09:00:00+03:30",
+            fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant
+        )
+        Spacer(Modifier.height(6.dp))
+        AdminTextField(value = start, onValueChange = { start = it }, label = "شروعِ بازه‌ی کاری")
+        Spacer(Modifier.height(6.dp))
+        AdminTextField(value = end, onValueChange = { end = it }, label = "پایانِ بازه‌ی کاری")
+        Spacer(Modifier.height(6.dp))
+        AdminTextField(value = minutes, onValueChange = { minutes = it }, label = "مدتِ هر بازه (دقیقه — خالی = مدتِ جلسه)")
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "ساختِ بازه‌ها",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (start.isNotBlank() && end.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = start.isNotBlank() && end.isNotBlank()) {
+                    onSubmit(start.trim(), end.trim(), minutes.trim()); start = ""; end = ""; minutes = ""
+                }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+        )
     }
 }
 

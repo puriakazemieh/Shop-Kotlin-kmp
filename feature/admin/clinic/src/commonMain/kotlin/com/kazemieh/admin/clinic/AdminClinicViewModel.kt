@@ -11,6 +11,7 @@ import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
 import com.kazemieh.domain.clinic.ConfirmAppointmentUseCase
 import com.kazemieh.domain.clinic.CreateTherapistUseCase
 import com.kazemieh.domain.clinic.DeleteTherapistUseCase
+import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
@@ -44,6 +45,7 @@ class AdminClinicViewModel(
     private val createTherapistUseCase: CreateTherapistUseCase,
     private val deleteTherapistUseCase: DeleteTherapistUseCase,
     private val addSlotUseCase: AddSlotUseCase,
+    private val generateSlotsUseCase: GenerateSlotsUseCase,
     private val getAdminSlotsUseCase: GetAdminSlotsUseCase,
     private val getAdminAppointmentsUseCase: GetAdminAppointmentsUseCase,
     private val confirmAppointmentUseCase: ConfirmAppointmentUseCase,
@@ -102,14 +104,19 @@ class AdminClinicViewModel(
         }
     }
 
-    fun createTherapist(name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String) {
+    fun createTherapist(
+        name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String,
+        mode: String = "ONLINE", location: String = ""
+    ) {
         viewModelScope.launch {
             val params = AdminTherapistParams(
                 name = name,
                 slug = slug,
                 sessionPrice = sessionPrice.toDoubleOrNull() ?: 0.0,
                 sessionDurationMinutes = durationMinutes.toIntOrNull() ?: 45,
-                productId = productId.toLongOrNull()
+                productId = productId.toLongOrNull(),
+                mode = mode,
+                location = location.ifBlank { null }
             )
             when (val result = createTherapistUseCase(params)) {
                 is AppResult.Success -> {
@@ -143,6 +150,19 @@ class AdminClinicViewModel(
             when (val result = addSlotUseCase(therapistId, startTime, endTime)) {
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess("بازه اضافه شد."))
+                    refreshSlots(therapistId)
+                }
+                is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: String) {
+        viewModelScope.launch {
+            when (val result = generateSlotsUseCase(therapistId, windowStart, windowEnd, slotMinutes.toIntOrNull())) {
+                is AppResult.Success -> {
+                    _effect.send(AdminClinicEffect.ShowSuccess("${result.data} بازه ساخته شد."))
                     refreshSlots(therapistId)
                 }
                 is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))

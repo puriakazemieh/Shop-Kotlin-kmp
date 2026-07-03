@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 data class IdResponse(val id: Long)
 
 @Serializable
+data class CreatedCountResponse(val created: Int)
+
+@Serializable
 data class AdminCreateTherapistRequestDto(
     val name: String,
     val slug: String,
@@ -15,7 +18,16 @@ data class AdminCreateTherapistRequestDto(
     val sessionPrice: Double = 0.0,
     val sessionDurationMinutes: Int = 45,
     val productId: Long? = null,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val mode: String = "ONLINE",
+    val location: String? = null
+)
+
+@Serializable
+data class AdminGenerateSlotsRequestDto(
+    val windowStart: String,
+    val windowEnd: String,
+    val slotMinutes: Int? = null
 )
 
 @Serializable

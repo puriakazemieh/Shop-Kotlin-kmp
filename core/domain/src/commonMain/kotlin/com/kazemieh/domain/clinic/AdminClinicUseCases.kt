@@ -21,6 +21,11 @@ class AddSlotUseCase(private val repository: AdminClinicRepository) {
         repository.addSlot(therapistId, startTime, endTime)
 }
 
+class GenerateSlotsUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?) =
+        repository.generateSlots(therapistId, windowStart, windowEnd, slotMinutes)
+}
+
 class GetAdminSlotsUseCase(private val repository: AdminClinicRepository) {
     suspend operator fun invoke(therapistId: Long) = repository.listSlots(therapistId)
 }
