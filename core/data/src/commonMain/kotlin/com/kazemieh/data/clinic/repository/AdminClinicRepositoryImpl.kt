@@ -7,8 +7,10 @@ import com.kazemieh.domain.clinic.AdminClinicRepository
 import com.kazemieh.domain.clinic.AdminSlot
 import com.kazemieh.domain.clinic.AdminTherapistParams
 import com.kazemieh.domain.clinic.AdminTherapistUpdateParams
+import com.kazemieh.domain.clinic.PatientNote
 import com.kazemieh.domain.clinic.TherapistSummary
 import com.kazemieh.network.clinic.AdminClinicApi
+import com.kazemieh.network.clinic.dto.AdminAddPatientNoteRequestDto
 import com.kazemieh.network.clinic.dto.AdminAddSlotRequestDto
 import com.kazemieh.network.clinic.dto.AdminAppointmentResponse
 import com.kazemieh.network.clinic.dto.AdminConfirmAppointmentRequestDto
@@ -16,6 +18,7 @@ import com.kazemieh.network.clinic.dto.AdminCreateTherapistRequestDto
 import com.kazemieh.network.clinic.dto.AdminGenerateSlotsRequestDto
 import com.kazemieh.network.clinic.dto.AdminSlotResponse
 import com.kazemieh.network.clinic.dto.AdminUpdateTherapistRequestDto
+import com.kazemieh.network.clinic.dto.PatientNoteResponse
 import com.kazemieh.network.clinic.dto.TherapistSummaryResponse
 import com.kazemieh.network.common.safeApiCall
 
@@ -87,6 +90,18 @@ class AdminClinicRepositoryImpl(
     override suspend fun completeAppointment(id: Long): AppResult<Unit> = safeApiCall {
         api.completeAppointment(id)
     }
+
+    override suspend fun listPatientNotes(appointmentId: Long): AppResult<List<PatientNote>> = safeApiCall {
+        api.listPatientNotes(appointmentId).map { it.toDomain() }
+    }
+
+    override suspend fun addPatientNote(appointmentId: Long, note: String): AppResult<Long> = safeApiCall {
+        api.addPatientNote(appointmentId, AdminAddPatientNoteRequestDto(note = note))
+    }
+
+    private fun PatientNoteResponse.toDomain() = PatientNote(
+        id = id, appointmentId = appointmentId, counselorId = counselorId, note = note, createdAt = createdAt
+    )
 
     private fun TherapistSummaryResponse.toDomain() = TherapistSummary(
         id = id, name = name, slug = slug, specialty = specialty, photoUrl = photoUrl,

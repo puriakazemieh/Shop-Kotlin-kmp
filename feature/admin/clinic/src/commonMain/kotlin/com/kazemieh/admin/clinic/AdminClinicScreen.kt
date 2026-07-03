@@ -111,7 +111,9 @@ fun AdminClinicScreen(
                     1 -> AppointmentsTab(
                         state = state,
                         onConfirm = viewModel::confirmAppointment,
-                        onComplete = viewModel::completeAppointment
+                        onComplete = viewModel::completeAppointment,
+                        onToggleNotes = viewModel::toggleNotes,
+                        onAddNote = viewModel::addNote
                     )
                 }
             }
@@ -391,7 +393,9 @@ private fun AddSlotForm(onSubmit: (startTime: String, endTime: String) -> Unit) 
 private fun AppointmentsTab(
     state: AdminClinicState,
     onConfirm: (id: Long, videoRoomUrl: String) -> Unit,
-    onComplete: (Long) -> Unit
+    onComplete: (Long) -> Unit,
+    onToggleNotes: (Long) -> Unit,
+    onAddNote: (Long, String) -> Unit
 ) {
     val colors = AppTheme.colors
     if (state.loadingAppointments && state.appointments.isEmpty()) {
@@ -409,7 +413,16 @@ private fun AppointmentsTab(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(state.appointments) { appointment ->
-            AppointmentAdminCard(appointment = appointment, onConfirm = onConfirm, onComplete = { onComplete(appointment.id) })
+            AppointmentAdminCard(
+                appointment = appointment,
+                onConfirm = onConfirm,
+                onComplete = { onComplete(appointment.id) },
+                notesExpanded = state.expandedNotesAppointmentId == appointment.id,
+                notes = state.notesByAppointment[appointment.id].orEmpty(),
+                loadingNotes = state.loadingNotes && state.expandedNotesAppointmentId == appointment.id,
+                onToggleNotes = onToggleNotes,
+                onAddNote = onAddNote
+            )
         }
     }
 }
@@ -418,7 +431,12 @@ private fun AppointmentsTab(
 private fun AppointmentAdminCard(
     appointment: AdminAppointment,
     onConfirm: (id: Long, videoRoomUrl: String) -> Unit,
-    onComplete: () -> Unit
+    onComplete: () -> Unit,
+    notesExpanded: Boolean,
+    notes: List<com.kazemieh.domain.clinic.PatientNote>,
+    loadingNotes: Boolean,
+    onToggleNotes: (Long) -> Unit,
+    onAddNote: (Long, String) -> Unit
 ) {
     val colors = AppTheme.colors
     var videoUrl by remember { mutableStateOf(appointment.videoRoomUrl.orEmpty()) }
@@ -479,6 +497,66 @@ private fun AppointmentAdminCard(
                 }
             }
         }
+
+        // ---- یادداشتِ محرمانه‌ی مراجع (فقط ادمین/مشاور) ----
+        Spacer(Modifier.height(10.dp))
+        Text(
+            if (notesExpanded) "بستنِ یادداشت‌ها" else "یادداشتِ محرمانه‌ی مراجع",
+            modifier = Modifier.clickable { onToggleNotes(appointment.id) }.padding(vertical = 4.dp),
+            color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+        )
+        if (notesExpanded) {
+            PatientNotesPanel(
+                notes = notes,
+                loading = loadingNotes,
+                onAddNote = { text -> onAddNote(appointment.id, text) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PatientNotesPanel(
+    notes: List<com.kazemieh.domain.clinic.PatientNote>,
+    loading: Boolean,
+    onAddNote: (String) -> Unit
+) {
+    val colors = AppTheme.colors
+    var text by remember { mutableStateOf("") }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surfaceVariant)
+            .padding(12.dp)
+    ) {
+        Text(
+            "این یادداشت‌ها محرمانه‌اند و فقط برای ادمین/مشاور قابلِ‌مشاهده‌اند.",
+            color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
+        )
+        Spacer(Modifier.height(8.dp))
+        when {
+            loading -> Text("در حالِ بارگذاری…", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+            notes.isEmpty() -> Text("یادداشتی ثبت نشده.", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+            else -> notes.forEach { note ->
+                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                    Text(note.note, color = colors.onSurface, fontSize = FontSize.SMALL)
+                    Text(note.createdAt.take(19), color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                }
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        AdminTextField(value = text, onValueChange = { text = it }, label = "یادداشتِ جدید")
+        Spacer(Modifier.height(6.dp))
+        Text(
+            "افزودنِ یادداشت",
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (text.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = text.isNotBlank()) { onAddNote(text.trim()); text = "" }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+        )
     }
 }
 

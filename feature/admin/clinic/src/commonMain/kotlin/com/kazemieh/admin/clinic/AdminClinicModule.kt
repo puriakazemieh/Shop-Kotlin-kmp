@@ -1,5 +1,6 @@
 package com.kazemieh.admin.clinic
 
+import com.kazemieh.domain.clinic.AddPatientNoteUseCase
 import com.kazemieh.domain.clinic.AddSlotUseCase
 import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
 import com.kazemieh.domain.clinic.ConfirmAppointmentUseCase
@@ -9,6 +10,7 @@ import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
+import com.kazemieh.domain.clinic.GetPatientNotesUseCase
 import com.kazemieh.domain.clinic.UpdateTherapistUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -24,6 +26,8 @@ val adminClinicModule = module {
     factory { GetAdminAppointmentsUseCase(get()) }
     factory { ConfirmAppointmentUseCase(get()) }
     factory { CompleteAppointmentUseCase(get()) }
+    factory { GetPatientNotesUseCase(get()) }
+    factory { AddPatientNoteUseCase(get()) }
 
     viewModel {
         AdminClinicViewModel(
@@ -31,10 +35,13 @@ val adminClinicModule = module {
             createTherapistUseCase = get(),
             deleteTherapistUseCase = get(),
             addSlotUseCase = get(),
+            generateSlotsUseCase = get(),
             getAdminSlotsUseCase = get(),
             getAdminAppointmentsUseCase = get(),
             confirmAppointmentUseCase = get(),
-            completeAppointmentUseCase = get()
+            completeAppointmentUseCase = get(),
+            getPatientNotesUseCase = get(),
+            addPatientNoteUseCase = get()
         )
     }
 }

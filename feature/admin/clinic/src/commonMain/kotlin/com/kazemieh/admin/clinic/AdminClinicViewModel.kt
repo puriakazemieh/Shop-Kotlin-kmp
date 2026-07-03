@@ -3,6 +3,7 @@ package com.kazemieh.admin.clinic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.clinic.AddPatientNoteUseCase
 import com.kazemieh.domain.clinic.AddSlotUseCase
 import com.kazemieh.domain.clinic.AdminAppointment
 import com.kazemieh.domain.clinic.AdminSlot
@@ -15,6 +16,8 @@ import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
+import com.kazemieh.domain.clinic.GetPatientNotesUseCase
+import com.kazemieh.domain.clinic.PatientNote
 import com.kazemieh.domain.clinic.TherapistSummary
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +35,11 @@ data class AdminClinicState(
     val expandedSlots: List<AdminSlot> = emptyList(),
     val loadingSlots: Boolean = false,
     val appointments: List<AdminAppointment> = emptyList(),
-    val loadingAppointments: Boolean = false
+    val loadingAppointments: Boolean = false,
+    /** یادداشت‌های محرمانه، per appointmentId (فقط برای نوبتِ باز‌شده). */
+    val notesByAppointment: Map<Long, List<PatientNote>> = emptyMap(),
+    val expandedNotesAppointmentId: Long? = null,
+    val loadingNotes: Boolean = false
 )
 
 sealed interface AdminClinicEffect {
@@ -49,7 +56,9 @@ class AdminClinicViewModel(
     private val getAdminSlotsUseCase: GetAdminSlotsUseCase,
     private val getAdminAppointmentsUseCase: GetAdminAppointmentsUseCase,
     private val confirmAppointmentUseCase: ConfirmAppointmentUseCase,
-    private val completeAppointmentUseCase: CompleteAppointmentUseCase
+    private val completeAppointmentUseCase: CompleteAppointmentUseCase,
+    private val getPatientNotesUseCase: GetPatientNotesUseCase,
+    private val addPatientNoteUseCase: AddPatientNoteUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminClinicState())
@@ -199,6 +208,45 @@ class AdminClinicViewModel(
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess("نوبت به‌عنوانِ برگزارشده علامت خورد."))
                     loadAppointments()
+                }
+                is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    /** یادداشتِ محرمانه (فقط ادمین/مشاور می‌بینند) — باز/بسته‌کردنِ پنلِ یک نوبت. */
+    fun toggleNotes(appointmentId: Long) {
+        if (_state.value.expandedNotesAppointmentId == appointmentId) {
+            _state.update { it.copy(expandedNotesAppointmentId = null) }
+            return
+        }
+        _state.update { it.copy(expandedNotesAppointmentId = appointmentId) }
+        loadNotes(appointmentId)
+    }
+
+    private fun loadNotes(appointmentId: Long) {
+        _state.update { it.copy(loadingNotes = true) }
+        viewModelScope.launch {
+            when (val result = getPatientNotesUseCase(appointmentId)) {
+                is AppResult.Success -> _state.update {
+                    it.copy(loadingNotes = false, notesByAppointment = it.notesByAppointment + (appointmentId to result.data))
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(loadingNotes = false) }
+                    _effect.send(AdminClinicEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun addNote(appointmentId: Long, note: String) {
+        viewModelScope.launch {
+            when (val result = addPatientNoteUseCase(appointmentId, note)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminClinicEffect.ShowSuccess("یادداشت ثبت شد."))
+                    loadNotes(appointmentId)
                 }
                 is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
                 else -> {}

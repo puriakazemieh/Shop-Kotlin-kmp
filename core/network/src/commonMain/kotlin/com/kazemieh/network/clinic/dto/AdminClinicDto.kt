@@ -72,3 +72,18 @@ data class AdminAppointmentResponse(
     val videoRoomUrl: String? = null,
     val notes: String? = null
 )
+
+// ---------- Patient notes (حساس) ----------
+@Serializable
+data class AdminAddPatientNoteRequestDto(
+    val note: String
+)
+
+@Serializable
+data class PatientNoteResponse(
+    val id: Long,
+    val appointmentId: Long,
+    val counselorId: Long,
+    val note: String,
+    val createdAt: String
+)

@@ -47,6 +47,14 @@ data class AdminAppointment(
     val notes: String?
 )
 
+data class PatientNote(
+    val id: Long,
+    val appointmentId: Long,
+    val counselorId: Long,
+    val note: String,
+    val createdAt: String
+)
+
 interface AdminClinicRepository {
     suspend fun listTherapists(): AppResult<List<TherapistSummary>>
     suspend fun createTherapist(params: AdminTherapistParams): AppResult<Long>
@@ -60,4 +68,6 @@ interface AdminClinicRepository {
     suspend fun listAppointments(): AppResult<List<AdminAppointment>>
     suspend fun confirmAppointment(id: Long, videoRoomUrl: String): AppResult<Unit>
     suspend fun completeAppointment(id: Long): AppResult<Unit>
+    suspend fun listPatientNotes(appointmentId: Long): AppResult<List<PatientNote>>
+    suspend fun addPatientNote(appointmentId: Long, note: String): AppResult<Long>
 }

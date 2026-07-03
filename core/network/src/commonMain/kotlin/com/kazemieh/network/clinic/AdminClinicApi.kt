@@ -13,4 +13,6 @@ interface AdminClinicApi {
     suspend fun listAppointments(): List<AdminAppointmentResponse>
     suspend fun confirmAppointment(id: Long, request: AdminConfirmAppointmentRequestDto)
     suspend fun completeAppointment(id: Long)
+    suspend fun listPatientNotes(appointmentId: Long): List<PatientNoteResponse>
+    suspend fun addPatientNote(appointmentId: Long, request: AdminAddPatientNoteRequestDto): Long
 }

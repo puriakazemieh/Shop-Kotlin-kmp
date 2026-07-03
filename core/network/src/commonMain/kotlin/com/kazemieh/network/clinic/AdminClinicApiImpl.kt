@@ -51,4 +51,13 @@ class AdminClinicApiImpl(
     override suspend fun completeAppointment(id: Long): Unit = safeApiCallRaw {
         client.post("api/admin/therapists/appointments/$id/complete")
     }
+
+    override suspend fun listPatientNotes(appointmentId: Long): List<PatientNoteResponse> = safeApiCallRaw {
+        client.get("api/admin/therapists/appointments/$appointmentId/notes")
+    }
+
+    override suspend fun addPatientNote(appointmentId: Long, request: AdminAddPatientNoteRequestDto): Long =
+        safeApiCallRaw<IdResponse> {
+            client.post("api/admin/therapists/appointments/$appointmentId/notes") { setBody(request) }
+        }.id
 }

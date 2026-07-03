@@ -41,3 +41,11 @@ class ConfirmAppointmentUseCase(private val repository: AdminClinicRepository) {
 class CompleteAppointmentUseCase(private val repository: AdminClinicRepository) {
     suspend operator fun invoke(id: Long) = repository.completeAppointment(id)
 }
+
+class GetPatientNotesUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(appointmentId: Long) = repository.listPatientNotes(appointmentId)
+}
+
+class AddPatientNoteUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(appointmentId: Long, note: String) = repository.addPatientNote(appointmentId, note)
+}
