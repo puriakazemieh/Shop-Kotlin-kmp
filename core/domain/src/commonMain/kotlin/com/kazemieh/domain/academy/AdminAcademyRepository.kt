@@ -20,7 +20,8 @@ data class AdminCourseParams(
     val jobMarketBadge: Boolean = false,
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
-    val instructorSkills: String? = null
+    val instructorSkills: String? = null,
+    val requiresProjectSubmission: Boolean = false
 )
 
 data class AdminCourseUpdateParams(
@@ -30,7 +31,8 @@ data class AdminCourseUpdateParams(
     val instructor: String? = null,
     val price: Double? = null,
     val discountedPrice: Double? = null,
-    val isPublished: Boolean? = null
+    val isPublished: Boolean? = null,
+    val requiresProjectSubmission: Boolean? = null
 )
 
 /** یک سؤالِ آزمون در فرمِ تست‌سازِ ادمین: متن + گزینه‌ها + ایندکسِ گزینه‌ی درست. */
@@ -73,4 +75,18 @@ interface AdminAcademyRepository {
     suspend fun listWaitlist(courseId: Long): AppResult<List<AdminWaitlistEntry>>
     /** خروجی: نفرِ مطلع‌شده، یا null اگر صف خالی بود. */
     suspend fun notifyNextInWaitlist(courseId: Long): AppResult<AdminWaitlistEntry?>
+
+    // ---- فایل‌های ضمیمه‌ی درس ----
+    suspend fun addLessonFile(courseId: Long, lessonId: Long, fileBytes: ByteArray, fileName: String, displayName: String): AppResult<Int>
+    /** افزودنِ فایلِ ضمیمه با لینکِ مستقیم (بدونِ آپلود) — هم‌الگو با نحوه‌ی ثبتِ videoUrl. */
+    suspend fun addLessonFileByLink(courseId: Long, lessonId: Long, name: String, url: String, sizeLabel: String? = null): AppResult<Int>
+    suspend fun deleteLessonFile(courseId: Long, lessonId: Long, index: Int): AppResult<Unit>
+
+    // ---- آزمونِ کوتاهِ درس ----
+    suspend fun getLessonQuiz(courseId: Long, lessonId: Long): AppResult<LessonQuiz?>
+    suspend fun upsertLessonQuiz(courseId: Long, lessonId: Long, title: String, passScore: Int, questions: List<AdminQuizQuestion>): AppResult<Unit>
+
+    // ---- پروژه‌های پایانی ----
+    suspend fun listProjectSubmissions(courseId: Long): AppResult<List<ProjectSubmission>>
+    suspend fun reviewProjectSubmission(submissionId: Long, status: String, mentorFeedback: String?): AppResult<Unit>
 }

@@ -74,6 +74,8 @@ fun MainGraphScreen(
     navigateToTherapistCatalog: () -> Unit = {},
     navigateToPsychTests: () -> Unit = {},
     navigateToComparison: () -> Unit = {},
+    navigateToFreeCourses: () -> Unit = {},
+    navigateToBundles: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val brand = koinInject<BrandConfig>()
@@ -176,6 +178,8 @@ fun MainGraphScreen(
                                 showClinic = brand.features.clinic,
                                 showPsychTests = brand.features.psychTests,
                                 showComparison = brand.features.productComparison,
+                                showFreeCourses = brand.features.academyFreeCoursesTab,
+                                showBundles = brand.features.productBundles,
                                 onLoginClick = navigateToAuth,
                                 onEditProfileClick = navigateToProfile,
                                 onCustomerClubClick = navigateToCustomerClub,
@@ -188,7 +192,9 @@ fun MainGraphScreen(
                                 onMyAppointmentsClick = navigateToMyAppointments,
                                 onBrowseTherapistsClick = navigateToTherapistCatalog,
                                 onPsychTestsClick = navigateToPsychTests,
-                                onComparisonClick = navigateToComparison
+                                onComparisonClick = navigateToComparison,
+                                onFreeCoursesClick = navigateToFreeCourses,
+                                onBundlesClick = navigateToBundles
                             )
                         }
                     }

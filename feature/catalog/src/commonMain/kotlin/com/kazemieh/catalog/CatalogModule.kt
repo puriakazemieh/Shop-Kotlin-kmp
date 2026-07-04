@@ -1,5 +1,9 @@
 package com.kazemieh.catalog
 
+import com.kazemieh.catalog.bundle.BundleDetailViewModel
+import com.kazemieh.catalog.bundle.BundleListViewModel
+import com.kazemieh.domain.bundle.GetBundleDetailUseCase
+import com.kazemieh.domain.bundle.GetBundlesUseCase
 import com.kazemieh.domain.catalog.GetActiveCampaignUseCase
 import com.kazemieh.domain.catalog.GetBannersUseCase
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
@@ -82,4 +86,10 @@ val catalogModule = module {
             clearRecentSearchesUseCase = get()
         )
     }
+
+    // Bundles
+    factory { GetBundlesUseCase(get()) }
+    factory { GetBundleDetailUseCase(get()) }
+    viewModel { BundleListViewModel(get()) }
+    viewModel { BundleDetailViewModel(get()) }
 }

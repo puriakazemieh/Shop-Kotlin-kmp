@@ -75,14 +75,33 @@ data class BrandFeatures(
     val stories: Boolean = true,
     val support: Boolean = true,
     val customerClub: Boolean = true,
-    /** عمودیِ آموزشگاه (دوره/سمینار/کارگاه + پخش‌کننده + آزمون + گواهی). */
+    /** عمودیِ آموزشگاه (دوره/سمینار/کارگاه + پخش‌کننده). */
     val academy: Boolean = false,
     /** عمودیِ مشاوره/نوبت‌دهی (درمانگرها + رزرو + اعتبار جلسه). */
     val clinic: Boolean = false,
     /** عمودیِ تست‌های روان‌شناسیِ قابل‌خرید (تفسیر خودکار یا توسط مشاور). */
     val psychTests: Boolean = false,
     /** مقایسه‌ی محصولات (فیچرِ عمومیِ فروشگاهی، مستقل از عمودی‌ها). */
-    val productComparison: Boolean = false
+    val productComparison: Boolean = false,
+    // ---- زیرفیچرهای مستقلِ آموزشگاه (هرکدام جدا از خودِ `academy` روشن/خاموش می‌شوند) ----
+    /** آزمونِ پایانِ دوره + گواهی (کوییز/چک‌پوینتِ درس هم همین پرچم را دارد). */
+    val academyQuiz: Boolean = false,
+    /** تبِ «دوره‌های رایگان» در فهرستِ دوره‌ها. */
+    val academyFreeCoursesTab: Boolean = false,
+    /** صفحه‌ی عمومیِ پروفایلِ مدرس (فهرستِ دوره‌های یک مدرسِ خاص). */
+    val academyInstructorProfiles: Boolean = false,
+    /** ارزیابیِ پروژه‌محورِ پایانِ دوره (کنارِ/به‌جایِ آزمونِ چندگزینه‌ای). */
+    val academyProjectAssessment: Boolean = false,
+    /** فایل‌های ضمیمه‌ی درس (جزوه/کدِ نمونه) کنارِ ویدیو. */
+    val academyLessonResources: Boolean = false,
+    // ---- زیرفیچرِ فروشگاهی ----
+    /** باندل/پکیجِ ترکیبیِ محصول. */
+    val productBundles: Boolean = false,
+    // ---- زیرفیچرهای مستقلِ مشاوره ----
+    /** پرونده‌ی کاملِ مراجع (نوبت‌ها + یادداشت‌ها + نتایجِ تست در یک نما). */
+    val clinicPatientFile: Boolean = false,
+    /** CRMِ سبکِ مراجعان (فهرستِ مراجعانِ هر درمانگر + برچسب). */
+    val clinicCrm: Boolean = false
 )
 
 /**
@@ -130,8 +149,13 @@ val CarmilaBrand = BrandConfig(
     appName = "کارمیلا",
     colors = CarmilaBrandColors,
     currency = "تومان",
-    // برندِ نمایشیِ اصلی؛ هر دو عمودیِ آموزشگاه و مشاوره + مقایسه‌ی محصول برای دمو روشن‌اند.
-    features = BrandFeatures(academy = true, clinic = true, productComparison = true)
+    // برندِ نمایشیِ اصلی؛ همه‌ی فیچرها برای دمو روشن‌اند تا هر قابلیتی قابلِ بررسی باشد.
+    features = BrandFeatures(
+        academy = true, clinic = true, productComparison = true,
+        academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
+        academyProjectAssessment = true, academyLessonResources = true,
+        productBundles = true, clinicPatientFile = true, clinicCrm = true
+    )
 )
 
 /** نمونه‌ی برندِ دومِ عطرفروشی «آتریس» — پالتِ گرم/طلایی. */
@@ -160,7 +184,8 @@ val AtrisBrand = BrandConfig(
     id = "atris",
     appName = "آتریس",
     colors = AtrisBrandColors,
-    currency = "تومان"
+    currency = "تومان",
+    features = BrandFeatures(productBundles = true)
 )
 
 /** نمونه‌ی برندِ سومِ ساعت‌فروشی «کرونوس» — پالتِ سرد/مشکی-نقره‌ای. */
@@ -189,7 +214,8 @@ val ChronosBrand = BrandConfig(
     id = "chronos",
     appName = "کرونوس",
     colors = ChronosBrandColors,
-    currency = "تومان"
+    currency = "تومان",
+    features = BrandFeatures(productBundles = true)
 )
 
 /** برندِ آموزشگاه «کاظمیه» — پالتِ آبی، فقط عمودیِ آموزشگاه روشن است. */
@@ -219,7 +245,11 @@ val AcademyBrand = BrandConfig(
     appName = "آموزشگاه کاظمیه",
     colors = AcademyBrandColors,
     currency = "تومان",
-    features = BrandFeatures(academy = true, clinic = false, productComparison = false)
+    features = BrandFeatures(
+        academy = true, clinic = false, productComparison = false,
+        academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
+        academyProjectAssessment = true, academyLessonResources = true
+    )
 )
 
 /** برندِ مرکزِ مشاوره «مهرجو» — پالتِ زرشکی/طلایی، عمودی‌های آموزشگاه+مشاوره+تست روشن‌اند. */
@@ -249,7 +279,12 @@ val PsychBrand = BrandConfig(
     appName = "مرکز مشاوره مهرجو",
     colors = PsychBrandColors,
     currency = "تومان",
-    features = BrandFeatures(academy = true, clinic = true, psychTests = true, productComparison = false)
+    features = BrandFeatures(
+        academy = true, clinic = true, psychTests = true, productComparison = false,
+        academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
+        academyProjectAssessment = true, academyLessonResources = true,
+        clinicPatientFile = true, clinicCrm = true
+    )
 )
 
 /**

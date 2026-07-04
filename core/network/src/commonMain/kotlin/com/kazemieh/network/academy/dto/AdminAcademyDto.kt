@@ -24,7 +24,8 @@ data class AdminCreateCourseRequestDto(
     val jobMarketBadge: Boolean = false,
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
-    val instructorSkills: String? = null
+    val instructorSkills: String? = null,
+    val requiresProjectSubmission: Boolean = false
 )
 
 @Serializable
@@ -35,7 +36,8 @@ data class AdminUpdateCourseRequestDto(
     val instructor: String? = null,
     val price: Double? = null,
     val discountedPrice: Double? = null,
-    val isPublished: Boolean? = null
+    val isPublished: Boolean? = null,
+    val requiresProjectSubmission: Boolean? = null
 )
 
 @Serializable
@@ -76,4 +78,29 @@ data class AdminWaitlistEntryResponse(
 data class AdminNotifyNextResponse(
     val found: Boolean,
     val entry: AdminWaitlistEntryResponse? = null
+)
+
+// ---------- Lesson resources/quiz + project review ----------
+@Serializable
+data class IndexResponse(val index: Int)
+
+@Serializable
+data class AdminAddLessonFileRequestDto(
+    val name: String,
+    val url: String,
+    val sizeLabel: String? = null
+)
+
+@Serializable
+data class AdminUpsertLessonQuizRequestDto(
+    val title: String = "آزمونِ این درس",
+    val passScore: Int = 60,
+    val questions: List<QuizQuestionResponse> = emptyList()
+)
+
+/** wrapper به‌جای JSONِ نال‌بلِ خام. */
+@Serializable
+data class AdminLessonQuizResponse(
+    val found: Boolean,
+    val quiz: LessonQuizResponse? = null
 )

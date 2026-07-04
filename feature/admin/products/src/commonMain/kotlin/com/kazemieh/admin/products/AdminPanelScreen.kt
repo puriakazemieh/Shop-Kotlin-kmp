@@ -73,10 +73,12 @@ fun AdminPanelScreen(
         if (brand.features.academy) add("آموزشگاه")
         if (brand.features.clinic) add("مشاوره")
         if (brand.features.psychTests) add("تست‌ها")
+        if (brand.features.productBundles) add("باندل‌ها")
     }
     val academyTabIndex = if (brand.features.academy) tabs.indexOf("آموزشگاه") else -1
     val clinicTabIndex = if (brand.features.clinic) tabs.indexOf("مشاوره") else -1
     val psychTabIndex = if (brand.features.psychTests) tabs.indexOf("تست‌ها") else -1
+    val bundlesTabIndex = if (brand.features.productBundles) tabs.indexOf("باندل‌ها") else -1
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -165,6 +167,7 @@ fun AdminPanelScreen(
                     academyTabIndex -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     clinicTabIndex -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     psychTabIndex -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    bundlesTabIndex -> AdminBundlesScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }

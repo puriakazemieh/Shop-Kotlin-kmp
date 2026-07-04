@@ -40,6 +40,13 @@ data class VideoVariant(
     val url: String
 )
 
+/** یک فایلِ ضمیمه‌ی درس (جزوه/کدِ نمونه/...) — کنارِ ویدیو، نه به‌جایِ آن. */
+data class LessonFile(
+    val name: String,
+    val url: String,
+    val sizeLabel: String? = null
+)
+
 data class Lesson(
     val id: Long,
     val title: String,
@@ -48,7 +55,10 @@ data class Lesson(
     val videoUrl: String?,
     val completed: Boolean,
     val lastPositionSeconds: Int,
-    val videoVariants: List<VideoVariant> = emptyList()
+    val videoVariants: List<VideoVariant> = emptyList(),
+    val resourceFiles: List<LessonFile> = emptyList(),
+    /** آیا این درس آزمونِ کوتاهِ خودش را دارد (تبِ «آزمون» در پخش‌کننده). */
+    val hasQuiz: Boolean = false
 )
 
 data class CourseSection(
@@ -83,7 +93,9 @@ data class CourseDetail(
     val instructorSkills: List<String> = emptyList(),
     val isFull: Boolean = false,
     val onWaitlist: Boolean = false,
-    val productId: Long? = null
+    val productId: Long? = null,
+    /** آیا صدورِ گواهی نیازمندِ تأییدِ پروژه‌ی پایانی هم هست (کنارِ قبولیِ آزمون). */
+    val requiresProjectSubmission: Boolean = false
 )
 
 data class CourseProgress(
@@ -133,4 +145,34 @@ data class Certificate(
     val certNumber: String,
     val issuedAt: String,
     val userName: String?
+)
+
+// ---------- Lesson quiz (checkpoint per lesson, separate from the course-final quiz) ----------
+data class LessonQuiz(
+    val lessonId: Long,
+    val title: String,
+    val passScore: Int,
+    val questions: List<QuizQuestion>,
+    val alreadyPassed: Boolean = false
+)
+
+data class LessonQuizResult(
+    val lessonId: Long,
+    val score: Int,
+    val passed: Boolean,
+    val passScore: Int
+)
+
+// ---------- Project-based assessment ----------
+data class ProjectSubmission(
+    val id: Long,
+    val courseId: Long,
+    val userId: Long,
+    val fileUrl: String,
+    val note: String?,
+    val status: String,
+    val mentorFeedback: String?,
+    val submittedAt: String,
+    val reviewedAt: String? = null,
+    val userName: String? = null
 )

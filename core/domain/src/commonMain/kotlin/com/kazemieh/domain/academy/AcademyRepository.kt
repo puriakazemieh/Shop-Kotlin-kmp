@@ -12,4 +12,10 @@ interface AcademyRepository {
     suspend fun submitQuiz(courseId: Long, answers: Map<Int, Int>): AppResult<QuizResult>
     suspend fun getCertificates(): AppResult<List<Certificate>>
     suspend fun joinWaitlist(courseId: Long): AppResult<WaitlistResult>
+    suspend fun getLessonQuiz(lessonId: Long): AppResult<LessonQuiz>
+    suspend fun submitLessonQuiz(lessonId: Long, answers: Map<Int, Int>): AppResult<LessonQuizResult>
+    suspend fun submitProject(courseId: Long, fileBytes: ByteArray, fileName: String, note: String?): AppResult<ProjectSubmission>
+    /** ثبتِ پروژه با لینکِ مستقیم (مثلاً گیت‌هاب/درایو) — بدونِ آپلود. */
+    suspend fun submitProjectByLink(courseId: Long, fileUrl: String, note: String?): AppResult<ProjectSubmission>
+    suspend fun getMyProject(courseId: Long): AppResult<ProjectSubmission?>
 }

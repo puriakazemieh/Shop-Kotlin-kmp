@@ -132,6 +132,25 @@ sealed class Screen {
     @Serializable
     data object Certificates : Screen()
 
+    @Serializable
+    data class LessonQuiz(val lessonId: Long) : Screen()
+
+    @Serializable
+    data class ProjectSubmission(val courseId: Long) : Screen()
+
+    @Serializable
+    data object FreeCourses : Screen()
+
+    @Serializable
+    data class InstructorCourses(val instructorName: String) : Screen()
+
+    // ---- Product bundles (general shop feature) ----
+    @Serializable
+    data object BundleList : Screen()
+
+    @Serializable
+    data class BundleDetail(val slug: String) : Screen()
+
     // ---- Clinic (vertical) ----
     @Serializable
     data object TherapistCatalog : Screen()

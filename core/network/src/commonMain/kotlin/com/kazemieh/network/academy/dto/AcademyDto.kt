@@ -28,6 +28,13 @@ data class VideoVariantResponse(
 )
 
 @Serializable
+data class LessonFileResponse(
+    val name: String,
+    val url: String,
+    val sizeLabel: String? = null
+)
+
+@Serializable
 data class LessonResponse(
     val id: Long,
     val title: String,
@@ -36,7 +43,9 @@ data class LessonResponse(
     val videoUrl: String? = null,
     val completed: Boolean = false,
     val lastPositionSeconds: Int = 0,
-    val videoVariants: List<VideoVariantResponse> = emptyList()
+    val videoVariants: List<VideoVariantResponse> = emptyList(),
+    val resourceFiles: List<LessonFileResponse> = emptyList(),
+    val hasQuiz: Boolean = false
 )
 
 @Serializable
@@ -73,7 +82,8 @@ data class CourseDetailResponse(
     val instructorSkills: List<String> = emptyList(),
     val isFull: Boolean = false,
     val onWaitlist: Boolean = false,
-    val productId: Long? = null
+    val productId: Long? = null,
+    val requiresProjectSubmission: Boolean = false
 )
 
 @Serializable
@@ -144,4 +154,61 @@ data class CertificateResponse(
     val certNumber: String,
     val issuedAt: String,
     val userName: String? = null
+)
+
+// ---------- Lesson quiz (checkpoint) ----------
+@Serializable
+data class LessonQuizResponse(
+    val lessonId: Long,
+    val title: String,
+    val passScore: Int,
+    val questions: List<QuizQuestionResponse>,
+    val alreadyPassed: Boolean = false
+)
+
+@Serializable
+data class SubmitLessonQuizRequestDto(
+    val answers: Map<Int, Int> = emptyMap()
+)
+
+@Serializable
+data class LessonQuizResultResponse(
+    val lessonId: Long,
+    val score: Int,
+    val passed: Boolean,
+    val passScore: Int
+)
+
+// ---------- Project-based assessment ----------
+@Serializable
+data class SubmitProjectRequestDto(
+    val fileUrl: String,
+    val note: String? = null
+)
+
+@Serializable
+data class ProjectSubmissionResponse(
+    val id: Long,
+    val courseId: Long,
+    val userId: Long,
+    val fileUrl: String,
+    val note: String? = null,
+    val status: String,
+    val mentorFeedback: String? = null,
+    val submittedAt: String,
+    val reviewedAt: String? = null,
+    val userName: String? = null
+)
+
+@Serializable
+data class AdminReviewProjectRequestDto(
+    val status: String,
+    val mentorFeedback: String? = null
+)
+
+/** wrapper به‌جای JSONِ نال‌بلِ خام. */
+@Serializable
+data class MyProjectResponse(
+    val found: Boolean,
+    val submission: ProjectSubmissionResponse? = null
 )

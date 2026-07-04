@@ -98,6 +98,7 @@ fun AdminClinicScreen(
                 ) {
                     TabChip("درمانگرها", tab == 0) { tab = 0 }
                     TabChip("نوبت‌ها", tab == 1) { tab = 1 }
+                    TabChip("مراجعان", tab == 2) { tab = 2 }
                 }
                 when (tab) {
                     0 -> TherapistsTab(
@@ -114,6 +115,12 @@ fun AdminClinicScreen(
                         onComplete = viewModel::completeAppointment,
                         onToggleNotes = viewModel::toggleNotes,
                         onAddNote = viewModel::addNote
+                    )
+                    2 -> PatientsTab(
+                        state = state,
+                        onSelectTherapist = viewModel::selectCrmTherapist,
+                        onTogglePatientFile = viewModel::togglePatientFile,
+                        onSetTags = viewModel::setPatientTags
                     )
                 }
             }
@@ -557,6 +564,141 @@ private fun PatientNotesPanel(
                 .padding(horizontal = 14.dp, vertical = 9.dp),
             color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
         )
+    }
+}
+
+/** CRMِ سبکِ مراجعان: انتخابِ درمانگر → فهرستِ مراجعان با برچسب → پرونده‌ی کاملِ مراجع (نوبت‌ها+یادداشت‌ها+نتایجِ تست). */
+@Composable
+private fun PatientsTab(
+    state: AdminClinicState,
+    onSelectTherapist: (Long) -> Unit,
+    onTogglePatientFile: (Long) -> Unit,
+    onSetTags: (userId: Long, tags: List<String>) -> Unit
+) {
+    val colors = AppTheme.colors
+    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        Text("ابتدا یک درمانگر را انتخاب کن:", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            state.therapists.forEach { t ->
+                ModeChip(t.name, state.crmTherapistId == t.id) { onSelectTherapist(t.id) }
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        when {
+            state.crmTherapistId == null -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("درمانگری را انتخاب کن تا فهرستِ مراجعانش دیده شود.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            }
+            state.loadingPatients && state.patients.isEmpty() -> LoadingCard(modifier = Modifier.fillMaxSize())
+            state.patients.isEmpty() -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("هنوز مراجعی برای این درمانگر ثبت نشده.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            }
+            else -> LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                items(state.patients) { patient ->
+                    PatientCard(
+                        patient = patient,
+                        expanded = state.expandedPatientUserId == patient.userId,
+                        file = if (state.expandedPatientUserId == patient.userId) state.patientFile else null,
+                        loadingFile = state.loadingPatientFile && state.expandedPatientUserId == patient.userId,
+                        onToggle = { onTogglePatientFile(patient.userId) },
+                        onSetTags = { tags -> onSetTags(patient.userId, tags) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PatientCard(
+    patient: com.kazemieh.domain.clinic.AdminPatientSummary,
+    expanded: Boolean,
+    file: com.kazemieh.domain.clinic.PatientFile?,
+    loadingFile: Boolean,
+    onToggle: () -> Unit,
+    onSetTags: (List<String>) -> Unit
+) {
+    val colors = AppTheme.colors
+    var tagsText by remember(patient.userId) { mutableStateOf(patient.tags.joinToString("، ")) }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(14.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth().clickable { onToggle() }, verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(patient.userName, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+                Spacer(Modifier.height(3.dp))
+                Text("${patient.appointmentCount} نوبت" + (patient.lastAppointmentAt?.let { " · آخرین: ${it.take(10)}" } ?: ""), color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                if (patient.tags.isNotEmpty()) {
+                    Spacer(Modifier.height(4.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        patient.tags.forEach { tag ->
+                            Text(
+                                tag, fontSize = FontSize.EXTRA_SMALL, color = colors.primary,
+                                modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.accentSoft).padding(horizontal = 8.dp, vertical = 3.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        if (expanded) {
+            Spacer(Modifier.height(10.dp))
+            AdminTextField(value = tagsText, onValueChange = { tagsText = it }, label = "برچسب‌ها (با کاما جدا کن، مثلاً «نیازمندِ پیگیری»)")
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "ذخیره‌ی برچسب‌ها",
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.primary)
+                    .clickable { onSetTags(tagsText.split(",", "،").map { it.trim() }.filter { it.isNotEmpty() }) }
+                    .padding(horizontal = 14.dp, vertical = 9.dp),
+                color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(12.dp))
+            when {
+                loadingFile -> Text("در حالِ بارگذاریِ پرونده…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                file != null -> PatientFileView(file)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PatientFileView(file: com.kazemieh.domain.clinic.PatientFile) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.surfaceVariant).padding(12.dp)
+    ) {
+        Text("پرونده‌ی مراجع", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+        Spacer(Modifier.height(8.dp))
+        Text("نوبت‌ها", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL)
+        if (file.appointments.isEmpty()) {
+            Text("نوبتی ثبت نشده.", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+        } else {
+            file.appointments.forEach { appt ->
+                Spacer(Modifier.height(4.dp))
+                Text("· ${appt.dayLabel} ${appt.timeLabel} — ${appt.status}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                appt.notes.forEach { note ->
+                    Text("  یادداشت: ${note.note}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL, modifier = Modifier.padding(start = 10.dp))
+                }
+            }
+        }
+        if (file.testResults.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            Text("نتایجِ تست‌های روان‌شناسی", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL)
+            file.testResults.forEach { t ->
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "· ${t.testTitle}" + (t.totalScore?.let { " — نمره: $it" } ?: "") + (t.interpretation?.let { " ($it)" } ?: ""),
+                    color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
+                )
+            }
+        }
     }
 }
 

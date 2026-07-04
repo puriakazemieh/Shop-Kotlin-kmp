@@ -49,3 +49,16 @@ class GetPatientNotesUseCase(private val repository: AdminClinicRepository) {
 class AddPatientNoteUseCase(private val repository: AdminClinicRepository) {
     suspend operator fun invoke(appointmentId: Long, note: String) = repository.addPatientNote(appointmentId, note)
 }
+
+class GetAdminPatientsUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(therapistId: Long) = repository.listPatients(therapistId)
+}
+
+class SetPatientTagsUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(therapistId: Long, userId: Long, tags: List<String>) =
+        repository.setPatientTags(therapistId, userId, tags)
+}
+
+class GetPatientFileUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(therapistId: Long, userId: Long) = repository.getPatientFile(therapistId, userId)
+}

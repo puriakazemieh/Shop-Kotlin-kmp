@@ -36,3 +36,25 @@ class GetCertificatesUseCase(private val repository: AcademyRepository) {
 class JoinWaitlistUseCase(private val repository: AcademyRepository) {
     suspend operator fun invoke(courseId: Long) = repository.joinWaitlist(courseId)
 }
+
+class GetLessonQuizUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(lessonId: Long) = repository.getLessonQuiz(lessonId)
+}
+
+class SubmitLessonQuizUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(lessonId: Long, answers: Map<Int, Int>) = repository.submitLessonQuiz(lessonId, answers)
+}
+
+class SubmitProjectUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long, fileBytes: ByteArray, fileName: String, note: String? = null) =
+        repository.submitProject(courseId, fileBytes, fileName, note)
+}
+
+class SubmitProjectByLinkUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long, fileUrl: String, note: String? = null) =
+        repository.submitProjectByLink(courseId, fileUrl, note)
+}
+
+class GetMyProjectUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.getMyProject(courseId)
+}

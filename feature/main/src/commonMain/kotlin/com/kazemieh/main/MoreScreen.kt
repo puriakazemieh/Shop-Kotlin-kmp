@@ -55,6 +55,8 @@ fun MoreScreen(
     showClinic: Boolean = true,
     showPsychTests: Boolean = false,
     showComparison: Boolean = false,
+    showFreeCourses: Boolean = false,
+    showBundles: Boolean = false,
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
@@ -68,6 +70,8 @@ fun MoreScreen(
     onBrowseTherapistsClick: () -> Unit = {},
     onPsychTestsClick: () -> Unit = {},
     onComparisonClick: () -> Unit = {},
+    onFreeCoursesClick: () -> Unit = {},
+    onBundlesClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -135,6 +139,25 @@ fun MoreScreen(
                 subtitle = "مشاهده و خرید دوره‌ها",
                 onClick = onBrowseCoursesClick
             ) { AccountIcon(painter = Resources.Icon.Book) }
+            Spacer(Modifier.height(12.dp))
+
+            if (showFreeCourses) {
+                AccountRow(
+                    title = "دوره‌های رایگان",
+                    subtitle = "شروعِ یادگیری بدونِ هزینه",
+                    onClick = onFreeCoursesClick
+                ) { AccountIcon(painter = Resources.Icon.Book) }
+                Spacer(Modifier.height(12.dp))
+            }
+        }
+
+        // ---- پیشنهادهای ترکیبی/باندل — فیچرِ عمومیِ فروشگاهی ----
+        if (showBundles) {
+            AccountRow(
+                title = "پیشنهادهای ترکیبی",
+                subtitle = "پکیج‌های ویژه با چند محصول",
+                onClick = onBundlesClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
 

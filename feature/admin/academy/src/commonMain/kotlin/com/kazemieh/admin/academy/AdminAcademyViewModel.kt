@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
+import com.kazemieh.domain.academy.AddLessonFileByLinkUseCase
 import com.kazemieh.domain.academy.AdminCourseParams
 import com.kazemieh.domain.academy.AdminQuizQuestion
 import com.kazemieh.domain.academy.AdminWaitlistEntry
@@ -12,11 +13,16 @@ import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.academy.CreateCourseUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
+import com.kazemieh.domain.academy.DeleteLessonFileUseCase
 import com.kazemieh.domain.academy.GetAdminCourseDetailUseCase
 import com.kazemieh.domain.academy.GetAdminCoursesUseCase
 import com.kazemieh.domain.academy.GetAdminWaitlistUseCase
+import com.kazemieh.domain.academy.ListProjectSubmissionsUseCase
 import com.kazemieh.domain.academy.NotifyNextInWaitlistUseCase
+import com.kazemieh.domain.academy.ProjectSubmission
+import com.kazemieh.domain.academy.ReviewProjectSubmissionUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
+import com.kazemieh.domain.academy.UpsertLessonQuizUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +42,11 @@ data class AdminAcademyState(
     val quizQuestionsByCourse: Map<Long, List<AdminQuizQuestion>> = emptyMap(),
     /** لیستِ انتظارِ کلاسِ حضوریِ باز (per courseId). */
     val waitlistByCourse: Map<Long, List<AdminWaitlistEntry>> = emptyMap(),
-    val loadingWaitlist: Boolean = false
+    val loadingWaitlist: Boolean = false,
+    /** سؤالاتِ آزمونِ کوتاهِ هر درس، ساخته‌شده در همین سشن (per lessonId). */
+    val lessonQuizByLesson: Map<Long, List<AdminQuizQuestion>> = emptyMap(),
+    /** پروژه‌های ثبت‌شده‌ی هر دوره (per courseId). */
+    val projectSubmissionsByCourse: Map<Long, List<ProjectSubmission>> = emptyMap()
 )
 
 sealed interface AdminAcademyEffect {
@@ -53,7 +63,12 @@ class AdminAcademyViewModel(
     private val addCourseLessonUseCase: AddCourseLessonUseCase,
     private val upsertCourseQuizUseCase: UpsertCourseQuizUseCase,
     private val getAdminWaitlistUseCase: GetAdminWaitlistUseCase,
-    private val notifyNextInWaitlistUseCase: NotifyNextInWaitlistUseCase
+    private val notifyNextInWaitlistUseCase: NotifyNextInWaitlistUseCase,
+    private val addLessonFileByLinkUseCase: AddLessonFileByLinkUseCase,
+    private val deleteLessonFileUseCase: DeleteLessonFileUseCase,
+    private val upsertLessonQuizUseCase: UpsertLessonQuizUseCase,
+    private val listProjectSubmissionsUseCase: ListProjectSubmissionsUseCase,
+    private val reviewProjectSubmissionUseCase: ReviewProjectSubmissionUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminAcademyState())
@@ -133,7 +148,8 @@ class AdminAcademyViewModel(
         courseType: String = "COURSE",
         format: String = "ONLINE_RECORDED",
         location: String = "",
-        capacity: String = ""
+        capacity: String = "",
+        requiresProjectSubmission: Boolean = false
     ) {
         viewModelScope.launch {
             val params = AdminCourseParams(
@@ -144,7 +160,8 @@ class AdminAcademyViewModel(
                 courseType = courseType,
                 format = format,
                 location = location.ifBlank { null },
-                capacity = capacity.toIntOrNull()
+                capacity = capacity.toIntOrNull(),
+                requiresProjectSubmission = requiresProjectSubmission
             )
             when (val result = createCourseUseCase(params)) {
                 is AppResult.Success -> {
@@ -211,6 +228,69 @@ class AdminAcademyViewModel(
         viewModelScope.launch {
             when (val result = upsertCourseQuizUseCase(courseId, "آزمونِ پایانِ دوره", passScore.toIntOrNull() ?: 60, updated)) {
                 is AppResult.Success -> _effect.send(AdminAcademyEffect.ShowSuccess("سؤال به آزمون اضافه شد."))
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- فایل‌های ضمیمه‌ی درس ----
+    fun addLessonFile(courseId: Long, lessonId: Long, name: String, url: String) {
+        viewModelScope.launch {
+            when (val result = addLessonFileByLinkUseCase(courseId, lessonId, name, url)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("فایل اضافه شد."))
+                    refreshExpanded(courseId)
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun deleteLessonFile(courseId: Long, lessonId: Long, index: Int) {
+        viewModelScope.launch {
+            when (val result = deleteLessonFileUseCase(courseId, lessonId, index)) {
+                is AppResult.Success -> refreshExpanded(courseId)
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- آزمونِ کوتاهِ درس ----
+    fun addLessonQuizQuestion(courseId: Long, lessonId: Long, passScore: String, text: String, options: List<String>, correctIndex: Int) {
+        val existing = _state.value.lessonQuizByLesson[lessonId].orEmpty()
+        val updated = existing + AdminQuizQuestion(text = text, options = options.filter { it.isNotBlank() }, correctIndex = correctIndex)
+        _state.update { it.copy(lessonQuizByLesson = it.lessonQuizByLesson + (lessonId to updated)) }
+        viewModelScope.launch {
+            when (val result = upsertLessonQuizUseCase(courseId, lessonId, "آزمونِ این درس", passScore.toIntOrNull() ?: 60, updated)) {
+                is AppResult.Success -> _effect.send(AdminAcademyEffect.ShowSuccess("سؤال به آزمونِ درس اضافه شد."))
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- پروژه‌های پایانی ----
+    fun loadProjectSubmissions(courseId: Long) {
+        viewModelScope.launch {
+            when (val result = listProjectSubmissionsUseCase(courseId)) {
+                is AppResult.Success -> _state.update {
+                    it.copy(projectSubmissionsByCourse = it.projectSubmissionsByCourse + (courseId to result.data))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun reviewProject(courseId: Long, submissionId: Long, status: String, feedback: String?) {
+        viewModelScope.launch {
+            when (val result = reviewProjectSubmissionUseCase(submissionId, status, feedback)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("وضعیتِ پروژه ثبت شد."))
+                    loadProjectSubmissions(courseId)
+                }
                 is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
                 else -> {}
             }

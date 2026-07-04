@@ -51,13 +51,16 @@ fun CourseListScreen(
     title: String,
     navigateBack: () -> Unit,
     navigateToCourse: (String) -> Unit,
-    navigateToCatalog: (() -> Unit)? = null
+    navigateToCatalog: (() -> Unit)? = null,
+    freeOnly: Boolean = false,
+    instructorFilter: String? = null,
+    navigateToInstructor: ((String) -> Unit)? = null
 ) {
     val viewModel = koinViewModel<CourseListViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
 
-    LaunchedEffect(mine) { viewModel.load(mine) }
+    LaunchedEffect(mine, freeOnly, instructorFilter) { viewModel.load(mine, freeOnly, instructorFilter) }
 
     Scaffold(
         containerColor = colors.background,
@@ -111,7 +114,11 @@ fun CourseListScreen(
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
                 ) {
                     items(state.courses) { course ->
-                        CourseRow(course = course, onClick = { navigateToCourse(course.slug) })
+                        CourseRow(
+                            course = course,
+                            onClick = { navigateToCourse(course.slug) },
+                            onInstructorClick = navigateToInstructor
+                        )
                     }
                 }
             }
@@ -120,7 +127,7 @@ fun CourseListScreen(
 }
 
 @Composable
-private fun CourseRow(course: CourseSummary, onClick: () -> Unit) {
+private fun CourseRow(course: CourseSummary, onClick: () -> Unit, onInstructorClick: ((String) -> Unit)? = null) {
     val colors = AppTheme.colors
     Row(
         modifier = Modifier
@@ -151,7 +158,10 @@ private fun CourseRow(course: CourseSummary, onClick: () -> Unit) {
             Text(course.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
             if (!course.instructor.isNullOrBlank()) {
                 Spacer(Modifier.height(3.dp))
-                Text(course.instructor!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                Text(
+                    course.instructor!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL,
+                    modifier = if (onInstructorClick != null) Modifier.clickable { onInstructorClick(course.instructor!!) } else Modifier
+                )
             }
             Spacer(Modifier.height(6.dp))
             Text("${course.lessonCount} درس", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)

@@ -46,6 +46,10 @@ import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
 import com.kazemieh.academy.quiz.CourseQuizScreen
 import com.kazemieh.academy.cert.CertificatesScreen
+import com.kazemieh.academy.lessonquiz.LessonQuizScreen
+import com.kazemieh.academy.project.ProjectSubmissionScreen
+import com.kazemieh.catalog.bundle.BundleListScreen
+import com.kazemieh.catalog.bundle.BundleDetailScreen
 import com.kazemieh.psychtest.list.PsychTestListScreen
 import com.kazemieh.psychtest.take.TakeTestScreen
 import com.kazemieh.comparison.ComparisonScreen
@@ -159,6 +163,12 @@ fun AppNavHost(
                 navigateToComparison = {
                     navController.navigate(Screen.Comparison)
                 },
+                navigateToFreeCourses = {
+                    navController.navigate(Screen.FreeCourses)
+                },
+                navigateToBundles = {
+                    navController.navigate(Screen.BundleList)
+                },
             )
         }
 
@@ -193,7 +203,8 @@ fun AppNavHost(
                 mine = false,
                 title = "دوره‌ها",
                 navigateBack = { navController.navigateBack() },
-                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) },
+                navigateToInstructor = { name -> navController.navigate(Screen.InstructorCourses(name)) }
             )
         }
 
@@ -203,7 +214,8 @@ fun AppNavHost(
                 title = "دوره‌های من",
                 navigateBack = { navController.navigateBack() },
                 navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) },
-                navigateToCatalog = { navController.navigate(Screen.CourseCatalog) }
+                navigateToCatalog = { navController.navigate(Screen.CourseCatalog) },
+                navigateToInstructor = { name -> navController.navigate(Screen.InstructorCourses(name)) }
             )
         }
 
@@ -221,7 +233,9 @@ fun AppNavHost(
             CourseLearnScreen(
                 slug = args.slug,
                 navigateBack = { navController.navigateBack() },
-                navigateToQuiz = { courseId -> navController.navigate(Screen.CourseQuiz(courseId)) }
+                navigateToQuiz = { courseId -> navController.navigate(Screen.CourseQuiz(courseId)) },
+                navigateToLessonQuiz = { lessonId -> navController.navigate(Screen.LessonQuiz(lessonId)) },
+                navigateToProject = { courseId -> navController.navigate(Screen.ProjectSubmission(courseId)) }
             )
         }
 
@@ -240,6 +254,60 @@ fun AppNavHost(
 
         composable<Screen.Certificates> {
             CertificatesScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.LessonQuiz> {
+            val args = it.toRoute<Screen.LessonQuiz>()
+            LessonQuizScreen(
+                lessonId = args.lessonId,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ProjectSubmission> {
+            val args = it.toRoute<Screen.ProjectSubmission>()
+            ProjectSubmissionScreen(
+                courseId = args.courseId,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.FreeCourses> {
+            CourseListScreen(
+                mine = false,
+                title = "دوره‌های رایگان",
+                freeOnly = true,
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        composable<Screen.InstructorCourses> {
+            val args = it.toRoute<Screen.InstructorCourses>()
+            CourseListScreen(
+                mine = false,
+                title = args.instructorName,
+                instructorFilter = args.instructorName,
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        // ---- Product bundles (general shop feature) ----
+        composable<Screen.BundleList> {
+            BundleListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToBundle = { slug -> navController.navigate(Screen.BundleDetail(slug)) }
+            )
+        }
+
+        composable<Screen.BundleDetail> {
+            val args = it.toRoute<Screen.BundleDetail>()
+            BundleDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToProduct = { productSlug -> navController.navigate(Screen.ProductDetail(productSlug)) }
+            )
         }
 
         // ---- Clinic (vertical) ----

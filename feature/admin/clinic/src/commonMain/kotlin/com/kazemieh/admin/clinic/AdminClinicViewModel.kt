@@ -6,6 +6,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.clinic.AddPatientNoteUseCase
 import com.kazemieh.domain.clinic.AddSlotUseCase
 import com.kazemieh.domain.clinic.AdminAppointment
+import com.kazemieh.domain.clinic.AdminPatientSummary
 import com.kazemieh.domain.clinic.AdminSlot
 import com.kazemieh.domain.clinic.AdminTherapistParams
 import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
@@ -14,10 +15,14 @@ import com.kazemieh.domain.clinic.CreateTherapistUseCase
 import com.kazemieh.domain.clinic.DeleteTherapistUseCase
 import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
+import com.kazemieh.domain.clinic.GetAdminPatientsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
+import com.kazemieh.domain.clinic.GetPatientFileUseCase
 import com.kazemieh.domain.clinic.GetPatientNotesUseCase
+import com.kazemieh.domain.clinic.PatientFile
 import com.kazemieh.domain.clinic.PatientNote
+import com.kazemieh.domain.clinic.SetPatientTagsUseCase
 import com.kazemieh.domain.clinic.TherapistSummary
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -39,7 +44,14 @@ data class AdminClinicState(
     /** یادداشت‌های محرمانه، per appointmentId (فقط برای نوبتِ باز‌شده). */
     val notesByAppointment: Map<Long, List<PatientNote>> = emptyMap(),
     val expandedNotesAppointmentId: Long? = null,
-    val loadingNotes: Boolean = false
+    val loadingNotes: Boolean = false,
+    // ---- CRMِ سبکِ مراجعان + پرونده‌ی کاملِ مراجع ----
+    val crmTherapistId: Long? = null,
+    val patients: List<AdminPatientSummary> = emptyList(),
+    val loadingPatients: Boolean = false,
+    val expandedPatientUserId: Long? = null,
+    val patientFile: PatientFile? = null,
+    val loadingPatientFile: Boolean = false
 )
 
 sealed interface AdminClinicEffect {
@@ -58,7 +70,10 @@ class AdminClinicViewModel(
     private val confirmAppointmentUseCase: ConfirmAppointmentUseCase,
     private val completeAppointmentUseCase: CompleteAppointmentUseCase,
     private val getPatientNotesUseCase: GetPatientNotesUseCase,
-    private val addPatientNoteUseCase: AddPatientNoteUseCase
+    private val addPatientNoteUseCase: AddPatientNoteUseCase,
+    private val getAdminPatientsUseCase: GetAdminPatientsUseCase,
+    private val setPatientTagsUseCase: SetPatientTagsUseCase,
+    private val getPatientFileUseCase: GetPatientFileUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminClinicState())
@@ -247,6 +262,59 @@ class AdminClinicViewModel(
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess("یادداشت ثبت شد."))
                     loadNotes(appointmentId)
+                }
+                is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- CRMِ سبکِ مراجعان + پرونده‌ی کاملِ مراجع ----
+    fun selectCrmTherapist(therapistId: Long) {
+        _state.update { it.copy(crmTherapistId = therapistId, expandedPatientUserId = null, patientFile = null) }
+        loadPatients(therapistId)
+    }
+
+    fun loadPatients(therapistId: Long) {
+        _state.update { it.copy(loadingPatients = true) }
+        viewModelScope.launch {
+            when (val result = getAdminPatientsUseCase(therapistId)) {
+                is AppResult.Success -> _state.update { it.copy(loadingPatients = false, patients = result.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(loadingPatients = false) }
+                    _effect.send(AdminClinicEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun togglePatientFile(userId: Long) {
+        val therapistId = _state.value.crmTherapistId ?: return
+        if (_state.value.expandedPatientUserId == userId) {
+            _state.update { it.copy(expandedPatientUserId = null, patientFile = null) }
+            return
+        }
+        _state.update { it.copy(expandedPatientUserId = userId, patientFile = null, loadingPatientFile = true) }
+        viewModelScope.launch {
+            when (val result = getPatientFileUseCase(therapistId, userId)) {
+                is AppResult.Success -> _state.update { it.copy(loadingPatientFile = false, patientFile = result.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(loadingPatientFile = false) }
+                    _effect.send(AdminClinicEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun setPatientTags(userId: Long, tags: List<String>) {
+        val therapistId = _state.value.crmTherapistId ?: return
+        viewModelScope.launch {
+            when (val result = setPatientTagsUseCase(therapistId, userId, tags)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminClinicEffect.ShowSuccess("برچسب‌ها به‌روزرسانی شد."))
+                    loadPatients(therapistId)
                 }
                 is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
                 else -> {}

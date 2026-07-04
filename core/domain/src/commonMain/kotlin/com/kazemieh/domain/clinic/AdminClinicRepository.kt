@@ -55,6 +55,41 @@ data class PatientNote(
     val createdAt: String
 )
 
+/** یک ردیفِ لیستِ مراجعانِ یک درمانگر (کارتِ CRM). */
+data class AdminPatientSummary(
+    val userId: Long,
+    val userName: String,
+    val therapistId: Long,
+    val appointmentCount: Int,
+    val lastAppointmentAt: String?,
+    val tags: List<String> = emptyList()
+)
+
+data class PatientFileAppointment(
+    val id: Long,
+    val status: AdminAppointmentStatus,
+    val dayLabel: String,
+    val timeLabel: String,
+    val notes: List<PatientNote> = emptyList()
+)
+
+data class PatientFileTestResult(
+    val testTitle: String,
+    val totalScore: Int?,
+    val interpretation: String?,
+    val completedAt: String?
+)
+
+/** پرونده‌ی کاملِ مراجع: نوبت‌ها + یادداشت‌ها + نتایجِ تست، همه در یک نما. */
+data class PatientFile(
+    val userId: Long,
+    val userName: String,
+    val therapistId: Long,
+    val tags: List<String> = emptyList(),
+    val appointments: List<PatientFileAppointment> = emptyList(),
+    val testResults: List<PatientFileTestResult> = emptyList()
+)
+
 interface AdminClinicRepository {
     suspend fun listTherapists(): AppResult<List<TherapistSummary>>
     suspend fun createTherapist(params: AdminTherapistParams): AppResult<Long>
@@ -70,4 +105,9 @@ interface AdminClinicRepository {
     suspend fun completeAppointment(id: Long): AppResult<Unit>
     suspend fun listPatientNotes(appointmentId: Long): AppResult<List<PatientNote>>
     suspend fun addPatientNote(appointmentId: Long, note: String): AppResult<Long>
+
+    // ---- CRMِ سبکِ مراجعان + پرونده‌ی کاملِ مراجع ----
+    suspend fun listPatients(therapistId: Long): AppResult<List<AdminPatientSummary>>
+    suspend fun setPatientTags(therapistId: Long, userId: Long, tags: List<String>): AppResult<Unit>
+    suspend fun getPatientFile(therapistId: Long, userId: Long): AppResult<PatientFile>
 }

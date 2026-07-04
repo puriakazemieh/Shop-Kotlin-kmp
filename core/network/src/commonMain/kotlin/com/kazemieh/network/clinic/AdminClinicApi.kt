@@ -15,4 +15,8 @@ interface AdminClinicApi {
     suspend fun completeAppointment(id: Long)
     suspend fun listPatientNotes(appointmentId: Long): List<PatientNoteResponse>
     suspend fun addPatientNote(appointmentId: Long, request: AdminAddPatientNoteRequestDto): Long
+
+    suspend fun listPatients(therapistId: Long): List<AdminPatientSummaryResponse>
+    suspend fun setPatientTags(therapistId: Long, userId: Long, request: AdminSetPatientTagsRequestDto)
+    suspend fun getPatientFile(therapistId: Long, userId: Long): PatientFileResponse
 }

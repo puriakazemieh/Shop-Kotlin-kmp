@@ -60,4 +60,16 @@ class AdminClinicApiImpl(
         safeApiCallRaw<IdResponse> {
             client.post("api/admin/therapists/appointments/$appointmentId/notes") { setBody(request) }
         }.id
+
+    override suspend fun listPatients(therapistId: Long): List<AdminPatientSummaryResponse> = safeApiCallRaw {
+        client.get("api/admin/therapists/$therapistId/patients")
+    }
+
+    override suspend fun setPatientTags(therapistId: Long, userId: Long, request: AdminSetPatientTagsRequestDto): Unit = safeApiCallRaw {
+        client.put("api/admin/therapists/$therapistId/patients/$userId/tags") { setBody(request) }
+    }
+
+    override suspend fun getPatientFile(therapistId: Long, userId: Long): PatientFileResponse = safeApiCallRaw {
+        client.get("api/admin/therapists/$therapistId/patients/$userId")
+    }
 }

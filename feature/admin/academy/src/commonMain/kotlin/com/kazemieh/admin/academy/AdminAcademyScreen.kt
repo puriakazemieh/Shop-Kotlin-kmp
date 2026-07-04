@@ -105,8 +105,8 @@ fun AdminAcademyScreen(
                             fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
                         )
                         Spacer(Modifier.height(14.dp))
-                        AddCourseForm(onSubmit = { t, s, p, pid, ct, fmt, loc, cap ->
-                            viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap)
+                        AddCourseForm(onSubmit = { t, s, p, pid, ct, fmt, loc, cap, requiresProject ->
+                            viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap, requiresProject)
                         })
                     }
                     items(state.courses) { course ->
@@ -116,8 +116,13 @@ fun AdminAcademyScreen(
                             detail = if (state.expandedCourseId == course.id) state.expandedCourseDetail else null,
                             loadingDetail = state.loadingDetail && state.expandedCourseId == course.id,
                             quizCount = state.quizQuestionsByCourse[course.id]?.size ?: 0,
+                            lessonQuizCounts = state.lessonQuizByLesson.mapValues { it.value.size },
                             waitlist = state.waitlistByCourse[course.id].orEmpty(),
-                            onToggle = { viewModel.toggleExpand(course.id) },
+                            projectSubmissions = state.projectSubmissionsByCourse[course.id].orEmpty(),
+                            onToggle = {
+                                viewModel.toggleExpand(course.id)
+                                if (course.id != state.expandedCourseId) viewModel.loadProjectSubmissions(course.id)
+                            },
                             onDelete = { viewModel.deleteCourse(course.id) },
                             onAddSection = { title -> viewModel.addSection(course.id, title) },
                             onAddLesson = { sectionId, title, url, minutes, free ->
@@ -126,7 +131,13 @@ fun AdminAcademyScreen(
                             onAddQuizQuestion = { passScore, text, options, correct ->
                                 viewModel.addQuizQuestion(course.id, passScore, text, options, correct)
                             },
-                            onNotifyNextWaitlist = { viewModel.notifyNext(course.id) }
+                            onAddLessonFile = { lessonId, name, url -> viewModel.addLessonFile(course.id, lessonId, name, url) },
+                            onDeleteLessonFile = { lessonId, index -> viewModel.deleteLessonFile(course.id, lessonId, index) },
+                            onAddLessonQuizQuestion = { lessonId, passScore, text, options, correct ->
+                                viewModel.addLessonQuizQuestion(course.id, lessonId, passScore, text, options, correct)
+                            },
+                            onNotifyNextWaitlist = { viewModel.notifyNext(course.id) },
+                            onReviewProject = { submissionId, status, feedback -> viewModel.reviewProject(course.id, submissionId, status, feedback) }
                         )
                     }
                 }
@@ -145,7 +156,7 @@ private val COURSE_FORMATS = listOf(
 
 @Composable
 private fun AddCourseForm(
-    onSubmit: (title: String, slug: String, price: String, productId: String, courseType: String, format: String, location: String, capacity: String) -> Unit
+    onSubmit: (title: String, slug: String, price: String, productId: String, courseType: String, format: String, location: String, capacity: String, requiresProject: Boolean) -> Unit
 ) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
@@ -156,6 +167,7 @@ private fun AddCourseForm(
     var format by remember { mutableStateOf("ONLINE_RECORDED") }
     var location by remember { mutableStateOf("") }
     var capacity by remember { mutableStateOf("") }
+    var requiresProject by remember { mutableStateOf(false) }
     val isInPerson = format == "IN_PERSON" || format == "OFFLINE"
 
     Column(
@@ -195,15 +207,20 @@ private fun AddCourseForm(
             AdminTextField(value = capacity, onValueChange = { capacity = it }, label = "ظرفیتِ کلاس (نفر)")
         }
         Spacer(Modifier.height(10.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = requiresProject, onCheckedChange = { requiresProject = it })
+            Text("گواهی نیازمندِ تأییدِ پروژه‌ی پایانی هم باشد", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        }
+        Spacer(Modifier.height(6.dp))
         Text(
             "ساخت دوره",
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .background(if (title.isNotBlank() && slug.isNotBlank()) colors.primary else colors.line)
                 .clickable(enabled = title.isNotBlank() && slug.isNotBlank()) {
-                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim(), courseType, format, location.trim(), capacity.trim())
+                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim(), courseType, format, location.trim(), capacity.trim(), requiresProject)
                     title = ""; slug = ""; price = ""; productId = ""; courseType = "COURSE"
-                    format = "ONLINE_RECORDED"; location = ""; capacity = ""
+                    format = "ONLINE_RECORDED"; location = ""; capacity = ""; requiresProject = false
                 }
                 .padding(horizontal = 16.dp, vertical = 11.dp),
             color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
@@ -241,13 +258,19 @@ private fun CourseCard(
     detail: CourseDetail?,
     loadingDetail: Boolean,
     quizCount: Int,
+    lessonQuizCounts: Map<Long, Int>,
     waitlist: List<com.kazemieh.domain.academy.AdminWaitlistEntry>,
+    projectSubmissions: List<com.kazemieh.domain.academy.ProjectSubmission>,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
     onAddSection: (String) -> Unit,
     onAddLesson: (sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit,
     onAddQuizQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit,
-    onNotifyNextWaitlist: () -> Unit
+    onAddLessonFile: (lessonId: Long, name: String, url: String) -> Unit,
+    onDeleteLessonFile: (lessonId: Long, index: Int) -> Unit,
+    onAddLessonQuizQuestion: (lessonId: Long, passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit,
+    onNotifyNextWaitlist: () -> Unit,
+    onReviewProject: (submissionId: Long, status: String, feedback: String?) -> Unit
 ) {
     val colors = AppTheme.colors
     Column(
@@ -286,6 +309,27 @@ private fun CourseCard(
                                 color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL,
                                 modifier = Modifier.padding(start = 8.dp, top = 2.dp)
                             )
+                            // ---- فایل‌های ضمیمه‌ی درس ----
+                            if (lesson.resourceFiles.isNotEmpty()) {
+                                Column(modifier = Modifier.padding(start = 16.dp, top = 2.dp)) {
+                                    lesson.resourceFiles.forEachIndexed { idx, file ->
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text("📎 ${file.name}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL, modifier = Modifier.weight(1f))
+                                            Text(
+                                                "حذف", color = colors.sale, fontSize = FontSize.EXTRA_SMALL,
+                                                modifier = Modifier.clickable { onDeleteLessonFile(lesson.id, idx) }.padding(4.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            AddLessonFileForm(onSubmit = { name, url -> onAddLessonFile(lesson.id, name, url) })
+                            LessonQuizBuilder(
+                                lessonId = lesson.id,
+                                hasQuiz = lesson.hasQuiz,
+                                quizCount = lessonQuizCounts[lesson.id] ?: 0,
+                                onAddQuestion = { passScore, text, options, correct -> onAddLessonQuizQuestion(lesson.id, passScore, text, options, correct) }
+                            )
                         }
                         Spacer(Modifier.height(6.dp))
                         AddLessonForm(onSubmit = { title, url, minutes, free -> onAddLesson(section.id, title, url, minutes, free) })
@@ -298,6 +342,11 @@ private fun CourseCard(
                     if (detail.isFull || waitlist.isNotEmpty()) {
                         Spacer(Modifier.height(12.dp))
                         WaitlistSection(waitlist = waitlist, onNotifyNext = onNotifyNextWaitlist)
+                    }
+                    // ---- پروژه‌های پایانیِ ثبت‌شده (فقط دوره‌های پروژه‌محور) ----
+                    if (detail.requiresProjectSubmission) {
+                        Spacer(Modifier.height(12.dp))
+                        ProjectSubmissionsSection(submissions = projectSubmissions, onReview = onReviewProject)
                     }
                 }
             }
@@ -464,6 +513,152 @@ private fun AddLessonForm(onSubmit: (title: String, videoUrl: String, durationMi
             color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
         )
     }
+}
+
+/** افزودنِ فایلِ ضمیمه با لینکِ مستقیم (بدونِ آپلود) — هم‌الگو با ثبتِ لینکِ ویدیو. */
+@Composable
+private fun AddLessonFileForm(onSubmit: (name: String, url: String) -> Unit) {
+    val colors = AppTheme.colors
+    var name by remember { mutableStateOf("") }
+    var url by remember { mutableStateOf("") }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(modifier = Modifier.weight(1f)) {
+            AdminTextField(value = name, onValueChange = { name = it }, label = "نامِ فایل (مثلاً جزوه)")
+        }
+        Box(modifier = Modifier.weight(1f)) {
+            AdminTextField(value = url, onValueChange = { url = it }, label = "لینکِ فایل")
+        }
+        Text(
+            "+", fontWeight = FontWeight.Bold, color = colors.onPrimary,
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(if (name.isNotBlank() && url.isNotBlank()) colors.primary else colors.line)
+                .clickable(enabled = name.isNotBlank() && url.isNotBlank()) {
+                    onSubmit(name.trim(), url.trim()); name = ""; url = ""
+                }
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+        )
+    }
+}
+
+/** تست‌سازِ آزمونِ کوتاهِ یک درس (checkpoint) — هم‌الگو با QuizBuilderِ آزمونِ پایانِ دوره. */
+@Composable
+private fun LessonQuizBuilder(lessonId: Long, hasQuiz: Boolean, quizCount: Int, onAddQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit) {
+    val colors = AppTheme.colors
+    var expanded by remember(lessonId) { mutableStateOf(false) }
+    Column(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 4.dp)) {
+        Text(
+            if (hasQuiz || quizCount > 0) "ویرایشِ آزمونِ این درس" else "افزودنِ آزمونِ کوتاه به این درس",
+            color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.clickable { expanded = !expanded }.padding(vertical = 4.dp)
+        )
+        if (expanded) {
+            var passScore by remember { mutableStateOf("60") }
+            var question by remember { mutableStateOf("") }
+            val options = remember { mutableStateListOf("", "", "", "") }
+            var correctIndex by remember { mutableStateOf(0) }
+            Column(
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(colors.surfaceVariant).padding(10.dp)
+            ) {
+                if (quizCount > 0) {
+                    Text("$quizCount سؤال در این سشن اضافه شد", color = colors.ok, fontSize = FontSize.EXTRA_SMALL)
+                    Spacer(Modifier.height(6.dp))
+                }
+                AdminTextField(value = passScore, onValueChange = { passScore = it }, label = "حدِ نصابِ قبولی (٪)")
+                Spacer(Modifier.height(6.dp))
+                AdminTextField(value = question, onValueChange = { question = it }, label = "متنِ سؤال")
+                Spacer(Modifier.height(6.dp))
+                options.forEachIndexed { i, opt ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            AdminTextField(value = opt, onValueChange = { options[i] = it }, label = "گزینه‌ی ${i + 1}")
+                        }
+                        Spacer(Modifier.size(8.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = correctIndex == i, onCheckedChange = { if (it) correctIndex = i })
+                            Text("درست", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                        }
+                    }
+                    Spacer(Modifier.height(4.dp))
+                }
+                val canAdd = question.isNotBlank() && options.count { it.isNotBlank() } >= 2
+                Text(
+                    "افزودنِ سؤال",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(if (canAdd) colors.primary else colors.line)
+                        .clickable(enabled = canAdd) {
+                            onAddQuestion(passScore.trim(), question.trim(), options.toList(), correctIndex)
+                            question = ""; options[0] = ""; options[1] = ""; options[2] = ""; options[3] = ""; correctIndex = 0
+                        }
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+/** بررسیِ پروژه‌های پایانیِ ثبت‌شده‌ی کاربران — تأیید/رد + بازخورد. */
+@Composable
+private fun ProjectSubmissionsSection(submissions: List<com.kazemieh.domain.academy.ProjectSubmission>, onReview: (submissionId: Long, status: String, feedback: String?) -> Unit) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.surfaceVariant).padding(12.dp)
+    ) {
+        Text("پروژه‌های پایانیِ ثبت‌شده", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+        if (submissions.isEmpty()) {
+            Spacer(Modifier.height(4.dp))
+            Text("هنوز پروژه‌ای ثبت نشده.", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+        }
+        submissions.forEach { s ->
+            Spacer(Modifier.height(8.dp))
+            var feedback by remember(s.id) { mutableStateOf(s.mentorFeedback ?: "") }
+            Column(
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(colors.surface).padding(10.dp)
+            ) {
+                Text("کاربر #${s.userId}" + (s.userName?.let { " — $it" } ?: ""), fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL)
+                Text("لینک: ${s.fileUrl}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                Text(
+                    "وضعیت: ${statusLabel(s.status)}",
+                    color = statusColor(s.status, colors), fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(6.dp))
+                AdminTextField(value = feedback, onValueChange = { feedback = it }, label = "بازخوردِ مدرس")
+                Spacer(Modifier.height(6.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        "تأیید", color = colors.ok, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(colors.ok.copy(alpha = 0.12f))
+                            .clickable { onReview(s.id, "APPROVED", feedback.trim().ifBlank { null }) }
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                    Text(
+                        "رد", color = colors.sale, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(colors.sale.copy(alpha = 0.12f))
+                            .clickable { onReview(s.id, "REJECTED", feedback.trim().ifBlank { null }) }
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun statusLabel(status: String) = when (status) {
+    "APPROVED" -> "تأییدشده"
+    "REJECTED" -> "ردشده"
+    else -> "در انتظارِ بررسی"
+}
+
+private fun statusColor(status: String, colors: com.kazemieh.designsystem.AppColors) = when (status) {
+    "APPROVED" -> colors.ok
+    "REJECTED" -> colors.sale
+    else -> colors.onSurfaceVariant
 }
 
 @Composable

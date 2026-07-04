@@ -87,3 +87,46 @@ data class PatientNoteResponse(
     val note: String,
     val createdAt: String
 )
+
+// ---------- CRM + patient file ----------
+@Serializable
+data class AdminPatientSummaryResponse(
+    val userId: Long,
+    val userName: String,
+    val therapistId: Long,
+    val appointmentCount: Int,
+    val lastAppointmentAt: String? = null,
+    val tags: List<String> = emptyList()
+)
+
+@Serializable
+data class AdminSetPatientTagsRequestDto(
+    val tags: List<String> = emptyList()
+)
+
+@Serializable
+data class PatientFileAppointmentResponse(
+    val id: Long,
+    val status: String,
+    val dayLabel: String,
+    val timeLabel: String,
+    val notes: List<PatientNoteResponse> = emptyList()
+)
+
+@Serializable
+data class PatientFileTestResultResponse(
+    val testTitle: String,
+    val totalScore: Int? = null,
+    val interpretation: String? = null,
+    val completedAt: String? = null
+)
+
+@Serializable
+data class PatientFileResponse(
+    val userId: Long,
+    val userName: String,
+    val therapistId: Long,
+    val tags: List<String> = emptyList(),
+    val appointments: List<PatientFileAppointmentResponse> = emptyList(),
+    val testResults: List<PatientFileTestResultResponse> = emptyList()
+)

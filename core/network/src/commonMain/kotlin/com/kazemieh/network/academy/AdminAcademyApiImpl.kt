@@ -4,6 +4,10 @@ import com.kazemieh.network.academy.dto.*
 import com.kazemieh.network.common.safeApiCallRaw
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
+import io.ktor.http.HttpHeaders
+import io.ktor.http.Headers
 
 class AdminAcademyApiImpl(
     private val client: HttpClient
@@ -50,5 +54,44 @@ class AdminAcademyApiImpl(
 
     override suspend fun notifyNextInWaitlist(courseId: Long): AdminNotifyNextResponse = safeApiCallRaw {
         client.post("api/admin/courses/$courseId/waitlist/notify-next")
+    }
+
+    override suspend fun addLessonFile(courseId: Long, lessonId: Long, fileBytes: ByteArray, fileName: String, displayName: String): Int =
+        safeApiCallRaw<IndexResponse> {
+            client.submitFormWithBinaryData(
+                url = "api/admin/courses/$courseId/lessons/$lessonId/files",
+                formData = formData {
+                    append("file", fileBytes, Headers.build {
+                        append(HttpHeaders.ContentType, "application/octet-stream")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                    })
+                    append("name", displayName)
+                }
+            )
+        }.index
+
+    override suspend fun addLessonFileByLink(courseId: Long, lessonId: Long, request: AdminAddLessonFileRequestDto): Int =
+        safeApiCallRaw<IndexResponse> {
+            client.post("api/admin/courses/$courseId/lessons/$lessonId/files/link") { setBody(request) }
+        }.index
+
+    override suspend fun deleteLessonFile(courseId: Long, lessonId: Long, index: Int): Unit = safeApiCallRaw {
+        client.delete("api/admin/courses/$courseId/lessons/$lessonId/files/$index")
+    }
+
+    override suspend fun getLessonQuiz(courseId: Long, lessonId: Long): AdminLessonQuizResponse = safeApiCallRaw {
+        client.get("api/admin/courses/$courseId/lessons/$lessonId/quiz")
+    }
+
+    override suspend fun upsertLessonQuiz(courseId: Long, lessonId: Long, request: AdminUpsertLessonQuizRequestDto): Unit = safeApiCallRaw {
+        client.put("api/admin/courses/$courseId/lessons/$lessonId/quiz") { setBody(request) }
+    }
+
+    override suspend fun listProjectSubmissions(courseId: Long): List<ProjectSubmissionResponse> = safeApiCallRaw {
+        client.get("api/admin/courses/$courseId/projects")
+    }
+
+    override suspend fun reviewProjectSubmission(submissionId: Long, request: AdminReviewProjectRequestDto): Unit = safeApiCallRaw {
+        client.post("api/admin/courses/projects/$submissionId/review") { setBody(request) }
     }
 }

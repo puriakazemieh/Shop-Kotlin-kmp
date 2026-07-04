@@ -73,6 +73,10 @@ import com.kazemieh.domain.clinic.ClinicRepository
 import com.kazemieh.data.clinic.repository.ClinicRepositoryImpl
 import com.kazemieh.domain.clinic.AdminClinicRepository
 import com.kazemieh.data.clinic.repository.AdminClinicRepositoryImpl
+import com.kazemieh.domain.bundle.BundleRepository
+import com.kazemieh.data.bundle.repository.BundleRepositoryImpl
+import com.kazemieh.domain.bundle.AdminBundleRepository
+import com.kazemieh.data.bundle.repository.AdminBundleRepositoryImpl
 import org.koin.dsl.module
 
 
@@ -203,6 +207,14 @@ val dataModule = module {
 
     single<AdminPsychTestRepository> {
         AdminPsychTestRepositoryImpl(get())
+    }
+
+    single<BundleRepository> {
+        BundleRepositoryImpl(get())
+    }
+
+    single<AdminBundleRepository> {
+        AdminBundleRepositoryImpl(get())
     }
 
     single { TokenManager(settings = get()) }

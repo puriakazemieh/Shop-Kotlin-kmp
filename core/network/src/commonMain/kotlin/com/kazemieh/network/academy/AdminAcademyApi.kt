@@ -13,4 +13,17 @@ interface AdminAcademyApi {
     suspend fun upsertQuiz(courseId: Long, request: AdminUpsertQuizRequestDto)
     suspend fun listWaitlist(courseId: Long): List<AdminWaitlistEntryResponse>
     suspend fun notifyNextInWaitlist(courseId: Long): AdminNotifyNextResponse
+
+    // ---- فایل‌های ضمیمه‌ی درس ----
+    suspend fun addLessonFile(courseId: Long, lessonId: Long, fileBytes: ByteArray, fileName: String, displayName: String): Int
+    suspend fun addLessonFileByLink(courseId: Long, lessonId: Long, request: AdminAddLessonFileRequestDto): Int
+    suspend fun deleteLessonFile(courseId: Long, lessonId: Long, index: Int)
+
+    // ---- آزمونِ کوتاهِ درس ----
+    suspend fun getLessonQuiz(courseId: Long, lessonId: Long): AdminLessonQuizResponse
+    suspend fun upsertLessonQuiz(courseId: Long, lessonId: Long, request: AdminUpsertLessonQuizRequestDto)
+
+    // ---- پروژه‌های پایانی ----
+    suspend fun listProjectSubmissions(courseId: Long): List<ProjectSubmissionResponse>
+    suspend fun reviewProjectSubmission(submissionId: Long, request: AdminReviewProjectRequestDto)
 }

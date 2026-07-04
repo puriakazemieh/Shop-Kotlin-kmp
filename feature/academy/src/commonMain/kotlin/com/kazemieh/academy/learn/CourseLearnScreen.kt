@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
@@ -47,12 +48,16 @@ import com.kazemieh.details.VideoPlayer
 import com.kazemieh.domain.academy.Lesson
 import org.koin.compose.viewmodel.koinViewModel
 
+private enum class LessonTab { VIDEO, FILES, QUIZ }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourseLearnScreen(
     slug: String,
     navigateBack: () -> Unit,
-    navigateToQuiz: (Long) -> Unit = {}
+    navigateToQuiz: (Long) -> Unit = {},
+    navigateToLessonQuiz: (Long) -> Unit = {},
+    navigateToProject: (Long) -> Unit = {}
 ) {
     val viewModel = koinViewModel<CourseLearnViewModel>()
     val state by viewModel.state.collectAsState()
@@ -153,6 +158,78 @@ fun CourseLearnScreen(
                         )
                     }
 
+                    // ---- تبِ ویدیو/فایل‌ها/آزمون (فقط اگر درسِ فعلی فایل یا آزمون داشته باشد) ----
+                    var activeTab by remember(lesson?.id) { mutableStateOf(LessonTab.VIDEO) }
+                    if (lesson != null && (lesson.resourceFiles.isNotEmpty() || lesson.hasQuiz)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            LessonTabChip("ویدیو", activeTab == LessonTab.VIDEO) { activeTab = LessonTab.VIDEO }
+                            if (lesson.resourceFiles.isNotEmpty()) {
+                                LessonTabChip("فایل‌ها", activeTab == LessonTab.FILES) { activeTab = LessonTab.FILES }
+                            }
+                            if (lesson.hasQuiz) {
+                                LessonTabChip("آزمون", activeTab == LessonTab.QUIZ) { activeTab = LessonTab.QUIZ }
+                            }
+                        }
+                        when (activeTab) {
+                            LessonTab.FILES -> {
+                                val uriHandler = LocalUriHandler.current
+                                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                                    lesson.resourceFiles.forEach { file ->
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(Radius.sm))
+                                                .background(colors.surfaceVariant)
+                                                .clickable { uriHandler.openUri(file.url) }
+                                                .padding(12.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(file.name, modifier = Modifier.weight(1f), color = colors.onSurface, fontSize = FontSize.SMALL)
+                                            if (file.sizeLabel != null) {
+                                                Text(file.sizeLabel, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                                            }
+                                        }
+                                        Spacer(Modifier.height(6.dp))
+                                    }
+                                }
+                            }
+                            LessonTab.QUIZ -> {
+                                Text(
+                                    "شرکت در آزمونِ این درس",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                                        .clip(RoundedCornerShape(Radius.button))
+                                        .background(colors.primary)
+                                        .clickable { navigateToLessonQuiz(lesson.id) }
+                                        .padding(vertical = 12.dp),
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                    color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+                                )
+                            }
+                            LessonTab.VIDEO -> {}
+                        }
+                    }
+
+                    // ---- پروژه‌ی پایانی (فقط دوره‌های پروژه‌محور، پس از تکمیلِ ۱۰۰٪) ----
+                    if (course.requiresProjectSubmission && course.progressPercent >= 100) {
+                        Text(
+                            "ثبتِ پروژه‌ی پایانی",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                                .clip(RoundedCornerShape(Radius.button))
+                                .background(colors.accent2)
+                                .clickable { navigateToProject(course.id) }
+                                .padding(vertical = 12.dp),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            color = androidx.compose.ui.graphics.Color.White, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+                        )
+                    }
+
                     // ---- درسِ فعلی + دکمه‌ی تکمیل ----
                     if (lesson != null) {
                         Row(
@@ -201,6 +278,22 @@ fun CourseLearnScreen(
             }
         }
     }
+}
+
+@Composable
+private fun LessonTabChip(label: String, active: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        label,
+        modifier = Modifier
+            .clip(RoundedCornerShape(Radius.full))
+            .background(if (active) colors.primary else colors.surfaceVariant)
+            .clickable { onClick() }
+            .padding(horizontal = 14.dp, vertical = 7.dp),
+        color = if (active) colors.onPrimary else colors.onSurfaceVariant,
+        fontSize = FontSize.SMALL,
+        fontWeight = FontWeight.SemiBold
+    )
 }
 
 @Composable

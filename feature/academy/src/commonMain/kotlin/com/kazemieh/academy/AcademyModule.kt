@@ -3,15 +3,22 @@ package com.kazemieh.academy
 import com.kazemieh.academy.cert.CertificatesViewModel
 import com.kazemieh.academy.detail.CourseDetailViewModel
 import com.kazemieh.academy.learn.CourseLearnViewModel
+import com.kazemieh.academy.lessonquiz.LessonQuizViewModel
 import com.kazemieh.academy.list.CourseListViewModel
+import com.kazemieh.academy.project.ProjectSubmissionViewModel
 import com.kazemieh.academy.quiz.CourseQuizViewModel
 import com.kazemieh.domain.academy.EnrollCourseUseCase
 import com.kazemieh.domain.academy.GetCertificatesUseCase
 import com.kazemieh.domain.academy.GetCourseDetailUseCase
 import com.kazemieh.domain.academy.GetCoursesUseCase
+import com.kazemieh.domain.academy.GetLessonQuizUseCase
 import com.kazemieh.domain.academy.GetMyCoursesUseCase
+import com.kazemieh.domain.academy.GetMyProjectUseCase
 import com.kazemieh.domain.academy.GetQuizUseCase
 import com.kazemieh.domain.academy.JoinWaitlistUseCase
+import com.kazemieh.domain.academy.SubmitLessonQuizUseCase
+import com.kazemieh.domain.academy.SubmitProjectByLinkUseCase
+import com.kazemieh.domain.academy.SubmitProjectUseCase
 import com.kazemieh.domain.academy.SubmitQuizUseCase
 import com.kazemieh.domain.academy.UpdateLessonProgressUseCase
 import org.koin.core.module.dsl.viewModel
@@ -27,10 +34,17 @@ val academyModule = module {
     factory { SubmitQuizUseCase(get()) }
     factory { GetCertificatesUseCase(get()) }
     factory { JoinWaitlistUseCase(get()) }
+    factory { GetLessonQuizUseCase(get()) }
+    factory { SubmitLessonQuizUseCase(get()) }
+    factory { SubmitProjectUseCase(get()) }
+    factory { SubmitProjectByLinkUseCase(get()) }
+    factory { GetMyProjectUseCase(get()) }
 
     viewModel { CourseListViewModel(get(), get()) }
     viewModel { CourseDetailViewModel(get(), get(), get()) }
     viewModel { CourseLearnViewModel(get(), get()) }
     viewModel { CourseQuizViewModel(get(), get()) }
     viewModel { CertificatesViewModel(get()) }
+    viewModel { LessonQuizViewModel(get(), get()) }
+    viewModel { ProjectSubmissionViewModel(get(), get()) }
 }

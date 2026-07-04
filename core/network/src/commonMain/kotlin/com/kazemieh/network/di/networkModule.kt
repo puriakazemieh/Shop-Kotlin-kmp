@@ -43,6 +43,10 @@ import com.kazemieh.network.clinic.ClinicApi
 import com.kazemieh.network.clinic.ClinicApiImpl
 import com.kazemieh.network.clinic.AdminClinicApi
 import com.kazemieh.network.clinic.AdminClinicApiImpl
+import com.kazemieh.network.bundle.BundleApi
+import com.kazemieh.network.bundle.BundleApiImpl
+import com.kazemieh.network.bundle.AdminBundleApi
+import com.kazemieh.network.bundle.AdminBundleApiImpl
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -134,5 +138,13 @@ val networkModule = module {
 
     single<AdminPsychTestApi> {
         AdminPsychTestApiImpl(get())
+    }
+
+    single<BundleApi> {
+        BundleApiImpl(get())
+    }
+
+    single<AdminBundleApi> {
+        AdminBundleApiImpl(get())
     }
 }

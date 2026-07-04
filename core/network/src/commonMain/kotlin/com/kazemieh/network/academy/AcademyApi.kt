@@ -12,4 +12,9 @@ interface AcademyApi {
     suspend fun submitQuiz(courseId: Long, request: SubmitQuizRequestDto): QuizResultResponse
     suspend fun getCertificates(): List<CertificateResponse>
     suspend fun joinWaitlist(courseId: Long): WaitlistResponse
+    suspend fun getLessonQuiz(lessonId: Long): LessonQuizResponse
+    suspend fun submitLessonQuiz(lessonId: Long, request: SubmitLessonQuizRequestDto): LessonQuizResultResponse
+    suspend fun submitProject(courseId: Long, fileBytes: ByteArray, fileName: String, note: String?): ProjectSubmissionResponse
+    suspend fun submitProjectByLink(courseId: Long, request: SubmitProjectRequestDto): ProjectSubmissionResponse
+    suspend fun getMyProject(courseId: Long): MyProjectResponse
 }
