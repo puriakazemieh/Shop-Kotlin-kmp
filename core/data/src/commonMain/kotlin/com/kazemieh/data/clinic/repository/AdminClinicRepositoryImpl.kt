@@ -169,6 +169,6 @@ class AdminClinicRepositoryImpl(
             "CANCELLED" -> AdminAppointmentStatus.CANCELLED
             else -> AdminAppointmentStatus.UNKNOWN
         },
-        dayLabel = dayLabel, timeLabel = timeLabel, videoRoomUrl = videoRoomUrl, notes = notes
+        dayLabel = dayLabel, timeLabel = timeLabel, videoRoomUrl = videoRoomUrl, notes = notes, mode = mode
     )
 }

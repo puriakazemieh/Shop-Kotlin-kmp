@@ -137,7 +137,10 @@ fun AdminAcademyScreen(
                                 viewModel.addLessonQuizQuestion(course.id, lessonId, passScore, text, options, correct)
                             },
                             onNotifyNextWaitlist = { viewModel.notifyNext(course.id) },
-                            onReviewProject = { submissionId, status, feedback -> viewModel.reviewProject(course.id, submissionId, status, feedback) }
+                            onReviewProject = { submissionId, status, feedback -> viewModel.reviewProject(course.id, submissionId, status, feedback) },
+                            onUpdateCourse = { title, description, instructor, price, discountedPrice, requiresProject ->
+                                viewModel.updateCourse(course.id, title, description, instructor, price, discountedPrice, requiresProject)
+                            }
                         )
                     }
                 }
@@ -270,7 +273,8 @@ private fun CourseCard(
     onDeleteLessonFile: (lessonId: Long, index: Int) -> Unit,
     onAddLessonQuizQuestion: (lessonId: Long, passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit,
     onNotifyNextWaitlist: () -> Unit,
-    onReviewProject: (submissionId: Long, status: String, feedback: String?) -> Unit
+    onReviewProject: (submissionId: Long, status: String, feedback: String?) -> Unit,
+    onUpdateCourse: (title: String, description: String, instructor: String, price: String, discountedPrice: String, requiresProject: Boolean) -> Unit
 ) {
     val colors = AppTheme.colors
     Column(
@@ -300,6 +304,8 @@ private fun CourseCard(
             when {
                 loadingDetail -> Text("در حالِ بارگذاری…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                 detail != null -> {
+                    EditCourseSection(detail = detail, onUpdate = onUpdateCourse)
+                    Spacer(Modifier.height(10.dp))
                     detail.sections.forEach { section ->
                         Spacer(Modifier.height(8.dp))
                         Text(section.title, fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
@@ -350,6 +356,62 @@ private fun CourseCard(
                     }
                 }
             }
+        }
+    }
+}
+
+/** ویرایشِ فیلدهای پایه‌ی دوره (عنوان/توضیح/مدرس/قیمت/نیازِ پروژه) پس از ساخته‌شدن. */
+@Composable
+private fun EditCourseSection(detail: CourseDetail, onUpdate: (title: String, description: String, instructor: String, price: String, discountedPrice: String, requiresProject: Boolean) -> Unit) {
+    val colors = AppTheme.colors
+    var editing by remember(detail.id) { mutableStateOf(false) }
+    Text(
+        if (editing) "بستنِ ویرایش" else "ویرایشِ اطلاعاتِ دوره",
+        color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.clickable { editing = !editing }.padding(vertical = 4.dp)
+    )
+    if (editing) {
+        var title by remember(detail.id) { mutableStateOf(detail.title) }
+        var description by remember(detail.id) { mutableStateOf(detail.description.orEmpty()) }
+        var instructor by remember(detail.id) { mutableStateOf(detail.instructor.orEmpty()) }
+        var price by remember(detail.id) { mutableStateOf(detail.price.toString()) }
+        var discountedPrice by remember(detail.id) { mutableStateOf(detail.discountedPrice?.toString().orEmpty()) }
+        var requiresProject by remember(detail.id) { mutableStateOf(detail.requiresProjectSubmission) }
+        Column(
+            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.surfaceVariant).padding(12.dp)
+        ) {
+            AdminTextField(value = title, onValueChange = { title = it }, label = "عنوانِ دوره")
+            Spacer(Modifier.height(6.dp))
+            AdminTextField(value = description, onValueChange = { description = it }, label = "توضیح")
+            Spacer(Modifier.height(6.dp))
+            AdminTextField(value = instructor, onValueChange = { instructor = it }, label = "مدرس")
+            Spacer(Modifier.height(6.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(modifier = Modifier.weight(1f)) {
+                    AdminTextField(value = price, onValueChange = { price = it }, label = "قیمت")
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    AdminTextField(value = discountedPrice, onValueChange = { discountedPrice = it }, label = "قیمتِ تخفیف‌خورده (اختیاری)")
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = requiresProject, onCheckedChange = { requiresProject = it })
+                Text("گواهی نیازمندِ تأییدِ پروژه‌ی پایانی هم باشد", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "ذخیره‌ی تغییرات",
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.primary)
+                    .clickable {
+                        onUpdate(title.trim(), description.trim(), instructor.trim(), price.trim(), discountedPrice.trim(), requiresProject)
+                        editing = false
+                    }
+                    .padding(horizontal = 14.dp, vertical = 9.dp),
+                color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+            )
         }
     }
 }

@@ -479,11 +479,14 @@ private fun AppointmentAdminCard(
 
         if (appointment.status == AdminAppointmentStatus.PENDING || appointment.status == AdminAppointmentStatus.CONFIRMED) {
             Spacer(Modifier.height(10.dp))
-            AdminTextField(value = videoUrl, onValueChange = { videoUrl = it }, label = "لینکِ اتاقِ تماس (Jitsi/Meet)")
+            AdminTextField(
+                value = videoUrl, onValueChange = { videoUrl = it },
+                label = if (appointment.isPhone) "شماره‌ی تماس برای این جلسه" else "لینکِ اتاقِ تماس (Jitsi/Meet)"
+            )
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "تأیید و ثبتِ لینک",
+                    if (appointment.isPhone) "تأیید و ثبتِ شماره" else "تأیید و ثبتِ لینک",
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(if (videoUrl.isNotBlank()) colors.primary else colors.line)

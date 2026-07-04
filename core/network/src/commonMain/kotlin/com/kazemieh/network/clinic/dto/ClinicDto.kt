@@ -60,5 +60,6 @@ data class AppointmentResponse(
     val timeLabel: String,
     val videoRoomUrl: String? = null,
     val canJoin: Boolean = false,
-    val notes: String? = null
+    val notes: String? = null,
+    val mode: String = "ONLINE"
 )

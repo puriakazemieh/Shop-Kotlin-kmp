@@ -72,6 +72,7 @@ class ClinicRepositoryImpl(
         timeLabel = timeLabel,
         videoRoomUrl = videoRoomUrl,
         canJoin = canJoin,
-        notes = notes
+        notes = notes,
+        mode = mode
     )
 }

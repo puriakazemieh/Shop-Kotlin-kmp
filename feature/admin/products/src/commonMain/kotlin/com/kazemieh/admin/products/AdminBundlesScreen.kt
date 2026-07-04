@@ -104,7 +104,11 @@ fun AdminBundlesScreen(
                         AddBundleForm(onSubmit = viewModel::createBundle)
                     }
                     items(state.bundles) { bundle ->
-                        BundleRow(bundle = bundle, onDelete = { viewModel.deleteBundle(bundle.id) })
+                        BundleRow(
+                            bundle = bundle,
+                            onDelete = { viewModel.deleteBundle(bundle.id) },
+                            onToggleActive = { viewModel.setBundleActive(bundle.id, !bundle.isActive) }
+                        )
                     }
                 }
             }
@@ -153,7 +157,7 @@ private fun AddBundleForm(onSubmit: (title: String, slug: String, description: S
 }
 
 @Composable
-private fun BundleRow(bundle: AdminBundle, onDelete: () -> Unit) {
+private fun BundleRow(bundle: AdminBundle, onDelete: () -> Unit, onToggleActive: () -> Unit) {
     val colors = AppTheme.colors
     Row(
         modifier = Modifier
@@ -172,6 +176,16 @@ private fun BundleRow(bundle: AdminBundle, onDelete: () -> Unit) {
                 color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
             )
         }
+        Text(
+            if (bundle.isActive) "غیرفعال کردن" else "فعال کردن",
+            color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold,
+            modifier = Modifier
+                .clip(RoundedCornerShape(9.dp))
+                .background(colors.accentSoft)
+                .clickable { onToggleActive() }
+                .padding(horizontal = 10.dp, vertical = 8.dp)
+        )
+        Spacer(Modifier.size(8.dp))
         Box(
             modifier = Modifier.size(32.dp).clip(RoundedCornerShape(9.dp)).background(colors.sale.copy(alpha = 0.1f)).clickable { onDelete() },
             contentAlignment = Alignment.Center

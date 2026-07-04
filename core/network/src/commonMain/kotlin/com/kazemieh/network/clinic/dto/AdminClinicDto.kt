@@ -70,7 +70,8 @@ data class AdminAppointmentResponse(
     val dayLabel: String,
     val timeLabel: String,
     val videoRoomUrl: String? = null,
-    val notes: String? = null
+    val notes: String? = null,
+    val mode: String = "ONLINE"
 )
 
 // ---------- Patient notes (حساس) ----------

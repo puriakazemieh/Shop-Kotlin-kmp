@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.bundle.AdminBundle
 import com.kazemieh.domain.bundle.AdminBundleParams
+import com.kazemieh.domain.bundle.AdminBundleUpdateParams
 import com.kazemieh.domain.bundle.CreateBundleUseCase
 import com.kazemieh.domain.bundle.DeleteBundleUseCase
 import com.kazemieh.domain.bundle.GetAdminBundlesUseCase
+import com.kazemieh.domain.bundle.UpdateBundleUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +32,7 @@ sealed interface AdminBundlesEffect {
 class AdminBundlesViewModel(
     private val getAdminBundlesUseCase: GetAdminBundlesUseCase,
     private val createBundleUseCase: CreateBundleUseCase,
+    private val updateBundleUseCase: UpdateBundleUseCase,
     private val deleteBundleUseCase: DeleteBundleUseCase
 ) : ViewModel() {
 
@@ -65,6 +68,19 @@ class AdminBundlesViewModel(
             when (val result = createBundleUseCase(params)) {
                 is AppResult.Success -> {
                     _effect.send(AdminBundlesEffect.ShowSuccess("باندل ساخته شد."))
+                    load()
+                }
+                is AppResult.Error -> _effect.send(AdminBundlesEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun setBundleActive(id: Long, isActive: Boolean) {
+        viewModelScope.launch {
+            when (val result = updateBundleUseCase(id, AdminBundleUpdateParams(isActive = isActive))) {
+                is AppResult.Success -> {
+                    _effect.send(AdminBundlesEffect.ShowSuccess(if (isActive) "باندل فعال شد." else "باندل غیرفعال شد."))
                     load()
                 }
                 is AppResult.Error -> _effect.send(AdminBundlesEffect.ShowError(result.message))

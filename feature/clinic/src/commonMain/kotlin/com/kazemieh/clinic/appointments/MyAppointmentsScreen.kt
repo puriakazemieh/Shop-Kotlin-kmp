@@ -119,7 +119,11 @@ fun MyAppointmentsScreen(
                             AppointmentCard(
                                 appointment = appointment,
                                 cancelling = state.cancellingId == appointment.id,
-                                onJoin = { appointment.videoRoomUrl?.let { uriHandler.openUri(it) } },
+                                onJoin = {
+                                    appointment.videoRoomUrl?.let { url ->
+                                        if (appointment.isPhone) uriHandler.openUri("tel:$url") else uriHandler.openUri(url)
+                                    }
+                                },
                                 onCancel = { viewModel.cancel(appointment.id) }
                             )
                         }
@@ -167,12 +171,19 @@ private fun AppointmentCard(
         }
         Spacer(Modifier.height(8.dp))
         Text("${appointment.dayLabel}  •  ${appointment.timeLabel}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        if (appointment.isPhone && !appointment.videoRoomUrl.isNullOrBlank()) {
+            Spacer(Modifier.height(4.dp))
+            Text("شماره‌ی تماس: ${appointment.videoRoomUrl}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        }
 
         if (appointment.canJoin || appointment.status == AppointmentStatus.PENDING || appointment.status == AppointmentStatus.CONFIRMED) {
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (appointment.canJoin) {
-                    ActionButton(text = "ورود به جلسه", bg = colors.primary, fg = colors.onPrimary, onClick = onJoin)
+                    ActionButton(
+                        text = if (appointment.isPhone) "تماس بگیر" else "ورود به جلسه",
+                        bg = colors.primary, fg = colors.onPrimary, onClick = onJoin
+                    )
                 }
                 if (appointment.status == AppointmentStatus.PENDING || appointment.status == AppointmentStatus.CONFIRMED) {
                     ActionButton(

@@ -44,8 +44,11 @@ data class AdminAppointment(
     val dayLabel: String,
     val timeLabel: String,
     val videoRoomUrl: String?,
-    val notes: String?
-)
+    val notes: String?,
+    val mode: String = "ONLINE"
+) {
+    val isPhone: Boolean get() = mode == "PHONE"
+}
 
 data class PatientNote(
     val id: Long,

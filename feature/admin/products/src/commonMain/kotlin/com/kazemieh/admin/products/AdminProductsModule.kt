@@ -111,6 +111,7 @@ val adminProductsModule = module {
         AdminBundlesViewModel(
             getAdminBundlesUseCase = get(),
             createBundleUseCase = get(),
+            updateBundleUseCase = get(),
             deleteBundleUseCase = get()
         )
     }

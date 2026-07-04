@@ -7,6 +7,7 @@ import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
 import com.kazemieh.domain.academy.AddLessonFileByLinkUseCase
 import com.kazemieh.domain.academy.AdminCourseParams
+import com.kazemieh.domain.academy.AdminCourseUpdateParams
 import com.kazemieh.domain.academy.AdminQuizQuestion
 import com.kazemieh.domain.academy.AdminWaitlistEntry
 import com.kazemieh.domain.academy.CourseDetail
@@ -21,6 +22,7 @@ import com.kazemieh.domain.academy.ListProjectSubmissionsUseCase
 import com.kazemieh.domain.academy.NotifyNextInWaitlistUseCase
 import com.kazemieh.domain.academy.ProjectSubmission
 import com.kazemieh.domain.academy.ReviewProjectSubmissionUseCase
+import com.kazemieh.domain.academy.UpdateCourseUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import com.kazemieh.domain.academy.UpsertLessonQuizUseCase
 import kotlinx.coroutines.channels.Channel
@@ -58,6 +60,7 @@ class AdminAcademyViewModel(
     private val getAdminCoursesUseCase: GetAdminCoursesUseCase,
     private val getAdminCourseDetailUseCase: GetAdminCourseDetailUseCase,
     private val createCourseUseCase: CreateCourseUseCase,
+    private val updateCourseUseCase: UpdateCourseUseCase,
     private val deleteCourseUseCase: DeleteCourseUseCase,
     private val addCourseSectionUseCase: AddCourseSectionUseCase,
     private val addCourseLessonUseCase: AddCourseLessonUseCase,
@@ -167,6 +170,35 @@ class AdminAcademyViewModel(
                 is AppResult.Success -> {
                     _effect.send(AdminAcademyEffect.ShowSuccess("دوره ساخته شد."))
                     load()
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun updateCourse(
+        id: Long,
+        title: String,
+        description: String,
+        instructor: String,
+        price: String,
+        discountedPrice: String,
+        requiresProjectSubmission: Boolean
+    ) {
+        viewModelScope.launch {
+            val params = AdminCourseUpdateParams(
+                title = title.ifBlank { null },
+                description = description.ifBlank { null },
+                instructor = instructor.ifBlank { null },
+                price = price.toDoubleOrNull(),
+                discountedPrice = discountedPrice.toDoubleOrNull(),
+                requiresProjectSubmission = requiresProjectSubmission
+            )
+            when (val result = updateCourseUseCase(id, params)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("دوره به‌روزرسانی شد."))
+                    refreshExpanded(id)
                 }
                 is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
                 else -> {}

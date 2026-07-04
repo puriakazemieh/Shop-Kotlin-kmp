@@ -57,7 +57,11 @@ data class Appointment(
     val status: AppointmentStatus,
     val dayLabel: String,
     val timeLabel: String,
+    /** برای حالتِ ONLINE: لینکِ اتاقِ تماس. برای PHONE: همین فیلد شماره‌تماس را نگه می‌دارد. */
     val videoRoomUrl: String?,
     val canJoin: Boolean,
-    val notes: String?
-)
+    val notes: String?,
+    val mode: String = "ONLINE"
+) {
+    val isPhone: Boolean get() = mode == "PHONE"
+}

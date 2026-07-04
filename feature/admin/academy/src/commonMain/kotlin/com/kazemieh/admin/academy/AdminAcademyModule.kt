@@ -40,6 +40,7 @@ val adminAcademyModule = module {
             getAdminCoursesUseCase = get(),
             getAdminCourseDetailUseCase = get(),
             createCourseUseCase = get(),
+            updateCourseUseCase = get(),
             deleteCourseUseCase = get(),
             addCourseSectionUseCase = get(),
             addCourseLessonUseCase = get(),
