@@ -54,6 +54,7 @@ import com.kazemieh.academy.lessonquiz.LessonQuizScreen
 import com.kazemieh.academy.project.ProjectSubmissionScreen
 import com.kazemieh.catalog.bundle.BundleListScreen
 import com.kazemieh.catalog.bundle.BundleDetailScreen
+import com.kazemieh.catalog.assistant.ShoppingAssistantScreen
 import com.kazemieh.psychtest.list.PsychTestListScreen
 import com.kazemieh.psychtest.take.TakeTestScreen
 import com.kazemieh.comparison.ComparisonScreen
@@ -181,6 +182,9 @@ fun AppNavHost(
                 },
                 navigateToMembership = {
                     navController.navigate(Screen.Membership)
+                },
+                navigateToShoppingAssistant = {
+                    navController.navigate(Screen.ShoppingAssistant)
                 },
             )
         }
@@ -388,6 +392,13 @@ fun AppNavHost(
             ComparisonScreen(
                 navigateBack = { navController.navigateBack() },
                 navigateToDetail = { slug -> navController.navigate(Screen.ProductDetail(slug)) }
+            )
+        }
+
+        composable<Screen.ShoppingAssistant> {
+            ShoppingAssistantScreen(
+                onBackClick = { navController.navigateBack() },
+                navigateToDetails = { slug -> navController.navigate(Screen.ProductDetail(slug)) }
             )
         }
 

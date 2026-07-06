@@ -1,5 +1,6 @@
 package com.kazemieh.catalog
 
+import com.kazemieh.catalog.assistant.ShoppingAssistantViewModel
 import com.kazemieh.catalog.bundle.BundleDetailViewModel
 import com.kazemieh.catalog.bundle.BundleListViewModel
 import com.kazemieh.domain.bundle.GetBundleDetailUseCase
@@ -36,6 +37,8 @@ val catalogModule = module {
 
     // Recently viewed
     factory { GetRecentlyViewedUseCase(get()) }
+
+    viewModel { ShoppingAssistantViewModel(getProductsUseCase = get()) }
 
     viewModel {
         ProductsOverviewViewModel(

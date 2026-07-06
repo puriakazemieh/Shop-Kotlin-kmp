@@ -75,6 +75,7 @@ fun MoreScreen(
     onReferralClick: () -> Unit = {},
     onRecurringOrdersClick: () -> Unit = {},
     onMembershipClick: () -> Unit = {},
+    onShoppingAssistantClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -214,6 +215,13 @@ fun MoreScreen(
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
+
+        AccountRow(
+            title = "دستیارِ خرید",
+            subtitle = "راهنمایی و پیشنهادِ محصول",
+            onClick = onShoppingAssistantClick
+        ) { AccountIcon(vector = Icons.Default.Star) }
+        Spacer(Modifier.height(12.dp))
 
         AccountRow(
             title = "پشتیبانی و سؤالات",
