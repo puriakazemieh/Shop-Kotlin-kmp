@@ -13,6 +13,8 @@ import com.kazemieh.domain.favorite.GetFavoritesUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.wallet.*
 import com.kazemieh.domain.referral.GetMyReferralInfoUseCase
+import com.kazemieh.domain.membership.GetMembershipStatusUseCase
+import com.kazemieh.domain.membership.SubscribeMembershipUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -56,6 +58,10 @@ val profileModule = module {
 
     viewModel { ReferralViewModel(getMyReferralInfoUseCase = get()) }
     factory { GetMyReferralInfoUseCase(get()) }
+
+    viewModel { MembershipViewModel(getMembershipStatusUseCase = get(), subscribeMembershipUseCase = get()) }
+    factory { GetMembershipStatusUseCase(get()) }
+    factory { SubscribeMembershipUseCase(get()) }
 
     // UseCases
     factory { GetProfileUseCase(get()) }

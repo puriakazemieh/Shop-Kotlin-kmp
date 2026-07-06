@@ -179,6 +179,10 @@ val dataModule = module {
         com.kazemieh.data.order.repository.RecurringOrderRepositoryImpl(get())
     }
 
+    single<com.kazemieh.domain.membership.MembershipRepository> {
+        com.kazemieh.data.membership.MembershipRepositoryImpl(get())
+    }
+
     single<OrderDataSource> {
         OrderDataSourceImpl(get())
     }

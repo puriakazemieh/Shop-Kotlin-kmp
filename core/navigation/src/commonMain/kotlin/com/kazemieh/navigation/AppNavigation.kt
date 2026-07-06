@@ -35,6 +35,7 @@ import com.kazemieh.cart.checkout.CheckoutScreen
 import com.kazemieh.cart.payment_completed.PaymentCompleted
 import com.kazemieh.profile.WalletScreen
 import com.kazemieh.profile.ReferralScreen
+import com.kazemieh.profile.MembershipScreen
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import com.kazemieh.profile.FavoritesScreen
@@ -178,6 +179,9 @@ fun AppNavHost(
                 navigateToRecurringOrders = {
                     navController.navigate(Screen.RecurringOrders)
                 },
+                navigateToMembership = {
+                    navController.navigate(Screen.Membership)
+                },
             )
         }
 
@@ -187,6 +191,10 @@ fun AppNavHost(
 
         composable<Screen.RecurringOrders> {
             RecurringOrdersScreen(onBackClick = { navController.navigateBack() })
+        }
+
+        composable<Screen.Membership> {
+            MembershipScreen(onBackClick = { navController.navigateBack() })
         }
 
         composable<Screen.Profile> {

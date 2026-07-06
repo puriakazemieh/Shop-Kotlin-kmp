@@ -74,6 +74,7 @@ fun MoreScreen(
     onBundlesClick: () -> Unit = {},
     onReferralClick: () -> Unit = {},
     onRecurringOrdersClick: () -> Unit = {},
+    onMembershipClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -119,6 +120,13 @@ fun MoreScreen(
                 title = "خریدهایِ تکراری",
                 subtitle = "سفارشِ خودکارِ دوره‌ای برایِ کالاهایِ مصرفی",
                 onClick = onRecurringOrdersClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "عضویتِ ویژه",
+                subtitle = "تخفیفِ خودکار روی همه‌ی خریدها",
+                onClick = onMembershipClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
 

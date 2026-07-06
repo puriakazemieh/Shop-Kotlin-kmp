@@ -108,6 +108,10 @@ val networkModule = module {
         com.kazemieh.network.order.RecurringOrderApiImpl(get())
     }
 
+    single<com.kazemieh.network.membership.MembershipApi> {
+        com.kazemieh.network.membership.MembershipApiImpl(get())
+    }
+
     single<AddressApi> {
         AddressApiImpl(get())
     }
