@@ -12,6 +12,7 @@ import com.kazemieh.domain.profile.ValidateProfileUseCase
 import com.kazemieh.domain.favorite.GetFavoritesUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.wallet.*
+import com.kazemieh.domain.referral.GetMyReferralInfoUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -52,6 +53,9 @@ val profileModule = module {
             withdrawWalletUseCase = get()
         )
     }
+
+    viewModel { ReferralViewModel(getMyReferralInfoUseCase = get()) }
+    factory { GetMyReferralInfoUseCase(get()) }
 
     // UseCases
     factory { GetProfileUseCase(get()) }

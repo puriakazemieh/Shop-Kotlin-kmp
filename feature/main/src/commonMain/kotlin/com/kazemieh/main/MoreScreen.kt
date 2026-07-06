@@ -72,6 +72,7 @@ fun MoreScreen(
     onComparisonClick: () -> Unit = {},
     onFreeCoursesClick: () -> Unit = {},
     onBundlesClick: () -> Unit = {},
+    onReferralClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -103,6 +104,13 @@ fun MoreScreen(
                 title = "باشگاه مشتریان",
                 subtitle = "امتیازها و مزایای شما",
                 onClick = onCustomerClubClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "دعوت از دوستان",
+                subtitle = "با کدِ اختصاصیِ خودت اعتبار بگیر",
+                onClick = onReferralClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
 

@@ -34,6 +34,7 @@ import com.kazemieh.catalog.CategorySearchScreen
 import com.kazemieh.cart.checkout.CheckoutScreen
 import com.kazemieh.cart.payment_completed.PaymentCompleted
 import com.kazemieh.profile.WalletScreen
+import com.kazemieh.profile.ReferralScreen
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import com.kazemieh.profile.FavoritesScreen
@@ -170,7 +171,14 @@ fun AppNavHost(
                 navigateToBundles = {
                     navController.navigate(Screen.BundleList)
                 },
+                navigateToReferral = {
+                    navController.navigate(Screen.Referral)
+                },
             )
+        }
+
+        composable<Screen.Referral> {
+            ReferralScreen(onBackClick = { navController.navigateBack() })
         }
 
         composable<Screen.Profile> {

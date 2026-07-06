@@ -100,6 +100,10 @@ val networkModule = module {
         com.kazemieh.network.order.ReturnRequestApiImpl(get())
     }
 
+    single<com.kazemieh.network.referral.ReferralApi> {
+        com.kazemieh.network.referral.ReferralApiImpl(get())
+    }
+
     single<AddressApi> {
         AddressApiImpl(get())
     }
