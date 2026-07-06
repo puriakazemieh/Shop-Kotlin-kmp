@@ -104,6 +104,10 @@ val networkModule = module {
         com.kazemieh.network.referral.ReferralApiImpl(get())
     }
 
+    single<com.kazemieh.network.order.RecurringOrderApi> {
+        com.kazemieh.network.order.RecurringOrderApiImpl(get())
+    }
+
     single<AddressApi> {
         AddressApiImpl(get())
     }

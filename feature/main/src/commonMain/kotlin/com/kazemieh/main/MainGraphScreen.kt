@@ -77,6 +77,7 @@ fun MainGraphScreen(
     navigateToFreeCourses: () -> Unit = {},
     navigateToBundles: () -> Unit = {},
     navigateToReferral: () -> Unit = {},
+    navigateToRecurringOrders: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val brand = koinInject<BrandConfig>()
@@ -196,7 +197,8 @@ fun MainGraphScreen(
                                 onComparisonClick = navigateToComparison,
                                 onFreeCoursesClick = navigateToFreeCourses,
                                 onBundlesClick = navigateToBundles,
-                                onReferralClick = navigateToReferral
+                                onReferralClick = navigateToReferral,
+                                onRecurringOrdersClick = navigateToRecurringOrders
                             )
                         }
                     }

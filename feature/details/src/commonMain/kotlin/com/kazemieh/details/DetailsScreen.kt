@@ -452,6 +452,10 @@ fun DetailsScreen(
                             priceAlertRequested = state.priceAlertRequested,
                             onPriceAlert = {
                                 viewModel.handleIntent(DetailsIntent.SubscribeToPriceAlert(discountedPrice ?: basePrice))
+                            },
+                            recurringOrderCreated = state.recurringOrderCreated,
+                            onRecurringOrder = {
+                                viewModel.handleIntent(DetailsIntent.SubscribeRecurringOrder)
                             }
                         )
 
@@ -798,7 +802,9 @@ private fun PriceActionCard(
     onGoToCart: () -> Unit,
     onToggleFavorite: () -> Unit,
     priceAlertRequested: Boolean = false,
-    onPriceAlert: () -> Unit = {}
+    onPriceAlert: () -> Unit = {},
+    recurringOrderCreated: Boolean = false,
+    onRecurringOrder: () -> Unit = {}
 ) {
     val colors = AppTheme.colors
     val displayPrice = discountedPrice ?: basePrice
@@ -961,6 +967,19 @@ private fun PriceActionCard(
                 fontSize = FontSize.SMALL,
                 fontWeight = FontWeight.SemiBold
             )
+            if (inStock) {
+                Text(
+                    text = if (recurringOrderCreated) "خریدِ تکراری فعال شد (هر ۳۰ روز)" else "خریدِ تکراری — هر ۳۰ روز خودکار سفارش بده",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(enabled = !recurringOrderCreated) { onRecurringOrder() }
+                        .padding(vertical = 6.dp),
+                    textAlign = TextAlign.Center,
+                    color = if (recurringOrderCreated) colors.ok else colors.onSurfaceVariant,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }

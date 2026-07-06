@@ -21,7 +21,8 @@ data class DetailsState(
     val notifyRequested: Boolean = false,
     val defaultCity: String? = null,
     val priceAlertRequested: Boolean = false,
-    val frequentlyBoughtTogether: List<ProductSummary> = emptyList()
+    val frequentlyBoughtTogether: List<ProductSummary> = emptyList(),
+    val recurringOrderCreated: Boolean = false
 )
 
 sealed interface DetailsIntent {
@@ -43,6 +44,7 @@ sealed interface DetailsIntent {
     data object RequestBackInStock : DetailsIntent
     data class SubscribeToPriceAlert(val targetPrice: Double) : DetailsIntent
     data class LoadFrequentlyBoughtTogether(val productId: Long) : DetailsIntent
+    data object SubscribeRecurringOrder : DetailsIntent
 }
 
 sealed interface DetailsEffect {

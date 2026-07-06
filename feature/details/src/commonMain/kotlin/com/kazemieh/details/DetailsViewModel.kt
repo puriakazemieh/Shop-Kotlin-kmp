@@ -22,6 +22,7 @@ import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
 import com.kazemieh.domain.catalog.RequestBackInStockUseCase
 import com.kazemieh.domain.catalog.SubscribeToPriceAlertUseCase
 import com.kazemieh.domain.catalog.GetFrequentlyBoughtTogetherUseCase
+import com.kazemieh.domain.order.CreateRecurringOrderUseCase
 import com.kazemieh.domain.catalog.ProductDetail
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.Review
@@ -60,7 +61,8 @@ class DetailsViewModel(
     private val requestBackInStockUseCase: RequestBackInStockUseCase,
     private val getAddressesUseCase: GetAddressesUseCase,
     private val subscribeToPriceAlertUseCase: SubscribeToPriceAlertUseCase,
-    private val getFrequentlyBoughtTogetherUseCase: GetFrequentlyBoughtTogetherUseCase
+    private val getFrequentlyBoughtTogetherUseCase: GetFrequentlyBoughtTogetherUseCase,
+    private val createRecurringOrderUseCase: CreateRecurringOrderUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -154,6 +156,22 @@ class DetailsViewModel(
             is DetailsIntent.RequestBackInStock -> requestBackInStock()
             is DetailsIntent.SubscribeToPriceAlert -> subscribeToPriceAlert(intent.targetPrice)
             is DetailsIntent.LoadFrequentlyBoughtTogether -> loadFrequentlyBoughtTogether(intent.productId)
+            is DetailsIntent.SubscribeRecurringOrder -> subscribeRecurringOrder()
+        }
+    }
+
+    private fun subscribeRecurringOrder() {
+        val variantId = _state.value.selectedVariant?.id ?: return
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = createRecurringOrderUseCase(variantId, _state.value.quantity, null, 30)) {
+                is AppResult.Success -> _state.update { it.copy(recurringOrderCreated = true) }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
         }
     }
 

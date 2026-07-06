@@ -17,6 +17,7 @@ import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
 import com.kazemieh.domain.catalog.RequestBackInStockUseCase
 import com.kazemieh.domain.catalog.SubscribeToPriceAlertUseCase
 import com.kazemieh.domain.catalog.GetFrequentlyBoughtTogetherUseCase
+import com.kazemieh.domain.order.CreateRecurringOrderUseCase
 import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
@@ -46,7 +47,8 @@ val detailsModule = module {
             requestBackInStockUseCase = get(),
             getAddressesUseCase = get(),
             subscribeToPriceAlertUseCase = get(),
-            getFrequentlyBoughtTogetherUseCase = get()
+            getFrequentlyBoughtTogetherUseCase = get(),
+            createRecurringOrderUseCase = get()
         )
     }
 
@@ -70,4 +72,5 @@ val detailsModule = module {
     factory { GetAddressesUseCase(get()) }
     factory { SubscribeToPriceAlertUseCase(get()) }
     factory { GetFrequentlyBoughtTogetherUseCase(get()) }
+    factory { CreateRecurringOrderUseCase(get()) }
 }

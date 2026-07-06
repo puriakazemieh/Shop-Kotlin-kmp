@@ -43,6 +43,7 @@ import com.kazemieh.orders.list.OrderListScreen
 import com.kazemieh.orders.detail.OrderDetailScreen
 import com.kazemieh.orders.tracking.OrderTrackingScreen
 import com.kazemieh.orders.returns.ReturnRequestScreen
+import com.kazemieh.orders.recurring.RecurringOrdersScreen
 import com.kazemieh.academy.list.CourseListScreen
 import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
@@ -174,11 +175,18 @@ fun AppNavHost(
                 navigateToReferral = {
                     navController.navigate(Screen.Referral)
                 },
+                navigateToRecurringOrders = {
+                    navController.navigate(Screen.RecurringOrders)
+                },
             )
         }
 
         composable<Screen.Referral> {
             ReferralScreen(onBackClick = { navController.navigateBack() })
+        }
+
+        composable<Screen.RecurringOrders> {
+            RecurringOrdersScreen(onBackClick = { navController.navigateBack() })
         }
 
         composable<Screen.Profile> {

@@ -155,6 +155,9 @@ sealed class Screen {
     data object Referral : Screen()
 
     @Serializable
+    data object RecurringOrders : Screen()
+
+    @Serializable
     data class BundleDetail(val slug: String) : Screen()
 
     // ---- Clinic (vertical) ----
