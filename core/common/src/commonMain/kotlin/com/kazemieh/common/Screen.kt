@@ -57,6 +57,9 @@ sealed class Screen {
     data class OrderTracking(val id: Long) : Screen()
 
     @Serializable
+    data class ReturnRequest(val orderItemId: Long? = null, val itemTitle: String? = null) : Screen()
+
+    @Serializable
     data object Settings : Screen()
 
     @Serializable

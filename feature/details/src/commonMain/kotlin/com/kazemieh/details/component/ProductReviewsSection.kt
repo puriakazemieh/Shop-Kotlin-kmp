@@ -111,9 +111,9 @@ fun ProductReviewsSection(
     if (showAddDialog) {
         AddReviewDialog(
             onDismiss = { showAddDialog = false },
-            onSubmit = { rating, comment ->
+            onSubmit = { rating, comment, images ->
                 scope.launch {
-                    when (val result = postReviewUseCase(CreateReviewRequest(productId = productId, rating = rating, comment = comment))) {
+                    when (val result = postReviewUseCase(CreateReviewRequest(productId = productId, rating = rating, comment = comment, images = images))) {
                         is AppResult.Success -> {
                             reviews = listOf(result.data) + reviews
                             showAddDialog = false

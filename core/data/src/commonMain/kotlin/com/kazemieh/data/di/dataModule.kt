@@ -167,6 +167,10 @@ val dataModule = module {
         OrderRepositoryImpl(get())
     }
 
+    single<com.kazemieh.domain.order.ReturnRequestRepository> {
+        com.kazemieh.data.order.repository.ReturnRequestRepositoryImpl(get())
+    }
+
     single<OrderDataSource> {
         OrderDataSourceImpl(get())
     }

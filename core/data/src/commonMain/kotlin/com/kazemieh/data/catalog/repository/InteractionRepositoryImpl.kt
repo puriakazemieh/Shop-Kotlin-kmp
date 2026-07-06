@@ -25,17 +25,19 @@ class InteractionRepositoryImpl(
                 productId = request.productId,
                 rating = request.rating,
                 comment = request.comment,
-                parentId = request.parentId
+                parentId = request.parentId,
+                images = request.images
             )
         ).toDomain()
     }
 
-    override suspend fun updateReview(reviewId: Long, rating: Int?, comment: String): AppResult<Review> = safeApiCall {
+    override suspend fun updateReview(reviewId: Long, rating: Int?, comment: String, images: List<String>): AppResult<Review> = safeApiCall {
         api.updateReview(
             reviewId,
             UpdateReviewRequest(
                 rating = rating,
-                comment = comment
+                comment = comment,
+                images = images
             )
         ).toDomain()
     }
@@ -84,7 +86,8 @@ class InteractionRepositoryImpl(
         replies = replies.map { it.toDomain() },
         helpfulCount = helpfulCount,
         helpfulByMe = helpfulByMe,
-        createdAt = createdAt
+        createdAt = createdAt,
+        images = images
     )
 
     private fun QuestionResponse.toDomain(): Question = Question(

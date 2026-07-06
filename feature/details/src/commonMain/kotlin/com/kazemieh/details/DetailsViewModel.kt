@@ -20,6 +20,8 @@ import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
 import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
 import com.kazemieh.domain.catalog.RequestBackInStockUseCase
+import com.kazemieh.domain.catalog.SubscribeToPriceAlertUseCase
+import com.kazemieh.domain.catalog.GetFrequentlyBoughtTogetherUseCase
 import com.kazemieh.domain.catalog.ProductDetail
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.Review
@@ -56,7 +58,9 @@ class DetailsViewModel(
     private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase,
     private val toggleReviewHelpfulUseCase: ToggleReviewHelpfulUseCase,
     private val requestBackInStockUseCase: RequestBackInStockUseCase,
-    private val getAddressesUseCase: GetAddressesUseCase
+    private val getAddressesUseCase: GetAddressesUseCase,
+    private val subscribeToPriceAlertUseCase: SubscribeToPriceAlertUseCase,
+    private val getFrequentlyBoughtTogetherUseCase: GetFrequentlyBoughtTogetherUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -139,7 +143,7 @@ class DetailsViewModel(
                 _state.update { it.copy(isCounterMode = intent.isCounterMode) }
             }
             is DetailsIntent.LoadInteractions -> loadInteractions(intent.productId)
-            is DetailsIntent.AddReview -> addReview(intent.productId, intent.rating, intent.comment, intent.parentId)
+            is DetailsIntent.AddReview -> addReview(intent.productId, intent.rating, intent.comment, intent.parentId, intent.images)
             is DetailsIntent.UpdateReview -> updateReview(intent.reviewId, intent.productId, intent.rating, intent.comment)
             is DetailsIntent.DeleteReview -> deleteReview(intent.reviewId, intent.productId)
             is DetailsIntent.AddQuestion -> addQuestion(intent.productId, intent.content, intent.parentId)
@@ -148,6 +152,33 @@ class DetailsViewModel(
             is DetailsIntent.ToggleFavorite -> toggleFavorite(intent.productId, intent.isFavorite)
             is DetailsIntent.ToggleReviewHelpful -> toggleReviewHelpful(intent.reviewId)
             is DetailsIntent.RequestBackInStock -> requestBackInStock()
+            is DetailsIntent.SubscribeToPriceAlert -> subscribeToPriceAlert(intent.targetPrice)
+            is DetailsIntent.LoadFrequentlyBoughtTogether -> loadFrequentlyBoughtTogether(intent.productId)
+        }
+    }
+
+    private fun subscribeToPriceAlert(targetPrice: Double) {
+        val product = _state.value.product ?: return
+        val variantId = _state.value.selectedVariant?.id ?: return
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = subscribeToPriceAlertUseCase(product.id, variantId, targetPrice)) {
+                is AppResult.Success -> _state.update { it.copy(priceAlertRequested = true) }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadFrequentlyBoughtTogether(productId: Long) {
+        viewModelScope.launch {
+            when (val result = getFrequentlyBoughtTogetherUseCase(productId)) {
+                is AppResult.Success -> _state.update { it.copy(frequentlyBoughtTogether = result.data) }
+                else -> {}
+            }
         }
     }
 
@@ -265,6 +296,7 @@ class DetailsViewModel(
                     }
                     loadInteractions(product.id)
                     product.categoryId?.let { loadSimilarProducts(it, product.id) }
+                    loadFrequentlyBoughtTogether(product.id)
                     recordRecentlyViewed(product)
                     loadDefaultCity()
                 }
@@ -332,7 +364,7 @@ class DetailsViewModel(
         }
     }
 
-    private fun addReview(productId: Long, rating: Int?, comment: String, parentId: Long?) {
+    private fun addReview(productId: Long, rating: Int?, comment: String, parentId: Long?, images: List<String> = emptyList()) {
         viewModelScope.launch {
             val isLoggedIn = isUserLoggedInUseCase().first()
             if (!isLoggedIn) {
@@ -340,7 +372,7 @@ class DetailsViewModel(
                 return@launch
             }
 
-            val request = CreateReviewRequest(productId, rating, comment, parentId)
+            val request = CreateReviewRequest(productId, rating, comment, parentId, images)
             when (val result = postReviewUseCase(request)) {
                 is AppResult.Success -> loadInteractions(productId)
                 is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))

@@ -13,4 +13,5 @@ interface OrderDataSource {
     suspend fun createOrder(request: CreateOrderRequest): AppResult<OrderDetailResponse>
     suspend fun cancelOrder(id: Long): AppResult<Unit>
     suspend fun trackOrder(id: Long): AppResult<OrderTrackingResponse>
+    suspend fun reorder(id: Long): AppResult<ReorderResponse>
 }

@@ -96,6 +96,10 @@ val networkModule = module {
         OrderApiImpl(get())
     }
 
+    single<com.kazemieh.network.order.ReturnRequestApi> {
+        com.kazemieh.network.order.ReturnRequestApiImpl(get())
+    }
+
     single<AddressApi> {
         AddressApiImpl(get())
     }

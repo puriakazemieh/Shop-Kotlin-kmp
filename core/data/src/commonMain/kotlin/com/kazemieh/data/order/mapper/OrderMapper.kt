@@ -27,7 +27,9 @@ fun OrderDetailResponse.toDomain(): OrderDetail = OrderDetail(
     shippedAt = shippedAt,
     deliveredAt = deliveredAt,
     walletPaidAmount = walletPaidAmount,
-    gatewayPaidAmount = gatewayPaidAmount
+    gatewayPaidAmount = gatewayPaidAmount,
+    isGift = isGift,
+    giftMessage = giftMessage
 )
 
 fun AddressSnapshotResponse.toDomain(): Address = Address(

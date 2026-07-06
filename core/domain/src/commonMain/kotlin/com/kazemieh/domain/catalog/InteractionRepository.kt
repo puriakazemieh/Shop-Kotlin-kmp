@@ -6,7 +6,7 @@ interface InteractionRepository {
     // Reviews
     suspend fun getReviews(productId: Long): AppResult<List<Review>>
     suspend fun postReview(request: CreateReviewRequest): AppResult<Review>
-    suspend fun updateReview(reviewId: Long, rating: Int?, comment: String): AppResult<Review>
+    suspend fun updateReview(reviewId: Long, rating: Int?, comment: String, images: List<String> = emptyList()): AppResult<Review>
     suspend fun deleteReview(reviewId: Long): AppResult<Unit>
     suspend fun toggleReviewHelpful(reviewId: Long): AppResult<Review>
 

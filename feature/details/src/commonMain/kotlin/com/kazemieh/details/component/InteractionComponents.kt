@@ -1,5 +1,6 @@
 package com.kazemieh.details.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,6 +52,23 @@ fun ReviewItem(
             modifier = Modifier.padding(top = 4.dp),
             style = MaterialTheme.typography.bodySmall
         )
+
+        if (review.images.isNotEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                review.images.take(4).forEach { url ->
+                    val painter = com.seiko.imageloader.rememberImagePainter(url)
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp).clip(RoundedCornerShape(Radius.xs)),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    )
+                }
+            }
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -186,10 +204,11 @@ fun RatingDisplay(rating: Int) {
 @Composable
 fun AddReviewDialog(
     onDismiss: () -> Unit,
-    onSubmit: (Int, String) -> Unit
+    onSubmit: (Int, String, List<String>) -> Unit
 ) {
     var rating by remember { mutableStateOf(5) }
     var comment by remember { mutableStateOf("") }
+    var imagesText by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -222,13 +241,25 @@ fun AddReviewDialog(
                     textStyle = MaterialTheme.typography.bodyMedium
                 )
 
+                Spacer(modifier = Modifier.padding(top = 8.dp))
+                OutlinedTextField(
+                    value = imagesText,
+                    onValueChange = { imagesText = it },
+                    label = { Text("لینکِ عکس‌ها (اختیاری، با کاما جدا کن)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
+
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) { Text("انصراف") }
                     Button(
-                        onClick = { onSubmit(rating, comment) },
+                        onClick = {
+                            val images = imagesText.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                            onSubmit(rating, comment, images)
+                        },
                         enabled = comment.isNotBlank()
                     ) {
                         Text("ثبت")

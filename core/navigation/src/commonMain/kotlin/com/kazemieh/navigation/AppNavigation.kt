@@ -41,6 +41,7 @@ import com.kazemieh.profile.club.CustomerClubScreen
 import com.kazemieh.orders.list.OrderListScreen
 import com.kazemieh.orders.detail.OrderDetailScreen
 import com.kazemieh.orders.tracking.OrderTrackingScreen
+import com.kazemieh.orders.returns.ReturnRequestScreen
 import com.kazemieh.academy.list.CourseListScreen
 import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
@@ -399,6 +400,9 @@ fun AppNavHost(
                 navigateBack = { navController.navigateBack() },
                 navigateToTracking = { id: Long ->
                     navController.navigate(Screen.OrderTracking(id))
+                },
+                navigateToReturnRequest = { itemId: Long, title: String ->
+                    navController.navigate(Screen.ReturnRequest(itemId, title))
                 }
             )
         }
@@ -408,6 +412,15 @@ fun AppNavHost(
             OrderTrackingScreen(
                 orderId = args.id,
                 navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ReturnRequest> {
+            val args = it.toRoute<Screen.ReturnRequest>()
+            ReturnRequestScreen(
+                orderItemId = args.orderItemId,
+                itemTitle = args.itemTitle,
+                onBackClick = { navController.navigateBack() }
             )
         }
 

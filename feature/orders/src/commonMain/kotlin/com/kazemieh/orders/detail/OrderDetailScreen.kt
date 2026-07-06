@@ -2,6 +2,7 @@ package com.kazemieh.orders.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +41,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun OrderDetailScreen(
     orderId: Long,
     navigateBack: () -> Unit,
-    navigateToTracking: (Long) -> Unit
+    navigateToTracking: (Long) -> Unit,
+    navigateToReturnRequest: (Long, String) -> Unit = { _, _ -> }
 ) {
     val viewModel = koinViewModel<OrderDetailViewModel>()
     val state by viewModel.state.collectAsState()
@@ -57,6 +59,15 @@ fun OrderDetailScreen(
                 OrderDetailEffect.OrderCancelled -> messageBarState.addSuccess("Order cancelled successfully")
                 is OrderDetailEffect.NavigateToTracking -> navigateToTracking(effect.id)
                 is OrderDetailEffect.ShowError -> messageBarState.addError(effect.message)
+                is OrderDetailEffect.Reordered -> {
+                    if (effect.skippedTitles.isEmpty()) {
+                        messageBarState.addSuccess("آیتم‌ها به سبد اضافه شدند.")
+                    } else {
+                        messageBarState.addSuccess(
+                            "آیتم‌های موجود به سبد اضافه شدند. رد شد: ${effect.skippedTitles.joinToString("، ")}"
+                        )
+                    }
+                }
             }
         }
     }
@@ -126,6 +137,24 @@ fun OrderDetailScreen(
                                     color = colors.onSurface
                                 )
                                 UserStatusBadge(status = order.status)
+                            }
+
+                            // ---- هدیه ----
+                            if (order.isGift) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(colors.gold.copy(alpha = 0.12f))
+                                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                                ) {
+                                    Text("این سفارش به‌عنوانِ هدیه ثبت شده", fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.gold)
+                                    order.giftMessage?.takeIf { it.isNotBlank() }?.let {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(it, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                                    }
+                                }
                             }
 
                             // ---- کد رهگیری ----
@@ -200,6 +229,19 @@ fun OrderDetailScreen(
                                                 fontFamily = AppFont(),
                                                 color = colors.onSurfaceVariant
                                             )
+                                            if (order.status == "COMPLETED") {
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(
+                                                    text = "درخواستِ مرجوعی/تعویض",
+                                                    fontSize = FontSize.EXTRA_SMALL,
+                                                    fontFamily = AppFont(),
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = colors.primary,
+                                                    modifier = Modifier.clickable {
+                                                        navigateToReturnRequest(item.id, item.title)
+                                                    }
+                                                )
+                                            }
                                         }
                                         Text(
                                             text = stringResource(Resources.String.PriceFormat, item.unitPrice),
@@ -254,6 +296,14 @@ fun OrderDetailScreen(
                             PrimaryButton(
                                 text = stringResource(Resources.String.TrackOrder),
                                 onClick = { viewModel.handleIntent(OrderDetailIntent.TrackOrder(order.id)) }
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            PrimaryButton(
+                                text = "سفارشِ مجددِ همین اقلام",
+                                onClick = { viewModel.handleIntent(OrderDetailIntent.Reorder(order.id)) },
+                                enabled = !state.isReordering,
+                                secondary = true
                             )
                         }
                     }

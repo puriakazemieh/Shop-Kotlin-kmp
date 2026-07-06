@@ -33,6 +33,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
+import com.kazemieh.admin.orders.AdminReturnRequestsScreen
 import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
@@ -70,6 +71,7 @@ fun AdminPanelScreen(
                 "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
             )
         )
+        add("مرجوعی‌ها")
         if (brand.features.academy) add("آموزشگاه")
         if (brand.features.clinic) add("مشاوره")
         if (brand.features.psychTests) add("تست‌ها")
@@ -79,6 +81,8 @@ fun AdminPanelScreen(
     val clinicTabIndex = if (brand.features.clinic) tabs.indexOf("مشاوره") else -1
     val psychTabIndex = if (brand.features.psychTests) tabs.indexOf("تست‌ها") else -1
     val bundlesTabIndex = if (brand.features.productBundles) tabs.indexOf("باندل‌ها") else -1
+    val returnRequestsTabIndex = tabs.indexOf("مرجوعی‌ها")
+
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -168,6 +172,7 @@ fun AdminPanelScreen(
                     clinicTabIndex -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     psychTabIndex -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     bundlesTabIndex -> AdminBundlesScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    returnRequestsTabIndex -> AdminReturnRequestsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }

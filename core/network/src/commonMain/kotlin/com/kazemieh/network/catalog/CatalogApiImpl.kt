@@ -66,4 +66,14 @@ class CatalogApiImpl(
             setBody(StockNotificationRequestDto(productId = productId, variantId = variantId))
         }
     }
+
+    override suspend fun getFrequentlyBoughtTogether(productId: Long): List<ProductSummaryResponse> = safeApiCallRaw {
+        client.get("api/products/$productId/frequently-bought-together")
+    }
+
+    override suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): Unit = safeApiCallRaw {
+        client.post("api/price-alerts") {
+            setBody(PriceAlertRequestDto(productId = productId, variantId = variantId, targetPrice = targetPrice))
+        }
+    }
 }

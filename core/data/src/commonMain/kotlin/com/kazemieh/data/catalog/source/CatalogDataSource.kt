@@ -27,4 +27,6 @@ interface CatalogDataSource {
     suspend fun getActiveCampaign(): AppResult<CampaignResponse?>
     suspend fun getBanners(): AppResult<List<BannerResponse>>
     suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit>
+    suspend fun getFrequentlyBoughtTogether(productId: Long): AppResult<List<ProductSummaryResponse>>
+    suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): AppResult<Unit>
 }

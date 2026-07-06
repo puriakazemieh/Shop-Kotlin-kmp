@@ -448,6 +448,10 @@ fun DetailsScreen(
                             onGoToCart = navigateToCart,
                             onToggleFavorite = {
                                 viewModel.handleIntent(DetailsIntent.ToggleFavorite(product.id, product.isFavorite))
+                            },
+                            priceAlertRequested = state.priceAlertRequested,
+                            onPriceAlert = {
+                                viewModel.handleIntent(DetailsIntent.SubscribeToPriceAlert(discountedPrice ?: basePrice))
                             }
                         )
 
@@ -664,6 +668,31 @@ fun DetailsScreen(
                                 }
                             }
                         }
+
+                        // ---- اغلب با هم خریده می‌شوند ----
+                        if (state.frequentlyBoughtTogether.isNotEmpty()) {
+                            Spacer(Modifier.height(28.dp))
+                            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+                            Spacer(Modifier.height(24.dp))
+                            Text(
+                                "اغلب با هم خریده می‌شوند",
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.onSurface
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(state.frequentlyBoughtTogether) { fbt ->
+                                    SimilarProductCard(
+                                        product = fbt,
+                                        onClick = { navigateToDetails(fbt.slug) }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -677,9 +706,9 @@ fun DetailsScreen(
     if (showReviewDialog) {
         AddReviewDialog(
             onDismiss = { showReviewDialog = false },
-            onSubmit = { rating, comment ->
+            onSubmit = { rating, comment, images ->
                 state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId))
+                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId, images))
                 }
                 showReviewDialog = false
             }
@@ -767,7 +796,9 @@ private fun PriceActionCard(
     onBuyNow: () -> Unit,
     onQuantityChange: (Int) -> Unit,
     onGoToCart: () -> Unit,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
+    priceAlertRequested: Boolean = false,
+    onPriceAlert: () -> Unit = {}
 ) {
     val colors = AppTheme.colors
     val displayPrice = discountedPrice ?: basePrice
@@ -917,6 +948,19 @@ private fun PriceActionCard(
                     )
                 }
             }
+
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = if (priceAlertRequested) "به‌محضِ کاهشِ قیمت خبرتان می‌کنیم" else "قیمت کم شد خبرم کن",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = !priceAlertRequested) { onPriceAlert() }
+                    .padding(vertical = 6.dp),
+                textAlign = TextAlign.Center,
+                color = if (priceAlertRequested) colors.ok else colors.primary,
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }

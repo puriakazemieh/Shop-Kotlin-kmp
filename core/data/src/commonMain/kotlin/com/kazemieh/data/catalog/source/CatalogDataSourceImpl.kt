@@ -48,4 +48,12 @@ class CatalogDataSourceImpl(
     override suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit> = safeApiCall {
         api.requestBackInStock(productId, variantId)
     }
+
+    override suspend fun getFrequentlyBoughtTogether(productId: Long): AppResult<List<ProductSummaryResponse>> = safeApiCall {
+        api.getFrequentlyBoughtTogether(productId)
+    }
+
+    override suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): AppResult<Unit> = safeApiCall {
+        api.subscribeToPriceAlert(productId, variantId, targetPrice)
+    }
 }
