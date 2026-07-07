@@ -6,6 +6,8 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
 import com.kazemieh.domain.academy.AddLessonFileByLinkUseCase
+import com.kazemieh.domain.academy.AddLessonFileUseCase
+import com.kazemieh.domain.academy.UploadCourseMediaUseCase
 import com.kazemieh.domain.academy.AdminCourseParams
 import com.kazemieh.domain.academy.AdminCourseUpdateParams
 import com.kazemieh.domain.academy.AdminQuizQuestion
@@ -68,6 +70,8 @@ class AdminAcademyViewModel(
     private val getAdminWaitlistUseCase: GetAdminWaitlistUseCase,
     private val notifyNextInWaitlistUseCase: NotifyNextInWaitlistUseCase,
     private val addLessonFileByLinkUseCase: AddLessonFileByLinkUseCase,
+    private val addLessonFileUseCase: AddLessonFileUseCase,
+    private val uploadCourseMediaUseCase: UploadCourseMediaUseCase,
     private val deleteLessonFileUseCase: DeleteLessonFileUseCase,
     private val upsertLessonQuizUseCase: UpsertLessonQuizUseCase,
     private val listProjectSubmissionsUseCase: ListProjectSubmissionsUseCase,
@@ -152,7 +156,8 @@ class AdminAcademyViewModel(
         format: String = "ONLINE_RECORDED",
         location: String = "",
         capacity: String = "",
-        requiresProjectSubmission: Boolean = false
+        requiresProjectSubmission: Boolean = false,
+        thumbnailUrl: String = ""
     ) {
         viewModelScope.launch {
             val params = AdminCourseParams(
@@ -164,7 +169,8 @@ class AdminAcademyViewModel(
                 format = format,
                 location = location.ifBlank { null },
                 capacity = capacity.toIntOrNull(),
-                requiresProjectSubmission = requiresProjectSubmission
+                requiresProjectSubmission = requiresProjectSubmission,
+                thumbnailUrl = thumbnailUrl.ifBlank { null }
             )
             when (val result = createCourseUseCase(params)) {
                 is AppResult.Success -> {
@@ -184,7 +190,8 @@ class AdminAcademyViewModel(
         instructor: String,
         price: String,
         discountedPrice: String,
-        requiresProjectSubmission: Boolean
+        requiresProjectSubmission: Boolean,
+        thumbnailUrl: String = ""
     ) {
         viewModelScope.launch {
             val params = AdminCourseUpdateParams(
@@ -193,7 +200,8 @@ class AdminAcademyViewModel(
                 instructor = instructor.ifBlank { null },
                 price = price.toDoubleOrNull(),
                 discountedPrice = discountedPrice.toDoubleOrNull(),
-                requiresProjectSubmission = requiresProjectSubmission
+                requiresProjectSubmission = requiresProjectSubmission,
+                thumbnailUrl = thumbnailUrl.ifBlank { null }
             )
             when (val result = updateCourseUseCase(id, params)) {
                 is AppResult.Success -> {
@@ -277,6 +285,35 @@ class AdminAcademyViewModel(
                 is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
                 else -> {}
             }
+        }
+    }
+
+    /** آپلودِ مستقیمِ فایلِ ضمیمه از دستگاه (به‌جای چسباندنِ لینک). */
+    fun addLessonFileFromDevice(courseId: Long, lessonId: Long, displayName: String, fileBytes: ByteArray, fileName: String) {
+        viewModelScope.launch {
+            when (val result = addLessonFileUseCase(courseId, lessonId, fileBytes, fileName, displayName)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("فایل آپلود شد."))
+                    refreshExpanded(courseId)
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    /**
+     * آپلودِ عمومیِ رسانه (کاورِ دوره یا ویدیویِ درس) — فقط URL برمی‌گرداند، بدونِ تغییرِ state.
+     * فراخوان (Composable) خودش URLِ برگشتی را در فیلدِ محلی‌اش می‌نشاند.
+     */
+    suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): String? {
+        return when (val result = uploadCourseMediaUseCase(fileBytes, fileName)) {
+            is AppResult.Success -> result.data
+            is AppResult.Error -> {
+                _effect.send(AdminAcademyEffect.ShowError(result.message))
+                null
+            }
+            else -> null
         }
     }
 

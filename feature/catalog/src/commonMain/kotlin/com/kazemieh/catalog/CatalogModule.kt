@@ -19,6 +19,9 @@ import com.kazemieh.domain.recentlyviewed.GetRecentlyViewedUseCase
 import com.kazemieh.domain.settings.GetRecentSearchesUseCase
 import com.kazemieh.domain.settings.AddRecentSearchUseCase
 import com.kazemieh.domain.settings.ClearRecentSearchesUseCase
+import com.kazemieh.domain.academy.GetCoursesUseCase
+import com.kazemieh.domain.clinic.GetTherapistsUseCase
+import com.kazemieh.domain.psychtest.GetPsychTestsUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -52,7 +55,13 @@ val catalogModule = module {
             markStoryAsSeenUseCase = get(),
             getBlogsUseCase = get(),
             getRecentlyViewedUseCase = get(),
-            isUserLoggedInUseCase = get()
+            isUserLoggedInUseCase = get(),
+            // این سه UseCase در ماژول‌های academy/clinic/psychtest ثبت شده‌اند؛ چون همان
+            // کانتینرِ Koin است، اینجا هم قابلِ get() هستند (بدونِ نیازِ وابستگیِ gradle جدید).
+            getCoursesUseCase = get(),
+            getTherapistsUseCase = get(),
+            getPsychTestsUseCase = get(),
+            brandConfig = get()
         )
     }
 

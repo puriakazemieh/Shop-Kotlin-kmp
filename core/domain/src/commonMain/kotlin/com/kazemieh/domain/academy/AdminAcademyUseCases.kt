@@ -1,5 +1,9 @@
 package com.kazemieh.domain.academy
 
+class UploadCourseMediaUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(fileBytes: ByteArray, fileName: String) = repository.uploadMedia(fileBytes, fileName)
+}
+
 class GetAdminCoursesUseCase(private val repository: AdminAcademyRepository) {
     suspend operator fun invoke() = repository.listCourses()
 }

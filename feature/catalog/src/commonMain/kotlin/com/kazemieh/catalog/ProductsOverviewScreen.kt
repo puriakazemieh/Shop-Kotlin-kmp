@@ -62,6 +62,9 @@ import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.blog.Blog
 import com.kazemieh.domain.catalog.Category
+import com.kazemieh.domain.academy.CourseSummary
+import com.kazemieh.domain.clinic.TherapistSummary
+import com.kazemieh.domain.psychtest.PsychTestSummary
 import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -72,7 +75,12 @@ fun ProductsOverviewScreen(
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
     navigateToBlogDetail: (String) -> Unit,
-    navigateToAuth: () -> Unit
+    navigateToAuth: () -> Unit,
+    navigateToCourseDetail: (String) -> Unit = {},
+    navigateToCourseCatalog: () -> Unit = {},
+    navigateToTherapistDetail: (String) -> Unit = {},
+    navigateToTherapistCatalog: () -> Unit = {},
+    navigateToPsychTestCatalog: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
@@ -217,6 +225,38 @@ fun ProductsOverviewScreen(
                                         }
                                     )
                                 }
+                            }
+                        }
+
+                        // ---- عمودی‌های دیگرِ برند (دوره‌ها/مشاوره/تست‌های روان‌شناسی) — مستقیماً روی صفحه‌ی اصلی،
+                        // درست مثلِ محصولات، نه فقط داخلِ پروفایل ----
+                        if (state.courses.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                CourseHomeSection(
+                                    courses = state.courses,
+                                    onSeeAll = navigateToCourseCatalog,
+                                    onCourseClick = { navigateToCourseDetail(it.slug) }
+                                )
+                            }
+                        }
+                        if (state.therapists.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                TherapistHomeSection(
+                                    therapists = state.therapists,
+                                    onSeeAll = navigateToTherapistCatalog,
+                                    onTherapistClick = { navigateToTherapistDetail(it.slug) }
+                                )
+                            }
+                        }
+                        if (state.psychTests.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                PsychTestHomeSection(
+                                    tests = state.psychTests,
+                                    onSeeAll = navigateToPsychTestCatalog
+                                )
                             }
                         }
 

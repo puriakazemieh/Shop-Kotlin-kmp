@@ -186,6 +186,12 @@ fun AppNavHost(
                 navigateToShoppingAssistant = {
                     navController.navigate(Screen.ShoppingAssistant)
                 },
+                navigateToCourseDetail = { slug ->
+                    navController.navigate(Screen.CourseDetail(slug))
+                },
+                navigateToTherapistDetail = { slug ->
+                    navController.navigate(Screen.TherapistDetail(slug))
+                },
             )
         }
 

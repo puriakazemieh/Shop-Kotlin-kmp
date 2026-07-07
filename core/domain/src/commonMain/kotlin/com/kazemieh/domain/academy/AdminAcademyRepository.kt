@@ -51,6 +51,9 @@ data class AdminWaitlistEntry(
 )
 
 interface AdminAcademyRepository {
+    /** آپلودِ عمومیِ رسانه (کاورِ دوره یا ویدیویِ درس) — قبل از ساختِ دوره/درس، فقط URL برمی‌گرداند. */
+    suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): AppResult<String>
+
     suspend fun listCourses(): AppResult<List<CourseSummary>>
     suspend fun getCourseDetail(id: Long): AppResult<CourseDetail>
     suspend fun createCourse(params: AdminCourseParams): AppResult<Long>

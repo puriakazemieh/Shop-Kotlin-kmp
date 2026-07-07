@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 data class IdResponse(val id: Long)
 
 @Serializable
+data class MediaUploadUrlResponse(val url: String)
+
+@Serializable
 data class AdminCreateCourseRequestDto(
     val title: String,
     val slug: String,

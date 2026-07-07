@@ -3,6 +3,9 @@ package com.kazemieh.network.academy
 import com.kazemieh.network.academy.dto.*
 
 interface AdminAcademyApi {
+    // ---- آپلودِ عمومیِ رسانه (کاورِ دوره یا ویدیویِ درس) — قبل از ساختِ دوره/درس، فقط URL برمی‌گرداند ----
+    suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): String
+
     suspend fun listCourses(): List<CourseSummaryResponse>
     suspend fun getCourseDetail(id: Long): CourseDetailResponse
     suspend fun createCourse(request: AdminCreateCourseRequestDto): Long

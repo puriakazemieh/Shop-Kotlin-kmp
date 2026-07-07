@@ -80,6 +80,8 @@ fun MainGraphScreen(
     navigateToRecurringOrders: () -> Unit = {},
     navigateToMembership: () -> Unit = {},
     navigateToShoppingAssistant: () -> Unit = {},
+    navigateToCourseDetail: (String) -> Unit = {},
+    navigateToTherapistDetail: (String) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val brand = koinInject<BrandConfig>()
@@ -160,7 +162,12 @@ fun MainGraphScreen(
                                 navigateToDetails = navigateToDetails,
                                 navigateToCategorySearch = navigateToCategorySearch,
                                 navigateToBlogDetail = navigateToBlogDetail,
-                                navigateToAuth = navigateToAuth
+                                navigateToAuth = navigateToAuth,
+                                navigateToCourseDetail = navigateToCourseDetail,
+                                navigateToCourseCatalog = navigateToCourseCatalog,
+                                navigateToTherapistDetail = navigateToTherapistDetail,
+                                navigateToTherapistCatalog = navigateToTherapistCatalog,
+                                navigateToPsychTestCatalog = navigateToPsychTests
                             )
                         }
                         composable<Screen.Search> {

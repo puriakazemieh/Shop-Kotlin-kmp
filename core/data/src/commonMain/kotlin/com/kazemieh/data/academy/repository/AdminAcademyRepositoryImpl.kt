@@ -39,6 +39,10 @@ class AdminAcademyRepositoryImpl(
     private val api: AdminAcademyApi
 ) : AdminAcademyRepository {
 
+    override suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): AppResult<String> = safeApiCall {
+        api.uploadMedia(fileBytes, fileName)
+    }
+
     override suspend fun listCourses(): AppResult<List<CourseSummary>> = safeApiCall {
         api.listCourses().map { it.toDomain() }
     }

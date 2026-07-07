@@ -13,6 +13,19 @@ class AdminAcademyApiImpl(
     private val client: HttpClient
 ) : AdminAcademyApi {
 
+    override suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): String =
+        safeApiCallRaw<MediaUploadUrlResponse> {
+            client.submitFormWithBinaryData(
+                url = "api/admin/courses/media/upload",
+                formData = formData {
+                    append("file", fileBytes, Headers.build {
+                        append(HttpHeaders.ContentType, "application/octet-stream")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                    })
+                }
+            )
+        }.url
+
     override suspend fun listCourses(): List<CourseSummaryResponse> = safeApiCallRaw {
         client.get("api/admin/courses")
     }

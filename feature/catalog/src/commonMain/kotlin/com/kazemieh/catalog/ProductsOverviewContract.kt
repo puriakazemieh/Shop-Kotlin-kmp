@@ -6,6 +6,9 @@ import com.kazemieh.domain.catalog.Campaign
 import com.kazemieh.domain.catalog.Category
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.story.Story
+import com.kazemieh.domain.academy.CourseSummary
+import com.kazemieh.domain.clinic.TherapistSummary
+import com.kazemieh.domain.psychtest.PsychTestSummary
 
 data class ProductsOverviewState(
     val isLoading: Boolean = false,
@@ -19,6 +22,10 @@ data class ProductsOverviewState(
     val recentlyViewed: List<ProductSummary> = emptyList(),
     val isStoriesLoading: Boolean = false,
     val isCategoriesLoading: Boolean = false,
+    // ---- پیش‌نمایشِ عمودی‌های دیگر مستقیماً روی صفحه‌ی اصلی (نه فقط داخلِ پروفایل) ----
+    val courses: List<CourseSummary> = emptyList(),
+    val therapists: List<TherapistSummary> = emptyList(),
+    val psychTests: List<PsychTestSummary> = emptyList(),
     val error: Any? = null
 )
 

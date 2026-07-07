@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,7 @@ import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseSummary
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,9 +107,12 @@ fun AdminAcademyScreen(
                             fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
                         )
                         Spacer(Modifier.height(14.dp))
-                        AddCourseForm(onSubmit = { t, s, p, pid, ct, fmt, loc, cap, requiresProject ->
-                            viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap, requiresProject)
-                        })
+                        AddCourseForm(
+                            uploadMedia = viewModel::uploadMedia,
+                            onSubmit = { t, s, p, pid, ct, fmt, loc, cap, requiresProject, thumb ->
+                                viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap, requiresProject, thumb)
+                            }
+                        )
                     }
                     items(state.courses) { course ->
                         CourseCard(
@@ -119,6 +124,7 @@ fun AdminAcademyScreen(
                             lessonQuizCounts = state.lessonQuizByLesson.mapValues { it.value.size },
                             waitlist = state.waitlistByCourse[course.id].orEmpty(),
                             projectSubmissions = state.projectSubmissionsByCourse[course.id].orEmpty(),
+                            uploadMedia = viewModel::uploadMedia,
                             onToggle = {
                                 viewModel.toggleExpand(course.id)
                                 if (course.id != state.expandedCourseId) viewModel.loadProjectSubmissions(course.id)
@@ -132,20 +138,62 @@ fun AdminAcademyScreen(
                                 viewModel.addQuizQuestion(course.id, passScore, text, options, correct)
                             },
                             onAddLessonFile = { lessonId, name, url -> viewModel.addLessonFile(course.id, lessonId, name, url) },
+                            onAddLessonFileUpload = { lessonId, name, bytes, fileName ->
+                                viewModel.addLessonFileFromDevice(course.id, lessonId, name, bytes, fileName)
+                            },
                             onDeleteLessonFile = { lessonId, index -> viewModel.deleteLessonFile(course.id, lessonId, index) },
                             onAddLessonQuizQuestion = { lessonId, passScore, text, options, correct ->
                                 viewModel.addLessonQuizQuestion(course.id, lessonId, passScore, text, options, correct)
                             },
                             onNotifyNextWaitlist = { viewModel.notifyNext(course.id) },
                             onReviewProject = { submissionId, status, feedback -> viewModel.reviewProject(course.id, submissionId, status, feedback) },
-                            onUpdateCourse = { title, description, instructor, price, discountedPrice, requiresProject ->
-                                viewModel.updateCourse(course.id, title, description, instructor, price, discountedPrice, requiresProject)
+                            onUpdateCourse = { title, description, instructor, price, discountedPrice, requiresProject, thumb ->
+                                viewModel.updateCourse(course.id, title, description, instructor, price, discountedPrice, requiresProject, thumb)
                             }
                         )
                     }
                 }
             }
         }
+    }
+}
+
+/**
+ * فیلدِ آدرسِ رسانه + دکمه‌ی «آپلود از دستگاه»: با انتخابِ فایل از دستگاه، آن را از طریقِ
+ * uploadMedia به سرور می‌فرستد و URLِ برگشتی را در همان فیلد می‌نشاند (بدونِ نیاز به چسباندنِ دستی).
+ */
+@Composable
+private fun MediaUploadField(
+    label: String,
+    url: String,
+    onUrlChange: (String) -> Unit,
+    uploadMedia: suspend (ByteArray, String) -> String?
+) {
+    val colors = AppTheme.colors
+    val scope = rememberCoroutineScope()
+    var isUploading by remember { mutableStateOf(false) }
+    val picker = remember { MediaPicker() }
+    picker.InitializeMediaPicker { bytes, isVideo ->
+        isUploading = true
+        scope.launch {
+            val uploadedUrl = uploadMedia(bytes, if (isVideo) "video_${bytes.size}.mp4" else "image_${bytes.size}.jpg")
+            if (uploadedUrl != null) onUrlChange(uploadedUrl)
+            isUploading = false
+        }
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(modifier = Modifier.weight(1f)) {
+            AdminTextField(value = url, onValueChange = onUrlChange, label = label)
+        }
+        Text(
+            if (isUploading) "در حالِ آپلود…" else "آپلود از دستگاه",
+            fontWeight = FontWeight.Bold, color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL,
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (isUploading) colors.line else colors.primary)
+                .clickable(enabled = !isUploading) { picker.open() }
+                .padding(horizontal = 12.dp, vertical = 11.dp)
+        )
     }
 }
 
@@ -159,7 +207,8 @@ private val COURSE_FORMATS = listOf(
 
 @Composable
 private fun AddCourseForm(
-    onSubmit: (title: String, slug: String, price: String, productId: String, courseType: String, format: String, location: String, capacity: String, requiresProject: Boolean) -> Unit
+    uploadMedia: suspend (ByteArray, String) -> String?,
+    onSubmit: (title: String, slug: String, price: String, productId: String, courseType: String, format: String, location: String, capacity: String, requiresProject: Boolean, thumbnailUrl: String) -> Unit
 ) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
@@ -171,6 +220,7 @@ private fun AddCourseForm(
     var location by remember { mutableStateOf("") }
     var capacity by remember { mutableStateOf("") }
     var requiresProject by remember { mutableStateOf(false) }
+    var thumbnailUrl by remember { mutableStateOf("") }
     val isInPerson = format == "IN_PERSON" || format == "OFFLINE"
 
     Column(
@@ -185,6 +235,13 @@ private fun AddCourseForm(
         AdminTextField(value = title, onValueChange = { title = it }, label = "عنوانِ دوره")
         Spacer(Modifier.height(8.dp))
         AdminTextField(value = slug, onValueChange = { slug = it }, label = "اسلاگ (لاتین، یکتا)")
+        Spacer(Modifier.height(8.dp))
+        MediaUploadField(
+            label = "تصویرِ کاورِ دوره",
+            url = thumbnailUrl,
+            onUrlChange = { thumbnailUrl = it },
+            uploadMedia = uploadMedia
+        )
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Box(modifier = Modifier.weight(1f)) {
@@ -221,9 +278,9 @@ private fun AddCourseForm(
                 .clip(RoundedCornerShape(12.dp))
                 .background(if (title.isNotBlank() && slug.isNotBlank()) colors.primary else colors.line)
                 .clickable(enabled = title.isNotBlank() && slug.isNotBlank()) {
-                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim(), courseType, format, location.trim(), capacity.trim(), requiresProject)
+                    onSubmit(title.trim(), slug.trim(), price.trim(), productId.trim(), courseType, format, location.trim(), capacity.trim(), requiresProject, thumbnailUrl.trim())
                     title = ""; slug = ""; price = ""; productId = ""; courseType = "COURSE"
-                    format = "ONLINE_RECORDED"; location = ""; capacity = ""; requiresProject = false
+                    format = "ONLINE_RECORDED"; location = ""; capacity = ""; requiresProject = false; thumbnailUrl = ""
                 }
                 .padding(horizontal = 16.dp, vertical = 11.dp),
             color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
@@ -264,17 +321,19 @@ private fun CourseCard(
     lessonQuizCounts: Map<Long, Int>,
     waitlist: List<com.kazemieh.domain.academy.AdminWaitlistEntry>,
     projectSubmissions: List<com.kazemieh.domain.academy.ProjectSubmission>,
+    uploadMedia: suspend (ByteArray, String) -> String?,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
     onAddSection: (String) -> Unit,
     onAddLesson: (sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit,
     onAddQuizQuestion: (passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit,
     onAddLessonFile: (lessonId: Long, name: String, url: String) -> Unit,
+    onAddLessonFileUpload: (lessonId: Long, name: String, fileBytes: ByteArray, fileName: String) -> Unit,
     onDeleteLessonFile: (lessonId: Long, index: Int) -> Unit,
     onAddLessonQuizQuestion: (lessonId: Long, passScore: String, text: String, options: List<String>, correctIndex: Int) -> Unit,
     onNotifyNextWaitlist: () -> Unit,
     onReviewProject: (submissionId: Long, status: String, feedback: String?) -> Unit,
-    onUpdateCourse: (title: String, description: String, instructor: String, price: String, discountedPrice: String, requiresProject: Boolean) -> Unit
+    onUpdateCourse: (title: String, description: String, instructor: String, price: String, discountedPrice: String, requiresProject: Boolean, thumbnailUrl: String) -> Unit
 ) {
     val colors = AppTheme.colors
     Column(
@@ -304,7 +363,7 @@ private fun CourseCard(
             when {
                 loadingDetail -> Text("در حالِ بارگذاری…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                 detail != null -> {
-                    EditCourseSection(detail = detail, onUpdate = onUpdateCourse)
+                    EditCourseSection(detail = detail, uploadMedia = uploadMedia, onUpdate = onUpdateCourse)
                     Spacer(Modifier.height(10.dp))
                     detail.sections.forEach { section ->
                         Spacer(Modifier.height(8.dp))
@@ -329,7 +388,10 @@ private fun CourseCard(
                                     }
                                 }
                             }
-                            AddLessonFileForm(onSubmit = { name, url -> onAddLessonFile(lesson.id, name, url) })
+                            AddLessonFileForm(
+                                onSubmitLink = { name, url -> onAddLessonFile(lesson.id, name, url) },
+                                onSubmitUpload = { name, bytes, fileName -> onAddLessonFileUpload(lesson.id, name, bytes, fileName) }
+                            )
                             LessonQuizBuilder(
                                 lessonId = lesson.id,
                                 hasQuiz = lesson.hasQuiz,
@@ -338,7 +400,10 @@ private fun CourseCard(
                             )
                         }
                         Spacer(Modifier.height(6.dp))
-                        AddLessonForm(onSubmit = { title, url, minutes, free -> onAddLesson(section.id, title, url, minutes, free) })
+                        AddLessonForm(
+                            uploadMedia = uploadMedia,
+                            onSubmit = { title, url, minutes, free -> onAddLesson(section.id, title, url, minutes, free) }
+                        )
                     }
                     Spacer(Modifier.height(10.dp))
                     AddSectionForm(onSubmit = onAddSection)
@@ -362,7 +427,11 @@ private fun CourseCard(
 
 /** ویرایشِ فیلدهای پایه‌ی دوره (عنوان/توضیح/مدرس/قیمت/نیازِ پروژه) پس از ساخته‌شدن. */
 @Composable
-private fun EditCourseSection(detail: CourseDetail, onUpdate: (title: String, description: String, instructor: String, price: String, discountedPrice: String, requiresProject: Boolean) -> Unit) {
+private fun EditCourseSection(
+    detail: CourseDetail,
+    uploadMedia: suspend (ByteArray, String) -> String?,
+    onUpdate: (title: String, description: String, instructor: String, price: String, discountedPrice: String, requiresProject: Boolean, thumbnailUrl: String) -> Unit
+) {
     val colors = AppTheme.colors
     var editing by remember(detail.id) { mutableStateOf(false) }
     Text(
@@ -377,6 +446,7 @@ private fun EditCourseSection(detail: CourseDetail, onUpdate: (title: String, de
         var price by remember(detail.id) { mutableStateOf(detail.price.toString()) }
         var discountedPrice by remember(detail.id) { mutableStateOf(detail.discountedPrice?.toString().orEmpty()) }
         var requiresProject by remember(detail.id) { mutableStateOf(detail.requiresProjectSubmission) }
+        var thumbnailUrl by remember(detail.id) { mutableStateOf(detail.thumbnailUrl.orEmpty()) }
         Column(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.surfaceVariant).padding(12.dp)
         ) {
@@ -385,6 +455,13 @@ private fun EditCourseSection(detail: CourseDetail, onUpdate: (title: String, de
             AdminTextField(value = description, onValueChange = { description = it }, label = "توضیح")
             Spacer(Modifier.height(6.dp))
             AdminTextField(value = instructor, onValueChange = { instructor = it }, label = "مدرس")
+            Spacer(Modifier.height(6.dp))
+            MediaUploadField(
+                label = "تصویرِ کاورِ دوره",
+                url = thumbnailUrl,
+                onUrlChange = { thumbnailUrl = it },
+                uploadMedia = uploadMedia
+            )
             Spacer(Modifier.height(6.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(modifier = Modifier.weight(1f)) {
@@ -406,7 +483,7 @@ private fun EditCourseSection(detail: CourseDetail, onUpdate: (title: String, de
                     .clip(RoundedCornerShape(10.dp))
                     .background(colors.primary)
                     .clickable {
-                        onUpdate(title.trim(), description.trim(), instructor.trim(), price.trim(), discountedPrice.trim(), requiresProject)
+                        onUpdate(title.trim(), description.trim(), instructor.trim(), price.trim(), discountedPrice.trim(), requiresProject, thumbnailUrl.trim())
                         editing = false
                     }
                     .padding(horizontal = 14.dp, vertical = 9.dp),
@@ -533,7 +610,10 @@ private fun AddSectionForm(onSubmit: (String) -> Unit) {
 }
 
 @Composable
-private fun AddLessonForm(onSubmit: (title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit) {
+private fun AddLessonForm(
+    uploadMedia: suspend (ByteArray, String) -> String?,
+    onSubmit: (title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) -> Unit
+) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
@@ -550,7 +630,12 @@ private fun AddLessonForm(onSubmit: (title: String, videoUrl: String, durationMi
     ) {
         AdminTextField(value = title, onValueChange = { title = it }, label = "عنوانِ درس")
         Spacer(Modifier.height(6.dp))
-        AdminTextField(value = url, onValueChange = { url = it }, label = "لینکِ ویدیو (mp4/hls)")
+        MediaUploadField(
+            label = "ویدیویِ درس (mp4/hls)",
+            url = url,
+            onUrlChange = { url = it },
+            uploadMedia = uploadMedia
+        )
         Spacer(Modifier.height(6.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(modifier = Modifier.weight(1f)) {
@@ -577,12 +662,26 @@ private fun AddLessonForm(onSubmit: (title: String, videoUrl: String, durationMi
     }
 }
 
-/** افزودنِ فایلِ ضمیمه با لینکِ مستقیم (بدونِ آپلود) — هم‌الگو با ثبتِ لینکِ ویدیو. */
+/** افزودنِ فایلِ ضمیمه: یا با آپلودِ مستقیم از دستگاه، یا با لینکِ مستقیم (برایِ فایل‌هایِ از‌قبل‌میزبانی‌شده). */
 @Composable
-private fun AddLessonFileForm(onSubmit: (name: String, url: String) -> Unit) {
+private fun AddLessonFileForm(
+    onSubmitLink: (name: String, url: String) -> Unit,
+    onSubmitUpload: (name: String, fileBytes: ByteArray, fileName: String) -> Unit
+) {
     val colors = AppTheme.colors
     var name by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
+    val picker = remember { MediaPicker() }
+    picker.InitializeMediaPicker { bytes, _ ->
+        if (name.isBlank()) {
+            // آپلودِ مستقیم: بدونِ نیازِ رفت‌وبرگشتِ URL، مستقیماً همراهِ نام ثبت می‌شود
+            onSubmitUpload("پیوست", bytes, "attachment_${bytes.size}")
+        } else {
+            onSubmitUpload(name.trim(), bytes, "attachment_${bytes.size}")
+            name = ""
+        }
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -591,8 +690,23 @@ private fun AddLessonFileForm(onSubmit: (name: String, url: String) -> Unit) {
         Box(modifier = Modifier.weight(1f)) {
             AdminTextField(value = name, onValueChange = { name = it }, label = "نامِ فایل (مثلاً جزوه)")
         }
+        Text(
+            "آپلود از دستگاه", fontWeight = FontWeight.Bold, color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL,
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(colors.primary)
+                .clickable { picker.open() }
+                .padding(horizontal = 10.dp, vertical = 10.dp)
+        )
+    }
+    Spacer(Modifier.height(4.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(modifier = Modifier.weight(1f)) {
-            AdminTextField(value = url, onValueChange = { url = it }, label = "لینکِ فایل")
+            AdminTextField(value = url, onValueChange = { url = it }, label = "یا لینکِ مستقیمِ فایل")
         }
         Text(
             "+", fontWeight = FontWeight.Bold, color = colors.onPrimary,
@@ -600,7 +714,7 @@ private fun AddLessonFileForm(onSubmit: (name: String, url: String) -> Unit) {
                 .clip(RoundedCornerShape(8.dp))
                 .background(if (name.isNotBlank() && url.isNotBlank()) colors.primary else colors.line)
                 .clickable(enabled = name.isNotBlank() && url.isNotBlank()) {
-                    onSubmit(name.trim(), url.trim()); name = ""; url = ""
+                    onSubmitLink(name.trim(), url.trim()); name = ""; url = ""
                 }
                 .padding(horizontal = 12.dp, vertical = 10.dp)
         )

@@ -3,6 +3,8 @@ package com.kazemieh.admin.academy
 import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
 import com.kazemieh.domain.academy.AddLessonFileByLinkUseCase
+import com.kazemieh.domain.academy.AddLessonFileUseCase
+import com.kazemieh.domain.academy.UploadCourseMediaUseCase
 import com.kazemieh.domain.academy.CreateCourseUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
 import com.kazemieh.domain.academy.DeleteLessonFileUseCase
@@ -30,6 +32,8 @@ val adminAcademyModule = module {
     factory { GetAdminWaitlistUseCase(get()) }
     factory { NotifyNextInWaitlistUseCase(get()) }
     factory { AddLessonFileByLinkUseCase(get()) }
+    factory { AddLessonFileUseCase(get()) }
+    factory { UploadCourseMediaUseCase(get()) }
     factory { DeleteLessonFileUseCase(get()) }
     factory { UpsertLessonQuizUseCase(get()) }
     factory { ListProjectSubmissionsUseCase(get()) }
@@ -48,6 +52,8 @@ val adminAcademyModule = module {
             getAdminWaitlistUseCase = get(),
             notifyNextInWaitlistUseCase = get(),
             addLessonFileByLinkUseCase = get(),
+            addLessonFileUseCase = get(),
+            uploadCourseMediaUseCase = get(),
             deleteLessonFileUseCase = get(),
             upsertLessonQuizUseCase = get(),
             listProjectSubmissionsUseCase = get(),
