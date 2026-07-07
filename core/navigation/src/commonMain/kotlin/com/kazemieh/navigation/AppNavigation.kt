@@ -52,6 +52,9 @@ import com.kazemieh.academy.quiz.CourseQuizScreen
 import com.kazemieh.academy.cert.CertificatesScreen
 import com.kazemieh.academy.lessonquiz.LessonQuizScreen
 import com.kazemieh.academy.project.ProjectSubmissionScreen
+import com.kazemieh.academy.peerreview.PeerReviewScreen
+import com.kazemieh.academy.cert.CertificateVerifyScreen
+import com.kazemieh.academy.placement.PlacementQuizScreen
 import com.kazemieh.catalog.bundle.BundleListScreen
 import com.kazemieh.catalog.bundle.BundleDetailScreen
 import com.kazemieh.catalog.assistant.ShoppingAssistantScreen
@@ -192,6 +195,12 @@ fun AppNavHost(
                 navigateToTherapistDetail = { slug ->
                     navController.navigate(Screen.TherapistDetail(slug))
                 },
+                navigateToPlacementQuiz = {
+                    navController.navigate(Screen.PlacementQuiz)
+                },
+                navigateToCertificateVerify = {
+                    navController.navigate(Screen.CertificateVerify)
+                },
             )
         }
 
@@ -303,7 +312,47 @@ fun AppNavHost(
             val args = it.toRoute<Screen.ProjectSubmission>()
             ProjectSubmissionScreen(
                 courseId = args.courseId,
+                navigateBack = { navController.navigateBack() },
+                navigateToPeerReview = { courseId -> navController.navigate(Screen.PeerReview(courseId)) }
+            )
+        }
+
+        composable<Screen.PeerReview> {
+            val args = it.toRoute<Screen.PeerReview>()
+            PeerReviewScreen(
+                courseId = args.courseId,
                 navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- تاییدِ عمومیِ گواهی (بدونِ نیازِ ورود) ----
+        composable<Screen.CertificateVerify> {
+            CertificateVerifyScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        // ---- آزمونِ تعیینِ سطح ----
+        composable<Screen.PlacementQuiz> {
+            PlacementQuizScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToCoursesByLevel = { level ->
+                    navController.navigate(Screen.CoursesByLevel(level)) {
+                        popUpTo<Screen.PlacementQuiz> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<Screen.CoursesByLevel> {
+            val args = it.toRoute<Screen.CoursesByLevel>()
+            val levelLabel = when (args.level) {
+                "BEGINNER" -> "مقدماتی"; "INTERMEDIATE" -> "متوسط"; "ADVANCED" -> "پیشرفته"; else -> args.level
+            }
+            CourseListScreen(
+                mine = false,
+                title = "دوره‌های سطحِ $levelLabel",
+                levelFilter = args.level,
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
             )
         }
 

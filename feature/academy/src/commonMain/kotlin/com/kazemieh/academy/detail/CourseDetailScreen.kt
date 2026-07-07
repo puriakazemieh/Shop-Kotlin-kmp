@@ -141,10 +141,18 @@ fun CourseDetailScreen(
                     if (!course.instructorBio.isNullOrBlank() || course.instructorSkills.isNotEmpty()) {
                         item { InstructorCard(course) }
                     }
+                    // ---- کدِ تخفیفِ اختصاصیِ مدرس (اگر تنظیم شده باشد) ----
+                    if (!course.instructorDiscountCode.isNullOrBlank()) {
+                        item { InstructorDiscountCard(course.instructorDiscountCode!!) }
+                    }
                     if (!course.description.isNullOrBlank()) {
                         item {
                             Text(course.description!!, color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR)
                         }
+                    }
+                    // ---- «این دوره شامل چیست» ----
+                    if (course.isOnline && (course.totalDurationSeconds > 0 || course.resourceFileCount > 0)) {
+                        item { CourseIncludesCard(course) }
                     }
                     // ---- سرفصل‌ها فقط برای دوره‌های آنلاین (محتوایِ قابلِ‌پخش) ----
                     if (course.isOnline) {
@@ -246,6 +254,56 @@ private fun InstructorCard(course: CourseDetail) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 course.instructorSkills.forEach { Chip(it, colors.surfaceVariant, colors.onSurfaceVariant) }
             }
+        }
+    }
+}
+
+/** کدِ تخفیفِ اختصاصیِ مدرس — مثلاً برای پرداختِ محصولِ فروشگاهیِ لینک‌شده به این دوره. */
+@Composable
+private fun InstructorDiscountCard(code: String) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.gold.copy(alpha = 0.1f))
+            .padding(14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text("کدِ تخفیفِ اختصاصیِ مدرس", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+            Spacer(Modifier.height(4.dp))
+            Text("این کد را هنگامِ خرید وارد کن", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+        }
+        Text(
+            code, fontWeight = FontWeight.ExtraBold, color = colors.gold, fontSize = FontSize.REGULAR,
+            modifier = Modifier.clip(RoundedCornerShape(Radius.sm)).background(colors.surface).padding(horizontal = 12.dp, vertical = 6.dp)
+        )
+    }
+}
+
+/** جعبه‌ی «این دوره شامل چیست» — مجموعِ مدتِ ویدیوها و تعدادِ فایل‌های ضمیمه. */
+@Composable
+private fun CourseIncludesCard(course: CourseDetail) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Radius.md))
+            .background(colors.surface)
+            .padding(16.dp)
+    ) {
+        Text("این دوره شامل چیست", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+        Spacer(Modifier.height(10.dp))
+        if (course.totalDurationSeconds > 0) {
+            val hours = course.totalDurationSeconds / 3600
+            val minutes = (course.totalDurationSeconds % 3600) / 60
+            val label = if (hours > 0) "$hours ساعت و $minutes دقیقه ویدیوی آموزشی" else "$minutes دقیقه ویدیوی آموزشی"
+            InfoLine("مدتِ کل", label)
+        }
+        if (course.resourceFileCount > 0) {
+            Spacer(Modifier.height(6.dp))
+            InfoLine("فایل‌های ضمیمه", "${course.resourceFileCount} فایل")
         }
     }
 }

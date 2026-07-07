@@ -48,7 +48,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProjectSubmissionScreen(
     courseId: Long,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToPeerReview: (Long) -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProjectSubmissionViewModel>()
     val state by viewModel.state.collectAsState()
@@ -138,6 +139,18 @@ fun ProjectSubmissionScreen(
                         .padding(vertical = 14.dp),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "نقدِ همتایان — دیدنِ پروژه‌های تأییدشده‌ی هم‌دوره‌ای‌ها",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.surfaceVariant)
+                        .clickable { navigateToPeerReview(courseId) }
+                        .padding(vertical = 14.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = colors.onSurface, fontWeight = FontWeight.SemiBold, fontSize = FontSize.SMALL
                 )
             }
         }

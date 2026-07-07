@@ -31,7 +31,7 @@ class CourseListViewModel(
      * freeOnly/instructorFilter روی کاتالوگِ کاملِ برگشته از سرور فیلترِ کلاینت‌ساید انجام می‌دهند —
      * بدونِ نیازِ سرور، چون endpointِ عمومی already کلِ کاتالوگ را برمی‌گرداند.
      */
-    fun load(mine: Boolean, freeOnly: Boolean = false, instructorFilter: String? = null) {
+    fun load(mine: Boolean, freeOnly: Boolean = false, instructorFilter: String? = null, levelFilter: String? = null) {
         _state.update { it.copy(isLoading = true, mine = mine) }
         viewModelScope.launch {
             val result = if (mine) getMyCoursesUseCase() else getCoursesUseCase()
@@ -40,6 +40,7 @@ class CourseListViewModel(
                     var courses = result.data
                     if (freeOnly) courses = courses.filter { it.price <= 0.0 }
                     if (!instructorFilter.isNullOrBlank()) courses = courses.filter { it.instructor == instructorFilter }
+                    if (!levelFilter.isNullOrBlank()) courses = courses.filter { it.level == levelFilter }
                     _state.update { it.copy(isLoading = false, courses = courses, error = null) }
                 }
                 is AppResult.Error -> _state.update { it.copy(isLoading = false, error = result.message) }

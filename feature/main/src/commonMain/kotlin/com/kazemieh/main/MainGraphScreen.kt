@@ -82,6 +82,8 @@ fun MainGraphScreen(
     navigateToShoppingAssistant: () -> Unit = {},
     navigateToCourseDetail: (String) -> Unit = {},
     navigateToTherapistDetail: (String) -> Unit = {},
+    navigateToPlacementQuiz: () -> Unit = {},
+    navigateToCertificateVerify: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val brand = koinInject<BrandConfig>()
@@ -209,7 +211,9 @@ fun MainGraphScreen(
                                 onReferralClick = navigateToReferral,
                                 onRecurringOrdersClick = navigateToRecurringOrders,
                                 onMembershipClick = navigateToMembership,
-                                onShoppingAssistantClick = navigateToShoppingAssistant
+                                onShoppingAssistantClick = navigateToShoppingAssistant,
+                                onPlacementQuizClick = navigateToPlacementQuiz,
+                                onCertificateVerifyClick = navigateToCertificateVerify
                             )
                         }
                     }

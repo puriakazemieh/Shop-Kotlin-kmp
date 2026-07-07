@@ -83,4 +83,40 @@ class AcademyApiImpl(
     override suspend fun getMyProject(courseId: Long): MyProjectResponse = safeApiCallRaw {
         client.get("api/academy/courses/$courseId/project")
     }
+
+    override suspend fun getLessonQuestions(lessonId: Long): List<LessonQuestionResponse> = safeApiCallRaw {
+        client.get("api/academy/lessons/$lessonId/questions")
+    }
+
+    override suspend fun createLessonQuestion(lessonId: Long, request: CreateLessonQuestionRequestDto): LessonQuestionResponse = safeApiCallRaw {
+        client.post("api/academy/lessons/$lessonId/questions") { setBody(request) }
+    }
+
+    override suspend fun markCourseUpdateSeen(courseId: Long): Unit = safeApiCallRaw {
+        client.post("api/academy/courses/$courseId/mark-update-seen")
+    }
+
+    override suspend fun getPeerSubmissions(courseId: Long): List<ProjectSubmissionResponse> = safeApiCallRaw {
+        client.get("api/academy/courses/$courseId/project/peers")
+    }
+
+    override suspend fun getPeerComments(submissionId: Long): List<PeerCommentResponse> = safeApiCallRaw {
+        client.get("api/academy/project/$submissionId/comments")
+    }
+
+    override suspend fun addPeerComment(submissionId: Long, request: CreatePeerCommentRequestDto): PeerCommentResponse = safeApiCallRaw {
+        client.post("api/academy/project/$submissionId/comments") { setBody(request) }
+    }
+
+    override suspend fun verifyCertificate(certNumber: String): CertificateVerifyResponse = safeApiCallRaw {
+        client.get("api/courses/certificates/verify/$certNumber")
+    }
+
+    override suspend fun getPlacementQuiz(): PlacementQuizResponseDto = safeApiCallRaw {
+        client.get("api/academy/placement-quiz")
+    }
+
+    override suspend fun submitPlacementQuiz(request: SubmitPlacementQuizRequestDto): PlacementQuizResultResponseDto = safeApiCallRaw {
+        client.post("api/academy/placement-quiz/submit") { setBody(request) }
+    }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,7 +49,7 @@ import com.kazemieh.details.VideoPlayer
 import com.kazemieh.domain.academy.Lesson
 import org.koin.compose.viewmodel.koinViewModel
 
-private enum class LessonTab { VIDEO, FILES, QUIZ }
+private enum class LessonTab { VIDEO, FILES, QUIZ, QA }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,9 +159,9 @@ fun CourseLearnScreen(
                         )
                     }
 
-                    // ---- تبِ ویدیو/فایل‌ها/آزمون (فقط اگر درسِ فعلی فایل یا آزمون داشته باشد) ----
+                    // ---- تبِ ویدیو/فایل‌ها/آزمون/پرسش‌وپاسخ ----
                     var activeTab by remember(lesson?.id) { mutableStateOf(LessonTab.VIDEO) }
-                    if (lesson != null && (lesson.resourceFiles.isNotEmpty() || lesson.hasQuiz)) {
+                    if (lesson != null) {
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -172,6 +173,7 @@ fun CourseLearnScreen(
                             if (lesson.hasQuiz) {
                                 LessonTabChip("آزمون", activeTab == LessonTab.QUIZ) { activeTab = LessonTab.QUIZ }
                             }
+                            LessonTabChip("پرسش‌وپاسخ", activeTab == LessonTab.QA) { activeTab = LessonTab.QA }
                         }
                         when (activeTab) {
                             LessonTab.FILES -> {
@@ -208,6 +210,14 @@ fun CourseLearnScreen(
                                         .padding(vertical = 12.dp),
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                                     color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+                                )
+                            }
+                            LessonTab.QA -> {
+                                LaunchedEffect(lesson.id) { viewModel.loadQuestions(lesson.id) }
+                                LessonQaSection(
+                                    questions = state.questionsByLesson[lesson.id].orEmpty(),
+                                    loading = state.loadingQuestions,
+                                    onSubmit = { content -> viewModel.submitQuestion(lesson.id, content) }
                                 )
                             }
                             LessonTab.VIDEO -> {}
@@ -294,6 +304,57 @@ private fun LessonTabChip(label: String, active: Boolean, onClick: () -> Unit) {
         fontSize = FontSize.SMALL,
         fontWeight = FontWeight.SemiBold
     )
+}
+
+/** پرسش‌وپاسخِ درس — mini-forum زیرِ ویدیو، هر کاربر می‌تواند سؤال بپرسد. */
+@Composable
+private fun LessonQaSection(
+    questions: List<com.kazemieh.domain.academy.LessonQuestion>,
+    loading: Boolean,
+    onSubmit: (String) -> Unit
+) {
+    val colors = AppTheme.colors
+    var text by remember { mutableStateOf("") }
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text("سؤالت را بپرس…", fontSize = FontSize.SMALL) },
+                singleLine = true
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                "ارسال",
+                modifier = Modifier
+                    .clip(RoundedCornerShape(Radius.sm))
+                    .background(if (text.isNotBlank()) colors.primary else colors.surfaceVariant)
+                    .clickable(enabled = text.isNotBlank()) { onSubmit(text.trim()); text = "" }
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold
+            )
+        }
+        Spacer(Modifier.height(10.dp))
+        when {
+            loading -> Text("در حالِ بارگذاری…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            questions.isEmpty() -> Text("هنوز سؤالی پرسیده نشده. اولین نفر باش!", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            else -> questions.forEach { q ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                        .clip(RoundedCornerShape(Radius.sm))
+                        .background(colors.surfaceVariant)
+                        .padding(10.dp)
+                ) {
+                    Text(q.userName ?: "کاربر #${q.userId}", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL)
+                    Spacer(Modifier.height(3.dp))
+                    Text(q.content, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                }
+            }
+        }
+    }
 }
 
 @Composable

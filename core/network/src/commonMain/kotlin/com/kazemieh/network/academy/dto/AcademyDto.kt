@@ -18,7 +18,8 @@ data class CourseSummaryResponse(
     val isOnline: Boolean = true,
     val level: String? = null,
     val jobMarketBadge: Boolean = false,
-    val freeUpdateBadge: Boolean = false
+    val freeUpdateBadge: Boolean = false,
+    val hasUnseenUpdate: Boolean = false
 )
 
 @Serializable
@@ -83,7 +84,11 @@ data class CourseDetailResponse(
     val isFull: Boolean = false,
     val onWaitlist: Boolean = false,
     val productId: Long? = null,
-    val requiresProjectSubmission: Boolean = false
+    val requiresProjectSubmission: Boolean = false,
+    val instructorDiscountCode: String? = null,
+    val totalDurationSeconds: Int = 0,
+    val resourceFileCount: Int = 0,
+    val hasUnseenUpdate: Boolean = false
 )
 
 @Serializable
@@ -212,3 +217,58 @@ data class MyProjectResponse(
     val found: Boolean,
     val submission: ProjectSubmissionResponse? = null
 )
+
+// ---------- پرسش‌وپاسخِ درس (Phase V) ----------
+@Serializable
+data class LessonQuestionResponse(
+    val id: Long,
+    val userId: Long,
+    val userName: String? = null,
+    val content: String,
+    val parentId: Long? = null,
+    val createdAt: String? = null
+)
+
+@Serializable
+data class CreateLessonQuestionRequestDto(
+    val content: String,
+    val parentId: Long? = null
+)
+
+// ---------- نقدِ همتایان (Phase V) ----------
+@Serializable
+data class PeerCommentResponse(
+    val id: Long,
+    val userId: Long,
+    val userName: String,
+    val comment: String,
+    val createdAt: String? = null
+)
+
+@Serializable
+data class CreatePeerCommentRequestDto(val comment: String)
+
+// ---------- تاییدِ گواهی (Phase V) ----------
+@Serializable
+data class CertificateVerifyResponse(
+    val valid: Boolean,
+    val courseTitle: String? = null,
+    val certNumber: String? = null,
+    val issuedAt: String? = null
+)
+
+// ---------- آزمونِ تعیینِ سطح (Phase V) ----------
+@Serializable
+data class PlacementQuizOptionResponse(val label: String, val score: Int)
+
+@Serializable
+data class PlacementQuizQuestionResponse(val id: Int, val text: String, val options: List<PlacementQuizOptionResponse>)
+
+@Serializable
+data class PlacementQuizResponseDto(val questions: List<PlacementQuizQuestionResponse>)
+
+@Serializable
+data class SubmitPlacementQuizRequestDto(val answers: List<Int>)
+
+@Serializable
+data class PlacementQuizResultResponseDto(val level: String, val label: String)

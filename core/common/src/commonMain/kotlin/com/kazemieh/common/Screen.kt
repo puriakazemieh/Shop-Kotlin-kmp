@@ -147,6 +147,18 @@ sealed class Screen {
     @Serializable
     data class InstructorCourses(val instructorName: String) : Screen()
 
+    @Serializable
+    data class CoursesByLevel(val level: String) : Screen()
+
+    @Serializable
+    data object CertificateVerify : Screen()
+
+    @Serializable
+    data object PlacementQuiz : Screen()
+
+    @Serializable
+    data class PeerReview(val courseId: Long) : Screen()
+
     // ---- Product bundles (general shop feature) ----
     @Serializable
     data object BundleList : Screen()

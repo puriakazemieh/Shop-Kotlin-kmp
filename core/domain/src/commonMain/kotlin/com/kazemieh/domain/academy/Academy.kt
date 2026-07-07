@@ -32,7 +32,8 @@ data class CourseSummary(
     val isOnline: Boolean = true,
     val level: String? = null,
     val jobMarketBadge: Boolean = false,
-    val freeUpdateBadge: Boolean = false
+    val freeUpdateBadge: Boolean = false,
+    val hasUnseenUpdate: Boolean = false
 )
 
 data class VideoVariant(
@@ -95,7 +96,13 @@ data class CourseDetail(
     val onWaitlist: Boolean = false,
     val productId: Long? = null,
     /** آیا صدورِ گواهی نیازمندِ تأییدِ پروژه‌ی پایانی هم هست (کنارِ قبولیِ آزمون). */
-    val requiresProjectSubmission: Boolean = false
+    val requiresProjectSubmission: Boolean = false,
+    /** کدِ تخفیفِ اختصاصیِ مدرس (اگر ادمین تنظیم کرده باشد). */
+    val instructorDiscountCode: String? = null,
+    /** جعبه‌ی «این دوره شامل چیست» — مجموعِ مدتِ ویدیوها و تعدادِ فایل‌های ضمیمه. */
+    val totalDurationSeconds: Int = 0,
+    val resourceFileCount: Int = 0,
+    val hasUnseenUpdate: Boolean = false
 )
 
 data class CourseProgress(
@@ -176,3 +183,35 @@ data class ProjectSubmission(
     val reviewedAt: String? = null,
     val userName: String? = null
 )
+
+// ---------- پرسش‌وپاسخِ درس (Phase V) ----------
+data class LessonQuestion(
+    val id: Long,
+    val userId: Long,
+    val userName: String?,
+    val content: String,
+    val parentId: Long?,
+    val createdAt: String?
+)
+
+// ---------- نقدِ همتایان (Phase V) ----------
+data class PeerComment(
+    val id: Long,
+    val userId: Long,
+    val userName: String,
+    val comment: String,
+    val createdAt: String?
+)
+
+// ---------- تاییدِ گواهی (Phase V) ----------
+data class CertificateVerification(
+    val valid: Boolean,
+    val courseTitle: String?,
+    val certNumber: String?,
+    val issuedAt: String?
+)
+
+// ---------- آزمونِ تعیینِ سطح (Phase V) ----------
+data class PlacementQuizOption(val label: String, val score: Int)
+data class PlacementQuizQuestion(val id: Int, val text: String, val options: List<PlacementQuizOption>)
+data class PlacementQuizResult(val level: String, val label: String)

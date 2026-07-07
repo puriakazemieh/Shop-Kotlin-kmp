@@ -58,3 +58,40 @@ class SubmitProjectByLinkUseCase(private val repository: AcademyRepository) {
 class GetMyProjectUseCase(private val repository: AcademyRepository) {
     suspend operator fun invoke(courseId: Long) = repository.getMyProject(courseId)
 }
+
+class GetLessonQuestionsUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(lessonId: Long) = repository.getLessonQuestions(lessonId)
+}
+
+class CreateLessonQuestionUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(lessonId: Long, content: String, parentId: Long? = null) =
+        repository.createLessonQuestion(lessonId, content, parentId)
+}
+
+class MarkCourseUpdateSeenUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.markCourseUpdateSeen(courseId)
+}
+
+class GetPeerSubmissionsUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long) = repository.getPeerSubmissions(courseId)
+}
+
+class GetPeerCommentsUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(submissionId: Long) = repository.getPeerComments(submissionId)
+}
+
+class AddPeerCommentUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(submissionId: Long, comment: String) = repository.addPeerComment(submissionId, comment)
+}
+
+class VerifyCertificateUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(certNumber: String) = repository.verifyCertificate(certNumber)
+}
+
+class GetPlacementQuizUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke() = repository.getPlacementQuiz()
+}
+
+class SubmitPlacementQuizUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(answers: List<Int>) = repository.submitPlacementQuiz(answers)
+}

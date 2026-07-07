@@ -18,4 +18,23 @@ interface AcademyRepository {
     /** ثبتِ پروژه با لینکِ مستقیم (مثلاً گیت‌هاب/درایو) — بدونِ آپلود. */
     suspend fun submitProjectByLink(courseId: Long, fileUrl: String, note: String?): AppResult<ProjectSubmission>
     suspend fun getMyProject(courseId: Long): AppResult<ProjectSubmission?>
+
+    // ---- پرسش‌وپاسخِ درس ----
+    suspend fun getLessonQuestions(lessonId: Long): AppResult<List<LessonQuestion>>
+    suspend fun createLessonQuestion(lessonId: Long, content: String, parentId: Long? = null): AppResult<LessonQuestion>
+
+    // ---- نشانِ به‌روزرسانیِ دوره ----
+    suspend fun markCourseUpdateSeen(courseId: Long): AppResult<Unit>
+
+    // ---- نقدِ همتایان ----
+    suspend fun getPeerSubmissions(courseId: Long): AppResult<List<ProjectSubmission>>
+    suspend fun getPeerComments(submissionId: Long): AppResult<List<PeerComment>>
+    suspend fun addPeerComment(submissionId: Long, comment: String): AppResult<PeerComment>
+
+    // ---- تاییدِ عمومیِ گواهی ----
+    suspend fun verifyCertificate(certNumber: String): AppResult<CertificateVerification>
+
+    // ---- آزمونِ تعیینِ سطح ----
+    suspend fun getPlacementQuiz(): AppResult<List<PlacementQuizQuestion>>
+    suspend fun submitPlacementQuiz(answers: List<Int>): AppResult<PlacementQuizResult>
 }

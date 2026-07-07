@@ -54,13 +54,14 @@ fun CourseListScreen(
     navigateToCatalog: (() -> Unit)? = null,
     freeOnly: Boolean = false,
     instructorFilter: String? = null,
+    levelFilter: String? = null,
     navigateToInstructor: ((String) -> Unit)? = null
 ) {
     val viewModel = koinViewModel<CourseListViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
 
-    LaunchedEffect(mine, freeOnly, instructorFilter) { viewModel.load(mine, freeOnly, instructorFilter) }
+    LaunchedEffect(mine, freeOnly, instructorFilter, levelFilter) { viewModel.load(mine, freeOnly, instructorFilter, levelFilter) }
 
     Scaffold(
         containerColor = colors.background,
@@ -155,7 +156,17 @@ private fun CourseRow(course: CourseSummary, onClick: () -> Unit, onInstructorCl
         }
         Spacer(Modifier.size(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(course.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(course.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR, modifier = Modifier.weight(1f, fill = false))
+                if (course.hasUnseenUpdate) {
+                    Spacer(Modifier.size(6.dp))
+                    Text(
+                        "به‌روزرسانیِ جدید",
+                        modifier = Modifier.clip(RoundedCornerShape(Radius.full)).background(colors.gold.copy(alpha = 0.15f)).padding(horizontal = 8.dp, vertical = 3.dp),
+                        color = colors.gold, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
             if (!course.instructor.isNullOrBlank()) {
                 Spacer(Modifier.height(3.dp))
                 Text(

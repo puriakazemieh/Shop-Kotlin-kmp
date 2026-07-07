@@ -76,6 +76,8 @@ fun MoreScreen(
     onRecurringOrdersClick: () -> Unit = {},
     onMembershipClick: () -> Unit = {},
     onShoppingAssistantClick: () -> Unit = {},
+    onPlacementQuizClick: () -> Unit = {},
+    onCertificateVerifyClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -174,6 +176,20 @@ fun MoreScreen(
                 ) { AccountIcon(painter = Resources.Icon.Book) }
                 Spacer(Modifier.height(12.dp))
             }
+
+            AccountRow(
+                title = "آزمونِ تعیینِ سطح",
+                subtitle = "پیدا کردنِ دوره‌ی مناسبِ سطحِ تو",
+                onClick = onPlacementQuizClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "تاییدِ گواهی",
+                subtitle = "بررسیِ اصالتِ یک گواهیِ صادرشده",
+                onClick = onCertificateVerifyClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
         }
 
         // ---- پیشنهادهای ترکیبی/باندل — فیچرِ عمومیِ فروشگاهی ----
