@@ -30,4 +30,24 @@ class ClinicApiImpl(
     override suspend fun cancel(appointmentId: Long): Unit = safeApiCallRaw {
         client.post("api/clinic/appointments/$appointmentId/cancel")
     }
+
+    override suspend fun getReceipt(appointmentId: Long): SessionReceiptResponse = safeApiCallRaw {
+        client.get("api/clinic/appointments/$appointmentId/receipt")
+    }
+
+    override suspend fun submitMood(request: MoodCheckInRequestDto): MoodCheckInResponse = safeApiCallRaw {
+        client.post("api/clinic/mood-checkins") { setBody(request) }
+    }
+
+    override suspend fun getMoodHistory(): List<MoodCheckInResponse> = safeApiCallRaw {
+        client.get("api/clinic/mood-checkins")
+    }
+
+    override suspend fun requestSwitch(request: SwitchRequestRequestDto): SwitchRequestResponse = safeApiCallRaw {
+        client.post("api/clinic/switch-requests") { setBody(request) }
+    }
+
+    override suspend fun getMySwitchRequests(): List<SwitchRequestResponse> = safeApiCallRaw {
+        client.get("api/clinic/switch-requests/mine")
+    }
 }

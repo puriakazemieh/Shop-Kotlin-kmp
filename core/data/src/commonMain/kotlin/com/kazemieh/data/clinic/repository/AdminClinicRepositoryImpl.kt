@@ -6,12 +6,14 @@ import com.kazemieh.domain.clinic.AdminAppointmentStatus
 import com.kazemieh.domain.clinic.AdminClinicRepository
 import com.kazemieh.domain.clinic.AdminPatientSummary
 import com.kazemieh.domain.clinic.AdminSlot
+import com.kazemieh.domain.clinic.AdminSwitchRequest
 import com.kazemieh.domain.clinic.AdminTherapistParams
 import com.kazemieh.domain.clinic.AdminTherapistUpdateParams
 import com.kazemieh.domain.clinic.PatientFile
 import com.kazemieh.domain.clinic.PatientFileAppointment
 import com.kazemieh.domain.clinic.PatientFileTestResult
 import com.kazemieh.domain.clinic.PatientNote
+import com.kazemieh.domain.clinic.SwitchRequestStatus
 import com.kazemieh.domain.clinic.TherapistSummary
 import com.kazemieh.network.clinic.AdminClinicApi
 import com.kazemieh.network.clinic.dto.AdminAddPatientNoteRequestDto
@@ -21,8 +23,10 @@ import com.kazemieh.network.clinic.dto.AdminConfirmAppointmentRequestDto
 import com.kazemieh.network.clinic.dto.AdminCreateTherapistRequestDto
 import com.kazemieh.network.clinic.dto.AdminGenerateSlotsRequestDto
 import com.kazemieh.network.clinic.dto.AdminPatientSummaryResponse
+import com.kazemieh.network.clinic.dto.AdminReviewSwitchRequestDto
 import com.kazemieh.network.clinic.dto.AdminSetPatientTagsRequestDto
 import com.kazemieh.network.clinic.dto.AdminSlotResponse
+import com.kazemieh.network.clinic.dto.AdminSwitchRequestResponse
 import com.kazemieh.network.clinic.dto.AdminUpdateTherapistRequestDto
 import com.kazemieh.network.clinic.dto.PatientFileAppointmentResponse
 import com.kazemieh.network.clinic.dto.PatientFileTestResultResponse
@@ -123,6 +127,27 @@ class AdminClinicRepositoryImpl(
             testResults = r.testResults.map { it.toDomain() }
         )
     }
+
+    override suspend fun listSwitchRequests(): AppResult<List<AdminSwitchRequest>> = safeApiCall {
+        api.listSwitchRequests().map { it.toDomain() }
+    }
+
+    override suspend fun reviewSwitchRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<AdminSwitchRequest> = safeApiCall {
+        api.reviewSwitchRequest(id, AdminReviewSwitchRequestDto(approve = approve, adminNote = adminNote)).toDomain()
+    }
+
+    private fun AdminSwitchRequestResponse.toDomain() = AdminSwitchRequest(
+        id = id, userId = userId, userName = userName,
+        fromTherapistId = fromTherapistId, fromTherapistName = fromTherapistName,
+        toTherapistId = toTherapistId, toTherapistName = toTherapistName, reason = reason,
+        status = when (status) {
+            "PENDING" -> SwitchRequestStatus.PENDING
+            "APPROVED" -> SwitchRequestStatus.APPROVED
+            "REJECTED" -> SwitchRequestStatus.REJECTED
+            else -> SwitchRequestStatus.UNKNOWN
+        },
+        adminNote = adminNote, createdAt = createdAt
+    )
 
     private fun AdminPatientSummaryResponse.toDomain() = AdminPatientSummary(
         userId = userId, userName = userName, therapistId = therapistId,

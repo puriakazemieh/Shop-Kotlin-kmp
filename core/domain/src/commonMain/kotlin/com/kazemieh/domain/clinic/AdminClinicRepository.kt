@@ -93,6 +93,21 @@ data class PatientFile(
     val testResults: List<PatientFileTestResult> = emptyList()
 )
 
+/** درخواستِ تعویضِ درمانگر از دیدِ ادمین (Phase X). */
+data class AdminSwitchRequest(
+    val id: Long,
+    val userId: Long,
+    val userName: String?,
+    val fromTherapistId: Long,
+    val fromTherapistName: String,
+    val toTherapistId: Long?,
+    val toTherapistName: String?,
+    val reason: String?,
+    val status: SwitchRequestStatus,
+    val adminNote: String?,
+    val createdAt: String?
+)
+
 interface AdminClinicRepository {
     suspend fun listTherapists(): AppResult<List<TherapistSummary>>
     suspend fun createTherapist(params: AdminTherapistParams): AppResult<Long>
@@ -113,4 +128,8 @@ interface AdminClinicRepository {
     suspend fun listPatients(therapistId: Long): AppResult<List<AdminPatientSummary>>
     suspend fun setPatientTags(therapistId: Long, userId: Long, tags: List<String>): AppResult<Unit>
     suspend fun getPatientFile(therapistId: Long, userId: Long): AppResult<PatientFile>
+
+    // ---- درخواست‌های تعویضِ درمانگر ----
+    suspend fun listSwitchRequests(): AppResult<List<AdminSwitchRequest>>
+    suspend fun reviewSwitchRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<AdminSwitchRequest>
 }

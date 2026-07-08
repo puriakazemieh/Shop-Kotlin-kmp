@@ -68,6 +68,7 @@ fun TherapistDetailScreen(
                     messageBarState.addSuccess("نوبتِ شما ثبت شد.")
                     navigateToMyAppointments()
                 }
+                is TherapistDetailEffect.SwitchRequested -> messageBarState.addSuccess("درخواستِ تعویضِ درمانگر ثبت شد؛ به‌زودی بررسی می‌شود.")
                 is TherapistDetailEffect.ShowError -> messageBarState.addError(effect.message)
             }
         }
@@ -190,6 +191,19 @@ fun TherapistDetailScreen(
                                 Spacer(Modifier.height(16.dp))
                                 com.kazemieh.details.component.ProductReviewsSection(productId = pid, title = "نظرِ مراجعان")
                             }
+                        }
+
+                        item {
+                            Spacer(Modifier.height(16.dp))
+                            Text(
+                                if (state.isRequestingSwitch) "در حالِ ثبتِ درخواست…" else "درخواستِ تعویضِ درمانگر",
+                                modifier = Modifier
+                                    .clickable(enabled = !state.isRequestingSwitch) { viewModel.requestSwitch(null) }
+                                    .padding(vertical = 4.dp),
+                                color = colors.onSurfaceVariant,
+                                fontSize = FontSize.SMALL,
+                                textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline
+                            )
                         }
                     }
                 }

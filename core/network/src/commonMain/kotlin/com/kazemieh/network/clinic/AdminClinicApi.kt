@@ -19,4 +19,7 @@ interface AdminClinicApi {
     suspend fun listPatients(therapistId: Long): List<AdminPatientSummaryResponse>
     suspend fun setPatientTags(therapistId: Long, userId: Long, request: AdminSetPatientTagsRequestDto)
     suspend fun getPatientFile(therapistId: Long, userId: Long): PatientFileResponse
+
+    suspend fun listSwitchRequests(): List<AdminSwitchRequestResponse>
+    suspend fun reviewSwitchRequest(id: Long, request: AdminReviewSwitchRequestDto): AdminSwitchRequestResponse
 }

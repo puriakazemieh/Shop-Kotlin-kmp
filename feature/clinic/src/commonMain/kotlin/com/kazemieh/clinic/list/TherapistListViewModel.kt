@@ -13,9 +13,17 @@ import kotlinx.coroutines.launch
 
 data class TherapistListState(
     val isLoading: Boolean = false,
-    val therapists: List<TherapistSummary> = emptyList(),
+    val allTherapists: List<TherapistSummary> = emptyList(),
+    val specialtyQuery: String = "",
     val error: Any? = null
-)
+) {
+    val therapists: List<TherapistSummary> get() =
+        if (specialtyQuery.isBlank()) allTherapists
+        else allTherapists.filter { it.specialty?.contains(specialtyQuery, ignoreCase = true) == true }
+
+    /** فهرستِ یکتای تخصص‌ها برای چیپ‌هایِ پیشنهادی. */
+    val specialties: List<String> get() = allTherapists.mapNotNull { it.specialty }.distinct()
+}
 
 class TherapistListViewModel(
     private val getTherapistsUseCase: GetTherapistsUseCase
@@ -28,10 +36,14 @@ class TherapistListViewModel(
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             when (val result = getTherapistsUseCase()) {
-                is AppResult.Success -> _state.update { it.copy(isLoading = false, therapists = result.data, error = null) }
+                is AppResult.Success -> _state.update { it.copy(isLoading = false, allTherapists = result.data, error = null) }
                 is AppResult.Error -> _state.update { it.copy(isLoading = false, error = result.message) }
                 else -> {}
             }
         }
+    }
+
+    fun setSpecialtyQuery(query: String) {
+        _state.update { it.copy(specialtyQuery = query) }
     }
 }

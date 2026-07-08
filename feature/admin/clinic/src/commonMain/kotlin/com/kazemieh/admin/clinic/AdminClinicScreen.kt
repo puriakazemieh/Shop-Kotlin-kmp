@@ -99,6 +99,7 @@ fun AdminClinicScreen(
                     TabChip("درمانگرها", tab == 0) { tab = 0 }
                     TabChip("نوبت‌ها", tab == 1) { tab = 1 }
                     TabChip("مراجعان", tab == 2) { tab = 2 }
+                    TabChip("درخواستِ تعویض", tab == 3) { tab = 3; viewModel.loadSwitchRequests() }
                 }
                 when (tab) {
                     0 -> TherapistsTab(
@@ -121,6 +122,10 @@ fun AdminClinicScreen(
                         onSelectTherapist = viewModel::selectCrmTherapist,
                         onTogglePatientFile = viewModel::togglePatientFile,
                         onSetTags = viewModel::setPatientTags
+                    )
+                    3 -> SwitchRequestsTab(
+                        state = state,
+                        onReview = viewModel::reviewSwitchRequest
                     )
                 }
             }
@@ -699,6 +704,96 @@ private fun PatientFileView(file: com.kazemieh.domain.clinic.PatientFile) {
                 Text(
                     "· ${t.testTitle}" + (t.totalScore?.let { " — نمره: $it" } ?: "") + (t.interpretation?.let { " ($it)" } ?: ""),
                     color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SwitchRequestsTab(
+    state: AdminClinicState,
+    onReview: (id: Long, approve: Boolean, adminNote: String?) -> Unit
+) {
+    val colors = AppTheme.colors
+    if (state.loadingSwitchRequests && state.switchRequests.isEmpty()) {
+        LoadingCard(modifier = Modifier.fillMaxSize())
+        return
+    }
+    if (state.switchRequests.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("درخواستِ تعویضی ثبت نشده.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        }
+        return
+    }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(state.switchRequests) { req ->
+            SwitchRequestCard(req = req, onReview = onReview)
+        }
+    }
+}
+
+@Composable
+private fun SwitchRequestCard(
+    req: com.kazemieh.domain.clinic.AdminSwitchRequest,
+    onReview: (id: Long, approve: Boolean, adminNote: String?) -> Unit
+) {
+    val colors = AppTheme.colors
+    val (statusLabel, statusColor) = when (req.status) {
+        com.kazemieh.domain.clinic.SwitchRequestStatus.PENDING -> "در انتظارِ بررسی" to colors.star
+        com.kazemieh.domain.clinic.SwitchRequestStatus.APPROVED -> "تأییدشده" to colors.ok
+        com.kazemieh.domain.clinic.SwitchRequestStatus.REJECTED -> "ردشده" to colors.sale
+        com.kazemieh.domain.clinic.SwitchRequestStatus.UNKNOWN -> "-" to colors.onSurfaceVariant
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(14.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                req.userName ?: "کاربر #${req.userId}",
+                fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                statusLabel,
+                modifier = Modifier.clip(RoundedCornerShape(999.dp)).background(statusColor.copy(alpha = 0.12f)).padding(horizontal = 10.dp, vertical = 4.dp),
+                color = statusColor, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+            )
+        }
+        Spacer(Modifier.height(6.dp))
+        Text("از: ${req.fromTherapistName}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        if (!req.reason.isNullOrBlank()) {
+            Spacer(Modifier.height(4.dp))
+            Text("دلیل: ${req.reason}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+        }
+        if (req.status == com.kazemieh.domain.clinic.SwitchRequestStatus.PENDING) {
+            Spacer(Modifier.height(10.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "تأیید",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.primary)
+                        .clickable { onReview(req.id, true, null) }
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+                )
+                Text(
+                    "ردّ",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.surfaceVariant)
+                        .clickable { onReview(req.id, false, null) }
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    color = colors.sale, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
                 )
             }
         }

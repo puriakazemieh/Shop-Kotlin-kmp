@@ -62,3 +62,12 @@ class SetPatientTagsUseCase(private val repository: AdminClinicRepository) {
 class GetPatientFileUseCase(private val repository: AdminClinicRepository) {
     suspend operator fun invoke(therapistId: Long, userId: Long) = repository.getPatientFile(therapistId, userId)
 }
+
+class GetAdminSwitchRequestsUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke() = repository.listSwitchRequests()
+}
+
+class ReviewSwitchRequestUseCase(private val repository: AdminClinicRepository) {
+    suspend operator fun invoke(id: Long, approve: Boolean, adminNote: String? = null) =
+        repository.reviewSwitchRequest(id, approve, adminNote)
+}

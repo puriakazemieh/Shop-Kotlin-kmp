@@ -131,3 +131,25 @@ data class PatientFileResponse(
     val appointments: List<PatientFileAppointmentResponse> = emptyList(),
     val testResults: List<PatientFileTestResultResponse> = emptyList()
 )
+
+// ---------- درخواست‌های تعویضِ درمانگر (Phase X) ----------
+@Serializable
+data class AdminSwitchRequestResponse(
+    val id: Long,
+    val userId: Long,
+    val userName: String? = null,
+    val fromTherapistId: Long,
+    val fromTherapistName: String,
+    val toTherapistId: Long? = null,
+    val toTherapistName: String? = null,
+    val reason: String? = null,
+    val status: String,
+    val adminNote: String? = null,
+    val createdAt: String? = null
+)
+
+@Serializable
+data class AdminReviewSwitchRequestDto(
+    val approve: Boolean,
+    val adminNote: String? = null
+)

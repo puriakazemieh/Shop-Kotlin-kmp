@@ -19,3 +19,24 @@ class BookAppointmentUseCase(private val repository: ClinicRepository) {
 class CancelAppointmentUseCase(private val repository: ClinicRepository) {
     suspend operator fun invoke(appointmentId: Long) = repository.cancel(appointmentId)
 }
+
+class GetSessionReceiptUseCase(private val repository: ClinicRepository) {
+    suspend operator fun invoke(appointmentId: Long) = repository.getReceipt(appointmentId)
+}
+
+class SubmitMoodCheckInUseCase(private val repository: ClinicRepository) {
+    suspend operator fun invoke(moodScore: Int, note: String? = null) = repository.submitMood(moodScore, note)
+}
+
+class GetMoodHistoryUseCase(private val repository: ClinicRepository) {
+    suspend operator fun invoke() = repository.getMoodHistory()
+}
+
+class RequestTherapistSwitchUseCase(private val repository: ClinicRepository) {
+    suspend operator fun invoke(fromTherapistId: Long, toTherapistId: Long? = null, reason: String? = null) =
+        repository.requestSwitch(fromTherapistId, toTherapistId, reason)
+}
+
+class GetMySwitchRequestsUseCase(private val repository: ClinicRepository) {
+    suspend operator fun invoke() = repository.getMySwitchRequests()
+}

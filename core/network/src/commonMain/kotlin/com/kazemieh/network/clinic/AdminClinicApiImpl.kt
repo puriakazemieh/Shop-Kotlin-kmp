@@ -72,4 +72,12 @@ class AdminClinicApiImpl(
     override suspend fun getPatientFile(therapistId: Long, userId: Long): PatientFileResponse = safeApiCallRaw {
         client.get("api/admin/therapists/$therapistId/patients/$userId")
     }
+
+    override suspend fun listSwitchRequests(): List<AdminSwitchRequestResponse> = safeApiCallRaw {
+        client.get("api/admin/clinic/switch-requests")
+    }
+
+    override suspend fun reviewSwitchRequest(id: Long, request: AdminReviewSwitchRequestDto): AdminSwitchRequestResponse = safeApiCallRaw {
+        client.post("api/admin/clinic/switch-requests/$id/review") { setBody(request) }
+    }
 }

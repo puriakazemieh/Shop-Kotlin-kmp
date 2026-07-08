@@ -10,9 +10,11 @@ import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
 import com.kazemieh.domain.clinic.GetAdminPatientsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
+import com.kazemieh.domain.clinic.GetAdminSwitchRequestsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
 import com.kazemieh.domain.clinic.GetPatientFileUseCase
 import com.kazemieh.domain.clinic.GetPatientNotesUseCase
+import com.kazemieh.domain.clinic.ReviewSwitchRequestUseCase
 import com.kazemieh.domain.clinic.SetPatientTagsUseCase
 import com.kazemieh.domain.clinic.UpdateTherapistUseCase
 import org.koin.core.module.dsl.viewModel
@@ -34,6 +36,8 @@ val adminClinicModule = module {
     factory { GetAdminPatientsUseCase(get()) }
     factory { SetPatientTagsUseCase(get()) }
     factory { GetPatientFileUseCase(get()) }
+    factory { GetAdminSwitchRequestsUseCase(get()) }
+    factory { ReviewSwitchRequestUseCase(get()) }
 
     viewModel {
         AdminClinicViewModel(
@@ -50,7 +54,9 @@ val adminClinicModule = module {
             addPatientNoteUseCase = get(),
             getAdminPatientsUseCase = get(),
             setPatientTagsUseCase = get(),
-            getPatientFileUseCase = get()
+            getPatientFileUseCase = get(),
+            getAdminSwitchRequestsUseCase = get(),
+            reviewSwitchRequestUseCase = get()
         )
     }
 }

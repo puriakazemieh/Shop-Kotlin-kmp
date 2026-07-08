@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.clinic.BookAppointmentUseCase
 import com.kazemieh.domain.clinic.GetTherapistDetailUseCase
+import com.kazemieh.domain.clinic.RequestTherapistSwitchUseCase
 import com.kazemieh.domain.clinic.TherapistDetail
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -19,17 +20,20 @@ data class TherapistDetailState(
     val isLoading: Boolean = false,
     val bookingSlotId: Long? = null,
     val therapist: TherapistDetail? = null,
+    val isRequestingSwitch: Boolean = false,
     val error: Any? = null
 )
 
 sealed interface TherapistDetailEffect {
     data class ShowError(val message: Any) : TherapistDetailEffect
     data object Booked : TherapistDetailEffect
+    data object SwitchRequested : TherapistDetailEffect
 }
 
 class TherapistDetailViewModel(
     private val getTherapistDetailUseCase: GetTherapistDetailUseCase,
-    private val bookAppointmentUseCase: BookAppointmentUseCase
+    private val bookAppointmentUseCase: BookAppointmentUseCase,
+    private val requestTherapistSwitchUseCase: RequestTherapistSwitchUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TherapistDetailState())
@@ -67,6 +71,26 @@ class TherapistDetailViewModel(
                 }
                 is AppResult.Error -> {
                     _state.update { it.copy(bookingSlotId = null) }
+                    _effect.send(TherapistDetailEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    /** درخواستِ تعویضِ همینِ درمانگر با درمانگرِ دیگر (بدونِ مقصدِ مشخص — ادمین تصمیم می‌گیرد). */
+    fun requestSwitch(reason: String?) {
+        val therapistId = _state.value.therapist?.id ?: return
+        if (_state.value.isRequestingSwitch) return
+        _state.update { it.copy(isRequestingSwitch = true) }
+        viewModelScope.launch {
+            when (val result = requestTherapistSwitchUseCase(therapistId, null, reason)) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(isRequestingSwitch = false) }
+                    _effect.send(TherapistDetailEffect.SwitchRequested)
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(isRequestingSwitch = false) }
                     _effect.send(TherapistDetailEffect.ShowError(result.message))
                 }
                 else -> {}

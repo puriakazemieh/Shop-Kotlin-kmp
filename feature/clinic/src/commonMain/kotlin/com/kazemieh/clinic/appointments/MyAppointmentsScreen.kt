@@ -50,7 +50,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MyAppointmentsScreen(
     navigateBack: () -> Unit,
-    navigateToCatalog: () -> Unit
+    navigateToCatalog: () -> Unit,
+    navigateToReceipt: (Long) -> Unit = {}
 ) {
     val viewModel = koinViewModel<MyAppointmentsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -124,7 +125,8 @@ fun MyAppointmentsScreen(
                                         if (appointment.isPhone) uriHandler.openUri("tel:$url") else uriHandler.openUri(url)
                                     }
                                 },
-                                onCancel = { viewModel.cancel(appointment.id) }
+                                onCancel = { viewModel.cancel(appointment.id) },
+                                onReceipt = { navigateToReceipt(appointment.id) }
                             )
                         }
                     }
@@ -139,7 +141,8 @@ private fun AppointmentCard(
     appointment: Appointment,
     cancelling: Boolean,
     onJoin: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    onReceipt: () -> Unit
 ) {
     val colors = AppTheme.colors
     val (statusLabel, statusColor) = when (appointment.status) {
@@ -195,6 +198,17 @@ private fun AppointmentCard(
                     )
                 }
             }
+        }
+
+        if (appointment.status == AppointmentStatus.COMPLETED) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = "دریافتِ رسیدِ جلسه",
+                modifier = Modifier.clickable { onReceipt() }.padding(vertical = 4.dp),
+                color = colors.primary,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = FontSize.SMALL
+            )
         }
     }
 }

@@ -8,6 +8,7 @@ import com.kazemieh.domain.clinic.AddSlotUseCase
 import com.kazemieh.domain.clinic.AdminAppointment
 import com.kazemieh.domain.clinic.AdminPatientSummary
 import com.kazemieh.domain.clinic.AdminSlot
+import com.kazemieh.domain.clinic.AdminSwitchRequest
 import com.kazemieh.domain.clinic.AdminTherapistParams
 import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
 import com.kazemieh.domain.clinic.ConfirmAppointmentUseCase
@@ -17,11 +18,13 @@ import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
 import com.kazemieh.domain.clinic.GetAdminPatientsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
+import com.kazemieh.domain.clinic.GetAdminSwitchRequestsUseCase
 import com.kazemieh.domain.clinic.GetAdminTherapistsUseCase
 import com.kazemieh.domain.clinic.GetPatientFileUseCase
 import com.kazemieh.domain.clinic.GetPatientNotesUseCase
 import com.kazemieh.domain.clinic.PatientFile
 import com.kazemieh.domain.clinic.PatientNote
+import com.kazemieh.domain.clinic.ReviewSwitchRequestUseCase
 import com.kazemieh.domain.clinic.SetPatientTagsUseCase
 import com.kazemieh.domain.clinic.TherapistSummary
 import kotlinx.coroutines.channels.Channel
@@ -51,7 +54,10 @@ data class AdminClinicState(
     val loadingPatients: Boolean = false,
     val expandedPatientUserId: Long? = null,
     val patientFile: PatientFile? = null,
-    val loadingPatientFile: Boolean = false
+    val loadingPatientFile: Boolean = false,
+    // ---- درخواست‌های تعویضِ درمانگر ----
+    val switchRequests: List<AdminSwitchRequest> = emptyList(),
+    val loadingSwitchRequests: Boolean = false
 )
 
 sealed interface AdminClinicEffect {
@@ -73,7 +79,9 @@ class AdminClinicViewModel(
     private val addPatientNoteUseCase: AddPatientNoteUseCase,
     private val getAdminPatientsUseCase: GetAdminPatientsUseCase,
     private val setPatientTagsUseCase: SetPatientTagsUseCase,
-    private val getPatientFileUseCase: GetPatientFileUseCase
+    private val getPatientFileUseCase: GetPatientFileUseCase,
+    private val getAdminSwitchRequestsUseCase: GetAdminSwitchRequestsUseCase,
+    private val reviewSwitchRequestUseCase: ReviewSwitchRequestUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminClinicState())
@@ -315,6 +323,34 @@ class AdminClinicViewModel(
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess("برچسب‌ها به‌روزرسانی شد."))
                     loadPatients(therapistId)
+                }
+                is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- درخواست‌های تعویضِ درمانگر ----
+    fun loadSwitchRequests() {
+        _state.update { it.copy(loadingSwitchRequests = true) }
+        viewModelScope.launch {
+            when (val result = getAdminSwitchRequestsUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(loadingSwitchRequests = false, switchRequests = result.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(loadingSwitchRequests = false) }
+                    _effect.send(AdminClinicEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun reviewSwitchRequest(id: Long, approve: Boolean, adminNote: String?) {
+        viewModelScope.launch {
+            when (val result = reviewSwitchRequestUseCase(id, approve, adminNote)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminClinicEffect.ShowSuccess(if (approve) "درخواست تأیید شد." else "درخواست ردّ شد."))
+                    loadSwitchRequests()
                 }
                 is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
                 else -> {}

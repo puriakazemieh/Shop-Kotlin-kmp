@@ -65,3 +65,38 @@ data class Appointment(
 ) {
     val isPhone: Boolean get() = mode == "PHONE"
 }
+
+// ---------- ثبتِ روزانه‌ی خلق‌وخو (Phase X) ----------
+data class MoodCheckIn(
+    val id: Long,
+    val moodScore: Int,
+    val note: String?,
+    val createdAt: String?
+)
+
+// ---------- درخواستِ تعویضِ درمانگر (Phase X) ----------
+enum class SwitchRequestStatus { PENDING, APPROVED, REJECTED, UNKNOWN }
+
+data class SwitchRequest(
+    val id: Long,
+    val fromTherapistId: Long,
+    val fromTherapistName: String,
+    val toTherapistId: Long?,
+    val toTherapistName: String?,
+    val reason: String?,
+    val status: SwitchRequestStatus,
+    val adminNote: String?,
+    val createdAt: String?
+)
+
+// ---------- رسیدِ جلسه، آماده برایِ ارائه به بیمه (Phase X) ----------
+data class SessionReceipt(
+    val appointmentId: Long,
+    val patientName: String,
+    val therapistName: String,
+    val therapistSpecialty: String?,
+    val sessionMode: String,
+    val sessionDate: String,
+    val sessionDurationMinutes: Int,
+    val amountPaid: Double
+)

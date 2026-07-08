@@ -64,6 +64,9 @@ import com.kazemieh.comparison.ComparisonScreen
 import com.kazemieh.clinic.list.TherapistListScreen
 import com.kazemieh.clinic.detail.TherapistDetailScreen
 import com.kazemieh.clinic.appointments.MyAppointmentsScreen
+import com.kazemieh.clinic.mood.MoodCheckInScreen
+import com.kazemieh.clinic.resources.EmergencyResourcesScreen
+import com.kazemieh.clinic.receipt.SessionReceiptScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -398,7 +401,9 @@ fun AppNavHost(
         composable<Screen.TherapistCatalog> {
             TherapistListScreen(
                 navigateBack = { navController.navigateBack() },
-                navigateToTherapist = { slug -> navController.navigate(Screen.TherapistDetail(slug)) }
+                navigateToTherapist = { slug -> navController.navigate(Screen.TherapistDetail(slug)) },
+                navigateToMoodCheckIn = { navController.navigate(Screen.MoodCheckIn) },
+                navigateToEmergencyResources = { navController.navigate(Screen.EmergencyResources) }
             )
         }
 
@@ -421,8 +426,22 @@ fun AppNavHost(
         composable<Screen.MyAppointments> {
             MyAppointmentsScreen(
                 navigateBack = { navController.navigateBack() },
-                navigateToCatalog = { navController.navigate(Screen.TherapistCatalog) }
+                navigateToCatalog = { navController.navigate(Screen.TherapistCatalog) },
+                navigateToReceipt = { appointmentId -> navController.navigate(Screen.SessionReceipt(appointmentId)) }
             )
+        }
+
+        composable<Screen.MoodCheckIn> {
+            MoodCheckInScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.EmergencyResources> {
+            EmergencyResourcesScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.SessionReceipt> {
+            val args = it.toRoute<Screen.SessionReceipt>()
+            SessionReceiptScreen(appointmentId = args.appointmentId, navigateBack = { navController.navigateBack() })
         }
 
         // ---- Psychology tests (vertical) ----
