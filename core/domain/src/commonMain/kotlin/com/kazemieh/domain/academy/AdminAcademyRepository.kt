@@ -21,7 +21,8 @@ data class AdminCourseParams(
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
     val instructorSkills: String? = null,
-    val requiresProjectSubmission: Boolean = false
+    val requiresProjectSubmission: Boolean = false,
+    val cohortStartDate: String? = null
 )
 
 data class AdminCourseUpdateParams(
@@ -32,7 +33,8 @@ data class AdminCourseUpdateParams(
     val price: Double? = null,
     val discountedPrice: Double? = null,
     val isPublished: Boolean? = null,
-    val requiresProjectSubmission: Boolean? = null
+    val requiresProjectSubmission: Boolean? = null,
+    val cohortStartDate: String? = null
 )
 
 /** یک سؤالِ آزمون در فرمِ تست‌سازِ ادمین: متن + گزینه‌ها + ایندکسِ گزینه‌ی درست. */
@@ -67,7 +69,9 @@ interface AdminAcademyRepository {
         videoUrl: String?,
         durationSeconds: Int,
         sortOrder: Int,
-        isFreePreview: Boolean
+        isFreePreview: Boolean,
+        subtitleLanguage: String? = null,
+        subtitleUrl: String? = null
     ): AppResult<Long>
     suspend fun upsertQuiz(
         courseId: Long,
@@ -92,4 +96,15 @@ interface AdminAcademyRepository {
     // ---- پروژه‌های پایانی ----
     suspend fun listProjectSubmissions(courseId: Long): AppResult<List<ProjectSubmission>>
     suspend fun reviewProjectSubmission(submissionId: Long, status: String, mentorFeedback: String?): AppResult<Unit>
+
+    // ---- سازمان/صندلیِ سازمانی ----
+    suspend fun listOrganizations(): AppResult<List<Organization>>
+    suspend fun createOrganization(name: String, contactEmail: String?): AppResult<Organization>
+    suspend fun buySeats(organizationId: Long, courseId: Long, count: Int): AppResult<List<OrganizationSeat>>
+    suspend fun listSeats(organizationId: Long): AppResult<List<OrganizationSeat>>
+    suspend fun assignSeat(organizationId: Long, courseId: Long, email: String): AppResult<OrganizationSeat>
+
+    // ---- گارانتیِ بازگشتِ وجه ----
+    suspend fun listRefundRequests(): AppResult<List<AdminCourseRefundRequest>>
+    suspend fun reviewRefundRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<AdminCourseRefundRequest>
 }

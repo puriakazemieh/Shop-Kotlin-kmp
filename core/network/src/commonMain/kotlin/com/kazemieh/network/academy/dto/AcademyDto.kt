@@ -36,6 +36,12 @@ data class LessonFileResponse(
 )
 
 @Serializable
+data class SubtitleTrackResponse(
+    val language: String,
+    val url: String
+)
+
+@Serializable
 data class LessonResponse(
     val id: Long,
     val title: String,
@@ -46,7 +52,8 @@ data class LessonResponse(
     val lastPositionSeconds: Int = 0,
     val videoVariants: List<VideoVariantResponse> = emptyList(),
     val resourceFiles: List<LessonFileResponse> = emptyList(),
-    val hasQuiz: Boolean = false
+    val hasQuiz: Boolean = false,
+    val subtitles: List<SubtitleTrackResponse> = emptyList()
 )
 
 @Serializable
@@ -88,7 +95,8 @@ data class CourseDetailResponse(
     val instructorDiscountCode: String? = null,
     val totalDurationSeconds: Int = 0,
     val resourceFileCount: Int = 0,
-    val hasUnseenUpdate: Boolean = false
+    val hasUnseenUpdate: Boolean = false,
+    val cohortStartDate: String? = null
 )
 
 @Serializable
@@ -272,3 +280,22 @@ data class SubmitPlacementQuizRequestDto(val answers: List<Int>)
 
 @Serializable
 data class PlacementQuizResultResponseDto(val level: String, val label: String)
+
+// ---------- گارانتیِ بازگشتِ وجهِ دوره (Phase W) ----------
+@Serializable
+data class CourseRefundRequestRequestDto(
+    val reason: String? = null
+)
+
+@Serializable
+data class CourseRefundRequestResponse(
+    val id: Long,
+    val courseId: Long,
+    val courseTitle: String,
+    val amount: Double,
+    val reason: String? = null,
+    val status: String,
+    val adminNote: String? = null,
+    val createdAt: String? = null,
+    val resolvedAt: String? = null
+)

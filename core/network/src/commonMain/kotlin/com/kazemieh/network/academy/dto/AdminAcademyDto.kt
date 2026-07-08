@@ -28,7 +28,8 @@ data class AdminCreateCourseRequestDto(
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
     val instructorSkills: String? = null,
-    val requiresProjectSubmission: Boolean = false
+    val requiresProjectSubmission: Boolean = false,
+    val cohortStartDate: String? = null
 )
 
 @Serializable
@@ -40,7 +41,8 @@ data class AdminUpdateCourseRequestDto(
     val price: Double? = null,
     val discountedPrice: Double? = null,
     val isPublished: Boolean? = null,
-    val requiresProjectSubmission: Boolean? = null
+    val requiresProjectSubmission: Boolean? = null,
+    val cohortStartDate: String? = null
 )
 
 @Serializable
@@ -56,7 +58,8 @@ data class AdminCreateLessonRequestDto(
     val durationSeconds: Int = 0,
     val sortOrder: Int = 0,
     val isFreePreview: Boolean = false,
-    val videoVariants: List<VideoVariantResponse> = emptyList()
+    val videoVariants: List<VideoVariantResponse> = emptyList(),
+    val subtitles: List<SubtitleTrackResponse> = emptyList()
 )
 
 // ---------- Admin quiz builder ----------
@@ -106,4 +109,63 @@ data class AdminUpsertLessonQuizRequestDto(
 data class AdminLessonQuizResponse(
     val found: Boolean,
     val quiz: LessonQuizResponse? = null
+)
+
+// ---------- سازمان/صندلیِ سازمانی (Phase W) ----------
+@Serializable
+data class OrganizationResponse(
+    val id: Long,
+    val name: String,
+    val contactEmail: String? = null,
+    val createdAt: String? = null
+)
+
+@Serializable
+data class CreateOrganizationRequestDto(
+    val name: String,
+    val contactEmail: String? = null
+)
+
+@Serializable
+data class SeatResponse(
+    val id: Long,
+    val organizationId: Long,
+    val courseId: Long,
+    val assignedUserId: Long? = null,
+    val assignedEmail: String? = null,
+    val assignedAt: String? = null
+)
+
+@Serializable
+data class BuySeatsRequestDto(
+    val courseId: Long,
+    val count: Int
+)
+
+@Serializable
+data class AssignSeatRequestDto(
+    val courseId: Long,
+    val email: String
+)
+
+// ---------- گارانتیِ بازگشتِ وجهِ دوره (Phase W) ----------
+@Serializable
+data class AdminCourseRefundRequestResponse(
+    val id: Long,
+    val courseId: Long,
+    val courseTitle: String,
+    val userId: Long,
+    val userName: String? = null,
+    val amount: Double,
+    val reason: String? = null,
+    val status: String,
+    val adminNote: String? = null,
+    val createdAt: String? = null,
+    val resolvedAt: String? = null
+)
+
+@Serializable
+data class AdminReviewRefundRequestDto(
+    val approve: Boolean,
+    val adminNote: String? = null
 )

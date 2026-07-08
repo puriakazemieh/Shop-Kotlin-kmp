@@ -7,6 +7,7 @@ import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.EnrollCourseUseCase
 import com.kazemieh.domain.academy.GetCourseDetailUseCase
 import com.kazemieh.domain.academy.JoinWaitlistUseCase
+import com.kazemieh.domain.academy.RequestCourseRefundUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ data class CourseDetailState(
     val isLoading: Boolean = false,
     val isEnrolling: Boolean = false,
     val isJoiningWaitlist: Boolean = false,
+    val isRequestingRefund: Boolean = false,
     val course: CourseDetail? = null,
     val error: Any? = null
 )
@@ -32,7 +34,8 @@ sealed interface CourseDetailEffect {
 class CourseDetailViewModel(
     private val getCourseDetailUseCase: GetCourseDetailUseCase,
     private val enrollCourseUseCase: EnrollCourseUseCase,
-    private val joinWaitlistUseCase: JoinWaitlistUseCase
+    private val joinWaitlistUseCase: JoinWaitlistUseCase,
+    private val requestCourseRefundUseCase: RequestCourseRefundUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CourseDetailState())
@@ -83,6 +86,24 @@ class CourseDetailViewModel(
                 }
                 is AppResult.Error -> {
                     _state.update { it.copy(isJoiningWaitlist = false) }
+                    _effect.send(CourseDetailEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun requestRefund(reason: String?) {
+        val course = _state.value.course ?: return
+        _state.update { it.copy(isRequestingRefund = true) }
+        viewModelScope.launch {
+            when (val result = requestCourseRefundUseCase(course.id, reason)) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(isRequestingRefund = false) }
+                    _effect.send(CourseDetailEffect.ShowSuccess("درخواستِ بازگشتِ وجه ثبت شد."))
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(isRequestingRefund = false) }
                     _effect.send(CourseDetailEffect.ShowError(result.message))
                 }
                 else -> {}

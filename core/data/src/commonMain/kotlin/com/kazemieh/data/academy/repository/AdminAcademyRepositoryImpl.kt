@@ -72,7 +72,8 @@ class AdminAcademyRepositoryImpl(
                 freeUpdateBadge = params.freeUpdateBadge,
                 instructorBio = params.instructorBio,
                 instructorSkills = params.instructorSkills,
-                requiresProjectSubmission = params.requiresProjectSubmission
+                requiresProjectSubmission = params.requiresProjectSubmission,
+                cohortStartDate = params.cohortStartDate
             )
         )
     }
@@ -88,7 +89,8 @@ class AdminAcademyRepositoryImpl(
                 price = params.price,
                 discountedPrice = params.discountedPrice,
                 isPublished = params.isPublished,
-                requiresProjectSubmission = params.requiresProjectSubmission
+                requiresProjectSubmission = params.requiresProjectSubmission,
+                cohortStartDate = params.cohortStartDate
             )
         )
     }
@@ -108,13 +110,18 @@ class AdminAcademyRepositoryImpl(
         videoUrl: String?,
         durationSeconds: Int,
         sortOrder: Int,
-        isFreePreview: Boolean
+        isFreePreview: Boolean,
+        subtitleLanguage: String?,
+        subtitleUrl: String?
     ): AppResult<Long> = safeApiCall {
+        val subtitles = if (!subtitleUrl.isNullOrBlank()) {
+            listOf(com.kazemieh.network.academy.dto.SubtitleTrackResponse(subtitleLanguage.orEmpty(), subtitleUrl))
+        } else emptyList()
         api.addLesson(
             courseId, sectionId,
             AdminCreateLessonRequestDto(
                 title = title, videoUrl = videoUrl, durationSeconds = durationSeconds,
-                sortOrder = sortOrder, isFreePreview = isFreePreview
+                sortOrder = sortOrder, isFreePreview = isFreePreview, subtitles = subtitles
             )
         )
     }
@@ -209,7 +216,8 @@ class AdminAcademyRepositoryImpl(
         id = id, title = title, durationSeconds = durationSeconds, isFreePreview = isFreePreview,
         videoUrl = videoUrl, completed = completed, lastPositionSeconds = lastPositionSeconds,
         resourceFiles = resourceFiles.map { LessonFile(it.name, it.url, it.sizeLabel) },
-        hasQuiz = hasQuiz
+        hasQuiz = hasQuiz,
+        subtitles = subtitles.map { com.kazemieh.domain.academy.SubtitleTrack(it.language, it.url) }
     )
 
     private fun LessonQuizResponse.toDomain() = LessonQuiz(
@@ -241,6 +249,52 @@ class AdminAcademyRepositoryImpl(
         seatsRemaining = seatsRemaining, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge,
         instructorBio = instructorBio, instructorSkills = instructorSkills,
         isFull = isFull, onWaitlist = onWaitlist, productId = productId,
-        requiresProjectSubmission = requiresProjectSubmission
+        requiresProjectSubmission = requiresProjectSubmission,
+        instructorDiscountCode = instructorDiscountCode, totalDurationSeconds = totalDurationSeconds,
+        resourceFileCount = resourceFileCount, hasUnseenUpdate = hasUnseenUpdate,
+        cohortStartDate = cohortStartDate
+    )
+
+    override suspend fun listOrganizations(): AppResult<List<com.kazemieh.domain.academy.Organization>> = safeApiCall {
+        api.listOrganizations().map { it.toDomain() }
+    }
+
+    override suspend fun createOrganization(name: String, contactEmail: String?): AppResult<com.kazemieh.domain.academy.Organization> = safeApiCall {
+        api.createOrganization(com.kazemieh.network.academy.dto.CreateOrganizationRequestDto(name, contactEmail)).toDomain()
+    }
+
+    override suspend fun buySeats(organizationId: Long, courseId: Long, count: Int): AppResult<List<com.kazemieh.domain.academy.OrganizationSeat>> = safeApiCall {
+        api.buySeats(organizationId, com.kazemieh.network.academy.dto.BuySeatsRequestDto(courseId, count)).map { it.toDomain() }
+    }
+
+    override suspend fun listSeats(organizationId: Long): AppResult<List<com.kazemieh.domain.academy.OrganizationSeat>> = safeApiCall {
+        api.listSeats(organizationId).map { it.toDomain() }
+    }
+
+    override suspend fun assignSeat(organizationId: Long, courseId: Long, email: String): AppResult<com.kazemieh.domain.academy.OrganizationSeat> = safeApiCall {
+        api.assignSeat(organizationId, com.kazemieh.network.academy.dto.AssignSeatRequestDto(courseId, email)).toDomain()
+    }
+
+    override suspend fun listRefundRequests(): AppResult<List<com.kazemieh.domain.academy.AdminCourseRefundRequest>> = safeApiCall {
+        api.listRefundRequests().map { it.toDomain() }
+    }
+
+    override suspend fun reviewRefundRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<com.kazemieh.domain.academy.AdminCourseRefundRequest> = safeApiCall {
+        api.reviewRefundRequest(id, com.kazemieh.network.academy.dto.AdminReviewRefundRequestDto(approve, adminNote)).toDomain()
+    }
+
+    private fun com.kazemieh.network.academy.dto.OrganizationResponse.toDomain() = com.kazemieh.domain.academy.Organization(
+        id = id, name = name, contactEmail = contactEmail, createdAt = createdAt
+    )
+
+    private fun com.kazemieh.network.academy.dto.SeatResponse.toDomain() = com.kazemieh.domain.academy.OrganizationSeat(
+        id = id, organizationId = organizationId, courseId = courseId,
+        assignedUserId = assignedUserId, assignedEmail = assignedEmail, assignedAt = assignedAt
+    )
+
+    private fun com.kazemieh.network.academy.dto.AdminCourseRefundRequestResponse.toDomain() = com.kazemieh.domain.academy.AdminCourseRefundRequest(
+        id = id, courseId = courseId, courseTitle = courseTitle, userId = userId, userName = userName,
+        amount = amount, reason = reason, status = status, adminNote = adminNote,
+        createdAt = createdAt, resolvedAt = resolvedAt
     )
 }

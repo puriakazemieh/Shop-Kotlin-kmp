@@ -48,6 +48,12 @@ data class LessonFile(
     val sizeLabel: String? = null
 )
 
+/** یک زیرنویسِ درس به یک زبان. */
+data class SubtitleTrack(
+    val language: String,
+    val url: String
+)
+
 data class Lesson(
     val id: Long,
     val title: String,
@@ -59,7 +65,8 @@ data class Lesson(
     val videoVariants: List<VideoVariant> = emptyList(),
     val resourceFiles: List<LessonFile> = emptyList(),
     /** آیا این درس آزمونِ کوتاهِ خودش را دارد (تبِ «آزمون» در پخش‌کننده). */
-    val hasQuiz: Boolean = false
+    val hasQuiz: Boolean = false,
+    val subtitles: List<SubtitleTrack> = emptyList()
 )
 
 data class CourseSection(
@@ -102,7 +109,9 @@ data class CourseDetail(
     /** جعبه‌ی «این دوره شامل چیست» — مجموعِ مدتِ ویدیوها و تعدادِ فایل‌های ضمیمه. */
     val totalDurationSeconds: Int = 0,
     val resourceFileCount: Int = 0,
-    val hasUnseenUpdate: Boolean = false
+    val hasUnseenUpdate: Boolean = false,
+    /** برایِ دوره‌های همگروهی/زنده: تاریخِ شروعِ گروه. */
+    val cohortStartDate: String? = null
 )
 
 data class CourseProgress(
@@ -215,3 +224,47 @@ data class CertificateVerification(
 data class PlacementQuizOption(val label: String, val score: Int)
 data class PlacementQuizQuestion(val id: Int, val text: String, val options: List<PlacementQuizOption>)
 data class PlacementQuizResult(val level: String, val label: String)
+
+// ---------- گارانتیِ بازگشتِ وجهِ دوره (Phase W) ----------
+data class CourseRefundRequest(
+    val id: Long,
+    val courseId: Long,
+    val courseTitle: String,
+    val amount: Double,
+    val reason: String?,
+    val status: String,
+    val adminNote: String?,
+    val createdAt: String?,
+    val resolvedAt: String?
+)
+
+data class AdminCourseRefundRequest(
+    val id: Long,
+    val courseId: Long,
+    val courseTitle: String,
+    val userId: Long,
+    val userName: String?,
+    val amount: Double,
+    val reason: String?,
+    val status: String,
+    val adminNote: String?,
+    val createdAt: String?,
+    val resolvedAt: String?
+)
+
+// ---------- سازمان/صندلیِ سازمانی (Phase W) ----------
+data class Organization(
+    val id: Long,
+    val name: String,
+    val contactEmail: String?,
+    val createdAt: String?
+)
+
+data class OrganizationSeat(
+    val id: Long,
+    val organizationId: Long,
+    val courseId: Long,
+    val assignedUserId: Long?,
+    val assignedEmail: String?,
+    val assignedAt: String?
+)

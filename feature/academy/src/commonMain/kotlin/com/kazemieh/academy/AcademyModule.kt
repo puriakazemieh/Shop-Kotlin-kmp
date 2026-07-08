@@ -23,9 +23,11 @@ import com.kazemieh.domain.academy.GetMyProjectUseCase
 import com.kazemieh.domain.academy.GetPeerCommentsUseCase
 import com.kazemieh.domain.academy.GetPeerSubmissionsUseCase
 import com.kazemieh.domain.academy.GetPlacementQuizUseCase
+import com.kazemieh.domain.academy.GetMyRefundRequestsUseCase
 import com.kazemieh.domain.academy.GetQuizUseCase
 import com.kazemieh.domain.academy.JoinWaitlistUseCase
 import com.kazemieh.domain.academy.MarkCourseUpdateSeenUseCase
+import com.kazemieh.domain.academy.RequestCourseRefundUseCase
 import com.kazemieh.domain.academy.SubmitLessonQuizUseCase
 import com.kazemieh.domain.academy.SubmitPlacementQuizUseCase
 import com.kazemieh.domain.academy.SubmitProjectByLinkUseCase
@@ -60,9 +62,11 @@ val academyModule = module {
     factory { VerifyCertificateUseCase(get()) }
     factory { GetPlacementQuizUseCase(get()) }
     factory { SubmitPlacementQuizUseCase(get()) }
+    factory { RequestCourseRefundUseCase(get()) }
+    factory { GetMyRefundRequestsUseCase(get()) }
 
     viewModel { CourseListViewModel(get(), get()) }
-    viewModel { CourseDetailViewModel(get(), get(), get()) }
+    viewModel { CourseDetailViewModel(get(), get(), get(), get()) }
     viewModel { CourseLearnViewModel(get(), get(), get(), get(), get()) }
     viewModel { CourseQuizViewModel(get(), get()) }
     viewModel { CertificatesViewModel(get()) }

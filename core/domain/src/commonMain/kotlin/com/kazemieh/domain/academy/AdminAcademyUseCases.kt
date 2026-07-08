@@ -37,8 +37,10 @@ class AddCourseLessonUseCase(private val repository: AdminAcademyRepository) {
         videoUrl: String? = null,
         durationSeconds: Int = 0,
         sortOrder: Int = 0,
-        isFreePreview: Boolean = false
-    ) = repository.addLesson(courseId, sectionId, title, videoUrl, durationSeconds, sortOrder, isFreePreview)
+        isFreePreview: Boolean = false,
+        subtitleLanguage: String? = null,
+        subtitleUrl: String? = null
+    ) = repository.addLesson(courseId, sectionId, title, videoUrl, durationSeconds, sortOrder, isFreePreview, subtitleLanguage, subtitleUrl)
 }
 
 class UpsertCourseQuizUseCase(private val repository: AdminAcademyRepository) {
@@ -84,4 +86,32 @@ class ListProjectSubmissionsUseCase(private val repository: AdminAcademyReposito
 class ReviewProjectSubmissionUseCase(private val repository: AdminAcademyRepository) {
     suspend operator fun invoke(submissionId: Long, status: String, mentorFeedback: String? = null) =
         repository.reviewProjectSubmission(submissionId, status, mentorFeedback)
+}
+
+class ListOrganizationsUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke() = repository.listOrganizations()
+}
+
+class CreateOrganizationUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(name: String, contactEmail: String? = null) = repository.createOrganization(name, contactEmail)
+}
+
+class BuySeatsUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(organizationId: Long, courseId: Long, count: Int) = repository.buySeats(organizationId, courseId, count)
+}
+
+class ListSeatsUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(organizationId: Long) = repository.listSeats(organizationId)
+}
+
+class AssignSeatUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(organizationId: Long, courseId: Long, email: String) = repository.assignSeat(organizationId, courseId, email)
+}
+
+class ListRefundRequestsUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke() = repository.listRefundRequests()
+}
+
+class ReviewRefundRequestUseCase(private val repository: AdminAcademyRepository) {
+    suspend operator fun invoke(id: Long, approve: Boolean, adminNote: String? = null) = repository.reviewRefundRequest(id, approve, adminNote)
 }

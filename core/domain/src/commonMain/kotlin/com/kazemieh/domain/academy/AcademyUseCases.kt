@@ -95,3 +95,11 @@ class GetPlacementQuizUseCase(private val repository: AcademyRepository) {
 class SubmitPlacementQuizUseCase(private val repository: AcademyRepository) {
     suspend operator fun invoke(answers: List<Int>) = repository.submitPlacementQuiz(answers)
 }
+
+class RequestCourseRefundUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke(courseId: Long, reason: String? = null) = repository.requestRefund(courseId, reason)
+}
+
+class GetMyRefundRequestsUseCase(private val repository: AcademyRepository) {
+    suspend operator fun invoke() = repository.getMyRefundRequests()
+}

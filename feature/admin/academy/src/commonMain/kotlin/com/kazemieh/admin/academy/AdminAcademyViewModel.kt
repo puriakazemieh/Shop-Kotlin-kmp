@@ -9,21 +9,31 @@ import com.kazemieh.domain.academy.AddLessonFileByLinkUseCase
 import com.kazemieh.domain.academy.AddLessonFileUseCase
 import com.kazemieh.domain.academy.UploadCourseMediaUseCase
 import com.kazemieh.domain.academy.AdminCourseParams
+import com.kazemieh.domain.academy.AdminCourseRefundRequest
 import com.kazemieh.domain.academy.AdminCourseUpdateParams
 import com.kazemieh.domain.academy.AdminQuizQuestion
 import com.kazemieh.domain.academy.AdminWaitlistEntry
+import com.kazemieh.domain.academy.AssignSeatUseCase
+import com.kazemieh.domain.academy.BuySeatsUseCase
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.academy.CreateCourseUseCase
+import com.kazemieh.domain.academy.CreateOrganizationUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
 import com.kazemieh.domain.academy.DeleteLessonFileUseCase
 import com.kazemieh.domain.academy.GetAdminCourseDetailUseCase
 import com.kazemieh.domain.academy.GetAdminCoursesUseCase
 import com.kazemieh.domain.academy.GetAdminWaitlistUseCase
+import com.kazemieh.domain.academy.ListOrganizationsUseCase
 import com.kazemieh.domain.academy.ListProjectSubmissionsUseCase
+import com.kazemieh.domain.academy.ListRefundRequestsUseCase
+import com.kazemieh.domain.academy.ListSeatsUseCase
 import com.kazemieh.domain.academy.NotifyNextInWaitlistUseCase
+import com.kazemieh.domain.academy.Organization
+import com.kazemieh.domain.academy.OrganizationSeat
 import com.kazemieh.domain.academy.ProjectSubmission
 import com.kazemieh.domain.academy.ReviewProjectSubmissionUseCase
+import com.kazemieh.domain.academy.ReviewRefundRequestUseCase
 import com.kazemieh.domain.academy.UpdateCourseUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import com.kazemieh.domain.academy.UpsertLessonQuizUseCase
@@ -50,7 +60,15 @@ data class AdminAcademyState(
     /** سؤالاتِ آزمونِ کوتاهِ هر درس، ساخته‌شده در همین سشن (per lessonId). */
     val lessonQuizByLesson: Map<Long, List<AdminQuizQuestion>> = emptyMap(),
     /** پروژه‌های ثبت‌شده‌ی هر دوره (per courseId). */
-    val projectSubmissionsByCourse: Map<Long, List<ProjectSubmission>> = emptyMap()
+    val projectSubmissionsByCourse: Map<Long, List<ProjectSubmission>> = emptyMap(),
+    // ---- سازمان/صندلیِ سازمانی ----
+    val organizations: List<Organization> = emptyList(),
+    val loadingOrganizations: Boolean = false,
+    val expandedOrganizationId: Long? = null,
+    val seatsByOrganization: Map<Long, List<OrganizationSeat>> = emptyMap(),
+    // ---- گارانتیِ بازگشتِ وجه ----
+    val refundRequests: List<AdminCourseRefundRequest> = emptyList(),
+    val loadingRefundRequests: Boolean = false
 )
 
 sealed interface AdminAcademyEffect {
@@ -75,7 +93,14 @@ class AdminAcademyViewModel(
     private val deleteLessonFileUseCase: DeleteLessonFileUseCase,
     private val upsertLessonQuizUseCase: UpsertLessonQuizUseCase,
     private val listProjectSubmissionsUseCase: ListProjectSubmissionsUseCase,
-    private val reviewProjectSubmissionUseCase: ReviewProjectSubmissionUseCase
+    private val reviewProjectSubmissionUseCase: ReviewProjectSubmissionUseCase,
+    private val listOrganizationsUseCase: ListOrganizationsUseCase,
+    private val createOrganizationUseCase: CreateOrganizationUseCase,
+    private val buySeatsUseCase: BuySeatsUseCase,
+    private val listSeatsUseCase: ListSeatsUseCase,
+    private val assignSeatUseCase: AssignSeatUseCase,
+    private val listRefundRequestsUseCase: ListRefundRequestsUseCase,
+    private val reviewRefundRequestUseCase: ReviewRefundRequestUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminAcademyState())
@@ -157,7 +182,8 @@ class AdminAcademyViewModel(
         location: String = "",
         capacity: String = "",
         requiresProjectSubmission: Boolean = false,
-        thumbnailUrl: String = ""
+        thumbnailUrl: String = "",
+        cohortStartDate: String = ""
     ) {
         viewModelScope.launch {
             val params = AdminCourseParams(
@@ -170,7 +196,8 @@ class AdminAcademyViewModel(
                 location = location.ifBlank { null },
                 capacity = capacity.toIntOrNull(),
                 requiresProjectSubmission = requiresProjectSubmission,
-                thumbnailUrl = thumbnailUrl.ifBlank { null }
+                thumbnailUrl = thumbnailUrl.ifBlank { null },
+                cohortStartDate = cohortStartDate.ifBlank { null }
             )
             when (val result = createCourseUseCase(params)) {
                 is AppResult.Success -> {
@@ -191,7 +218,8 @@ class AdminAcademyViewModel(
         price: String,
         discountedPrice: String,
         requiresProjectSubmission: Boolean,
-        thumbnailUrl: String = ""
+        thumbnailUrl: String = "",
+        cohortStartDate: String = ""
     ) {
         viewModelScope.launch {
             val params = AdminCourseUpdateParams(
@@ -201,7 +229,8 @@ class AdminAcademyViewModel(
                 price = price.toDoubleOrNull(),
                 discountedPrice = discountedPrice.toDoubleOrNull(),
                 requiresProjectSubmission = requiresProjectSubmission,
-                thumbnailUrl = thumbnailUrl.ifBlank { null }
+                thumbnailUrl = thumbnailUrl.ifBlank { null },
+                cohortStartDate = cohortStartDate.ifBlank { null }
             )
             when (val result = updateCourseUseCase(id, params)) {
                 is AppResult.Success -> {
@@ -243,12 +272,16 @@ class AdminAcademyViewModel(
         }
     }
 
-    fun addLesson(courseId: Long, sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean) {
+    fun addLesson(
+        courseId: Long, sectionId: Long, title: String, videoUrl: String, durationMinutes: String, isFreePreview: Boolean,
+        subtitleLanguage: String = "", subtitleUrl: String = ""
+    ) {
         viewModelScope.launch {
             val durationSeconds = (durationMinutes.toDoubleOrNull() ?: 0.0) * 60
             when (val result = addCourseLessonUseCase(
                 courseId, sectionId, title,
-                videoUrl.ifBlank { null }, durationSeconds.toInt(), 0, isFreePreview
+                videoUrl.ifBlank { null }, durationSeconds.toInt(), 0, isFreePreview,
+                subtitleLanguage.ifBlank { null }, subtitleUrl.ifBlank { null }
             )) {
                 is AppResult.Success -> {
                     _effect.send(AdminAcademyEffect.ShowSuccess("درس اضافه شد."))
@@ -374,5 +407,98 @@ class AdminAcademyViewModel(
             }
         }
         load()
+    }
+
+    // ---- سازمان/صندلیِ سازمانی ----
+    fun loadOrganizations() {
+        _state.update { it.copy(loadingOrganizations = true) }
+        viewModelScope.launch {
+            when (val result = listOrganizationsUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(loadingOrganizations = false, organizations = result.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(loadingOrganizations = false) }
+                    _effect.send(AdminAcademyEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun createOrganization(name: String, contactEmail: String) {
+        viewModelScope.launch {
+            when (val result = createOrganizationUseCase(name, contactEmail.ifBlank { null })) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("سازمان ساخته شد."))
+                    loadOrganizations()
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun toggleOrganizationExpand(organizationId: Long) {
+        val next = if (_state.value.expandedOrganizationId == organizationId) null else organizationId
+        _state.update { it.copy(expandedOrganizationId = next) }
+        if (next != null) loadSeats(next)
+    }
+
+    private fun loadSeats(organizationId: Long) {
+        viewModelScope.launch {
+            when (val result = listSeatsUseCase(organizationId)) {
+                is AppResult.Success -> _state.update { it.copy(seatsByOrganization = it.seatsByOrganization + (organizationId to result.data)) }
+                else -> {}
+            }
+        }
+    }
+
+    fun buySeats(organizationId: Long, courseId: Long, count: Int) {
+        viewModelScope.launch {
+            when (val result = buySeatsUseCase(organizationId, courseId, count)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("$count صندلی خریداری شد."))
+                    loadSeats(organizationId)
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun assignSeat(organizationId: Long, courseId: Long, email: String) {
+        viewModelScope.launch {
+            when (val result = assignSeatUseCase(organizationId, courseId, email)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess("صندلی به $email اختصاص یافت و او ثبت‌نام شد."))
+                    loadSeats(organizationId)
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- گارانتیِ بازگشتِ وجه ----
+    fun loadRefundRequests() {
+        _state.update { it.copy(loadingRefundRequests = true) }
+        viewModelScope.launch {
+            when (val result = listRefundRequestsUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(loadingRefundRequests = false, refundRequests = result.data) }
+                else -> _state.update { it.copy(loadingRefundRequests = false) }
+            }
+        }
+    }
+
+    fun reviewRefundRequest(id: Long, approve: Boolean, adminNote: String?) {
+        viewModelScope.launch {
+            when (val result = reviewRefundRequestUseCase(id, approve, adminNote)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminAcademyEffect.ShowSuccess(if (approve) "بازگشتِ وجه تأیید شد." else "درخواست ردّ شد."))
+                    loadRefundRequests()
+                }
+                is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
     }
 }

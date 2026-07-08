@@ -29,4 +29,15 @@ interface AdminAcademyApi {
     // ---- پروژه‌های پایانی ----
     suspend fun listProjectSubmissions(courseId: Long): List<ProjectSubmissionResponse>
     suspend fun reviewProjectSubmission(submissionId: Long, request: AdminReviewProjectRequestDto)
+
+    // ---- سازمان/صندلیِ سازمانی ----
+    suspend fun listOrganizations(): List<OrganizationResponse>
+    suspend fun createOrganization(request: CreateOrganizationRequestDto): OrganizationResponse
+    suspend fun buySeats(organizationId: Long, request: BuySeatsRequestDto): List<SeatResponse>
+    suspend fun listSeats(organizationId: Long): List<SeatResponse>
+    suspend fun assignSeat(organizationId: Long, request: AssignSeatRequestDto): SeatResponse
+
+    // ---- گارانتیِ بازگشتِ وجه ----
+    suspend fun listRefundRequests(): List<AdminCourseRefundRequestResponse>
+    suspend fun reviewRefundRequest(id: Long, request: AdminReviewRefundRequestDto): AdminCourseRefundRequestResponse
 }

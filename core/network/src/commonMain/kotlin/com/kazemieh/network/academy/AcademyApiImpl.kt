@@ -119,4 +119,12 @@ class AcademyApiImpl(
     override suspend fun submitPlacementQuiz(request: SubmitPlacementQuizRequestDto): PlacementQuizResultResponseDto = safeApiCallRaw {
         client.post("api/academy/placement-quiz/submit") { setBody(request) }
     }
+
+    override suspend fun requestRefund(courseId: Long, request: CourseRefundRequestRequestDto): CourseRefundRequestResponse = safeApiCallRaw {
+        client.post("api/academy/courses/$courseId/refund-request") { setBody(request) }
+    }
+
+    override suspend fun getMyRefundRequests(): List<CourseRefundRequestResponse> = safeApiCallRaw {
+        client.get("api/academy/refund-requests/mine")
+    }
 }

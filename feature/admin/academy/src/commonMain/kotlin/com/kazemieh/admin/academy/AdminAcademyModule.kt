@@ -4,16 +4,23 @@ import com.kazemieh.domain.academy.AddCourseLessonUseCase
 import com.kazemieh.domain.academy.AddCourseSectionUseCase
 import com.kazemieh.domain.academy.AddLessonFileByLinkUseCase
 import com.kazemieh.domain.academy.AddLessonFileUseCase
+import com.kazemieh.domain.academy.AssignSeatUseCase
+import com.kazemieh.domain.academy.BuySeatsUseCase
 import com.kazemieh.domain.academy.UploadCourseMediaUseCase
 import com.kazemieh.domain.academy.CreateCourseUseCase
+import com.kazemieh.domain.academy.CreateOrganizationUseCase
 import com.kazemieh.domain.academy.DeleteCourseUseCase
 import com.kazemieh.domain.academy.DeleteLessonFileUseCase
 import com.kazemieh.domain.academy.GetAdminCourseDetailUseCase
 import com.kazemieh.domain.academy.GetAdminCoursesUseCase
 import com.kazemieh.domain.academy.GetAdminWaitlistUseCase
+import com.kazemieh.domain.academy.ListOrganizationsUseCase
 import com.kazemieh.domain.academy.ListProjectSubmissionsUseCase
+import com.kazemieh.domain.academy.ListRefundRequestsUseCase
+import com.kazemieh.domain.academy.ListSeatsUseCase
 import com.kazemieh.domain.academy.NotifyNextInWaitlistUseCase
 import com.kazemieh.domain.academy.ReviewProjectSubmissionUseCase
+import com.kazemieh.domain.academy.ReviewRefundRequestUseCase
 import com.kazemieh.domain.academy.UpdateCourseUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import com.kazemieh.domain.academy.UpsertLessonQuizUseCase
@@ -38,6 +45,13 @@ val adminAcademyModule = module {
     factory { UpsertLessonQuizUseCase(get()) }
     factory { ListProjectSubmissionsUseCase(get()) }
     factory { ReviewProjectSubmissionUseCase(get()) }
+    factory { ListOrganizationsUseCase(get()) }
+    factory { CreateOrganizationUseCase(get()) }
+    factory { BuySeatsUseCase(get()) }
+    factory { ListSeatsUseCase(get()) }
+    factory { AssignSeatUseCase(get()) }
+    factory { ListRefundRequestsUseCase(get()) }
+    factory { ReviewRefundRequestUseCase(get()) }
 
     viewModel {
         AdminAcademyViewModel(
@@ -57,7 +71,14 @@ val adminAcademyModule = module {
             deleteLessonFileUseCase = get(),
             upsertLessonQuizUseCase = get(),
             listProjectSubmissionsUseCase = get(),
-            reviewProjectSubmissionUseCase = get()
+            reviewProjectSubmissionUseCase = get(),
+            listOrganizationsUseCase = get(),
+            createOrganizationUseCase = get(),
+            buySeatsUseCase = get(),
+            listSeatsUseCase = get(),
+            assignSeatUseCase = get(),
+            listRefundRequestsUseCase = get(),
+            reviewRefundRequestUseCase = get()
         )
     }
 }

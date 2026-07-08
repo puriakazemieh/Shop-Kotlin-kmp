@@ -8,6 +8,7 @@ import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseFormat
 import com.kazemieh.domain.academy.CourseProgress
 import com.kazemieh.domain.academy.CourseSection
+import com.kazemieh.domain.academy.CourseRefundRequest
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.academy.CourseType
 import com.kazemieh.domain.academy.Lesson
@@ -24,6 +25,7 @@ import com.kazemieh.domain.academy.Quiz
 import com.kazemieh.domain.academy.QuizOption
 import com.kazemieh.domain.academy.QuizQuestion
 import com.kazemieh.domain.academy.QuizResult
+import com.kazemieh.domain.academy.SubtitleTrack
 import com.kazemieh.domain.academy.VideoVariant
 import com.kazemieh.domain.academy.WaitlistResult
 import com.kazemieh.network.academy.AcademyApi
@@ -154,6 +156,19 @@ class AcademyRepositoryImpl(
         PlacementQuizResult(level = r.level, label = r.label)
     }
 
+    override suspend fun requestRefund(courseId: Long, reason: String?): AppResult<CourseRefundRequest> = safeApiCall {
+        api.requestRefund(courseId, com.kazemieh.network.academy.dto.CourseRefundRequestRequestDto(reason)).toDomain()
+    }
+
+    override suspend fun getMyRefundRequests(): AppResult<List<CourseRefundRequest>> = safeApiCall {
+        api.getMyRefundRequests().map { it.toDomain() }
+    }
+
+    private fun com.kazemieh.network.academy.dto.CourseRefundRequestResponse.toDomain() = CourseRefundRequest(
+        id = id, courseId = courseId, courseTitle = courseTitle, amount = amount, reason = reason,
+        status = status, adminNote = adminNote, createdAt = createdAt, resolvedAt = resolvedAt
+    )
+
     private fun LessonQuestionResponse.toDomain() = LessonQuestion(
         id = id, userId = userId, userName = userName, content = content, parentId = parentId, createdAt = createdAt
     )
@@ -175,7 +190,8 @@ class AcademyRepositoryImpl(
         videoUrl = videoUrl, completed = completed, lastPositionSeconds = lastPositionSeconds,
         videoVariants = videoVariants.map { VideoVariant(it.quality, it.url) },
         resourceFiles = resourceFiles.map { LessonFile(it.name, it.url, it.sizeLabel) },
-        hasQuiz = hasQuiz
+        hasQuiz = hasQuiz,
+        subtitles = subtitles.map { SubtitleTrack(it.language, it.url) }
     )
 
     private fun SectionResponse.toDomain() = CourseSection(
@@ -193,7 +209,8 @@ class AcademyRepositoryImpl(
         isFull = isFull, onWaitlist = onWaitlist, productId = productId,
         requiresProjectSubmission = requiresProjectSubmission,
         instructorDiscountCode = instructorDiscountCode, totalDurationSeconds = totalDurationSeconds,
-        resourceFileCount = resourceFileCount, hasUnseenUpdate = hasUnseenUpdate
+        resourceFileCount = resourceFileCount, hasUnseenUpdate = hasUnseenUpdate,
+        cohortStartDate = cohortStartDate
     )
 
     private fun WaitlistResponse.toDomain() = WaitlistResult(courseId = courseId, joined = joined, position = position)

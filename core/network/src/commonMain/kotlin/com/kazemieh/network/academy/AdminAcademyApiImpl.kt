@@ -107,4 +107,32 @@ class AdminAcademyApiImpl(
     override suspend fun reviewProjectSubmission(submissionId: Long, request: AdminReviewProjectRequestDto): Unit = safeApiCallRaw {
         client.post("api/admin/courses/projects/$submissionId/review") { setBody(request) }
     }
+
+    override suspend fun listOrganizations(): List<OrganizationResponse> = safeApiCallRaw {
+        client.get("api/admin/organizations")
+    }
+
+    override suspend fun createOrganization(request: CreateOrganizationRequestDto): OrganizationResponse = safeApiCallRaw {
+        client.post("api/admin/organizations") { setBody(request) }
+    }
+
+    override suspend fun buySeats(organizationId: Long, request: BuySeatsRequestDto): List<SeatResponse> = safeApiCallRaw {
+        client.post("api/admin/organizations/$organizationId/seats") { setBody(request) }
+    }
+
+    override suspend fun listSeats(organizationId: Long): List<SeatResponse> = safeApiCallRaw {
+        client.get("api/admin/organizations/$organizationId/seats")
+    }
+
+    override suspend fun assignSeat(organizationId: Long, request: AssignSeatRequestDto): SeatResponse = safeApiCallRaw {
+        client.post("api/admin/organizations/$organizationId/seats/assign") { setBody(request) }
+    }
+
+    override suspend fun listRefundRequests(): List<AdminCourseRefundRequestResponse> = safeApiCallRaw {
+        client.get("api/admin/academy/refund-requests")
+    }
+
+    override suspend fun reviewRefundRequest(id: Long, request: AdminReviewRefundRequestDto): AdminCourseRefundRequestResponse = safeApiCallRaw {
+        client.post("api/admin/academy/refund-requests/$id/review") { setBody(request) }
+    }
 }

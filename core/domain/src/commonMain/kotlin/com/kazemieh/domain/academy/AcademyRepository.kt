@@ -37,4 +37,8 @@ interface AcademyRepository {
     // ---- آزمونِ تعیینِ سطح ----
     suspend fun getPlacementQuiz(): AppResult<List<PlacementQuizQuestion>>
     suspend fun submitPlacementQuiz(answers: List<Int>): AppResult<PlacementQuizResult>
+
+    // ---- گارانتیِ بازگشتِ وجهِ دوره ----
+    suspend fun requestRefund(courseId: Long, reason: String?): AppResult<CourseRefundRequest>
+    suspend fun getMyRefundRequests(): AppResult<List<CourseRefundRequest>>
 }

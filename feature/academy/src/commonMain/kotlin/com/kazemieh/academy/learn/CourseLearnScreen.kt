@@ -167,7 +167,7 @@ fun CourseLearnScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             LessonTabChip("ویدیو", activeTab == LessonTab.VIDEO) { activeTab = LessonTab.VIDEO }
-                            if (lesson.resourceFiles.isNotEmpty()) {
+                            if (lesson.resourceFiles.isNotEmpty() || lesson.subtitles.isNotEmpty()) {
                                 LessonTabChip("فایل‌ها", activeTab == LessonTab.FILES) { activeTab = LessonTab.FILES }
                             }
                             if (lesson.hasQuiz) {
@@ -193,6 +193,20 @@ fun CourseLearnScreen(
                                             if (file.sizeLabel != null) {
                                                 Text(file.sizeLabel, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
                                             }
+                                        }
+                                        Spacer(Modifier.height(6.dp))
+                                    }
+                                    lesson.subtitles.forEach { subtitle ->
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(Radius.sm))
+                                                .background(colors.surfaceVariant)
+                                                .clickable { uriHandler.openUri(subtitle.url) }
+                                                .padding(12.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text("زیرنویس: ${subtitle.language}", modifier = Modifier.weight(1f), color = colors.onSurface, fontSize = FontSize.SMALL)
                                         }
                                         Spacer(Modifier.height(6.dp))
                                     }

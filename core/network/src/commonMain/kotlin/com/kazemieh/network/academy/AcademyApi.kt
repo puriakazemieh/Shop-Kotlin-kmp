@@ -36,4 +36,8 @@ interface AcademyApi {
     // ---- آزمونِ تعیینِ سطح ----
     suspend fun getPlacementQuiz(): PlacementQuizResponseDto
     suspend fun submitPlacementQuiz(request: SubmitPlacementQuizRequestDto): PlacementQuizResultResponseDto
+
+    // ---- گارانتیِ بازگشتِ وجهِ دوره ----
+    suspend fun requestRefund(courseId: Long, request: CourseRefundRequestRequestDto): CourseRefundRequestResponse
+    suspend fun getMyRefundRequests(): List<CourseRefundRequestResponse>
 }

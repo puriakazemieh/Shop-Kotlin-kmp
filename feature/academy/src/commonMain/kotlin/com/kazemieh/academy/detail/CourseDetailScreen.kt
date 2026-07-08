@@ -122,6 +122,10 @@ fun CourseDetailScreen(
                             Spacer(Modifier.height(6.dp))
                             Text("مدرس: ${course.instructor}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                         }
+                        if (!course.cohortStartDate.isNullOrBlank()) {
+                            Spacer(Modifier.height(6.dp))
+                            Text("شروعِ گروه: ${course.cohortStartDate.take(10)}", color = colors.gold, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
+                        }
                         if (course.enrolled && course.isOnline && course.progressPercent > 0) {
                             Spacer(Modifier.height(10.dp))
                             LinearProgressIndicator(
@@ -164,6 +168,17 @@ fun CourseDetailScreen(
                             items(section.lessons.size) { idx ->
                                 LessonRow(section.lessons[idx], course.enrolled)
                             }
+                        }
+                    }
+                    // ---- گارانتیِ بازگشتِ وجه (فقط دوره‌های آنلاینِ ثبت‌نام‌شده) ----
+                    if (course.enrolled && course.isOnline) {
+                        item {
+                            Spacer(Modifier.height(16.dp))
+                            Text(
+                                if (state.isRequestingRefund) "در حالِ ثبتِ درخواست…" else "درخواستِ بازگشتِ وجه (گارانتیِ ۷ روزه)",
+                                modifier = Modifier.clickable(enabled = !state.isRequestingRefund) { viewModel.requestRefund(null) }.padding(vertical = 4.dp),
+                                color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline
+                            )
                         }
                     }
                     // ---- نظرِ شاگردان (فقط اگر دوره به محصول لینک شده باشد) ----
