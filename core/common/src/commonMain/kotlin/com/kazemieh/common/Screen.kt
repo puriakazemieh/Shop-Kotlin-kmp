@@ -24,9 +24,6 @@ sealed class Screen {
     data class HomeGraph(val showCart: Boolean = false) : Screen()
 
     @Serializable
-    data object BlogGraph : Screen()
-
-    @Serializable
     data object BlogList : Screen()
 
     @Serializable

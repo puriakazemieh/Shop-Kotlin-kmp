@@ -37,7 +37,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AdminBlogListScreen(
     navigateToManageBlog: (Long?, String?) -> Unit,
-    navigateToManageCategory: (Long?) -> Unit,
     navigateBack: () -> Unit,
     embedded: Boolean = false,
     viewModel: AdminBlogListViewModel = koinViewModel()

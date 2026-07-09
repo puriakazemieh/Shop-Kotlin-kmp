@@ -14,7 +14,7 @@ import com.kazemieh.designsystem.brand.CarmilaBrandColors
 @Composable
 fun AppTheme(
     themeMode: AppThemeMode = AppThemeMode.LIGHT,
-    language: AppLanguage = AppLanguage.ENGLISH,
+    language: AppLanguage = AppLanguage.PERSIAN,
     brandColors: BrandColors = CarmilaBrandColors,
     content: @Composable () -> Unit
 ) {

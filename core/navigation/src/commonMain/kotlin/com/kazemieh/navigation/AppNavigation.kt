@@ -589,9 +589,6 @@ fun AppNavHost(
                 },
                 navigateToManageBlog = { id: Long?, slug: String? ->
                     navController.navigate(Screen.ManageBlog(id, slug))
-                },
-                navigateToManageCategory = { _: Long? ->
-                    // مدیریت دسته‌بندی مجله (در صورت نیاز)
                 }
             )
         }
@@ -664,9 +661,6 @@ fun AppNavHost(
             AdminBlogListScreen(
                 navigateToManageBlog = { id: Long?, slug: String? ->
                     navController.navigate(Screen.ManageBlog(id, slug))
-                },
-                navigateToManageCategory = { id: Long? ->
-                    // Logic for categories if needed
                 },
                 navigateBack = { navController.navigateBack() }
             )

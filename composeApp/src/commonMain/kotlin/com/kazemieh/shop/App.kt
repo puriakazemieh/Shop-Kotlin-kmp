@@ -48,7 +48,7 @@ fun App() {
     val observeLanguageUseCase = koinInject<ObserveLanguageUseCase>()
     val observeThemeModeUseCase = koinInject<ObserveThemeModeUseCase>()
 
-    val language by observeLanguageUseCase().collectAsState(AppLanguage.ENGLISH)
+    val language by observeLanguageUseCase().collectAsState(AppLanguage.PERSIAN)
     val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.LIGHT)
 
     val brand = koinInject<BrandConfig>()

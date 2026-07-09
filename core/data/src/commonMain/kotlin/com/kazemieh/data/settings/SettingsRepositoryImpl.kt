@@ -17,7 +17,7 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
 
     @OptIn(ExperimentalSettingsApi::class)
     override fun observeLanguage(): Flow<AppLanguage> {
-        return flowSettings.getStringFlow(KEY_LANGUAGE, AppLanguage.ENGLISH.code)
+        return flowSettings.getStringFlow(KEY_LANGUAGE, AppLanguage.PERSIAN.code)
             .map { AppLanguage.fromCode(it) }
     }
 
@@ -26,7 +26,7 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
     }
 
     override suspend fun getLanguage(): AppLanguage {
-        val code = settings.getString(KEY_LANGUAGE, AppLanguage.ENGLISH.code)
+        val code = settings.getString(KEY_LANGUAGE, AppLanguage.PERSIAN.code)
         return AppLanguage.fromCode(code)
     }
 
