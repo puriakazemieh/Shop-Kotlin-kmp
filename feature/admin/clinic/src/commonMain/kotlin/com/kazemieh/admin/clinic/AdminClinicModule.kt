@@ -4,10 +4,13 @@ import com.kazemieh.domain.clinic.AddPatientNoteUseCase
 import com.kazemieh.domain.clinic.AddSlotUseCase
 import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
 import com.kazemieh.domain.clinic.ConfirmAppointmentUseCase
+import com.kazemieh.domain.clinic.CreateMatchQuestionUseCase
 import com.kazemieh.domain.clinic.CreateTherapistUseCase
+import com.kazemieh.domain.clinic.DeleteMatchQuestionUseCase
 import com.kazemieh.domain.clinic.DeleteTherapistUseCase
 import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
+import com.kazemieh.domain.clinic.GetAdminMatchQuestionsUseCase
 import com.kazemieh.domain.clinic.GetAdminPatientsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminSwitchRequestsUseCase
@@ -38,6 +41,9 @@ val adminClinicModule = module {
     factory { GetPatientFileUseCase(get()) }
     factory { GetAdminSwitchRequestsUseCase(get()) }
     factory { ReviewSwitchRequestUseCase(get()) }
+    factory { GetAdminMatchQuestionsUseCase(get()) }
+    factory { CreateMatchQuestionUseCase(get()) }
+    factory { DeleteMatchQuestionUseCase(get()) }
 
     viewModel {
         AdminClinicViewModel(
@@ -56,7 +62,10 @@ val adminClinicModule = module {
             setPatientTagsUseCase = get(),
             getPatientFileUseCase = get(),
             getAdminSwitchRequestsUseCase = get(),
-            reviewSwitchRequestUseCase = get()
+            reviewSwitchRequestUseCase = get(),
+            getAdminMatchQuestionsUseCase = get(),
+            createMatchQuestionUseCase = get(),
+            deleteMatchQuestionUseCase = get()
         )
     }
 }

@@ -197,6 +197,18 @@ sealed class Screen {
     @Serializable
     data class SessionReceipt(val appointmentId: Long) : Screen()
 
+    @Serializable
+    data class MessagingThread(val therapistId: Long) : Screen()
+
+    @Serializable
+    data object Homework : Screen()
+
+    @Serializable
+    data object Journal : Screen()
+
+    @Serializable
+    data object TherapistMatch : Screen()
+
     // ---- Psychology tests (vertical) ----
     @Serializable
     data object PsychTestCatalog : Screen()

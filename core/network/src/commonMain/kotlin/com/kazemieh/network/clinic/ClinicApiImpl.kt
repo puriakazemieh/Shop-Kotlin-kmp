@@ -50,4 +50,44 @@ class ClinicApiImpl(
     override suspend fun getMySwitchRequests(): List<SwitchRequestResponse> = safeApiCallRaw {
         client.get("api/clinic/switch-requests/mine")
     }
+
+    override suspend fun listMessages(therapistId: Long): List<ClinicMessageResponse> = safeApiCallRaw {
+        client.get("api/clinic/therapists/$therapistId/messages")
+    }
+
+    override suspend fun sendMessage(therapistId: Long, request: SendMessageRequestDto): ClinicMessageResponse = safeApiCallRaw {
+        client.post("api/clinic/therapists/$therapistId/messages") { setBody(request) }
+    }
+
+    override suspend fun messagingStatus(therapistId: Long): MessagingPlanStatusResponse = safeApiCallRaw {
+        client.get("api/clinic/therapists/$therapistId/messaging-status")
+    }
+
+    override suspend fun myHomework(): List<HomeworkResponse> = safeApiCallRaw {
+        client.get("api/clinic/homework")
+    }
+
+    override suspend fun completeHomework(id: Long): HomeworkResponse = safeApiCallRaw {
+        client.post("api/clinic/homework/$id/complete")
+    }
+
+    override suspend fun myJournal(): List<JournalEntryResponse> = safeApiCallRaw {
+        client.get("api/clinic/journal")
+    }
+
+    override suspend fun addJournalEntry(request: JournalEntryRequestDto): JournalEntryResponse = safeApiCallRaw {
+        client.post("api/clinic/journal") { setBody(request) }
+    }
+
+    override suspend fun deleteJournalEntry(id: Long): Unit = safeApiCallRaw {
+        client.delete("api/clinic/journal/$id")
+    }
+
+    override suspend fun matchQuestions(): List<TherapistMatchQuestionResponse> = safeApiCallRaw {
+        client.get("api/clinic/therapist-match/questions")
+    }
+
+    override suspend fun submitMatch(request: SubmitTherapistMatchRequestDto): List<TherapistMatchResultResponse> = safeApiCallRaw {
+        client.post("api/clinic/therapist-match/submit") { setBody(request) }
+    }
 }

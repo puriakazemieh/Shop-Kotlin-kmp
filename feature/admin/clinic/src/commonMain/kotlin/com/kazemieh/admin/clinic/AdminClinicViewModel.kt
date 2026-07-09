@@ -6,16 +6,20 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.clinic.AddPatientNoteUseCase
 import com.kazemieh.domain.clinic.AddSlotUseCase
 import com.kazemieh.domain.clinic.AdminAppointment
+import com.kazemieh.domain.clinic.AdminMatchQuestionParams
 import com.kazemieh.domain.clinic.AdminPatientSummary
 import com.kazemieh.domain.clinic.AdminSlot
 import com.kazemieh.domain.clinic.AdminSwitchRequest
 import com.kazemieh.domain.clinic.AdminTherapistParams
 import com.kazemieh.domain.clinic.CompleteAppointmentUseCase
 import com.kazemieh.domain.clinic.ConfirmAppointmentUseCase
+import com.kazemieh.domain.clinic.CreateMatchQuestionUseCase
 import com.kazemieh.domain.clinic.CreateTherapistUseCase
+import com.kazemieh.domain.clinic.DeleteMatchQuestionUseCase
 import com.kazemieh.domain.clinic.DeleteTherapistUseCase
 import com.kazemieh.domain.clinic.GenerateSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminAppointmentsUseCase
+import com.kazemieh.domain.clinic.GetAdminMatchQuestionsUseCase
 import com.kazemieh.domain.clinic.GetAdminPatientsUseCase
 import com.kazemieh.domain.clinic.GetAdminSlotsUseCase
 import com.kazemieh.domain.clinic.GetAdminSwitchRequestsUseCase
@@ -26,6 +30,7 @@ import com.kazemieh.domain.clinic.PatientFile
 import com.kazemieh.domain.clinic.PatientNote
 import com.kazemieh.domain.clinic.ReviewSwitchRequestUseCase
 import com.kazemieh.domain.clinic.SetPatientTagsUseCase
+import com.kazemieh.domain.clinic.TherapistMatchQuestion
 import com.kazemieh.domain.clinic.TherapistSummary
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +62,10 @@ data class AdminClinicState(
     val loadingPatientFile: Boolean = false,
     // ---- درخواست‌های تعویضِ درمانگر ----
     val switchRequests: List<AdminSwitchRequest> = emptyList(),
-    val loadingSwitchRequests: Boolean = false
+    val loadingSwitchRequests: Boolean = false,
+    // ---- پرسشنامه‌ی تطبیقِ درمانگر ----
+    val matchQuestions: List<TherapistMatchQuestion> = emptyList(),
+    val loadingMatchQuestions: Boolean = false
 )
 
 sealed interface AdminClinicEffect {
@@ -81,7 +89,10 @@ class AdminClinicViewModel(
     private val setPatientTagsUseCase: SetPatientTagsUseCase,
     private val getPatientFileUseCase: GetPatientFileUseCase,
     private val getAdminSwitchRequestsUseCase: GetAdminSwitchRequestsUseCase,
-    private val reviewSwitchRequestUseCase: ReviewSwitchRequestUseCase
+    private val reviewSwitchRequestUseCase: ReviewSwitchRequestUseCase,
+    private val getAdminMatchQuestionsUseCase: GetAdminMatchQuestionsUseCase,
+    private val createMatchQuestionUseCase: CreateMatchQuestionUseCase,
+    private val deleteMatchQuestionUseCase: DeleteMatchQuestionUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminClinicState())
@@ -138,7 +149,7 @@ class AdminClinicViewModel(
 
     fun createTherapist(
         name: String, slug: String, sessionPrice: String, durationMinutes: String, productId: String,
-        mode: String = "ONLINE", location: String = ""
+        mode: String = "ONLINE", location: String = "", messagingProductId: String = ""
     ) {
         viewModelScope.launch {
             val params = AdminTherapistParams(
@@ -147,6 +158,7 @@ class AdminClinicViewModel(
                 sessionPrice = sessionPrice.toDoubleOrNull() ?: 0.0,
                 sessionDurationMinutes = durationMinutes.toIntOrNull() ?: 45,
                 productId = productId.toLongOrNull(),
+                messagingProductId = messagingProductId.toLongOrNull(),
                 mode = mode,
                 location = location.ifBlank { null }
             )
@@ -177,9 +189,9 @@ class AdminClinicViewModel(
         }
     }
 
-    fun addSlot(therapistId: Long, startTime: String, endTime: String) {
+    fun addSlot(therapistId: Long, startTime: String, endTime: String, capacity: String = "1") {
         viewModelScope.launch {
-            when (val result = addSlotUseCase(therapistId, startTime, endTime)) {
+            when (val result = addSlotUseCase(therapistId, startTime, endTime, capacity.toIntOrNull() ?: 1)) {
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess("بازه اضافه شد."))
                     refreshSlots(therapistId)
@@ -190,9 +202,9 @@ class AdminClinicViewModel(
         }
     }
 
-    fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: String) {
+    fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: String, capacity: String = "1") {
         viewModelScope.launch {
-            when (val result = generateSlotsUseCase(therapistId, windowStart, windowEnd, slotMinutes.toIntOrNull())) {
+            when (val result = generateSlotsUseCase(therapistId, windowStart, windowEnd, slotMinutes.toIntOrNull(), capacity.toIntOrNull() ?: 1)) {
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess("${result.data} بازه ساخته شد."))
                     refreshSlots(therapistId)
@@ -351,6 +363,48 @@ class AdminClinicViewModel(
                 is AppResult.Success -> {
                     _effect.send(AdminClinicEffect.ShowSuccess(if (approve) "درخواست تأیید شد." else "درخواست ردّ شد."))
                     loadSwitchRequests()
+                }
+                is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    // ---- پرسشنامه‌ی تطبیقِ درمانگر ----
+    fun loadMatchQuestions() {
+        _state.update { it.copy(loadingMatchQuestions = true) }
+        viewModelScope.launch {
+            when (val result = getAdminMatchQuestionsUseCase()) {
+                is AppResult.Success -> _state.update { it.copy(loadingMatchQuestions = false, matchQuestions = result.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(loadingMatchQuestions = false) }
+                    _effect.send(AdminClinicEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun createMatchQuestion(questionText: String, tag: String, displayOrder: String) {
+        viewModelScope.launch {
+            val params = AdminMatchQuestionParams(questionText = questionText, tag = tag, displayOrder = displayOrder.toIntOrNull() ?: 0)
+            when (val result = createMatchQuestionUseCase(params)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminClinicEffect.ShowSuccess("سؤال اضافه شد."))
+                    loadMatchQuestions()
+                }
+                is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    fun deleteMatchQuestion(id: Long) {
+        viewModelScope.launch {
+            when (val result = deleteMatchQuestionUseCase(id)) {
+                is AppResult.Success -> {
+                    _effect.send(AdminClinicEffect.ShowSuccess("سؤال حذف شد."))
+                    loadMatchQuestions()
                 }
                 is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
                 else -> {}

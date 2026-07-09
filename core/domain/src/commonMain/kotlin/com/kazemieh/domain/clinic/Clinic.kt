@@ -18,8 +18,13 @@ data class AvailabilitySlot(
     val startTime: String,
     val endTime: String,
     val dayLabel: String,
-    val timeLabel: String
-)
+    val timeLabel: String,
+    val capacity: Int = 1,
+    val remainingCapacity: Int = 1
+) {
+    /** ظرفیت بیش‌تر از ۱ یعنی این بازه یک جلسه‌ی گروهی است. */
+    val isGroupSession: Boolean get() = capacity > 1
+}
 
 data class TherapistDetail(
     val id: Long,
@@ -99,4 +104,55 @@ data class SessionReceipt(
     val sessionDate: String,
     val sessionDurationMinutes: Int,
     val amountPaid: Double
+)
+
+// ---------- پیام‌رسانیِ امنِ بینِ‌جلسه‌ای (Phase Y) ----------
+enum class MessageSenderType { PATIENT, THERAPIST, UNKNOWN }
+
+data class ClinicMessage(
+    val id: Long,
+    val senderType: MessageSenderType,
+    val body: String,
+    val createdAt: String?
+)
+
+data class MessagingPlanStatus(
+    val therapistId: Long,
+    val active: Boolean,
+    val freeMessagesRemaining: Int
+)
+
+// ---------- تکلیف/تمرینِ بینِ‌جلسه‌ای (Phase Y) ----------
+enum class HomeworkStatus { ASSIGNED, COMPLETED, UNKNOWN }
+
+data class Homework(
+    val id: Long,
+    val therapistId: Long,
+    val therapistName: String,
+    val title: String,
+    val description: String?,
+    val status: HomeworkStatus,
+    val dueDate: String?,
+    val completedAt: String?,
+    val createdAt: String?
+)
+
+// ---------- یادداشتِ روزانه (ژورنال) — Phase Y ----------
+data class JournalEntry(
+    val id: Long,
+    val content: String,
+    val sharedWithTherapistId: Long?,
+    val createdAt: String?
+)
+
+// ---------- پرسشنامه‌ی تطبیقِ درمانگر (Phase Y) ----------
+data class TherapistMatchQuestion(
+    val id: Long,
+    val questionText: String,
+    val tag: String
+)
+
+data class TherapistMatchResult(
+    val therapist: TherapistSummary,
+    val matchScore: Int
 )

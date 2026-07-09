@@ -22,4 +22,20 @@ interface AdminClinicApi {
 
     suspend fun listSwitchRequests(): List<AdminSwitchRequestResponse>
     suspend fun reviewSwitchRequest(id: Long, request: AdminReviewSwitchRequestDto): AdminSwitchRequestResponse
+
+    suspend fun listMessagesWithPatient(therapistId: Long, userId: Long): List<ClinicMessageResponse>
+    suspend fun sendMessageToPatient(therapistId: Long, userId: Long, request: SendMessageRequestDto): ClinicMessageResponse
+
+    suspend fun listHomeworkForPatient(therapistId: Long, userId: Long): List<HomeworkResponse>
+    suspend fun assignHomework(therapistId: Long, userId: Long, request: AdminAssignHomeworkRequestDto): HomeworkResponse
+
+    suspend fun sharedJournal(therapistId: Long, userId: Long): List<JournalEntryResponse>
+
+    suspend fun listMatchQuestions(): List<TherapistMatchQuestionResponse>
+    suspend fun createMatchQuestion(request: AdminCreateMatchQuestionRequestDto): TherapistMatchQuestionResponse
+    suspend fun deleteMatchQuestion(id: Long)
+
+    suspend fun buyClinicSeats(organizationId: Long, request: BuyClinicSeatsRequestDto): List<ClinicSeatResponse>
+    suspend fun listClinicSeats(organizationId: Long): List<ClinicSeatResponse>
+    suspend fun assignClinicSeat(organizationId: Long, request: AssignClinicSeatRequestDto): ClinicSeatResponse
 }

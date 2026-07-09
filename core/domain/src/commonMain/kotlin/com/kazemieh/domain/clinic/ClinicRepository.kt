@@ -13,4 +13,18 @@ interface ClinicRepository {
     suspend fun getMoodHistory(): AppResult<List<MoodCheckIn>>
     suspend fun requestSwitch(fromTherapistId: Long, toTherapistId: Long?, reason: String?): AppResult<SwitchRequest>
     suspend fun getMySwitchRequests(): AppResult<List<SwitchRequest>>
+
+    suspend fun listMessages(therapistId: Long): AppResult<List<ClinicMessage>>
+    suspend fun sendMessage(therapistId: Long, body: String): AppResult<ClinicMessage>
+    suspend fun messagingStatus(therapistId: Long): AppResult<MessagingPlanStatus>
+
+    suspend fun myHomework(): AppResult<List<Homework>>
+    suspend fun completeHomework(id: Long): AppResult<Homework>
+
+    suspend fun myJournal(): AppResult<List<JournalEntry>>
+    suspend fun addJournalEntry(content: String, sharedWithTherapistId: Long?): AppResult<JournalEntry>
+    suspend fun deleteJournalEntry(id: Long): AppResult<Unit>
+
+    suspend fun matchQuestions(): AppResult<List<TherapistMatchQuestion>>
+    suspend fun submitMatch(selectedTags: List<String>): AppResult<List<TherapistMatchResult>>
 }

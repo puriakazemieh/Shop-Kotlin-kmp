@@ -18,6 +18,7 @@ data class AdminCreateTherapistRequestDto(
     val sessionPrice: Double = 0.0,
     val sessionDurationMinutes: Int = 45,
     val productId: Long? = null,
+    val messagingProductId: Long? = null,
     val isActive: Boolean = true,
     val mode: String = "ONLINE",
     val location: String? = null
@@ -27,7 +28,8 @@ data class AdminCreateTherapistRequestDto(
 data class AdminGenerateSlotsRequestDto(
     val windowStart: String,
     val windowEnd: String,
-    val slotMinutes: Int? = null
+    val slotMinutes: Int? = null,
+    val capacity: Int = 1
 )
 
 @Serializable
@@ -38,13 +40,15 @@ data class AdminUpdateTherapistRequestDto(
     val photoUrl: String? = null,
     val sessionPrice: Double? = null,
     val sessionDurationMinutes: Int? = null,
-    val isActive: Boolean? = null
+    val isActive: Boolean? = null,
+    val messagingProductId: Long? = null
 )
 
 @Serializable
 data class AdminAddSlotRequestDto(
     val startTime: String,
-    val endTime: String
+    val endTime: String,
+    val capacity: Int = 1
 )
 
 @Serializable
@@ -57,7 +61,9 @@ data class AdminSlotResponse(
     val id: Long,
     val startTime: String,
     val endTime: String,
-    val isBooked: Boolean
+    val isBooked: Boolean,
+    val capacity: Int = 1,
+    val bookedCount: Int = 0
 )
 
 @Serializable
@@ -152,4 +158,45 @@ data class AdminSwitchRequestResponse(
 data class AdminReviewSwitchRequestDto(
     val approve: Boolean,
     val adminNote: String? = null
+)
+
+// ---------- تکلیف/تمرین (Phase Y — از دیدِ ادمین) ----------
+@Serializable
+data class AdminAssignHomeworkRequestDto(
+    val title: String,
+    val description: String? = null,
+    val dueDate: String? = null
+)
+
+// ---------- مدیریتِ پرسشنامه‌ی تطبیقِ درمانگر (Phase Y) ----------
+@Serializable
+data class AdminCreateMatchQuestionRequestDto(
+    val questionText: String,
+    val tag: String,
+    val displayOrder: Int = 0
+)
+
+// ---------- بسته‌ی مشاوره‌ی سازمانی (Phase Y) ----------
+@Serializable
+data class BuyClinicSeatsRequestDto(
+    val therapistId: Long,
+    val sessionCount: Int = 1,
+    val count: Int = 1
+)
+
+@Serializable
+data class AssignClinicSeatRequestDto(
+    val therapistId: Long,
+    val email: String
+)
+
+@Serializable
+data class ClinicSeatResponse(
+    val id: Long,
+    val organizationId: Long,
+    val therapistId: Long,
+    val sessionCount: Int,
+    val assignedUserId: Long? = null,
+    val assignedEmail: String? = null,
+    val assignedAt: String? = null
 )

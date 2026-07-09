@@ -68,6 +68,9 @@ fun MoreScreen(
     onCertificatesClick: () -> Unit = {},
     onMyAppointmentsClick: () -> Unit = {},
     onBrowseTherapistsClick: () -> Unit = {},
+    onHomeworkClick: () -> Unit = {},
+    onJournalClick: () -> Unit = {},
+    onTherapistMatchClick: () -> Unit = {},
     onPsychTestsClick: () -> Unit = {},
     onComparisonClick: () -> Unit = {},
     onFreeCoursesClick: () -> Unit = {},
@@ -209,6 +212,27 @@ fun MoreScreen(
                 subtitle = "انتخابِ درمانگر و رزرو نوبت",
                 onClick = onBrowseTherapistsClick
             ) { AccountIcon(painter = Resources.Icon.Person) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "تکلیف‌ها و تمرین‌ها",
+                subtitle = "تمرین‌هایِ تعیین‌شده توسطِ درمانگر",
+                onClick = onHomeworkClick
+            ) { AccountIcon(painter = Resources.Icon.Book) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "یادداشتِ روزانه",
+                subtitle = "ژورنالِ خصوصی، با امکانِ اشتراک‌گذاری",
+                onClick = onJournalClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "پرسشنامه‌ی تطبیقِ درمانگر",
+                subtitle = "یافتنِ درمانگرِ مناسبِ نیازِ تو",
+                onClick = onTherapistMatchClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
 

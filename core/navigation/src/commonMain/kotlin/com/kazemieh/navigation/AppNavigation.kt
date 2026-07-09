@@ -67,6 +67,10 @@ import com.kazemieh.clinic.appointments.MyAppointmentsScreen
 import com.kazemieh.clinic.mood.MoodCheckInScreen
 import com.kazemieh.clinic.resources.EmergencyResourcesScreen
 import com.kazemieh.clinic.receipt.SessionReceiptScreen
+import com.kazemieh.clinic.messaging.MessagingScreen
+import com.kazemieh.clinic.homework.HomeworkScreen
+import com.kazemieh.clinic.journal.JournalScreen
+import com.kazemieh.clinic.match.TherapistMatchScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -203,6 +207,15 @@ fun AppNavHost(
                 },
                 navigateToCertificateVerify = {
                     navController.navigate(Screen.CertificateVerify)
+                },
+                navigateToHomework = {
+                    navController.navigate(Screen.Homework)
+                },
+                navigateToJournal = {
+                    navController.navigate(Screen.Journal)
+                },
+                navigateToTherapistMatch = {
+                    navController.navigate(Screen.TherapistMatch)
                 },
             )
         }
@@ -419,7 +432,30 @@ fun AppNavHost(
                 },
                 navigateToProduct = { productSlug ->
                     navController.navigate(Screen.ProductDetail(slug = productSlug))
+                },
+                navigateToMessaging = { therapistId ->
+                    navController.navigate(Screen.MessagingThread(therapistId))
                 }
+            )
+        }
+
+        composable<Screen.MessagingThread> {
+            val args = it.toRoute<Screen.MessagingThread>()
+            MessagingScreen(therapistId = args.therapistId, navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Homework> {
+            HomeworkScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Journal> {
+            JournalScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.TherapistMatch> {
+            TherapistMatchScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToTherapist = { slug -> navController.navigate(Screen.TherapistDetail(slug)) }
             )
         }
 

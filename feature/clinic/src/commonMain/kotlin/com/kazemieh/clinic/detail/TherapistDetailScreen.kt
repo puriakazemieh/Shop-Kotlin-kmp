@@ -53,7 +53,8 @@ fun TherapistDetailScreen(
     slug: String,
     navigateBack: () -> Unit,
     navigateToMyAppointments: () -> Unit,
-    navigateToProduct: (String) -> Unit = {}
+    navigateToProduct: (String) -> Unit = {},
+    navigateToMessaging: (Long) -> Unit = {}
 ) {
     val viewModel = koinViewModel<TherapistDetailViewModel>()
     val state by viewModel.state.collectAsState()
@@ -196,6 +197,23 @@ fun TherapistDetailScreen(
                         item {
                             Spacer(Modifier.height(16.dp))
                             Text(
+                                "چت با درمانگر",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(Radius.button))
+                                    .background(colors.surfaceVariant)
+                                    .clickable { navigateToMessaging(therapist.id) }
+                                    .padding(vertical = 12.dp),
+                                color = colors.onSurface,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = FontSize.REGULAR,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                        }
+
+                        item {
+                            Spacer(Modifier.height(8.dp))
+                            Text(
                                 if (state.isRequestingSwitch) "در حالِ ثبتِ درخواست…" else "درخواستِ تعویضِ درمانگر",
                                 modifier = Modifier
                                     .clickable(enabled = !state.isRequestingSwitch) { viewModel.requestSwitch(null) }
@@ -275,6 +293,10 @@ private fun SlotRow(
             Text(slot.dayLabel, fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.REGULAR)
             Spacer(Modifier.height(2.dp))
             Text(slot.timeLabel, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            if (slot.isGroupSession) {
+                Spacer(Modifier.height(2.dp))
+                Text("جلسه‌ی گروهی · ${slot.remainingCapacity} از ${slot.capacity} جا خالی", color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold)
+            }
         }
         Text(
             text = if (booking) "در حالِ رزرو…" else "رزرو",

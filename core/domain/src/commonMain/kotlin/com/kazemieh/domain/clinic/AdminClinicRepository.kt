@@ -11,6 +11,7 @@ data class AdminTherapistParams(
     val sessionPrice: Double = 0.0,
     val sessionDurationMinutes: Int = 45,
     val productId: Long? = null,
+    val messagingProductId: Long? = null,
     val isActive: Boolean = true,
     val mode: String = "ONLINE",
     val location: String? = null
@@ -23,14 +24,17 @@ data class AdminTherapistUpdateParams(
     val photoUrl: String? = null,
     val sessionPrice: Double? = null,
     val sessionDurationMinutes: Int? = null,
-    val isActive: Boolean? = null
+    val isActive: Boolean? = null,
+    val messagingProductId: Long? = null
 )
 
 data class AdminSlot(
     val id: Long,
     val startTime: String,
     val endTime: String,
-    val isBooked: Boolean
+    val isBooked: Boolean,
+    val capacity: Int = 1,
+    val bookedCount: Int = 0
 )
 
 enum class AdminAppointmentStatus { PENDING, CONFIRMED, COMPLETED, CANCELLED, UNKNOWN }
@@ -108,15 +112,33 @@ data class AdminSwitchRequest(
     val createdAt: String?
 )
 
+/** یک سؤالِ پرسشنامه‌ی تطبیقِ درمانگر برایِ مدیریتِ ادمین (Phase Y). */
+data class AdminMatchQuestionParams(
+    val questionText: String,
+    val tag: String,
+    val displayOrder: Int = 0
+)
+
+/** بسته‌ی مشاوره‌ی سازمانی (Phase Y). */
+data class ClinicOrgSeat(
+    val id: Long,
+    val organizationId: Long,
+    val therapistId: Long,
+    val sessionCount: Int,
+    val assignedUserId: Long?,
+    val assignedEmail: String?,
+    val assignedAt: String?
+)
+
 interface AdminClinicRepository {
     suspend fun listTherapists(): AppResult<List<TherapistSummary>>
     suspend fun createTherapist(params: AdminTherapistParams): AppResult<Long>
     suspend fun updateTherapist(id: Long, params: AdminTherapistUpdateParams): AppResult<Unit>
     suspend fun deleteTherapist(id: Long): AppResult<Unit>
     /** startTime/endTime باید در قالبِ ISO-8601 با آفستِ زمانی باشند (مثلاً 2026-07-10T14:00:00+03:30). */
-    suspend fun addSlot(therapistId: Long, startTime: String, endTime: String): AppResult<Long>
+    suspend fun addSlot(therapistId: Long, startTime: String, endTime: String, capacity: Int = 1): AppResult<Long>
     /** تولیدِ خودکارِ بازه‌ها از یک بازه‌ی کاری (ISO-8601). خروجی: تعدادِ بازه‌ی ساخته‌شده. */
-    suspend fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?): AppResult<Int>
+    suspend fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?, capacity: Int = 1): AppResult<Int>
     suspend fun listSlots(therapistId: Long): AppResult<List<AdminSlot>>
     suspend fun listAppointments(): AppResult<List<AdminAppointment>>
     suspend fun confirmAppointment(id: Long, videoRoomUrl: String): AppResult<Unit>
@@ -132,4 +154,21 @@ interface AdminClinicRepository {
     // ---- درخواست‌های تعویضِ درمانگر ----
     suspend fun listSwitchRequests(): AppResult<List<AdminSwitchRequest>>
     suspend fun reviewSwitchRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<AdminSwitchRequest>
+
+    // ---- پیام‌رسانی/تکلیف/ژورنالِ به‌اشتراک‌گذاشته‌شده (به‌عنوانِ درمانگر) ----
+    suspend fun listMessagesWithPatient(therapistId: Long, userId: Long): AppResult<List<ClinicMessage>>
+    suspend fun sendMessageToPatient(therapistId: Long, userId: Long, body: String): AppResult<ClinicMessage>
+    suspend fun listHomeworkForPatient(therapistId: Long, userId: Long): AppResult<List<Homework>>
+    suspend fun assignHomework(therapistId: Long, userId: Long, title: String, description: String?, dueDate: String?): AppResult<Homework>
+    suspend fun sharedJournal(therapistId: Long, userId: Long): AppResult<List<JournalEntry>>
+
+    // ---- مدیریتِ پرسشنامه‌ی تطبیقِ درمانگر ----
+    suspend fun listMatchQuestions(): AppResult<List<TherapistMatchQuestion>>
+    suspend fun createMatchQuestion(params: AdminMatchQuestionParams): AppResult<TherapistMatchQuestion>
+    suspend fun deleteMatchQuestion(id: Long): AppResult<Unit>
+
+    // ---- بسته‌ی مشاوره‌ی سازمانی ----
+    suspend fun buyClinicSeats(organizationId: Long, therapistId: Long, sessionCount: Int, count: Int): AppResult<List<ClinicOrgSeat>>
+    suspend fun listClinicSeats(organizationId: Long): AppResult<List<ClinicOrgSeat>>
+    suspend fun assignClinicSeat(organizationId: Long, therapistId: Long, email: String): AppResult<ClinicOrgSeat>
 }
