@@ -80,6 +80,16 @@ class CategorySearchViewModel(
                 _state.update { it.copy(discountedOnly = intent.value) }
                 loadProducts()
             }
+            is CategorySearchIntent.ApplyPriceStock -> {
+                _state.update {
+                    it.copy(
+                        minPrice = intent.minPrice,
+                        maxPrice = intent.maxPrice,
+                        inStockOnly = intent.inStockOnly
+                    )
+                }
+                loadProducts()
+            }
             is CategorySearchIntent.ToggleFavorite -> toggleFavorite(intent.product)
         }
     }
@@ -121,6 +131,9 @@ class CategorySearchViewModel(
                 query = currentState.searchQuery.ifBlank { null },
                 categoryId = currentState.categoryId,
                 options = currentState.selectedOptions.ifEmpty { null },
+                minPrice = currentState.minPrice,
+                maxPrice = currentState.maxPrice,
+                inStock = if (currentState.inStockOnly) true else null,
                 sort = currentState.sort,
                 discountedOnly = currentState.discountedOnly
             )

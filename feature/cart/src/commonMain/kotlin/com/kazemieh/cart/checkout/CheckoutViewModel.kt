@@ -33,7 +33,9 @@ data class CheckoutState(
     val walletBalance: Double = 0.0,
     val showAddNewAddressForm: Boolean = false,
     val isLoading: Boolean = false,
-    val isFormValid: Boolean = false
+    val isFormValid: Boolean = false,
+    val isGift: Boolean = false,
+    val giftMessage: String = ""
 )
 
 sealed interface CheckoutIntent {
@@ -46,6 +48,8 @@ sealed interface CheckoutIntent {
     data class UpdateCountry(val value: String) : CheckoutIntent
     data class SelectAddress(val addressId: Long) : CheckoutIntent
     data class ToggleUseWallet(val use: Boolean) : CheckoutIntent
+    data class ToggleGift(val isGift: Boolean) : CheckoutIntent
+    data class UpdateGiftMessage(val value: String) : CheckoutIntent
     data class ToggleAddNewAddress(val show: Boolean) : CheckoutIntent
     data class AddNewAddress(
         val receiverName: String,
@@ -128,6 +132,12 @@ class CheckoutViewModel(
             }
             is CheckoutIntent.ToggleUseWallet -> {
                 _state.update { it.copy(useWallet = intent.use) }
+            }
+            is CheckoutIntent.ToggleGift -> {
+                _state.update { it.copy(isGift = intent.isGift) }
+            }
+            is CheckoutIntent.UpdateGiftMessage -> {
+                _state.update { it.copy(giftMessage = intent.value) }
             }
             is CheckoutIntent.ToggleAddNewAddress -> {
                 _state.update { it.copy(showAddNewAddressForm = intent.show) }
@@ -249,7 +259,10 @@ class CheckoutViewModel(
 
             _state.update { it.copy(isLoading = true) }
 
-            val orderResult = createOrderUseCase(items, addressId, _state.value.useWallet)
+            val orderResult = createOrderUseCase(
+                items, addressId, _state.value.useWallet,
+                _state.value.isGift, _state.value.giftMessage.takeIf { _state.value.isGift }
+            )
             when (orderResult) {
                 is AppResult.Success -> {
                     val orderId = orderResult.data.id
@@ -290,7 +303,10 @@ class CheckoutViewModel(
                 return@launch
             }
 
-            val result = createOrderUseCase(items, addressId, _state.value.useWallet)
+            val result = createOrderUseCase(
+                items, addressId, _state.value.useWallet,
+                _state.value.isGift, _state.value.giftMessage.takeIf { _state.value.isGift }
+            )
             when (result) {
                 is AppResult.Success -> {
                     CartEventBus.refresh()

@@ -31,6 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 
@@ -75,6 +77,7 @@ fun ProfileEditBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(ContentWidth.readable)
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
                 .verticalScroll(rememberScrollState())

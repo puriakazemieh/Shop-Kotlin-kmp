@@ -60,4 +60,20 @@ class CatalogApiImpl(
     override suspend fun getBanners(): List<BannerResponse> = safeApiCallRaw {
         client.get("api/banners")
     }
+
+    override suspend fun requestBackInStock(productId: Long, variantId: Long): Unit = safeApiCallRaw {
+        client.post("api/stock-notifications") {
+            setBody(StockNotificationRequestDto(productId = productId, variantId = variantId))
+        }
+    }
+
+    override suspend fun getFrequentlyBoughtTogether(productId: Long): List<ProductSummaryResponse> = safeApiCallRaw {
+        client.get("api/products/$productId/frequently-bought-together")
+    }
+
+    override suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): Unit = safeApiCallRaw {
+        client.post("api/price-alerts") {
+            setBody(PriceAlertRequestDto(productId = productId, variantId = variantId, targetPrice = targetPrice))
+        }
+    }
 }

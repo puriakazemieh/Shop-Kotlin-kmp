@@ -43,7 +43,7 @@ class SettingsViewModel(
 }
 
 data class SettingsState(
-    val language: AppLanguage = AppLanguage.ENGLISH,
+    val language: AppLanguage = AppLanguage.PERSIAN,
     val themeMode: AppThemeMode = AppThemeMode.LIGHT
 )
 

@@ -18,8 +18,15 @@ import com.kazemieh.domain.catalog.PostQuestionUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
 import com.kazemieh.domain.catalog.UpdateQuestionUseCase
 import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
+import com.kazemieh.domain.catalog.RequestBackInStockUseCase
+import com.kazemieh.domain.catalog.SubscribeToPriceAlertUseCase
+import com.kazemieh.domain.catalog.GetFrequentlyBoughtTogetherUseCase
+import com.kazemieh.domain.order.CreateRecurringOrderUseCase
 import com.kazemieh.domain.catalog.ProductDetail
 import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.catalog.Review
+import com.kazemieh.domain.address.GetAddressesUseCase
 import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.recentlyviewed.AddRecentlyViewedUseCase
@@ -49,7 +56,13 @@ class DetailsViewModel(
     private val deleteQuestionUseCase: DeleteQuestionUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
-    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase
+    private val addRecentlyViewedUseCase: AddRecentlyViewedUseCase,
+    private val toggleReviewHelpfulUseCase: ToggleReviewHelpfulUseCase,
+    private val requestBackInStockUseCase: RequestBackInStockUseCase,
+    private val getAddressesUseCase: GetAddressesUseCase,
+    private val subscribeToPriceAlertUseCase: SubscribeToPriceAlertUseCase,
+    private val getFrequentlyBoughtTogetherUseCase: GetFrequentlyBoughtTogetherUseCase,
+    private val createRecurringOrderUseCase: CreateRecurringOrderUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -94,7 +107,8 @@ class DetailsViewModel(
                         selectedOptions = intent.variant.options,
                         isAddedToCart = false,
                         quantity = 1,
-                        isCounterMode = true
+                        isCounterMode = true,
+                        notifyRequested = false
                     )
                 }
             }
@@ -121,7 +135,8 @@ class DetailsViewModel(
                         selectedVariant = matchingVariant,
                         isAddedToCart = false,
                         quantity = 1,
-                        isCounterMode = true
+                        isCounterMode = true,
+                        notifyRequested = false
                     )
                 }
             }
@@ -130,13 +145,117 @@ class DetailsViewModel(
                 _state.update { it.copy(isCounterMode = intent.isCounterMode) }
             }
             is DetailsIntent.LoadInteractions -> loadInteractions(intent.productId)
-            is DetailsIntent.AddReview -> addReview(intent.productId, intent.rating, intent.comment, intent.parentId)
+            is DetailsIntent.AddReview -> addReview(intent.productId, intent.rating, intent.comment, intent.parentId, intent.images)
             is DetailsIntent.UpdateReview -> updateReview(intent.reviewId, intent.productId, intent.rating, intent.comment)
             is DetailsIntent.DeleteReview -> deleteReview(intent.reviewId, intent.productId)
             is DetailsIntent.AddQuestion -> addQuestion(intent.productId, intent.content, intent.parentId)
             is DetailsIntent.UpdateQuestion -> updateQuestion(intent.questionId, intent.productId, intent.content)
             is DetailsIntent.DeleteQuestion -> deleteQuestion(intent.questionId, intent.productId)
             is DetailsIntent.ToggleFavorite -> toggleFavorite(intent.productId, intent.isFavorite)
+            is DetailsIntent.ToggleReviewHelpful -> toggleReviewHelpful(intent.reviewId)
+            is DetailsIntent.RequestBackInStock -> requestBackInStock()
+            is DetailsIntent.SubscribeToPriceAlert -> subscribeToPriceAlert(intent.targetPrice)
+            is DetailsIntent.LoadFrequentlyBoughtTogether -> loadFrequentlyBoughtTogether(intent.productId)
+            is DetailsIntent.SubscribeRecurringOrder -> subscribeRecurringOrder()
+        }
+    }
+
+    private fun subscribeRecurringOrder() {
+        val variantId = _state.value.selectedVariant?.id ?: return
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = createRecurringOrderUseCase(variantId, _state.value.quantity, null, 30)) {
+                is AppResult.Success -> _state.update { it.copy(recurringOrderCreated = true) }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun subscribeToPriceAlert(targetPrice: Double) {
+        val product = _state.value.product ?: return
+        val variantId = _state.value.selectedVariant?.id ?: return
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = subscribeToPriceAlertUseCase(product.id, variantId, targetPrice)) {
+                is AppResult.Success -> _state.update { it.copy(priceAlertRequested = true) }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadFrequentlyBoughtTogether(productId: Long) {
+        viewModelScope.launch {
+            when (val result = getFrequentlyBoughtTogetherUseCase(productId)) {
+                is AppResult.Success -> _state.update { it.copy(frequentlyBoughtTogether = result.data) }
+                else -> {}
+            }
+        }
+    }
+
+    private fun toggleReviewHelpful(reviewId: Long) {
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = toggleReviewHelpfulUseCase(reviewId)) {
+                is AppResult.Success -> {
+                    val updated = result.data
+                    _state.update { it.copy(reviews = it.reviews.updateHelpful(updated)) }
+                }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    /** به‌روزرسانیِ بازگشتیِ helpfulCount/helpfulByMe برای نظرِ مطابق (شاملِ پاسخ‌ها). */
+    private fun List<Review>.updateHelpful(updated: Review): List<Review> = map { review ->
+        when {
+            review.id == updated.id -> review.copy(
+                helpfulCount = updated.helpfulCount,
+                helpfulByMe = updated.helpfulByMe,
+                replies = review.replies.updateHelpful(updated)
+            )
+            else -> review.copy(replies = review.replies.updateHelpful(updated))
+        }
+    }
+
+    private fun requestBackInStock() {
+        val product = _state.value.product ?: return
+        val variantId = _state.value.selectedVariant?.id ?: return
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) {
+                _effect.send(DetailsEffect.NavigateToAuth)
+                return@launch
+            }
+            when (val result = requestBackInStockUseCase(product.id, variantId)) {
+                is AppResult.Success -> _state.update { it.copy(notifyRequested = true) }
+                is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadDefaultCity() {
+        viewModelScope.launch {
+            if (!isUserLoggedInUseCase().first()) return@launch
+            when (val result = getAddressesUseCase()) {
+                is AppResult.Success -> {
+                    val city = result.data.firstOrNull { it.isDefault }?.city
+                        ?: result.data.firstOrNull()?.city
+                    if (city != null) _state.update { it.copy(defaultCity = city) }
+                }
+                else -> {}
+            }
         }
     }
 
@@ -195,7 +314,9 @@ class DetailsViewModel(
                     }
                     loadInteractions(product.id)
                     product.categoryId?.let { loadSimilarProducts(it, product.id) }
+                    loadFrequentlyBoughtTogether(product.id)
                     recordRecentlyViewed(product)
+                    loadDefaultCity()
                 }
                 is AppResult.Error -> {
                     _state.update {
@@ -261,7 +382,7 @@ class DetailsViewModel(
         }
     }
 
-    private fun addReview(productId: Long, rating: Int?, comment: String, parentId: Long?) {
+    private fun addReview(productId: Long, rating: Int?, comment: String, parentId: Long?, images: List<String> = emptyList()) {
         viewModelScope.launch {
             val isLoggedIn = isUserLoggedInUseCase().first()
             if (!isLoggedIn) {
@@ -269,7 +390,7 @@ class DetailsViewModel(
                 return@launch
             }
 
-            val request = CreateReviewRequest(productId, rating, comment, parentId)
+            val request = CreateReviewRequest(productId, rating, comment, parentId, images)
             when (val result = postReviewUseCase(request)) {
                 is AppResult.Success -> loadInteractions(productId)
                 is AppResult.Error -> _effect.send(DetailsEffect.ShowError(result.message))

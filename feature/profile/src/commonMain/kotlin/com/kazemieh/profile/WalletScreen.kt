@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -296,7 +297,7 @@ fun TransactionsList(state: AppResult<com.kazemieh.domain.admin.AdminPage<Wallet
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(transactions) { transaction ->

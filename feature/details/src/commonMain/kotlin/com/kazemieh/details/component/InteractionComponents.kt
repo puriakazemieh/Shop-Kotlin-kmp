@@ -1,5 +1,6 @@
 package com.kazemieh.details.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ fun ReviewItem(
     onReplyClick: (Long) -> Unit,
     onEditClick: (Review) -> Unit,
     onDeleteClick: (Long) -> Unit,
+    onHelpfulClick: (Long) -> Unit,
     depth: Int = 0
 ) {
     val paddingStart = if (depth < 3) (depth * 16).dp else (3 * 16).dp
@@ -51,7 +53,27 @@ fun ReviewItem(
             style = MaterialTheme.typography.bodySmall
         )
 
-        Row(modifier = Modifier.padding(top = 8.dp)) {
+        if (review.images.isNotEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                review.images.take(4).forEach { url ->
+                    val painter = com.seiko.imageloader.rememberImagePainter(url)
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp).clip(RoundedCornerShape(Radius.xs)),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             TextButton(
                 onClick = { onReplyClick(review.id) },
                 contentPadding = PaddingValues(end = 8.dp)
@@ -71,6 +93,21 @@ fun ReviewItem(
             ) {
                 Text("حذف", style = MaterialTheme.typography.labelMedium)
             }
+            Spacer(modifier = Modifier.weight(1f))
+            // رأیِ «مفید بود» — فقط روی نظرهای سطح‌اول (نه پاسخ‌ها)
+            if (depth == 0) {
+                val helpfulColor = if (review.helpfulByMe) AppTheme.colors.ok else MaterialTheme.colorScheme.onSurfaceVariant
+                TextButton(
+                    onClick = { onHelpfulClick(review.id) },
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    colors = ButtonDefaults.textButtonColors(contentColor = helpfulColor)
+                ) {
+                    Text(
+                        text = if (review.helpfulCount > 0) "👍 مفید بود (${review.helpfulCount})" else "👍 مفید بود",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
         }
 
         // Recursive replies
@@ -80,6 +117,7 @@ fun ReviewItem(
                 onReplyClick = onReplyClick,
                 onEditClick = onEditClick,
                 onDeleteClick = onDeleteClick,
+                onHelpfulClick = onHelpfulClick,
                 depth = depth + 1
             )
         }
@@ -166,10 +204,11 @@ fun RatingDisplay(rating: Int) {
 @Composable
 fun AddReviewDialog(
     onDismiss: () -> Unit,
-    onSubmit: (Int, String) -> Unit
+    onSubmit: (Int, String, List<String>) -> Unit
 ) {
     var rating by remember { mutableStateOf(5) }
     var comment by remember { mutableStateOf("") }
+    var imagesText by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -202,13 +241,25 @@ fun AddReviewDialog(
                     textStyle = MaterialTheme.typography.bodyMedium
                 )
 
+                Spacer(modifier = Modifier.padding(top = 8.dp))
+                OutlinedTextField(
+                    value = imagesText,
+                    onValueChange = { imagesText = it },
+                    label = { Text("لینکِ عکس‌ها (اختیاری، با کاما جدا کن)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
+
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) { Text("انصراف") }
                     Button(
-                        onClick = { onSubmit(rating, comment) },
+                        onClick = {
+                            val images = imagesText.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                            onSubmit(rating, comment, images)
+                        },
                         enabled = comment.isNotBlank()
                     ) {
                         Text("ثبت")

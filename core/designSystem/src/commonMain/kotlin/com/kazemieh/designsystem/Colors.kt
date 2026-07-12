@@ -1,11 +1,13 @@
 package com.kazemieh.designsystem
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import com.kazemieh.designsystem.brand.BrandPalette
 
 // =====================================================================================
 //  Carmilla Design System — Color Tokens
@@ -172,6 +174,69 @@ data class AppColors(
 val LocalAppColors = compositionLocalOf<AppColors> {
     error("No AppColors provided")
 }
+
+// =====================================================================================
+//  سازنده‌های پالت‌محور (White-label) — از یک BrandPalette هم ColorScheme و هم AppColors می‌سازند
+// =====================================================================================
+
+fun buildColorScheme(p: BrandPalette, dark: Boolean): ColorScheme {
+    val base = if (dark) darkColorScheme() else lightColorScheme()
+    return base.copy(
+        primary = p.accent,
+        onPrimary = p.onAccent,
+        primaryContainer = p.accentSoft,
+        onPrimaryContainer = p.accent,
+        secondary = p.gold,
+        onSecondary = p.onGold,
+        secondaryContainer = p.goldSoft,
+        tertiary = p.accent2,
+        onTertiary = p.onAccent,
+        tertiaryContainer = p.accentSoft,
+        onTertiaryContainer = p.accent,
+        background = p.bg,
+        onBackground = p.ink,
+        surface = p.surface,
+        onSurface = p.ink,
+        surfaceVariant = p.surfaceVariant,
+        onSurfaceVariant = p.inkSoft,
+        outline = p.line,
+        outlineVariant = p.outlineVariant,
+        error = p.sale,
+        onError = Color.White
+    )
+}
+
+fun buildAppColors(p: BrandPalette): AppColors = AppColors(
+    primary = p.accent,
+    onPrimary = p.onAccent,
+    primaryContainer = p.accentSoft,
+    onPrimaryContainer = p.accent,
+    secondary = p.gold,
+    onSecondary = p.onGold,
+    secondaryContainer = p.goldSoft,
+    onSecondaryContainer = p.ink,
+    background = p.bg,
+    onBackground = p.ink,
+    surface = p.surface,
+    onSurface = p.ink,
+    surfaceVariant = p.surfaceVariant,
+    onSurfaceVariant = p.inkSoft,
+    outline = p.line,
+    error = p.sale,
+    onError = Color.White,
+    accent2 = p.accent2,
+    accentSoft = p.accentSoft,
+    gold = p.gold,
+    line = p.line,
+    sale = p.sale,
+    star = p.star,
+    ok = p.ok,
+    categoryYellow = CategoryYellow,
+    categoryBlue = CategoryBlue,
+    categoryGreen = CategoryGreen,
+    categoryPurple = CategoryPurple,
+    categoryRed = CategoryRed
+)
 
 @Composable
 fun provideAppColors(darkTheme: Boolean): AppColors {

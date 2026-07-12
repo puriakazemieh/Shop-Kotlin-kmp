@@ -17,5 +17,7 @@ data class OrderDetailResponse(
     val shippedAt: String? = null,
     val deliveredAt: String? = null,
     val walletPaidAmount: Double? = null,
-    val gatewayPaidAmount: Double? = null
+    val gatewayPaidAmount: Double? = null,
+    val isGift: Boolean = false,
+    val giftMessage: String? = null
 )

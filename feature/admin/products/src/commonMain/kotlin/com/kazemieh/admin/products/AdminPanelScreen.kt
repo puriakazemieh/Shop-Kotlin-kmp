@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.domain.admin.AdminStats
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -33,12 +34,18 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
+import com.kazemieh.admin.orders.AdminReturnRequestsScreen
 import com.kazemieh.admin.wallet.AdminWalletScreen
 import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
+import com.kazemieh.admin.academy.AdminAcademyScreen
+import com.kazemieh.admin.clinic.AdminClinicScreen
+import com.kazemieh.admin.psychtest.AdminPsychTestScreen
+import com.kazemieh.designsystem.brand.BrandConfig
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,18 +54,35 @@ fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
     navigateToManageBlog: (Long?, String?) -> Unit,
-    navigateToManageCategory: (Long?) -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val colors = AppTheme.colors
+    val brand = koinInject<BrandConfig>()
     var selectedTab by remember { mutableStateOf(0) }
 
-    val tabs = listOf(
-        "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
-        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
-    )
+    // تب‌های عمودی (آموزشگاه/مشاوره) فقط وقتی در تنظیماتِ برند روشن باشند نمایش داده می‌شوند
+    // تا مدیریتِ فروشگاه دقیقاً همان بخش‌هایی را ببیند که سمتِ کاربر هم فعال است.
+    val tabs = buildList {
+        addAll(
+            listOf(
+                "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
+                "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
+            )
+        )
+        add("مرجوعی‌ها")
+        if (brand.features.academy) add("آموزشگاه")
+        if (brand.features.clinic) add("مشاوره")
+        if (brand.features.psychTests) add("تست‌ها")
+        if (brand.features.productBundles) add("باندل‌ها")
+    }
+    val academyTabIndex = if (brand.features.academy) tabs.indexOf("آموزشگاه") else -1
+    val clinicTabIndex = if (brand.features.clinic) tabs.indexOf("مشاوره") else -1
+    val psychTabIndex = if (brand.features.psychTests) tabs.indexOf("تست‌ها") else -1
+    val bundlesTabIndex = if (brand.features.productBundles) tabs.indexOf("باندل‌ها") else -1
+    val returnRequestsTabIndex = tabs.indexOf("مرجوعی‌ها")
+
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -138,12 +162,16 @@ fun AdminPanelScreen(
                     5 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
                     6 -> AdminBlogListScreen(
                         navigateToManageBlog = navigateToManageBlog,
-                        navigateToManageCategory = navigateToManageCategory,
                         navigateBack = { selectedTab = 1 },
                         embedded = true
                     )
                     7 -> AdminWalletScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                     8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    academyTabIndex -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    clinicTabIndex -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    psychTabIndex -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    bundlesTabIndex -> AdminBundlesScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    returnRequestsTabIndex -> AdminReturnRequestsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
                 }
             }
         }
@@ -169,7 +197,7 @@ private fun ProductsTab(
             is AppResult.Success -> {
                 val products = result.data.items
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(all = 12.dp),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(all = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     // هدرِ مدیریت محصولات + دکمه‌ی افزودن (مطابق مرجع)
@@ -233,6 +261,16 @@ private fun AdminDashboard(stats: AdminStats) {
             item { StatCard("سفارش‌ها", stats.totalOrders.toString(), "عدد") }
             item { StatCard("محصولات", stats.totalProducts.toString(), "عدد") }
             item { StatCard("مشتریان", stats.totalCustomers.toString(), "نفر") }
+        }
+        // ---- ردِپای عمودی‌ها (فقط وقتی محتوایی وجود دارد) ----
+        val vc = stats.verticalCounts
+        if (vc.courses > 0 || vc.therapists > 0 || vc.psychTests > 0) {
+            Spacer(Modifier.height(12.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (vc.courses > 0) item { StatCard("دوره‌ها", vc.courses.toString(), "عدد") }
+                if (vc.therapists > 0) item { StatCard("درمانگرها", vc.therapists.toString(), "نفر") }
+                if (vc.psychTests > 0) item { StatCard("تست‌ها", vc.psychTests.toString(), "عدد") }
+            }
         }
         Spacer(Modifier.height(16.dp))
         Column(

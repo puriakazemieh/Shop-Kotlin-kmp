@@ -6,5 +6,7 @@ import kotlinx.serialization.Serializable
 data class CreateOrderRequest(
     val items: List<OrderItemRequest>,
     val addressId: Long? = null,
-    val useWallet: Boolean = false
+    val useWallet: Boolean = false,
+    val isGift: Boolean = false,
+    val giftMessage: String? = null
 )

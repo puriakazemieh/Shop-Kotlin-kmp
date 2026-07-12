@@ -10,7 +10,10 @@ data class ReviewResponse(
     val rating: Int?,
     val comment: String,
     val replies: List<ReviewResponse>,
-    val createdAt: String
+    val helpfulCount: Int = 0,
+    val helpfulByMe: Boolean = false,
+    val createdAt: String,
+    val images: List<String> = emptyList()
 )
 
 @Serializable
@@ -18,7 +21,8 @@ data class CreateReviewRequestDto(
     val productId: Long,
     val rating: Int?,
     val comment: String,
-    val parentId: Long? = null
+    val parentId: Long? = null,
+    val images: List<String> = emptyList()
 )
 
 @Serializable
@@ -41,7 +45,8 @@ data class CreateQuestionRequestDto(
 @Serializable
 data class UpdateReviewRequest(
     val rating: Int?,
-    val comment: String
+    val comment: String,
+    val images: List<String> = emptyList()
 )
 
 @Serializable

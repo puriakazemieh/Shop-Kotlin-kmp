@@ -1,6 +1,7 @@
 package com.kazemieh.domain.order
 
 import com.kazemieh.domain.address.Address
+import com.kazemieh.domain.cart.Cart
 
 data class Order(
     val id: Long,
@@ -9,6 +10,11 @@ data class Order(
     val shippingPrice: Double,
     val totalPrice: Double,
     val createdAt: String
+)
+
+data class ReorderResult(
+    val cart: Cart,
+    val skippedTitles: List<String>
 )
 
 data class OrderDetail(
@@ -25,7 +31,9 @@ data class OrderDetail(
     val shippedAt: String?,
     val deliveredAt: String?,
     val walletPaidAmount: Double? = null,
-    val gatewayPaidAmount: Double? = null
+    val gatewayPaidAmount: Double? = null,
+    val isGift: Boolean = false,
+    val giftMessage: String? = null
 )
 
 data class OrderItem(
@@ -42,5 +50,11 @@ data class OrderTracking(
     val status: String,
     val trackingCode: String?,
     val orderedAt: String,
-    val shippedAt: String?
+    val shippedAt: String?,
+    val history: List<OrderStatusHistoryItem> = emptyList()
+)
+
+data class OrderStatusHistoryItem(
+    val status: String,
+    val at: String
 )

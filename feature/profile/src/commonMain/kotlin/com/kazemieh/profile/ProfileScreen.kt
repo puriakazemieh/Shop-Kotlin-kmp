@@ -62,6 +62,7 @@ import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -88,6 +89,7 @@ fun ProfileScreen(
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
+    val favoriteColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
@@ -300,7 +302,7 @@ fun ProfileScreen(
                                     } else if (state.favorites.isEmpty()) {
                                         EmptyTabHint(text = stringResource(Resources.String.FavoritesEmpty))
                                     } else {
-                                        state.favorites.chunked(2).forEach { rowItems ->
+                                        state.favorites.chunked(favoriteColumns).forEach { rowItems ->
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -313,7 +315,7 @@ fun ProfileScreen(
                                                         onFavoriteClick = { viewModel.handleIntent(ProfileIntent.ToggleFavorite(product)) }
                                                     )
                                                 }
-                                                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                                                repeat(favoriteColumns - rowItems.size) { Spacer(Modifier.weight(1f)) }
                                             }
                                             Spacer(modifier = Modifier.height(12.dp))
                                         }

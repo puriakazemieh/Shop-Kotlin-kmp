@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.CarmillaFilterChip
@@ -112,7 +113,7 @@ fun BlogListScreen(
                 LoadingCard(modifier = Modifier.fillMaxSize())
             } else {
                 LazyColumn(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).responsiveMaxWidth(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {

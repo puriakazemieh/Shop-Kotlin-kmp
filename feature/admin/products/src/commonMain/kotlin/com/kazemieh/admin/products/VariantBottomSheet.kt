@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.admin.AdminOption
 import com.kazemieh.domain.admin.AdminVariant
@@ -110,6 +111,7 @@ fun VariantBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
                 .verticalScroll(rememberScrollState())

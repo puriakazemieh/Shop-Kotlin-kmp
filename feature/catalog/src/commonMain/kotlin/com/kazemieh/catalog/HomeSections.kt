@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Spacing
@@ -391,7 +392,9 @@ fun TrustBadges(modifier: Modifier = Modifier) {
                 .background(colors.line)
         )
         Spacer(Modifier.height(Spacing.lg))
-        items.chunked(2).forEach { rowItems ->
+        // روی موبایل ۲تایی، روی تبلت/دسکتاپ همه در یک ردیف
+        val badgeColumns = adaptiveGridColumns(compact = 2, medium = 4, expanded = 4)
+        items.chunked(badgeColumns).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(14.dp)
@@ -399,7 +402,7 @@ fun TrustBadges(modifier: Modifier = Modifier) {
                 rowItems.forEach { item ->
                     TrustBadgeItem(item = item, modifier = Modifier.weight(1f))
                 }
-                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                repeat(badgeColumns - rowItems.size) { Spacer(Modifier.weight(1f)) }
             }
         }
     }

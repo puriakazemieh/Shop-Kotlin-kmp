@@ -29,6 +29,24 @@ import com.kazemieh.network.story.StoryApi
 import com.kazemieh.network.story.StoryApiImpl
 import com.kazemieh.network.wallet.WalletApi
 import com.kazemieh.network.wallet.WalletApiImpl
+import com.kazemieh.network.support.SupportApi
+import com.kazemieh.network.support.SupportApiImpl
+import com.kazemieh.network.academy.AcademyApi
+import com.kazemieh.network.academy.AcademyApiImpl
+import com.kazemieh.network.academy.AdminAcademyApi
+import com.kazemieh.network.academy.AdminAcademyApiImpl
+import com.kazemieh.network.psychtest.PsychTestApi
+import com.kazemieh.network.psychtest.PsychTestApiImpl
+import com.kazemieh.network.psychtest.AdminPsychTestApi
+import com.kazemieh.network.psychtest.AdminPsychTestApiImpl
+import com.kazemieh.network.clinic.ClinicApi
+import com.kazemieh.network.clinic.ClinicApiImpl
+import com.kazemieh.network.clinic.AdminClinicApi
+import com.kazemieh.network.clinic.AdminClinicApiImpl
+import com.kazemieh.network.bundle.BundleApi
+import com.kazemieh.network.bundle.BundleApiImpl
+import com.kazemieh.network.bundle.AdminBundleApi
+import com.kazemieh.network.bundle.AdminBundleApiImpl
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -78,6 +96,22 @@ val networkModule = module {
         OrderApiImpl(get())
     }
 
+    single<com.kazemieh.network.order.ReturnRequestApi> {
+        com.kazemieh.network.order.ReturnRequestApiImpl(get())
+    }
+
+    single<com.kazemieh.network.referral.ReferralApi> {
+        com.kazemieh.network.referral.ReferralApiImpl(get())
+    }
+
+    single<com.kazemieh.network.order.RecurringOrderApi> {
+        com.kazemieh.network.order.RecurringOrderApiImpl(get())
+    }
+
+    single<com.kazemieh.network.membership.MembershipApi> {
+        com.kazemieh.network.membership.MembershipApiImpl(get())
+    }
+
     single<AddressApi> {
         AddressApiImpl(get())
     }
@@ -92,5 +126,41 @@ val networkModule = module {
 
     single<StoryApi> {
         StoryApiImpl(get())
+    }
+
+    single<SupportApi> {
+        SupportApiImpl(get())
+    }
+
+    single<AcademyApi> {
+        AcademyApiImpl(get())
+    }
+
+    single<ClinicApi> {
+        ClinicApiImpl(get())
+    }
+
+    single<AdminAcademyApi> {
+        AdminAcademyApiImpl(get())
+    }
+
+    single<AdminClinicApi> {
+        AdminClinicApiImpl(get())
+    }
+
+    single<PsychTestApi> {
+        PsychTestApiImpl(get())
+    }
+
+    single<AdminPsychTestApi> {
+        AdminPsychTestApiImpl(get())
+    }
+
+    single<BundleApi> {
+        BundleApiImpl(get())
+    }
+
+    single<AdminBundleApi> {
+        AdminBundleApiImpl(get())
     }
 }

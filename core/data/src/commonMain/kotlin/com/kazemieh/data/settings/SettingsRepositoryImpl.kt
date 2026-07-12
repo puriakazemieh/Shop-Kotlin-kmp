@@ -17,7 +17,7 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
 
     @OptIn(ExperimentalSettingsApi::class)
     override fun observeLanguage(): Flow<AppLanguage> {
-        return flowSettings.getStringFlow(KEY_LANGUAGE, AppLanguage.ENGLISH.code)
+        return flowSettings.getStringFlow(KEY_LANGUAGE, AppLanguage.PERSIAN.code)
             .map { AppLanguage.fromCode(it) }
     }
 
@@ -26,7 +26,7 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
     }
 
     override suspend fun getLanguage(): AppLanguage {
-        val code = settings.getString(KEY_LANGUAGE, AppLanguage.ENGLISH.code)
+        val code = settings.getString(KEY_LANGUAGE, AppLanguage.PERSIAN.code)
         return AppLanguage.fromCode(code)
     }
 
@@ -45,8 +45,30 @@ class SettingsRepositoryImpl(private val settings: Settings) : SettingsRepositor
         return AppThemeMode.fromCode(code)
     }
 
+    override suspend fun getRecentSearches(): List<String> {
+        val raw = settings.getString(KEY_RECENT_SEARCHES, "")
+        return raw.split(RECENT_DELIMITER).map { it.trim() }.filter { it.isNotEmpty() }
+    }
+
+    override suspend fun addRecentSearch(query: String) {
+        val q = query.trim()
+        if (q.isEmpty()) return
+        val current = getRecentSearches().toMutableList()
+        current.removeAll { it.equals(q, ignoreCase = true) }
+        current.add(0, q)
+        val trimmed = current.take(MAX_RECENT_SEARCHES)
+        settings.putString(KEY_RECENT_SEARCHES, trimmed.joinToString(RECENT_DELIMITER))
+    }
+
+    override suspend fun clearRecentSearches() {
+        settings.putString(KEY_RECENT_SEARCHES, "")
+    }
+
     companion object {
         private const val KEY_LANGUAGE = "app_language"
         private const val KEY_THEME_MODE = "app_theme_mode"
+        private const val KEY_RECENT_SEARCHES = "recent_searches"
+        private const val RECENT_DELIMITER = "\n"
+        private const val MAX_RECENT_SEARCHES = 8
     }
 }

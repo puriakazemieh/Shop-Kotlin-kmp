@@ -37,6 +37,7 @@ import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.responsiveMaxWidth
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -85,6 +86,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                 .padding(16.dp)
         ) {
             Text(

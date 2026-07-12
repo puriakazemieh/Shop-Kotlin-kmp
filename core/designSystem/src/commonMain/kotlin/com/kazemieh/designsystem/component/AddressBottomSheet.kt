@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
@@ -82,6 +84,7 @@ fun AddressBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(ContentWidth.readable)
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
                 .verticalScroll(rememberScrollState()),

@@ -27,7 +27,9 @@ fun OrderDetailResponse.toDomain(): OrderDetail = OrderDetail(
     shippedAt = shippedAt,
     deliveredAt = deliveredAt,
     walletPaidAmount = walletPaidAmount,
-    gatewayPaidAmount = gatewayPaidAmount
+    gatewayPaidAmount = gatewayPaidAmount,
+    isGift = isGift,
+    giftMessage = giftMessage
 )
 
 fun AddressSnapshotResponse.toDomain(): Address = Address(
@@ -57,5 +59,6 @@ fun OrderTrackingResponse.toDomain(): OrderTracking = OrderTracking(
     status = status,
     trackingCode = trackingCode,
     orderedAt = orderedAt,
-    shippedAt = shippedAt
+    shippedAt = shippedAt,
+    history = history.map { OrderStatusHistoryItem(status = it.status, at = it.at) }
 )

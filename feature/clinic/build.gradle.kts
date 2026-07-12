@@ -1,0 +1,68 @@
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.androidLint)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
+}
+
+kotlin {
+    androidLibrary {
+        namespace = "com.kazemieh.clinic"
+        compileSdk = 36
+        minSdk = 24
+    }
+
+    val xcfName = "feature:clinic"
+
+    iosX64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    iosArm64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    iosSimulatorArm64 {
+        binaries.framework {
+            baseName = xcfName
+        }
+    }
+
+    js {
+        browser()
+    }
+
+    jvm()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.components.resources)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.image.loader)
+
+                implementation(libs.compose.material.icons.core)
+                implementation(libs.compose.material.icons.extended)
+
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
+
+                implementation(project(":core:designSystem"))
+                implementation(project(":core:domain"))
+                implementation(project(":core:common"))
+                // بازاستفاده از بخشِ نظرات (ProductReviewsSection)
+                implementation(project(":feature:details"))
+            }
+        }
+    }
+}

@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -120,7 +121,7 @@ fun AdminOrderScreen(
                             }
                         } else {
                             LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
                                 contentPadding = PaddingValues(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
@@ -276,7 +277,7 @@ fun OrderDetailDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 TopAppBar(

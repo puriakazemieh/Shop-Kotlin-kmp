@@ -9,4 +9,5 @@ interface OrderApi {
     suspend fun createOrder(request: CreateOrderRequest): OrderDetailResponse
     suspend fun cancelOrder(id: Long)
     suspend fun trackOrder(id: Long): OrderTrackingResponse
+    suspend fun reorder(id: Long): ReorderResponse
 }

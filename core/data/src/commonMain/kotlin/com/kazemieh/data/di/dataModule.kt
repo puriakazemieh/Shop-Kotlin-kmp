@@ -59,6 +59,24 @@ import com.kazemieh.domain.recentlyviewed.RecentlyViewedRepository
 import com.kazemieh.data.recentlyviewed.RecentlyViewedRepositoryImpl
 import com.kazemieh.data.recentlyviewed.source.RecentlyViewedDataSource
 import com.kazemieh.data.recentlyviewed.source.RecentlyViewedDataSourceImpl
+import com.kazemieh.domain.support.SupportRepository
+import com.kazemieh.data.support.repository.SupportRepositoryImpl
+import com.kazemieh.domain.academy.AcademyRepository
+import com.kazemieh.data.academy.repository.AcademyRepositoryImpl
+import com.kazemieh.domain.academy.AdminAcademyRepository
+import com.kazemieh.data.academy.repository.AdminAcademyRepositoryImpl
+import com.kazemieh.domain.psychtest.PsychTestRepository
+import com.kazemieh.data.psychtest.repository.PsychTestRepositoryImpl
+import com.kazemieh.domain.psychtest.AdminPsychTestRepository
+import com.kazemieh.data.psychtest.repository.AdminPsychTestRepositoryImpl
+import com.kazemieh.domain.clinic.ClinicRepository
+import com.kazemieh.data.clinic.repository.ClinicRepositoryImpl
+import com.kazemieh.domain.clinic.AdminClinicRepository
+import com.kazemieh.data.clinic.repository.AdminClinicRepositoryImpl
+import com.kazemieh.domain.bundle.BundleRepository
+import com.kazemieh.data.bundle.repository.BundleRepositoryImpl
+import com.kazemieh.domain.bundle.AdminBundleRepository
+import com.kazemieh.data.bundle.repository.AdminBundleRepositoryImpl
 import org.koin.dsl.module
 
 
@@ -149,6 +167,22 @@ val dataModule = module {
         OrderRepositoryImpl(get())
     }
 
+    single<com.kazemieh.domain.order.ReturnRequestRepository> {
+        com.kazemieh.data.order.repository.ReturnRequestRepositoryImpl(get())
+    }
+
+    single<com.kazemieh.domain.referral.ReferralRepository> {
+        com.kazemieh.data.referral.ReferralRepositoryImpl(get())
+    }
+
+    single<com.kazemieh.domain.order.RecurringOrderRepository> {
+        com.kazemieh.data.order.repository.RecurringOrderRepositoryImpl(get())
+    }
+
+    single<com.kazemieh.domain.membership.MembershipRepository> {
+        com.kazemieh.data.membership.MembershipRepositoryImpl(get())
+    }
+
     single<OrderDataSource> {
         OrderDataSourceImpl(get())
     }
@@ -162,6 +196,42 @@ val dataModule = module {
     }
 
     single { ProfileLocalDataSource(get()) }
+
+    single<SupportRepository> {
+        SupportRepositoryImpl(get())
+    }
+
+    single<AcademyRepository> {
+        AcademyRepositoryImpl(get())
+    }
+
+    single<ClinicRepository> {
+        ClinicRepositoryImpl(get())
+    }
+
+    single<AdminAcademyRepository> {
+        AdminAcademyRepositoryImpl(get())
+    }
+
+    single<AdminClinicRepository> {
+        AdminClinicRepositoryImpl(get())
+    }
+
+    single<PsychTestRepository> {
+        PsychTestRepositoryImpl(get())
+    }
+
+    single<AdminPsychTestRepository> {
+        AdminPsychTestRepositoryImpl(get())
+    }
+
+    single<BundleRepository> {
+        BundleRepositoryImpl(get())
+    }
+
+    single<AdminBundleRepository> {
+        AdminBundleRepositoryImpl(get())
+    }
 
     single { TokenManager(settings = get()) }
     single<TokenProvider> { get<TokenManager>() }

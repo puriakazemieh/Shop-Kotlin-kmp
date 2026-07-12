@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.domain.admin.DiscountType
@@ -47,7 +48,7 @@ fun CreateDiscountDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable).padding(16.dp),
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.surface
         ) {

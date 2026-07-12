@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.kazemieh.designsystem.responsiveMaxWidth
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +38,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AdminBlogListScreen(
     navigateToManageBlog: (Long?, String?) -> Unit,
-    navigateToManageCategory: (Long?) -> Unit,
     navigateBack: () -> Unit,
     embedded: Boolean = false,
     viewModel: AdminBlogListViewModel = koinViewModel()
@@ -227,6 +227,7 @@ private fun ArticlesList(
     onDeleteBlog: (Blog) -> Unit
 ) {
     LazyColumn(
+        modifier = Modifier.responsiveMaxWidth(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -315,6 +316,7 @@ private fun CategoriesList(
     onDeleteCategory: (BlogCategory) -> Unit
 ) {
     LazyColumn(
+        modifier = Modifier.responsiveMaxWidth(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {

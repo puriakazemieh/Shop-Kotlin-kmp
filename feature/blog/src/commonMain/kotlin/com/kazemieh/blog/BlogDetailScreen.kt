@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.BlogContentRenderer
@@ -74,7 +75,7 @@ fun BlogDetailScreen(
             state.blog?.let { blog ->
                 val colors = AppTheme.colors
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(padding),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {

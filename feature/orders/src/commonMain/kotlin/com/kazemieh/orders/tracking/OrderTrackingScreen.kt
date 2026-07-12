@@ -22,6 +22,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -89,6 +90,7 @@ fun OrderTrackingScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .responsiveMaxWidth()
                             .verticalScroll(rememberScrollState())
                             .padding(16.dp)
                     ) {
@@ -116,8 +118,13 @@ fun OrderTrackingScreen(
                                 fontFamily = AppFont()
                             )
                         } else {
+                            // زمانِ واقعیِ هر مرحله از تاریخچه‌ی سرور (اگر موجود بود)
+                            val historyTimes = tracking.history.associate {
+                                it.status.uppercase() to formatDateTime(it.at)
+                            }
                             StatusTimeline(
                                 currentStatus = tracking.status,
+                                historyTimes = historyTimes,
                                 orderedAt = formatDateTime(tracking.orderedAt),
                                 shippedAt = tracking.shippedAt?.let { formatDateTime(it) }
                             )
@@ -145,7 +152,12 @@ fun OrderTrackingScreen(
 }
 
 @Composable
-private fun StatusTimeline(currentStatus: String, orderedAt: String, shippedAt: String?) {
+private fun StatusTimeline(
+    currentStatus: String,
+    historyTimes: Map<String, String>,
+    orderedAt: String,
+    shippedAt: String?
+) {
     val colors = AppTheme.colors
     val steps = listOf("PLACED", "PROCESSING", "SHIPPING", "COMPLETED")
     val labels = listOf(
@@ -159,7 +171,8 @@ private fun StatusTimeline(currentStatus: String, orderedAt: String, shippedAt: 
         steps.forEachIndexed { i, step ->
             val done = currentIndex >= i
             val isActive = currentIndex == i
-            val timestamp = when {
+            // اولویت با زمانِ واقعیِ تاریخچه؛ در نبودِ آن، fallback به orderedAt/shippedAt
+            val timestamp = historyTimes[step] ?: when {
                 i == 0 -> orderedAt
                 step == "SHIPPING" -> shippedAt
                 else -> null

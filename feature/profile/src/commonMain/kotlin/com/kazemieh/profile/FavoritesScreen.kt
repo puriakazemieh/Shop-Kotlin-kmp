@@ -31,6 +31,7 @@ import com.kazemieh.catalog.MainProductCard
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -48,6 +49,7 @@ fun FavoritesScreen(
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
+    val gridColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
@@ -111,7 +113,7 @@ fun FavoritesScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(
-                            state.favorites.chunked(2),
+                            state.favorites.chunked(gridColumns),
                             key = { row -> "fav_${row.first().id}" }
                         ) { rowItems ->
                             Row(
@@ -128,7 +130,7 @@ fun FavoritesScreen(
                                         }
                                     )
                                 }
-                                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                                repeat(gridColumns - rowItems.size) { Spacer(Modifier.weight(1f)) }
                             }
                         }
                     }

@@ -26,11 +26,19 @@ class OrderRepositoryImpl(
         return dataSource.getOrder(id).map { it.toDomain() }
     }
 
-    override suspend fun createOrder(items: List<Pair<Long, Int>>, addressId: Long?, useWallet: Boolean): AppResult<OrderDetail> {
+    override suspend fun createOrder(
+        items: List<Pair<Long, Int>>,
+        addressId: Long?,
+        useWallet: Boolean,
+        isGift: Boolean,
+        giftMessage: String?
+    ): AppResult<OrderDetail> {
         val request = CreateOrderRequest(
             items = items.map { OrderItemRequest(it.first, it.second) },
             addressId = addressId,
-            useWallet = useWallet
+            useWallet = useWallet,
+            isGift = isGift,
+            giftMessage = giftMessage
         )
         return dataSource.createOrder(request).map { it.toDomain() }
     }
@@ -41,5 +49,11 @@ class OrderRepositoryImpl(
 
     override suspend fun trackOrder(id: Long): AppResult<OrderTracking> {
         return dataSource.trackOrder(id).map { it.toDomain() }
+    }
+
+    override suspend fun reorder(id: Long): AppResult<ReorderResult> {
+        return dataSource.reorder(id).map {
+            ReorderResult(cart = it.cart.toDomain(), skippedTitles = it.skippedTitles)
+        }
     }
 }

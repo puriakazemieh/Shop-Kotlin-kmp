@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -103,7 +104,7 @@ fun AdminWithdrawalsScreen(
                         "REJECTED" to "ردشده"
                     )
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         if (pendingCount > 0) {

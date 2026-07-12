@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.order.CancelOrderUseCase
 import com.kazemieh.domain.order.GetOrderUseCase
+import com.kazemieh.domain.order.ReorderUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class OrderDetailViewModel(
     private val getOrderUseCase: GetOrderUseCase,
-    private val cancelOrderUseCase: CancelOrderUseCase
+    private val cancelOrderUseCase: CancelOrderUseCase,
+    private val reorderUseCase: ReorderUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OrderDetailState())
@@ -33,6 +35,21 @@ class OrderDetailViewModel(
                 viewModelScope.launch {
                     _effect.emit(OrderDetailEffect.NavigateToTracking(intent.id))
                 }
+            }
+            is OrderDetailIntent.Reorder -> reorder(intent.id)
+        }
+    }
+
+    private fun reorder(id: Long) {
+        viewModelScope.launch {
+            _state.update { it.copy(isReordering = true) }
+            val result = reorderUseCase(id)
+            _state.update { it.copy(isReordering = false) }
+
+            when (result) {
+                is AppResult.Success -> _effect.emit(OrderDetailEffect.Reordered(result.data.skippedTitles))
+                is AppResult.Error -> _effect.emit(OrderDetailEffect.ShowError(result.message))
+                else -> {}
             }
         }
     }

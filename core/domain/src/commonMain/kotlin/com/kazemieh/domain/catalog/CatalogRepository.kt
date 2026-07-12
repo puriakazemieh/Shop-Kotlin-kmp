@@ -23,4 +23,7 @@ interface CatalogRepository {
     suspend fun getProductDetail(slug: String): AppResult<ProductDetail>
     suspend fun getActiveCampaign(): AppResult<Campaign?>
     suspend fun getBanners(): AppResult<List<Banner>>
+    suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit>
+    suspend fun getFrequentlyBoughtTogether(productId: Long): AppResult<List<ProductSummary>>
+    suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): AppResult<Unit>
 }

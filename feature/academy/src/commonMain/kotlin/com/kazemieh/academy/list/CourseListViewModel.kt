@@ -1,0 +1,51 @@
+package com.kazemieh.academy.list
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kazemieh.common.AppResult
+import com.kazemieh.domain.academy.CourseSummary
+import com.kazemieh.domain.academy.GetCoursesUseCase
+import com.kazemieh.domain.academy.GetMyCoursesUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+data class CourseListState(
+    val isLoading: Boolean = false,
+    val courses: List<CourseSummary> = emptyList(),
+    val mine: Boolean = false,
+    val error: Any? = null
+)
+
+class CourseListViewModel(
+    private val getCoursesUseCase: GetCoursesUseCase,
+    private val getMyCoursesUseCase: GetMyCoursesUseCase
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(CourseListState())
+    val state: StateFlow<CourseListState> = _state.asStateFlow()
+
+    /**
+     * freeOnly/instructorFilter روی کاتالوگِ کاملِ برگشته از سرور فیلترِ کلاینت‌ساید انجام می‌دهند —
+     * بدونِ نیازِ سرور، چون endpointِ عمومی already کلِ کاتالوگ را برمی‌گرداند.
+     */
+    fun load(mine: Boolean, freeOnly: Boolean = false, instructorFilter: String? = null, levelFilter: String? = null) {
+        _state.update { it.copy(isLoading = true, mine = mine) }
+        viewModelScope.launch {
+            val result = if (mine) getMyCoursesUseCase() else getCoursesUseCase()
+            when (result) {
+                is AppResult.Success -> {
+                    var courses = result.data
+                    if (freeOnly) courses = courses.filter { it.price <= 0.0 }
+                    if (!instructorFilter.isNullOrBlank()) courses = courses.filter { it.instructor == instructorFilter }
+                    if (!levelFilter.isNullOrBlank()) courses = courses.filter { it.level == levelFilter }
+                    _state.update { it.copy(isLoading = false, courses = courses, error = null) }
+                }
+                is AppResult.Error -> _state.update { it.copy(isLoading = false, error = result.message) }
+                else -> {}
+            }
+        }
+    }
+}

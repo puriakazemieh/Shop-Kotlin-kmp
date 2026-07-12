@@ -29,6 +29,10 @@ class InteractionApiImpl(
         client.delete("api/reviews/$reviewId")
     }
 
+    override suspend fun markReviewHelpful(reviewId: Long): ReviewResponse = safeApiCallRaw {
+        client.post("api/reviews/$reviewId/helpful")
+    }
+
     override suspend fun getQuestions(productId: Long): List<QuestionResponse> = safeApiCallRaw {
         client.get("api/questions/product/$productId")
     }

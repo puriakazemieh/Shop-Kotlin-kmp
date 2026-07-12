@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -109,6 +111,7 @@ fun CheckoutScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp)
                         .padding(top = 16.dp, bottom = 24.dp)
@@ -219,6 +222,45 @@ fun CheckoutScreen(
                             SummaryRow("از کیف پول", stringResource(Resources.String.PriceFormat, walletUsed), colors.ok)
                             Spacer(Modifier.height(7.dp))
                             SummaryRow("باقی‌مانده از درگاه", stringResource(Resources.String.PriceFormat, remaining), colors.onSurface)
+                        }
+                    }
+
+                    Spacer(Modifier.height(22.dp))
+
+                    // ---- هدیه ----
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(colors.surface)
+                            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "این سفارش هدیه است",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = FontSize.REGULAR,
+                                color = colors.onSurface
+                            )
+                            Switch(
+                                checked = state.isGift,
+                                onCheckedChange = { viewModel.handleIntent(CheckoutIntent.ToggleGift(it)) }
+                            )
+                        }
+                        if (state.isGift) {
+                            Spacer(Modifier.height(12.dp))
+                            OutlinedTextField(
+                                value = state.giftMessage,
+                                onValueChange = { viewModel.handleIntent(CheckoutIntent.UpdateGiftMessage(it)) },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text("پیامِ هدیه (اختیاری)", fontSize = FontSize.EXTRA_SMALL) },
+                                minLines = 2
+                            )
                         }
                     }
 
