@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -57,7 +58,7 @@ fun ReferralScreen(onBackClick: () -> Unit) {
                 )
                 is AppResult.Success -> {
                     val info = result.data
-                    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                    Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable).padding(16.dp)) {
                         Text(
                             "با هر خریدِ موفقِ دوستی که با کدِ تو ثبت‌نام کند، درصدی از مبلغِ خریدش به کیفِ پولِ تو اضافه می‌شود.",
                             fontSize = FontSize.SMALL, color = colors.onSurfaceVariant

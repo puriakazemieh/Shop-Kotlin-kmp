@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -88,7 +89,7 @@ fun ProjectSubmissionScreen(
                 return@ContentWithMessageBar
             }
             val submission = state.submission
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable).padding(16.dp)) {
                 if (submission != null) {
                     Column(
                         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(Radius.md)).background(colors.surfaceVariant).padding(14.dp)

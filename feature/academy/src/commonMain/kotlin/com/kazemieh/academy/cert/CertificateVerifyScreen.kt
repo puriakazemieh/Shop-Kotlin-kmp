@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import org.koin.compose.viewmodel.koinViewModel
@@ -61,7 +62,7 @@ fun CertificateVerifyScreen(
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable).padding(padding).padding(16.dp)) {
             Text(
                 "شماره‌ی گواهی را وارد کن تا اصالت و مشخصاتِ آن بررسی شود.",
                 color = colors.onSurfaceVariant, fontSize = FontSize.SMALL

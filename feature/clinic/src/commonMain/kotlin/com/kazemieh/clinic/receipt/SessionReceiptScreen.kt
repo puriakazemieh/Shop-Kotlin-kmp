@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.domain.clinic.SessionReceipt
@@ -66,7 +67,7 @@ fun SessionReceiptScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Box(modifier = Modifier.fillMaxSize().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable).padding(padding)) {
             val receipt = state.receipt
             when {
                 state.isLoading && receipt == null -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)

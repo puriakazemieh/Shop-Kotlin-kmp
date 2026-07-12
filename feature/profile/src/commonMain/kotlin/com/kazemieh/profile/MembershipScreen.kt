@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -69,7 +70,7 @@ fun MembershipScreen(onBackClick: () -> Unit) {
                 )
                 is AppResult.Success -> {
                     val status = result.data
-                    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                    Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable).padding(16.dp)) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
