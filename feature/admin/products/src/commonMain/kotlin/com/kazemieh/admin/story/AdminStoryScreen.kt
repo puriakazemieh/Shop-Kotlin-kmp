@@ -226,6 +226,7 @@ fun CreateStorySheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 24.dp)
                 .verticalScroll(rememberScrollState())

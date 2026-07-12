@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import com.kazemieh.designsystem.component.CarmillaFilterChip
+import com.kazemieh.designsystem.responsiveMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,6 +87,7 @@ fun BulkVariantBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
                 .verticalScroll(rememberScrollState()),

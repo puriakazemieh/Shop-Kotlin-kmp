@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.domain.catalog.Category
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -29,6 +30,7 @@ fun CategoriesBottomSheet(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                 .padding(16.dp)
         ) {
             item {

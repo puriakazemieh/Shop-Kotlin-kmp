@@ -277,7 +277,7 @@ fun OrderDetailDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 TopAppBar(
