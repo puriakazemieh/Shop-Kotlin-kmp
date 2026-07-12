@@ -291,8 +291,7 @@ val PsychBrand = BrandConfig(
  * رجیستریِ برندها. انتخابِ برندِ فعال در زمانِ اجرا بر اساسِ شناسه (از فلِیور/آرگومان).
  */
 object BrandRegistry {
-    // برندِ فعالِ محصول: مرکزِ مشاوره «مهرجو» با پالتِ زرشکی/طلایی.
-    val default: BrandConfig = PsychBrand
+    val default: BrandConfig = CarmilaBrand
 
     private val all: List<BrandConfig> =
         listOf(CarmilaBrand, AtrisBrand, ChronosBrand, AcademyBrand, PsychBrand)
