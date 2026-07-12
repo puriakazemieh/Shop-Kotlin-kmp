@@ -60,8 +60,11 @@
   --bp-medium:   600px;
   --bp-expanded: 840px;
 
-  /* ---- readable content cap (responsiveMaxWidth) ---- */
-  --content-max: 1200px;
+  /* ---- content widths (mirror ContentWidth in WindowSize.kt) ---- */
+  --content-readable: 640px;   /* forms, product detail, settings, auth */
+  --content-medium:   840px;   /* single-column lists, cart, profile */
+  --content-wide:    1200px;   /* grids, dashboards, home */
+  --content-max:     1200px;   /* back-compat alias = wide */
 
   /* ---- typography family (Vazirmatn) ---- */
   --font-fa: "Vazirmatn", "Tahoma", "Segoe UI", system-ui, sans-serif;

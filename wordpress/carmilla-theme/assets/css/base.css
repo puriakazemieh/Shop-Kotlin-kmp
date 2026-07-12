@@ -44,13 +44,18 @@ p, .t-body { font-weight: 400; font-size: 15px; line-height: 28px; margin: 0 0 v
 .t-caption { font-weight: 500; font-size: 11px; line-height: 14px; letter-spacing: 1.5px; color: var(--ink-soft); }
 .t-muted   { color: var(--ink-soft); }
 
-/* ---- container: responsiveMaxWidth (cap + center on large screens) ---- */
+/* ---- container: responsiveMaxWidth (cap + center on large screens) ----
+   Three widths mirror ContentWidth (WindowSize.kt): readable 640 / medium 840 / wide 1200.
+   Default = wide (home/grids). Use modifiers for narrower, readable pages. */
 .container {
   width: 100%;
-  max-width: var(--content-max);
+  max-width: var(--content-wide);
   margin-inline: auto;
   padding-inline: var(--sp-lg);
 }
+.container--readable { max-width: var(--content-readable); }  /* product detail, auth, settings, forms */
+.container--medium   { max-width: var(--content-medium); }    /* cart, profile, single-column lists */
+.container--wide     { max-width: var(--content-wide); }      /* dashboards, product grids, home */
 @media (min-width: 600px)  { .container { padding-inline: var(--sp-xl); } }
 @media (min-width: 840px)  { .container { padding-inline: var(--sp-xxl); } }
 
