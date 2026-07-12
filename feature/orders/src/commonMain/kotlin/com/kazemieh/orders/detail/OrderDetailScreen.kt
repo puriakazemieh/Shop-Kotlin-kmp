@@ -10,11 +10,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.ui.draw.clip
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.responsiveMaxWidth
+import com.kazemieh.domain.order.OrderDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -50,6 +58,7 @@ fun OrderDetailScreen(
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    var showInvoice by remember { mutableStateOf(false) }
 
     LaunchedEffect(orderId) {
         viewModel.handleIntent(OrderDetailIntent.LoadOrderDetail(orderId))
@@ -308,9 +317,74 @@ fun OrderDetailScreen(
                                 enabled = !state.isReordering,
                                 secondary = true
                             )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            PrimaryButton(
+                                text = "دانلود فاکتور",
+                                onClick = { showInvoice = true },
+                                secondary = true
+                            )
+
+                            if (showInvoice) {
+                                InvoiceDialog(order = order, onDismiss = { showInvoice = false })
+                            }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * فاکتورِ چاپیِ سفارش که از داده‌ی موجودِ سفارش ساخته می‌شود. روی وب/دسکتاپ کاربر می‌تواند
+ * از print مرورگر خروجیِ PDF بگیرد؛ روی موبایل با اسکرین‌شات ذخیره کند.
+ */
+@Composable
+private fun InvoiceDialog(order: OrderDetail, onDismiss: () -> Unit) {
+    val colors = AppTheme.colors
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+            Column(
+                modifier = Modifier
+                    .responsiveMaxWidth(ContentWidth.readable)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(Radius.lg))
+                    .background(colors.surface)
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp)
+            ) {
+                Text("فاکتورِ فروش", fontFamily = AppFont(), fontWeight = FontWeight.ExtraBold, fontSize = FontSize.LARGE, color = colors.onSurface)
+                Spacer(Modifier.height(4.dp))
+                Text("شماره سفارش: TR-${order.id}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                Text("تاریخ ثبت: ${order.createdAt}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                order.address?.let { addr ->
+                    Spacer(Modifier.height(10.dp))
+                    Text("خریدار: ${addr.receiverName} — ${addr.receiverPhone}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface)
+                    Text("${addr.province}، ${addr.city} — ${addr.addressLine1}", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                }
+                Spacer(Modifier.height(14.dp))
+                HorizontalDivider(color = colors.line)
+                Spacer(Modifier.height(10.dp))
+                order.items.forEach { item ->
+                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("${item.title} ×${item.qty}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface, modifier = Modifier.weight(1f))
+                        Text(stringResource(Resources.String.PriceFormat, formatToman(item.unitPrice * item.qty)), fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface)
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                HorizontalDivider(color = colors.line)
+                Spacer(Modifier.height(10.dp))
+                OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, formatToman(order.subtotalPrice)))
+                Spacer(Modifier.height(4.dp))
+                OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, formatToman(order.shippingPrice)))
+                Spacer(Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("مبلغ کل", fontFamily = AppFont(), fontWeight = FontWeight.ExtraBold, fontSize = FontSize.REGULAR, color = colors.onSurface)
+                    Text(stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)), fontFamily = AppFont(), fontWeight = FontWeight.ExtraBold, fontSize = FontSize.REGULAR, color = colors.primary)
+                }
+                Spacer(Modifier.height(16.dp))
+                PrimaryButton(text = "بستن", onClick = onDismiss, secondary = true)
             }
         }
     }
