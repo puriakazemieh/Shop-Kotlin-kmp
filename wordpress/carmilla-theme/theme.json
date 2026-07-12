@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 2,
+  "settings": {
+    "appearanceTools": true,
+    "layout": { "contentSize": "1200px", "wideSize": "1400px" },
+    "color": {
+      "custom": true,
+      "defaultPalette": false,
+      "palette": [
+        { "slug": "accent",      "color": "#20305C", "name": "Accent" },
+        { "slug": "accent-2",    "color": "#34487E", "name": "Accent 2" },
+        { "slug": "accent-soft", "color": "#EAEDF6", "name": "Accent soft" },
+        { "slug": "gold",        "color": "#B08D57", "name": "Gold" },
+        { "slug": "bg",          "color": "#F6F5F1", "name": "Background" },
+        { "slug": "surface",     "color": "#FFFFFF", "name": "Surface" },
+        { "slug": "line",        "color": "#E7E4DD", "name": "Line" },
+        { "slug": "ink",         "color": "#192038", "name": "Ink" },
+        { "slug": "ink-soft",    "color": "#6B7184", "name": "Ink soft" },
+        { "slug": "sale",        "color": "#D8453B", "name": "Sale" },
+        { "slug": "star",        "color": "#E7A93B", "name": "Star" },
+        { "slug": "ok",          "color": "#1F9D6B", "name": "OK" }
+      ]
+    },
+    "typography": {
+      "customFontSize": true,
+      "fontFamilies": [
+        {
+          "fontFamily": "\"Vazirmatn\", Tahoma, system-ui, sans-serif",
+          "slug": "vazirmatn",
+          "name": "Vazirmatn"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "body",     "size": "15px", "name": "Body" },
+        { "slug": "title",    "size": "17px", "name": "Title" },
+        { "slug": "title-lg", "size": "24px", "name": "Title large" },
+        { "slug": "headline", "size": "28px", "name": "Headline" },
+        { "slug": "display",  "size": "34px", "name": "Display" }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "rem", "%", "vw"],
+      "spacingSizes": [
+        { "slug": "20", "size": "4px",  "name": "XS" },
+        { "slug": "30", "size": "8px",  "name": "SM" },
+        { "slug": "40", "size": "12px", "name": "MD" },
+        { "slug": "50", "size": "16px", "name": "LG" },
+        { "slug": "60", "size": "24px", "name": "XL" },
+        { "slug": "70", "size": "32px", "name": "XXL" }
+      ]
+    }
+  },
+  "styles": {
+    "color": { "background": "var(--bg)", "text": "var(--ink)" },
+    "typography": { "fontFamily": "var(--font-fa)", "fontSize": "15px", "lineHeight": "1.87" },
+    "elements": {
+      "link": { "color": { "text": "var(--accent)" } }
+    }
+  }
+}

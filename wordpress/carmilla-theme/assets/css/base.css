@@ -1,0 +1,156 @@
+/* =====================================================================================
+   Carmilla theme — base layer (RTL, type scale, layout primitives, components)
+   Type scale ported from Typography.kt. Grid/container mirror WindowSize.kt.
+   Depends on tokens.css.
+   ===================================================================================== */
+
+/* ---- Vazirmatn: drop woff2 files into assets/fonts/ (graceful fallback to Tahoma) ---- */
+@font-face {
+  font-family: "Vazirmatn";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../fonts/Vazirmatn[wght].woff2") format("woff2");
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  direction: rtl;
+  text-align: right;
+  font-family: var(--font-fa);
+  font-size: 15px;
+  line-height: 28px;              /* body-large */
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* ---- type scale (Typography.kt) ---- */
+.t-display { font-weight: 800; font-size: 34px; line-height: 42px; letter-spacing: -0.6px; margin: 0; }
+.t-headline{ font-weight: 800; font-size: 28px; line-height: 36px; letter-spacing: -0.4px; margin: 0; }
+h1, .t-title-lg { font-weight: 700; font-size: 24px; line-height: 32px; margin: 0 0 var(--sp-md); }
+h2, .t-title    { font-weight: 600; font-size: 17px; line-height: 24px; margin: 0 0 var(--sp-sm); }
+h3, .t-title-sm { font-weight: 600; font-size: 14px; line-height: 20px; margin: 0 0 var(--sp-sm); }
+p, .t-body { font-weight: 400; font-size: 15px; line-height: 28px; margin: 0 0 var(--sp-md); }
+.t-body-sm { font-weight: 400; font-size: 12px; line-height: 18px; }
+.t-caption { font-weight: 500; font-size: 11px; line-height: 14px; letter-spacing: 1.5px; color: var(--ink-soft); }
+.t-muted   { color: var(--ink-soft); }
+
+/* ---- container: responsiveMaxWidth (cap + center on large screens) ---- */
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--sp-lg);
+}
+@media (min-width: 600px)  { .container { padding-inline: var(--sp-xl); } }
+@media (min-width: 840px)  { .container { padding-inline: var(--sp-xxl); } }
+
+/* ---- adaptive product grid: 2 / 3 / 4 columns (adaptiveGridColumns) ---- */
+.grid-adaptive {
+  display: grid;
+  gap: var(--sp-lg);
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 600px) { .grid-adaptive { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 840px) { .grid-adaptive { grid-template-columns: repeat(4, 1fr); } }
+
+/* ---- app shell: bottom bar (mobile) <-> side rail (large) ---- */
+.app-shell { min-height: 100vh; }
+.side-rail { display: none; }
+@media (min-width: 840px) {
+  .app-shell { display: grid; grid-template-columns: 260px 1fr; }
+  .side-rail { display: block; border-inline-start: 1px solid var(--line); background: var(--surface); }
+  .bottom-bar { display: none; }
+}
+
+/* ---- surface / card ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--el-sm);
+  overflow: hidden;
+}
+.card--pad { padding: var(--sp-lg); }
+
+/* ---- PrimaryButton ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 12px 20px;
+  border-radius: var(--r-button);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: filter .15s ease, background .15s ease;
+}
+.btn--primary { background: var(--accent); color: var(--on-accent); }
+.btn--primary:hover { filter: brightness(1.06); text-decoration: none; }
+.btn--gold { background: var(--gold); color: var(--on-gold); }
+.btn--ghost { background: transparent; color: var(--accent); border-color: var(--line); }
+
+/* ---- CarmillaBadge ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--r-xs);
+  line-height: 1;
+}
+.badge--sale { background: color-mix(in srgb, var(--sale) 14%, transparent); color: var(--sale); }
+.badge--new  { background: var(--accent-soft); color: var(--accent); }
+.badge--stock{ background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
+.badge--rating { background: color-mix(in srgb, var(--star) 18%, transparent); color: #7a5b12; }
+
+/* ---- CarmillaFilterChip ---- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+/* ---- StoryRing ---- */
+.story-ring {
+  width: 68px; height: 68px;
+  border-radius: var(--r-full);
+  padding: 3px;
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+}
+.story-ring > img,
+.story-ring > .avatar {
+  width: 100%; height: 100%;
+  border-radius: var(--r-full);
+  border: 2px solid var(--surface);
+  background: var(--surface-2);
+  object-fit: cover;
+}
+
+/* ---- product card ---- */
+.product-card .thumb { aspect-ratio: 3 / 4; background: var(--surface-2); }
+.product-card .body { padding: var(--sp-md); }
+.price { font-weight: 700; color: var(--ink); }
+.price--old { color: var(--ink-soft); text-decoration: line-through; font-weight: 400; font-size: 12px; }

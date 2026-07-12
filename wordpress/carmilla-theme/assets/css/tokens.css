@@ -1,0 +1,120 @@
+/* =====================================================================================
+   Carmilla Design System — CSS token layer
+   Ported 1:1 from core/designSystem/{Colors,Shape,Dimens,Typography}.kt (Compose app).
+   Source of truth: DesignSystem-Carmilla.dc.html. Light default + dark override.
+   ===================================================================================== */
+
+:root {
+  /* ---- brand + surface (light) ---- */
+  --accent:           #20305C;
+  --accent-2:         #34487E;
+  --accent-soft:      #EAEDF6;
+  --gold:             #B08D57;
+  --gold-soft:        #F3ECE0;
+  --bg:               #F6F5F1;
+  --surface:          #FFFFFF;
+  --surface-2:        #F1EFE9;
+  --line:             #E7E4DD;
+  --outline-variant:  #D9D5CC;
+  --ink:              #192038;
+  --ink-soft:         #6B7184;
+
+  /* ---- semantic ---- */
+  --sale:             #D8453B;
+  --star:             #E7A93B;
+  --ok:               #1F9D6B;
+
+  /* ---- category accents ---- */
+  --cat-yellow: #F5B041;
+  --cat-blue:   #4EA8DE;
+  --cat-green:  #4895EF;
+  --cat-purple: #9B5DE5;
+  --cat-red:    #F25C54;
+
+  /* ---- on-colors ---- */
+  --on-accent: #FFFFFF;
+  --on-gold:   #5C4325;
+
+  /* ---- radius (dp -> px) ---- */
+  --r-xs:     8px;
+  --r-sm:     11px;
+  --r-button: 13px;
+  --r-md:     16px;
+  --r-lg:     22px;
+  --r-full:   999px;
+
+  /* ---- spacing (4pt grid) ---- */
+  --sp-xs:  4px;
+  --sp-sm:  8px;
+  --sp-md:  12px;
+  --sp-lg:  16px;
+  --sp-xl:  24px;
+  --sp-xxl: 32px;
+
+  /* ---- elevation ---- */
+  --el-sm: 0 2px 6px rgba(25, 32, 56, .06);
+  --el-md: 0 8px 24px rgba(25, 32, 56, .10);
+  --el-lg: 0 16px 40px rgba(25, 32, 56, .16);
+
+  /* ---- responsive breakpoints (mirror WindowSize.kt: 600 / 840) ---- */
+  --bp-medium:   600px;
+  --bp-expanded: 840px;
+
+  /* ---- readable content cap (responsiveMaxWidth) ---- */
+  --content-max: 1200px;
+
+  /* ---- typography family (Vazirmatn) ---- */
+  --font-fa: "Vazirmatn", "Tahoma", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Dark theme — via system preference … */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent:          #5E73AD;
+    --accent-2:        #7689BE;
+    --accent-soft:     #262C44;
+    --gold:            #C9A86A;
+    --gold-soft:       #3A2F1C;
+    --bg:              #13151D;
+    --surface:         #1B1E29;
+    --surface-2:       #242837;
+    --line:            #2E3242;
+    --outline-variant: #3A3F52;
+    --ink:             #ECEDF2;
+    --ink-soft:        #9AA0B2;
+    --sale:            #E0584E;
+    --star:            #E7A93B;
+    --ok:              #33B57F;
+    --on-accent:       #0F1320;
+    --on-gold:         #F3E6CF;
+    --el-sm: 0 2px 6px rgba(0, 0, 0, .35);
+    --el-md: 0 8px 24px rgba(0, 0, 0, .45);
+    --el-lg: 0 16px 40px rgba(0, 0, 0, .55);
+  }
+}
+
+/* … and via explicit toggle (data-theme wins over the media query).
+   Also matches nested [data-theme="dark"] containers so dark sections work. */
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  --accent:          #5E73AD;
+  --accent-2:        #7689BE;
+  --accent-soft:     #262C44;
+  --gold:            #C9A86A;
+  --gold-soft:       #3A2F1C;
+  --bg:              #13151D;
+  --surface:         #1B1E29;
+  --surface-2:       #242837;
+  --line:            #2E3242;
+  --outline-variant: #3A3F52;
+  --ink:             #ECEDF2;
+  --ink-soft:        #9AA0B2;
+  --sale:            #E0584E;
+  --star:            #E7A93B;
+  --ok:              #33B57F;
+  --on-accent:       #0F1320;
+  --on-gold:         #F3E6CF;
+  --el-sm: 0 2px 6px rgba(0, 0, 0, .35);
+  --el-md: 0 8px 24px rgba(0, 0, 0, .45);
+  --el-lg: 0 16px 40px rgba(0, 0, 0, .55);
+}

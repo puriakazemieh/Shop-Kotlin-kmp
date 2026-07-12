@@ -1,0 +1,102 @@
+<!doctype html>
+<!--
+  Dev-only design-system preview (not part of the WP theme runtime).
+  Renders the real tokens.css + base.css so the ported Carmilla palette,
+  type scale and components can be verified visually.
+-->
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carmilla — Design tokens preview</title>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <style>
+    .sec { padding: var(--sp-xl) 0; border-block-end: 1px solid var(--line); }
+    .row { display: flex; flex-wrap: wrap; gap: var(--sp-md); align-items: center; }
+    .sw { width: 96px; }
+    .sw .chip-color { height: 56px; border-radius: var(--r-sm); border: 1px solid var(--line); }
+    .panel { border-radius: var(--r-lg); padding: var(--sp-xl); background: var(--bg); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sec">
+      <p class="t-caption">CARMILLA DESIGN SYSTEM</p>
+      <h1 class="t-display">کالکشن پاییز و زمستان</h1>
+      <p class="t-body">این صفحه توکن‌های دیزاین را که یک‌به‌یک از <code>core/designSystem</code> پورت شده‌اند نمایش می‌دهد — رنگ، تایپوگرافی، شعاع، دکمه، بَج و کارت.</p>
+    </div>
+
+    <div class="sec">
+      <h2 class="t-title-lg">رنگ‌ها (Light)</h2>
+      <div class="row">
+        <div class="sw"><div class="chip-color" style="background:var(--accent)"></div><div class="t-body-sm">accent</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--accent-2)"></div><div class="t-body-sm">accent-2</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--accent-soft)"></div><div class="t-body-sm">accent-soft</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--gold)"></div><div class="t-body-sm">gold</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--surface-2)"></div><div class="t-body-sm">surface-2</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--sale)"></div><div class="t-body-sm">sale</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--star)"></div><div class="t-body-sm">star</div></div>
+        <div class="sw"><div class="chip-color" style="background:var(--ok)"></div><div class="t-body-sm">ok</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2 class="t-title-lg">تایپوگرافی</h2>
+      <p class="t-display">Display · ۳۴/۸۰۰</p>
+      <p class="t-headline">Headline · ۲۸/۸۰۰</p>
+      <h1 class="t-title-lg">Title large · ۲۴/۷۰۰</h1>
+      <h2 class="t-title">Title · ۱۷/۶۰۰</h2>
+      <p class="t-body">Body · ۱۵/۴۰۰ با ارتفاع خط بلند برای خوانایی فارسی؛ نمونه‌ی متن یک پاراگراف کامل.</p>
+      <p class="t-caption">LABEL SMALL · ۱۱/۵۰۰ · LETTER-SPACING</p>
+    </div>
+
+    <div class="sec">
+      <h2 class="t-title-lg">دکمه‌ها و چیپ‌ها</h2>
+      <div class="row">
+        <button class="btn btn--primary">افزودن به سبد</button>
+        <button class="btn btn--gold">باشگاه مشتریان</button>
+        <button class="btn btn--ghost">مشاهده‌ی بیشتر</button>
+        <span class="chip" aria-pressed="true">پرفروش‌ها</span>
+        <span class="chip">جدیدترین</span>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2 class="t-title-lg">بَج‌ها و استوری</h2>
+      <div class="row">
+        <span class="badge badge--sale">٪۲۵ تخفیف</span>
+        <span class="badge badge--new">جدید</span>
+        <span class="badge badge--stock">موجود</span>
+        <span class="badge badge--rating">★ ۴٫۸</span>
+        <span class="story-ring"><span class="avatar"></span></span>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2 class="t-title-lg">گرید محصول (۲/۳/۴ ستون تطبیقی)</h2>
+      <div class="grid-adaptive">
+        <article class="card product-card"><div class="thumb"></div><div class="body"><h3 class="t-title-sm">مانتو کتان</h3><div class="price">۱٬۲۸۰٬۰۰۰ <span class="price--old">۱٬۶۰۰٬۰۰۰</span></div></div></article>
+        <article class="card product-card"><div class="thumb"></div><div class="body"><h3 class="t-title-sm">شال نخی</h3><div class="price">۳۲۰٬۰۰۰</div></div></article>
+        <article class="card product-card"><div class="thumb"></div><div class="body"><h3 class="t-title-sm">کیف چرم</h3><div class="price">۲٬۱۰۰٬۰۰۰</div></div></article>
+        <article class="card product-card"><div class="thumb"></div><div class="body"><h3 class="t-title-sm">کفش تابستانی</h3><div class="price">۸۹۰٬۰۰۰</div></div></article>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2 class="t-title-lg">حالت تاریک (data-theme=&quot;dark&quot;)</h2>
+      <div class="panel" data-theme="dark">
+        <p class="t-caption">DARK</p>
+        <h2 class="t-headline" style="color:var(--ink)">شب‌های کارمیلا</h2>
+        <p class="t-body" style="color:var(--ink)">همان توکن‌ها در تم تاریک.</p>
+        <div class="row">
+          <button class="btn btn--primary">دکمه</button>
+          <span class="badge badge--sale">حراج</span>
+          <span class="badge badge--stock">موجود</span>
+          <article class="card product-card" style="width:180px"><div class="thumb"></div><div class="body"><h3 class="t-title-sm" style="color:var(--ink)">محصول</h3><div class="price" style="color:var(--ink)">۴۵۰٬۰۰۰</div></div></article>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
