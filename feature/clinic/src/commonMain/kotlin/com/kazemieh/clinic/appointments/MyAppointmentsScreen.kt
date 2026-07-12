@@ -52,7 +52,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MyAppointmentsScreen(
     navigateBack: () -> Unit,
     navigateToCatalog: () -> Unit,
-    navigateToReceipt: (Long) -> Unit = {}
+    navigateToReceipt: (Long) -> Unit = {},
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<MyAppointmentsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -69,26 +70,9 @@ fun MyAppointmentsScreen(
         }
     }
 
-    Scaffold(
-        containerColor = colors.background,
-        topBar = {
-            TopAppBar(
-                title = { Text("نوبت‌های من", fontSize = FontSize.MEDIUM, color = colors.onSurface) },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colors.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colors.surface,
-                    titleContentColor = colors.onSurface,
-                    navigationIconContentColor = colors.onSurface
-                )
-            )
-        }
-    ) { padding ->
+    val body: @Composable (Modifier) -> Unit = { bodyModifier ->
         ContentWithMessageBar(
-            modifier = Modifier.fillMaxSize().padding(padding),
+            modifier = bodyModifier,
             messageBarState = messageBarState
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -134,6 +118,32 @@ fun MyAppointmentsScreen(
                 }
             }
         }
+    }
+
+    if (embedded) {
+        body(Modifier.fillMaxWidth().height(560.dp))
+        return
+    }
+
+    Scaffold(
+        containerColor = colors.background,
+        topBar = {
+            TopAppBar(
+                title = { Text("نوبت‌های من", fontSize = FontSize.MEDIUM, color = colors.onSurface) },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colors.onSurface)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.surface,
+                    titleContentColor = colors.onSurface,
+                    navigationIconContentColor = colors.onSurface
+                )
+            )
+        }
+    ) { padding ->
+        body(Modifier.fillMaxSize().padding(padding))
     }
 }
 

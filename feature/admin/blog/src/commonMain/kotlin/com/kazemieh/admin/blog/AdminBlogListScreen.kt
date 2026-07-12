@@ -46,6 +46,11 @@ fun AdminBlogListScreen(
     var selectedTab by remember { mutableStateOf(0) }
     val messageBarState = rememberMessageBarState()
 
+    // با بازگشت از ویرایشگرِ مقاله، فهرست را تازه‌سازی می‌کنیم تا مقاله‌ی تازه‌ساخته‌شده دیده شود
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(AdminBlogListIntent.LoadBlogs)
+    }
+
     // دیالوگ‌های محلی: ساخت/ویرایش دسته‌بندی و تأییدِ حذف
     var showCategoryDialog by remember { mutableStateOf(false) }
     var categoryToEdit by remember { mutableStateOf<BlogCategory?>(null) }
@@ -188,36 +193,59 @@ private fun BlogCategoryDialog(
     onDismiss: () -> Unit,
     onConfirm: (name: String, description: String?) -> Unit
 ) {
+    val colors = AppTheme.colors
     var name by remember { mutableStateOf(category?.name ?: "") }
     var description by remember { mutableStateOf(category?.description ?: "") }
-    AlertDialog(
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        title = { Text(if (category == null) "دسته‌بندی جدید" else "ویرایش دسته‌بندی", fontFamily = AppFont()) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("نام دسته‌بندی", fontFamily = AppFont()) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("توضیحات (اختیاری)", fontFamily = AppFont()) },
-                    modifier = Modifier.fillMaxWidth()
-                )
+        sheetState = sheetState,
+        containerColor = colors.surface
+    ) {
+        Column(
+            modifier = Modifier
+                .responsiveMaxWidth()
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            Text(
+                text = if (category == null) "دسته‌بندی جدید" else "ویرایش دسته‌بندی",
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM,
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.onSurface
+            )
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("نام دسته‌بندی", fontFamily = AppFont()) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("توضیحات (اختیاری)", fontFamily = AppFont()) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                TextButton(
+                    onClick = { onConfirm(name.trim(), description.trim().takeIf { it.isNotBlank() }) },
+                    enabled = name.trim().length >= 2,
+                    modifier = Modifier.weight(1f)
+                ) { Text("ذخیره", fontWeight = FontWeight.Bold) }
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.weight(1f)
+                ) { Text("انصراف") }
             }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { onConfirm(name.trim(), description.trim().takeIf { it.isNotBlank() }) },
-                enabled = name.trim().length >= 2
-            ) { Text("ذخیره", fontWeight = FontWeight.Bold) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } }
-    )
+        }
+    }
 }
 
 @Composable

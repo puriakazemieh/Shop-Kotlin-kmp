@@ -56,13 +56,27 @@ fun CourseListScreen(
     freeOnly: Boolean = false,
     instructorFilter: String? = null,
     levelFilter: String? = null,
-    navigateToInstructor: ((String) -> Unit)? = null
+    navigateToInstructor: ((String) -> Unit)? = null,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<CourseListViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
 
     LaunchedEffect(mine, freeOnly, instructorFilter, levelFilter) { viewModel.load(mine, freeOnly, instructorFilter, levelFilter) }
+
+    if (embedded) {
+        CourseListBody(
+            state = state,
+            mine = mine,
+            navigateToCourse = navigateToCourse,
+            navigateToCatalog = navigateToCatalog,
+            navigateToInstructor = navigateToInstructor,
+            colors = colors,
+            modifier = Modifier.fillMaxWidth().height(560.dp)
+        )
+        return
+    }
 
     Scaffold(
         containerColor = colors.background,
@@ -82,46 +96,67 @@ fun CourseListScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            when {
-                state.isLoading -> CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center), color = colors.primary
+        CourseListBody(
+            state = state,
+            mine = mine,
+            navigateToCourse = navigateToCourse,
+            navigateToCatalog = navigateToCatalog,
+            navigateToInstructor = navigateToInstructor,
+            colors = colors,
+            modifier = Modifier.fillMaxSize().padding(padding)
+        )
+    }
+}
+
+@Composable
+private fun CourseListBody(
+    state: CourseListState,
+    mine: Boolean,
+    navigateToCourse: (String) -> Unit,
+    navigateToCatalog: (() -> Unit)?,
+    navigateToInstructor: ((String) -> Unit)?,
+    colors: com.kazemieh.designsystem.AppColors,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        when {
+            state.isLoading -> CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center), color = colors.primary
+            )
+            state.courses.isEmpty() -> Column(
+                modifier = Modifier.align(Alignment.Center).padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = if (mine) "هنوز در دوره‌ای ثبت‌نام نکرده‌اید." else "دوره‌ای موجود نیست.",
+                    color = colors.onSurfaceVariant
                 )
-                state.courses.isEmpty() -> Column(
-                    modifier = Modifier.align(Alignment.Center).padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                if (mine && navigateToCatalog != null) {
+                    Spacer(Modifier.height(16.dp))
                     Text(
-                        text = if (mine) "هنوز در دوره‌ای ثبت‌نام نکرده‌اید." else "دوره‌ای موجود نیست.",
-                        color = colors.onSurfaceVariant
+                        text = "مشاهده‌ی دوره‌ها",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(Radius.button))
+                            .background(colors.primary)
+                            .clickable { navigateToCatalog() }
+                            .padding(horizontal = 20.dp, vertical = 12.dp),
+                        color = colors.onPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = FontSize.REGULAR
                     )
-                    if (mine && navigateToCatalog != null) {
-                        Spacer(Modifier.height(16.dp))
-                        Text(
-                            text = "مشاهده‌ی دوره‌ها",
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(Radius.button))
-                                .background(colors.primary)
-                                .clickable { navigateToCatalog() }
-                                .padding(horizontal = 20.dp, vertical = 12.dp),
-                            color = colors.onPrimary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = FontSize.REGULAR
-                        )
-                    }
                 }
-                else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
-                ) {
-                    items(state.courses) { course ->
-                        CourseRow(
-                            course = course,
-                            onClick = { navigateToCourse(course.slug) },
-                            onInstructorClick = navigateToInstructor
-                        )
-                    }
+            }
+            else -> LazyColumn(
+                modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
+            ) {
+                items(state.courses) { course ->
+                    CourseRow(
+                        course = course,
+                        onClick = { navigateToCourse(course.slug) },
+                        onInstructorClick = navigateToInstructor
+                    )
                 }
             }
         }

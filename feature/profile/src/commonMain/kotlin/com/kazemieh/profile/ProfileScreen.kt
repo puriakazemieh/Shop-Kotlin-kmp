@@ -57,6 +57,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalUriHandler
 import com.kazemieh.catalog.MainProductCard
+import com.kazemieh.academy.list.CourseListScreen
+import com.kazemieh.psychtest.list.PsychTestListScreen
+import com.kazemieh.clinic.appointments.MyAppointmentsScreen
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
@@ -85,6 +88,11 @@ fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToDetail: (String) -> Unit = {},
     navigateToOrderDetail: (Long) -> Unit = {},
+    navigateToCourse: (String) -> Unit = {},
+    navigateToCourseCatalog: () -> Unit = {},
+    navigateToTakeTest: (Long) -> Unit = {},
+    navigateToTherapistCatalog: () -> Unit = {},
+    navigateToSessionReceipt: (Long) -> Unit = {},
     onSignedOut: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
@@ -296,7 +304,7 @@ fun ProfileScreen(
                                 }
 
                                 // ---- علاقه‌مندی‌ها (شبکه‌ی درجا) ----
-                                else -> {
+                                4 -> {
                                     if (state.favoritesLoading) {
                                         LoadingCard(modifier = Modifier.fillMaxWidth().height(120.dp))
                                     } else if (state.favorites.isEmpty()) {
@@ -321,6 +329,32 @@ fun ProfileScreen(
                                         }
                                     }
                                 }
+
+                                // ---- دوره‌های من (درجا) ----
+                                5 -> CourseListScreen(
+                                    mine = true,
+                                    title = "دوره‌های من",
+                                    navigateBack = {},
+                                    navigateToCourse = navigateToCourse,
+                                    navigateToCatalog = navigateToCourseCatalog,
+                                    embedded = true
+                                )
+
+                                // ---- آزمون‌های من (درجا) ----
+                                6 -> PsychTestListScreen(
+                                    navigateBack = {},
+                                    navigateToProduct = navigateToDetail,
+                                    navigateToTakeTest = navigateToTakeTest,
+                                    embedded = true
+                                )
+
+                                // ---- مشاوره‌های من (درجا) ----
+                                else -> MyAppointmentsScreen(
+                                    navigateBack = {},
+                                    navigateToCatalog = navigateToTherapistCatalog,
+                                    navigateToReceipt = navigateToSessionReceipt,
+                                    embedded = true
+                                )
                             }
                         }
                     }
@@ -627,7 +661,10 @@ private fun ProfileHeader(name: String, phone: String?) {
 /** ردیفِ تب‌های پروفایل (مثل پنل ادمین): اطلاعات شخصی / آدرس‌ها / کیف پول / … */
 @Composable
 private fun ProfileTabs(selected: Int, onSelect: (Int) -> Unit) {
-    val tabs = listOf("اطلاعات شخصی", "آدرس‌ها", "کیف پول", "سفارش‌ها", "علاقه‌مندی‌ها")
+    val tabs = listOf(
+        "اطلاعات شخصی", "آدرس‌ها", "کیف پول", "سفارش‌ها", "علاقه‌مندی‌ها",
+        "دوره‌های من", "آزمون‌های من", "مشاوره‌های من"
+    )
     Row(
         modifier = Modifier
             .fillMaxWidth()

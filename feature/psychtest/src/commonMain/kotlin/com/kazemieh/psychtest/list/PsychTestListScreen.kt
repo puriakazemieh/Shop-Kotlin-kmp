@@ -50,14 +50,24 @@ import org.koin.compose.viewmodel.koinViewModel
 fun PsychTestListScreen(
     navigateBack: () -> Unit,
     navigateToProduct: (String) -> Unit,
-    navigateToTakeTest: (Long) -> Unit
+    navigateToTakeTest: (Long) -> Unit,
+    embedded: Boolean = false
 ) {
     val viewModel = koinViewModel<PsychTestListViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
-    var tab by remember { mutableStateOf(0) } // 0 = فروشگاه، 1 = تست‌های من
+    var tab by remember { mutableStateOf(if (embedded) 1 else 0) } // 0 = فروشگاه، 1 = تست‌های من
 
     LaunchedEffect(Unit) { viewModel.load() }
+
+    if (embedded) {
+        PsychTestListBody(
+            state = state, tab = tab, onTabChange = { tab = it },
+            navigateToProduct = navigateToProduct, navigateToTakeTest = navigateToTakeTest,
+            colors = colors, modifier = Modifier.fillMaxWidth().height(560.dp)
+        )
+        return
+    }
 
     Scaffold(
         containerColor = colors.background,
@@ -77,41 +87,58 @@ fun PsychTestListScreen(
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                TabChip("فروشگاهِ تست", tab == 0) { tab = 0 }
-                TabChip("تست‌های من", tab == 1) { tab = 1 }
-            }
-            Box(modifier = Modifier.fillMaxSize()) {
-                when {
-                    state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
-                    tab == 0 -> LazyColumn(
-                        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(state.tests.size) { idx ->
-                            ShopTestCard(state.tests[idx], onBuy = { slug -> navigateToProduct(slug) })
+        PsychTestListBody(
+            state = state, tab = tab, onTabChange = { tab = it },
+            navigateToProduct = navigateToProduct, navigateToTakeTest = navigateToTakeTest,
+            colors = colors, modifier = Modifier.fillMaxSize().padding(padding)
+        )
+    }
+}
+
+@Composable
+private fun PsychTestListBody(
+    state: PsychTestListState,
+    tab: Int,
+    onTabChange: (Int) -> Unit,
+    navigateToProduct: (String) -> Unit,
+    navigateToTakeTest: (Long) -> Unit,
+    colors: com.kazemieh.designsystem.AppColors,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TabChip("فروشگاهِ تست", tab == 0) { onTabChange(0) }
+            TabChip("تست‌های من", tab == 1) { onTabChange(1) }
+        }
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
+                tab == 0 -> LazyColumn(
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(state.tests.size) { idx ->
+                        ShopTestCard(state.tests[idx], onBuy = { slug -> navigateToProduct(slug) })
+                    }
+                }
+                else -> LazyColumn(
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (state.myTests.isEmpty()) {
+                        item {
+                            Text(
+                                "هنوز تستی نخریده‌اید. از فروشگاهِ تست خرید کنید.",
+                                color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR,
+                                modifier = Modifier.padding(top = 24.dp)
+                            )
                         }
                     }
-                    else -> LazyColumn(
-                        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        if (state.myTests.isEmpty()) {
-                            item {
-                                Text(
-                                    "هنوز تستی نخریده‌اید. از فروشگاهِ تست خرید کنید.",
-                                    color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR,
-                                    modifier = Modifier.padding(top = 24.dp)
-                                )
-                            }
-                        }
-                        items(state.myTests.size) { idx ->
-                            MyTestCard(state.myTests[idx], onTake = { navigateToTakeTest(it) })
-                        }
+                    items(state.myTests.size) { idx ->
+                        MyTestCard(state.myTests[idx], onTake = { navigateToTakeTest(it) })
                     }
                 }
             }

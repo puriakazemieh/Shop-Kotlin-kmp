@@ -243,6 +243,21 @@ fun AppNavHost(
                 navigateToOrderDetail = { id ->
                     navController.navigate(Screen.OrderDetail(id))
                 },
+                navigateToCourse = { slug ->
+                    navController.navigate(Screen.CourseDetail(slug))
+                },
+                navigateToCourseCatalog = {
+                    navController.navigate(Screen.CourseCatalog)
+                },
+                navigateToTakeTest = { userTestId ->
+                    navController.navigate(Screen.TakeTest(userTestId))
+                },
+                navigateToTherapistCatalog = {
+                    navController.navigate(Screen.TherapistCatalog)
+                },
+                navigateToSessionReceipt = { appointmentId ->
+                    navController.navigate(Screen.SessionReceipt(appointmentId))
+                },
                 onSignedOut = {
                     navController.navigate(Screen.HomeGraph()) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }
