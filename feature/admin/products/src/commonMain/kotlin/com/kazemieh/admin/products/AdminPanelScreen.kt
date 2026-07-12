@@ -263,9 +263,15 @@ private fun AdminDashboard(stats: AdminStats) {
     val colors = AppTheme.colors
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            item { StatCard("سفارش‌های امروز", stats.newOrdersToday.toString(), "عدد", trend = stats.ordersTrendPercent) }
+            item { StatCard("فروش امروز", stringResource(Resources.String.PriceFormat, formatToman(stats.salesToday)), "تومان", trend = stats.salesTrendPercent) }
+            item {
+                StatCard(
+                    "کالای موجود", stats.totalProducts.toString(), "عدد",
+                    highlight = if (stats.lowStockCount > 0) "${stats.lowStockCount} کم‌موجود" else null
+                )
+            }
             item { StatCard("درآمد کل", stringResource(Resources.String.PriceFormat, formatToman(stats.totalRevenue)), "تومان") }
-            item { StatCard("سفارش‌ها", stats.totalOrders.toString(), "عدد") }
-            item { StatCard("محصولات", stats.totalProducts.toString(), "عدد") }
             item { StatCard("مشتریان", stats.totalCustomers.toString(), "نفر") }
         }
         Spacer(Modifier.height(16.dp))
@@ -321,7 +327,7 @@ private fun AdminDashboard(stats: AdminStats) {
 }
 
 @Composable
-private fun StatCard(label: String, value: String, sub: String) {
+private fun StatCard(label: String, value: String, sub: String, trend: Int? = null, highlight: String? = null) {
     val colors = AppTheme.colors
     Column(
         modifier = Modifier
@@ -331,14 +337,42 @@ private fun StatCard(label: String, value: String, sub: String) {
             .border(1.dp, colors.line, RoundedCornerShape(18.dp))
             .padding(18.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(colors.accentSoft),
-            contentAlignment = androidx.compose.ui.Alignment.Center
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
         ) {
-            Text(value.take(1), color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.accentSoft),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                Text(value.take(1), color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+            }
+            // نشانِ روند (سبز/قرمز) یا برچسبِ کم‌موجودی
+            if (trend != null) {
+                val up = trend >= 0
+                Text(
+                    text = (if (up) "+" else "") + "$trend٪",
+                    color = if (up) colors.ok else colors.sale,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.EXTRA_SMALL
+                )
+            } else if (highlight != null) {
+                Text(
+                    text = highlight,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(colors.gold.copy(alpha = 0.15f))
+                        .padding(horizontal = 8.dp, vertical = 3.dp),
+                    color = colors.gold,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    maxLines = 1
+                )
+            }
         }
         Spacer(Modifier.height(14.dp))
         Text(value, fontSize = FontSize.MEDIUM, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, maxLines = 1)

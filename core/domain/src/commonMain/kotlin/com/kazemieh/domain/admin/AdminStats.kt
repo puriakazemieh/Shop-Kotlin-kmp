@@ -17,5 +17,10 @@ data class AdminStats(
     val totalProducts: Long,
     val totalCustomers: Long,
     val weeklySales: List<DailySales>,
-    val verticalCounts: VerticalCounts = VerticalCounts()
+    val verticalCounts: VerticalCounts = VerticalCounts(),
+    val newOrdersToday: Long = 0,
+    val ordersTrendPercent: Int = 0,
+    val salesToday: Double = 0.0,
+    val salesTrendPercent: Int = 0,
+    val lowStockCount: Long = 0
 )

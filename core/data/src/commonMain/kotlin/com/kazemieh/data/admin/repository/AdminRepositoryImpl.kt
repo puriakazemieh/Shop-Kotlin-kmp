@@ -250,7 +250,12 @@ class AdminRepositoryImpl(
                     courses = dto.verticalCounts.courses,
                     therapists = dto.verticalCounts.therapists,
                     psychTests = dto.verticalCounts.psychTests
-                )
+                ),
+                newOrdersToday = dto.newOrdersToday,
+                ordersTrendPercent = dto.ordersTrendPercent,
+                salesToday = dto.salesToday,
+                salesTrendPercent = dto.salesTrendPercent,
+                lowStockCount = dto.lowStockCount
             )
         }
 }
