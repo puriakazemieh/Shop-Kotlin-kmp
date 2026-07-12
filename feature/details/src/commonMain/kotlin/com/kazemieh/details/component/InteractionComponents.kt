@@ -457,3 +457,97 @@ private fun InlineComposer(
         }
     }
 }
+
+/**
+ * دیالوگِ ثبتِ نظرِ جدید (برای زمانی که ریپلای نیست و از دکمه‌ی اصلی باز می‌شود).
+ */
+@Composable
+fun AddReviewDialog(
+    onDismiss: () -> Unit,
+    onSubmit: (rating: Int, comment: String, images: List<String>) -> Unit
+) {
+    val colors = AppTheme.colors
+    var rating by remember { mutableStateOf(5) }
+    var comment by remember { mutableStateOf("") }
+
+    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .clip(RoundedCornerShape(Radius.md))
+                .background(colors.surface)
+                .padding(20.dp)
+        ) {
+            Text(
+                "ثبت نظر جدید",
+                fontFamily = AppFont(),
+                fontSize = FontSize.MEDIUM,
+                fontWeight = FontWeight.Bold,
+                color = colors.onSurface
+            )
+            Spacer(Modifier.height(16.dp))
+            
+            Text("امتیاز شما", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+            Spacer(Modifier.height(8.dp))
+            StarRowClickable(rating = rating, onRatingChange = { rating = it })
+            
+            Spacer(Modifier.height(16.dp))
+            OutlinedTextField(
+                value = comment,
+                onValueChange = { comment = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("تجربه خود را بنویسید…", fontSize = FontSize.SMALL) },
+                minLines = 3,
+                shape = RoundedCornerShape(Radius.sm),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = colors.primary,
+                    unfocusedBorderColor = colors.line
+                )
+            )
+            
+            Spacer(Modifier.height(24.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    "انصراف",
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .border(1.dp, colors.line, RoundedCornerShape(Radius.button))
+                        .clickable { onDismiss() }
+                        .padding(vertical = 12.dp),
+                    textAlign = TextAlign.Center,
+                    fontSize = FontSize.SMALL,
+                    color = colors.onSurfaceVariant
+                )
+                Text(
+                    "ثبت نظر",
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(if (comment.isNotBlank()) colors.primary else colors.line)
+                        .clickable(enabled = comment.isNotBlank()) { onSubmit(rating, comment, emptyList()); onDismiss() }
+                        .padding(vertical = 12.dp),
+                    textAlign = TextAlign.Center,
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onPrimary
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StarRowClickable(rating: Int, onRatingChange: (Int) -> Unit) {
+    val colors = AppTheme.colors
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        repeat(5) { i ->
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = if (i < rating) colors.star else colors.line,
+                modifier = Modifier.size(28.dp).clickable { onRatingChange(i + 1) }
+            )
+        }
+    }
+}

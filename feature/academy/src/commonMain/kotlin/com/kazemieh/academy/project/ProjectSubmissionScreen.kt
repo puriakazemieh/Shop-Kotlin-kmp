@@ -112,7 +112,7 @@ fun ProjectSubmissionScreen(
                         if (!submission.mentorFeedback.isNullOrBlank()) {
                             Spacer(Modifier.height(8.dp))
                             Text("بازخوردِ مدرس:", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL)
-                            Text(submission.mentorFeedback, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                            Text(submission.mentorFeedback!!, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
                         }
                     }
                     Spacer(Modifier.height(16.dp))

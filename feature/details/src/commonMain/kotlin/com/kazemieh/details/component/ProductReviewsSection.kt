@@ -31,8 +31,9 @@ import com.kazemieh.designsystem.Radius
 import com.kazemieh.domain.catalog.CreateReviewRequest
 import com.kazemieh.domain.catalog.GetReviewsUseCase
 import com.kazemieh.domain.catalog.PostReviewUseCase
+import com.kazemieh.domain.catalog.UpdateReviewUseCase
+import com.kazemieh.domain.catalog.DeleteReviewUseCase
 import com.kazemieh.domain.catalog.Review
-import com.kazemieh.domain.catalog.ToggleReviewHelpfulUseCase
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,7 +52,8 @@ fun ProductReviewsSection(
     val colors = AppTheme.colors
     val getReviewsUseCase = koinInject<GetReviewsUseCase>()
     val postReviewUseCase = koinInject<PostReviewUseCase>()
-    val toggleHelpfulUseCase = koinInject<ToggleReviewHelpfulUseCase>()
+    val updateReviewUseCase = koinInject<UpdateReviewUseCase>()
+    val deleteReviewUseCase = koinInject<DeleteReviewUseCase>()
     val scope = rememberCoroutineScope()
 
     var isLoading by remember(productId) { mutableStateOf(true) }
@@ -92,14 +94,27 @@ fun ProductReviewsSection(
             else -> reviews.forEach { review ->
                 ReviewItem(
                     review = review,
-                    onReplyClick = {},
-                    onEditClick = {},
-                    onDeleteClick = {},
-                    onHelpfulClick = { reviewId ->
+                    currentUserId = null, // TODO: Get from auth state
+                    onReplySubmit = { parentId, txt ->
                         scope.launch {
-                            when (val result = toggleHelpfulUseCase(reviewId)) {
+                            when (val result = postReviewUseCase(CreateReviewRequest(productId = productId, rating = null, comment = txt, parentId = parentId))) {
+                                is AppResult.Success -> reviews = reviews.map { if (it.id == parentId) it.copy(replies = it.replies + result.data) else it }
+                                else -> {}
+                            }
+                        }
+                    },
+                    onEditSubmit = { reviewId, rating, txt ->
+                        scope.launch {
+                            when (val result = updateReviewUseCase(reviewId, rating, txt)) {
                                 is AppResult.Success -> reviews = reviews.map { if (it.id == reviewId) result.data else it }
                                 else -> {}
+                            }
+                        }
+                    },
+                    onDelete = { reviewId ->
+                        scope.launch {
+                            if (deleteReviewUseCase(reviewId) is AppResult.Success) {
+                                reviews = reviews.filter { it.id != reviewId }
                             }
                         }
                     }
@@ -111,9 +126,9 @@ fun ProductReviewsSection(
     if (showAddDialog) {
         AddReviewDialog(
             onDismiss = { showAddDialog = false },
-            onSubmit = { rating, comment, images ->
+            onSubmit = { rating, comment, _ ->
                 scope.launch {
-                    when (val result = postReviewUseCase(CreateReviewRequest(productId = productId, rating = rating, comment = comment, images = images))) {
+                    when (val result = postReviewUseCase(CreateReviewRequest(productId = productId, rating = rating, comment = comment))) {
                         is AppResult.Success -> {
                             reviews = listOf(result.data) + reviews
                             showAddDialog = false

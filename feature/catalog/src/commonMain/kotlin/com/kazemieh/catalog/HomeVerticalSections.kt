@@ -144,10 +144,11 @@ private fun TherapistHomeCard(therapist: TherapistSummary, onClick: () -> Unit) 
             modifier = Modifier.size(56.dp).clip(CircleShape).background(colors.accentSoft),
             contentAlignment = Alignment.Center
         ) {
-            if (!therapist.photoUrl.isNullOrBlank()) {
+            val photoUrl = therapist.photoUrl
+            if (!photoUrl.isNullOrBlank()) {
                 Image(
                     modifier = Modifier.size(56.dp).clip(CircleShape),
-                    painter = rememberImagePainter(therapist.photoUrl),
+                    painter = rememberImagePainter(photoUrl),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -169,10 +170,11 @@ private fun TherapistHomeCard(therapist: TherapistSummary, onClick: () -> Unit) 
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        if (!therapist.specialty.isNullOrBlank()) {
+        val specialty = therapist.specialty
+        if (!specialty.isNullOrBlank()) {
             Spacer(Modifier.height(2.dp))
             Text(
-                therapist.specialty,
+                specialty,
                 fontSize = FontSize.EXTRA_SMALL,
                 color = colors.onSurfaceVariant,
                 maxLines = 1,

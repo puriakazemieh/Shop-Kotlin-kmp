@@ -190,9 +190,10 @@ private fun MoodHistoryRow(entry: MoodCheckIn) {
                     .clip(RoundedCornerShape(50))
                     .background(colors.primary)
             )
-            if (!entry.note.isNullOrBlank()) {
+            val note = entry.note
+            if (!note.isNullOrBlank()) {
                 Spacer(Modifier.height(4.dp))
-                Text(entry.note, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                Text(note, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
             }
         }
         Text(entry.createdAt?.take(10).orEmpty(), color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)

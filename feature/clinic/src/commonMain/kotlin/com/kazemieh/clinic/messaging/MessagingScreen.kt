@@ -187,10 +187,11 @@ private fun MessageBubble(message: ClinicMessage) {
                 color = if (isPatient) colors.onPrimary else colors.onSurface,
                 fontSize = FontSize.SMALL
             )
-            if (!message.createdAt.isNullOrBlank()) {
+            val createdAt = message.createdAt
+            if (!createdAt.isNullOrBlank()) {
                 Spacer(Modifier.height(3.dp))
                 Text(
-                    message.createdAt.take(16).replace("T", " "),
+                    createdAt.take(16).replace("T", " "),
                     color = if (isPatient) colors.onPrimary.copy(alpha = 0.7f) else colors.onSurfaceVariant,
                     fontSize = FontSize.EXTRA_SMALL,
                     fontWeight = FontWeight.Normal

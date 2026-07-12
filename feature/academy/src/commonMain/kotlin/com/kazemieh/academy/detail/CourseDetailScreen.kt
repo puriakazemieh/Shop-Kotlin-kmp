@@ -123,9 +123,10 @@ fun CourseDetailScreen(
                             Spacer(Modifier.height(6.dp))
                             Text("مدرس: ${course.instructor}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                         }
-                        if (!course.cohortStartDate.isNullOrBlank()) {
+                        val cohortStartDate = course.cohortStartDate
+                        if (!cohortStartDate.isNullOrBlank()) {
                             Spacer(Modifier.height(6.dp))
-                            Text("شروعِ گروه: ${course.cohortStartDate.take(10)}", color = colors.gold, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
+                            Text("شروعِ گروه: ${cohortStartDate.take(10)}", color = colors.gold, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
                         }
                         if (course.enrolled && course.isOnline && course.progressPercent > 0) {
                             Spacer(Modifier.height(10.dp))

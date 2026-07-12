@@ -44,7 +44,8 @@ data class CreateQuestionRequestDto(
 @Serializable
 data class UpdateReviewRequest(
     val rating: Int?,
-    val comment: String
+    val comment: String,
+    val images: List<String> = emptyList()
 )
 
 @Serializable

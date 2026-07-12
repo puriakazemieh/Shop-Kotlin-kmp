@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -78,7 +79,7 @@ fun BundleDetailScreen(
                         ProductCard(product = bundle.product, onClick = navigateToProduct)
                         if (!bundle.description.isNullOrBlank()) {
                             Spacer(Modifier.height(10.dp))
-                            Text(bundle.description, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                            Text(bundle.description!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                         }
                         Spacer(Modifier.height(6.dp))
                         Text(

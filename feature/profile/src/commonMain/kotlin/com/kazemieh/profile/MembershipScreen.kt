@@ -85,7 +85,7 @@ fun MembershipScreen(onBackClick: () -> Unit) {
                             Spacer(Modifier.height(8.dp))
                             Text(
                                 "${(status.discountPercent.takeIf { status.isActive } ?: 0.05) * 100}٪ تخفیفِ خودکار روی همه‌ی خریدها" +
-                                    if (status.isActive && status.expiresAt != null) " · تا ${status.expiresAt.take(10)}" else "",
+                                    if (status.isActive && status.expiresAt != null) " · تا ${status.expiresAt?.take(10)}" else "",
                                 fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
                             )
                         }

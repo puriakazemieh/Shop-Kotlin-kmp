@@ -163,7 +163,7 @@ private fun ShopTestCard(test: PsychTestSummary, onBuy: (String) -> Unit) {
                 modifier = Modifier
                     .clip(RoundedCornerShape(Radius.button))
                     .background(if (productId != null) colors.primary else colors.line)
-                    .clickable(enabled = productId != null) { productId?.let { onBuy(it) } }
+                    .clickable(enabled = productId != null) { productId?.let { onBuy(it.toString()) } }
                     .padding(horizontal = 18.dp, vertical = 10.dp),
                 color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
             )

@@ -141,13 +141,15 @@ private fun HomeworkCard(
         }
         Spacer(Modifier.height(4.dp))
         Text("از طرفِ: ${homework.therapistName}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
-        if (!homework.description.isNullOrBlank()) {
+        val description = homework.description
+        if (!description.isNullOrBlank()) {
             Spacer(Modifier.height(6.dp))
-            Text(homework.description, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            Text(description, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
         }
-        if (!homework.dueDate.isNullOrBlank()) {
+        val dueDate = homework.dueDate
+        if (!dueDate.isNullOrBlank()) {
             Spacer(Modifier.height(4.dp))
-            Text("مهلت: ${homework.dueDate.take(10)}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+            Text("مهلت: ${dueDate.take(10)}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
         }
         if (homework.status == HomeworkStatus.ASSIGNED) {
             Spacer(Modifier.height(10.dp))

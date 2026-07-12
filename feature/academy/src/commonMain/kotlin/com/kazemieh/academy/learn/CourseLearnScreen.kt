@@ -192,7 +192,7 @@ fun CourseLearnScreen(
                                         ) {
                                             Text(file.name, modifier = Modifier.weight(1f), color = colors.onSurface, fontSize = FontSize.SMALL)
                                             if (file.sizeLabel != null) {
-                                                Text(file.sizeLabel, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                                                Text(file.sizeLabel!!, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
                                             }
                                         }
                                         Spacer(Modifier.height(6.dp))

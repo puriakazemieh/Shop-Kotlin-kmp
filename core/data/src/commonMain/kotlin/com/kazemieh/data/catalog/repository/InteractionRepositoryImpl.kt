@@ -30,18 +30,23 @@ class InteractionRepositoryImpl(
         ).toDomain()
     }
 
-    override suspend fun updateReview(reviewId: Long, rating: Int?, comment: String): AppResult<Review> = safeApiCall {
+    override suspend fun updateReview(reviewId: Long, rating: Int?, comment: String, images: List<String>): AppResult<Review> = safeApiCall {
         api.updateReview(
             reviewId,
             UpdateReviewRequest(
                 rating = rating,
-                comment = comment
+                comment = comment,
+                images = images
             )
         ).toDomain()
     }
 
     override suspend fun deleteReview(reviewId: Long): AppResult<Unit> = safeApiCall {
         api.deleteReview(reviewId)
+    }
+
+    override suspend fun toggleReviewHelpful(reviewId: Long): AppResult<Review> = safeApiCall {
+        api.markReviewHelpful(reviewId).toDomain()
     }
 
     override suspend fun getQuestions(productId: Long): AppResult<List<Question>> = safeApiCall {

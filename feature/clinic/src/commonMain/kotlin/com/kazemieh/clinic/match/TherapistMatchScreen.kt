@@ -182,9 +182,10 @@ private fun ResultsList(results: List<TherapistMatchResult>, navigateToTherapist
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(r.therapist.name, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-                    if (!r.therapist.specialty.isNullOrBlank()) {
+                    val specialty = r.therapist.specialty
+                    if (!specialty.isNullOrBlank()) {
                         Spacer(Modifier.height(3.dp))
-                        Text(r.therapist.specialty, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                        Text(specialty, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                     }
                 }
                 Text("امتیازِ تطبیق: ${r.matchScore}", color = colors.primary, fontWeight = FontWeight.SemiBold, fontSize = FontSize.SMALL)

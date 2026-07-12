@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -973,9 +974,10 @@ private fun OrganizationCard(
         Row(modifier = Modifier.fillMaxWidth().clickable { onToggle() }, verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(organization.name, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-                if (!organization.contactEmail.isNullOrBlank()) {
+                val email = organization.contactEmail
+                if (!email.isNullOrBlank()) {
                     Spacer(Modifier.height(3.dp))
-                    Text(organization.contactEmail, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+                    Text(email, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
                 }
             }
         }

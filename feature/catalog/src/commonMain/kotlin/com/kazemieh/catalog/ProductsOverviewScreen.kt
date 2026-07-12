@@ -139,7 +139,7 @@ fun ProductsOverviewScreen(
                 InfoCard(
                     image = Resources.Image.Cat,
                     title = stringResource(Resources.String.Oops),
-                    subtitle = state.error
+                    subtitle = state.error?:""
                 )
             }
         } else {

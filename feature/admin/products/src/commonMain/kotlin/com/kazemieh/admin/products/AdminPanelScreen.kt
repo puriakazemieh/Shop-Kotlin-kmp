@@ -47,7 +47,6 @@ fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
     navigateToManageBlog: (Long?, String?) -> Unit,
-    navigateToManageCategory: (Long?) -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
@@ -141,7 +140,6 @@ fun AdminPanelScreen(
                     5 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
                     6 -> AdminBlogListScreen(
                         navigateToManageBlog = navigateToManageBlog,
-                        navigateToManageCategory = navigateToManageCategory,
                         navigateBack = { selectedTab = 1 },
                         embedded = true
                     )

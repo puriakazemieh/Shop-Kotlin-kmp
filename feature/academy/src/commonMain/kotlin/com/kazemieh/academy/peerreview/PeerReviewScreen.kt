@@ -132,9 +132,10 @@ private fun PeerSubmissionCard(
         Text(submission.userName ?: "کاربر #${submission.userId}", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
         Spacer(Modifier.height(4.dp))
         Text("لینک: ${submission.fileUrl}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
-        if (!submission.note.isNullOrBlank()) {
+        val note = submission.note
+        if (!note.isNullOrBlank()) {
             Spacer(Modifier.height(4.dp))
-            Text(submission.note, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            Text(note, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
         }
         if (expanded) {
             Spacer(Modifier.height(10.dp))
