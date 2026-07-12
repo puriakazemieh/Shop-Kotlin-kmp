@@ -68,6 +68,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -157,6 +159,7 @@ fun DetailsScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
+                            .responsiveMaxWidth(ContentWidth.readable)
                             .padding(horizontal = 16.dp)
                             .padding(top = 12.dp, bottom = 24.dp)
                     ) {

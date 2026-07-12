@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 
 /**
@@ -28,7 +30,7 @@ fun AdminFinanceScreen(
     var subTab by remember { mutableStateOf(0) }
     val subTabs = listOf("درخواست‌های برداشت", "موجودی کیف پول")
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth(ContentWidth.medium)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

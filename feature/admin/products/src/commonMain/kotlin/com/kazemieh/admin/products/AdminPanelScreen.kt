@@ -14,6 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.domain.admin.AdminProduct
 import com.kazemieh.domain.admin.AdminStats
 import androidx.compose.material.icons.Icons
@@ -107,7 +109,7 @@ fun AdminPanelScreen(
             // هر تب اکشنِ افزودنِ خودش را به‌صورت اینلاین دارد (مطابق مرجع)
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Column(modifier = Modifier.padding(padding).fillMaxSize().responsiveMaxWidth(ContentWidth.wide)) {
             if (selectedTab == 0) {
                 Text(
                     text = "خوش آمدید، مدیر فروشگاه کارمیلا",

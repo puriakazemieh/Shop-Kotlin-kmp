@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -237,6 +239,7 @@ fun ManageProductScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .responsiveMaxWidth(ContentWidth.readable)
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 24.dp)
                         .verticalScroll(rememberScrollState())
