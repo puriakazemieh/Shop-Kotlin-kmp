@@ -22,6 +22,7 @@ import com.kazemieh.common.AppThemeMode
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ProvideWindowSizeClass
 import com.kazemieh.designsystem.brand.BrandConfig
 import com.kazemieh.designsystem.brand.BrandRegistry
 import com.kazemieh.network.common.ApiConfig
@@ -58,7 +59,9 @@ fun App() {
         language = language,
         brandColors = brand.colors
     ) {
-        AppNavHost()
+        ProvideWindowSizeClass {
+            AppNavHost()
+        }
     }
 }
 

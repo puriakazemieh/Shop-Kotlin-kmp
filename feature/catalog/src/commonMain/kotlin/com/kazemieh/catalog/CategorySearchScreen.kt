@@ -48,6 +48,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.CarmillaFilterChip
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -71,6 +72,7 @@ fun CategorySearchScreen(
 ) {
     val viewModel = koinViewModel<CategorySearchViewModel>()
     val state by viewModel.state.collectAsState()
+    val gridColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
     val colors = AppTheme.colors
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
@@ -297,7 +299,7 @@ fun CategorySearchScreen(
                     subtitle = stringResource(Resources.String.NoProductInCategory)
                 )
             }
-            else -> items(displayProducts.chunked(2)) { rowItems ->
+            else -> items(displayProducts.chunked(gridColumns)) { rowItems ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -312,7 +314,7 @@ fun CategorySearchScreen(
                             }
                         )
                     }
-                    if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
+                    repeat(gridColumns - rowItems.size) { Spacer(modifier = Modifier.weight(1f)) }
                 }
             }
         }

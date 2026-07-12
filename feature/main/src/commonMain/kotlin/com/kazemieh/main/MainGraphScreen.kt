@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,8 +42,10 @@ import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.main.component.BottomBar
 import com.kazemieh.main.component.BottomBarDestination
 import com.kazemieh.main.component.HomeTopBar
+import com.kazemieh.main.component.SideNavRail
 import com.kazemieh.main.component.TitleTopBar
 import com.kazemieh.designsystem.brand.BrandConfig
+import com.kazemieh.designsystem.windowSizeClass
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -129,122 +132,165 @@ fun MainGraphScreen(
         }
     }
 
+    val window = windowSizeClass()
+    val isLarge = window.isLarge
+
+    // ناوبریِ مشترکِ تب‌ها (هم نوارِ پایینِ موبایل هم نوارِ کناریِ دسکتاپ از این استفاده می‌کنند)
+    val onSelectDestination: (BottomBarDestination) -> Unit = { destination ->
+        navController.navigate(destination.screen) {
+            launchSingleTop = true
+            popUpTo<Screen.ProductsOverview> {
+                saveState = true
+                inclusive = false
+            }
+            restoreState = true
+        }
+    }
+
+    // نوارِ بالا بر اساسِ تبِ فعال — در هر دو چیدمان مشترک است
+    val topBar: @Composable () -> Unit = {
+        when (selectedDestination) {
+            BottomBarDestination.ProductsOverview -> HomeTopBar()
+            // صفحه‌ی جستجو هدر و فیلدِ جستجوی خودش را دارد
+            BottomBarDestination.Search -> {}
+            else -> TitleTopBar(title = stringResource(selectedDestination.title))
+        }
+    }
+
+    // میزبانِ ناوبریِ تب‌ها — یک بار تعریف می‌شود و در هر دو چیدمان (موبایل/بزرگ) بازاستفاده می‌گردد
+    val tabNavHost: @Composable (Modifier) -> Unit = { hostModifier ->
+        NavHost(
+            modifier = hostModifier,
+            navController = navController,
+            startDestination = Screen.ProductsOverview
+        ) {
+            composable<Screen.ProductsOverview> {
+                ProductsOverviewScreen(
+                    navigateToDetails = navigateToDetails,
+                    navigateToCategorySearch = navigateToCategorySearch,
+                    navigateToBlogDetail = navigateToBlogDetail,
+                    navigateToAuth = navigateToAuth,
+                    navigateToCourseDetail = navigateToCourseDetail,
+                    navigateToCourseCatalog = navigateToCourseCatalog,
+                    navigateToTherapistDetail = navigateToTherapistDetail,
+                    navigateToTherapistCatalog = navigateToTherapistCatalog,
+                    navigateToPsychTestCatalog = navigateToPsychTests
+                )
+            }
+            composable<Screen.Search> {
+                SearchScreen(
+                    navigateToDetails = navigateToDetails,
+                    navigateToAuth = navigateToAuth
+                )
+            }
+            composable<Screen.Cart> {
+                CartScreen(navigateToCheckout = navigateToCheckout)
+            }
+            composable<Screen.Categories> {
+                MoreScreen(
+                    isLoggedIn = state.isLoggedIn,
+                    isAdmin = state.isAdmin,
+                    userName = state.userName,
+                    userPhone = state.userPhone,
+                    showAcademy = brand.features.academy,
+                    showClinic = brand.features.clinic,
+                    showPsychTests = brand.features.psychTests,
+                    showComparison = brand.features.productComparison,
+                    showFreeCourses = brand.features.academyFreeCoursesTab,
+                    showBundles = brand.features.productBundles,
+                    onLoginClick = navigateToAuth,
+                    onEditProfileClick = navigateToProfile,
+                    onCustomerClubClick = navigateToCustomerClub,
+                    onSupportClick = navigateToContactUs,
+                    onSettingsClick = navigateToSettings,
+                    onAdminPanelClick = navigateToAdminPanel,
+                    onMyCoursesClick = navigateToMyCourses,
+                    onBrowseCoursesClick = navigateToCourseCatalog,
+                    onCertificatesClick = navigateToCertificates,
+                    onMyAppointmentsClick = navigateToMyAppointments,
+                    onBrowseTherapistsClick = navigateToTherapistCatalog,
+                    onPsychTestsClick = navigateToPsychTests,
+                    onComparisonClick = navigateToComparison,
+                    onFreeCoursesClick = navigateToFreeCourses,
+                    onBundlesClick = navigateToBundles,
+                    onReferralClick = navigateToReferral,
+                    onRecurringOrdersClick = navigateToRecurringOrders,
+                    onMembershipClick = navigateToMembership,
+                    onShoppingAssistantClick = navigateToShoppingAssistant,
+                    onPlacementQuizClick = navigateToPlacementQuiz,
+                    onCertificateVerifyClick = navigateToCertificateVerify,
+                    onHomeworkClick = navigateToHomework,
+                    onJournalClick = navigateToJournal,
+                    onTherapistMatchClick = navigateToTherapistMatch
+                )
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .systemBarsPadding()
     ) {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.surface,
-            topBar = {
-                when (selectedDestination) {
-                    BottomBarDestination.ProductsOverview -> HomeTopBar()
-                    // صفحه‌ی جستجو هدر و فیلدِ جستجوی خودش را دارد
-                    BottomBarDestination.Search -> {}
-                    else -> TitleTopBar(title = stringResource(selectedDestination.title))
+        if (isLarge) {
+            // ----- چیدمانِ صفحاتِ بزرگ (تبلت/لپ‌تاپ/دسکتاپ/وب): نوارِ کناری به‌جای نوارِ پایین -----
+            Row(modifier = Modifier.fillMaxSize()) {
+                SideNavRail(
+                    cartItemCount = state.cartItemCount,
+                    selected = selectedDestination,
+                    onSelect = onSelectDestination,
+                    expanded = window.isExpanded
+                )
+                Scaffold(
+                    modifier = Modifier.weight(1f),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    topBar = topBar
+                ) { padding ->
+                    ContentWithMessageBar(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                top = padding.calculateTopPadding(),
+                                bottom = padding.calculateBottomPadding()
+                            ),
+                        messageBarState = messageBarState,
+                    ) {
+                        tabNavHost(Modifier.fillMaxSize())
+                    }
                 }
             }
-        ) { padding ->
-            ContentWithMessageBar(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                        bottom = padding.calculateBottomPadding()
-                    ),
-                messageBarState = messageBarState,
-            ) {
-                Column(modifier = Modifier.fillMaxSize()) {
+        } else {
+            // ----- چیدمانِ موبایل: نوارِ پایینِ شناور -----
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.surface,
+                topBar = topBar
+            ) { padding ->
+                ContentWithMessageBar(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = padding.calculateTopPadding(),
+                            bottom = padding.calculateBottomPadding()
+                        ),
+                    messageBarState = messageBarState,
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        tabNavHost(Modifier.weight(1f))
 
-                    NavHost(
-                        modifier = Modifier.weight(1f),
-                        navController = navController,
-                        startDestination = Screen.ProductsOverview
-                    ) {
-                        composable<Screen.ProductsOverview> {
-                            ProductsOverviewScreen(
-                                navigateToDetails = navigateToDetails,
-                                navigateToCategorySearch = navigateToCategorySearch,
-                                navigateToBlogDetail = navigateToBlogDetail,
-                                navigateToAuth = navigateToAuth,
-                                navigateToCourseDetail = navigateToCourseDetail,
-                                navigateToCourseCatalog = navigateToCourseCatalog,
-                                navigateToTherapistDetail = navigateToTherapistDetail,
-                                navigateToTherapistCatalog = navigateToTherapistCatalog,
-                                navigateToPsychTestCatalog = navigateToPsychTests
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            BottomBar(
+                                cartItemCount = state.cartItemCount,
+                                selected = selectedDestination,
+                                onSelect = onSelectDestination
                             )
                         }
-                        composable<Screen.Search> {
-                            SearchScreen(
-                                navigateToDetails = navigateToDetails,
-                                navigateToAuth = navigateToAuth
-                            )
-                        }
-                        composable<Screen.Cart> {
-                            CartScreen(navigateToCheckout = navigateToCheckout)
-                        }
-                        composable<Screen.Categories> {
-                            MoreScreen(
-                                isLoggedIn = state.isLoggedIn,
-                                isAdmin = state.isAdmin,
-                                userName = state.userName,
-                                userPhone = state.userPhone,
-                                showAcademy = brand.features.academy,
-                                showClinic = brand.features.clinic,
-                                showPsychTests = brand.features.psychTests,
-                                showComparison = brand.features.productComparison,
-                                showFreeCourses = brand.features.academyFreeCoursesTab,
-                                showBundles = brand.features.productBundles,
-                                onLoginClick = navigateToAuth,
-                                onEditProfileClick = navigateToProfile,
-                                onCustomerClubClick = navigateToCustomerClub,
-                                onSupportClick = navigateToContactUs,
-                                onSettingsClick = navigateToSettings,
-                                onAdminPanelClick = navigateToAdminPanel,
-                                onMyCoursesClick = navigateToMyCourses,
-                                onBrowseCoursesClick = navigateToCourseCatalog,
-                                onCertificatesClick = navigateToCertificates,
-                                onMyAppointmentsClick = navigateToMyAppointments,
-                                onBrowseTherapistsClick = navigateToTherapistCatalog,
-                                onPsychTestsClick = navigateToPsychTests,
-                                onComparisonClick = navigateToComparison,
-                                onFreeCoursesClick = navigateToFreeCourses,
-                                onBundlesClick = navigateToBundles,
-                                onReferralClick = navigateToReferral,
-                                onRecurringOrdersClick = navigateToRecurringOrders,
-                                onMembershipClick = navigateToMembership,
-                                onShoppingAssistantClick = navigateToShoppingAssistant,
-                                onPlacementQuizClick = navigateToPlacementQuiz,
-                                onCertificateVerifyClick = navigateToCertificateVerify,
-                                onHomeworkClick = navigateToHomework,
-                                onJournalClick = navigateToJournal,
-                                onTherapistMatchClick = navigateToTherapistMatch
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(all = 12.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        BottomBar(
-                            cartItemCount = state.cartItemCount,
-                            selected = selectedDestination,
-                            onSelect = { destination ->
-                                navController.navigate(destination.screen) {
-                                    launchSingleTop = true
-                                    popUpTo<Screen.ProductsOverview> {
-                                        saveState = true
-                                        inclusive = false
-                                    }
-                                    restoreState = true
-                                }
-                            }
-                        )
                     }
                 }
             }

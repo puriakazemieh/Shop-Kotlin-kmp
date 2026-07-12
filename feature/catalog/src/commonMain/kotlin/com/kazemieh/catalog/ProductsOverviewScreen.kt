@@ -58,6 +58,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.blog.Blog
@@ -84,6 +85,9 @@ fun ProductsOverviewScreen(
 ) {
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
+    // تعدادِ ستونِ گریدِ محصولات و دسته‌ها بر اساسِ عرضِ صفحه (موبایل ۲ / تبلت ۳ / دسکتاپ ۴)
+    val productColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
+    val categoryColumns = adaptiveGridColumns(compact = 3, medium = 5, expanded = 6)
     val homeListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     // ترتیب آیتم‌های خانه مطابق اسپک: 0=استوری، 1=هیرو، (دسته‌ها)، (پیشنهاد شگفت‌انگیز)، سرتیتر جدیدترین
@@ -180,7 +184,7 @@ fun ProductsOverviewScreen(
                                     modifier = Modifier.padding(horizontal = 16.dp),
                                     verticalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
-                                    state.categories.chunked(3).forEach { rowItems ->
+                                    state.categories.chunked(categoryColumns).forEach { rowItems ->
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -196,7 +200,7 @@ fun ProductsOverviewScreen(
                                                     }
                                                 )
                                             }
-                                            repeat(3 - rowItems.size) {
+                                            repeat(categoryColumns - rowItems.size) {
                                                 Spacer(modifier = Modifier.weight(1f))
                                             }
                                         }
@@ -271,7 +275,7 @@ fun ProductsOverviewScreen(
                         }
 
                         items(
-                            items = products.chunked(2),
+                            items = products.chunked(productColumns),
                             key = { row -> "grid_${row.first().id}" }
                         ) { rowItems ->
                             Row(
@@ -296,7 +300,9 @@ fun ProductsOverviewScreen(
                                         }
                                     )
                                 }
-                                if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
+                                repeat(productColumns - rowItems.size) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
                             }
                         }
 

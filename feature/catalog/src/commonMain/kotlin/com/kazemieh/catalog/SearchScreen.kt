@@ -39,6 +39,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.CarmillaFilterChip
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -58,6 +59,7 @@ fun SearchScreen(
 ) {
     val viewModel = koinViewModel<SearchViewModel>()
     val state by viewModel.state.collectAsState()
+    val gridColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
     val colors = AppTheme.colors
 
     LaunchedEffect(Unit) {
@@ -137,7 +139,7 @@ fun SearchScreen(
                 )
             }
 
-            else -> items(state.results.chunked(2)) { rowItems ->
+            else -> items(state.results.chunked(gridColumns)) { rowItems ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -150,7 +152,7 @@ fun SearchScreen(
                             onFavoriteClick = { viewModel.handleIntent(SearchIntent.ToggleFavorite(product)) }
                         )
                     }
-                    if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
+                    repeat(gridColumns - rowItems.size) { Spacer(modifier = Modifier.weight(1f)) }
                 }
             }
         }
