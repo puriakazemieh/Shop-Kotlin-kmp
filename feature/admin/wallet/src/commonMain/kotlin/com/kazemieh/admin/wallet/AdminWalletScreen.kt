@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -108,7 +109,7 @@ fun AdminWalletScreen(
                                 Text(stringResource(Resources.String.NothingHere), fontFamily = AppFont())
                             }
                         } else {
-                            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            LazyColumn(modifier = Modifier.responsiveMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 items(users) { user ->
                                     AdminUserWalletItem(
                                         user = user,

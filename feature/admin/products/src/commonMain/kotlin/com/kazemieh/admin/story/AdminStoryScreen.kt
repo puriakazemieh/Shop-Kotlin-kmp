@@ -32,6 +32,7 @@ import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
 import androidx.compose.ui.window.Dialog
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -141,7 +142,7 @@ fun AdminStoryScreen(
         }
     ) { padding ->
         val colors = AppTheme.colors
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(padding)) {
             // هدر: عنوان + دکمه‌ی افزودنِ استوری (مطابق اسپک)
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),

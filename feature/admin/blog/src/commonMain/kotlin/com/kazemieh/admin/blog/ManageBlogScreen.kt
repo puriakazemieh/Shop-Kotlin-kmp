@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.component.CarmillaFilterChip
@@ -116,6 +117,7 @@ fun ManageBlogScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                     .padding(padding)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),

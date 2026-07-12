@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.domain.admin.AdminStats
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -196,7 +197,7 @@ private fun ProductsTab(
             is AppResult.Success -> {
                 val products = result.data.items
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(all = 12.dp),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(all = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     // هدرِ مدیریت محصولات + دکمه‌ی افزودن (مطابق مرجع)

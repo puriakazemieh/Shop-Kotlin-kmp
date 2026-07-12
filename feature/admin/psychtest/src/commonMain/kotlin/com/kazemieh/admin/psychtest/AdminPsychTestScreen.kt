@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
@@ -102,7 +103,7 @@ fun AdminPsychTestScreen(
 @Composable
 private fun TestsTab(state: AdminPsychTestState, viewModel: AdminPsychTestViewModel) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item { CreateTestForm(state, viewModel) }
@@ -223,7 +224,7 @@ private fun TestRow(test: PsychTestSummary, onDelete: () -> Unit) {
 private fun InterpretTab(pending: List<UserPsychTest>, onInterpret: (Long, String) -> Unit) {
     val colors = AppTheme.colors
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         if (pending.isEmpty()) {
