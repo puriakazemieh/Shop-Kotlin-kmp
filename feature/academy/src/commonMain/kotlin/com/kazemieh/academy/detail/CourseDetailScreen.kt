@@ -1,12 +1,16 @@
 package com.kazemieh.academy.detail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.FlowRow
@@ -14,10 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import com.seiko.imageloader.rememberImagePainter
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -115,31 +123,7 @@ fun CourseDetailScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
                 ) {
-                    item {
-                        Text(course.title, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.EXTRA_REGULAR, color = colors.onSurface)
-                        Spacer(Modifier.height(8.dp))
-                        CourseBadgesRow(course)
-                        if (!course.instructor.isNullOrBlank()) {
-                            Spacer(Modifier.height(6.dp))
-                            Text("مدرس: ${course.instructor}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
-                        }
-                        val cohortStartDate = course.cohortStartDate
-                        if (!cohortStartDate.isNullOrBlank()) {
-                            Spacer(Modifier.height(6.dp))
-                            Text("شروعِ گروه: ${cohortStartDate.take(10)}", color = colors.gold, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
-                        }
-                        if (course.enrolled && course.isOnline && course.progressPercent > 0) {
-                            Spacer(Modifier.height(10.dp))
-                            LinearProgressIndicator(
-                                progress = { course.progressPercent / 100f },
-                                modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(Radius.full)),
-                                color = colors.primary,
-                                trackColor = colors.surfaceVariant
-                            )
-                            Spacer(Modifier.height(4.dp))
-                            Text("${course.progressPercent}% تکمیل", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
-                        }
-                    }
+                    item { CourseHeader(course) }
                     // ---- دوره‌ی حضوری/آفلاین: کارتِ مکان و ظرفیت (به‌جای فهرستِ درس‌ها) ----
                     if (!course.isOnline) {
                         item { InPersonInfoCard(course) }
@@ -161,7 +145,11 @@ fun CourseDetailScreen(
                         item { CourseIncludesCard(course) }
                     }
                     // ---- سرفصل‌ها فقط برای دوره‌های آنلاین (محتوایِ قابلِ‌پخش) ----
-                    if (course.isOnline) {
+                    if (course.isOnline && course.sections.isNotEmpty()) {
+                        item {
+                            Spacer(Modifier.height(8.dp))
+                            Text("سرفصل‌های دوره", fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.EXTRA_REGULAR)
+                        }
                         course.sections.forEach { section ->
                             item {
                                 Spacer(Modifier.height(6.dp))
@@ -194,6 +182,135 @@ fun CourseDetailScreen(
             }
         }
         }
+    }
+}
+
+/** جداکننده‌ی هزارگانِ تومان. */
+private fun formatToman(value: Double): String {
+    val n = value.toLong()
+    val s = n.toString()
+    val sb = StringBuilder()
+    for ((i, c) in s.withIndex()) {
+        if (i > 0 && (s.length - i) % 3 == 0) sb.append('٬')
+        sb.append(c)
+    }
+    return sb.toString()
+}
+
+/** سرتیترِ دوره: کاورِ ۱۶:۹ + عنوان + چیپ‌ها + مدرس + قیمت + آمار + نوارِ پیشرفت. */
+@Composable
+private fun CourseHeader(course: CourseDetail) {
+    val colors = AppTheme.colors
+    Column {
+        // ---- کاورِ دوره (۱۶:۹) ----
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(RoundedCornerShape(Radius.lg))
+                .background(colors.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            if (!course.thumbnailUrl.isNullOrBlank()) {
+                Image(
+                    painter = rememberImagePainter(course.thumbnailUrl!!),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Text("🎓", fontSize = FontSize.EXTRA_LARGE)
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+
+        Text(course.title, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.EXTRA_REGULAR, color = colors.onSurface)
+        Spacer(Modifier.height(8.dp))
+        CourseBadgesRow(course)
+
+        if (!course.instructor.isNullOrBlank()) {
+            Spacer(Modifier.height(8.dp))
+            Text("مدرس: ${course.instructor}", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        }
+        val cohortStartDate = course.cohortStartDate
+        if (!cohortStartDate.isNullOrBlank()) {
+            Spacer(Modifier.height(6.dp))
+            Text("شروعِ گروه: ${cohortStartDate.take(10)}", color = colors.gold, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
+        }
+
+        // ---- کارتِ آمار + قیمت ----
+        Spacer(Modifier.height(14.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Radius.md))
+                .background(colors.surface)
+                .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+                .padding(16.dp)
+        ) {
+            val lessonCount = course.sections.sumOf { it.lessons.size }
+            if (course.isOnline) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    CourseStat("$lessonCount", "درس")
+                    if (course.totalDurationSeconds > 0) {
+                        val h = course.totalDurationSeconds / 3600
+                        val m = (course.totalDurationSeconds % 3600) / 60
+                        CourseStat(if (h > 0) "$h:${m.toString().padStart(2, '0')}" else "$m دقیقه", "زمان")
+                    }
+                    course.level?.let { lvl ->
+                        val label = when (lvl) { "BEGINNER" -> "مقدماتی"; "INTERMEDIATE" -> "متوسط"; "ADVANCED" -> "پیشرفته"; else -> lvl }
+                        CourseStat(label, "سطح")
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+                HorizontalDivider(color = colors.line)
+                Spacer(Modifier.height(14.dp))
+            }
+            // قیمت
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("قیمتِ دوره", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.weight(1f))
+                when {
+                    course.price <= 0.0 -> Text("رایگان", color = colors.ok, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+                    course.discountedPrice != null && course.discountedPrice!! < course.price -> {
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                "${formatToman(course.price)} تومان",
+                                color = colors.onSurfaceVariant,
+                                fontSize = FontSize.EXTRA_SMALL,
+                                textDecoration = androidx.compose.ui.text.style.TextDecoration.LineThrough
+                            )
+                            Text("${formatToman(course.discountedPrice!!)} تومان", color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+                        }
+                    }
+                    else -> Text("${formatToman(course.price)} تومان", color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+                }
+            }
+        }
+
+        if (course.enrolled && course.isOnline && course.progressPercent > 0) {
+            Spacer(Modifier.height(14.dp))
+            LinearProgressIndicator(
+                progress = { course.progressPercent / 100f },
+                modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(Radius.full)),
+                color = colors.primary,
+                trackColor = colors.surfaceVariant
+            )
+            Spacer(Modifier.height(4.dp))
+            Text("${course.progressPercent}% تکمیل", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+        }
+    }
+}
+
+@Composable
+private fun RowScope.CourseStat(value: String, label: String) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.weight(1f),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(value, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.REGULAR, maxLines = 1)
+        Spacer(Modifier.height(3.dp))
+        Text(label, color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
     }
 }
 
@@ -395,11 +512,34 @@ private fun CourseBottomAction(
         else -> true
     }
     val bg = if (classFull && course.onWaitlist) colors.onSurfaceVariant else colors.primary
-    Box(modifier = Modifier.fillMaxWidth().background(colors.surface).padding(16.dp)) {
+    // قیمت را کنارِ دکمه نشان می‌دهیم مگر اینکه کاربر ثبت‌نام کرده باشد یا کلاس پر باشد
+    val showPrice = !course.enrolled && !classFull
+    Row(
+        modifier = Modifier.fillMaxWidth().background(colors.surface).padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        if (showPrice) {
+            Column {
+                if (course.price <= 0.0) {
+                    Text("رایگان", color = colors.ok, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+                } else {
+                    val effective = course.discountedPrice?.takeIf { it < course.price } ?: course.price
+                    if (effective < course.price) {
+                        Text(
+                            "${formatToman(course.price)}",
+                            color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL,
+                            textDecoration = androidx.compose.ui.text.style.TextDecoration.LineThrough
+                        )
+                    }
+                    Text("${formatToman(effective)} تومان", color = colors.onSurface, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.REGULAR)
+                }
+            }
+        }
         Text(
             text = label,
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(1f)
                 .clip(RoundedCornerShape(Radius.button))
                 .background(bg)
                 .clickable(enabled = clickable) {
@@ -410,7 +550,7 @@ private fun CourseBottomAction(
                     }
                 }
                 .padding(vertical = 15.dp),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            textAlign = TextAlign.Center,
             color = colors.onPrimary,
             fontWeight = FontWeight.Bold,
             fontSize = FontSize.REGULAR

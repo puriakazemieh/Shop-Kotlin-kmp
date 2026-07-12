@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -90,6 +91,22 @@ fun CourseLearnScreen(
             when {
                 state.isLoading && course == null -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
                 course != null -> Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth()) {
+                    // ---- نوارِ پیشرفتِ دوره ----
+                    if (course.isOnline) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            LinearProgressIndicator(
+                                progress = { (course.progressPercent / 100f).coerceIn(0f, 1f) },
+                                modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(Radius.full)),
+                                color = colors.primary,
+                                trackColor = colors.surfaceVariant
+                            )
+                            Text("${course.progressPercent}%", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
+                        }
+                    }
                     // ---- ناحیه‌ی پخشِ ویدیو ----
                     val lesson = state.selectedLesson
                     // کیفیتِ انتخاب‌شده per درس (ریست با تغییرِ درس)
