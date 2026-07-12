@@ -110,7 +110,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         // برندِ پیش‌فرض؛ هر فلِیور می‌تواند override کند.
-        buildConfigField("String", "BRAND", "\"carmila\"")
+        buildConfigField("String", "BRAND", "\"psych\"")
     }
     buildFeatures {
         buildConfig = true
