@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.domain.psychtest.PsychTestSummary
@@ -88,7 +89,7 @@ fun PsychTestListScreen(
                 when {
                     state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
                     tab == 0 -> LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(state.tests.size) { idx ->
@@ -96,7 +97,7 @@ fun PsychTestListScreen(
                         }
                     }
                     else -> LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         if (state.myTests.isEmpty()) {

@@ -136,6 +136,23 @@ object ContentWidth {
 }
 
 /**
+ * پدینگِ افقیِ متقارن بر اساسِ عرضِ واقعیِ پنجره اضافه می‌کند تا محتوا روی نمایشگرهای پهن
+ * (دسکتاپ/وب/تبلتِ افقی) در وسط و با عرضِ خوانا بماند، بدون تغییرِ ساختارِ چیدمان.
+ * روی موبایل هیچ تغییری نمی‌دهد. برای اعمالِ سریع روی LazyColumn/Columnهای موجود مناسب است.
+ *
+ * @param maxWidth بیشینه‌ی عرضِ محتوا (پیش‌فرض [ContentWidth.medium]).
+ */
+@Composable
+fun Modifier.responsiveMaxWidth(maxWidth: Dp = ContentWidth.medium): Modifier {
+    val info = LocalWindowSizeClass.current
+    return if (info.widthDp > maxWidth) {
+        padding(horizontal = (info.widthDp - maxWidth) / 2)
+    } else {
+        this
+    }
+}
+
+/**
  * محتوا را روی نمایشگرهای پهن در وسط قرار می‌دهد و عرضش را محدود می‌کند، ولی روی موبایل
  * دست‌نخورده تمام‌عرض می‌ماند. با این کار همه‌ی صفحات روی دسکتاپ/تبلت خوانا و متمرکز می‌مانند.
  *

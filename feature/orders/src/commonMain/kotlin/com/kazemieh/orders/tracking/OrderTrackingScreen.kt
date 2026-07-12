@@ -22,6 +22,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -89,6 +90,7 @@ fun OrderTrackingScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .responsiveMaxWidth()
                             .verticalScroll(rememberScrollState())
                             .padding(16.dp)
                     ) {

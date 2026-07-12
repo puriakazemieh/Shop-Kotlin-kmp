@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -108,6 +109,7 @@ fun CartScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .responsiveMaxWidth()
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp)
                             .padding(top = 16.dp, bottom = 24.dp)

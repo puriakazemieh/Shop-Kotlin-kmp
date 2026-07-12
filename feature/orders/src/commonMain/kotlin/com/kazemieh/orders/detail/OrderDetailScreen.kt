@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.ui.draw.clip
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -120,6 +121,7 @@ fun OrderDetailScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
+                                .responsiveMaxWidth()
                                 .padding(16.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
