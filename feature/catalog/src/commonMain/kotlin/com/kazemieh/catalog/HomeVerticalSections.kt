@@ -31,6 +31,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.academy.CourseSummary
 import com.kazemieh.domain.clinic.TherapistSummary
 import com.kazemieh.domain.psychtest.PsychTestSummary
@@ -94,7 +95,7 @@ private fun CourseHomeCard(course: CourseSummary, onClick: () -> Unit) {
         Spacer(Modifier.height(6.dp))
         val price = course.discountedPrice ?: course.price
         Text(
-            text = if (price <= 0.0) "رایگان" else stringResource(Resources.String.PriceFormat, price),
+            text = if (price <= 0.0) "رایگان" else stringResource(Resources.String.PriceFormat, formatToman(price)),
             fontSize = FontSize.EXTRA_SMALL,
             fontWeight = FontWeight.SemiBold,
             color = colors.primary
@@ -238,7 +239,7 @@ private fun PsychTestHomeCard(test: PsychTestSummary, onClick: () -> Unit) {
         Spacer(Modifier.height(6.dp))
         val price = test.discountedPrice ?: test.price
         Text(
-            text = if (price <= 0.0) "رایگان" else stringResource(Resources.String.PriceFormat, price),
+            text = if (price <= 0.0) "رایگان" else stringResource(Resources.String.PriceFormat, formatToman(price)),
             fontSize = FontSize.EXTRA_SMALL,
             fontWeight = FontWeight.SemiBold,
             color = colors.primary

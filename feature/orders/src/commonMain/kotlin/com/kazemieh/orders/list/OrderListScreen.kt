@@ -31,6 +31,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.order.Order
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -167,7 +168,7 @@ fun OrderCard(
                 color = colors.onSurfaceVariant
             )
             Text(
-                text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+                text = stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = FontSize.EXTRA_REGULAR,
                 color = colors.onSurface,

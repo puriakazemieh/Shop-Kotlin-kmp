@@ -31,6 +31,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
@@ -260,7 +261,7 @@ private fun AdminDashboard(stats: AdminStats) {
     val colors = AppTheme.colors
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            item { StatCard("درآمد کل", stringResource(Resources.String.PriceFormat, stats.totalRevenue), "تومان") }
+            item { StatCard("درآمد کل", stringResource(Resources.String.PriceFormat, formatToman(stats.totalRevenue)), "تومان") }
             item { StatCard("سفارش‌ها", stats.totalOrders.toString(), "عدد") }
             item { StatCard("محصولات", stats.totalProducts.toString(), "عدد") }
             item { StatCard("مشتریان", stats.totalCustomers.toString(), "نفر") }

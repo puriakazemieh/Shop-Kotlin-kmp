@@ -38,6 +38,7 @@ import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.admin.AdminOrderSummary
 import com.kazemieh.domain.admin.AdminOrderDetail
 import org.jetbrains.compose.resources.painterResource
@@ -216,7 +217,7 @@ fun AdminOrderCard(
         }
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+            text = stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
             fontWeight = FontWeight.ExtraBold,
             fontSize = FontSize.SMALL,
             color = colors.onSurface,
@@ -381,7 +382,7 @@ fun OrderDetailDialog(
                                         }
                                         Spacer(Modifier.width(8.dp))
                                         Text(
-                                            text = stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, item.unitPriceSnapshot)),
+                                            text = stringResource(Resources.String.QtyXPriceFormat, item.qty, stringResource(Resources.String.PriceFormat, formatToman(item.unitPriceSnapshot))),
                                             fontSize = FontSize.SMALL,
                                             color = colors.onSurface,
                                             fontFamily = AppFont()
@@ -391,11 +392,11 @@ fun OrderDetailDialog(
                                 Spacer(Modifier.height(8.dp))
                                 Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
                                 Spacer(Modifier.height(10.dp))
-                                OrderSummaryRow(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, order.subtotalPrice), colors.onSurface)
+                                OrderSummaryRow(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, formatToman(order.subtotalPrice)), colors.onSurface)
                                 Spacer(Modifier.height(7.dp))
-                                OrderSummaryRow(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, order.shippingPrice), colors.onSurface)
+                                OrderSummaryRow(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, formatToman(order.shippingPrice)), colors.onSurface)
                                 Spacer(Modifier.height(7.dp))
-                                OrderSummaryRow(stringResource(Resources.String.TotalLabelSimple), stringResource(Resources.String.PriceFormat, order.totalPrice), colors.primary, bold = true)
+                                OrderSummaryRow(stringResource(Resources.String.TotalLabelSimple), stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)), colors.primary, bold = true)
                             }
                             Spacer(Modifier.height(18.dp))
 

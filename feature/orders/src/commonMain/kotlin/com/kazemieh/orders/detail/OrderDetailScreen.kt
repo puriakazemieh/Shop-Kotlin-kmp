@@ -32,6 +32,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.orders.list.UserStatusBadge
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -246,7 +247,7 @@ fun OrderDetailScreen(
                                             }
                                         }
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, item.unitPrice),
+                                            text = stringResource(Resources.String.PriceFormat, formatToman(item.unitPrice)),
                                             fontWeight = FontWeight.ExtraBold,
                                             fontSize = FontSize.SMALL,
                                             fontFamily = AppFont(),
@@ -256,16 +257,16 @@ fun OrderDetailScreen(
                                     HorizontalDivider(color = colors.line)
                                 }
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, order.subtotalPrice))
+                                    OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, formatToman(order.subtotalPrice)))
                                     Spacer(modifier = Modifier.height(8.dp))
-                                    OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, order.shippingPrice))
+                                    OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, formatToman(order.shippingPrice)))
                                     if ((order.walletPaidAmount ?: 0.0) > 0) {
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        OrderSummaryLine(stringResource(Resources.String.WalletPaidAmount), stringResource(Resources.String.PriceFormat, order.walletPaidAmount ?: 0.0))
+                                        OrderSummaryLine(stringResource(Resources.String.WalletPaidAmount), stringResource(Resources.String.PriceFormat, formatToman(order.walletPaidAmount ?: 0.0)))
                                     }
                                     if ((order.gatewayPaidAmount ?: 0.0) > 0) {
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        OrderSummaryLine(stringResource(Resources.String.GatewayPaidAmount), stringResource(Resources.String.PriceFormat, order.gatewayPaidAmount ?: 0.0))
+                                        OrderSummaryLine(stringResource(Resources.String.GatewayPaidAmount), stringResource(Resources.String.PriceFormat, formatToman(order.gatewayPaidAmount ?: 0.0)))
                                     }
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
@@ -273,7 +274,7 @@ fun OrderDetailScreen(
                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Text(stringResource(Resources.String.TotalLabelSimple), fontWeight = FontWeight.Bold, fontFamily = AppFont(), color = colors.onSurface)
                                         Text(
-                                            stringResource(Resources.String.PriceFormat, order.totalPrice),
+                                            stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
                                             fontWeight = FontWeight.ExtraBold,
                                             fontSize = FontSize.EXTRA_REGULAR,
                                             color = colors.primary,

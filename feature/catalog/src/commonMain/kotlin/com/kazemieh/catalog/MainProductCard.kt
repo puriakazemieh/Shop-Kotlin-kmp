@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.catalog.ProductSummary
@@ -193,14 +194,14 @@ fun MainProductCard(
                 Column {
                     if (hasDiscount && product.minPrice != null) {
                         Text(
-                            text = stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
+                            text = stringResource(Resources.String.PriceFormat, formatToman(product.minPrice)),
                             fontSize = FontSize.EXTRA_SMALL,
                             color = colors.onSurfaceVariant,
                             textDecoration = TextDecoration.LineThrough
                         )
                     }
                     Text(
-                        text = stringResource(Resources.String.PriceFormat, displayPrice ?: 0.0),
+                        text = stringResource(Resources.String.PriceFormat, formatToman(displayPrice)),
                         fontSize = FontSize.EXTRA_REGULAR,
                         fontWeight = FontWeight.ExtraBold,
                         color = colors.onSurface

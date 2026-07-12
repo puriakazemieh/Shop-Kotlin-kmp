@@ -75,6 +75,7 @@ import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.MessageBarState
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.address.Address
 import com.kazemieh.domain.order.Order
 import com.kazemieh.domain.wallet.WalletBalance
@@ -503,7 +504,7 @@ private fun OrderRow(order: Order, onClick: () -> Unit) {
             )
         }
         Text(
-            text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+            text = stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
             fontFamily = AppFont(),
             fontSize = FontSize.REGULAR,
             fontWeight = FontWeight.ExtraBold,
@@ -833,9 +834,7 @@ fun WalletBalanceCard(
                         is AppResult.Success -> {
                             Text(
                                 text = stringResource(
-                                    Resources.String.PriceFormat,
-                                    state.data.balance
-                                ),
+                                    Resources.String.PriceFormat, formatToman(state.data.balance)),
                                 fontSize = FontSize.MEDIUM,
                                 fontFamily = AppFont(),
                                 fontWeight = FontWeight.Bold,

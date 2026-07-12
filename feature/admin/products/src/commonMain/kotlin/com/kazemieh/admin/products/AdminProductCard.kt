@@ -31,6 +31,7 @@ import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.admin.AdminProduct
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -105,7 +106,7 @@ fun AdminProductCard(
 
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = stringResource(Resources.String.PriceFormat, price),
+                text = stringResource(Resources.String.PriceFormat, formatToman(price)),
                 fontFamily = AppFont(),
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.ExtraBold,

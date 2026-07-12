@@ -34,6 +34,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.wallet.AdminWithdrawal
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -286,7 +287,7 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
                 fontFamily = AppFont()
             )
             Text(
-                text = stringResource(Resources.String.PriceFormat, withdrawal.amount),
+                text = stringResource(Resources.String.PriceFormat, formatToman(withdrawal.amount)),
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = FontSize.EXTRA_REGULAR,
                 color = colors.onSurface,

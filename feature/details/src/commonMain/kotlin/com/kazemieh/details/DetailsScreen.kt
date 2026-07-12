@@ -68,6 +68,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -713,7 +714,7 @@ private fun PriceActionCard(
             Column {
                 if (oldPrice != null) {
                     Text(
-                        text = stringResource(Resources.String.PriceFormat, oldPrice),
+                        text = stringResource(Resources.String.PriceFormat, formatToman(oldPrice)),
                         fontSize = FontSize.SMALL,
                         color = colors.onSurfaceVariant,
                         textDecoration = TextDecoration.LineThrough
@@ -722,7 +723,7 @@ private fun PriceActionCard(
                 }
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = stringResource(Resources.String.PriceFormat, displayPrice),
+                        text = stringResource(Resources.String.PriceFormat, formatToman(displayPrice)),
                         fontSize = FontSize.LARGE,
                         fontWeight = FontWeight.ExtraBold,
                         color = colors.onSurface
@@ -1171,7 +1172,7 @@ private fun SimilarProductCard(
         Spacer(Modifier.height(6.dp))
         if (price != null) {
             Text(
-                text = stringResource(Resources.String.PriceFormat, price),
+                text = stringResource(Resources.String.PriceFormat, formatToman(price)),
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.ExtraBold,
                 color = colors.onSurface

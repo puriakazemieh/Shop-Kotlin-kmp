@@ -31,6 +31,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.admin.AdminVariant
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
@@ -678,7 +679,7 @@ private fun VariantDisplayCard(
     onDelete: () -> Unit
 ) {
     val colors = AppTheme.colors
-    val priceText = stringResource(Resources.String.PriceFormat, variant.discountedPrice ?: variant.price)
+    val priceText = stringResource(Resources.String.PriceFormat, formatToman(variant.discountedPrice ?: variant.price))
     Column(
         modifier = Modifier
             .fillMaxWidth()

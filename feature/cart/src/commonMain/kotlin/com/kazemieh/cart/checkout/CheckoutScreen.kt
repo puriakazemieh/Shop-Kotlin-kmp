@@ -54,6 +54,7 @@ import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.address.Address
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
@@ -205,7 +206,7 @@ fun CheckoutScreen(
                                 )
                                 Spacer(Modifier.height(2.dp))
                                 Text(
-                                    text = stringResource(Resources.String.WalletBalance) + ": " + stringResource(Resources.String.PriceFormat, state.walletBalance),
+                                    text = stringResource(Resources.String.WalletBalance) + ": " + stringResource(Resources.String.PriceFormat, formatToman(state.walletBalance)),
                                     fontSize = FontSize.SMALL,
                                     color = colors.onSurfaceVariant
                                 )
@@ -219,9 +220,9 @@ fun CheckoutScreen(
                             Spacer(Modifier.height(14.dp))
                             Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
                             Spacer(Modifier.height(12.dp))
-                            SummaryRow("از کیف پول", stringResource(Resources.String.PriceFormat, walletUsed), colors.ok)
+                            SummaryRow("از کیف پول", stringResource(Resources.String.PriceFormat, formatToman(walletUsed)), colors.ok)
                             Spacer(Modifier.height(7.dp))
-                            SummaryRow("باقی‌مانده از درگاه", stringResource(Resources.String.PriceFormat, remaining), colors.onSurface)
+                            SummaryRow("باقی‌مانده از درگاه", stringResource(Resources.String.PriceFormat, formatToman(remaining)), colors.onSurface)
                         }
                     }
 
@@ -299,7 +300,7 @@ fun CheckoutScreen(
                         ) {
                             Text("قابل پرداخت", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
                             Text(
-                                text = stringResource(Resources.String.PriceFormat, totalAmount),
+                                text = stringResource(Resources.String.PriceFormat, formatToman(totalAmount)),
                                 fontSize = FontSize.MEDIUM,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = colors.primary

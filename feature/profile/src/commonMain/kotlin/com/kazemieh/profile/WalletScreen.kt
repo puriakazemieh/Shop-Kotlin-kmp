@@ -40,6 +40,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.wallet.WalletTransaction
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -224,7 +225,7 @@ fun BalanceCard(
             is AppResult.Loading -> CircularProgressIndicator(color = Color.White)
             is AppResult.Success -> {
                 Text(
-                    text = stringResource(Resources.String.PriceFormat, balanceState.data.balance),
+                    text = stringResource(Resources.String.PriceFormat, formatToman(balanceState.data.balance)),
                     fontFamily = AppFont(),
                     fontSize = FontSize.EXTRA_LARGE,
                     fontWeight = FontWeight.ExtraBold,
@@ -356,7 +357,7 @@ fun TransactionItem(transaction: WalletTransaction) {
         }
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = stringResource(Resources.String.PriceFormat, transaction.amount),
+            text = stringResource(Resources.String.PriceFormat, formatToman(transaction.amount)),
             fontFamily = AppFont(),
             fontWeight = FontWeight.ExtraBold,
             color = accent
