@@ -1,6 +1,7 @@
 package com.kazemieh.academy.learn
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -375,13 +376,23 @@ private fun LessonQaSection(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                        .clip(RoundedCornerShape(Radius.sm))
-                        .background(colors.surfaceVariant)
-                        .padding(10.dp)
+                        .padding(vertical = 5.dp)
+                        .clip(RoundedCornerShape(Radius.md))
+                        .background(colors.surface)
+                        .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+                        .padding(12.dp)
                 ) {
-                    Text(q.userName ?: "کاربر #${q.userId}", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL)
-                    Spacer(Modifier.height(3.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier.size(30.dp).clip(androidx.compose.foundation.shape.CircleShape).background(colors.accentSoft),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("س", color = colors.primary, fontWeight = FontWeight.Bold, fontSize = FontSize.EXTRA_SMALL)
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Text(q.userName ?: "کاربر #${q.userId}", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+                    }
+                    Spacer(Modifier.height(8.dp))
                     Text(q.content, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                 }
             }

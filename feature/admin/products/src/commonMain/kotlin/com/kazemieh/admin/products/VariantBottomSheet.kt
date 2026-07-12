@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.domain.admin.AdminOption
 import com.kazemieh.domain.admin.AdminVariant
 import com.kazemieh.domain.admin.AdminVariantOption
@@ -302,40 +303,43 @@ fun VariantBottomSheet(
                 }
             }
 
-            OutlinedTextField(
+            CustomTextField(
                 value = sku,
                 onValueChange = { sku = it },
-                label = { Text(stringResource(Resources.String.Sku)) },
+                placeholder = stringResource(Resources.String.Sku),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedTextField(
+            CustomTextField(
                 value = price,
                 onValueChange = { price = it },
-                label = { Text(stringResource(Resources.String.Price)) },
+                placeholder = stringResource(Resources.String.Price),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            OutlinedTextField(
+            CustomTextField(
                 value = discountedPrice,
                 onValueChange = { discountedPrice = it },
-                label = { Text(stringResource(Resources.String.DiscountedPricePlaceholder)) },
+                placeholder = stringResource(Resources.String.DiscountedPricePlaceholder),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            OutlinedTextField(
+            CustomTextField(
                 value = initialOnHand,
                 onValueChange = { initialOnHand = it },
-                label = { Text(stringResource(Resources.String.InitialStockRequired)) },
+                placeholder = stringResource(Resources.String.InitialStockRequired),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = initialOnHand.isEmpty()
+                error = initialOnHand.isEmpty()
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR, modifier = Modifier.weight(1f))
                 Switch(checked = isActive, onCheckedChange = { isActive = it })
             }
 
