@@ -54,7 +54,8 @@ val adminProductsModule = module {
     viewModel {
         AdminPanelViewModel(
             getAdminProductsUseCase = get(),
-            getAdminStatsUseCase = get()
+            getAdminStatsUseCase = get(),
+            deleteAdminProductUseCase = get()
         )
     }
 

@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
-import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -66,7 +65,6 @@ fun ManageProductScreen(
     var selectedVariantToEdit by remember { mutableStateOf<AdminVariant?>(null) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
     var showDeactivationDialog by remember { mutableStateOf(false) }
-    var dropdownMenuOpened by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -223,121 +221,83 @@ fun ManageProductScreen(
         )
     }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = if (id == null) stringResource(Resources.String.NewProduct) else stringResource(Resources.String.EditProduct),
-                        fontSize = FontSize.LARGE,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            modifier = Modifier.graphicsLayer { rotationY = if (isRtl) 180f else 0f },
-                            painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = stringResource(Resources.String.BackArrowIconDesc),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                actions = {
-                    if (id != null) {
-                        Box {
-                            IconButton(onClick = { dropdownMenuOpened = true }) {
-                                Icon(
-                                    painter = painterResource(Resources.Icon.VerticalMenu),
-                                    contentDescription = stringResource(Resources.String.VerticalMenuIconDesc),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            DropdownMenu(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                expanded = dropdownMenuOpened,
-                                onDismissRequest = { dropdownMenuOpened = false }
-                            ) {
-                                DropdownMenuItem(
-                                    leadingIcon = {
-                                        Icon(
-                                            modifier = Modifier.size(14.dp),
-                                            painter = painterResource(Resources.Icon.Delete),
-                                            contentDescription = stringResource(Resources.String.DeleteIconDesc),
-                                            tint = MaterialTheme.colorScheme.error
-                                        )
-                                    },
-                                    text = {
-                                        Text(
-                                            text = stringResource(Resources.String.DeleteProduct),
-                                            color = MaterialTheme.colorScheme.error,
-                                            fontSize = FontSize.REGULAR
-                                        )
-                                    },
-                                    onClick = {
-                                        dropdownMenuOpened = false
-                                        viewModel.handleIntent(ManageProductIntent.DeleteProduct)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
-    ) { padding ->
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = navigateBack,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surface
+    ) {
         ContentWithMessageBar(
-            modifier = Modifier.padding(padding),
             messageBarState = messageBarState,
         ) {
             if (state.isLoading) {
-                LoadingCard(modifier = Modifier.fillMaxSize())
+                LoadingCard(modifier = Modifier.fillMaxWidth().height(220.dp))
             } else {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
+                        .fillMaxWidth()
                         .padding(horizontal = 24.dp)
+                        .padding(bottom = 24.dp)
                         .verticalScroll(rememberScrollState())
                         .imePadding(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Product Basic Info
-                    CustomTextField(
-                        value = state.title,
-                        onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateTitle(it)) },
-                        placeholder = stringResource(Resources.String.ProductTitlePlaceholder)
+                    Text(
+                        text = if (id == null) stringResource(Resources.String.NewProduct) else stringResource(Resources.String.EditProduct),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = FontSize.LARGE,
+                        color = AppTheme.colors.onSurface
                     )
 
-                    CustomTextField(
-                        value = state.brand,
-                        onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateBrand(it)) },
-                        placeholder = "برند (مثلاً سیلک‌رز)"
-                    )
+                    // نام محصول
+                    Column {
+                        FieldLabel("نام محصول")
+                        Spacer(Modifier.height(7.dp))
+                        CustomTextField(
+                            value = state.title,
+                            onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateTitle(it)) },
+                            placeholder = stringResource(Resources.String.ProductTitlePlaceholder)
+                        )
+                    }
 
-                    CustomTextField(
-                        modifier = Modifier.height(120.dp),
-                        value = state.description,
-                        onValueChange = {
-                            viewModel.handleIntent(
-                                ManageProductIntent.UpdateDescription(
-                                    it
-                                )
+                    // برند + موجودی (کنار هم، مطابق اسپک)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            FieldLabel("برند")
+                            Spacer(Modifier.height(7.dp))
+                            CustomTextField(
+                                value = state.brand,
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateBrand(it)) },
+                                placeholder = "کارمیلا استایل"
                             )
-                        },
-                        placeholder = stringResource(Resources.String.Details),
-                        expanded = true
-                    )
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            FieldLabel("موجودی")
+                            Spacer(Modifier.height(7.dp))
+                            CustomTextField(
+                                value = if (state.initialOnHand == 0) "" else state.initialOnHand.toString(),
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateInitialOnHand(it.toIntOrNull() ?: 0)) },
+                                placeholder = "10",
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
+                    }
+
+                    // توضیحات (اختیاری)
+                    Column {
+                        FieldLabel("توضیحات (اختیاری)")
+                        Spacer(Modifier.height(7.dp))
+                        CustomTextField(
+                            modifier = Modifier.height(110.dp),
+                            value = state.description,
+                            onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateDescription(it)) },
+                            placeholder = stringResource(Resources.String.Details),
+                            expanded = true
+                        )
+                    }
 
                     // ---- دسته‌بندی (چیپ‌های انتخابی، مطابق مرجع) ----
                     FieldLabel(stringResource(Resources.String.SelectCategory))
@@ -362,53 +322,25 @@ fun ManageProductScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        CustomTextField(
-                            modifier = Modifier.weight(1f),
-                            value = if (state.basePrice == 0.0) "" else state.basePrice.toString(),
-                            onValueChange = {
-                                val price = it.toDoubleOrNull() ?: 0.0
-                                viewModel.handleIntent(ManageProductIntent.UpdateBasePrice(price))
-                            },
-                            placeholder = stringResource(Resources.String.BasePricePlaceholder),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        CustomTextField(
-                            modifier = Modifier.weight(1f),
-                            value = if (state.discountedPrice == 0.0) "" else state.discountedPrice.toString(),
-                            onValueChange = {
-                                val price = it.toDoubleOrNull() ?: 0.0
-                                viewModel.handleIntent(ManageProductIntent.UpdateDiscountedPrice(price))
-                            },
-                            placeholder = stringResource(Resources.String.DiscountedPricePlaceholder),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                    }
-
-                    if (state.variants.isEmpty()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            FieldLabel("قیمت (تومان)")
+                            Spacer(Modifier.height(7.dp))
                             CustomTextField(
-                                modifier = Modifier.weight(1f),
-                                value = state.sku,
-                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateSku(it)) },
-                                placeholder = stringResource(Resources.String.Sku)
+                                value = if (state.basePrice == 0.0) "" else state.basePrice.toString(),
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateBasePrice(it.toDoubleOrNull() ?: 0.0)) },
+                                placeholder = stringResource(Resources.String.BasePricePlaceholder),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            FieldLabel("قیمت با تخفیف")
+                            Spacer(Modifier.height(7.dp))
                             CustomTextField(
-                                modifier = Modifier.weight(1f),
-                                value = if (state.initialOnHand == 0) "" else state.initialOnHand.toString(),
-                                onValueChange = {
-                                    val qty = it.toIntOrNull() ?: 0
-                                    viewModel.handleIntent(ManageProductIntent.UpdateInitialOnHand(qty))
-                                },
-                                placeholder = stringResource(Resources.String.InitialStock),
+                                value = if (state.discountedPrice == 0.0) "" else state.discountedPrice.toString(),
+                                onValueChange = { viewModel.handleIntent(ManageProductIntent.UpdateDiscountedPrice(it.toDoubleOrNull() ?: 0.0)) },
+                                placeholder = stringResource(Resources.String.DiscountedPricePlaceholder),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
                         }

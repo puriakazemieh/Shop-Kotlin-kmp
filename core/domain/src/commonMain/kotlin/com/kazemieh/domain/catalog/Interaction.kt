@@ -7,18 +7,16 @@ data class Review(
     val rating: Int?,
     val comment: String,
     val replies: List<Review>,
-    val helpfulCount: Int = 0,
-    val helpfulByMe: Boolean = false,
     val createdAt: String,
-    val images: List<String> = emptyList()
+    val isSupport: Boolean = false,
+    val verifiedPurchase: Boolean = false
 )
 
 data class CreateReviewRequest(
     val productId: Long,
     val rating: Int?,
     val comment: String,
-    val parentId: Long? = null,
-    val images: List<String> = emptyList()
+    val parentId: Long? = null
 )
 
 data class Question(
@@ -27,7 +25,8 @@ data class Question(
     val userName: String,
     val content: String,
     val replies: List<Question>,
-    val createdAt: String
+    val createdAt: String,
+    val isSupport: Boolean = false
 )
 
 data class CreateQuestionRequest(

@@ -67,7 +67,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.AppTheme
-import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -77,27 +76,17 @@ import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.details.component.AddQuestionDialog
-import com.kazemieh.details.component.AddReviewDialog
-import com.kazemieh.details.component.EditQuestionDialog
-import com.kazemieh.details.component.EditReviewDialog
 import com.kazemieh.details.component.QuestionItem
 import com.kazemieh.details.component.ReviewItem
 import com.kazemieh.details.component.VariantChip
-import com.kazemieh.domain.catalog.ProductAttribute
 import com.kazemieh.domain.catalog.ProductImage
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.ProductVideo
-import com.kazemieh.domain.catalog.Question
-import com.kazemieh.domain.catalog.Review
-import com.kazemieh.common.ComparisonStore
-import com.kazemieh.designsystem.brand.BrandConfig
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
@@ -129,11 +118,6 @@ fun DetailsScreen(
     val galleryScope = rememberCoroutineScope()
     var fullscreenImageUrl by remember { mutableStateOf<String?>(null) }
     var showSizeGuide by remember { mutableStateOf(false) }
-    var showReviewDialog by remember { mutableStateOf(false) }
-    var showQuestionDialog by remember { mutableStateOf(false) }
-    var activeParentId by remember { mutableStateOf<Long?>(null) }
-    var editReview by remember { mutableStateOf<Review?>(null) }
-    var editQuestion by remember { mutableStateOf<Question?>(null) }
     var newReviewRating by remember { mutableStateOf(5) }
     var newReviewText by remember { mutableStateOf("") }
     var newQuestionText by remember { mutableStateOf("") }
@@ -171,7 +155,6 @@ fun DetailsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .responsiveMaxWidth()
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp)
                             .padding(top = 12.dp, bottom = 24.dp)
@@ -439,8 +422,6 @@ fun DetailsScreen(
                             isAddedToCart = state.isAddedToCart,
                             quantity = state.quantity,
                             isFavorite = product.isFavorite,
-                            notifyRequested = state.notifyRequested,
-                            onNotifyMe = { viewModel.handleIntent(DetailsIntent.RequestBackInStock) },
                             onAddToCart = { viewModel.handleIntent(DetailsIntent.AddToCart) },
                             onBuyNow = {
                                 viewModel.handleIntent(DetailsIntent.AddToCart)
@@ -450,48 +431,13 @@ fun DetailsScreen(
                             onGoToCart = navigateToCart,
                             onToggleFavorite = {
                                 viewModel.handleIntent(DetailsIntent.ToggleFavorite(product.id, product.isFavorite))
-                            },
-                            priceAlertRequested = state.priceAlertRequested,
-                            onPriceAlert = {
-                                viewModel.handleIntent(DetailsIntent.SubscribeToPriceAlert(discountedPrice ?: basePrice))
-                            },
-                            recurringOrderCreated = state.recurringOrderCreated,
-                            onRecurringOrder = {
-                                viewModel.handleIntent(DetailsIntent.SubscribeRecurringOrder)
                             }
                         )
 
                         Spacer(Modifier.height(22.dp))
 
-                        // ---- افزودن به مقایسه (فقط وقتی برند این فیچر را روشن کرده) ----
-                        val brand = koinInject<BrandConfig>()
-                        if (brand.features.productComparison) {
-                            val comparedSlugs by ComparisonStore.slugs.collectAsState()
-                            val inComparison = comparedSlugs.contains(product.slug)
-                            Spacer(Modifier.height(12.dp))
-                            Text(
-                                if (inComparison) "✓ در فهرستِ مقایسه" else "افزودن به مقایسه",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(Radius.button))
-                                    .border(1.dp, if (inComparison) colors.primary else colors.line, RoundedCornerShape(Radius.button))
-                                    .background(if (inComparison) colors.accentSoft else colors.surface)
-                                    .clickable { ComparisonStore.toggle(product.slug) }
-                                    .padding(vertical = 12.dp),
-                                textAlign = TextAlign.Center,
-                                color = if (inComparison) colors.primary else colors.onSurface,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = FontSize.SMALL
-                            )
-                        }
-
                         // ---- نشان‌های خدمات ----
-                        Spacer(Modifier.height(12.dp))
                         ServiceBadges()
-
-                        // ---- تخمین زمان ارسال + اطلاعات فیت مدل ----
-                        Spacer(Modifier.height(12.dp))
-                        ShippingAndFitInfo(city = state.defaultCity, attributes = product.attributes)
 
                         // ---- معرفی محصول ----
                         if (!product.description.isNullOrBlank()) {
@@ -544,15 +490,6 @@ fun DetailsScreen(
                             ProductSpecsCard(specs = specs)
                         }
 
-                        // ---- هرمِ رایحه (فقط عطر: وقتی نُت‌های آغازین/میانی/پایه ثبت شده باشند) ----
-                        val scent = remember(product) { extractScentPyramid(product.attributes) }
-                        if (scent != null) {
-                            Spacer(Modifier.height(22.dp))
-                            Text("هرم رایحه", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.onSurface)
-                            Spacer(Modifier.height(10.dp))
-                            ScentPyramid(pyramid = scent)
-                        }
-
                         // ---- دیدگاه خریداران ----
                         Spacer(Modifier.height(28.dp))
                         Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
@@ -600,23 +537,39 @@ fun DetailsScreen(
                         state.reviews.forEach { review ->
                             ReviewItem(
                                 review = review,
-                                onReplyClick = { activeParentId = it; showReviewDialog = true },
-                                onEditClick = { editReview = it },
-                                onDeleteClick = {
-                                    state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid)) }
+                                currentUserId = state.currentUserId,
+                                onReplySubmit = { parentId, comment ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.AddReview(pid, null, comment, parentId))
+                                    }
                                 },
-                                onHelpfulClick = { viewModel.handleIntent(DetailsIntent.ToggleReviewHelpful(it)) }
+                                onEditSubmit = { reviewId, rating, comment ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.UpdateReview(reviewId, pid, rating, comment))
+                                    }
+                                },
+                                onDelete = {
+                                    state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid)) }
+                                }
                             )
                         }
 
                         // ---- پرسش و پاسخ ----
                         Spacer(Modifier.height(28.dp))
-                        Text(
-                            "پرسش و پاسخ (${state.questions.size})",
-                            fontSize = FontSize.MEDIUM,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = colors.onSurface
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "پرسش و پاسخ",
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.onSurface
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                "${state.questions.size} پرسش",
+                                fontSize = FontSize.SMALL,
+                                color = colors.onSurfaceVariant
+                            )
+                        }
                         Spacer(Modifier.height(14.dp))
                         // ---- ثبت پرسشِ اینلاین (مثل بخش دیدگاه‌ها) ----
                         WriteQuestionCard(
@@ -642,9 +595,18 @@ fun DetailsScreen(
                         state.questions.forEach { question ->
                             QuestionItem(
                                 question = question,
-                                onReplyClick = { activeParentId = it; showQuestionDialog = true },
-                                onEditClick = { editQuestion = it },
-                                onDeleteClick = {
+                                currentUserId = state.currentUserId,
+                                onReplySubmit = { parentId, content ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.AddQuestion(pid, content, parentId))
+                                    }
+                                },
+                                onEditSubmit = { questionId, content ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.UpdateQuestion(questionId, pid, content))
+                                    }
+                                },
+                                onDelete = {
                                     state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteQuestion(it, pid)) }
                                 }
                             )
@@ -674,31 +636,6 @@ fun DetailsScreen(
                                 }
                             }
                         }
-
-                        // ---- اغلب با هم خریده می‌شوند ----
-                        if (state.frequentlyBoughtTogether.isNotEmpty()) {
-                            Spacer(Modifier.height(28.dp))
-                            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
-                            Spacer(Modifier.height(24.dp))
-                            Text(
-                                "اغلب با هم خریده می‌شوند",
-                                fontSize = FontSize.MEDIUM,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = colors.onSurface
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                items(state.frequentlyBoughtTogether) { fbt ->
-                                    SimilarProductCard(
-                                        product = fbt,
-                                        onClick = { navigateToDetails(fbt.slug) }
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -707,56 +644,6 @@ fun DetailsScreen(
 
     if (showSizeGuide) {
         SizeGuideDialog(onDismiss = { showSizeGuide = false })
-    }
-
-    if (showReviewDialog) {
-        AddReviewDialog(
-            onDismiss = { showReviewDialog = false },
-            onSubmit = { rating, comment, images ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId, images))
-                }
-                showReviewDialog = false
-            }
-        )
-    }
-
-    if (showQuestionDialog) {
-        AddQuestionDialog(
-            onDismiss = { showQuestionDialog = false },
-            onSubmit = { content ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.AddQuestion(it, content, activeParentId))
-                }
-                showQuestionDialog = false
-            }
-        )
-    }
-
-    editReview?.let { review ->
-        EditReviewDialog(
-            review = review,
-            onDismiss = { editReview = null },
-            onSubmit = { rating, comment ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.UpdateReview(review.id, it, rating, comment))
-                }
-                editReview = null
-            }
-        )
-    }
-
-    editQuestion?.let { question ->
-        EditQuestionDialog(
-            question = question,
-            onDismiss = { editQuestion = null },
-            onSubmit = { content ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.UpdateQuestion(question.id, it, content))
-                }
-                editQuestion = null
-            }
-        )
     }
 
     fullscreenImageUrl?.let { url ->
@@ -796,17 +683,11 @@ private fun PriceActionCard(
     isAddedToCart: Boolean,
     quantity: Int,
     isFavorite: Boolean,
-    notifyRequested: Boolean,
-    onNotifyMe: () -> Unit,
     onAddToCart: () -> Unit,
     onBuyNow: () -> Unit,
     onQuantityChange: (Int) -> Unit,
     onGoToCart: () -> Unit,
-    onToggleFavorite: () -> Unit,
-    priceAlertRequested: Boolean = false,
-    onPriceAlert: () -> Unit = {},
-    recurringOrderCreated: Boolean = false,
-    onRecurringOrder: () -> Unit = {}
+    onToggleFavorite: () -> Unit
 ) {
     val colors = AppTheme.colors
     val displayPrice = discountedPrice ?: basePrice
@@ -873,42 +754,6 @@ private fun PriceActionCard(
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(Modifier.height(11.dp))
-            // «موجود شد خبرم کن» — اشتراکِ اطلاع‌رسانیِ موجودی
-            if (notifyRequested) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(Radius.button))
-                        .background(colors.accentSoft)
-                        .padding(vertical = 15.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(Icons.Default.Check, null, tint = colors.ok, modifier = Modifier.size(17.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text(
-                        text = "به‌محضِ موجود شدن خبرتان می‌کنیم",
-                        color = colors.primary,
-                        fontSize = FontSize.REGULAR,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            } else {
-                Text(
-                    text = "موجود شد خبرم کن",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(Radius.button))
-                        .background(colors.primary)
-                        .clickable { onNotifyMe() }
-                        .padding(vertical = 15.dp),
-                    textAlign = TextAlign.Center,
-                    color = colors.onPrimary,
-                    fontSize = FontSize.REGULAR,
-                    fontWeight = FontWeight.Bold
-                )
-            }
         } else {
             Row(horizontalArrangement = Arrangement.spacedBy(11.dp)) {
                 // افزودن به سبد / مشاهده سبد
@@ -955,32 +800,6 @@ private fun PriceActionCard(
                         modifier = Modifier.size(21.dp)
                     )
                 }
-            }
-
-            Spacer(Modifier.height(10.dp))
-            Text(
-                text = if (priceAlertRequested) "به‌محضِ کاهشِ قیمت خبرتان می‌کنیم" else "قیمت کم شد خبرم کن",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(enabled = !priceAlertRequested) { onPriceAlert() }
-                    .padding(vertical = 6.dp),
-                textAlign = TextAlign.Center,
-                color = if (priceAlertRequested) colors.ok else colors.primary,
-                fontSize = FontSize.SMALL,
-                fontWeight = FontWeight.SemiBold
-            )
-            if (inStock) {
-                Text(
-                    text = if (recurringOrderCreated) "خریدِ تکراری فعال شد (هر ۳۰ روز)" else "خریدِ تکراری — هر ۳۰ روز خودکار سفارش بده",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(enabled = !recurringOrderCreated) { onRecurringOrder() }
-                        .padding(vertical = 6.dp),
-                    textAlign = TextAlign.Center,
-                    color = if (recurringOrderCreated) colors.ok else colors.onSurfaceVariant,
-                    fontSize = FontSize.EXTRA_SMALL,
-                    fontWeight = FontWeight.SemiBold
-                )
             }
         }
     }
@@ -1141,83 +960,7 @@ private fun ProductSpecsCard(specs: List<Pair<String, String>>) {
     }
 }
 
-/** سه لایه‌ی هرمِ رایحه‌ی یک عطر (نُت‌های آغازین/میانی/پایه). */
-private data class ScentPyramidData(
-    val top: List<String>,
-    val heart: List<String>,
-    val base: List<String>
-)
-
-/**
- * از میانِ attributesِ جنریکِ محصول، نُت‌های عطر را استخراج می‌کند.
- * کلیدها به‌صورتِ منعطف تطبیق داده می‌شوند (فارسی یا انگلیسیِ HANDOFF عطر:
- * notesTop/notesHeart/notesBase یا «نُت آغازین/میانی/پایه»). اگر هیچ‌کدام نبود null.
- */
-private fun extractScentPyramid(attributes: List<ProductAttribute>): ScentPyramidData? {
-    fun find(vararg keys: String): List<String> {
-        val attr = attributes.firstOrNull { a ->
-            keys.any { k -> a.name.replace(" ", "").equals(k.replace(" ", ""), ignoreCase = true) }
-        } ?: return emptyList()
-        return attr.value.split("،", ",", "/").map { it.trim() }.filter { it.isNotEmpty() }
-    }
-    val top = find("notesTop", "نُت آغازین", "نت آغازین", "نت‌های آغازین", "نُت‌های آغازین")
-    val heart = find("notesHeart", "نُت میانی", "نت میانی", "نت‌های میانی", "نُت‌های میانی")
-    val base = find("notesBase", "نُت پایه", "نت پایه", "نت‌های پایه", "نُت‌های پایه")
-    return if (top.isEmpty() && heart.isEmpty() && base.isEmpty()) null
-    else ScentPyramidData(top, heart, base)
-}
-
-/** رندرِ گرافیکیِ هرمِ رایحه در سه ردیف با چیپ‌های نُت. */
-@Composable
-private fun ScentPyramid(pyramid: ScentPyramidData) {
-    val colors = AppTheme.colors
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(Radius.md))
-            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
-            .padding(vertical = 4.dp)
-    ) {
-        ScentLayer(title = "نُت‌های آغازین", notes = pyramid.top, accent = colors.primary)
-        if (pyramid.heart.isNotEmpty() || pyramid.base.isNotEmpty()) {
-            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
-        }
-        ScentLayer(title = "نُت‌های میانی", notes = pyramid.heart, accent = colors.gold)
-        if (pyramid.base.isNotEmpty()) {
-            Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
-        }
-        ScentLayer(title = "نُت‌های پایه", notes = pyramid.base, accent = colors.onSurfaceVariant)
-    }
-}
-
-@Composable
-private fun ScentLayer(title: String, notes: List<String>, accent: Color) {
-    if (notes.isEmpty()) return
-    val colors = AppTheme.colors
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(8.dp).clip(CircleShape).background(accent))
-            Spacer(Modifier.width(8.dp))
-            Text(title, fontSize = FontSize.REGULAR, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
-        }
-        Spacer(Modifier.height(8.dp))
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            notes.forEach { note ->
-                Text(
-                    note,
-                    fontSize = FontSize.SMALL,
-                    color = colors.onSurfaceVariant,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(Radius.full))
-                        .background(colors.surfaceVariant)
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                )
-            }
-        }
-    }
-}
-
-/** کارتِ ثبتِ پرسشِ اینلاین — متن + دکمه (هم‌سبک با بخش دیدگاه‌ها، به‌جای دیالوگ). */
+/** ثبتِ پرسشِ اینلاین — ردیفِ «متن + دکمه» مطابق اسپک (به‌جای دیالوگ). */
 @Composable
 private fun WriteQuestionCard(
     text: String,
@@ -1225,46 +968,39 @@ private fun WriteQuestionCard(
     onSubmit: () -> Unit
 ) {
     val colors = AppTheme.colors
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(Radius.md))
-            .background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
-            .padding(16.dp)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text("پرسش خود را بنویسید", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
-        Spacer(Modifier.height(11.dp))
+        Text(
+            text = "ثبت پرسش",
+            modifier = Modifier
+                .clip(RoundedCornerShape(Radius.button))
+                .background(if (text.isNotBlank()) colors.primary else colors.accentSoft)
+                .clickable(enabled = text.isNotBlank()) { onSubmit() }
+                .padding(horizontal = 20.dp, vertical = 15.dp),
+            textAlign = TextAlign.Center,
+            color = if (text.isNotBlank()) colors.onPrimary else colors.primary,
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.Bold
+        )
         OutlinedTextField(
             value = text,
             onValueChange = onTextChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(1f),
             placeholder = { Text("پرسش خود درباره این محصول را بنویسید…", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
-            minLines = 2,
+            maxLines = 2,
             shape = RoundedCornerShape(Radius.sm),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = colors.surfaceVariant,
-                unfocusedContainerColor = colors.surfaceVariant,
+                focusedContainerColor = colors.surface,
+                unfocusedContainerColor = colors.surface,
                 focusedBorderColor = colors.primary,
                 unfocusedBorderColor = colors.line,
                 cursorColor = colors.primary,
                 focusedTextColor = colors.onSurface,
                 unfocusedTextColor = colors.onSurface
             )
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = "ثبت پرسش",
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(Radius.button))
-                .background(if (text.isNotBlank()) colors.primary else colors.line)
-                .clickable(enabled = text.isNotBlank()) { onSubmit() }
-                .padding(vertical = 13.dp),
-            textAlign = TextAlign.Center,
-            color = colors.onPrimary,
-            fontSize = FontSize.REGULAR,
-            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -1283,65 +1019,6 @@ private fun ServiceBadges(modifier: Modifier = Modifier) {
     ) {
         items.forEach { (icon, label) ->
             ServiceBadgeTile(icon = icon, label = label, modifier = Modifier.weight(1f))
-        }
-    }
-}
-
-/**
- * تخمینِ زمانِ ارسال (بر اساسِ شهرِ آدرسِ پیش‌فرض) + اطلاعاتِ فیتِ مدل (از attributes).
- * کلاینت‌ساید است؛ برای وایت‌لیبل، فیت به‌صورتِ جنریک از attributes خوانده می‌شود.
- */
-@Composable
-private fun ShippingAndFitInfo(
-    city: String?,
-    attributes: List<ProductAttribute>,
-    modifier: Modifier = Modifier
-) {
-    val colors = AppTheme.colors
-    val estimate = when {
-        city == null -> "۲ تا ۴ روز کاری"
-        city.contains("تهران") -> "۱ تا ۲ روز کاری"
-        else -> "۲ تا ۴ روز کاری"
-    }
-    val fit = attributes.firstOrNull {
-        it.name.contains("فیت") || it.name.contains("قد مدل") ||
-            it.name.contains("fit", ignoreCase = true) || it.name.contains("سایز مدل")
-    }
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(Radius.md))
-            .background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
-            .padding(14.dp)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.LocalShipping, null, tint = colors.primary, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(9.dp))
-            Text("تخمین زمان ارسال", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
-            Spacer(Modifier.weight(1f))
-            Text(
-                text = estimate + if (city != null) " • $city" else "",
-                fontSize = FontSize.SMALL,
-                fontWeight = FontWeight.SemiBold,
-                color = colors.onSurfaceVariant
-            )
-        }
-        if (fit != null) {
-            Spacer(Modifier.height(10.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("📏", fontSize = FontSize.REGULAR)
-                Spacer(Modifier.width(9.dp))
-                Text("اطلاعات فیت مدل", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = fit.value,
-                    fontSize = FontSize.SMALL,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colors.onSurfaceVariant
-                )
-            }
         }
     }
 }

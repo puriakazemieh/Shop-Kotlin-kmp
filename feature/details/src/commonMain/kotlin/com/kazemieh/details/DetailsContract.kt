@@ -18,11 +18,7 @@ data class DetailsState(
     val selectedOptions: Map<String, String> = emptyMap(),
     val isAddedToCart: Boolean = false,
     val isCounterMode: Boolean = true,
-    val notifyRequested: Boolean = false,
-    val defaultCity: String? = null,
-    val priceAlertRequested: Boolean = false,
-    val frequentlyBoughtTogether: List<ProductSummary> = emptyList(),
-    val recurringOrderCreated: Boolean = false
+    val currentUserId: Long? = null
 )
 
 sealed interface DetailsIntent {
@@ -33,18 +29,13 @@ sealed interface DetailsIntent {
     data object AddToCart : DetailsIntent
     data class SetCounterMode(val isCounterMode: Boolean) : DetailsIntent
     data class LoadInteractions(val productId: Long) : DetailsIntent
-    data class AddReview(val productId: Long, val rating: Int?, val comment: String, val parentId: Long?, val images: List<String> = emptyList()) : DetailsIntent
+    data class AddReview(val productId: Long, val rating: Int?, val comment: String, val parentId: Long?) : DetailsIntent
     data class UpdateReview(val reviewId: Long, val productId: Long, val rating: Int?, val comment: String) : DetailsIntent
     data class DeleteReview(val reviewId: Long, val productId: Long) : DetailsIntent
     data class AddQuestion(val productId: Long, val content: String, val parentId: Long?) : DetailsIntent
     data class UpdateQuestion(val questionId: Long, val productId: Long, val content: String) : DetailsIntent
     data class DeleteQuestion(val questionId: Long, val productId: Long) : DetailsIntent
     data class ToggleFavorite(val productId: Long, val isFavorite: Boolean) : DetailsIntent
-    data class ToggleReviewHelpful(val reviewId: Long) : DetailsIntent
-    data object RequestBackInStock : DetailsIntent
-    data class SubscribeToPriceAlert(val targetPrice: Double) : DetailsIntent
-    data class LoadFrequentlyBoughtTogether(val productId: Long) : DetailsIntent
-    data object SubscribeRecurringOrder : DetailsIntent
 }
 
 sealed interface DetailsEffect {

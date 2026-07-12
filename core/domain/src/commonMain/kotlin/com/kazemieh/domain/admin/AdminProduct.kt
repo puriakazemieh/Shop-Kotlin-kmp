@@ -12,6 +12,9 @@ data class AdminProduct(
     val discountedPrice: Double? = null,
     val sku: String? = null,
     val initialOnHand: Int? = null,
+    val categoryName: String? = null,
+    val thumbnailUrl: String? = null,
+    val stock: Int = 0,
     val isActive: Boolean
 )
 
