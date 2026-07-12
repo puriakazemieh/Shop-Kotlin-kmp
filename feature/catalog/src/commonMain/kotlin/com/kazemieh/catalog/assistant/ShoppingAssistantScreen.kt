@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import org.koin.compose.viewmodel.koinViewModel
@@ -125,7 +126,7 @@ private fun AssistantBubble(message: AssistantMessage, onProductClick: (String) 
                         Text(product.title, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "${(product.minDiscountedPrice ?: product.minPrice)?.toLong() ?: 0} تومان",
+                            "${formatToman(product.minDiscountedPrice ?: product.minPrice)} تومان",
                             fontSize = FontSize.EXTRA_SMALL, color = colors.primary
                         )
                     }

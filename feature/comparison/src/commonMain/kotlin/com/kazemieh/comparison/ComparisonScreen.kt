@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.catalog.ProductDetail
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -129,7 +130,7 @@ private fun ComparisonTable(products: List<ProductDetail>, onRemove: (String) ->
         // ردیف‌های پایه
         RenderRow("قیمت", colWidth, products) { p ->
             val price = p.discountedPrice ?: p.basePrice
-            if (price != null) "${price.toLong()} تومان" else "—"
+            if (price != null) "${formatToman(price)} تومان" else "—"
         }
         RenderRow("برند", colWidth, products) { it.brand ?: "—" }
         RenderRow("دسته", colWidth, products) { it.categoryName ?: "—" }

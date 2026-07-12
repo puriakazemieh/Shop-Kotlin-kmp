@@ -7,8 +7,8 @@ import kotlin.math.roundToLong
  * نمونه: 1450000.0 -> "۱٬۴۵۰٬۰۰۰" (رقم‌ها با فونتِ فارسی نمایش داده می‌شوند).
  * فقط عدد را قالب‌بندی می‌کند؛ واحد («تومان») باید بیرون اضافه شود.
  */
-fun formatToman(value: Double?): String {
-    val n = (value ?: 0.0).roundToLong()
+fun formatToman(value: Number?): String {
+    val n = (value?.toDouble() ?: 0.0).roundToLong()
     val negative = n < 0
     val s = (if (negative) -n else n).toString()
     val sb = StringBuilder()

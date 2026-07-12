@@ -34,6 +34,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.clinic.SessionReceipt
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -110,7 +111,7 @@ private fun ReceiptCard(receipt: SessionReceipt, modifier: Modifier = Modifier) 
         Spacer(Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text("مبلغِ پرداخت‌شده", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-            Text("${receipt.amountPaid.toLong()} تومان", fontWeight = FontWeight.ExtraBold, color = colors.primary, fontSize = FontSize.REGULAR)
+            Text("${formatToman(receipt.amountPaid)} تومان", fontWeight = FontWeight.ExtraBold, color = colors.primary, fontSize = FontSize.REGULAR)
         }
     }
 }

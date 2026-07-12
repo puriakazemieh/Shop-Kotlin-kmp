@@ -49,6 +49,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.academy.CourseDetail
 import com.kazemieh.domain.academy.CourseSummary
 import kotlinx.coroutines.flow.collectLatest
@@ -1110,7 +1111,7 @@ private fun RefundRequestCard(
         Text(req.courseTitle, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
         Spacer(Modifier.height(3.dp))
         Text(
-            (req.userName ?: "کاربر #${req.userId}") + " — مبلغ: ${req.amount.toInt()} تومان",
+            (req.userName ?: "کاربر #${req.userId}") + " — مبلغ: ${formatToman(req.amount)} تومان",
             color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
         )
         if (!req.reason.isNullOrBlank()) {

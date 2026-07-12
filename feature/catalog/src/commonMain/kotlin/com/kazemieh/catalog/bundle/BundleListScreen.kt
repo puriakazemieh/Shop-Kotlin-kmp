@@ -40,6 +40,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.bundle.BundleSummary
 import com.seiko.imageloader.rememberImagePainter
 import org.koin.compose.viewmodel.koinViewModel
@@ -124,7 +125,7 @@ private fun BundleCard(bundle: BundleSummary, onClick: () -> Unit) {
             Spacer(Modifier.height(4.dp))
             val price = bundle.product.minDiscountedPrice ?: bundle.product.minPrice
             if (price != null) {
-                Text("${price.toLong()} تومان", color = colors.primary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
+                Text("${formatToman(price)} تومان", color = colors.primary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL)
             }
         }
     }

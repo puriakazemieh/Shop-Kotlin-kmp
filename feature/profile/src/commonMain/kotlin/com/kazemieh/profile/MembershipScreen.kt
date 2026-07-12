@@ -24,6 +24,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.util.formatToman
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -91,7 +92,7 @@ fun MembershipScreen(onBackClick: () -> Unit) {
                         }
                         Spacer(Modifier.height(20.dp))
                         Text(
-                            "هزینه‌ی هر ۳۰ روز: ${status.price.toLong()} تومان (از کیفِ‌پول کسر می‌شود)",
+                            "هزینه‌ی هر ۳۰ روز: ${formatToman(status.price)} تومان (از کیفِ‌پول کسر می‌شود)",
                             fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
                         )
                         Spacer(Modifier.height(16.dp))

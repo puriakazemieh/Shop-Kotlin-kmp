@@ -345,7 +345,7 @@ fun ProcessWithdrawalDialog(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("کاربر: ${withdrawal.userFullName ?: withdrawal.userId}", fontFamily = AppFont())
                 Text("ایمیل: ${withdrawal.userEmail ?: "-"}", fontFamily = AppFont())
-                Text("مبلغ: ${withdrawal.amount} تومان", fontFamily = AppFont())
+                Text("مبلغ: ${formatToman(withdrawal.amount)} تومان", fontFamily = AppFont())
                 Text("شبا: ${withdrawal.iban}", fontFamily = AppFont())
                 OutlinedTextField(
                     value = adminNote,
