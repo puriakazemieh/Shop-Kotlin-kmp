@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import org.koin.compose.viewmodel.koinViewModel
@@ -93,7 +94,7 @@ fun PlacementQuizScreen(
                 }
                 else -> Column(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(
-                        modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
+                        modifier = Modifier.weight(1f).responsiveMaxWidth().padding(horizontal = 16.dp),
                         contentPadding = PaddingValues(vertical = 12.dp)
                     ) {
                         itemsIndexed(state.questions) { qIndex, question ->

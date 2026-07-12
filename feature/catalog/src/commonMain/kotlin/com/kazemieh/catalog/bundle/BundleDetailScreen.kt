@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.catalog.ProductCard
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,7 +71,7 @@ fun BundleDetailScreen(
             when {
                 state.isLoading && bundle == null -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
                 bundle != null -> LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     item {

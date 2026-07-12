@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.details.VideoPlayer
@@ -88,7 +89,7 @@ fun CourseLearnScreen(
             val course = state.course
             when {
                 state.isLoading && course == null -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
-                course != null -> Column(modifier = Modifier.fillMaxSize()) {
+                course != null -> Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth()) {
                     // ---- ناحیه‌ی پخشِ ویدیو ----
                     val lesson = state.selectedLesson
                     // کیفیتِ انتخاب‌شده per درس (ریست با تغییرِ درس)

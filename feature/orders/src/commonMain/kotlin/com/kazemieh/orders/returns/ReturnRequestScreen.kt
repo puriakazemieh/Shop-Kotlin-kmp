@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
@@ -75,7 +76,7 @@ fun ReturnRequestScreen(
     ) { padding ->
         ContentWithMessageBar(modifier = Modifier.padding(padding), messageBarState = messageBarState) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+                modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 if (orderItemId != null) {
