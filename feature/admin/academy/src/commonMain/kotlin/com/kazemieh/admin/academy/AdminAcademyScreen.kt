@@ -117,36 +117,54 @@ fun AdminAcademyScreen(
             if (state.isLoading && state.courses.isEmpty()) {
                 LoadingCard(modifier = Modifier.fillMaxSize())
             } else {
+                val selectedId = state.expandedCourseId
+                // با انتخابِ یک دوره، به‌جای بازشدنِ درجا داخلِ فهرست (که صفحه را شلوغ می‌کند)
+                // فقط همان دوره در حالتِ باز نمایش داده می‌شود؛ مثلِ رفتن به صفحه‌ی مدیریتِ آن دوره.
+                val visibleCourses = if (selectedId != null) state.courses.filter { it.id == selectedId } else state.courses
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                "دوره‌های آموزشی (${state.courses.size})", fontSize = FontSize.EXTRA_REGULAR,
-                                fontWeight = FontWeight.ExtraBold, color = colors.onSurface
-                            )
+                        if (selectedId == null) {
                             Row(
-                                modifier = Modifier.clip(RoundedCornerShape(11.dp)).background(colors.primary)
-                                    .clickable { showAddCourse = true }.padding(horizontal = 14.dp, vertical = 9.dp),
-                                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
-                                Text("افزودنِ دوره", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                                Text(
+                                    "دوره‌های آموزشی (${state.courses.size})", fontSize = FontSize.EXTRA_REGULAR,
+                                    fontWeight = FontWeight.ExtraBold, color = colors.onSurface
+                                )
+                                Row(
+                                    modifier = Modifier.clip(RoundedCornerShape(11.dp)).background(colors.primary)
+                                        .clickable { showAddCourse = true }.padding(horizontal = 14.dp, vertical = 9.dp),
+                                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
+                                    Text("افزودنِ دوره", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                "روی هر دوره بزنید تا صفحه‌ی مدیریتِ آن باز شود؛ آن‌جا بخش، درس و آزمون اضافه کنید. لینکِ ویدیو باید مستقیم و قابلِ پخش باشد.",
+                                fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
+                            )
+                        } else {
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .clip(RoundedCornerShape(11.dp))
+                                    .clickable { viewModel.toggleExpand(selectedId) }
+                                    .padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colors.primary, modifier = Modifier.size(20.dp))
+                                Spacer(Modifier.size(8.dp))
+                                Text("بازگشت به فهرستِ دوره‌ها", color = colors.primary, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR)
                             }
                         }
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            "دوره بساز، سپس با بازکردنِ آن، بخش و درس اضافه کن. لینکِ ویدیو باید مستقیم و قابلِ پخش باشد.",
-                            fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
-                        )
                     }
-                    items(state.courses) { course ->
+                    items(visibleCourses) { course ->
                         CourseCard(
                             course = course,
                             expanded = state.expandedCourseId == course.id,
