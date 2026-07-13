@@ -11,6 +11,7 @@ import com.kazemieh.domain.psychtest.UserTestStatus
 import com.kazemieh.network.psychtest.AdminPsychTestApi
 import com.kazemieh.network.psychtest.dto.AdminCreatePsychTestRequestDto
 import com.kazemieh.network.psychtest.dto.AdminInterpretRequestDto
+import com.kazemieh.network.psychtest.dto.AdminUpdatePsychTestRequestDto
 import com.kazemieh.network.psychtest.dto.PsychTestSummaryResponse
 import com.kazemieh.network.psychtest.dto.ScoreRangeResponse
 import com.kazemieh.network.psychtest.dto.TestOptionResponse
@@ -47,6 +48,30 @@ class AdminPsychTestRepositoryImpl(
                     )
                 },
                 ranges = ranges.map { ScoreRangeResponse(it.minScore, it.maxScore, it.interpretation) }
+            )
+        )
+    }
+
+    override suspend fun update(
+        id: Long,
+        title: String?,
+        description: String?,
+        price: Double?,
+        resultMode: String?,
+        questions: List<AdminTestQuestion>?,
+        ranges: List<AdminScoreRange>?
+    ): AppResult<Unit> = safeApiCall {
+        api.update(
+            id,
+            AdminUpdatePsychTestRequestDto(
+                title = title, description = description, price = price, resultMode = resultMode,
+                questions = questions?.mapIndexed { i, q ->
+                    TestQuestionResponse(
+                        index = i, text = q.text,
+                        options = q.options.map { TestOptionResponse(text = it.first, score = it.second) }
+                    )
+                },
+                ranges = ranges?.map { ScoreRangeResponse(it.minScore, it.maxScore, it.interpretation) }
             )
         )
     }

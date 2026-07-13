@@ -13,6 +13,7 @@ interface PsychTestApi {
 interface AdminPsychTestApi {
     suspend fun list(): List<PsychTestSummaryResponse>
     suspend fun create(request: AdminCreatePsychTestRequestDto): Long
+    suspend fun update(id: Long, request: AdminUpdatePsychTestRequestDto)
     suspend fun delete(id: Long)
     suspend fun pendingInterpretations(): List<UserPsychTestResponse>
     suspend fun interpret(userTestId: Long, request: AdminInterpretRequestDto)

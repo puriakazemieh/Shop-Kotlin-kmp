@@ -22,6 +22,15 @@ interface AdminPsychTestRepository {
         questions: List<AdminTestQuestion>,
         ranges: List<AdminScoreRange>
     ): AppResult<Long>
+    suspend fun update(
+        id: Long,
+        title: String?,
+        description: String?,
+        price: Double?,
+        resultMode: String?,
+        questions: List<AdminTestQuestion>?,
+        ranges: List<AdminScoreRange>?
+    ): AppResult<Unit>
     suspend fun delete(id: Long): AppResult<Unit>
     suspend fun pendingInterpretations(): AppResult<List<UserPsychTest>>
     suspend fun interpret(userTestId: Long, interpretation: String): AppResult<Unit>

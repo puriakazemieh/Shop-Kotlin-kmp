@@ -13,6 +13,7 @@ import com.kazemieh.domain.psychtest.GetPsychTestDetailUseCase
 import com.kazemieh.domain.psychtest.InterpretTestUseCase
 import com.kazemieh.domain.psychtest.PsychTestDetail
 import com.kazemieh.domain.psychtest.PsychTestSummary
+import com.kazemieh.domain.psychtest.UpdatePsychTestUseCase
 import com.kazemieh.domain.psychtest.UserPsychTest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +33,11 @@ data class AdminPsychTestState(
     val draftRanges: List<AdminScoreRange> = emptyList(),
     /** جزئیاتِ تستِ انتخاب‌شده برای نمایش/بررسیِ محتوا (با کلیک روی ردیف). */
     val detailLoadingSlug: String? = null,
-    val selectedDetail: PsychTestDetail? = null
+    val selectedDetail: PsychTestDetail? = null,
+    /** حالتِ ویرایش: شناسه‌ی تستِ در حالِ ویرایش و جزئیاتِ بارگذاری‌شده برای پیش‌پُر کردنِ فرم. */
+    val editLoadingId: Long? = null,
+    val editingTestId: Long? = null,
+    val editingDetail: PsychTestDetail? = null
 )
 
 sealed interface AdminPsychTestEffect {
@@ -43,6 +48,7 @@ sealed interface AdminPsychTestEffect {
 class AdminPsychTestViewModel(
     private val getAdminPsychTestsUseCase: GetAdminPsychTestsUseCase,
     private val createPsychTestUseCase: CreatePsychTestUseCase,
+    private val updatePsychTestUseCase: UpdatePsychTestUseCase,
     private val deletePsychTestUseCase: DeletePsychTestUseCase,
     private val getPendingInterpretationsUseCase: GetPendingInterpretationsUseCase,
     private val interpretTestUseCase: InterpretTestUseCase,
@@ -133,6 +139,52 @@ class AdminPsychTestViewModel(
 
     fun closeDetail() {
         _state.update { it.copy(detailLoadingSlug = null, selectedDetail = null) }
+    }
+
+    /** ویرایشِ یک تست: جزئیاتِ کامل (سؤال‌ها) را می‌گیرد تا فرمِ ویرایش با آن پیش‌پُر شود. */
+    fun openEdit(test: PsychTestSummary) {
+        _state.update { it.copy(editLoadingId = test.id, editingTestId = test.id, editingDetail = null) }
+        viewModelScope.launch {
+            when (val r = getPsychTestDetailUseCase(test.slug)) {
+                is AppResult.Success -> _state.update { it.copy(editLoadingId = null, editingDetail = r.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(editLoadingId = null, editingTestId = null) }
+                    _effect.send(AdminPsychTestEffect.ShowError(r.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun closeEdit() {
+        _state.update { it.copy(editLoadingId = null, editingTestId = null, editingDetail = null) }
+    }
+
+    fun updateTest(
+        id: Long,
+        title: String,
+        description: String,
+        price: String,
+        resultMode: String,
+        questions: List<AdminTestQuestion>,
+        ranges: List<AdminScoreRange>?
+    ) {
+        viewModelScope.launch {
+            val result = updatePsychTestUseCase(
+                id = id, title = title, description = description,
+                price = price.toDoubleOrNull(), resultMode = resultMode,
+                questions = questions, ranges = ranges
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    _effect.send(AdminPsychTestEffect.ShowSuccess("تغییرات ذخیره شد."))
+                    closeEdit()
+                    load()
+                }
+                is AppResult.Error -> _effect.send(AdminPsychTestEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
     }
 
     fun deleteTest(id: Long) {

@@ -38,6 +38,18 @@ class CreatePsychTestUseCase(private val repository: AdminPsychTestRepository) {
     ) = repository.create(title, slug, description, price, productId, resultMode, questions, ranges)
 }
 
+class UpdatePsychTestUseCase(private val repository: AdminPsychTestRepository) {
+    suspend operator fun invoke(
+        id: Long,
+        title: String?,
+        description: String?,
+        price: Double?,
+        resultMode: String?,
+        questions: List<AdminTestQuestion>?,
+        ranges: List<AdminScoreRange>?
+    ) = repository.update(id, title, description, price, resultMode, questions, ranges)
+}
+
 class DeletePsychTestUseCase(private val repository: AdminPsychTestRepository) {
     suspend operator fun invoke(id: Long) = repository.delete(id)
 }

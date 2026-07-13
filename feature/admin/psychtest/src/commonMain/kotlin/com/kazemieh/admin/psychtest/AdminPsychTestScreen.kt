@@ -63,6 +63,7 @@ import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.psychtest.AdminScoreRange
 import com.kazemieh.domain.psychtest.AdminTestQuestion
+import com.kazemieh.domain.psychtest.PsychTestDetail
 import com.kazemieh.domain.psychtest.PsychTestSummary
 import com.kazemieh.domain.psychtest.TestResultMode
 import com.kazemieh.domain.psychtest.UserPsychTest
@@ -154,7 +155,7 @@ private fun TestsTab(state: AdminPsychTestState, viewModel: AdminPsychTestViewMo
             TestCard(
                 state.tests[idx],
                 onClick = { viewModel.openDetail(state.tests[idx].slug) },
-                onEdit = { viewModel.openDetail(state.tests[idx].slug) },
+                onEdit = { viewModel.openEdit(state.tests[idx]) },
                 onDelete = { viewModel.deleteTest(state.tests[idx].id) }
             )
         }
@@ -163,6 +164,17 @@ private fun TestsTab(state: AdminPsychTestState, viewModel: AdminPsychTestViewMo
     if (showCreate) {
         PsychTestSheet(onDismiss = { showCreate = false }) {
             CreateTestForm(viewModel, onDone = { showCreate = false })
+        }
+    }
+
+    if (state.editLoadingId != null || state.editingDetail != null) {
+        PsychTestSheet(onDismiss = { viewModel.closeEdit() }) {
+            val detail = state.editingDetail
+            if (detail == null) {
+                Text("در حالِ بارگذاریِ تست…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.padding(vertical = 24.dp))
+            } else {
+                CreateTestForm(viewModel, initial = detail, editId = state.editingTestId, onDone = { viewModel.closeEdit() })
+            }
         }
     }
 
@@ -291,16 +303,39 @@ private class RangeDraftUi {
 }
 
 @Composable
-private fun CreateTestForm(viewModel: AdminPsychTestViewModel, onDone: () -> Unit) {
+private fun CreateTestForm(
+    viewModel: AdminPsychTestViewModel,
+    initial: PsychTestDetail? = null,
+    editId: Long? = null,
+    onDone: () -> Unit
+) {
     val colors = AppTheme.colors
-    var title by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var resultMode by remember { mutableStateOf("AUTO") }
-    val questions = remember { mutableStateListOf(QuestionDraftUi()) }
+    val isEdit = editId != null
+    var title by remember { mutableStateOf(initial?.title ?: "") }
+    var price by remember { mutableStateOf(initial?.price?.takeIf { it > 0.0 }?.toLong()?.toString() ?: "") }
+    var description by remember { mutableStateOf(initial?.description ?: "") }
+    var resultMode by remember { mutableStateOf(initial?.resultMode?.name ?: "AUTO") }
+    val questions = remember {
+        mutableStateListOf<QuestionDraftUi>().apply {
+            val initialQuestions = initial?.questions.orEmpty()
+            if (initialQuestions.isEmpty()) {
+                add(QuestionDraftUi())
+            } else {
+                initialQuestions.forEach { q ->
+                    add(QuestionDraftUi().apply {
+                        text = q.text
+                        q.options.take(options.size).forEachIndexed { i, o -> options[i] = o.text }
+                    })
+                }
+            }
+        }
+    }
     val ranges = remember { mutableStateListOf<RangeDraftUi>() }
 
-    Text("ساخت / ویرایشِ تستِ روان‌شناسی", fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.MEDIUM)
+    Text(
+        if (isEdit) "ویرایشِ تستِ روان‌شناسی" else "ساخت / ویرایشِ تستِ روان‌شناسی",
+        fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.MEDIUM
+    )
     Spacer(Modifier.height(18.dp))
 
     LabeledField("عنوانِ تست", title, { title = it }, "مثلاً تستِ شخصیت‌شناسی")
@@ -328,6 +363,13 @@ private fun CreateTestForm(viewModel: AdminPsychTestViewModel, onDone: () -> Uni
     if (resultMode == "AUTO") {
         Spacer(Modifier.height(6.dp))
         SectionHeader("بازه‌ی امتیاز ← تفسیر", "+ افزودنِ بازه") { ranges.add(RangeDraftUi()) }
+        if (isEdit) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "بازه‌های فعلی حفظ می‌شوند مگر بازه‌ی جدیدی اضافه کنید (که جایگزینِ آن‌ها می‌شود).",
+                color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
+            )
+        }
         Spacer(Modifier.height(10.dp))
         ranges.forEachIndexed { i, r ->
             RangeEditor(r) { ranges.removeAt(i) }
@@ -351,8 +393,12 @@ private fun CreateTestForm(viewModel: AdminPsychTestViewModel, onDone: () -> Uni
             val rs = ranges
                 .filter { it.text.isNotBlank() }
                 .map { AdminScoreRange(it.min.toIntOrNull() ?: 0, it.max.toIntOrNull() ?: 0, it.text.trim()) }
-            val slug = "test-" + kotlin.random.Random.nextInt(100_000, 999_999)
-            viewModel.createTest(title.trim(), slug, description.trim(), price.trim(), "", resultMode, qs, rs)
+            if (editId != null) {
+                viewModel.updateTest(editId, title.trim(), description.trim(), price.trim(), resultMode, qs, rs.ifEmpty { null })
+            } else {
+                val slug = "test-" + kotlin.random.Random.nextInt(100_000, 999_999)
+                viewModel.createTest(title.trim(), slug, description.trim(), price.trim(), "", resultMode, qs, rs)
+            }
             onDone()
         }
         BigButton("انصراف", filled = false, enabled = true, modifier = Modifier.weight(1f)) { onDone() }

@@ -43,6 +43,10 @@ class AdminPsychTestApiImpl(
             client.post("api/admin/psych-tests") { setBody(request) }
         }.id
 
+    override suspend fun update(id: Long, request: AdminUpdatePsychTestRequestDto): Unit = safeApiCallRaw {
+        client.patch("api/admin/psych-tests/$id") { setBody(request) }
+    }
+
     override suspend fun delete(id: Long): Unit = safeApiCallRaw {
         client.delete("api/admin/psych-tests/$id")
     }
