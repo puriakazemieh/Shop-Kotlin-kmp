@@ -11,24 +11,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -67,6 +74,7 @@ fun AdminAcademyScreen(
     val colors = AppTheme.colors
     val messageBarState = rememberMessageBarState()
     var tab by remember { mutableStateOf(0) }
+    var showAddCourse by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { viewModel.load() }
     LaunchedEffect(Unit) {
@@ -114,21 +122,28 @@ fun AdminAcademyScreen(
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     item {
-                        Text(
-                            "دوره‌های آموزشی", fontSize = FontSize.EXTRA_REGULAR,
-                            fontWeight = FontWeight.ExtraBold, color = colors.onSurface
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "دوره‌های آموزشی (${state.courses.size})", fontSize = FontSize.EXTRA_REGULAR,
+                                fontWeight = FontWeight.ExtraBold, color = colors.onSurface
+                            )
+                            Row(
+                                modifier = Modifier.clip(RoundedCornerShape(11.dp)).background(colors.primary)
+                                    .clickable { showAddCourse = true }.padding(horizontal = 14.dp, vertical = 9.dp),
+                                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
+                                Text("افزودنِ دوره", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                            }
+                        }
                         Spacer(Modifier.height(6.dp))
                         Text(
                             "دوره بساز، سپس با بازکردنِ آن، بخش و درس اضافه کن. لینکِ ویدیو باید مستقیم و قابلِ پخش باشد.",
                             fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
-                        )
-                        Spacer(Modifier.height(14.dp))
-                        AddCourseForm(
-                            uploadMedia = viewModel::uploadMedia,
-                            onSubmit = { t, s, p, pid, ct, fmt, loc, cap, requiresProject, thumb, cohort ->
-                                viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap, requiresProject, thumb, cohort)
-                            }
                         )
                     }
                     items(state.courses) { course ->
@@ -173,8 +188,41 @@ fun AdminAcademyScreen(
             }
                 }
             }
+
+            if (showAddCourse) {
+                AcademySheet(onDismiss = { showAddCourse = false }) {
+                    AddCourseForm(
+                        uploadMedia = viewModel::uploadMedia,
+                        onSubmit = { t, s, p, pid, ct, fmt, loc, cap, requiresProject, thumb, cohort ->
+                            viewModel.createCourse(t, s, p, pid, ct, fmt, loc, cap, requiresProject, thumb, cohort)
+                            showAddCourse = false
+                        }
+                    )
+                }
+            }
         }
         }
+    }
+}
+
+/** پوسته‌ی مشترکِ باتم‌شیتِ فرم‌های آموزشگاه — اسکرول‌پذیر و سازگار با کیبورد. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AcademySheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
+    val colors = AppTheme.colors
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = colors.surface
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
+                .padding(horizontal = 20.dp).padding(bottom = 28.dp)
+                .verticalScroll(rememberScrollState()).imePadding()
+        ) { content() }
     }
 }
 

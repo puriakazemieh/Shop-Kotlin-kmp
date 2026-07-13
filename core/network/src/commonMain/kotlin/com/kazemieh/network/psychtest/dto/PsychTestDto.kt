@@ -1,5 +1,6 @@
 package com.kazemieh.network.psychtest.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -81,7 +82,7 @@ data class AdminCreatePsychTestRequestDto(
     val discountedPrice: Double? = null,
     val productId: Long? = null,
     val resultMode: String = "AUTO",
-    val isPublished: Boolean = true,
+    @SerialName("published") val isPublished: Boolean = true,
     val questions: List<TestQuestionResponse> = emptyList(),
     val ranges: List<ScoreRangeResponse> = emptyList()
 )

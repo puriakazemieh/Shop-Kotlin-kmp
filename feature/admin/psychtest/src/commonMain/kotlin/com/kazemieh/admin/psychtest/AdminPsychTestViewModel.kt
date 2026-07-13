@@ -9,7 +9,9 @@ import com.kazemieh.domain.psychtest.CreatePsychTestUseCase
 import com.kazemieh.domain.psychtest.DeletePsychTestUseCase
 import com.kazemieh.domain.psychtest.GetAdminPsychTestsUseCase
 import com.kazemieh.domain.psychtest.GetPendingInterpretationsUseCase
+import com.kazemieh.domain.psychtest.GetPsychTestDetailUseCase
 import com.kazemieh.domain.psychtest.InterpretTestUseCase
+import com.kazemieh.domain.psychtest.PsychTestDetail
 import com.kazemieh.domain.psychtest.PsychTestSummary
 import com.kazemieh.domain.psychtest.UserPsychTest
 import kotlinx.coroutines.channels.Channel
@@ -27,7 +29,10 @@ data class AdminPsychTestState(
     val pending: List<UserPsychTest> = emptyList(),
     /** سؤالاتِ در حالِ ساختِ همین سشن (پیش از ثبتِ تست). */
     val draftQuestions: List<AdminTestQuestion> = emptyList(),
-    val draftRanges: List<AdminScoreRange> = emptyList()
+    val draftRanges: List<AdminScoreRange> = emptyList(),
+    /** جزئیاتِ تستِ انتخاب‌شده برای نمایش/بررسیِ محتوا (با کلیک روی ردیف). */
+    val detailLoadingSlug: String? = null,
+    val selectedDetail: PsychTestDetail? = null
 )
 
 sealed interface AdminPsychTestEffect {
@@ -40,7 +45,8 @@ class AdminPsychTestViewModel(
     private val createPsychTestUseCase: CreatePsychTestUseCase,
     private val deletePsychTestUseCase: DeletePsychTestUseCase,
     private val getPendingInterpretationsUseCase: GetPendingInterpretationsUseCase,
-    private val interpretTestUseCase: InterpretTestUseCase
+    private val interpretTestUseCase: InterpretTestUseCase,
+    private val getPsychTestDetailUseCase: GetPsychTestDetailUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminPsychTestState())
@@ -99,6 +105,25 @@ class AdminPsychTestViewModel(
                 else -> {}
             }
         }
+    }
+
+    /** با کلیک روی یک تست، محتوایِ کاملِ آن (سؤال‌ها) را از سرور می‌گیرد تا در باتم‌شیت نمایش دهد. */
+    fun openDetail(slug: String) {
+        _state.update { it.copy(detailLoadingSlug = slug, selectedDetail = null) }
+        viewModelScope.launch {
+            when (val r = getPsychTestDetailUseCase(slug)) {
+                is AppResult.Success -> _state.update { it.copy(detailLoadingSlug = null, selectedDetail = r.data) }
+                is AppResult.Error -> {
+                    _state.update { it.copy(detailLoadingSlug = null) }
+                    _effect.send(AdminPsychTestEffect.ShowError(r.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun closeDetail() {
+        _state.update { it.copy(detailLoadingSlug = null, selectedDetail = null) }
     }
 
     fun deleteTest(id: Long) {

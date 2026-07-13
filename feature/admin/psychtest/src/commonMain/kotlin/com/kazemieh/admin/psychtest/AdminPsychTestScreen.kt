@@ -11,22 +11,29 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -102,19 +109,110 @@ fun AdminPsychTestScreen(
 
 @Composable
 private fun TestsTab(state: AdminPsychTestState, viewModel: AdminPsychTestViewModel) {
+    val colors = AppTheme.colors
+    var showCreate by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        item { CreateTestForm(state, viewModel) }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("تست‌های روان‌شناسی (${state.tests.size})", fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR, color = colors.onSurface)
+                Row(
+                    modifier = Modifier.clip(RoundedCornerShape(11.dp)).background(colors.primary)
+                        .clickable { showCreate = true }.padding(horizontal = 14.dp, vertical = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
+                    Text("افزودنِ تست", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+        if (state.tests.isEmpty()) {
+            item { Text("هنوز تستی ساخته نشده. با دکمه‌ی «افزودنِ تست» شروع کن.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.padding(top = 8.dp)) }
+        }
         items(state.tests.size) { idx ->
-            TestRow(state.tests[idx], onDelete = { viewModel.deleteTest(state.tests[idx].id) })
+            TestRow(
+                state.tests[idx],
+                onClick = { viewModel.openDetail(state.tests[idx].slug) },
+                onDelete = { viewModel.deleteTest(state.tests[idx].id) }
+            )
+        }
+    }
+
+    if (showCreate) {
+        PsychTestSheet(onDismiss = { showCreate = false }) {
+            CreateTestForm(state, viewModel, onCreated = { showCreate = false })
+        }
+    }
+
+    if (state.detailLoadingSlug != null || state.selectedDetail != null) {
+        PsychTestSheet(onDismiss = { viewModel.closeDetail() }) {
+            TestDetailContent(loading = state.detailLoadingSlug != null, detail = state.selectedDetail)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PsychTestSheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
+    val colors = AppTheme.colors
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = colors.surface
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
+                .padding(horizontal = 20.dp).padding(bottom = 28.dp)
+                .verticalScroll(rememberScrollState()).imePadding()
+        ) { content() }
+    }
+}
+
+/** نمایشِ محتوایِ کاملِ یک تست (عنوان/توضیح/سؤال‌ها) هنگامِ کلیک روی ردیف. */
+@Composable
+private fun TestDetailContent(loading: Boolean, detail: com.kazemieh.domain.psychtest.PsychTestDetail?) {
+    val colors = AppTheme.colors
+    when {
+        loading -> {
+            Text("در حالِ بارگذاریِ محتوا…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.padding(vertical = 24.dp))
+        }
+        detail != null -> {
+            Text(detail.title, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.LARGE)
+            if (!detail.description.isNullOrBlank()) {
+                Spacer(Modifier.height(6.dp))
+                Text(detail.description!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "${detail.questions.size} سؤال · ${if (detail.resultMode.name == "AUTO") "نتیجه‌ی خودکار" else "تفسیرِ مشاور"}",
+                color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.height(12.dp))
+            detail.questions.forEachIndexed { i, q ->
+                Column(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                    Text("${i + 1}. ${q.text}", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
+                    q.options.forEach { opt ->
+                        Text("• ${opt.text}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL, modifier = Modifier.padding(start = 10.dp, top = 2.dp))
+                    }
+                }
+            }
+            if (detail.questions.isEmpty()) {
+                Text("این تست هنوز سؤالی ندارد.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+            }
         }
     }
 }
 
 @Composable
-private fun CreateTestForm(state: AdminPsychTestState, viewModel: AdminPsychTestViewModel) {
+private fun CreateTestForm(state: AdminPsychTestState, viewModel: AdminPsychTestViewModel, onCreated: () -> Unit = {}) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
     var slug by remember { mutableStateOf("") }
@@ -196,16 +294,17 @@ private fun CreateTestForm(state: AdminPsychTestState, viewModel: AdminPsychTest
         SmallButton("ساختِ تست", title.isNotBlank() && slug.isNotBlank()) {
             viewModel.createTest(title.trim(), slug.trim(), description.trim(), price.trim(), productId.trim(), resultMode)
             title = ""; slug = ""; description = ""; price = ""; productId = ""
+            onCreated()
         }
     }
 }
 
 @Composable
-private fun TestRow(test: PsychTestSummary, onDelete: () -> Unit) {
+private fun TestRow(test: PsychTestSummary, onClick: () -> Unit, onDelete: () -> Unit) {
     val colors = AppTheme.colors
     Row(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).padding(14.dp),
+            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).clickable { onClick() }.padding(14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(Modifier.weight(1f)) {

@@ -11,23 +11,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -166,6 +178,7 @@ private fun TherapistsTab(
     onGenerateSlots: (therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: String, capacity: String) -> Unit
 ) {
     val colors = AppTheme.colors
+    var showAddTherapist by remember { mutableStateOf(false) }
     if (state.isLoading && state.therapists.isEmpty()) {
         LoadingCard(modifier = Modifier.fillMaxSize())
         return
@@ -175,12 +188,16 @@ private fun TherapistsTab(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
+            SectionHeader(
+                title = "درمانگرها (${state.therapists.size})",
+                addLabel = "افزودن درمانگر",
+                onAdd = { showAddTherapist = true }
+            )
+            Spacer(Modifier.height(6.dp))
             Text(
                 "درمانگر بساز، سپس با بازکردنِ آن، بازه‌های زمانیِ آزاد اضافه کن. اگر «شناسهٔ محصول» را پر کنی، رزرو نیازمندِ خریدِ آن محصول می‌شود.",
-                fontSize = FontSize.SMALL, color = colors.onSurfaceVariant
+                fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant
             )
-            Spacer(Modifier.height(10.dp))
-            AddTherapistForm(onSubmit = onCreate)
         }
         items(state.therapists) { therapist ->
             TherapistCard(
@@ -193,6 +210,65 @@ private fun TherapistsTab(
                 onAddSlot = { start, end, cap -> onAddSlot(therapist.id, start, end, cap) },
                 onGenerateSlots = { ws, we, sm, cap -> onGenerateSlots(therapist.id, ws, we, sm, cap) }
             )
+        }
+    }
+
+    if (showAddTherapist) {
+        AdminSheet(onDismiss = { showAddTherapist = false }) {
+            AddTherapistForm(onSubmit = { n, s, p, d, pid, mode, loc, mpid ->
+                onCreate(n, s, p, d, pid, mode, loc, mpid); showAddTherapist = false
+            })
+        }
+    }
+}
+
+/** هدرِ استانداردِ هر تب: عنوان + دکمه‌ی افزودن (هم‌الگو با تبِ محصولات). */
+@Composable
+private fun SectionHeader(title: String, addLabel: String, onAdd: () -> Unit) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(title, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR, color = colors.onSurface)
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(11.dp))
+                .background(colors.primary)
+                .clickable { onAdd() }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
+            Text(addLabel, color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+/** پوسته‌ی مشترکِ باتم‌شیتِ فرم‌ها — اسکرول‌پذیر و سازگار با کیبورد. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AdminSheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
+    val colors = AppTheme.colors
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = colors.surface
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp)
+                .verticalScroll(rememberScrollState())
+                .imePadding()
+        ) {
+            content()
         }
     }
 }
@@ -289,6 +365,8 @@ private fun TherapistCard(
     onGenerateSlots: (windowStart: String, windowEnd: String, slotMinutes: String, capacity: String) -> Unit
 ) {
     val colors = AppTheme.colors
+    var showSlotPicker by remember { mutableStateOf(false) }
+    var showGenerate by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -323,19 +401,54 @@ private fun TherapistCard(
                         slots.forEach { slot ->
                             val capacityLabel = if (slot.capacity > 1) " (${slot.bookedCount}/${slot.capacity} گروهی)" else if (slot.isBooked) " (رزروشده)" else ""
                             Text(
-                                "${slot.startTime} – ${slot.endTime}$capacityLabel",
+                                "${slotDayLabel(slot.startTime)} — ${slotTimeLabel(slot.startTime)} تا ${slotTimeLabel(slot.endTime)}$capacityLabel",
                                 color = if (slot.isBooked) colors.onSurfaceVariant else colors.ok,
                                 fontSize = FontSize.EXTRA_SMALL,
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
                     }
-                    Spacer(Modifier.height(10.dp))
-                    AddSlotForm(onSubmit = onAddSlot)
-                    Spacer(Modifier.height(10.dp))
-                    GenerateSlotsForm(onSubmit = onGenerateSlots)
+                    Spacer(Modifier.height(12.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.primary)
+                                .clickable { showSlotPicker = true }
+                                .padding(horizontal = 14.dp, vertical = 9.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(14.dp))
+                            Text("افزودنِ بازه", color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold)
+                        }
+                        Text(
+                            "تولیدِ خودکار",
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.surfaceVariant)
+                                .clickable { showGenerate = true }
+                                .padding(horizontal = 14.dp, vertical = 9.dp),
+                            color = colors.onSurface, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
+        }
+    }
+
+    if (showSlotPicker) {
+        SlotPickerBottomSheet(
+            therapistName = therapist.name,
+            onDismiss = { showSlotPicker = false },
+            onSubmit = { start, end, cap -> onAddSlot(start, end, cap); showSlotPicker = false }
+        )
+    }
+    if (showGenerate) {
+        AdminSheet(onDismiss = { showGenerate = false }) {
+            Text("تولیدِ خودکارِ بازه‌ها", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+            Spacer(Modifier.height(10.dp))
+            GenerateSlotsForm(onSubmit = { ws, we, sm, cap -> onGenerateSlots(ws, we, sm, cap); showGenerate = false })
         }
     }
 }
@@ -380,41 +493,73 @@ private fun GenerateSlotsForm(onSubmit: (windowStart: String, windowEnd: String,
     }
 }
 
+/**
+ * باتم‌شیتِ انتخابِ بازه: تقویم (روز) + ساعتِ شروع + مدت + ظرفیت، سپس زمان‌ها را به‌صورتِ
+ * ISO-8601 با آفستِ +03:30 می‌سازد و ارسال می‌کند (به‌جایِ واردکردنِ دستیِ رشته‌ی خام).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddSlotForm(onSubmit: (startTime: String, endTime: String, capacity: String) -> Unit) {
+private fun SlotPickerBottomSheet(
+    therapistName: String,
+    onDismiss: () -> Unit,
+    onSubmit: (startTime: String, endTime: String, capacity: String) -> Unit
+) {
     val colors = AppTheme.colors
-    var start by remember { mutableStateOf("") }
-    var end by remember { mutableStateOf("") }
-    var capacity by remember { mutableStateOf("1") }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(colors.surfaceVariant)
-            .padding(10.dp)
-    ) {
-        Text(
-            "شروع/پایانِ بازه به‌فرمتِ ISO با آفستِ زمانی، مثلاً 2026-07-10T14:00:00+03:30",
-            fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant
+    val datePickerState = rememberDatePickerState()
+    val timeState = rememberTimePickerState(initialHour = 9, initialMinute = 0, is24Hour = true)
+    var durationMinutes by remember { mutableStateOf(60) }
+    var capacity by remember { mutableStateOf(1) }
+
+    AdminSheet(onDismiss = onDismiss) {
+        Text("افزودنِ بازه برای $therapistName", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+        Spacer(Modifier.height(4.dp))
+        Text("۱) روزِ بازه را از تقویم انتخاب کن:", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        Spacer(Modifier.height(6.dp))
+        DatePicker(
+            state = datePickerState,
+            title = null,
+            headline = null,
+            showModeToggle = false,
+            colors = DatePickerDefaults.colors(containerColor = colors.surface)
         )
+        Spacer(Modifier.height(10.dp))
+        Text("۲) ساعتِ شروع:", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
         Spacer(Modifier.height(6.dp))
-        AdminTextField(value = start, onValueChange = { start = it }, label = "شروعِ بازه")
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            TimePicker(state = timeState)
+        }
+        Spacer(Modifier.height(12.dp))
+        Text("۳) مدتِ جلسه (دقیقه):", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
         Spacer(Modifier.height(6.dp))
-        AdminTextField(value = end, onValueChange = { end = it }, label = "پایانِ بازه")
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            listOf(30, 45, 60, 90).forEach { d ->
+                ModeChip("$d دقیقه", durationMinutes == d) { durationMinutes = d }
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Text("۴) ظرفیت (بیش‌تر از ۱ یعنی جلسه‌ی گروهی):", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
         Spacer(Modifier.height(6.dp))
-        AdminTextField(value = capacity, onValueChange = { capacity = it }, label = "ظرفیت (بیش‌تر از ۱ یعنی گروهی)")
-        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            listOf(1, 2, 3, 5, 10).forEach { c ->
+                ModeChip(if (c == 1) "تکی" else "$c نفر", capacity == c) { capacity = c }
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        val dateMillis = datePickerState.selectedDateMillis
+        val enabled = dateMillis != null
         Text(
-            "افزودنِ بازه",
+            "ثبتِ بازه",
             modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(if (start.isNotBlank() && end.isNotBlank()) colors.primary else colors.line)
-                .clickable(enabled = start.isNotBlank() && end.isNotBlank()) {
-                    onSubmit(start.trim(), end.trim(), capacity.trim())
-                    start = ""; end = ""; capacity = "1"
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(if (enabled) colors.primary else colors.line)
+                .clickable(enabled = enabled) {
+                    val (startIso, endIso) = buildSlotIso(dateMillis!!, timeState.hour, timeState.minute, durationMinutes)
+                    onSubmit(startIso, endIso, capacity.toString())
                 }
-                .padding(horizontal = 14.dp, vertical = 9.dp),
-            color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
+                .padding(vertical = 13.dp),
+            color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
     }
 }
@@ -899,6 +1044,52 @@ private fun AddMatchQuestionForm(onSubmit: (questionText: String, tag: String, d
             color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
         )
     }
+}
+
+// ---------- کمک‌تابع‌های زمان/تاریخ (بدونِ وابستگیِ خارجی) ----------
+
+/** برچسبِ کوتاهِ ساعت از رشته‌ی ISO (مثلاً «06:30» از «2026-07-14T06:30:00Z»). */
+private fun slotTimeLabel(iso: String): String = iso.substringAfter('T', "").take(5)
+
+/** برچسبِ کوتاهِ روز از رشته‌ی ISO (بخشِ تاریخِ «YYYY-MM-DD»). */
+private fun slotDayLabel(iso: String): String = iso.take(10)
+
+private fun pad2(n: Int): String = n.toString().padStart(2, '0')
+private fun pad4(n: Int): String = n.toString().padStart(4, '0')
+
+/** تبدیلِ «روزِ اپاک» به (سال، ماه، روز) — الگوریتمِ تقویمِ میلادیِ Howard Hinnant. */
+private fun civilFromEpochDays(epochDay: Long): Triple<Int, Int, Int> {
+    val z = epochDay + 719468
+    val era = (if (z >= 0) z else z - 146096) / 146097
+    val doe = z - era * 146097
+    val yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365
+    val y = yoe + era * 400
+    val doy = doe - (365 * yoe + yoe / 4 - yoe / 100)
+    val mp = (5 * doy + 2) / 153
+    val d = (doy - (153 * mp + 2) / 5 + 1).toInt()
+    val m = (if (mp < 10) mp + 3 else mp - 9).toInt()
+    val year = (if (m <= 2) y + 1 else y).toInt()
+    return Triple(year, m, d)
+}
+
+private fun isoOf(epochDay: Long, hour: Int, minute: Int): String {
+    val (y, m, d) = civilFromEpochDays(epochDay)
+    return "${pad4(y)}-${pad2(m)}-${pad2(d)}T${pad2(hour)}:${pad2(minute)}:00+03:30"
+}
+
+/**
+ * از تاریخِ انتخابیِ تقویم (میلی‌ثانیه‌ی UTCِ نیمه‌شب) + ساعتِ شروع + مدت،
+ * جفتِ (شروع، پایان) را به‌صورتِ ISO با آفستِ +03:30 می‌سازد.
+ */
+private fun buildSlotIso(dateMillis: Long, startHour: Int, startMinute: Int, durationMinutes: Int): Pair<String, String> {
+    val epochDay = dateMillis / 86_400_000L
+    val startTotal = startHour * 60 + startMinute
+    val endTotal = startTotal + durationMinutes
+    val endEpochDay = epochDay + endTotal / 1440
+    val endMinuteOfDay = endTotal % 1440
+    val startIso = isoOf(epochDay, startHour, startMinute)
+    val endIso = isoOf(endEpochDay, endMinuteOfDay / 60, endMinuteOfDay % 60)
+    return startIso to endIso
 }
 
 @Composable

@@ -151,7 +151,7 @@ val CarmilaBrand = BrandConfig(
     currency = "تومان",
     // برندِ نمایشیِ اصلی؛ همه‌ی فیچرها برای دمو روشن‌اند تا هر قابلیتی قابلِ بررسی باشد.
     features = BrandFeatures(
-        academy = true, clinic = true, productComparison = true,
+        academy = true, clinic = true, psychTests = true, productComparison = true,
         academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
         academyProjectAssessment = true, academyLessonResources = true,
         productBundles = true, clinicPatientFile = true, clinicCrm = true

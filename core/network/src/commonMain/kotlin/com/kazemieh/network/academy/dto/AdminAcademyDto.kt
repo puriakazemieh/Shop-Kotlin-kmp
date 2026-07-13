@@ -1,5 +1,6 @@
 package com.kazemieh.network.academy.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +19,7 @@ data class AdminCreateCourseRequestDto(
     val price: Double = 0.0,
     val discountedPrice: Double? = null,
     val productId: Long? = null,
-    val isPublished: Boolean = true,
+    @SerialName("published") val isPublished: Boolean = true,
     val courseType: String = "COURSE",
     val format: String = "ONLINE_RECORDED",
     val level: String? = null,
@@ -40,7 +41,7 @@ data class AdminUpdateCourseRequestDto(
     val instructor: String? = null,
     val price: Double? = null,
     val discountedPrice: Double? = null,
-    val isPublished: Boolean? = null,
+    @SerialName("published") val isPublished: Boolean? = null,
     val requiresProjectSubmission: Boolean? = null,
     val cohortStartDate: String? = null
 )
@@ -57,7 +58,7 @@ data class AdminCreateLessonRequestDto(
     val videoUrl: String? = null,
     val durationSeconds: Int = 0,
     val sortOrder: Int = 0,
-    val isFreePreview: Boolean = false,
+    @SerialName("freePreview") val isFreePreview: Boolean = false,
     val videoVariants: List<VideoVariantResponse> = emptyList(),
     val subtitles: List<SubtitleTrackResponse> = emptyList()
 )

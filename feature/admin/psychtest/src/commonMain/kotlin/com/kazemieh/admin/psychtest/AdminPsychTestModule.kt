@@ -4,6 +4,7 @@ import com.kazemieh.domain.psychtest.CreatePsychTestUseCase
 import com.kazemieh.domain.psychtest.DeletePsychTestUseCase
 import com.kazemieh.domain.psychtest.GetAdminPsychTestsUseCase
 import com.kazemieh.domain.psychtest.GetPendingInterpretationsUseCase
+import com.kazemieh.domain.psychtest.GetPsychTestDetailUseCase
 import com.kazemieh.domain.psychtest.InterpretTestUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -21,7 +22,8 @@ val adminPsychTestModule = module {
             createPsychTestUseCase = get(),
             deletePsychTestUseCase = get(),
             getPendingInterpretationsUseCase = get(),
-            interpretTestUseCase = get()
+            interpretTestUseCase = get(),
+            getPsychTestDetailUseCase = get()
         )
     }
 }

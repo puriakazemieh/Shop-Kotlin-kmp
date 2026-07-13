@@ -1,5 +1,6 @@
 package com.kazemieh.network.clinic.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,7 +20,7 @@ data class AdminCreateTherapistRequestDto(
     val sessionDurationMinutes: Int = 45,
     val productId: Long? = null,
     val messagingProductId: Long? = null,
-    val isActive: Boolean = true,
+    @SerialName("active") val isActive: Boolean = true,
     val mode: String = "ONLINE",
     val location: String? = null
 )
@@ -40,7 +41,7 @@ data class AdminUpdateTherapistRequestDto(
     val photoUrl: String? = null,
     val sessionPrice: Double? = null,
     val sessionDurationMinutes: Int? = null,
-    val isActive: Boolean? = null,
+    @SerialName("active") val isActive: Boolean? = null,
     val messagingProductId: Long? = null
 )
 
@@ -61,7 +62,7 @@ data class AdminSlotResponse(
     val id: Long,
     val startTime: String,
     val endTime: String,
-    val isBooked: Boolean,
+    @SerialName("booked") val isBooked: Boolean,
     val capacity: Int = 1,
     val bookedCount: Int = 0
 )

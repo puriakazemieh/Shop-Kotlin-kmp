@@ -1,5 +1,6 @@
 package com.kazemieh.network.academy.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,7 +16,7 @@ data class CourseSummaryResponse(
     val enrolled: Boolean = false,
     val courseType: String = "COURSE",
     val format: String = "ONLINE_RECORDED",
-    val isOnline: Boolean = true,
+    @SerialName("online") val isOnline: Boolean = true,
     val level: String? = null,
     val jobMarketBadge: Boolean = false,
     val freeUpdateBadge: Boolean = false,
@@ -46,7 +47,7 @@ data class LessonResponse(
     val id: Long,
     val title: String,
     val durationSeconds: Int,
-    val isFreePreview: Boolean,
+    @SerialName("freePreview") val isFreePreview: Boolean,
     val videoUrl: String? = null,
     val completed: Boolean = false,
     val lastPositionSeconds: Int = 0,
@@ -78,7 +79,7 @@ data class CourseDetailResponse(
     val sections: List<SectionResponse>,
     val courseType: String = "COURSE",
     val format: String = "ONLINE_RECORDED",
-    val isOnline: Boolean = true,
+    @SerialName("online") val isOnline: Boolean = true,
     val level: String? = null,
     val location: String? = null,
     val capacity: Int? = null,
@@ -88,7 +89,7 @@ data class CourseDetailResponse(
     val freeUpdateBadge: Boolean = false,
     val instructorBio: String? = null,
     val instructorSkills: List<String> = emptyList(),
-    val isFull: Boolean = false,
+    @SerialName("full") val isFull: Boolean = false,
     val onWaitlist: Boolean = false,
     val productId: Long? = null,
     val requiresProjectSubmission: Boolean = false,
