@@ -10,8 +10,11 @@ data class OrderListState(
 sealed interface OrderListIntent {
     data object LoadOrders : OrderListIntent
     data class OnOrderClick(val orderId: Long) : OrderListIntent
+    data class OnReorderClick(val orderId: Long) : OrderListIntent
 }
 
 sealed interface OrderListEffect {
     data class NavigateToDetail(val orderId: Long) : OrderListEffect
+    data class ReorderDone(val skippedTitles: List<String>) : OrderListEffect
+    data class ReorderFailed(val message: Any) : OrderListEffect
 }

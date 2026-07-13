@@ -28,7 +28,7 @@ val ordersModule = module {
     factory { ListMyRecurringOrdersUseCase(get()) }
     factory { CancelRecurringOrderUseCase(get()) }
 
-    viewModel { OrderListViewModel(get()) }
+    viewModel { OrderListViewModel(get(), get()) }
     viewModel { OrderDetailViewModel(get(), get(), get()) }
     viewModel { OrderTrackingViewModel(get()) }
     viewModel { ReturnRequestViewModel(get(), get()) }

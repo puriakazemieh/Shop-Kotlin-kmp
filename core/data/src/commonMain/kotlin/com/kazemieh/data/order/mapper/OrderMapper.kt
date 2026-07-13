@@ -10,6 +10,7 @@ fun OrderResponse.toDomain(): Order = Order(
     subtotalPrice = subtotalPrice,
     shippingPrice = shippingPrice,
     totalPrice = totalPrice,
+    itemCount = itemCount,
     createdAt = createdAt
 )
 
