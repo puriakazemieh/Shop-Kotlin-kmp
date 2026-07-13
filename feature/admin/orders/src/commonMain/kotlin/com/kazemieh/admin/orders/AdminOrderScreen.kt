@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -55,6 +56,7 @@ fun AdminOrderScreen(
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    var statusSheetOrder by remember { mutableStateOf<AdminOrderSummary?>(null) }
 
     val statusUpdatedSuccessMessage = stringResource(Resources.String.StatusUpdatedSuccessfully)
 
@@ -121,16 +123,34 @@ fun AdminOrderScreen(
                                 Text(stringResource(Resources.String.NoOrdersFound), fontFamily = AppFont())
                             }
                         } else {
+                            val colors = AppTheme.colors
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                                contentPadding = PaddingValues(16.dp)
                             ) {
-                                items(orders) { order ->
-                                    AdminOrderCard(
-                                        order = order,
-                                        onClick = { viewModel.handleIntent(AdminOrderIntent.ShowOrderDetail(order.id)) }
-                                    )
+                                // فهرست به‌صورتِ یک کارتِ گروهی با خط‌های جداکننده (مطابق دیزاین)
+                                item {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(18.dp))
+                                            .background(colors.surface)
+                                            .border(1.dp, colors.line, RoundedCornerShape(18.dp))
+                                    ) {
+                                        orders.forEachIndexed { index, order ->
+                                            AdminOrderRow(
+                                                order = order,
+                                                onClick = { viewModel.handleIntent(AdminOrderIntent.ShowOrderDetail(order.id)) },
+                                                onStatusClick = { statusSheetOrder = order }
+                                            )
+                                            if (index < orders.lastIndex) {
+                                                HorizontalDivider(
+                                                    color = colors.line,
+                                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -150,6 +170,111 @@ fun AdminOrderScreen(
                 }
             }
         )
+    }
+
+    statusSheetOrder?.let { order ->
+        OrderStatusBottomSheet(
+            currentStatus = order.status,
+            isUpdating = state.isUpdatingStatus,
+            onDismiss = { statusSheetOrder = null },
+            onSelect = { newStatus ->
+                viewModel.handleIntent(AdminOrderIntent.UpdateStatus(order.id, newStatus))
+                statusSheetOrder = null
+            }
+        )
+    }
+}
+
+/**
+ * باتم‌شیتِ «تغییر وضعیت سفارش» — هر وضعیت یک ردیفِ کارت با نقطه‌ی رنگی و انتخابِ فعلی
+ * با هایلایت و تیک مشخص می‌شود (مطابق دیزاین).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun OrderStatusBottomSheet(
+    currentStatus: String,
+    isUpdating: Boolean,
+    onDismiss: () -> Unit,
+    onSelect: (String) -> Unit
+) {
+    val colors = AppTheme.colors
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val statuses = listOf("PLACED", "PROCESSING", "SHIPPING", "COMPLETED", "CANCELLED")
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = colors.surface
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp)
+        ) {
+            Text(
+                text = "تغییرِ وضعیتِ سفارش",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = FontSize.LARGE,
+                color = colors.onSurface,
+                fontFamily = AppFont()
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "وضعیتِ جدیدِ سفارش را انتخاب کنید",
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant,
+                fontFamily = AppFont()
+            )
+            Spacer(Modifier.height(16.dp))
+            statuses.forEach { status ->
+                val selected = currentStatus.equals(status, ignoreCase = true)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .then(
+                            if (selected) Modifier.background(colors.primary.copy(alpha = 0.10f))
+                            else Modifier.background(colors.surface)
+                        )
+                        .border(
+                            1.dp,
+                            if (selected) colors.primary else colors.line,
+                            RoundedCornerShape(14.dp)
+                        )
+                        .clickable(enabled = !isUpdating && !selected) { onSelect(status) }
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (selected) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = colors.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    } else {
+                        Spacer(Modifier.width(20.dp))
+                    }
+                    Text(
+                        text = statusLabel(status),
+                        modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                        fontSize = FontSize.REGULAR,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.onSurface,
+                        fontFamily = AppFont()
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(statusColor(status))
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -181,21 +306,20 @@ fun StatusFilterRow(
     }
 }
 
+/** ردیفِ سفارش داخلِ کارتِ گروهی — عنوان + «کاربر · زمان» + قیمت + پیلِ وضعیت + فلش. */
 @Composable
-fun AdminOrderCard(
+fun AdminOrderRow(
     order: AdminOrderSummary,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onStatusClick: () -> Unit
 ) {
     val colors = AppTheme.colors
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -204,7 +328,8 @@ fun AdminOrderCard(
                 fontWeight = FontWeight.Bold,
                 fontSize = FontSize.REGULAR,
                 fontFamily = AppFont(),
-                color = colors.onSurface
+                color = colors.onSurface,
+                maxLines = 1
             )
             Spacer(modifier = Modifier.height(3.dp))
             Text(
@@ -221,10 +346,11 @@ fun AdminOrderCard(
             fontWeight = FontWeight.ExtraBold,
             fontSize = FontSize.SMALL,
             color = colors.onSurface,
-            fontFamily = AppFont()
+            fontFamily = AppFont(),
+            maxLines = 1
         )
         Spacer(modifier = Modifier.width(10.dp))
-        StatusBadge(status = order.status)
+        StatusBadge(status = order.status, onClick = onStatusClick)
         Spacer(modifier = Modifier.width(6.dp))
         Icon(
             painter = painterResource(Resources.Icon.RightArrow),
@@ -235,16 +361,20 @@ fun AdminOrderCard(
     }
 }
 
+/** رنگِ نماینده‌ی هر وضعیتِ سفارش (برای پیل و نقطه‌ی رنگی). */
 @Composable
-fun StatusBadge(status: String) {
-    val color = when (status.uppercase()) {
-        "PLACED" -> AppTheme.colors.star
-        "PROCESSING" -> AppTheme.colors.accent2
-        "SHIPPING" -> MaterialTheme.colorScheme.primary
-        "COMPLETED" -> AppTheme.colors.ok
-        "CANCELLED" -> AppTheme.colors.sale
-        else -> MaterialTheme.colorScheme.outline
-    }
+fun statusColor(status: String): Color = when (status.uppercase()) {
+    "PLACED" -> AppTheme.colors.star
+    "PROCESSING" -> AppTheme.colors.accent2
+    "SHIPPING" -> MaterialTheme.colorScheme.primary
+    "COMPLETED" -> AppTheme.colors.ok
+    "CANCELLED" -> AppTheme.colors.sale
+    else -> MaterialTheme.colorScheme.outline
+}
+
+@Composable
+fun StatusBadge(status: String, onClick: (() -> Unit)? = null) {
+    val color = statusColor(status)
     val label = when (status.uppercase()) {
         "PLACED" -> stringResource(Resources.String.OrderStatusPlaced)
         "PROCESSING" -> stringResource(Resources.String.OrderStatusProcessing)
@@ -256,9 +386,10 @@ fun StatusBadge(status: String) {
     Text(
         text = label,
         modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(50))
             .background(color)
-            .padding(horizontal = 10.dp, vertical = 4.dp),
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
         fontSize = FontSize.EXTRA_SMALL,
         color = Color.White,
         fontWeight = FontWeight.Bold,
