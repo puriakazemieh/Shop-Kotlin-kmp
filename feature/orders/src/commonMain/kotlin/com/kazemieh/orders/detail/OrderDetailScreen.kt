@@ -249,7 +249,7 @@ fun OrderDetailScreen(
                                                 fontFamily = AppFont(),
                                                 color = colors.onSurfaceVariant
                                             )
-                                            if (order.status == "COMPLETED") {
+                                            if (order.status == "COMPLETED" && order.address != null) {
                                                 Spacer(modifier = Modifier.height(4.dp))
                                                 Text(
                                                     text = "درخواستِ مرجوعی/تعویض",
@@ -425,17 +425,25 @@ private fun OrderStatusTimeline(order: OrderDetail) {
         return
     }
 
-    val reachedProcessing = status in listOf("PROCESSING", "SHIPPING", "COMPLETED")
-    val reachedShipped = status in listOf("SHIPPING", "COMPLETED") || order.shippedAt != null
-    val reachedDelivered = status == "COMPLETED" || order.deliveredAt != null
+    val confirmed = status in listOf("PROCESSING", "SHIPPING", "COMPLETED")
 
     data class TimelineStep(val label: String, val time: String?, val done: Boolean)
-    val steps = listOf(
-        TimelineStep("ثبتِ سفارش", order.createdAt, true),
-        TimelineStep("در حالِ آماده‌سازی", null, reachedProcessing),
-        TimelineStep("تحویل به پست", order.shippedAt, reachedShipped),
-        TimelineStep("تحویل به مشتری", order.deliveredAt, reachedDelivered)
-    )
+    // سفارشِ دیجیتال (تست/نوبت/دوره) ارسالِ پستی ندارد؛ چرخه‌ی کوتاه‌تری نمایش می‌دهیم.
+    val steps = if (order.address == null) {
+        listOf(
+            TimelineStep("ثبتِ سفارش", order.createdAt, true),
+            TimelineStep("پرداخت و فعال‌سازیِ دسترسی", null, confirmed || status == "COMPLETED")
+        )
+    } else {
+        val reachedShipped = status in listOf("SHIPPING", "COMPLETED") || order.shippedAt != null
+        val reachedDelivered = status == "COMPLETED" || order.deliveredAt != null
+        listOf(
+            TimelineStep("ثبتِ سفارش", order.createdAt, true),
+            TimelineStep("در حالِ آماده‌سازی", null, confirmed),
+            TimelineStep("تحویل به پست", order.shippedAt, reachedShipped),
+            TimelineStep("تحویل به مشتری", order.deliveredAt, reachedDelivered)
+        )
+    }
 
     Column(
         modifier = Modifier
