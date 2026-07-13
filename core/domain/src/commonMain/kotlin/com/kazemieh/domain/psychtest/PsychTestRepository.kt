@@ -28,6 +28,7 @@ interface AdminPsychTestRepository {
         title: String?,
         description: String?,
         price: Double?,
+        productId: Long?,
         resultMode: String?,
         questions: List<AdminTestQuestion>?,
         ranges: List<AdminScoreRange>?

@@ -314,6 +314,7 @@ private fun CreateTestForm(
     val isEdit = editId != null
     var title by remember { mutableStateOf(initial?.title ?: "") }
     var price by remember { mutableStateOf(initial?.price?.takeIf { it > 0.0 }?.toLong()?.toString() ?: "") }
+    var productId by remember { mutableStateOf(initial?.productId?.toString() ?: "") }
     var description by remember { mutableStateOf(initial?.description ?: "") }
     var resultMode by remember { mutableStateOf(initial?.resultMode?.name ?: "AUTO") }
     val questions = remember {
@@ -355,6 +356,8 @@ private fun CreateTestForm(
     LabeledField("عنوانِ تست", title, { title = it }, "مثلاً تستِ شخصیت‌شناسی")
     Spacer(Modifier.height(14.dp))
     LabeledField("قیمت (تومان)", price, { v -> price = v.filter { it.isDigit() } }, "350000", numeric = true)
+    Spacer(Modifier.height(14.dp))
+    LabeledField("شناسه‌ی محصولِ فروشگاه (برای فعال‌سازیِ خرید)", productId, { v -> productId = v.filter { it.isDigit() } }, "مثلاً 42", numeric = true)
     Spacer(Modifier.height(14.dp))
     LabeledField("توضیحِ کوتاه", description, { description = it }, "توضیحِ کوتاه درباره‌ی تست")
     Spacer(Modifier.height(18.dp))
@@ -403,10 +406,10 @@ private fun CreateTestForm(
                 .filter { it.text.isNotBlank() }
                 .map { AdminScoreRange(it.min.toIntOrNull() ?: 0, it.max.toIntOrNull() ?: 0, it.text.trim()) }
             if (editId != null) {
-                viewModel.updateTest(editId, title.trim(), description.trim(), price.trim(), resultMode, qs, rs)
+                viewModel.updateTest(editId, title.trim(), description.trim(), price.trim(), productId.trim(), resultMode, qs, rs)
             } else {
                 val slug = "test-" + kotlin.random.Random.nextInt(100_000, 999_999)
-                viewModel.createTest(title.trim(), slug, description.trim(), price.trim(), "", resultMode, qs, rs)
+                viewModel.createTest(title.trim(), slug, description.trim(), price.trim(), productId.trim(), resultMode, qs, rs)
             }
             onDone()
         }

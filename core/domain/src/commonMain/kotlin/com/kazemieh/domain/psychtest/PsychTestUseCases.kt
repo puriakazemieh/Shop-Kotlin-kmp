@@ -48,10 +48,11 @@ class UpdatePsychTestUseCase(private val repository: AdminPsychTestRepository) {
         title: String?,
         description: String?,
         price: Double?,
+        productId: Long?,
         resultMode: String?,
         questions: List<AdminTestQuestion>?,
         ranges: List<AdminScoreRange>?
-    ) = repository.update(id, title, description, price, resultMode, questions, ranges)
+    ) = repository.update(id, title, description, price, productId, resultMode, questions, ranges)
 }
 
 class DeletePsychTestUseCase(private val repository: AdminPsychTestRepository) {

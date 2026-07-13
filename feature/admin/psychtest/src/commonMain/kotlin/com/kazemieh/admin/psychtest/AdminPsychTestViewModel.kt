@@ -168,6 +168,7 @@ class AdminPsychTestViewModel(
         title: String,
         description: String,
         price: String,
+        productId: String,
         resultMode: String,
         questions: List<AdminTestQuestion>,
         ranges: List<AdminScoreRange>?
@@ -175,7 +176,7 @@ class AdminPsychTestViewModel(
         viewModelScope.launch {
             val result = updatePsychTestUseCase(
                 id = id, title = title, description = description,
-                price = price.toDoubleOrNull(), resultMode = resultMode,
+                price = price.toDoubleOrNull(), productId = productId.toLongOrNull(), resultMode = resultMode,
                 questions = questions, ranges = ranges
             )
             when (result) {

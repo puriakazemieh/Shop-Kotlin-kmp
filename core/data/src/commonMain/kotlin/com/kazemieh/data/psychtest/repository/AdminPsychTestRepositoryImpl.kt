@@ -63,6 +63,7 @@ class AdminPsychTestRepositoryImpl(
         title: String?,
         description: String?,
         price: Double?,
+        productId: Long?,
         resultMode: String?,
         questions: List<AdminTestQuestion>?,
         ranges: List<AdminScoreRange>?
@@ -70,7 +71,7 @@ class AdminPsychTestRepositoryImpl(
         api.update(
             id,
             AdminUpdatePsychTestRequestDto(
-                title = title, description = description, price = price, resultMode = resultMode,
+                title = title, description = description, price = price, productId = productId, resultMode = resultMode,
                 questions = questions?.mapIndexed { i, q ->
                     TestQuestionResponse(
                         index = i, text = q.text,

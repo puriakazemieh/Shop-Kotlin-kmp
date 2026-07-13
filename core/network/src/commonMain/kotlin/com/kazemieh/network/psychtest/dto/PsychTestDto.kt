@@ -108,6 +108,7 @@ data class AdminUpdatePsychTestRequestDto(
     val description: String? = null,
     val price: Double? = null,
     val discountedPrice: Double? = null,
+    val productId: Long? = null,
     val resultMode: String? = null,
     @SerialName("published") val isPublished: Boolean? = null,
     val questions: List<TestQuestionResponse>? = null,
