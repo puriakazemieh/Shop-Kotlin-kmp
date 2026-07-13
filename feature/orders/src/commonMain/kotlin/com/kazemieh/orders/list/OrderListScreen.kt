@@ -162,7 +162,7 @@ fun OrderCard(
             Spacer(modifier = Modifier.width(13.dp))
             Text(
                 modifier = Modifier.weight(1f),
-                text = formatDateTime(order.createdAt),
+                text = "تاریخِ ثبت: ${formatDateTime(order.createdAt)}",
                 fontSize = FontSize.SMALL,
                 fontFamily = AppFont(),
                 color = colors.onSurfaceVariant

@@ -5,10 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.ContentWidth
 import com.kazemieh.designsystem.Radius
@@ -186,6 +190,10 @@ fun OrderDetailScreen(
                                 }
                             }
 
+                            // ---- تایم‌لاینِ وضعیتِ سفارش ----
+                            Spacer(modifier = Modifier.height(18.dp))
+                            OrderStatusTimeline(order)
+
                             // ---- آدرس تحویل ----
                             order.address?.let { address ->
                                 Spacer(modifier = Modifier.height(18.dp))
@@ -236,7 +244,7 @@ fun OrderDetailScreen(
                                             Text(item.title, fontWeight = FontWeight.SemiBold, fontFamily = AppFont(), color = colors.onSurface)
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
-                                                text = item.options.entries.joinToString(" · ") { "${it.key}: ${it.value}" } + " · تعداد ${item.qty}",
+                                                text = (item.options.values.filter { it.isNotBlank() } + "تعداد ${item.qty}").joinToString(" · "),
                                                 fontSize = FontSize.SMALL,
                                                 fontFamily = AppFont(),
                                                 color = colors.onSurfaceVariant
@@ -311,19 +319,23 @@ fun OrderDetailScreen(
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))
-                            PrimaryButton(
-                                text = "سفارشِ مجددِ همین اقلام",
-                                onClick = { viewModel.handleIntent(OrderDetailIntent.Reorder(order.id)) },
-                                enabled = !state.isReordering,
-                                secondary = true
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-                            PrimaryButton(
-                                text = "دانلود فاکتور",
-                                onClick = { showInvoice = true },
-                                secondary = true
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                PrimaryButton(
+                                    modifier = Modifier.weight(1f),
+                                    text = "دانلود فاکتور",
+                                    onClick = { showInvoice = true }
+                                )
+                                PrimaryButton(
+                                    modifier = Modifier.weight(1f),
+                                    text = "ثبتِ مجددِ سفارش",
+                                    onClick = { viewModel.handleIntent(OrderDetailIntent.Reorder(order.id)) },
+                                    enabled = !state.isReordering,
+                                    secondary = true
+                                )
+                            }
 
                             if (showInvoice) {
                                 InvoiceDialog(order = order, onDismiss = { showInvoice = false })
@@ -385,6 +397,88 @@ private fun InvoiceDialog(order: OrderDetail, onDismiss: () -> Unit) {
                 }
                 Spacer(Modifier.height(16.dp))
                 PrimaryButton(text = "بستن", onClick = onDismiss, secondary = true)
+            }
+        }
+    }
+}
+
+/**
+ * تایم‌لاینِ چرخه‌ی سفارش (ثبت → آماده‌سازی → تحویل به پست → تحویل به مشتری) با تیکِ سبز
+ * برای مراحلِ طی‌شده. برای سفارش‌های دیجیتال (تست/نوبت/دوره) هم همین چرخه نمایش داده می‌شود.
+ */
+@Composable
+private fun OrderStatusTimeline(order: OrderDetail) {
+    val colors = AppTheme.colors
+    val status = order.status.uppercase()
+
+    if (status == "CANCELLED") {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(colors.sale.copy(alpha = 0.10f))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("این سفارش لغو شده است", fontFamily = AppFont(), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL, color = colors.sale)
+        }
+        return
+    }
+
+    val reachedProcessing = status in listOf("PROCESSING", "SHIPPING", "COMPLETED")
+    val reachedShipped = status in listOf("SHIPPING", "COMPLETED") || order.shippedAt != null
+    val reachedDelivered = status == "COMPLETED" || order.deliveredAt != null
+
+    data class TimelineStep(val label: String, val time: String?, val done: Boolean)
+    val steps = listOf(
+        TimelineStep("ثبتِ سفارش", order.createdAt, true),
+        TimelineStep("در حالِ آماده‌سازی", null, reachedProcessing),
+        TimelineStep("تحویل به پست", order.shippedAt, reachedShipped),
+        TimelineStep("تحویل به مشتری", order.deliveredAt, reachedDelivered)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        steps.forEachIndexed { i, step ->
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                Column(modifier = Modifier.weight(1f).padding(vertical = 6.dp)) {
+                    Text(
+                        step.label, fontFamily = AppFont(), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL,
+                        color = if (step.done) colors.onSurface else colors.onSurfaceVariant
+                    )
+                    step.time?.let {
+                        Spacer(Modifier.height(3.dp))
+                        Text(formatDateTime(it), fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                    }
+                }
+                Spacer(Modifier.width(12.dp))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(Modifier.height(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(if (step.done) colors.ok else colors.surface)
+                            .then(if (step.done) Modifier else Modifier.border(1.5.dp, colors.line, CircleShape)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (step.done) Icon(Icons.Default.Check, contentDescription = null, tint = Color.White, modifier = Modifier.size(14.dp))
+                    }
+                    if (i < steps.lastIndex) {
+                        Box(
+                            modifier = Modifier
+                                .width(2.dp)
+                                .height(30.dp)
+                                .background(if (steps[i + 1].done) colors.ok else colors.line)
+                        )
+                    }
+                }
             }
         }
     }
