@@ -184,17 +184,30 @@ private fun ShopTestCard(test: PsychTestSummary, onBuy: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(formatToman(test.price), fontWeight = FontWeight.Bold, color = colors.primary, fontSize = FontSize.REGULAR)
-            val productId = test.productId
-            val label = if (test.owned) "شروعِ تست" else "خرید"
-            Text(
-                if (productId != null || test.owned) label else "به‌زودی",
-                modifier = Modifier
-                    .clip(RoundedCornerShape(Radius.button))
-                    .background(if (productId != null || test.owned) colors.primary else colors.line)
-                    .clickable(enabled = productId != null) { productId?.let { onBuy(it.toString()) } }
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
-            )
+            val productSlug = test.productSlug
+            when {
+                test.owned -> Text(
+                    "خریداری‌شده — در «تست‌های من»",
+                    color = colors.ok, fontWeight = FontWeight.SemiBold, fontSize = FontSize.EXTRA_SMALL
+                )
+                productSlug != null -> Text(
+                    "خرید",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.primary)
+                        .clickable { onBuy(productSlug) }
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                    color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+                )
+                else -> Text(
+                    "به‌زودی",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.line)
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                    color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+                )
+            }
         }
     }
 }
