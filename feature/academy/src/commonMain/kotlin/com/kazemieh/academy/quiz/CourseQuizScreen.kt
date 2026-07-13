@@ -95,6 +95,14 @@ fun CourseQuizScreen(
                     CircularProgressIndicator(color = colors.primary)
                 }
                 result != null -> QuizResultView(result = result, onViewCertificate = navigateToCertificates, onRetry = { viewModel.load(courseId) })
+                quiz != null && !quiz.hasQuiz -> Box(Modifier.fillMaxSize().padding(24.dp), Alignment.Center) {
+                    Text(
+                        "برای این دوره آزمونی تعریف نشده است.",
+                        color = colors.onSurfaceVariant,
+                        fontSize = FontSize.REGULAR,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 quiz != null -> LazyColumn(
                     modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)

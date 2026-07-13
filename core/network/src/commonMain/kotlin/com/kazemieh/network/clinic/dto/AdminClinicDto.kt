@@ -20,7 +20,7 @@ data class AdminCreateTherapistRequestDto(
     val sessionDurationMinutes: Int = 45,
     val productId: Long? = null,
     val messagingProductId: Long? = null,
-    @SerialName("active") val isActive: Boolean = true,
+    val isActive: Boolean = true,
     val mode: String = "ONLINE",
     val location: String? = null
 )
@@ -41,7 +41,7 @@ data class AdminUpdateTherapistRequestDto(
     val photoUrl: String? = null,
     val sessionPrice: Double? = null,
     val sessionDurationMinutes: Int? = null,
-    @SerialName("active") val isActive: Boolean? = null,
+    val isActive: Boolean? = null,
     val messagingProductId: Long? = null
 )
 

@@ -82,7 +82,7 @@ data class AdminCreatePsychTestRequestDto(
     val discountedPrice: Double? = null,
     val productId: Long? = null,
     val resultMode: String = "AUTO",
-    @SerialName("published") val isPublished: Boolean = true,
+    val isPublished: Boolean = true,
     val questions: List<TestQuestionResponse> = emptyList(),
     val ranges: List<ScoreRangeResponse> = emptyList()
 )
@@ -110,7 +110,7 @@ data class AdminUpdatePsychTestRequestDto(
     val discountedPrice: Double? = null,
     val productId: Long? = null,
     val resultMode: String? = null,
-    @SerialName("published") val isPublished: Boolean? = null,
+    val isPublished: Boolean? = null,
     val questions: List<TestQuestionResponse>? = null,
     val ranges: List<ScoreRangeResponse>? = null
 )

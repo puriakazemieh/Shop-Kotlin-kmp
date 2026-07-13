@@ -136,7 +136,8 @@ data class QuizResponse(
     val title: String,
     val passScore: Int,
     val questions: List<QuizQuestionResponse>,
-    val alreadyPassed: Boolean = false
+    val alreadyPassed: Boolean = false,
+    val hasQuiz: Boolean = true
 )
 
 @Serializable

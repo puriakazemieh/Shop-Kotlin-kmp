@@ -223,6 +223,7 @@ class AcademyRepositoryImpl(
 
     private fun QuizResponse.toDomain() = Quiz(
         courseId = courseId, title = title, passScore = passScore, alreadyPassed = alreadyPassed,
+        hasQuiz = hasQuiz,
         questions = questions.map { q ->
             QuizQuestion(index = q.index, text = q.text, options = q.options.map { QuizOption(it.text) })
         }

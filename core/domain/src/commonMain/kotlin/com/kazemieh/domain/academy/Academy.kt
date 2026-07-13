@@ -137,7 +137,8 @@ data class Quiz(
     val title: String,
     val passScore: Int,
     val questions: List<QuizQuestion>,
-    val alreadyPassed: Boolean
+    val alreadyPassed: Boolean,
+    val hasQuiz: Boolean = true
 )
 
 data class QuizResult(
