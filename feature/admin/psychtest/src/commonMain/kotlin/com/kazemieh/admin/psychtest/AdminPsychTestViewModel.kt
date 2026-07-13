@@ -3,9 +3,11 @@ package com.kazemieh.admin.psychtest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.psychtest.AdminPsychTestDetail
 import com.kazemieh.domain.psychtest.AdminScoreRange
 import com.kazemieh.domain.psychtest.AdminTestQuestion
 import com.kazemieh.domain.psychtest.CreatePsychTestUseCase
+import com.kazemieh.domain.psychtest.GetAdminPsychTestDetailUseCase
 import com.kazemieh.domain.psychtest.DeletePsychTestUseCase
 import com.kazemieh.domain.psychtest.GetAdminPsychTestsUseCase
 import com.kazemieh.domain.psychtest.GetPendingInterpretationsUseCase
@@ -37,7 +39,7 @@ data class AdminPsychTestState(
     /** حالتِ ویرایش: شناسه‌ی تستِ در حالِ ویرایش و جزئیاتِ بارگذاری‌شده برای پیش‌پُر کردنِ فرم. */
     val editLoadingId: Long? = null,
     val editingTestId: Long? = null,
-    val editingDetail: PsychTestDetail? = null
+    val editingDetail: AdminPsychTestDetail? = null
 )
 
 sealed interface AdminPsychTestEffect {
@@ -52,7 +54,8 @@ class AdminPsychTestViewModel(
     private val deletePsychTestUseCase: DeletePsychTestUseCase,
     private val getPendingInterpretationsUseCase: GetPendingInterpretationsUseCase,
     private val interpretTestUseCase: InterpretTestUseCase,
-    private val getPsychTestDetailUseCase: GetPsychTestDetailUseCase
+    private val getPsychTestDetailUseCase: GetPsychTestDetailUseCase,
+    private val getAdminPsychTestDetailUseCase: GetAdminPsychTestDetailUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminPsychTestState())
@@ -141,11 +144,11 @@ class AdminPsychTestViewModel(
         _state.update { it.copy(detailLoadingSlug = null, selectedDetail = null) }
     }
 
-    /** ویرایشِ یک تست: جزئیاتِ کامل (سؤال‌ها) را می‌گیرد تا فرمِ ویرایش با آن پیش‌پُر شود. */
+    /** ویرایشِ یک تست: جزئیاتِ کاملِ ادمین (سؤال‌ها با امتیاز + بازه‌ها) را می‌گیرد تا فرمِ ویرایش کاملاً پیش‌پُر شود. */
     fun openEdit(test: PsychTestSummary) {
         _state.update { it.copy(editLoadingId = test.id, editingTestId = test.id, editingDetail = null) }
         viewModelScope.launch {
-            when (val r = getPsychTestDetailUseCase(test.slug)) {
+            when (val r = getAdminPsychTestDetailUseCase(test.id)) {
                 is AppResult.Success -> _state.update { it.copy(editLoadingId = null, editingDetail = r.data) }
                 is AppResult.Error -> {
                     _state.update { it.copy(editLoadingId = null, editingTestId = null) }

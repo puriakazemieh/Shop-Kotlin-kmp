@@ -58,6 +58,20 @@ data class UserPsychTest(
     val completedAt: String?
 )
 
+/** جزئیاتِ کاملِ یک تست برای ادمین (شاملِ امتیازِ گزینه‌ها و بازه‌ها) جهتِ پیش‌پُر کردنِ فرمِ ویرایش. */
+data class AdminPsychTestDetail(
+    val id: Long,
+    val title: String,
+    val slug: String,
+    val description: String?,
+    val price: Double,
+    val productId: Long?,
+    val resultMode: TestResultMode,
+    val isPublished: Boolean,
+    val questions: List<AdminTestQuestion>,
+    val ranges: List<AdminScoreRange>
+)
+
 /** یک سؤالِ تست در فرمِ تست‌سازِ ادمین. */
 data class AdminTestQuestion(
     val text: String,

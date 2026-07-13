@@ -2,6 +2,7 @@ package com.kazemieh.admin.psychtest
 
 import com.kazemieh.domain.psychtest.CreatePsychTestUseCase
 import com.kazemieh.domain.psychtest.DeletePsychTestUseCase
+import com.kazemieh.domain.psychtest.GetAdminPsychTestDetailUseCase
 import com.kazemieh.domain.psychtest.GetAdminPsychTestsUseCase
 import com.kazemieh.domain.psychtest.GetPendingInterpretationsUseCase
 import com.kazemieh.domain.psychtest.GetPsychTestDetailUseCase
@@ -12,6 +13,7 @@ import org.koin.dsl.module
 
 val adminPsychTestModule = module {
     factory { GetAdminPsychTestsUseCase(get()) }
+    factory { GetAdminPsychTestDetailUseCase(get()) }
     factory { CreatePsychTestUseCase(get()) }
     factory { UpdatePsychTestUseCase(get()) }
     factory { DeletePsychTestUseCase(get()) }
@@ -26,7 +28,8 @@ val adminPsychTestModule = module {
             deletePsychTestUseCase = get(),
             getPendingInterpretationsUseCase = get(),
             interpretTestUseCase = get(),
-            getPsychTestDetailUseCase = get()
+            getPsychTestDetailUseCase = get(),
+            getAdminPsychTestDetailUseCase = get()
         )
     }
 }

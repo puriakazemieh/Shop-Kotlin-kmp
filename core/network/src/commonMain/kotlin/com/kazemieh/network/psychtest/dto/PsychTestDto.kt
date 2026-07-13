@@ -88,6 +88,21 @@ data class AdminCreatePsychTestRequestDto(
 )
 
 @Serializable
+data class AdminPsychTestDetailResponse(
+    val id: Long,
+    val title: String,
+    val slug: String,
+    val description: String? = null,
+    val price: Double = 0.0,
+    val discountedPrice: Double? = null,
+    val productId: Long? = null,
+    val resultMode: String = "AUTO",
+    @SerialName("published") val isPublished: Boolean = true,
+    val questions: List<TestQuestionResponse> = emptyList(),
+    val ranges: List<ScoreRangeResponse> = emptyList()
+)
+
+@Serializable
 data class AdminUpdatePsychTestRequestDto(
     val title: String? = null,
     val description: String? = null,

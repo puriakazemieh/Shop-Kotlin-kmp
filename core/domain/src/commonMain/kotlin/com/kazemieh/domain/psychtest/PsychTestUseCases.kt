@@ -25,6 +25,10 @@ class GetAdminPsychTestsUseCase(private val repository: AdminPsychTestRepository
     suspend operator fun invoke() = repository.list()
 }
 
+class GetAdminPsychTestDetailUseCase(private val repository: AdminPsychTestRepository) {
+    suspend operator fun invoke(id: Long) = repository.detail(id)
+}
+
 class CreatePsychTestUseCase(private val repository: AdminPsychTestRepository) {
     suspend operator fun invoke(
         title: String,

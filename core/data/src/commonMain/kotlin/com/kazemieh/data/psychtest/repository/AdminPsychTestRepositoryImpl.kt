@@ -1,6 +1,7 @@
 package com.kazemieh.data.psychtest.repository
 
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.psychtest.AdminPsychTestDetail
 import com.kazemieh.domain.psychtest.AdminPsychTestRepository
 import com.kazemieh.domain.psychtest.AdminScoreRange
 import com.kazemieh.domain.psychtest.AdminTestQuestion
@@ -9,6 +10,7 @@ import com.kazemieh.domain.psychtest.TestResultMode
 import com.kazemieh.domain.psychtest.UserPsychTest
 import com.kazemieh.domain.psychtest.UserTestStatus
 import com.kazemieh.network.psychtest.AdminPsychTestApi
+import com.kazemieh.network.psychtest.dto.AdminPsychTestDetailResponse
 import com.kazemieh.network.psychtest.dto.AdminCreatePsychTestRequestDto
 import com.kazemieh.network.psychtest.dto.AdminInterpretRequestDto
 import com.kazemieh.network.psychtest.dto.AdminUpdatePsychTestRequestDto
@@ -25,6 +27,10 @@ class AdminPsychTestRepositoryImpl(
 
     override suspend fun list(): AppResult<List<PsychTestSummary>> = safeApiCall {
         api.list().map { it.toDomain() }
+    }
+
+    override suspend fun detail(id: Long): AppResult<AdminPsychTestDetail> = safeApiCall {
+        api.detail(id).toDomain()
     }
 
     override suspend fun create(
@@ -87,6 +93,15 @@ class AdminPsychTestRepositoryImpl(
     override suspend fun interpret(userTestId: Long, interpretation: String): AppResult<Unit> = safeApiCall {
         api.interpret(userTestId, AdminInterpretRequestDto(interpretation))
     }
+
+    private fun AdminPsychTestDetailResponse.toDomain() = AdminPsychTestDetail(
+        id = id, title = title, slug = slug, description = description, price = price,
+        productId = productId, resultMode = TestResultMode.from(resultMode), isPublished = isPublished,
+        questions = questions.map { q ->
+            AdminTestQuestion(q.text, q.options.map { it.text to (it.score ?: 0) })
+        },
+        ranges = ranges.map { AdminScoreRange(it.minScore, it.maxScore, it.interpretation) }
+    )
 
     private fun PsychTestSummaryResponse.toDomain() = PsychTestSummary(
         id = id, title = title, slug = slug, description = description, price = price,

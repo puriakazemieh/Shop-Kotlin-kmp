@@ -61,9 +61,9 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.formatToman
+import com.kazemieh.domain.psychtest.AdminPsychTestDetail
 import com.kazemieh.domain.psychtest.AdminScoreRange
 import com.kazemieh.domain.psychtest.AdminTestQuestion
-import com.kazemieh.domain.psychtest.PsychTestDetail
 import com.kazemieh.domain.psychtest.PsychTestSummary
 import com.kazemieh.domain.psychtest.TestResultMode
 import com.kazemieh.domain.psychtest.UserPsychTest
@@ -289,10 +289,11 @@ private fun TestDetailContent(loading: Boolean, detail: com.kazemieh.domain.psyc
 
 // =============================== فرمِ ساخت/ویرایشِ تست ===============================
 
-/** پیش‌نویسِ یک سؤال در فرم. */
+/** پیش‌نویسِ یک سؤال در فرم. امتیازِ گزینه‌ها به‌صورتِ نامرئی نگه‌داری می‌شود (پیش‌فرض = اندیس). */
 private class QuestionDraftUi {
     var text by mutableStateOf("")
     val options = mutableStateListOf("", "", "", "")
+    val scores = mutableStateListOf(0, 1, 2, 3)
 }
 
 /** پیش‌نویسِ یک بازه‌ی امتیاز→تفسیر (فقط حالتِ خودکار). */
@@ -305,7 +306,7 @@ private class RangeDraftUi {
 @Composable
 private fun CreateTestForm(
     viewModel: AdminPsychTestViewModel,
-    initial: PsychTestDetail? = null,
+    initial: AdminPsychTestDetail? = null,
     editId: Long? = null,
     onDone: () -> Unit
 ) {
@@ -324,13 +325,26 @@ private fun CreateTestForm(
                 initialQuestions.forEach { q ->
                     add(QuestionDraftUi().apply {
                         text = q.text
-                        q.options.take(options.size).forEachIndexed { i, o -> options[i] = o.text }
+                        q.options.take(options.size).forEachIndexed { i, (optText, optScore) ->
+                            options[i] = optText
+                            scores[i] = optScore
+                        }
                     })
                 }
             }
         }
     }
-    val ranges = remember { mutableStateListOf<RangeDraftUi>() }
+    val ranges = remember {
+        mutableStateListOf<RangeDraftUi>().apply {
+            initial?.ranges.orEmpty().forEach { r ->
+                add(RangeDraftUi().apply {
+                    min = r.minScore.toString()
+                    max = r.maxScore.toString()
+                    text = r.interpretation
+                })
+            }
+        }
+    }
 
     Text(
         if (isEdit) "ویرایشِ تستِ روان‌شناسی" else "ساخت / ویرایشِ تستِ روان‌شناسی",
@@ -363,13 +377,6 @@ private fun CreateTestForm(
     if (resultMode == "AUTO") {
         Spacer(Modifier.height(6.dp))
         SectionHeader("بازه‌ی امتیاز ← تفسیر", "+ افزودنِ بازه") { ranges.add(RangeDraftUi()) }
-        if (isEdit) {
-            Spacer(Modifier.height(4.dp))
-            Text(
-                "بازه‌های فعلی حفظ می‌شوند مگر بازه‌ی جدیدی اضافه کنید (که جایگزینِ آن‌ها می‌شود).",
-                color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL
-            )
-        }
         Spacer(Modifier.height(10.dp))
         ranges.forEachIndexed { i, r ->
             RangeEditor(r) { ranges.removeAt(i) }
@@ -387,14 +394,16 @@ private fun CreateTestForm(
                 .map { q ->
                     AdminTestQuestion(
                         q.text.trim(),
-                        q.options.mapIndexedNotNull { idx, o -> if (o.isNotBlank()) o.trim() to idx else null }
+                        q.options.mapIndexedNotNull { idx, o ->
+                            if (o.isNotBlank()) o.trim() to q.scores.getOrElse(idx) { idx } else null
+                        }
                     )
                 }
             val rs = ranges
                 .filter { it.text.isNotBlank() }
                 .map { AdminScoreRange(it.min.toIntOrNull() ?: 0, it.max.toIntOrNull() ?: 0, it.text.trim()) }
             if (editId != null) {
-                viewModel.updateTest(editId, title.trim(), description.trim(), price.trim(), resultMode, qs, rs.ifEmpty { null })
+                viewModel.updateTest(editId, title.trim(), description.trim(), price.trim(), resultMode, qs, rs)
             } else {
                 val slug = "test-" + kotlin.random.Random.nextInt(100_000, 999_999)
                 viewModel.createTest(title.trim(), slug, description.trim(), price.trim(), "", resultMode, qs, rs)

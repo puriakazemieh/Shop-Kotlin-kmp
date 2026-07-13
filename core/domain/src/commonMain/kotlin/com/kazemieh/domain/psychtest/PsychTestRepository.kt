@@ -12,6 +12,7 @@ interface PsychTestRepository {
 
 interface AdminPsychTestRepository {
     suspend fun list(): AppResult<List<PsychTestSummary>>
+    suspend fun detail(id: Long): AppResult<AdminPsychTestDetail>
     suspend fun create(
         title: String,
         slug: String,

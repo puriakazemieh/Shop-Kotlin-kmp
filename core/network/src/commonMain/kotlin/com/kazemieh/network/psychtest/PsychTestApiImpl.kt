@@ -38,6 +38,10 @@ class AdminPsychTestApiImpl(
         client.get("api/admin/psych-tests")
     }
 
+    override suspend fun detail(id: Long): AdminPsychTestDetailResponse = safeApiCallRaw {
+        client.get("api/admin/psych-tests/$id")
+    }
+
     override suspend fun create(request: AdminCreatePsychTestRequestDto): Long =
         safeApiCallRaw<IdResponse> {
             client.post("api/admin/psych-tests") { setBody(request) }
