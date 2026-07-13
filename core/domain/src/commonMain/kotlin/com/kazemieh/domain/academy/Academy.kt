@@ -26,6 +26,8 @@ data class CourseSummary(
     val price: Double,
     val discountedPrice: Double?,
     val lessonCount: Int,
+    val completedLessons: Int = 0,
+    val progressPercent: Int = 0,
     val enrolled: Boolean,
     val courseType: CourseType = CourseType.COURSE,
     val format: CourseFormat = CourseFormat.ONLINE_RECORDED,

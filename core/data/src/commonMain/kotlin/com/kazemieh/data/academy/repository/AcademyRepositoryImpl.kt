@@ -179,7 +179,8 @@ class AcademyRepositoryImpl(
 
     private fun CourseSummaryResponse.toDomain() = CourseSummary(
         id = id, title = title, slug = slug, thumbnailUrl = thumbnailUrl, instructor = instructor,
-        price = price, discountedPrice = discountedPrice, lessonCount = lessonCount, enrolled = enrolled,
+        price = price, discountedPrice = discountedPrice, lessonCount = lessonCount,
+        completedLessons = completedLessons, progressPercent = progressPercent, enrolled = enrolled,
         courseType = CourseType.from(courseType), format = CourseFormat.from(format), isOnline = isOnline,
         level = level, jobMarketBadge = jobMarketBadge, freeUpdateBadge = freeUpdateBadge,
         hasUnseenUpdate = hasUnseenUpdate

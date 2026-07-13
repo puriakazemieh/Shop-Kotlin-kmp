@@ -29,8 +29,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.responsiveMaxWidth
@@ -142,22 +143,37 @@ fun CourseLearnScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("کیفیت:", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
+                            Text("کیفیتِ پخش:", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
                             variants.forEach { v ->
                                 val active = (selectedQuality ?: variants.firstOrNull()?.quality) == v.quality
                                 Text(
                                     v.quality,
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(Radius.full))
-                                        .background(if (active) colors.primary else colors.surfaceVariant)
+                                        .clip(RoundedCornerShape(Radius.sm))
+                                        .background(if (active) colors.primary else colors.surface)
+                                        .border(1.dp, if (active) colors.primary else colors.line, RoundedCornerShape(Radius.sm))
                                         .clickable { selectedQuality = v.quality }
-                                        .padding(horizontal = 12.dp, vertical = 5.dp),
-                                    color = if (active) colors.onPrimary else colors.onSurfaceVariant,
+                                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                                    color = if (active) colors.onPrimary else colors.onSurface,
                                     fontSize = FontSize.EXTRA_SMALL,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
                         }
+                    }
+                    // ---- ذخیره برای پخشِ آفلاین ----
+                    if (activeUrl != null) {
+                        val offlineUri = LocalUriHandler.current
+                        Text(
+                            "↓  ذخیره برای پخشِ آفلاین",
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 4.dp)
+                                .clickable { offlineUri.openUri(activeUrl) },
+                            color = colors.primary,
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
 
                     // ---- دکمه‌ی آزمونِ پایانِ دوره (پس از تکمیلِ ۱۰۰٪) ----
@@ -302,17 +318,29 @@ fun CourseLearnScreen(
                         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        course.sections.forEach { section ->
+                        course.sections.forEachIndexed { sIdx, section ->
                             item {
-                                Spacer(Modifier.height(6.dp))
-                                Text(section.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+                                Spacer(Modifier.height(8.dp))
+                                val heading = if (section.title.contains("فصل")) section.title else "فصل $sIdx: ${section.title}"
+                                Text(heading, fontWeight = FontWeight.Bold, color = colors.primary, fontSize = FontSize.REGULAR)
                             }
                             items(section.lessons.size) { idx ->
                                 val l = section.lessons[idx]
                                 LearnLessonRow(
                                     lesson = l,
                                     selected = l.id == state.selectedLessonId,
-                                    onClick = { if (l.videoUrl != null) viewModel.selectLesson(l.id) }
+                                    onClick = { if (l.videoUrl != null) viewModel.selectLesson(l.id) },
+                                    onToggleComplete = { if (!l.completed && l.videoUrl != null) viewModel.markComplete(l.id) }
+                                )
+                            }
+                            item { Spacer(Modifier.height(4.dp)) }
+                        }
+                        if (course.isOnline && course.progressPercent < 100) {
+                            item {
+                                Text(
+                                    "پس از تکمیلِ همه‌ی جلسات، آزمونِ پایانِ دوره فعال می‌شود.",
+                                    color = colors.onSurfaceVariant, fontSize = FontSize.SMALL,
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
                                 )
                             }
                         }
@@ -401,24 +429,53 @@ private fun LessonQaSection(
 }
 
 @Composable
-private fun LearnLessonRow(lesson: Lesson, selected: Boolean, onClick: () -> Unit) {
+private fun LearnLessonRow(lesson: Lesson, selected: Boolean, onClick: () -> Unit, onToggleComplete: () -> Unit) {
     val colors = AppTheme.colors
+    val uriHandler = LocalUriHandler.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(Radius.sm))
             .background(if (selected) colors.accentSoft else colors.surface)
-            .clickable { onClick() }
-            .padding(12.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            if (lesson.completed) Icons.Default.CheckCircle else Icons.Default.PlayCircle,
-            contentDescription = null,
-            tint = if (lesson.completed) colors.ok else colors.primary,
-            modifier = Modifier.size(18.dp)
+        Text(
+            lesson.title,
+            modifier = Modifier.weight(1f, fill = false).clickable { onClick() }.padding(vertical = 8.dp),
+            color = colors.onSurface,
+            fontSize = FontSize.REGULAR,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
-        Spacer(Modifier.size(10.dp))
-        Text(lesson.title, modifier = Modifier.weight(1f), color = colors.onSurface, fontSize = FontSize.REGULAR)
+        Spacer(Modifier.width(8.dp))
+        Icon(
+            Icons.Default.PlayArrow,
+            contentDescription = null,
+            tint = if (lesson.videoUrl != null) colors.primary else colors.onSurfaceVariant,
+            modifier = Modifier.size(18.dp).clickable { onClick() }
+        )
+        Spacer(Modifier.width(8.dp))
+        Box(
+            modifier = Modifier
+                .size(22.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(if (lesson.completed) colors.primary else colors.surface)
+                .border(1.5.dp, if (lesson.completed) colors.primary else colors.line, RoundedCornerShape(6.dp))
+                .clickable { onToggleComplete() },
+            contentAlignment = Alignment.Center
+        ) {
+            if (lesson.completed) Icon(Icons.Default.Check, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(14.dp))
+        }
+        Spacer(Modifier.weight(1f))
+        if (lesson.resourceFiles.isNotEmpty()) {
+            Text(
+                "دانلود فایل",
+                modifier = Modifier.clickable { uriHandler.openUri(lesson.resourceFiles.first().url) }.padding(vertical = 8.dp),
+                color = colors.primary,
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 }

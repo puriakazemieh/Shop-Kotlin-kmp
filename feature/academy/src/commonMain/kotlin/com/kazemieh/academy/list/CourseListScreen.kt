@@ -1,6 +1,7 @@
 package com.kazemieh.academy.list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -69,6 +70,7 @@ fun CourseListScreen(
         CourseListBody(
             state = state,
             mine = mine,
+            embedded = true,
             navigateToCourse = navigateToCourse,
             navigateToCatalog = navigateToCatalog,
             navigateToInstructor = navigateToInstructor,
@@ -99,6 +101,7 @@ fun CourseListScreen(
         CourseListBody(
             state = state,
             mine = mine,
+            embedded = false,
             navigateToCourse = navigateToCourse,
             navigateToCatalog = navigateToCatalog,
             navigateToInstructor = navigateToInstructor,
@@ -112,6 +115,7 @@ fun CourseListScreen(
 private fun CourseListBody(
     state: CourseListState,
     mine: Boolean,
+    embedded: Boolean,
     navigateToCourse: (String) -> Unit,
     navigateToCatalog: (() -> Unit)?,
     navigateToInstructor: ((String) -> Unit)?,
@@ -151,6 +155,17 @@ private fun CourseListBody(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
             ) {
+                if (mine && embedded) {
+                    item {
+                        Text(
+                            "دوره‌های من",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = FontSize.EXTRA_MEDIUM,
+                            color = colors.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                    }
+                }
                 items(state.courses) { course ->
                     CourseRow(
                         course = course,
@@ -166,56 +181,81 @@ private fun CourseListBody(
 @Composable
 private fun CourseRow(course: CourseSummary, onClick: () -> Unit, onInstructorClick: ((String) -> Unit)? = null) {
     val colors = AppTheme.colors
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(Radius.md))
             .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
             .clickable { onClick() }
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(14.dp)
     ) {
-        Box(
-            modifier = Modifier.size(72.dp).clip(RoundedCornerShape(Radius.sm)).background(colors.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            if (!course.thumbnailUrl.isNullOrBlank()) {
-                androidx.compose.foundation.Image(
-                    painter = rememberImagePainter(course.thumbnailUrl!!),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(Radius.sm)),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Text("🎓", fontSize = FontSize.LARGE)
-            }
-        }
-        Spacer(Modifier.size(12.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(course.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR, modifier = Modifier.weight(1f, fill = false))
-                if (course.hasUnseenUpdate) {
-                    Spacer(Modifier.size(6.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(course.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR, modifier = Modifier.weight(1f, fill = false))
+                    if (course.hasUnseenUpdate) {
+                        Spacer(Modifier.size(6.dp))
+                        Text(
+                            "به‌روزرسانیِ جدید",
+                            modifier = Modifier.clip(RoundedCornerShape(Radius.full)).background(colors.gold.copy(alpha = 0.15f)).padding(horizontal = 8.dp, vertical = 3.dp),
+                            color = colors.gold, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                if (!course.instructor.isNullOrBlank()) {
+                    Spacer(Modifier.height(4.dp))
                     Text(
-                        "به‌روزرسانیِ جدید",
-                        modifier = Modifier.clip(RoundedCornerShape(Radius.full)).background(colors.gold.copy(alpha = 0.15f)).padding(horizontal = 8.dp, vertical = 3.dp),
-                        color = colors.gold, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
+                        course.instructor!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL,
+                        modifier = if (onInstructorClick != null) Modifier.clickable { onInstructorClick(course.instructor!!) } else Modifier
                     )
                 }
             }
-            if (!course.instructor.isNullOrBlank()) {
-                Spacer(Modifier.height(3.dp))
+            Spacer(Modifier.size(12.dp))
+            Box(
+                modifier = Modifier.size(64.dp).clip(RoundedCornerShape(Radius.sm)).background(colors.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                if (!course.thumbnailUrl.isNullOrBlank()) {
+                    androidx.compose.foundation.Image(
+                        painter = rememberImagePainter(course.thumbnailUrl!!),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(Radius.sm)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text("🎓", fontSize = FontSize.LARGE)
+                }
+            }
+        }
+
+        if (course.enrolled) {
+            Spacer(Modifier.height(12.dp))
+            LinearProgressIndicator(
+                progress = { (course.progressPercent / 100f).coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth().height(7.dp).clip(RoundedCornerShape(Radius.full)),
+                color = colors.primary,
+                trackColor = colors.surfaceVariant
+            )
+            Spacer(Modifier.height(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    course.instructor!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL,
-                    modifier = if (onInstructorClick != null) Modifier.clickable { onInstructorClick(course.instructor!!) } else Modifier
+                    "${course.progressPercent}٪ پیشرفت · ${course.completedLessons} از ${course.lessonCount} جلسه",
+                    color = colors.onSurfaceVariant, fontSize = FontSize.SMALL
+                )
+                Text(
+                    "ادامه دوره ←",
+                    modifier = Modifier.clickable { onClick() },
+                    color = colors.primary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold
                 )
             }
-            Spacer(Modifier.height(6.dp))
+        } else {
+            Spacer(Modifier.height(8.dp))
             Text("${course.lessonCount} درس", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
-            if (course.enrolled) {
-                Spacer(Modifier.height(6.dp))
-                Text("ثبت‌نام‌شده", color = colors.ok, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
-            }
         }
     }
 }
