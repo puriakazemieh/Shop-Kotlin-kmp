@@ -108,7 +108,7 @@ fun TakeTestScreen(
                     item {
                         val enabled = viewModel.allAnswered() && !state.submitting
                         Text(
-                            if (state.submitting) "در حالِ ارسال…" else "ثبت و مشاهده‌ی نتیجه",
+                            if (state.submitting) "در حالِ ارسال…" else "ثبتِ پاسخ‌ها",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(Radius.button))
@@ -136,26 +136,29 @@ private fun QuestionCard(number: Int, question: TestQuestion, selected: Int?, on
             .padding(14.dp)
     ) {
         Text("$number. ${question.text}", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(12.dp))
         question.options.forEachIndexed { i, opt ->
             val active = selected == i
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(vertical = 5.dp)
                     .clip(RoundedCornerShape(Radius.sm))
-                    .background(if (active) colors.accentSoft else colors.surfaceVariant)
+                    .border(1.dp, if (active) colors.primary else colors.line, RoundedCornerShape(Radius.sm))
+                    .background(if (active) colors.accentSoft else colors.surface)
                     .clickable { onSelect(i) }
-                    .padding(12.dp),
+                    .padding(horizontal = 14.dp, vertical = 13.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
-                    modifier = Modifier.size(18.dp).clip(CircleShape)
-                        .background(if (active) colors.primary else colors.surface)
-                        .border(1.dp, if (active) colors.primary else colors.line, CircleShape)
-                )
-                Spacer(Modifier.size(10.dp))
-                Text(opt.text, color = colors.onSurface, fontSize = FontSize.REGULAR)
+                    modifier = Modifier.size(20.dp).clip(CircleShape)
+                        .border(2.dp, if (active) colors.primary else colors.line, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (active) Box(Modifier.size(10.dp).clip(CircleShape).background(colors.primary))
+                }
+                Spacer(Modifier.size(12.dp))
+                Text(opt.text, color = colors.onSurface, fontSize = FontSize.REGULAR, modifier = Modifier.weight(1f))
             }
         }
     }

@@ -14,14 +14,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,14 +49,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
+import com.kazemieh.domain.psychtest.AdminScoreRange
+import com.kazemieh.domain.psychtest.AdminTestQuestion
 import com.kazemieh.domain.psychtest.PsychTestSummary
+import com.kazemieh.domain.psychtest.TestResultMode
 import com.kazemieh.domain.psychtest.UserPsychTest
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
@@ -113,32 +125,36 @@ private fun TestsTab(state: AdminPsychTestState, viewModel: AdminPsychTestViewMo
     var showCreate by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("تست‌های روان‌شناسی (${state.tests.size})", fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR, color = colors.onSurface)
+                Text(
+                    "مدیریتِ تست‌های روان‌شناسی",
+                    fontWeight = FontWeight.Bold, fontSize = FontSize.EXTRA_REGULAR, color = colors.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
                 Row(
-                    modifier = Modifier.clip(RoundedCornerShape(11.dp)).background(colors.primary)
-                        .clickable { showCreate = true }.padding(horizontal = 14.dp, vertical = 9.dp),
+                    modifier = Modifier.clip(RoundedCornerShape(12.dp)).background(colors.primary)
+                        .clickable { showCreate = true }.padding(horizontal = 16.dp, vertical = 11.dp),
                     verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(15.dp))
-                    Text("افزودنِ تست", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
+                    Icon(Icons.Default.Add, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(16.dp))
+                    Text("ساختِ تستِ جدید", color = colors.onPrimary, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold)
                 }
             }
         }
         if (state.tests.isEmpty()) {
-            item { Text("هنوز تستی ساخته نشده. با دکمه‌ی «افزودنِ تست» شروع کن.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.padding(top = 8.dp)) }
+            item { Text("هنوز تستی ساخته نشده. با دکمه‌ی «ساختِ تستِ جدید» شروع کن.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.padding(top = 8.dp)) }
         }
         items(state.tests.size) { idx ->
-            TestRow(
+            TestCard(
                 state.tests[idx],
                 onClick = { viewModel.openDetail(state.tests[idx].slug) },
+                onEdit = { viewModel.openDetail(state.tests[idx].slug) },
                 onDelete = { viewModel.deleteTest(state.tests[idx].id) }
             )
         }
@@ -146,7 +162,7 @@ private fun TestsTab(state: AdminPsychTestState, viewModel: AdminPsychTestViewMo
 
     if (showCreate) {
         PsychTestSheet(onDismiss = { showCreate = false }) {
-            CreateTestForm(state, viewModel, onCreated = { showCreate = false })
+            CreateTestForm(viewModel, onDone = { showCreate = false })
         }
     }
 
@@ -176,6 +192,54 @@ private fun PsychTestSheet(onDismiss: () -> Unit, content: @Composable () -> Uni
     }
 }
 
+// =============================== لیستِ تست‌ها (کارت) ===============================
+
+@Composable
+private fun TestCard(test: PsychTestSummary, onClick: () -> Unit, onEdit: () -> Unit, onDelete: () -> Unit) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp)).clickable { onClick() }.padding(16.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(test.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.EXTRA_REGULAR)
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "${test.questionCount} سؤال · ${formatToman(test.price)}",
+                color = colors.onSurfaceVariant, fontSize = FontSize.SMALL
+            )
+            Spacer(Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SquareIcon(Icons.Default.Edit, colors.primary) { onEdit() }
+                SquareIcon(Icons.Default.Delete, colors.sale) { onDelete() }
+            }
+        }
+        Spacer(Modifier.width(10.dp))
+        ResultBadge(test.resultMode)
+    }
+}
+
+@Composable
+private fun ResultBadge(mode: TestResultMode) {
+    val colors = AppTheme.colors
+    val label = if (mode == TestResultMode.AUTO) "نتیجه‌ی آنی" else "تفسیرِ مشاور"
+    Text(
+        label, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold, color = colors.primary,
+        modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.accentSoft).padding(horizontal = 12.dp, vertical = 6.dp)
+    )
+}
+
+@Composable
+private fun SquareIcon(icon: ImageVector, tint: Color, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Box(
+        modifier = Modifier.size(38.dp).clip(RoundedCornerShape(10.dp))
+            .border(1.dp, colors.line, RoundedCornerShape(10.dp)).clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(17.dp)) }
+}
+
 /** نمایشِ محتوایِ کاملِ یک تست (عنوان/توضیح/سؤال‌ها) هنگامِ کلیک روی ردیف. */
 @Composable
 private fun TestDetailContent(loading: Boolean, detail: com.kazemieh.domain.psychtest.PsychTestDetail?) {
@@ -185,14 +249,14 @@ private fun TestDetailContent(loading: Boolean, detail: com.kazemieh.domain.psyc
             Text("در حالِ بارگذاریِ محتوا…", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, modifier = Modifier.padding(vertical = 24.dp))
         }
         detail != null -> {
-            Text(detail.title, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.LARGE)
+            Text(detail.title, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.MEDIUM)
             if (!detail.description.isNullOrBlank()) {
                 Spacer(Modifier.height(6.dp))
                 Text(detail.description!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
             }
             Spacer(Modifier.height(8.dp))
             Text(
-                "${detail.questions.size} سؤال · ${if (detail.resultMode.name == "AUTO") "نتیجه‌ی خودکار" else "تفسیرِ مشاور"}",
+                "${detail.questions.size} سؤال · ${if (detail.resultMode == TestResultMode.AUTO) "نتیجه‌ی خودکار" else "تفسیرِ مشاور"}",
                 color = colors.primary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold
             )
             Spacer(Modifier.height(12.dp))
@@ -211,113 +275,207 @@ private fun TestDetailContent(loading: Boolean, detail: com.kazemieh.domain.psyc
     }
 }
 
+// =============================== فرمِ ساخت/ویرایشِ تست ===============================
+
+/** پیش‌نویسِ یک سؤال در فرم. */
+private class QuestionDraftUi {
+    var text by mutableStateOf("")
+    val options = mutableStateListOf("", "", "", "")
+}
+
+/** پیش‌نویسِ یک بازه‌ی امتیاز→تفسیر (فقط حالتِ خودکار). */
+private class RangeDraftUi {
+    var min by mutableStateOf("")
+    var max by mutableStateOf("")
+    var text by mutableStateOf("")
+}
+
 @Composable
-private fun CreateTestForm(state: AdminPsychTestState, viewModel: AdminPsychTestViewModel, onCreated: () -> Unit = {}) {
+private fun CreateTestForm(viewModel: AdminPsychTestViewModel, onDone: () -> Unit) {
     val colors = AppTheme.colors
     var title by remember { mutableStateOf("") }
-    var slug by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
-    var productId by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
     var resultMode by remember { mutableStateOf("AUTO") }
+    val questions = remember { mutableStateListOf(QuestionDraftUi()) }
+    val ranges = remember { mutableStateListOf<RangeDraftUi>() }
 
-    // پیش‌نویسِ سؤال
-    var qText by remember { mutableStateOf("") }
-    val opts = remember { mutableStateListOf("", "", "", "") }
-    val scores = remember { mutableStateListOf("0", "1", "2", "3") }
-    // پیش‌نویسِ بازه (فقط AUTO)
-    var rMin by remember { mutableStateOf("") }
-    var rMax by remember { mutableStateOf("") }
-    var rText by remember { mutableStateOf("") }
+    Text("ساخت / ویرایشِ تستِ روان‌شناسی", fontWeight = FontWeight.ExtraBold, color = colors.onSurface, fontSize = FontSize.MEDIUM)
+    Spacer(Modifier.height(18.dp))
 
-    Column(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(colors.surfaceVariant).padding(14.dp)
+    LabeledField("عنوانِ تست", title, { title = it }, "مثلاً تستِ شخصیت‌شناسی")
+    Spacer(Modifier.height(14.dp))
+    LabeledField("قیمت (تومان)", price, { v -> price = v.filter { it.isDigit() } }, "350000", numeric = true)
+    Spacer(Modifier.height(14.dp))
+    LabeledField("توضیحِ کوتاه", description, { description = it }, "توضیحِ کوتاه درباره‌ی تست")
+    Spacer(Modifier.height(18.dp))
+
+    Text("نحوه‌ی ارائه‌ی نتیجه", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+    Spacer(Modifier.height(8.dp))
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        ModeChip("نتیجه‌ی آنی (خودکار)", resultMode == "AUTO", Modifier.weight(1f)) { resultMode = "AUTO" }
+        ModeChip("تفسیر توسط مشاور", resultMode == "COUNSELOR", Modifier.weight(1f)) { resultMode = "COUNSELOR" }
+    }
+    Spacer(Modifier.height(18.dp))
+
+    SectionHeader("سؤالاتِ تست", "+ افزودنِ سؤال") { questions.add(QuestionDraftUi()) }
+    Spacer(Modifier.height(10.dp))
+    questions.forEachIndexed { i, q ->
+        QuestionEditor(q, canRemove = questions.size > 1) { questions.removeAt(i) }
+        Spacer(Modifier.height(10.dp))
+    }
+
+    if (resultMode == "AUTO") {
+        Spacer(Modifier.height(6.dp))
+        SectionHeader("بازه‌ی امتیاز ← تفسیر", "+ افزودنِ بازه") { ranges.add(RangeDraftUi()) }
+        Spacer(Modifier.height(10.dp))
+        ranges.forEachIndexed { i, r ->
+            RangeEditor(r) { ranges.removeAt(i) }
+            Spacer(Modifier.height(10.dp))
+        }
+    }
+
+    Spacer(Modifier.height(20.dp))
+    val canSave = title.isNotBlank() &&
+        questions.any { it.text.isNotBlank() && it.options.count { o -> o.isNotBlank() } >= 2 }
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        BigButton("ذخیرهٔ تست", filled = true, enabled = canSave, modifier = Modifier.weight(1f)) {
+            val qs = questions
+                .filter { it.text.isNotBlank() && it.options.count { o -> o.isNotBlank() } >= 2 }
+                .map { q ->
+                    AdminTestQuestion(
+                        q.text.trim(),
+                        q.options.mapIndexedNotNull { idx, o -> if (o.isNotBlank()) o.trim() to idx else null }
+                    )
+                }
+            val rs = ranges
+                .filter { it.text.isNotBlank() }
+                .map { AdminScoreRange(it.min.toIntOrNull() ?: 0, it.max.toIntOrNull() ?: 0, it.text.trim()) }
+            val slug = "test-" + kotlin.random.Random.nextInt(100_000, 999_999)
+            viewModel.createTest(title.trim(), slug, description.trim(), price.trim(), "", resultMode, qs, rs)
+            onDone()
+        }
+        BigButton("انصراف", filled = false, enabled = true, modifier = Modifier.weight(1f)) { onDone() }
+    }
+}
+
+@Composable
+private fun SectionHeader(title: String, action: String, onAction: () -> Unit) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("افزودنِ تستِ جدید", fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-        Spacer(Modifier.height(10.dp))
-        Field(title, { title = it }, "عنوانِ تست")
-        Spacer(Modifier.height(8.dp))
-        Field(slug, { slug = it }, "اسلاگ (لاتین، یکتا)")
-        Spacer(Modifier.height(8.dp))
-        Field(description, { description = it }, "توضیح")
-        Spacer(Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Box(Modifier.weight(1f)) { Field(price, { price = it }, "قیمت") }
-            Box(Modifier.weight(1f)) { Field(productId, { productId = it }, "شناسه‌ی محصول") }
-        }
-        Spacer(Modifier.height(10.dp))
-        Text("حالتِ نتیجه", fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
-        Spacer(Modifier.height(4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            ModeChip("خودکار", resultMode == "AUTO") { resultMode = "AUTO" }
-            ModeChip("تفسیرِ مشاور", resultMode == "COUNSELOR") { resultMode = "COUNSELOR" }
-        }
+        Text(title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+        Text(
+            action, color = colors.primary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL,
+            modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onAction() }.padding(horizontal = 4.dp, vertical = 4.dp)
+        )
+    }
+}
 
-        // ---- سازنده‌ی سؤال ----
-        Spacer(Modifier.height(12.dp))
-        Text("سؤال (${state.draftQuestions.size} سؤال افزوده شد)", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
-        Spacer(Modifier.height(6.dp))
-        Field(qText, { qText = it }, "متنِ سؤال")
-        opts.forEachIndexed { i, _ ->
-            Spacer(Modifier.height(4.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.weight(2f)) { Field(opts[i], { opts[i] = it }, "گزینه‌ی ${i + 1}") }
-                Box(Modifier.weight(1f)) { Field(scores[i], { scores[i] = it }, "امتیاز") }
-            }
+@Composable
+private fun QuestionEditor(q: QuestionDraftUi, canRemove: Boolean, onRemove: () -> Unit) {
+    val colors = AppTheme.colors
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
+            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).padding(12.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.weight(1f)) { FilledField(q.text, { q.text = it }, "متنِ سؤال") }
+            if (canRemove) RemoveButton(onRemove)
         }
-        Spacer(Modifier.height(6.dp))
-        val canAddQ = qText.isNotBlank() && opts.count { it.isNotBlank() } >= 2
-        SmallButton("افزودنِ سؤال", canAddQ) {
-            val pairs = opts.mapIndexed { i, o -> o to (scores[i].toIntOrNull() ?: 0) }
-            viewModel.addDraftQuestion(qText.trim(), pairs)
-            qText = ""; opts[0] = ""; opts[1] = ""; opts[2] = ""; opts[3] = ""
+        Spacer(Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.weight(1f)) { FilledField(q.options[0], { q.options[0] = it }, "گزینه") }
+            Box(Modifier.weight(1f)) { FilledField(q.options[1], { q.options[1] = it }, "گزینه") }
         }
-
-        // ---- سازنده‌ی بازه‌ی تفسیر (فقط AUTO) ----
-        if (resultMode == "AUTO") {
-            Spacer(Modifier.height(12.dp))
-            Text("بازه‌ی امتیاز → تفسیر (${state.draftRanges.size})", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
-            Spacer(Modifier.height(6.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(Modifier.weight(1f)) { Field(rMin, { rMin = it }, "از") }
-                Box(Modifier.weight(1f)) { Field(rMax, { rMax = it }, "تا") }
-            }
-            Spacer(Modifier.height(4.dp))
-            Field(rText, { rText = it }, "متنِ تفسیر")
-            Spacer(Modifier.height(6.dp))
-            SmallButton("افزودنِ بازه", rText.isNotBlank()) {
-                viewModel.addDraftRange(rMin.trim(), rMax.trim(), rText.trim()); rMin = ""; rMax = ""; rText = ""
-            }
-        }
-
-        Spacer(Modifier.height(12.dp))
-        SmallButton("ساختِ تست", title.isNotBlank() && slug.isNotBlank()) {
-            viewModel.createTest(title.trim(), slug.trim(), description.trim(), price.trim(), productId.trim(), resultMode)
-            title = ""; slug = ""; description = ""; price = ""; productId = ""
-            onCreated()
+        Spacer(Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.weight(1f)) { FilledField(q.options[2], { q.options[2] = it }, "گزینه") }
+            Box(Modifier.weight(1f)) { FilledField(q.options[3], { q.options[3] = it }, "گزینه") }
         }
     }
 }
 
 @Composable
-private fun TestRow(test: PsychTestSummary, onClick: () -> Unit, onDelete: () -> Unit) {
+private fun RangeEditor(r: RangeDraftUi, onRemove: () -> Unit) {
     val colors = AppTheme.colors
-    Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).clickable { onClick() }.padding(14.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
+            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).padding(12.dp)
     ) {
-        Column(Modifier.weight(1f)) {
-            Text(test.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
-            Spacer(Modifier.height(3.dp))
-            Text("${test.questionCount} سؤال · ${if (test.resultMode.name == "AUTO") "خودکار" else "تفسیرِ مشاور"}", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.weight(1f)) { FilledField(r.min, { v -> r.min = v.filter { it.isDigit() } }, "از", numeric = true) }
+            Box(Modifier.weight(1f)) { FilledField(r.max, { v -> r.max = v.filter { it.isDigit() } }, "تا", numeric = true) }
+            RemoveButton(onRemove)
         }
-        Box(
-            modifier = Modifier.size(32.dp).clip(RoundedCornerShape(9.dp)).background(colors.sale.copy(alpha = 0.1f)).clickable { onDelete() },
-            contentAlignment = Alignment.Center
-        ) { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(15.dp), tint = colors.sale) }
+        Spacer(Modifier.height(8.dp))
+        FilledField(r.text, { r.text = it }, "متنِ تفسیرِ این بازه")
     }
 }
+
+@Composable
+private fun RemoveButton(onRemove: () -> Unit) {
+    val colors = AppTheme.colors
+    Box(
+        modifier = Modifier.size(38.dp).clip(RoundedCornerShape(10.dp))
+            .border(1.dp, colors.line, RoundedCornerShape(10.dp)).clickable { onRemove() },
+        contentAlignment = Alignment.Center
+    ) { Icon(Icons.Default.Close, contentDescription = null, tint = colors.sale, modifier = Modifier.size(16.dp)) }
+}
+
+@Composable
+private fun LabeledField(label: String, value: String, onValueChange: (String) -> Unit, placeholder: String, numeric: Boolean = false) {
+    val colors = AppTheme.colors
+    Text(label, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.SMALL)
+    Spacer(Modifier.height(8.dp))
+    FilledField(value, onValueChange, placeholder, numeric)
+}
+
+@Composable
+private fun FilledField(value: String, onValueChange: (String) -> Unit, placeholder: String, numeric: Boolean = false) {
+    val colors = AppTheme.colors
+    OutlinedTextField(
+        value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(placeholder, fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+        singleLine = true, shape = RoundedCornerShape(12.dp),
+        keyboardOptions = if (numeric) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = colors.surfaceVariant, unfocusedContainerColor = colors.surfaceVariant,
+            focusedBorderColor = colors.primary, unfocusedBorderColor = Color.Transparent,
+            cursorColor = colors.primary, focusedTextColor = colors.onSurface, unfocusedTextColor = colors.onSurface
+        )
+    )
+}
+
+@Composable
+private fun ModeChip(label: String, active: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        label, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
+        color = if (active) colors.onPrimary else colors.onSurfaceVariant,
+        modifier = modifier.clip(RoundedCornerShape(12.dp)).background(if (active) colors.primary else colors.surface)
+            .border(1.dp, if (active) colors.primary else colors.line, RoundedCornerShape(12.dp))
+            .clickable { onClick() }.padding(vertical = 13.dp)
+    )
+}
+
+@Composable
+private fun BigButton(label: String, filled: Boolean, enabled: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    Text(
+        label, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR,
+        color = if (filled) colors.onPrimary else colors.primary,
+        modifier = modifier.clip(RoundedCornerShape(13.dp))
+            .background(if (filled) (if (enabled) colors.primary else colors.line) else colors.surface)
+            .then(if (filled) Modifier else Modifier.border(1.dp, colors.line, RoundedCornerShape(13.dp)))
+            .clickable(enabled = enabled) { onClick() }.padding(vertical = 14.dp)
+    )
+}
+
+// =============================== تبِ تفسیرها ===============================
 
 @Composable
 private fun InterpretTab(pending: List<UserPsychTest>, onInterpret: (Long, String) -> Unit) {
@@ -349,9 +507,11 @@ private fun InterpretCard(userTest: UserPsychTest, onInterpret: (Long, String) -
             Text("امتیازِ کاربر: $it", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
         }
         Spacer(Modifier.height(8.dp))
-        Field(text, { text = it }, "متنِ تفسیر")
+        FilledField(text, { text = it }, "متنِ تفسیر")
         Spacer(Modifier.height(8.dp))
-        SmallButton("ثبتِ تفسیر", text.isNotBlank()) { onInterpret(userTest.id, text.trim()); text = "" }
+        BigButton("ثبتِ تفسیر", filled = true, enabled = text.isNotBlank(), modifier = Modifier.fillMaxWidth()) {
+            onInterpret(userTest.id, text.trim()); text = ""
+        }
     }
 }
 
@@ -363,43 +523,5 @@ private fun TabChip(label: String, active: Boolean, onClick: () -> Unit) {
         color = if (active) colors.onPrimary else colors.onSurfaceVariant,
         modifier = Modifier.clip(RoundedCornerShape(50)).background(if (active) colors.primary else colors.surfaceVariant)
             .clickable { onClick() }.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
-}
-
-@Composable
-private fun ModeChip(label: String, active: Boolean, onClick: () -> Unit) {
-    val colors = AppTheme.colors
-    Text(
-        label, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.SemiBold,
-        color = if (active) colors.onPrimary else colors.onSurfaceVariant,
-        modifier = Modifier.clip(RoundedCornerShape(50)).background(if (active) colors.primary else colors.surface)
-            .border(1.dp, if (active) colors.primary else colors.line, RoundedCornerShape(50))
-            .clickable { onClick() }.padding(horizontal = 12.dp, vertical = 7.dp)
-    )
-}
-
-@Composable
-private fun SmallButton(label: String, enabled: Boolean, onClick: () -> Unit) {
-    val colors = AppTheme.colors
-    Text(
-        label,
-        modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(if (enabled) colors.primary else colors.line)
-            .clickable(enabled = enabled) { onClick() }.padding(horizontal = 14.dp, vertical = 9.dp),
-        color = colors.onPrimary, fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold
-    )
-}
-
-@Composable
-private fun Field(value: String, onValueChange: (String) -> Unit, label: String) {
-    val colors = AppTheme.colors
-    OutlinedTextField(
-        value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(),
-        label = { Text(label, fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant) },
-        singleLine = true, shape = RoundedCornerShape(10.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = colors.surface, unfocusedContainerColor = colors.surface,
-            focusedBorderColor = colors.primary, unfocusedBorderColor = colors.line,
-            cursorColor = colors.primary, focusedTextColor = colors.onSurface, unfocusedTextColor = colors.onSurface
-        )
     )
 }

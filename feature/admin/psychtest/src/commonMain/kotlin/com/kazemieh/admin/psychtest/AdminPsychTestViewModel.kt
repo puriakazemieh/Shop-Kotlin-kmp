@@ -88,12 +88,21 @@ class AdminPsychTestViewModel(
         _state.update { it.copy(draftRanges = it.draftRanges + range) }
     }
 
-    fun createTest(title: String, slug: String, description: String, price: String, productId: String, resultMode: String) {
+    fun createTest(
+        title: String,
+        slug: String,
+        description: String,
+        price: String,
+        productId: String,
+        resultMode: String,
+        questions: List<AdminTestQuestion> = _state.value.draftQuestions,
+        ranges: List<AdminScoreRange> = _state.value.draftRanges
+    ) {
         viewModelScope.launch {
             val result = createPsychTestUseCase(
                 title = title, slug = slug, description = description.ifBlank { null },
                 price = price.toDoubleOrNull() ?: 0.0, productId = productId.toLongOrNull(),
-                resultMode = resultMode, questions = _state.value.draftQuestions, ranges = _state.value.draftRanges
+                resultMode = resultMode, questions = questions, ranges = ranges
             )
             when (result) {
                 is AppResult.Success -> {

@@ -28,9 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +37,9 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.psychtest.PsychTestSummary
+import com.kazemieh.domain.psychtest.TestResultMode
 import com.kazemieh.domain.psychtest.UserPsychTest
 import com.kazemieh.domain.psychtest.UserTestStatus
 import org.koin.compose.viewmodel.koinViewModel
@@ -56,13 +55,12 @@ fun PsychTestListScreen(
     val viewModel = koinViewModel<PsychTestListViewModel>()
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
-    var tab by remember { mutableStateOf(if (embedded) 1 else 0) } // 0 = فروشگاه، 1 = تست‌های من
 
     LaunchedEffect(Unit) { viewModel.load() }
 
     if (embedded) {
         PsychTestListBody(
-            state = state, tab = tab, onTabChange = { tab = it },
+            state = state,
             navigateToProduct = navigateToProduct, navigateToTakeTest = navigateToTakeTest,
             colors = colors, modifier = Modifier.fillMaxWidth().height(560.dp)
         )
@@ -88,7 +86,7 @@ fun PsychTestListScreen(
         }
     ) { padding ->
         PsychTestListBody(
-            state = state, tab = tab, onTabChange = { tab = it },
+            state = state,
             navigateToProduct = navigateToProduct, navigateToTakeTest = navigateToTakeTest,
             colors = colors, modifier = Modifier.fillMaxSize().padding(padding)
         )
@@ -98,48 +96,36 @@ fun PsychTestListScreen(
 @Composable
 private fun PsychTestListBody(
     state: PsychTestListState,
-    tab: Int,
-    onTabChange: (Int) -> Unit,
     navigateToProduct: (String) -> Unit,
     navigateToTakeTest: (Long) -> Unit,
     colors: com.kazemieh.designsystem.AppColors,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TabChip("فروشگاهِ تست", tab == 0) { onTabChange(0) }
-            TabChip("تست‌های من", tab == 1) { onTabChange(1) }
-        }
-        Box(modifier = Modifier.fillMaxSize()) {
-            when {
-                state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
-                tab == 0 -> LazyColumn(
-                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(state.tests.size) { idx ->
-                        ShopTestCard(state.tests[idx], onBuy = { slug -> navigateToProduct(slug) })
-                    }
-                }
-                else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    if (state.myTests.isEmpty()) {
-                        item {
-                            Text(
-                                "هنوز تستی نخریده‌اید. از فروشگاهِ تست خرید کنید.",
-                                color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR,
-                                modifier = Modifier.padding(top = 24.dp)
-                            )
-                        }
-                    }
+    Box(modifier = modifier) {
+        when {
+            state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = colors.primary)
+            else -> LazyColumn(
+                modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (state.myTests.isNotEmpty()) {
+                    item { SectionTitle("تست‌های من") }
                     items(state.myTests.size) { idx ->
                         MyTestCard(state.myTests[idx], onTake = { navigateToTakeTest(it) })
                     }
+                }
+                item { SectionTitle("همه‌ی تست‌ها") }
+                if (state.tests.isEmpty()) {
+                    item {
+                        Text(
+                            "تستی برای نمایش وجود ندارد.",
+                            color = colors.onSurfaceVariant, fontSize = FontSize.REGULAR,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+                items(state.tests.size) { idx ->
+                    ShopTestCard(state.tests[idx], onBuy = { slug -> navigateToProduct(slug) })
                 }
             }
         }
@@ -147,18 +133,27 @@ private fun PsychTestListBody(
 }
 
 @Composable
-private fun TabChip(label: String, active: Boolean, onClick: () -> Unit) {
+private fun SectionTitle(title: String) {
     val colors = AppTheme.colors
     Text(
+        title,
+        fontWeight = FontWeight.Bold,
+        fontSize = FontSize.EXTRA_REGULAR,
+        color = colors.onSurface,
+        modifier = Modifier.padding(top = 10.dp, bottom = 2.dp)
+    )
+}
+
+@Composable
+private fun ResultBadge(mode: TestResultMode) {
+    val colors = AppTheme.colors
+    val label = if (mode == TestResultMode.AUTO) "نتیجه‌ی آنی" else "تفسیر توسط مشاور"
+    Text(
         label,
-        fontSize = FontSize.SMALL,
+        fontSize = FontSize.EXTRA_SMALL,
         fontWeight = FontWeight.SemiBold,
-        color = if (active) colors.onPrimary else colors.onSurfaceVariant,
-        modifier = Modifier
-            .clip(RoundedCornerShape(Radius.full))
-            .background(if (active) colors.primary else colors.surfaceVariant)
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        color = colors.primary,
+        modifier = Modifier.clip(RoundedCornerShape(Radius.full)).background(colors.accentSoft).padding(horizontal = 12.dp, vertical = 6.dp)
     )
 }
 
@@ -173,25 +168,31 @@ private fun ShopTestCard(test: PsychTestSummary, onBuy: (String) -> Unit) {
             .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
             .padding(16.dp)
     ) {
-        Text(test.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR)
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(test.title, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.EXTRA_REGULAR, modifier = Modifier.weight(1f))
+            Spacer(Modifier.height(8.dp))
+            ResultBadge(test.resultMode)
+        }
         if (!test.description.isNullOrBlank()) {
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(8.dp))
             Text(test.description!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL, maxLines = 2)
         }
-        Spacer(Modifier.height(8.dp))
-        Text("${test.questionCount} سؤال", color = colors.onSurfaceVariant, fontSize = FontSize.EXTRA_SMALL)
-        Spacer(Modifier.height(12.dp))
-        if (test.owned) {
-            Text("خریداری‌شده — از «تست‌های من» انجام دهید", color = colors.ok, fontSize = FontSize.SMALL, fontWeight = FontWeight.SemiBold)
-        } else {
+        Spacer(Modifier.height(14.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(formatToman(test.price), fontWeight = FontWeight.Bold, color = colors.primary, fontSize = FontSize.REGULAR)
             val productId = test.productId
+            val label = if (test.owned) "شروعِ تست" else "خرید"
             Text(
-                if (productId != null) "خریدِ تست" else "برای خرید به‌زودی",
+                if (productId != null || test.owned) label else "به‌زودی",
                 modifier = Modifier
                     .clip(RoundedCornerShape(Radius.button))
-                    .background(if (productId != null) colors.primary else colors.line)
+                    .background(if (productId != null || test.owned) colors.primary else colors.line)
                     .clickable(enabled = productId != null) { productId?.let { onBuy(it.toString()) } }
-                    .padding(horizontal = 18.dp, vertical = 10.dp),
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
                 color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
             )
         }
@@ -201,6 +202,7 @@ private fun ShopTestCard(test: PsychTestSummary, onBuy: (String) -> Unit) {
 @Composable
 private fun MyTestCard(userTest: UserPsychTest, onTake: (Long) -> Unit) {
     val colors = AppTheme.colors
+    val canStart = userTest.status == UserTestStatus.PURCHASED || userTest.status == UserTestStatus.IN_PROGRESS
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,32 +211,35 @@ private fun MyTestCard(userTest: UserPsychTest, onTake: (Long) -> Unit) {
             .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
             .padding(16.dp)
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(userTest.testTitle, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.REGULAR, modifier = Modifier.weight(1f))
-            Text(
-                userTest.status.label,
-                fontSize = FontSize.EXTRA_SMALL,
-                color = colors.primary,
-                modifier = Modifier.clip(RoundedCornerShape(Radius.full)).background(colors.accentSoft).padding(horizontal = 10.dp, vertical = 5.dp)
-            )
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(userTest.testTitle, fontWeight = FontWeight.Bold, color = colors.onSurface, fontSize = FontSize.EXTRA_REGULAR)
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    if (userTest.status == UserTestStatus.PURCHASED) "شروع‌نشده" else userTest.status.label,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.onSurfaceVariant,
+                    modifier = Modifier.clip(RoundedCornerShape(Radius.full)).background(colors.surfaceVariant).padding(horizontal = 12.dp, vertical = 6.dp)
+                )
+            }
+            if (canStart) {
+                Text(
+                    "شروع",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.primary)
+                        .clickable { onTake(userTest.id) }
+                        .padding(horizontal = 22.dp, vertical = 10.dp),
+                    color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
+                )
+            }
         }
         if (userTest.status == UserTestStatus.COMPLETED && !userTest.interpretation.isNullOrBlank()) {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
             Text("نتیجه:", fontWeight = FontWeight.SemiBold, color = colors.onSurface, fontSize = FontSize.SMALL)
             Spacer(Modifier.height(4.dp))
             Text(userTest.interpretation!!, color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
-        }
-        if (userTest.status == UserTestStatus.PURCHASED || userTest.status == UserTestStatus.IN_PROGRESS) {
-            Spacer(Modifier.height(12.dp))
-            Text(
-                "انجامِ تست",
-                modifier = Modifier
-                    .clip(RoundedCornerShape(Radius.button))
-                    .background(colors.primary)
-                    .clickable { onTake(userTest.id) }
-                    .padding(horizontal = 18.dp, vertical = 10.dp),
-                color = colors.onPrimary, fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL
-            )
         }
     }
 }
