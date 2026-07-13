@@ -50,6 +50,7 @@ import com.kazemieh.academy.detail.CourseDetailScreen
 import com.kazemieh.academy.learn.CourseLearnScreen
 import com.kazemieh.academy.quiz.CourseQuizScreen
 import com.kazemieh.academy.cert.CertificatesScreen
+import com.kazemieh.academy.courserequest.CourseRequestScreen
 import com.kazemieh.academy.lessonquiz.LessonQuizScreen
 import com.kazemieh.academy.project.ProjectSubmissionScreen
 import com.kazemieh.academy.peerreview.PeerReviewScreen
@@ -249,6 +250,9 @@ fun AppNavHost(
                 navigateToCourseCatalog = {
                     navController.navigate(Screen.CourseCatalog)
                 },
+                navigateToCourseRequests = {
+                    navController.navigate(Screen.CourseRequests)
+                },
                 navigateToTakeTest = { userTestId ->
                     navController.navigate(Screen.TakeTest(userTestId))
                 },
@@ -329,6 +333,10 @@ fun AppNavHost(
 
         composable<Screen.Certificates> {
             CertificatesScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.CourseRequests> {
+            CourseRequestScreen(navigateBack = { navController.navigateBack() })
         }
 
         composable<Screen.LessonQuiz> {

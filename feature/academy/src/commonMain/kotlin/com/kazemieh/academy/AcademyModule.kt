@@ -9,7 +9,11 @@ import com.kazemieh.academy.list.CourseListViewModel
 import com.kazemieh.academy.peerreview.PeerReviewViewModel
 import com.kazemieh.academy.placement.PlacementQuizViewModel
 import com.kazemieh.academy.project.ProjectSubmissionViewModel
+import com.kazemieh.academy.courserequest.CourseRequestViewModel
 import com.kazemieh.academy.quiz.CourseQuizViewModel
+import com.kazemieh.domain.courserequest.CreateCourseRequestUseCase
+import com.kazemieh.domain.courserequest.GetCourseRequestsUseCase
+import com.kazemieh.domain.courserequest.ToggleCourseRequestLikeUseCase
 import com.kazemieh.domain.academy.AddPeerCommentUseCase
 import com.kazemieh.domain.academy.CreateLessonQuestionUseCase
 import com.kazemieh.domain.academy.EnrollCourseUseCase
@@ -64,6 +68,9 @@ val academyModule = module {
     factory { SubmitPlacementQuizUseCase(get()) }
     factory { RequestCourseRefundUseCase(get()) }
     factory { GetMyRefundRequestsUseCase(get()) }
+    factory { GetCourseRequestsUseCase(get()) }
+    factory { CreateCourseRequestUseCase(get()) }
+    factory { ToggleCourseRequestLikeUseCase(get()) }
 
     viewModel { CourseListViewModel(get(), get()) }
     viewModel { CourseDetailViewModel(get(), get(), get(), get()) }
@@ -75,4 +82,5 @@ val academyModule = module {
     viewModel { PeerReviewViewModel(get(), get(), get()) }
     viewModel { CertificateVerifyViewModel(get()) }
     viewModel { PlacementQuizViewModel(get(), get()) }
+    viewModel { CourseRequestViewModel(get(), get(), get()) }
 }

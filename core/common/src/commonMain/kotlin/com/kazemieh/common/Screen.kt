@@ -133,6 +133,9 @@ sealed class Screen {
     data object Certificates : Screen()
 
     @Serializable
+    data object CourseRequests : Screen()
+
+    @Serializable
     data class LessonQuiz(val lessonId: Long) : Screen()
 
     @Serializable

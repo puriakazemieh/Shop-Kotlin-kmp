@@ -71,6 +71,8 @@ import com.kazemieh.domain.psychtest.AdminPsychTestRepository
 import com.kazemieh.data.psychtest.repository.AdminPsychTestRepositoryImpl
 import com.kazemieh.domain.clinic.ClinicRepository
 import com.kazemieh.data.clinic.repository.ClinicRepositoryImpl
+import com.kazemieh.domain.courserequest.CourseRequestRepository
+import com.kazemieh.data.courserequest.repository.CourseRequestRepositoryImpl
 import com.kazemieh.domain.clinic.AdminClinicRepository
 import com.kazemieh.data.clinic.repository.AdminClinicRepositoryImpl
 import com.kazemieh.domain.bundle.BundleRepository
@@ -207,6 +209,10 @@ val dataModule = module {
 
     single<ClinicRepository> {
         ClinicRepositoryImpl(get())
+    }
+
+    single<CourseRequestRepository> {
+        CourseRequestRepositoryImpl(get())
     }
 
     single<AdminAcademyRepository> {

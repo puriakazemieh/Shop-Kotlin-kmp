@@ -41,6 +41,7 @@ import com.kazemieh.admin.wallet.AdminFinanceScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
 import com.kazemieh.admin.academy.AdminAcademyScreen
+import com.kazemieh.admin.academy.courserequest.AdminCourseRequestScreen
 import com.kazemieh.admin.psychtest.AdminPsychTestScreen
 import com.kazemieh.admin.clinic.AdminClinicScreen
 import org.jetbrains.compose.resources.stringResource
@@ -62,7 +63,7 @@ fun AdminPanelScreen(
     var productToDelete by remember { mutableStateOf<com.kazemieh.domain.admin.AdminProduct?>(null) }
 
     val tabs = listOf(
-        "داشبورد", "محصولات", "دوره و کارگاه", "نوبت‌دهی", "تست‌ها",
+        "داشبورد", "محصولات", "دوره و کارگاه", "درخواست دوره", "نوبت‌دهی", "تست‌ها",
         "واریانت‌ها", "سفارش‌ها", "کد تخفیف", "استوری", "بلاگ",
         "مالی و برداشت"
     )
@@ -142,18 +143,19 @@ fun AdminPanelScreen(
                         onAdd = { navigateToManageProduct(null) }
                     )
                     2 -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    3 -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    4 -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    5 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    6 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    7 -> AdminDiscountsScreen(navigateBack = { selectedTab = 1 }, embedded = true)
-                    8 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
-                    9 -> AdminBlogListScreen(
+                    3 -> AdminCourseRequestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    4 -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    5 -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    6 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    7 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    8 -> AdminDiscountsScreen(navigateBack = { selectedTab = 1 }, embedded = true)
+                    9 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
+                    10 -> AdminBlogListScreen(
                         navigateToManageBlog = navigateToManageBlog,
                         navigateBack = { selectedTab = 1 },
                         embedded = true
                     )
-                    10 -> AdminFinanceScreen(onBackClick = { selectedTab = 1 })
+                    11 -> AdminFinanceScreen(onBackClick = { selectedTab = 1 })
                 }
             }
         }

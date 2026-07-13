@@ -24,6 +24,9 @@ import com.kazemieh.domain.academy.ReviewRefundRequestUseCase
 import com.kazemieh.domain.academy.UpdateCourseUseCase
 import com.kazemieh.domain.academy.UpsertCourseQuizUseCase
 import com.kazemieh.domain.academy.UpsertLessonQuizUseCase
+import com.kazemieh.domain.courserequest.GetAdminCourseRequestsUseCase
+import com.kazemieh.domain.courserequest.DeleteCourseRequestUseCase
+import com.kazemieh.admin.academy.courserequest.AdminCourseRequestViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -52,6 +55,8 @@ val adminAcademyModule = module {
     factory { AssignSeatUseCase(get()) }
     factory { ListRefundRequestsUseCase(get()) }
     factory { ReviewRefundRequestUseCase(get()) }
+    factory { GetAdminCourseRequestsUseCase(get()) }
+    factory { DeleteCourseRequestUseCase(get()) }
 
     viewModel {
         AdminAcademyViewModel(
@@ -81,4 +86,6 @@ val adminAcademyModule = module {
             reviewRefundRequestUseCase = get()
         )
     }
+
+    viewModel { AdminCourseRequestViewModel(get(), get()) }
 }

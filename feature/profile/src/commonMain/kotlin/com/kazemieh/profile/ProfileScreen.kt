@@ -91,6 +91,7 @@ fun ProfileScreen(
     navigateToOrderDetail: (Long) -> Unit = {},
     navigateToCourse: (String) -> Unit = {},
     navigateToCourseCatalog: () -> Unit = {},
+    navigateToCourseRequests: () -> Unit = {},
     navigateToTakeTest: (Long) -> Unit = {},
     navigateToTherapistCatalog: () -> Unit = {},
     navigateToSessionReceipt: (Long) -> Unit = {},
@@ -235,6 +236,34 @@ fun ProfileScreen(
                                     Spacer(modifier = Modifier.height(10.dp))
                                     InfoField(label = "شماره موبایل", value = profile.phone)
                                     Spacer(modifier = Modifier.height(20.dp))
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(14.dp))
+                                            .background(MaterialTheme.colorScheme.surface)
+                                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp))
+                                            .clickable { navigateToCourseRequests() }
+                                            .padding(horizontal = 14.dp, vertical = 14.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(
+                                            text = "درخواستِ دوره",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontFamily = AppFont(),
+                                            fontSize = FontSize.REGULAR,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Text(
+                                            text = "پیشنهاد و لایک",
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontFamily = AppFont(),
+                                            fontSize = FontSize.EXTRA_SMALL
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
                                     SignOutRow(onClick = { viewModel.handleIntent(ProfileIntent.SignOut) })
                                 }
 
