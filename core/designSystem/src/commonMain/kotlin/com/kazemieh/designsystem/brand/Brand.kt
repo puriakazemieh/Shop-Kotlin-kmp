@@ -246,9 +246,12 @@ val AcademyBrand = BrandConfig(
     colors = AcademyBrandColors,
     currency = "تومان",
     features = BrandFeatures(
-        academy = true, clinic = false, productComparison = false,
+        // آموزشگاه علاوه بر دوره‌ها، نوبت‌دهیِ مشاوره و تست‌های روان‌شناسی را هم دارد،
+        // بنابراین این عمودی‌ها روی صفحه‌ی اصلی نمایش داده می‌شوند.
+        academy = true, clinic = true, psychTests = true, productComparison = false,
         academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
-        academyProjectAssessment = true, academyLessonResources = true
+        academyProjectAssessment = true, academyLessonResources = true,
+        clinicPatientFile = true, clinicCrm = true
     )
 )
 
