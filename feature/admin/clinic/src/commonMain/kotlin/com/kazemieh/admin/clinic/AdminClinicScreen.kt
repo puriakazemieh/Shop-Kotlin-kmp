@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -107,7 +108,10 @@ fun AdminClinicScreen(
         ContentWithMessageBar(modifier = Modifier.padding(padding), messageBarState = messageBarState) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TabChip("درمانگرها", tab == 0) { tab = 0 }
@@ -116,40 +120,61 @@ fun AdminClinicScreen(
                     TabChip("درخواستِ تعویض", tab == 3) { tab = 3; viewModel.loadSwitchRequests() }
                     TabChip("پرسشنامه‌ی تطبیق", tab == 4) { tab = 4; viewModel.loadMatchQuestions() }
                 }
-                when (tab) {
-                    0 -> TherapistsTab(
-                        state = state,
-                        onToggle = viewModel::toggleExpand,
-                        onDelete = viewModel::deleteTherapist,
-                        onCreate = { n, s, p, d, pid, mode, loc, mpid -> viewModel.createTherapist(n, s, p, d, pid, mode, loc, mpid) },
-                        onAddSlot = viewModel::addSlot,
-                        onGenerateSlots = viewModel::generateSlots
-                    )
-                    1 -> AppointmentsTab(
-                        state = state,
-                        onConfirm = viewModel::confirmAppointment,
-                        onComplete = viewModel::completeAppointment,
-                        onToggleNotes = viewModel::toggleNotes,
-                        onAddNote = viewModel::addNote
-                    )
-                    2 -> PatientsTab(
-                        state = state,
-                        onSelectTherapist = viewModel::selectCrmTherapist,
-                        onTogglePatientFile = viewModel::togglePatientFile,
-                        onSetTags = viewModel::setPatientTags
-                    )
-                    3 -> SwitchRequestsTab(
-                        state = state,
-                        onReview = viewModel::reviewSwitchRequest
-                    )
-                    4 -> MatchQuestionsTab(
-                        state = state,
-                        onCreate = viewModel::createMatchQuestion,
-                        onDelete = viewModel::deleteMatchQuestion
-                    )
+                // محتوای هر تب باید فضایِ باقی‌مانده را پر کند (نه اینکه ته صفحه کوچک دیده شود).
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    when (tab) {
+                        0 -> TherapistsTab(
+                            state = state,
+                            onToggle = viewModel::toggleExpand,
+                            onDelete = viewModel::deleteTherapist,
+                            onCreate = { n, s, p, d, pid, mode, loc, mpid -> viewModel.createTherapist(n, s, p, d, pid, mode, loc, mpid) },
+                            onAddSlot = viewModel::addSlot,
+                            onGenerateSlots = viewModel::generateSlots
+                        )
+                        1 -> AppointmentsTab(
+                            state = state,
+                            onConfirm = viewModel::confirmAppointment,
+                            onComplete = viewModel::completeAppointment,
+                            onToggleNotes = viewModel::toggleNotes,
+                            onAddNote = viewModel::addNote
+                        )
+                        2 -> PatientsTab(
+                            state = state,
+                            onSelectTherapist = viewModel::selectCrmTherapist,
+                            onTogglePatientFile = viewModel::togglePatientFile,
+                            onSetTags = viewModel::setPatientTags
+                        )
+                        3 -> SwitchRequestsTab(
+                            state = state,
+                            onReview = viewModel::reviewSwitchRequest
+                        )
+                        4 -> MatchQuestionsTab(
+                            state = state,
+                            onCreate = viewModel::createMatchQuestion,
+                            onDelete = viewModel::deleteMatchQuestion
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+/** لینکِ «بازگشت به فهرست» — وقتی یک آیتم برای مدیریت به‌صورتِ صفحه‌ی جدا باز شده است. */
+@Composable
+private fun BackToListRow(label: String, onBack: () -> Unit) {
+    val colors = AppTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(11.dp))
+            .clickable { onBack() }
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colors.primary, modifier = Modifier.size(20.dp))
+        Spacer(Modifier.size(8.dp))
+        Text(label, color = colors.primary, fontWeight = FontWeight.Bold, fontSize = FontSize.REGULAR)
     }
 }
 
@@ -183,23 +208,30 @@ private fun TherapistsTab(
         LoadingCard(modifier = Modifier.fillMaxSize())
         return
     }
+    val selectedId = state.expandedTherapistId
+    // با انتخابِ یک درمانگر، فقط همان (باز) نشان داده می‌شود — مثلِ صفحه‌ی مدیریتِ جدا.
+    val visibleTherapists = if (selectedId != null) state.therapists.filter { it.id == selectedId } else state.therapists
     LazyColumn(
         modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            SectionHeader(
-                title = "درمانگرها (${state.therapists.size})",
-                addLabel = "افزودن درمانگر",
-                onAdd = { showAddTherapist = true }
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                "درمانگر بساز، سپس با بازکردنِ آن، بازه‌های زمانیِ آزاد اضافه کن. اگر «شناسهٔ محصول» را پر کنی، رزرو نیازمندِ خریدِ آن محصول می‌شود.",
-                fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant
-            )
+            if (selectedId == null) {
+                SectionHeader(
+                    title = "درمانگرها (${state.therapists.size})",
+                    addLabel = "افزودن درمانگر",
+                    onAdd = { showAddTherapist = true }
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "روی هر درمانگر بزنید تا صفحه‌ی مدیریتِ آن باز شود و بازه‌های زمانیِ آزاد اضافه کنید. اگر «شناسهٔ محصول» را پر کنی، رزرو نیازمندِ خریدِ آن محصول می‌شود.",
+                    fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant
+                )
+            } else {
+                BackToListRow("بازگشت به فهرستِ درمانگرها") { onToggle(selectedId) }
+            }
         }
-        items(state.therapists) { therapist ->
+        items(visibleTherapists) { therapist ->
             TherapistCard(
                 therapist = therapist,
                 expanded = state.expandedTherapistId == therapist.id,
@@ -583,11 +615,17 @@ private fun AppointmentsTab(
         }
         return
     }
+    val selectedId = state.expandedNotesAppointmentId
+    // با بازکردنِ یک نوبت، فقط همان (با یادداشت‌ها) نشان داده می‌شود — صفحه‌ی مدیریتِ جدا.
+    val visibleAppointments = if (selectedId != null) state.appointments.filter { it.id == selectedId } else state.appointments
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(state.appointments) { appointment ->
+        if (selectedId != null) {
+            item { BackToListRow("بازگشت به فهرستِ نوبت‌ها") { onToggleNotes(selectedId) } }
+        }
+        items(visibleAppointments) { appointment ->
             AppointmentAdminCard(
                 appointment = appointment,
                 onConfirm = onConfirm,
@@ -764,16 +802,23 @@ private fun PatientsTab(
             state.patients.isEmpty() -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("هنوز مراجعی برای این درمانگر ثبت نشده.", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
             }
-            else -> LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                items(state.patients) { patient ->
-                    PatientCard(
-                        patient = patient,
-                        expanded = state.expandedPatientUserId == patient.userId,
-                        file = if (state.expandedPatientUserId == patient.userId) state.patientFile else null,
-                        loadingFile = state.loadingPatientFile && state.expandedPatientUserId == patient.userId,
-                        onToggle = { onTogglePatientFile(patient.userId) },
-                        onSetTags = { tags -> onSetTags(patient.userId, tags) }
-                    )
+            else -> {
+                val selectedUserId = state.expandedPatientUserId
+                val visiblePatients = if (selectedUserId != null) state.patients.filter { it.userId == selectedUserId } else state.patients
+                LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    if (selectedUserId != null) {
+                        item { BackToListRow("بازگشت به فهرستِ مراجعان") { onTogglePatientFile(selectedUserId) } }
+                    }
+                    items(visiblePatients) { patient ->
+                        PatientCard(
+                            patient = patient,
+                            expanded = state.expandedPatientUserId == patient.userId,
+                            file = if (state.expandedPatientUserId == patient.userId) state.patientFile else null,
+                            loadingFile = state.loadingPatientFile && state.expandedPatientUserId == patient.userId,
+                            onToggle = { onTogglePatientFile(patient.userId) },
+                            onSetTags = { tags -> onSetTags(patient.userId, tags) }
+                        )
+                    }
                 }
             }
         }
