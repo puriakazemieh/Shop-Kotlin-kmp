@@ -3,6 +3,10 @@
    product detail, cart, pagination). Depends on tokens.css + base.css.
    ===================================================================================== */
 
+/* ---- inline icons ---- */
+.cico { display: inline-block; vertical-align: middle; flex: 0 0 auto; }
+.bottom-nav a .ic { display: inline-flex; }
+
 /* ---- sticky header ---- */
 .site-header {
   position: sticky;
@@ -40,11 +44,12 @@
 /* ---- mobile bottom nav (hidden ≥840) ---- */
 .bottom-nav {
   position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 50;
-  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  display: flex;
   background: var(--surface); border-block-start: 1px solid var(--line);
   padding-block: 6px; padding-block-end: calc(6px + env(safe-area-inset-bottom));
 }
 .bottom-nav a {
+  flex: 1 1 0; min-width: 0;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   font-size: 11px; color: var(--ink-soft); padding: 4px 0;
 }

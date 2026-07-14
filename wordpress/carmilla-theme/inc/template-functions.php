@@ -56,11 +56,11 @@ function carmilla_primary_menu_fallback() {
  */
 function carmilla_bottom_nav_items() {
 	$items = array(
-		array( 'label' => 'خانه',   'url' => home_url( '/' ), 'icon' => '⌂' ),
-		array( 'label' => 'فروشگاه', 'url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop' ), 'icon' => '▤' ),
-		array( 'label' => 'مجله',   'url' => home_url( '/blog' ), 'icon' => '✎' ),
-		array( 'label' => 'سبد',    'url' => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart' ), 'icon' => '⛃' ),
-		array( 'label' => 'حساب',   'url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/account' ), 'icon' => '☺' ),
+		array( 'label' => 'خانه',   'url' => home_url( '/' ), 'icon' => 'home' ),
+		array( 'label' => 'فروشگاه', 'url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop' ), 'icon' => 'shop' ),
+		array( 'label' => 'مجله',   'url' => home_url( '/blog' ), 'icon' => 'blog' ),
+		array( 'label' => 'سبد',    'url' => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart' ), 'icon' => 'cart' ),
+		array( 'label' => 'حساب',   'url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/account' ), 'icon' => 'user' ),
 	);
 	return apply_filters( 'carmilla_bottom_nav_items', $items );
 }

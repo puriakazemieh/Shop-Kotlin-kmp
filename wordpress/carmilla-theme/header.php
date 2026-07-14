@@ -43,9 +43,9 @@ $cart_count  = carmilla_cart_count();
 			</nav>
 
 			<div class="header-actions">
-				<a class="icon-btn" href="<?php echo esc_url( home_url( '/?s=' ) ); ?>" aria-label="<?php esc_attr_e( 'جستجو', 'carmilla' ); ?>">⌕</a>
-				<a class="icon-btn" href="<?php echo esc_url( $account_url ); ?>" aria-label="<?php esc_attr_e( 'حساب کاربری', 'carmilla' ); ?>">☺</a>
-				<a class="icon-btn" href="<?php echo esc_url( $cart_url ); ?>" aria-label="<?php esc_attr_e( 'سبد خرید', 'carmilla' ); ?>">⛃
+				<a class="icon-btn" href="<?php echo esc_url( home_url( '/?s=' ) ); ?>" aria-label="<?php esc_attr_e( 'جستجو', 'carmilla' ); ?>"><?php echo carmilla_icon( 'search' ); // phpcs:ignore ?></a>
+				<a class="icon-btn" href="<?php echo esc_url( $account_url ); ?>" aria-label="<?php esc_attr_e( 'حساب کاربری', 'carmilla' ); ?>"><?php echo carmilla_icon( 'user' ); // phpcs:ignore ?></a>
+				<a class="icon-btn" href="<?php echo esc_url( $cart_url ); ?>" aria-label="<?php esc_attr_e( 'سبد خرید', 'carmilla' ); ?>"><?php echo carmilla_icon( 'cart' ); // phpcs:ignore ?>
 					<?php if ( $cart_count > 0 ) : ?>
 						<span class="count"><?php echo esc_html( carmilla_to_persian_digits( $cart_count ) ); ?></span>
 					<?php endif; ?>

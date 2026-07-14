@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			'<a class="bn%s" href="%s"><span class="ic">%s</span>%s</a>',
 			esc_attr( $active ),
 			esc_url( $item['url'] ),
-			esc_html( $item['icon'] ),
+			carmilla_icon( $item['icon'], 22 ), // phpcs:ignore -- trusted inline svg
 			esc_html( $item['label'] )
 		);
 	}
