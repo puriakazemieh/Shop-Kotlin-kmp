@@ -24,7 +24,18 @@ $cart_count  = carmilla_cart_count();
 <header class="site-header">
 	<div class="container container--wide">
 		<div class="bar">
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="brand"><?php bloginfo( 'name' ); ?></a>
+			<?php
+			$header_title = get_theme_mod( 'carmilla_header_title', '' );
+			if ( has_custom_logo() ) {
+				the_custom_logo();
+			} else {
+				printf(
+					'<a href="%s" class="brand">%s</a>',
+					esc_url( home_url( '/' ) ),
+					esc_html( $header_title ?: get_bloginfo( 'name' ) )
+				);
+			}
+			?>
 
 			<nav aria-label="<?php esc_attr_e( 'منوی اصلی', 'carmilla' ); ?>">
 				<?php

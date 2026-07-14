@@ -11,7 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'CARMILLA_THEME_VERSION', '0.2.0' );
 
 require_once get_template_directory() . '/inc/icons.php';
+require_once get_template_directory() . '/inc/customizer.php';
 require_once get_template_directory() . '/inc/template-functions.php';
+require_once get_template_directory() . '/inc/post-types.php';
+require_once get_template_directory() . '/inc/meta-boxes.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once get_template_directory() . '/inc/woocommerce.php';
@@ -42,6 +45,14 @@ if ( ! function_exists( 'carmilla_setup' ) ) {
 		) );
 
 		add_image_size( 'carmilla-card', 600, 800, true ); // 3:4 product/course cards
+
+		add_theme_support( 'custom-logo', array(
+			'height'      => 48,
+			'width'       => 200,
+			'flex-width'  => true,
+			'flex-height' => true,
+		) );
+		add_theme_support( 'customize-selective-refresh-widgets' );
 	}
 }
 add_action( 'after_setup_theme', 'carmilla_setup' );

@@ -24,7 +24,9 @@ $woo = class_exists( 'WooCommerce' );
 
 	<!-- Stories -->
 	<?php
-	$stories = get_posts( array( 'post_type' => 'cb_story', 'numberposts' => 12, 'post_status' => 'publish', 'suppress_filters' => false ) );
+	$stories = carmilla_feature_enabled( 'stories' ) && post_type_exists( 'cb_story' )
+		? get_posts( array( 'post_type' => 'cb_story', 'numberposts' => 12, 'post_status' => 'publish', 'suppress_filters' => false ) )
+		: array();
 	if ( $stories ) :
 		?>
 		<section class="section">
@@ -41,7 +43,7 @@ $woo = class_exists( 'WooCommerce' );
 
 	<!-- Categories -->
 	<?php
-	if ( $woo ) :
+	if ( $woo && carmilla_feature_enabled( 'shop' ) ) :
 		$cats = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => true, 'number' => 8, 'parent' => 0 ) );
 		if ( ! is_wp_error( $cats ) && $cats ) :
 			?>
@@ -74,9 +76,42 @@ $woo = class_exists( 'WooCommerce' );
 		</section>
 	<?php endif; ?>
 
+	<!-- Courses teaser -->
+	<?php
+	$courses = carmilla_feature_enabled( 'courses' ) && post_type_exists( 'cb_course' )
+		? get_posts( array( 'post_type' => 'cb_course', 'numberposts' => 4, 'post_status' => 'publish' ) )
+		: array();
+	if ( $courses ) :
+		?>
+		<section class="section">
+			<div class="section-head">
+				<h2 class="t-title-lg"><?php esc_html_e( 'دوره‌های آموزشی', 'carmilla' ); ?></h2>
+				<a class="more" href="<?php echo esc_url( get_post_type_archive_link( 'cb_course' ) ); ?>"><?php esc_html_e( 'مشاهده همه', 'carmilla' ); ?></a>
+			</div>
+			<div class="grid-adaptive">
+				<?php
+				global $post;
+				foreach ( $courses as $post ) :
+					setup_postdata( $post );
+					$instructor = get_post_meta( get_the_ID(), 'cb_instructor', true );
+					?>
+					<article class="card">
+						<a href="<?php the_permalink(); ?>" class="thumb"><?php the_post_thumbnail( 'carmilla-card' ); ?></a>
+						<div class="card--pad">
+							<h3 class="t-title-sm"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+							<?php if ( $instructor ) : ?><div class="meta-row"><span><?php echo esc_html( $instructor ); ?></span></div><?php endif; ?>
+						</div>
+					</article>
+				<?php endforeach; wp_reset_postdata(); ?>
+			</div>
+		</section>
+	<?php endif; ?>
+
 	<!-- Blog teaser -->
 	<?php
-	$posts = get_posts( array( 'numberposts' => 3, 'post_status' => 'publish' ) );
+	$posts = carmilla_feature_enabled( 'blog' )
+		? get_posts( array( 'numberposts' => 3, 'post_status' => 'publish' ) )
+		: array();
 	if ( $posts ) :
 		?>
 		<section class="section">

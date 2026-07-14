@@ -55,13 +55,29 @@ function carmilla_primary_menu_fallback() {
  * Filterable so a child theme / site can adjust.
  */
 function carmilla_bottom_nav_items() {
-	$items = array(
-		array( 'label' => 'خانه',   'url' => home_url( '/' ), 'icon' => 'home' ),
-		array( 'label' => 'فروشگاه', 'url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop' ), 'icon' => 'shop' ),
-		array( 'label' => 'مجله',   'url' => home_url( '/blog' ), 'icon' => 'blog' ),
-		array( 'label' => 'سبد',    'url' => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart' ), 'icon' => 'cart' ),
-		array( 'label' => 'حساب',   'url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/account' ), 'icon' => 'user' ),
+	$items = array();
+	$items[] = array( 'label' => 'خانه', 'url' => home_url( '/' ), 'icon' => 'home' );
+
+	if ( carmilla_feature_enabled( 'shop' ) && function_exists( 'wc_get_page_permalink' ) ) {
+		$items[] = array( 'label' => 'فروشگاه', 'url' => wc_get_page_permalink( 'shop' ), 'icon' => 'shop' );
+	}
+	if ( carmilla_feature_enabled( 'courses' ) && post_type_exists( 'cb_course' ) ) {
+		$items[] = array( 'label' => 'دوره‌ها', 'url' => get_post_type_archive_link( 'cb_course' ), 'icon' => 'academy' );
+	}
+	if ( carmilla_feature_enabled( 'blog' ) ) {
+		$items[] = array( 'label' => 'مجله', 'url' => get_permalink( get_option( 'page_for_posts' ) ) ?: home_url( '/blog' ), 'icon' => 'blog' );
+	}
+	if ( carmilla_feature_enabled( 'shop' ) && function_exists( 'wc_get_cart_url' ) ) {
+		$items[] = array( 'label' => 'سبد', 'url' => wc_get_cart_url(), 'icon' => 'cart' );
+	}
+	$items[] = array(
+		'label' => 'حساب',
+		'url'   => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/account' ),
+		'icon'  => 'user',
 	);
+
+	// Keep at most 5 for the mobile bar.
+	$items = array_slice( $items, 0, 5 );
 	return apply_filters( 'carmilla_bottom_nav_items', $items );
 }
 
