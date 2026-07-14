@@ -19,6 +19,7 @@ function carmilla_meta_fields() {
 				'cb_format'       => array( 'شکل برگزاری', 'select', array( 'ONLINE_RECORDED' => 'آنلاین (ضبط‌شده)', 'ONLINE_LIVE' => 'آنلاین (زنده)', 'IN_PERSON' => 'حضوری' ) ),
 				'cb_duration'     => array( 'مدت', 'text' ),
 				'cb_product_slug' => array( 'اسلاگ محصول WooCommerce (برای خرید)', 'text' ),
+				'cb_syllabus'     => array( 'سرفصل‌ها (هر خط یک مورد)', 'textarea' ),
 			),
 		),
 		'cb_therapist' => array(
@@ -80,6 +81,8 @@ function carmilla_render_meta_box( $post ) {
 				echo '<option value="' . esc_attr( $opt_val ) . '" ' . selected( $val, $opt_val, false ) . '>' . esc_html( $opt_label ) . '</option>';
 			}
 			echo '</select>';
+		} elseif ( 'textarea' === $type ) {
+			echo '<textarea name="' . esc_attr( $key ) . '" rows="5" style="width:100%">' . esc_textarea( $val ) . '</textarea>';
 		} else {
 			$input_type = in_array( $type, array( 'number', 'url' ), true ) ? $type : 'text';
 			echo '<input type="' . esc_attr( $input_type ) . '" name="' . esc_attr( $key ) . '" value="' . esc_attr( $val ) . '" style="width:100%">';
@@ -113,6 +116,8 @@ add_action( 'save_post', function ( $post_id ) {
 			$clean = esc_url_raw( $raw );
 		} elseif ( 'number' === $type ) {
 			$clean = preg_replace( '/[^0-9.\-]/', '', $raw );
+		} elseif ( 'textarea' === $type ) {
+			$clean = sanitize_textarea_field( $raw );
 		} else {
 			$clean = sanitize_text_field( $raw );
 		}

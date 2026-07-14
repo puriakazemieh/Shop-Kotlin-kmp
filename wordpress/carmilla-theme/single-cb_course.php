@@ -42,6 +42,24 @@ while ( have_posts() ) :
 			<?php the_content(); ?>
 		</div>
 
+		<?php
+		$syllabus = trim( (string) get_post_meta( $id, 'cb_syllabus', true ) );
+		if ( $syllabus ) :
+			$items = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $syllabus ) ) );
+			if ( $items ) :
+				?>
+				<h2 class="t-title-lg" style="margin-block:var(--sp-lg) var(--sp-sm)"><?php esc_html_e( 'سرفصل‌ها', 'carmilla' ); ?></h2>
+				<div class="card">
+					<?php foreach ( $items as $i => $item ) : ?>
+						<div style="display:flex;gap:var(--sp-md);align-items:center;padding:var(--sp-md);<?php echo $i ? 'border-block-start:1px solid var(--line)' : ''; ?>">
+							<span class="badge badge--new"><?php echo esc_html( carmilla_to_persian_digits( $i + 1 ) ); ?></span>
+							<span class="t-body" style="margin:0"><?php echo esc_html( $item ); ?></span>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+		<?php endif; ?>
+
 		<?php if ( $cta_url ) : ?>
 			<a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>"><?php esc_html_e( 'ثبت‌نام / خرید دوره', 'carmilla' ); ?></a>
 		<?php endif; ?>

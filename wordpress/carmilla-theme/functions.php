@@ -15,7 +15,11 @@ require_once get_template_directory() . '/inc/customizer.php';
 require_once get_template_directory() . '/inc/template-functions.php';
 require_once get_template_directory() . '/inc/post-types.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
+require_once get_template_directory() . '/inc/rest.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
+if ( is_admin() ) {
+	require_once get_template_directory() . '/inc/admin-page.php';
+}
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once get_template_directory() . '/inc/woocommerce.php';
 }
@@ -70,6 +74,17 @@ function carmilla_enqueue_assets() {
 
 	// Keep the required theme header stylesheet last (mostly metadata).
 	wp_enqueue_style( 'carmilla-style', get_stylesheet_uri(), array( 'carmilla-components' ), $ver );
+
+	// Interactive course-requests screen (theme REST + JS).
+	if ( is_post_type_archive( 'cb_course_request' ) ) {
+		wp_enqueue_script( 'carmilla-course-requests', $dir . '/assets/js/course-requests.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-course-requests', 'CarmillaData', array(
+			'restUrl'  => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
+			'nonce'    => wp_create_nonce( 'wp_rest' ),
+			'loggedIn' => is_user_logged_in(),
+			'loginUrl' => wp_login_url( get_post_type_archive_link( 'cb_course_request' ) ),
+		) );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'carmilla_enqueue_assets' );
 
