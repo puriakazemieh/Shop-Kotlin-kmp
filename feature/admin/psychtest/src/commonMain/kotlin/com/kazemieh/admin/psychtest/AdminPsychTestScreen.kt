@@ -112,7 +112,8 @@ fun AdminPsychTestScreen(
                     TabChip("تست‌ها", tab == 0) { tab = 0 }
                     TabChip("تفسیرها (${state.pending.size})", tab == 1) { tab = 1 }
                 }
-                Box(Modifier.fillMaxSize()) {
+                // محتوای تب باید فضایِ باقی‌مانده را پر کند (نه اینکه کوچک ته صفحه دیده شود).
+                Box(Modifier.weight(1f).fillMaxWidth()) {
                     if (tab == 0) TestsTab(state, viewModel) else InterpretTab(state.pending, viewModel::interpret)
                 }
             }

@@ -201,8 +201,27 @@ class AdminAcademyViewModel(
             )
             when (val result = createCourseUseCase(params)) {
                 is AppResult.Success -> {
-                    _effect.send(AdminAcademyEffect.ShowSuccess("دوره ساخته شد."))
-                    load()
+                    _effect.send(AdminAcademyEffect.ShowSuccess("دوره ساخته شد. حالا محتوای دوره را اضافه کنید."))
+                    // فهرست را تازه کن و بلافاصله صفحه‌ی مدیریتِ دوره‌ی جدید را باز کن
+                    // تا کاربر همان‌جا بخش/درس/آزمون اضافه کند.
+                    val newId = result.data
+                    when (val listResult = getAdminCoursesUseCase()) {
+                        is AppResult.Success -> _state.update {
+                            it.copy(
+                                isLoading = false,
+                                courses = listResult.data,
+                                expandedCourseId = newId,
+                                expandedCourseDetail = null,
+                                loadingDetail = true
+                            )
+                        }
+                        else -> {}
+                    }
+                    when (val detail = getAdminCourseDetailUseCase(newId)) {
+                        is AppResult.Success -> _state.update { it.copy(loadingDetail = false, expandedCourseDetail = detail.data) }
+                        else -> _state.update { it.copy(loadingDetail = false) }
+                    }
+                    loadWaitlist(newId)
                 }
                 is AppResult.Error -> _effect.send(AdminAcademyEffect.ShowError(result.message))
                 else -> {}

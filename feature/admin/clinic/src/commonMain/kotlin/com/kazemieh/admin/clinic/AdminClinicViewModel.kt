@@ -164,8 +164,25 @@ class AdminClinicViewModel(
             )
             when (val result = createTherapistUseCase(params)) {
                 is AppResult.Success -> {
-                    _effect.send(AdminClinicEffect.ShowSuccess("درمانگر ساخته شد."))
-                    loadTherapists()
+                    _effect.send(AdminClinicEffect.ShowSuccess("درمانگر ساخته شد. حالا بازه‌های نوبت را اضافه کنید."))
+                    // فهرست را تازه کن و صفحه‌ی مدیریتِ درمانگرِ جدید را باز کن تا بازه اضافه شود.
+                    val newId = result.data
+                    when (val listResult = getAdminTherapistsUseCase()) {
+                        is AppResult.Success -> _state.update {
+                            it.copy(
+                                isLoading = false,
+                                therapists = listResult.data,
+                                expandedTherapistId = newId,
+                                expandedSlots = emptyList(),
+                                loadingSlots = true
+                            )
+                        }
+                        else -> {}
+                    }
+                    when (val slots = getAdminSlotsUseCase(newId)) {
+                        is AppResult.Success -> _state.update { it.copy(loadingSlots = false, expandedSlots = slots.data) }
+                        else -> _state.update { it.copy(loadingSlots = false) }
+                    }
                 }
                 is AppResult.Error -> _effect.send(AdminClinicEffect.ShowError(result.message))
                 else -> {}
