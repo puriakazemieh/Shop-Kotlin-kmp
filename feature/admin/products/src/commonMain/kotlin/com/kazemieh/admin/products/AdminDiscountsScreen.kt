@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -133,7 +134,7 @@ fun AdminDiscountsScreen(
                             )
                         } else {
                             LazyColumn(
-                                modifier = Modifier.fillMaxSize().padding(16.dp),
+                                modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(11.dp)
                             ) {
                                 items(discounts) { discount ->

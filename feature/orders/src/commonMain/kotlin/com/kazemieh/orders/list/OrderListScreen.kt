@@ -26,10 +26,14 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.formatDateTime
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
+import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.order.Order
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -44,11 +48,20 @@ fun OrderListScreen(
     val viewModel = koinViewModel<OrderListViewModel>()
     val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val messageBarState = rememberMessageBarState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is OrderListEffect.NavigateToDetail -> navigateToDetail(effect.orderId)
+                is OrderListEffect.ReorderDone -> {
+                    if (effect.skippedTitles.isEmpty()) {
+                        messageBarState.addSuccess("آیتم‌ها به سبد اضافه شدند.")
+                    } else {
+                        messageBarState.addSuccess("آیتم‌های موجود به سبد اضافه شدند. رد شد: ${effect.skippedTitles.joinToString("، ")}")
+                    }
+                }
+                is OrderListEffect.ReorderFailed -> messageBarState.addError(effect.message)
             }
         }
     }
@@ -83,8 +96,9 @@ fun OrderListScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-            when (val result = state.ordersState) {
+        ContentWithMessageBar(modifier = Modifier.padding(padding), messageBarState = messageBarState) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (val result = state.ordersState) {
                 is AppResult.Loading -> LoadingCard(Modifier.fillMaxSize())
                 is AppResult.Error -> InfoCard(
                     title = stringResource(Resources.String.Oops),
@@ -99,18 +113,20 @@ fun OrderListScreen(
                         }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
                             contentPadding = PaddingValues(16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(orders) { order ->
                                 OrderCard(
                                     order = order,
-                                    onClick = { viewModel.handleIntent(OrderListIntent.OnOrderClick(order.id)) }
+                                    onClick = { viewModel.handleIntent(OrderListIntent.OnOrderClick(order.id)) },
+                                    onReorder = { viewModel.handleIntent(OrderListIntent.OnReorderClick(order.id)) }
                                 )
                             }
                         }
                     }
+                }
                 }
             }
         }
@@ -120,7 +136,8 @@ fun OrderListScreen(
 @Composable
 fun OrderCard(
     order: Order,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onReorder: () -> Unit = {}
 ) {
     val colors = AppTheme.colors
     Column(
@@ -158,15 +175,23 @@ fun OrderCard(
                     .background(colors.surfaceVariant)
             )
             Spacer(modifier = Modifier.width(13.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "تاریخِ ثبت: ${formatDateTime(order.createdAt)}",
+                    fontSize = FontSize.SMALL,
+                    fontFamily = AppFont(),
+                    color = colors.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(3.dp))
+                Text(
+                    text = "${order.itemCount} کالا",
+                    fontSize = FontSize.SMALL,
+                    fontFamily = AppFont(),
+                    color = colors.onSurfaceVariant
+                )
+            }
             Text(
-                modifier = Modifier.weight(1f),
-                text = formatDateTime(order.createdAt),
-                fontSize = FontSize.SMALL,
-                fontFamily = AppFont(),
-                color = colors.onSurfaceVariant
-            )
-            Text(
-                text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+                text = stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = FontSize.EXTRA_REGULAR,
                 color = colors.onSurface,
@@ -176,20 +201,39 @@ fun OrderCard(
         Spacer(modifier = Modifier.height(14.dp))
         Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
         Spacer(modifier = Modifier.height(13.dp))
-        Text(
-            text = "جزئیات و رهگیری",
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(11.dp))
-                .background(colors.accentSoft)
-                .clickable { onClick() }
-                .padding(vertical = 10.dp),
-            textAlign = TextAlign.Center,
-            fontSize = FontSize.SMALL,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.primary,
-            fontFamily = AppFont()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = "جزئیات و رهگیری",
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(11.dp))
+                    .background(colors.accentSoft)
+                    .clickable { onClick() }
+                    .padding(vertical = 10.dp),
+                textAlign = TextAlign.Center,
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.primary,
+                fontFamily = AppFont()
+            )
+            Text(
+                text = "خرید مجدد",
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(11.dp))
+                    .border(1.dp, colors.line, RoundedCornerShape(11.dp))
+                    .clickable { onReorder() }
+                    .padding(vertical = 10.dp),
+                textAlign = TextAlign.Center,
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurface,
+                fontFamily = AppFont()
+            )
+        }
     }
 }
 

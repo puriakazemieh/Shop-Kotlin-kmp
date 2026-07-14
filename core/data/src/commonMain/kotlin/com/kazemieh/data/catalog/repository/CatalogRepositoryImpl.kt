@@ -52,4 +52,13 @@ class CatalogRepositoryImpl(
 
     override suspend fun getBanners(): AppResult<List<Banner>> =
         dataSource.getBanners().map { list -> list.map { it.toBannerDomain() } }
+
+    override suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit> =
+        dataSource.requestBackInStock(productId, variantId)
+
+    override suspend fun getFrequentlyBoughtTogether(productId: Long): AppResult<List<ProductSummary>> =
+        dataSource.getFrequentlyBoughtTogether(productId).map { list -> list.map { it.toCatalogDomain() } }
+
+    override suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): AppResult<Unit> =
+        dataSource.subscribeToPriceAlert(productId, variantId, targetPrice)
 }

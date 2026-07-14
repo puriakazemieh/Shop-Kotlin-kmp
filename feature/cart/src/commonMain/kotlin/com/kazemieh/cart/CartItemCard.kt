@@ -40,6 +40,7 @@ import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.stringResource
 import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.cart.CartItem
 import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.painterResource
@@ -175,7 +176,7 @@ fun CartItemCard(
             ) {
                 Column {
                     Text(
-                        text = stringResource(Resources.String.PriceFormat, cartItem.lineTotal),
+                        text = stringResource(Resources.String.PriceFormat, formatToman(cartItem.lineTotal)),
                         fontSize = FontSize.EXTRA_REGULAR,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.ExtraBold,

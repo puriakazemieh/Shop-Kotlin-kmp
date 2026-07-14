@@ -1,21 +1,30 @@
 package com.kazemieh.admin.products
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.domain.admin.AdminOption
 import com.kazemieh.domain.admin.AdminVariant
 import com.kazemieh.domain.admin.AdminVariantOption
@@ -36,12 +45,13 @@ fun VariantBottomSheet(
     onCreateOptionTypeAndValue: (String, String) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
+    val colors = AppTheme.colors
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var options by remember {
         val masterVariant = existingVariants.firstOrNull()
         val masterKeys = masterVariant?.options?.keys ?: emptySet()
-        
+
         mutableStateOf(
             if (variant != null) {
                 if (variant.id == masterVariant?.id) {
@@ -75,13 +85,13 @@ fun VariantBottomSheet(
     if (showDeletePropertyWarning != null) {
         AlertDialog(
             onDismissRequest = { showDeletePropertyWarning = null },
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = colors.surface,
             title = { Text(stringResource(Resources.String.WarningText)) },
-            text = { 
+            text = {
                 Text(
                     if (causesDuplicates) stringResource(Resources.String.DeletePropertyDuplicateWarning)
                     else stringResource(Resources.String.DeletePropertyWarning)
-                ) 
+                )
             },
             confirmButton = {
                 TextButton(onClick = {
@@ -101,25 +111,71 @@ fun VariantBottomSheet(
         )
     }
 
+    // منطقِ حذفِ یک ویژگی (مشترک برای دکمه‌ی «حذف»).
+    fun deleteProperty(index: Int) {
+        if (options.size <= 1) return
+        if (isMasterVariant) {
+            val remainingKeys = options.filterIndexed { i, _ -> i != index }.map { it.type }
+            val futureVariants = existingVariants.map { v -> v.options.filterKeys { it in remainingKeys } }
+            causesDuplicates = futureVariants.size != futureVariants.distinct().size
+            showDeletePropertyWarning = index
+        } else {
+            options = options.filterIndexed { i, _ -> i != index }
+        }
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = colors.surface
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
                 .verticalScroll(rememberScrollState())
                 .imePadding(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // ---- سربرگ: عنوان + دکمه‌ی بستن ----
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(RoundedCornerShape(Radius.button))
+                        .background(colors.surfaceVariant)
+                        .clickable { onDismiss() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "بستن",
+                        tint = colors.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = if (variant == null) stringResource(Resources.String.AddNewVariant) else stringResource(Resources.String.EditVariant),
+                    fontSize = FontSize.LARGE,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            // ---- بخشِ ویژگی‌ها ----
             Text(
-                text = if (variant == null) stringResource(Resources.String.AddNewVariant) else stringResource(Resources.String.EditVariant),
-                fontSize = FontSize.LARGE,
-                fontWeight = FontWeight.Bold
+                text = "ویژگی‌ها",
+                fontSize = FontSize.REGULAR,
+                fontWeight = FontWeight.Bold,
+                color = colors.onSurface
             )
 
             options.forEachIndexed { index, option ->
@@ -129,75 +185,59 @@ fun VariantBottomSheet(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                        .clip(RoundedCornerShape(Radius.md))
+                        .background(colors.accentSoft)
+                        .padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            OptionSelector(
-                                label = stringResource(Resources.String.OptionType),
-                                value = option.type,
-                                suggestions = availableOptions.map { it.name }.filter { it.lowercase() !in otherSelectedTypes },
-                                isError = isDuplicateType,
-                                enabled = !isSubsequentVariant,
-                                onValueChange = { newType ->
-                                    val newList = options.toMutableList()
-                                    newList[index] = option.copy(type = newType, value = "")
-                                    options = newList
-                                }
+                    // ردیفِ بالا: «حذف» (فقط اگر قابلِ حذف باشد)
+                    if (!isSubsequentVariant && options.size > 1) {
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "حذف",
+                                color = MaterialTheme.colorScheme.error,
+                                fontSize = FontSize.SMALL,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.clickable { deleteProperty(index) }
                             )
-                        }
-                        Column(modifier = Modifier.weight(1f)) {
-                            OptionSelector(
-                                label = stringResource(Resources.String.OptionValue),
-                                value = option.value,
-                                suggestions = availableOptions.find { it.name == option.type }?.values?.map { it.value }
-                                    ?: emptyList(),
-                                onValueChange = { newValue ->
-                                    val newList = options.toMutableList()
-                                    newList[index] = option.copy(value = newValue)
-                                    options = newList
-                                }
-                            )
-                        }
-                        if (!isSubsequentVariant) {
-                            IconButton(onClick = {
-                                if (options.size > 1) {
-                                    if (isMasterVariant) {
-                                        val remainingKeys = options.filterIndexed { i, _ -> i != index }.map { it.type }
-                                        val futureVariants = existingVariants.map { v -> 
-                                            v.options.filterKeys { it in remainingKeys } 
-                                        }
-                                        causesDuplicates = futureVariants.size != futureVariants.distinct().size
-                                        showDeletePropertyWarning = index
-                                    } else {
-                                        options = options.filterIndexed { i, _ -> i != index }
-                                    }
-                                }
-                            }) {
-                                Icon(
-                                    Icons.Default.Delete,
-                                    contentDescription = stringResource(Resources.String.DeleteOption),
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                            }
+                            Spacer(Modifier.weight(1f))
                         }
                     }
+
+                    OptionSelector(
+                        label = stringResource(Resources.String.OptionType),
+                        value = option.type,
+                        suggestions = availableOptions.map { it.name }.filter { it.lowercase() !in otherSelectedTypes },
+                        isError = isDuplicateType,
+                        enabled = !isSubsequentVariant,
+                        onValueChange = { newType ->
+                            val newList = options.toMutableList()
+                            newList[index] = option.copy(type = newType, value = "")
+                            options = newList
+                        }
+                    )
+
+                    OptionSelector(
+                        label = stringResource(Resources.String.OptionValue),
+                        value = option.value,
+                        suggestions = availableOptions.find { it.name == option.type }?.values?.map { it.value }
+                            ?: emptyList(),
+                        onValueChange = { newValue ->
+                            val newList = options.toMutableList()
+                            newList[index] = option.copy(value = newValue)
+                            options = newList
+                        }
+                    )
 
                     if (isDuplicateType) {
                         Text(
                             text = stringResource(Resources.String.DuplicateOptionType),
                             color = MaterialTheme.colorScheme.error,
-                            fontSize = FontSize.EXTRA_SMALL,
-                            modifier = Modifier.padding(start = 8.dp)
+                            fontSize = FontSize.EXTRA_SMALL
                         )
                     }
 
-                    // Clear actions for new properties
+                    // اکشن‌های ساختِ نوع/مقدارِ جدید
                     val typeExists = availableOptions.any { it.name == option.type }
                     val valueExists = availableOptions.find { it.name == option.type }?.values?.any { it.value == option.value } ?: false
 
@@ -208,27 +248,21 @@ fun VariantBottomSheet(
                         if (option.type.isNotBlank() && !typeExists && option.value.isNotBlank() && !isDuplicateType) {
                             TextButton(
                                 onClick = { onCreateOptionTypeAndValue(option.type, option.value) },
-                                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                                colors = ButtonDefaults.textButtonColors(contentColor = colors.primary)
                             ) {
                                 Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text(
-                                    text = stringResource(Resources.String.CreateTypeAndValue),
-                                    fontSize = FontSize.SMALL
-                                )
+                                Text(text = stringResource(Resources.String.CreateTypeAndValue), fontSize = FontSize.SMALL)
                             }
                         } else {
                             if (option.type.isNotBlank() && !typeExists && !isDuplicateType) {
                                 TextButton(
                                     onClick = { onCreateOptionType(option.type) },
-                                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                                    colors = ButtonDefaults.textButtonColors(contentColor = colors.primary)
                                 ) {
                                     Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(4.dp))
-                                    Text(
-                                        text = stringResource(Resources.String.CreateTypeFormat, option.type),
-                                        fontSize = FontSize.SMALL
-                                    )
+                                    Text(text = stringResource(Resources.String.CreateTypeFormat, option.type), fontSize = FontSize.SMALL)
                                 }
                             }
                             if (option.value.isNotBlank() && typeExists && !valueExists && !isDuplicateType) {
@@ -238,14 +272,11 @@ fun VariantBottomSheet(
                                             onCreateOptionValue(id, option.value)
                                         }
                                     },
-                                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                                    colors = ButtonDefaults.textButtonColors(contentColor = colors.primary)
                                 ) {
                                     Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(4.dp))
-                                    Text(
-                                        text = stringResource(Resources.String.CreateValueFormat, option.value),
-                                        fontSize = FontSize.SMALL
-                                    )
+                                    Text(text = stringResource(Resources.String.CreateValueFormat, option.value), fontSize = FontSize.SMALL)
                                 }
                             }
                         }
@@ -253,15 +284,30 @@ fun VariantBottomSheet(
                 }
             }
 
+            // ---- افزودنِ ویژگیِ دیگر ----
             if (!isSubsequentVariant) {
-                TextButton(
-                    onClick = { options = options + AdminVariantOption("", "") },
-                    enabled = options.all { it.type.isNotBlank() && it.value.isNotBlank() } && options.map { it.type.lowercase() }.distinct().size == options.size,
-                    modifier = Modifier.align(Alignment.Start)
+                val canAddProperty = options.all { it.type.isNotBlank() && it.value.isNotBlank() } &&
+                        options.map { it.type.lowercase() }.distinct().size == options.size
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Radius.sm))
+                        .clickable(enabled = canAddProperty) { options = options + AdminVariantOption("", "") }
+                        .padding(vertical = 6.dp, horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(Resources.String.AddVariant))
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null,
+                        tint = if (canAddProperty) colors.primary else colors.onSurfaceVariant,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        "افزودن ویژگی دیگر",
+                        color = if (canAddProperty) colors.primary else colors.onSurfaceVariant,
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
 
@@ -274,25 +320,22 @@ fun VariantBottomSheet(
                 Text(
                     text = stringResource(Resources.String.VariantComboExists),
                     color = MaterialTheme.colorScheme.error,
-                    fontSize = FontSize.SMALL,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    fontSize = FontSize.SMALL
                 )
             }
 
-            // Apply to all variants logic
+            // اعمال به همه‌ی واریانت‌ها
             val masterKeysInOtherVariants = existingVariants.getOrNull(1)?.options?.keys ?: emptySet()
-            val newCompletedProperties = options.filter { 
-                it.type.isNotBlank() && it.value.isNotBlank() && it.type !in masterKeysInOtherVariants 
+            val newCompletedProperties = options.filter {
+                it.type.isNotBlank() && it.value.isNotBlank() && it.type !in masterKeysInOtherVariants
             }
             val hasNewCompletedProperties = isMasterVariant && existingVariants.size > 1 && newCompletedProperties.isNotEmpty()
 
             if (hasNewCompletedProperties) {
                 Button(
-                    onClick = {
-                        onApplyToAll(options.filter { it.type.isNotBlank() && it.value.isNotBlank() })
-                    },
+                    onClick = { onApplyToAll(options.filter { it.type.isNotBlank() && it.value.isNotBlank() }) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer)
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.accentSoft, contentColor = colors.primary)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
@@ -300,40 +343,69 @@ fun VariantBottomSheet(
                 }
             }
 
-            OutlinedTextField(
-                value = sku,
-                onValueChange = { sku = it },
-                label = { Text(stringResource(Resources.String.Sku)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            // ---- کد انبار (SKU) + موجودی ----
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Box(Modifier.weight(1f)) {
+                    CustomTextField(
+                        value = sku,
+                        onValueChange = { sku = it },
+                        placeholder = stringResource(Resources.String.Sku),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Box(Modifier.weight(1f)) {
+                    CustomTextField(
+                        value = initialOnHand,
+                        onValueChange = { initialOnHand = it },
+                        placeholder = stringResource(Resources.String.InitialStockRequired),
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        error = initialOnHand.isEmpty()
+                    )
+                }
+            }
 
-            OutlinedTextField(
-                value = price,
-                onValueChange = { price = it },
-                label = { Text(stringResource(Resources.String.Price)) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
+            // ---- قیمت + قیمت با تخفیف ----
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Box(Modifier.weight(1f)) {
+                    CustomTextField(
+                        value = price,
+                        onValueChange = { price = it },
+                        placeholder = stringResource(Resources.String.Price),
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+                }
+                Box(Modifier.weight(1f)) {
+                    CustomTextField(
+                        value = discountedPrice,
+                        onValueChange = { discountedPrice = it },
+                        placeholder = stringResource(Resources.String.DiscountedPricePlaceholder),
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+                }
+            }
 
-            OutlinedTextField(
-                value = discountedPrice,
-                onValueChange = { discountedPrice = it },
-                label = { Text(stringResource(Resources.String.DiscountedPricePlaceholder)) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            OutlinedTextField(
-                value = initialOnHand,
-                onValueChange = { initialOnHand = it },
-                label = { Text(stringResource(Resources.String.InitialStockRequired)) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = initialOnHand.isEmpty()
-            )
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR)
+            // ---- وضعیتِ واریانت ----
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(Radius.md))
+                    .background(colors.surface)
+                    .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
+                    .padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(stringResource(Resources.String.Active), fontSize = FontSize.REGULAR, fontWeight = FontWeight.SemiBold, color = colors.onSurface)
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        "واریانت غیرفعال در فروشگاه نمایش داده نمی‌شود",
+                        fontSize = FontSize.EXTRA_SMALL,
+                        color = colors.onSurfaceVariant
+                    )
+                }
                 Switch(checked = isActive, onCheckedChange = { isActive = it })
             }
 
@@ -355,52 +427,55 @@ fun VariantBottomSheet(
                     (discountedPrice.isEmpty() || discountedPrice.toDoubleOrNull() != null) &&
                     initialOnHand.toIntOrNull() != null
 
+            // هنگامِ ساخت، امکانِ «ذخیره و افزودنِ واریانتِ بعدی» را حفظ می‌کنیم.
+            if (variant == null) {
+                TextButton(
+                    enabled = isFormValid,
+                    onClick = {
+                        onConfirm(
+                            sku, price.toDouble(), discountedPrice.toDoubleOrNull(),
+                            options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
+                            isActive, initialOnHand.toInt(), false
+                        )
+                        // فرم را برای واریانتِ بعدی خالی کن؛ نوعِ ویژگی‌ها حفظ می‌شود.
+                        sku = ""
+                        price = ""
+                        discountedPrice = ""
+                        initialOnHand = ""
+                        options = options.map { it.copy(value = "") }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.textButtonColors(contentColor = colors.primary)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(Resources.String.AddAndNext))
+                }
+            }
+
+            // ---- ذخیره / انصراف ----
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                if (variant == null) {
-                    OutlinedButton(
-                        enabled = isFormValid,
-                        onClick = {
-                            onConfirm(
-                                sku,
-                                price.toDouble(),
-                                discountedPrice.toDoubleOrNull(),
-                                options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
-                                isActive,
-                                initialOnHand.toInt(),
-                                false
-                            )
-                            // Reset form for next variant while keeping the same property types
-                            sku = ""
-                            price = ""
-                            discountedPrice = ""
-                            initialOnHand = ""
-                            options = options.map { it.copy(value = "") }
-                        },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(stringResource(Resources.String.AddAndNext))
-                    }
-                }
-
                 Button(
                     enabled = isFormValid,
                     onClick = {
                         onConfirm(
-                            sku,
-                            price.toDouble(),
-                            discountedPrice.toDoubleOrNull(),
+                            sku, price.toDouble(), discountedPrice.toDoubleOrNull(),
                             options.filter { it.type.isNotBlank() && it.value.isNotBlank() },
-                            isActive,
-                            initialOnHand.toInt(),
-                            true
+                            isActive, initialOnHand.toInt(), true
                         )
                     },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(if (variant == null) stringResource(Resources.String.Add) else stringResource(Resources.String.Update))
+                }
+                OutlinedButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(Resources.String.Cancel))
                 }
             }
         }

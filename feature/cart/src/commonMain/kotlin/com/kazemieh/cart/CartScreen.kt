@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -50,6 +51,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -108,6 +110,7 @@ fun CartScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .responsiveMaxWidth()
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp)
                             .padding(top = 16.dp, bottom = 24.dp)
@@ -344,14 +347,14 @@ private fun OrderSummaryCard(
 
         SummaryRow(
             label = stringResource(Resources.String.ItemsPriceLabel),
-            value = stringResource(Resources.String.PriceFormat, subtotal),
+            value = stringResource(Resources.String.PriceFormat, formatToman(subtotal)),
             valueColor = colors.onSurface
         )
         if (savings > 0) {
             Spacer(Modifier.height(11.dp))
             SummaryRow(
                 label = stringResource(Resources.String.YourSavingsLabel),
-                value = "- ${stringResource(Resources.String.PriceFormat, savings)}",
+                value = "- ${stringResource(Resources.String.PriceFormat, formatToman(savings))}",
                 valueColor = colors.sale
             )
         }
@@ -365,7 +368,7 @@ private fun OrderSummaryCard(
             Spacer(Modifier.height(11.dp))
             SummaryRow(
                 label = stringResource(Resources.String.DiscountAmount),
-                value = "- ${stringResource(Resources.String.PriceFormat, discountAmount)}",
+                value = "- ${stringResource(Resources.String.PriceFormat, formatToman(discountAmount))}",
                 valueColor = colors.sale
             )
         }
@@ -464,7 +467,7 @@ private fun OrderSummaryCard(
                 color = colors.onSurface
             )
             Text(
-                text = stringResource(Resources.String.PriceFormat, total),
+                text = stringResource(Resources.String.PriceFormat, formatToman(total)),
                 fontSize = FontSize.MEDIUM,
                 fontWeight = FontWeight.ExtraBold,
                 color = colors.primary

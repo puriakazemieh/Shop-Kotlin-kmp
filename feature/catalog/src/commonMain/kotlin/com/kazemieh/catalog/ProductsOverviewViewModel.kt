@@ -15,6 +15,10 @@ import com.kazemieh.domain.recentlyviewed.GetRecentlyViewedUseCase
 import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
+import com.kazemieh.domain.academy.GetCoursesUseCase
+import com.kazemieh.domain.clinic.GetTherapistsUseCase
+import com.kazemieh.domain.psychtest.GetPsychTestsUseCase
+import com.kazemieh.designsystem.brand.BrandConfig
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +39,11 @@ class ProductsOverviewViewModel(
     private val markStoryAsSeenUseCase: MarkStoryAsSeenUseCase,
     private val getBlogsUseCase: GetBlogsUseCase,
     private val getRecentlyViewedUseCase: GetRecentlyViewedUseCase,
-    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
+    private val getCoursesUseCase: GetCoursesUseCase,
+    private val getTherapistsUseCase: GetTherapistsUseCase,
+    private val getPsychTestsUseCase: GetPsychTestsUseCase,
+    private val brandConfig: BrandConfig
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductsOverviewState())
@@ -53,6 +61,35 @@ class ProductsOverviewViewModel(
         loadBlogPosts()
         observeRecentlyViewed()
         observeFavorites()
+        loadVerticalPreviews()
+    }
+
+    /** پیش‌نمایشِ چندتایی از دوره/درمانگر/تست روان‌شناسی — فقط اگر برند همان عمودی را روشن کرده باشد. */
+    private fun loadVerticalPreviews() {
+        if (brandConfig.features.academy) {
+            viewModelScope.launch {
+                when (val result = getCoursesUseCase()) {
+                    is AppResult.Success -> _state.update { it.copy(courses = result.data.take(8)) }
+                    else -> { /* بدون دوره؛ بخش نمایش داده نمی‌شود */ }
+                }
+            }
+        }
+        if (brandConfig.features.clinic) {
+            viewModelScope.launch {
+                when (val result = getTherapistsUseCase()) {
+                    is AppResult.Success -> _state.update { it.copy(therapists = result.data.take(8)) }
+                    else -> { /* بدون درمانگر؛ بخش نمایش داده نمی‌شود */ }
+                }
+            }
+        }
+        if (brandConfig.features.psychTests) {
+            viewModelScope.launch {
+                when (val result = getPsychTestsUseCase()) {
+                    is AppResult.Success -> _state.update { it.copy(psychTests = result.data.take(8)) }
+                    else -> { /* بدون تست؛ بخش نمایش داده نمی‌شود */ }
+                }
+            }
+        }
     }
 
     private fun observeRecentlyViewed() {
@@ -215,6 +252,7 @@ class ProductsOverviewViewModel(
             loadCampaign()
             loadBanners()
             loadBlogPosts()
+            loadVerticalPreviews()
             _state.update { it.copy(isRefreshing = false) }
         }
     }

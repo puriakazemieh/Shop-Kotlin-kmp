@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -94,6 +95,7 @@ fun CustomerClubScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding())
+                .responsiveMaxWidth()
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {

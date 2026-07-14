@@ -68,6 +68,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
@@ -76,18 +79,12 @@ import com.kazemieh.designsystem.component.QuantityCounter
 import com.kazemieh.designsystem.component.QuantityCounterSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
-import com.kazemieh.details.component.AddQuestionDialog
-import com.kazemieh.details.component.AddReviewDialog
-import com.kazemieh.details.component.EditQuestionDialog
-import com.kazemieh.details.component.EditReviewDialog
 import com.kazemieh.details.component.QuestionItem
 import com.kazemieh.details.component.ReviewItem
 import com.kazemieh.details.component.VariantChip
 import com.kazemieh.domain.catalog.ProductImage
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.domain.catalog.ProductVideo
-import com.kazemieh.domain.catalog.Question
-import com.kazemieh.domain.catalog.Review
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -124,11 +121,6 @@ fun DetailsScreen(
     val galleryScope = rememberCoroutineScope()
     var fullscreenImageUrl by remember { mutableStateOf<String?>(null) }
     var showSizeGuide by remember { mutableStateOf(false) }
-    var showReviewDialog by remember { mutableStateOf(false) }
-    var showQuestionDialog by remember { mutableStateOf(false) }
-    var activeParentId by remember { mutableStateOf<Long?>(null) }
-    var editReview by remember { mutableStateOf<Review?>(null) }
-    var editQuestion by remember { mutableStateOf<Question?>(null) }
     var newReviewRating by remember { mutableStateOf(5) }
     var newReviewText by remember { mutableStateOf("") }
     var newQuestionText by remember { mutableStateOf("") }
@@ -167,6 +159,7 @@ fun DetailsScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
+                            .responsiveMaxWidth(ContentWidth.readable)
                             .padding(horizontal = 16.dp)
                             .padding(top = 12.dp, bottom = 24.dp)
                     ) {
@@ -548,9 +541,18 @@ fun DetailsScreen(
                         state.reviews.forEach { review ->
                             ReviewItem(
                                 review = review,
-                                onReplyClick = { activeParentId = it; showReviewDialog = true },
-                                onEditClick = { editReview = it },
-                                onDeleteClick = {
+                                currentUserId = state.currentUserId,
+                                onReplySubmit = { parentId, comment ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.AddReview(pid, null, comment, parentId))
+                                    }
+                                },
+                                onEditSubmit = { reviewId, rating, comment ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.UpdateReview(reviewId, pid, rating, comment))
+                                    }
+                                },
+                                onDelete = {
                                     state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteReview(it, pid)) }
                                 }
                             )
@@ -558,12 +560,20 @@ fun DetailsScreen(
 
                         // ---- پرسش و پاسخ ----
                         Spacer(Modifier.height(28.dp))
-                        Text(
-                            "پرسش و پاسخ (${state.questions.size})",
-                            fontSize = FontSize.MEDIUM,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = colors.onSurface
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "پرسش و پاسخ",
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.onSurface
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                "${state.questions.size} پرسش",
+                                fontSize = FontSize.SMALL,
+                                color = colors.onSurfaceVariant
+                            )
+                        }
                         Spacer(Modifier.height(14.dp))
                         // ---- ثبت پرسشِ اینلاین (مثل بخش دیدگاه‌ها) ----
                         WriteQuestionCard(
@@ -589,9 +599,18 @@ fun DetailsScreen(
                         state.questions.forEach { question ->
                             QuestionItem(
                                 question = question,
-                                onReplyClick = { activeParentId = it; showQuestionDialog = true },
-                                onEditClick = { editQuestion = it },
-                                onDeleteClick = {
+                                currentUserId = state.currentUserId,
+                                onReplySubmit = { parentId, content ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.AddQuestion(pid, content, parentId))
+                                    }
+                                },
+                                onEditSubmit = { questionId, content ->
+                                    state.product?.id?.let { pid ->
+                                        viewModel.handleIntent(DetailsIntent.UpdateQuestion(questionId, pid, content))
+                                    }
+                                },
+                                onDelete = {
                                     state.product?.id?.let { pid -> viewModel.handleIntent(DetailsIntent.DeleteQuestion(it, pid)) }
                                 }
                             )
@@ -629,56 +648,6 @@ fun DetailsScreen(
 
     if (showSizeGuide) {
         SizeGuideDialog(onDismiss = { showSizeGuide = false })
-    }
-
-    if (showReviewDialog) {
-        AddReviewDialog(
-            onDismiss = { showReviewDialog = false },
-            onSubmit = { rating, comment ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.AddReview(it, rating, comment, activeParentId))
-                }
-                showReviewDialog = false
-            }
-        )
-    }
-
-    if (showQuestionDialog) {
-        AddQuestionDialog(
-            onDismiss = { showQuestionDialog = false },
-            onSubmit = { content ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.AddQuestion(it, content, activeParentId))
-                }
-                showQuestionDialog = false
-            }
-        )
-    }
-
-    editReview?.let { review ->
-        EditReviewDialog(
-            review = review,
-            onDismiss = { editReview = null },
-            onSubmit = { rating, comment ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.UpdateReview(review.id, it, rating, comment))
-                }
-                editReview = null
-            }
-        )
-    }
-
-    editQuestion?.let { question ->
-        EditQuestionDialog(
-            question = question,
-            onDismiss = { editQuestion = null },
-            onSubmit = { content ->
-                state.product?.id?.let {
-                    viewModel.handleIntent(DetailsIntent.UpdateQuestion(question.id, it, content))
-                }
-                editQuestion = null
-            }
-        )
     }
 
     fullscreenImageUrl?.let { url ->
@@ -748,7 +717,7 @@ private fun PriceActionCard(
             Column {
                 if (oldPrice != null) {
                     Text(
-                        text = stringResource(Resources.String.PriceFormat, oldPrice),
+                        text = stringResource(Resources.String.PriceFormat, formatToman(oldPrice)),
                         fontSize = FontSize.SMALL,
                         color = colors.onSurfaceVariant,
                         textDecoration = TextDecoration.LineThrough
@@ -757,7 +726,7 @@ private fun PriceActionCard(
                 }
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = stringResource(Resources.String.PriceFormat, displayPrice),
+                        text = stringResource(Resources.String.PriceFormat, formatToman(displayPrice)),
                         fontSize = FontSize.LARGE,
                         fontWeight = FontWeight.ExtraBold,
                         color = colors.onSurface
@@ -995,7 +964,7 @@ private fun ProductSpecsCard(specs: List<Pair<String, String>>) {
     }
 }
 
-/** کارتِ ثبتِ پرسشِ اینلاین — متن + دکمه (هم‌سبک با بخش دیدگاه‌ها، به‌جای دیالوگ). */
+/** ثبتِ پرسشِ اینلاین — ردیفِ «متن + دکمه» مطابق اسپک (به‌جای دیالوگ). */
 @Composable
 private fun WriteQuestionCard(
     text: String,
@@ -1003,46 +972,39 @@ private fun WriteQuestionCard(
     onSubmit: () -> Unit
 ) {
     val colors = AppTheme.colors
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(Radius.md))
-            .background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(Radius.md))
-            .padding(16.dp)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text("پرسش خود را بنویسید", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
-        Spacer(Modifier.height(11.dp))
+        Text(
+            text = "ثبت پرسش",
+            modifier = Modifier
+                .clip(RoundedCornerShape(Radius.button))
+                .background(if (text.isNotBlank()) colors.primary else colors.accentSoft)
+                .clickable(enabled = text.isNotBlank()) { onSubmit() }
+                .padding(horizontal = 20.dp, vertical = 15.dp),
+            textAlign = TextAlign.Center,
+            color = if (text.isNotBlank()) colors.onPrimary else colors.primary,
+            fontSize = FontSize.REGULAR,
+            fontWeight = FontWeight.Bold
+        )
         OutlinedTextField(
             value = text,
             onValueChange = onTextChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(1f),
             placeholder = { Text("پرسش خود درباره این محصول را بنویسید…", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
-            minLines = 2,
+            maxLines = 2,
             shape = RoundedCornerShape(Radius.sm),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = colors.surfaceVariant,
-                unfocusedContainerColor = colors.surfaceVariant,
+                focusedContainerColor = colors.surface,
+                unfocusedContainerColor = colors.surface,
                 focusedBorderColor = colors.primary,
                 unfocusedBorderColor = colors.line,
                 cursorColor = colors.primary,
                 focusedTextColor = colors.onSurface,
                 unfocusedTextColor = colors.onSurface
             )
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = "ثبت پرسش",
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(Radius.button))
-                .background(if (text.isNotBlank()) colors.primary else colors.line)
-                .clickable(enabled = text.isNotBlank()) { onSubmit() }
-                .padding(vertical = 13.dp),
-            textAlign = TextAlign.Center,
-            color = colors.onPrimary,
-            fontSize = FontSize.REGULAR,
-            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -1213,7 +1175,7 @@ private fun SimilarProductCard(
         Spacer(Modifier.height(6.dp))
         if (price != null) {
             Text(
-                text = stringResource(Resources.String.PriceFormat, price),
+                text = stringResource(Resources.String.PriceFormat, formatToman(price)),
                 fontSize = FontSize.REGULAR,
                 fontWeight = FontWeight.ExtraBold,
                 color = colors.onSurface

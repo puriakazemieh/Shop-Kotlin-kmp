@@ -11,7 +11,8 @@ import java.awt.Dimension
 import java.net.URI
 
 fun main(args: Array<String>) = application {
-    initKoin()
+    // انتخابِ برند برای دسکتاپ با آرگومانِ اجرا: -Dbrand=atris (پیش‌فرض carmila)
+    initKoin(brand = com.kazemieh.designsystem.brand.BrandRegistry.byId(System.getProperty("brand")))
 
     // Handle deep link from arguments (if app was launched with URI)
     args.firstOrNull()?.let { handleUri(it) }

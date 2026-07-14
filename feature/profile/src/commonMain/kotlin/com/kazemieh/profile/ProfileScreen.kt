@@ -57,11 +57,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalUriHandler
 import com.kazemieh.catalog.MainProductCard
+import com.kazemieh.academy.list.CourseListScreen
+import com.kazemieh.psychtest.list.PsychTestListScreen
+import com.kazemieh.clinic.appointments.MyAppointmentsScreen
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -71,6 +75,7 @@ import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.MessageBarState
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.address.Address
 import com.kazemieh.domain.order.Order
 import com.kazemieh.domain.wallet.WalletBalance
@@ -84,10 +89,17 @@ fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToDetail: (String) -> Unit = {},
     navigateToOrderDetail: (Long) -> Unit = {},
+    navigateToCourse: (String) -> Unit = {},
+    navigateToCourseCatalog: () -> Unit = {},
+    navigateToCourseRequests: () -> Unit = {},
+    navigateToTakeTest: (Long) -> Unit = {},
+    navigateToTherapistCatalog: () -> Unit = {},
+    navigateToSessionReceipt: (Long) -> Unit = {},
     onSignedOut: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
+    val favoriteColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
@@ -224,6 +236,34 @@ fun ProfileScreen(
                                     Spacer(modifier = Modifier.height(10.dp))
                                     InfoField(label = "شماره موبایل", value = profile.phone)
                                     Spacer(modifier = Modifier.height(20.dp))
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(14.dp))
+                                            .background(MaterialTheme.colorScheme.surface)
+                                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp))
+                                            .clickable { navigateToCourseRequests() }
+                                            .padding(horizontal = 14.dp, vertical = 14.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(
+                                            text = "درخواستِ دوره",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontFamily = AppFont(),
+                                            fontSize = FontSize.REGULAR,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Text(
+                                            text = "پیشنهاد و لایک",
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontFamily = AppFont(),
+                                            fontSize = FontSize.EXTRA_SMALL
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
                                     SignOutRow(onClick = { viewModel.handleIntent(ProfileIntent.SignOut) })
                                 }
 
@@ -294,13 +334,13 @@ fun ProfileScreen(
                                 }
 
                                 // ---- علاقه‌مندی‌ها (شبکه‌ی درجا) ----
-                                else -> {
+                                4 -> {
                                     if (state.favoritesLoading) {
                                         LoadingCard(modifier = Modifier.fillMaxWidth().height(120.dp))
                                     } else if (state.favorites.isEmpty()) {
                                         EmptyTabHint(text = stringResource(Resources.String.FavoritesEmpty))
                                     } else {
-                                        state.favorites.chunked(2).forEach { rowItems ->
+                                        state.favorites.chunked(favoriteColumns).forEach { rowItems ->
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -313,12 +353,38 @@ fun ProfileScreen(
                                                         onFavoriteClick = { viewModel.handleIntent(ProfileIntent.ToggleFavorite(product)) }
                                                     )
                                                 }
-                                                if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+                                                repeat(favoriteColumns - rowItems.size) { Spacer(Modifier.weight(1f)) }
                                             }
                                             Spacer(modifier = Modifier.height(12.dp))
                                         }
                                     }
                                 }
+
+                                // ---- دوره‌های من (درجا) ----
+                                5 -> CourseListScreen(
+                                    mine = true,
+                                    title = "دوره‌های من",
+                                    navigateBack = {},
+                                    navigateToCourse = navigateToCourse,
+                                    navigateToCatalog = navigateToCourseCatalog,
+                                    embedded = true
+                                )
+
+                                // ---- آزمون‌های من (درجا) ----
+                                6 -> PsychTestListScreen(
+                                    navigateBack = {},
+                                    navigateToProduct = navigateToDetail,
+                                    navigateToTakeTest = navigateToTakeTest,
+                                    embedded = true
+                                )
+
+                                // ---- مشاوره‌های من (درجا) ----
+                                else -> MyAppointmentsScreen(
+                                    navigateBack = {},
+                                    navigateToCatalog = navigateToTherapistCatalog,
+                                    navigateToReceipt = navigateToSessionReceipt,
+                                    embedded = true
+                                )
                             }
                         }
                     }
@@ -467,7 +533,7 @@ private fun OrderRow(order: Order, onClick: () -> Unit) {
             )
         }
         Text(
-            text = stringResource(Resources.String.PriceFormat, order.totalPrice),
+            text = stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
             fontFamily = AppFont(),
             fontSize = FontSize.REGULAR,
             fontWeight = FontWeight.ExtraBold,
@@ -625,7 +691,10 @@ private fun ProfileHeader(name: String, phone: String?) {
 /** ردیفِ تب‌های پروفایل (مثل پنل ادمین): اطلاعات شخصی / آدرس‌ها / کیف پول / … */
 @Composable
 private fun ProfileTabs(selected: Int, onSelect: (Int) -> Unit) {
-    val tabs = listOf("اطلاعات شخصی", "آدرس‌ها", "کیف پول", "سفارش‌ها", "علاقه‌مندی‌ها")
+    val tabs = listOf(
+        "اطلاعات شخصی", "آدرس‌ها", "کیف پول", "سفارش‌ها", "علاقه‌مندی‌ها",
+        "دوره‌های من", "آزمون‌های من", "مشاوره‌های من"
+    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -794,9 +863,7 @@ fun WalletBalanceCard(
                         is AppResult.Success -> {
                             Text(
                                 text = stringResource(
-                                    Resources.String.PriceFormat,
-                                    state.data.balance
-                                ),
+                                    Resources.String.PriceFormat, formatToman(state.data.balance)),
                                 fontSize = FontSize.MEDIUM,
                                 fontFamily = AppFont(),
                                 fontWeight = FontWeight.Bold,

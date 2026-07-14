@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -31,6 +34,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.wallet.AdminWithdrawal
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -103,7 +107,7 @@ fun AdminWithdrawalsScreen(
                         "REJECTED" to "ردشده"
                     )
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         if (pendingCount > 0) {
@@ -199,9 +203,9 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
         else -> colors.gold
     }
     val statusLabel = when (statusUpper) {
-        "PAID" -> "پرداخت‌شده"
-        "REJECTED" -> "ردشده"
-        else -> "در انتظار"
+        "PAID" -> "پرداخت شد"
+        "REJECTED" -> "رد شد"
+        else -> "در انتظار بررسی"
     }
     Column(
         modifier = Modifier
@@ -246,18 +250,30 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
             )
         }
         Spacer(modifier = Modifier.height(11.dp))
-        Text(
-            text = withdrawal.iban,
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(10.dp))
                 .background(colors.surfaceVariant)
                 .padding(horizontal = 12.dp, vertical = 9.dp),
-            fontSize = FontSize.SMALL,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.onSurfaceVariant,
-            fontFamily = AppFont()
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = withdrawal.iban,
+                modifier = Modifier.weight(1f),
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurfaceVariant,
+                fontFamily = AppFont()
+            )
+            Icon(
+                imageVector = Icons.Default.CreditCard,
+                contentDescription = null,
+                tint = colors.onSurfaceVariant,
+                modifier = Modifier.size(18.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(11.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -271,7 +287,7 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
                 fontFamily = AppFont()
             )
             Text(
-                text = stringResource(Resources.String.PriceFormat, withdrawal.amount),
+                text = stringResource(Resources.String.PriceFormat, formatToman(withdrawal.amount)),
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = FontSize.EXTRA_REGULAR,
                 color = colors.onSurface,
@@ -294,6 +310,21 @@ fun WithdrawalItem(withdrawal: AdminWithdrawal, onClick: () -> Unit) {
                 color = colors.onPrimary,
                 fontFamily = AppFont()
             )
+        } else {
+            val note = withdrawal.adminNote?.takeIf { it.isNotBlank() }
+                ?: if (statusUpper == "PAID") "پرداخت شد" else "—"
+            Spacer(modifier = Modifier.height(11.dp))
+            Text(
+                text = "یادداشت: $note",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.surfaceVariant)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                fontSize = FontSize.SMALL,
+                color = colors.onSurfaceVariant,
+                fontFamily = AppFont()
+            )
         }
     }
 }
@@ -314,7 +345,7 @@ fun ProcessWithdrawalDialog(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("کاربر: ${withdrawal.userFullName ?: withdrawal.userId}", fontFamily = AppFont())
                 Text("ایمیل: ${withdrawal.userEmail ?: "-"}", fontFamily = AppFont())
-                Text("مبلغ: ${withdrawal.amount} تومان", fontFamily = AppFont())
+                Text("مبلغ: ${formatToman(withdrawal.amount)} تومان", fontFamily = AppFont())
                 Text("شبا: ${withdrawal.iban}", fontFamily = AppFont())
                 OutlinedTextField(
                     value = adminNote,

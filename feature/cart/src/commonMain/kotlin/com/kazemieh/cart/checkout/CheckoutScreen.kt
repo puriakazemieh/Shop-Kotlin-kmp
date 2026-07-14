@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
@@ -52,6 +54,7 @@ import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.address.Address
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
@@ -109,6 +112,7 @@ fun CheckoutScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .responsiveMaxWidth(com.kazemieh.designsystem.ContentWidth.readable)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp)
                         .padding(top = 16.dp, bottom = 24.dp)
@@ -202,7 +206,7 @@ fun CheckoutScreen(
                                 )
                                 Spacer(Modifier.height(2.dp))
                                 Text(
-                                    text = stringResource(Resources.String.WalletBalance) + ": " + stringResource(Resources.String.PriceFormat, state.walletBalance),
+                                    text = stringResource(Resources.String.WalletBalance) + ": " + stringResource(Resources.String.PriceFormat, formatToman(state.walletBalance)),
                                     fontSize = FontSize.SMALL,
                                     color = colors.onSurfaceVariant
                                 )
@@ -216,9 +220,48 @@ fun CheckoutScreen(
                             Spacer(Modifier.height(14.dp))
                             Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
                             Spacer(Modifier.height(12.dp))
-                            SummaryRow("از کیف پول", stringResource(Resources.String.PriceFormat, walletUsed), colors.ok)
+                            SummaryRow("از کیف پول", stringResource(Resources.String.PriceFormat, formatToman(walletUsed)), colors.ok)
                             Spacer(Modifier.height(7.dp))
-                            SummaryRow("باقی‌مانده از درگاه", stringResource(Resources.String.PriceFormat, remaining), colors.onSurface)
+                            SummaryRow("باقی‌مانده از درگاه", stringResource(Resources.String.PriceFormat, formatToman(remaining)), colors.onSurface)
+                        }
+                    }
+
+                    Spacer(Modifier.height(22.dp))
+
+                    // ---- هدیه ----
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(colors.surface)
+                            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "این سفارش هدیه است",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = FontSize.REGULAR,
+                                color = colors.onSurface
+                            )
+                            Switch(
+                                checked = state.isGift,
+                                onCheckedChange = { viewModel.handleIntent(CheckoutIntent.ToggleGift(it)) }
+                            )
+                        }
+                        if (state.isGift) {
+                            Spacer(Modifier.height(12.dp))
+                            OutlinedTextField(
+                                value = state.giftMessage,
+                                onValueChange = { viewModel.handleIntent(CheckoutIntent.UpdateGiftMessage(it)) },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text("پیامِ هدیه (اختیاری)", fontSize = FontSize.EXTRA_SMALL) },
+                                minLines = 2
+                            )
                         }
                     }
 
@@ -257,7 +300,7 @@ fun CheckoutScreen(
                         ) {
                             Text("قابل پرداخت", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
                             Text(
-                                text = stringResource(Resources.String.PriceFormat, totalAmount),
+                                text = stringResource(Resources.String.PriceFormat, formatToman(totalAmount)),
                                 fontSize = FontSize.MEDIUM,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = colors.primary

@@ -15,7 +15,8 @@ fun CartResponse.toDomain(): Cart = Cart(
     totalQty = totalQty,
     discountAmount = discountAmount,
     total = total,
-    appliedDiscountCode = appliedDiscountCode
+    appliedDiscountCode = appliedDiscountCode,
+    updatedAt = updatedAt
 )
 
 fun CartItemResponse.toDomain(): CartItem = CartItem(

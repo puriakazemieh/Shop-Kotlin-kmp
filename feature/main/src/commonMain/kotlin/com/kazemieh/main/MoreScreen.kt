@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -51,16 +52,41 @@ fun MoreScreen(
     isAdmin: Boolean = false,
     userName: String = "",
     userPhone: String = "",
+    showAcademy: Boolean = true,
+    showClinic: Boolean = true,
+    showPsychTests: Boolean = false,
+    showComparison: Boolean = false,
+    showFreeCourses: Boolean = false,
+    showBundles: Boolean = false,
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
     onSupportClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
+    onMyCoursesClick: () -> Unit = {},
+    onBrowseCoursesClick: () -> Unit = {},
+    onCertificatesClick: () -> Unit = {},
+    onMyAppointmentsClick: () -> Unit = {},
+    onBrowseTherapistsClick: () -> Unit = {},
+    onHomeworkClick: () -> Unit = {},
+    onJournalClick: () -> Unit = {},
+    onTherapistMatchClick: () -> Unit = {},
+    onPsychTestsClick: () -> Unit = {},
+    onComparisonClick: () -> Unit = {},
+    onFreeCoursesClick: () -> Unit = {},
+    onBundlesClick: () -> Unit = {},
+    onReferralClick: () -> Unit = {},
+    onRecurringOrdersClick: () -> Unit = {},
+    onMembershipClick: () -> Unit = {},
+    onShoppingAssistantClick: () -> Unit = {},
+    onPlacementQuizClick: () -> Unit = {},
+    onCertificateVerifyClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .responsiveMaxWidth()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp)
             .padding(top = 12.dp, bottom = 24.dp)
@@ -90,7 +116,155 @@ fun MoreScreen(
                 onClick = onCustomerClubClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "دعوت از دوستان",
+                subtitle = "با کدِ اختصاصیِ خودت اعتبار بگیر",
+                onClick = onReferralClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "خریدهایِ تکراری",
+                subtitle = "سفارشِ خودکارِ دوره‌ای برایِ کالاهایِ مصرفی",
+                onClick = onRecurringOrdersClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "عضویتِ ویژه",
+                subtitle = "تخفیفِ خودکار روی همه‌ی خریدها",
+                onClick = onMembershipClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            if (showAcademy) {
+                AccountRow(
+                    title = "دوره‌های من",
+                    subtitle = "آموزش‌های خریداری‌شده و پیشرفت",
+                    onClick = onMyCoursesClick
+                ) { AccountIcon(painter = Resources.Icon.Book) }
+                Spacer(Modifier.height(12.dp))
+
+                AccountRow(
+                    title = "گواهی‌های من",
+                    subtitle = "گواهیِ دوره‌های تکمیل‌شده",
+                    onClick = onCertificatesClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
+
+            if (showClinic) {
+                AccountRow(
+                    title = "نوبت‌های من",
+                    subtitle = "مشاوره‌های رزروشده و ورود به جلسه",
+                    onClick = onMyAppointmentsClick
+                ) { AccountIcon(painter = Resources.Icon.Clock) }
+                Spacer(Modifier.height(12.dp))
+            }
         }
+
+        // ---- آموزشگاه (مرور و خرید دوره‌ها) — فقط وقتی برند این عمودی را روشن کرده ----
+        if (showAcademy) {
+            AccountRow(
+                title = "دوره‌های آموزشی",
+                subtitle = "مشاهده و خرید دوره‌ها",
+                onClick = onBrowseCoursesClick
+            ) { AccountIcon(painter = Resources.Icon.Book) }
+            Spacer(Modifier.height(12.dp))
+
+            if (showFreeCourses) {
+                AccountRow(
+                    title = "دوره‌های رایگان",
+                    subtitle = "شروعِ یادگیری بدونِ هزینه",
+                    onClick = onFreeCoursesClick
+                ) { AccountIcon(painter = Resources.Icon.Book) }
+                Spacer(Modifier.height(12.dp))
+            }
+
+            AccountRow(
+                title = "آزمونِ تعیینِ سطح",
+                subtitle = "پیدا کردنِ دوره‌ی مناسبِ سطحِ تو",
+                onClick = onPlacementQuizClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "تاییدِ گواهی",
+                subtitle = "بررسیِ اصالتِ یک گواهیِ صادرشده",
+                onClick = onCertificateVerifyClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- پیشنهادهای ترکیبی/باندل — فیچرِ عمومیِ فروشگاهی ----
+        if (showBundles) {
+            AccountRow(
+                title = "پیشنهادهای ترکیبی",
+                subtitle = "پکیج‌های ویژه با چند محصول",
+                onClick = onBundlesClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- مشاوره و روان‌شناسی (رزرو نوبت) — فقط وقتی برند این عمودی را روشن کرده ----
+        if (showClinic) {
+            AccountRow(
+                title = "مشاوره و روان‌شناسی",
+                subtitle = "انتخابِ درمانگر و رزرو نوبت",
+                onClick = onBrowseTherapistsClick
+            ) { AccountIcon(painter = Resources.Icon.Person) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "تکلیف‌ها و تمرین‌ها",
+                subtitle = "تمرین‌هایِ تعیین‌شده توسطِ درمانگر",
+                onClick = onHomeworkClick
+            ) { AccountIcon(painter = Resources.Icon.Book) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "یادداشتِ روزانه",
+                subtitle = "ژورنالِ خصوصی، با امکانِ اشتراک‌گذاری",
+                onClick = onJournalClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+
+            AccountRow(
+                title = "پرسشنامه‌ی تطبیقِ درمانگر",
+                subtitle = "یافتنِ درمانگرِ مناسبِ نیازِ تو",
+                onClick = onTherapistMatchClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- تست‌های روان‌شناسی — فقط وقتی برند این عمودی را روشن کرده ----
+        if (showPsychTests) {
+            AccountRow(
+                title = "تست‌های روان‌شناسی",
+                subtitle = "خرید و انجامِ تست‌های خودارزیابی",
+                onClick = onPsychTestsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- مقایسه‌ی محصولات — فیچرِ عمومی، پشتِ پرچمِ برند ----
+        if (showComparison) {
+            AccountRow(
+                title = "مقایسه‌ی محصولات",
+                subtitle = "بررسیِ کنارِهمِ مشخصاتِ محصولات",
+                onClick = onComparisonClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        AccountRow(
+            title = "دستیارِ خرید",
+            subtitle = "راهنمایی و پیشنهادِ محصول",
+            onClick = onShoppingAssistantClick
+        ) { AccountIcon(vector = Icons.Default.Star) }
+        Spacer(Modifier.height(12.dp))
+
         AccountRow(
             title = "پشتیبانی و سؤالات",
             subtitle = "پاسخگویی ۲۴ ساعته",

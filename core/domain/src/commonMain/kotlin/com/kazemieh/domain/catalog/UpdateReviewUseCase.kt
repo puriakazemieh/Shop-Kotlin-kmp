@@ -5,7 +5,7 @@ import com.kazemieh.common.AppResult
 class UpdateReviewUseCase(
     private val repository: InteractionRepository
 ) {
-    suspend operator fun invoke(reviewId: Long, rating: Int?, comment: String): AppResult<Review> {
-        return repository.updateReview(reviewId, rating, comment)
+    suspend operator fun invoke(reviewId: Long, rating: Int?, comment: String, images: List<String> = emptyList()): AppResult<Review> {
+        return repository.updateReview(reviewId, rating, comment, images)
     }
 }

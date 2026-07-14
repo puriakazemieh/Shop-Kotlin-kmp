@@ -34,6 +34,8 @@ import com.kazemieh.catalog.CategorySearchScreen
 import com.kazemieh.cart.checkout.CheckoutScreen
 import com.kazemieh.cart.payment_completed.PaymentCompleted
 import com.kazemieh.profile.WalletScreen
+import com.kazemieh.profile.ReferralScreen
+import com.kazemieh.profile.MembershipScreen
 import com.kazemieh.settings.SettingsScreen
 import com.kazemieh.profile.ProfileScreen
 import com.kazemieh.profile.FavoritesScreen
@@ -41,6 +43,35 @@ import com.kazemieh.profile.club.CustomerClubScreen
 import com.kazemieh.orders.list.OrderListScreen
 import com.kazemieh.orders.detail.OrderDetailScreen
 import com.kazemieh.orders.tracking.OrderTrackingScreen
+import com.kazemieh.orders.returns.ReturnRequestScreen
+import com.kazemieh.orders.recurring.RecurringOrdersScreen
+import com.kazemieh.academy.list.CourseListScreen
+import com.kazemieh.academy.detail.CourseDetailScreen
+import com.kazemieh.academy.learn.CourseLearnScreen
+import com.kazemieh.academy.quiz.CourseQuizScreen
+import com.kazemieh.academy.cert.CertificatesScreen
+import com.kazemieh.academy.courserequest.CourseRequestScreen
+import com.kazemieh.academy.lessonquiz.LessonQuizScreen
+import com.kazemieh.academy.project.ProjectSubmissionScreen
+import com.kazemieh.academy.peerreview.PeerReviewScreen
+import com.kazemieh.academy.cert.CertificateVerifyScreen
+import com.kazemieh.academy.placement.PlacementQuizScreen
+import com.kazemieh.catalog.bundle.BundleListScreen
+import com.kazemieh.catalog.bundle.BundleDetailScreen
+import com.kazemieh.catalog.assistant.ShoppingAssistantScreen
+import com.kazemieh.psychtest.list.PsychTestListScreen
+import com.kazemieh.psychtest.take.TakeTestScreen
+import com.kazemieh.comparison.ComparisonScreen
+import com.kazemieh.clinic.list.TherapistListScreen
+import com.kazemieh.clinic.detail.TherapistDetailScreen
+import com.kazemieh.clinic.appointments.MyAppointmentsScreen
+import com.kazemieh.clinic.mood.MoodCheckInScreen
+import com.kazemieh.clinic.resources.EmergencyResourcesScreen
+import com.kazemieh.clinic.receipt.SessionReceiptScreen
+import com.kazemieh.clinic.messaging.MessagingScreen
+import com.kazemieh.clinic.homework.HomeworkScreen
+import com.kazemieh.clinic.journal.JournalScreen
+import com.kazemieh.clinic.match.TherapistMatchScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -127,7 +158,79 @@ fun AppNavHost(
                 navigateToCustomerClub = {
                     navController.navigate(Screen.CustomerClub)
                 },
+                navigateToMyCourses = {
+                    navController.navigate(Screen.MyCourses)
+                },
+                navigateToCourseCatalog = {
+                    navController.navigate(Screen.CourseCatalog)
+                },
+                navigateToCertificates = {
+                    navController.navigate(Screen.Certificates)
+                },
+                navigateToMyAppointments = {
+                    navController.navigate(Screen.MyAppointments)
+                },
+                navigateToTherapistCatalog = {
+                    navController.navigate(Screen.TherapistCatalog)
+                },
+                navigateToPsychTests = {
+                    navController.navigate(Screen.PsychTestCatalog)
+                },
+                navigateToComparison = {
+                    navController.navigate(Screen.Comparison)
+                },
+                navigateToFreeCourses = {
+                    navController.navigate(Screen.FreeCourses)
+                },
+                navigateToBundles = {
+                    navController.navigate(Screen.BundleList)
+                },
+                navigateToReferral = {
+                    navController.navigate(Screen.Referral)
+                },
+                navigateToRecurringOrders = {
+                    navController.navigate(Screen.RecurringOrders)
+                },
+                navigateToMembership = {
+                    navController.navigate(Screen.Membership)
+                },
+                navigateToShoppingAssistant = {
+                    navController.navigate(Screen.ShoppingAssistant)
+                },
+                navigateToCourseDetail = { slug ->
+                    navController.navigate(Screen.CourseDetail(slug))
+                },
+                navigateToTherapistDetail = { slug ->
+                    navController.navigate(Screen.TherapistDetail(slug))
+                },
+                navigateToPlacementQuiz = {
+                    navController.navigate(Screen.PlacementQuiz)
+                },
+                navigateToCertificateVerify = {
+                    navController.navigate(Screen.CertificateVerify)
+                },
+                navigateToHomework = {
+                    navController.navigate(Screen.Homework)
+                },
+                navigateToJournal = {
+                    navController.navigate(Screen.Journal)
+                },
+                navigateToTherapistMatch = {
+                    navController.navigate(Screen.TherapistMatch)
+                },
             )
+        }
+
+        composable<Screen.Referral> {
+            ReferralScreen(onBackClick = { navController.navigateBack() })
+        }
+
+        composable<Screen.RecurringOrders> {
+            RecurringOrdersScreen(onBackClick = { navController.navigateBack() })
+        }
+
+        composable<Screen.Membership> {
+            MembershipScreen(onBackClick = { navController.navigateBack() })
         }
 
         composable<Screen.Profile> {
@@ -141,6 +244,24 @@ fun AppNavHost(
                 navigateToOrderDetail = { id ->
                     navController.navigate(Screen.OrderDetail(id))
                 },
+                navigateToCourse = { slug ->
+                    navController.navigate(Screen.CourseDetail(slug))
+                },
+                navigateToCourseCatalog = {
+                    navController.navigate(Screen.CourseCatalog)
+                },
+                navigateToCourseRequests = {
+                    navController.navigate(Screen.CourseRequests)
+                },
+                navigateToTakeTest = { userTestId ->
+                    navController.navigate(Screen.TakeTest(userTestId))
+                },
+                navigateToTherapistCatalog = {
+                    navController.navigate(Screen.TherapistCatalog)
+                },
+                navigateToSessionReceipt = { appointmentId ->
+                    navController.navigate(Screen.SessionReceipt(appointmentId))
+                },
                 onSignedOut = {
                     navController.navigate(Screen.HomeGraph()) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }
@@ -152,6 +273,265 @@ fun AppNavHost(
         composable<Screen.CustomerClub> {
             CustomerClubScreen(
                 navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- Academy (vertical) ----
+        composable<Screen.CourseCatalog> {
+            CourseListScreen(
+                mine = false,
+                title = "دوره‌ها",
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) },
+                navigateToInstructor = { name -> navController.navigate(Screen.InstructorCourses(name)) }
+            )
+        }
+
+        composable<Screen.MyCourses> {
+            CourseListScreen(
+                mine = true,
+                title = "دوره‌های من",
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) },
+                navigateToCatalog = { navController.navigate(Screen.CourseCatalog) },
+                navigateToInstructor = { name -> navController.navigate(Screen.InstructorCourses(name)) }
+            )
+        }
+
+        composable<Screen.CourseDetail> {
+            val args = it.toRoute<Screen.CourseDetail>()
+            CourseDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToLearn = { slug -> navController.navigate(Screen.CourseLearn(slug)) }
+            )
+        }
+
+        composable<Screen.CourseLearn> {
+            val args = it.toRoute<Screen.CourseLearn>()
+            CourseLearnScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToQuiz = { courseId -> navController.navigate(Screen.CourseQuiz(courseId)) },
+                navigateToLessonQuiz = { lessonId -> navController.navigate(Screen.LessonQuiz(lessonId)) },
+                navigateToProject = { courseId -> navController.navigate(Screen.ProjectSubmission(courseId)) }
+            )
+        }
+
+        composable<Screen.CourseQuiz> {
+            val args = it.toRoute<Screen.CourseQuiz>()
+            CourseQuizScreen(
+                courseId = args.courseId,
+                navigateBack = { navController.navigateBack() },
+                navigateToCertificates = {
+                    navController.navigate(Screen.Certificates) {
+                        popUpTo<Screen.CourseQuiz> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<Screen.Certificates> {
+            CertificatesScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.CourseRequests> {
+            CourseRequestScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.LessonQuiz> {
+            val args = it.toRoute<Screen.LessonQuiz>()
+            LessonQuizScreen(
+                lessonId = args.lessonId,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ProjectSubmission> {
+            val args = it.toRoute<Screen.ProjectSubmission>()
+            ProjectSubmissionScreen(
+                courseId = args.courseId,
+                navigateBack = { navController.navigateBack() },
+                navigateToPeerReview = { courseId -> navController.navigate(Screen.PeerReview(courseId)) }
+            )
+        }
+
+        composable<Screen.PeerReview> {
+            val args = it.toRoute<Screen.PeerReview>()
+            PeerReviewScreen(
+                courseId = args.courseId,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- تاییدِ عمومیِ گواهی (بدونِ نیازِ ورود) ----
+        composable<Screen.CertificateVerify> {
+            CertificateVerifyScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        // ---- آزمونِ تعیینِ سطح ----
+        composable<Screen.PlacementQuiz> {
+            PlacementQuizScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToCoursesByLevel = { level ->
+                    navController.navigate(Screen.CoursesByLevel(level)) {
+                        popUpTo<Screen.PlacementQuiz> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<Screen.CoursesByLevel> {
+            val args = it.toRoute<Screen.CoursesByLevel>()
+            val levelLabel = when (args.level) {
+                "BEGINNER" -> "مقدماتی"; "INTERMEDIATE" -> "متوسط"; "ADVANCED" -> "پیشرفته"; else -> args.level
+            }
+            CourseListScreen(
+                mine = false,
+                title = "دوره‌های سطحِ $levelLabel",
+                levelFilter = args.level,
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        composable<Screen.FreeCourses> {
+            CourseListScreen(
+                mine = false,
+                title = "دوره‌های رایگان",
+                freeOnly = true,
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        composable<Screen.InstructorCourses> {
+            val args = it.toRoute<Screen.InstructorCourses>()
+            CourseListScreen(
+                mine = false,
+                title = args.instructorName,
+                instructorFilter = args.instructorName,
+                navigateBack = { navController.navigateBack() },
+                navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) }
+            )
+        }
+
+        // ---- Product bundles (general shop feature) ----
+        composable<Screen.BundleList> {
+            BundleListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToBundle = { slug -> navController.navigate(Screen.BundleDetail(slug)) }
+            )
+        }
+
+        composable<Screen.BundleDetail> {
+            val args = it.toRoute<Screen.BundleDetail>()
+            BundleDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToProduct = { productSlug -> navController.navigate(Screen.ProductDetail(productSlug)) }
+            )
+        }
+
+        // ---- Clinic (vertical) ----
+        composable<Screen.TherapistCatalog> {
+            TherapistListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToTherapist = { slug -> navController.navigate(Screen.TherapistDetail(slug)) },
+                navigateToMoodCheckIn = { navController.navigate(Screen.MoodCheckIn) },
+                navigateToEmergencyResources = { navController.navigate(Screen.EmergencyResources) }
+            )
+        }
+
+        composable<Screen.TherapistDetail> {
+            val args = it.toRoute<Screen.TherapistDetail>()
+            TherapistDetailScreen(
+                slug = args.slug,
+                navigateBack = { navController.navigateBack() },
+                navigateToMyAppointments = {
+                    navController.navigate(Screen.MyAppointments) {
+                        popUpTo<Screen.TherapistCatalog> { inclusive = false }
+                    }
+                },
+                navigateToProduct = { productSlug ->
+                    navController.navigate(Screen.ProductDetail(slug = productSlug))
+                },
+                navigateToMessaging = { therapistId ->
+                    navController.navigate(Screen.MessagingThread(therapistId))
+                }
+            )
+        }
+
+        composable<Screen.MessagingThread> {
+            val args = it.toRoute<Screen.MessagingThread>()
+            MessagingScreen(therapistId = args.therapistId, navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Homework> {
+            HomeworkScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Journal> {
+            JournalScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.TherapistMatch> {
+            TherapistMatchScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToTherapist = { slug -> navController.navigate(Screen.TherapistDetail(slug)) }
+            )
+        }
+
+        composable<Screen.MyAppointments> {
+            MyAppointmentsScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToCatalog = { navController.navigate(Screen.TherapistCatalog) },
+                navigateToReceipt = { appointmentId -> navController.navigate(Screen.SessionReceipt(appointmentId)) }
+            )
+        }
+
+        composable<Screen.MoodCheckIn> {
+            MoodCheckInScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.EmergencyResources> {
+            EmergencyResourcesScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.SessionReceipt> {
+            val args = it.toRoute<Screen.SessionReceipt>()
+            SessionReceiptScreen(appointmentId = args.appointmentId, navigateBack = { navController.navigateBack() })
+        }
+
+        // ---- Psychology tests (vertical) ----
+        composable<Screen.PsychTestCatalog> {
+            PsychTestListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToProduct = { productSlug -> navController.navigate(Screen.ProductDetail(slug = productSlug)) },
+                navigateToTakeTest = { userTestId -> navController.navigate(Screen.TakeTest(userTestId)) }
+            )
+        }
+
+        composable<Screen.TakeTest> {
+            val args = it.toRoute<Screen.TakeTest>()
+            TakeTestScreen(
+                userTestId = args.userTestId,
+                navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        // ---- Product comparison ----
+        composable<Screen.Comparison> {
+            ComparisonScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToDetail = { slug -> navController.navigate(Screen.ProductDetail(slug)) }
+            )
+        }
+
+        composable<Screen.ShoppingAssistant> {
+            ShoppingAssistantScreen(
+                onBackClick = { navController.navigateBack() },
+                navigateToDetails = { slug -> navController.navigate(Screen.ProductDetail(slug)) }
             )
         }
 
@@ -188,6 +568,9 @@ fun AppNavHost(
                 navigateBack = { navController.navigateBack() },
                 navigateToTracking = { id: Long ->
                     navController.navigate(Screen.OrderTracking(id))
+                },
+                navigateToReturnRequest = { itemId: Long, title: String ->
+                    navController.navigate(Screen.ReturnRequest(itemId, title))
                 }
             )
         }
@@ -197,6 +580,15 @@ fun AppNavHost(
             OrderTrackingScreen(
                 orderId = args.id,
                 navigateBack = { navController.navigateBack() }
+            )
+        }
+
+        composable<Screen.ReturnRequest> {
+            val args = it.toRoute<Screen.ReturnRequest>()
+            ReturnRequestScreen(
+                orderItemId = args.orderItemId,
+                itemTitle = args.itemTitle,
+                onBackClick = { navController.navigateBack() }
             )
         }
 
@@ -220,9 +612,6 @@ fun AppNavHost(
                 },
                 navigateToManageBlog = { id: Long?, slug: String? ->
                     navController.navigate(Screen.ManageBlog(id, slug))
-                },
-                navigateToManageCategory = { _: Long? ->
-                    // مدیریت دسته‌بندی مجله (در صورت نیاز)
                 }
             )
         }
@@ -295,9 +684,6 @@ fun AppNavHost(
             AdminBlogListScreen(
                 navigateToManageBlog = { id: Long?, slug: String? ->
                     navController.navigate(Screen.ManageBlog(id, slug))
-                },
-                navigateToManageCategory = { id: Long? ->
-                    // Logic for categories if needed
                 },
                 navigateBack = { navController.navigateBack() }
             )

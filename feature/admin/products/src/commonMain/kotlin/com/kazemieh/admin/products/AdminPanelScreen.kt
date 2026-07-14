@@ -14,6 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
+import com.kazemieh.domain.admin.AdminProduct
 import com.kazemieh.domain.admin.AdminStats
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -30,13 +33,17 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.admin.options.ManageOptionsScreen
 import com.kazemieh.admin.orders.AdminOrderScreen
-import com.kazemieh.admin.wallet.AdminWalletScreen
-import com.kazemieh.admin.wallet.AdminWithdrawalsScreen
+import com.kazemieh.admin.wallet.AdminFinanceScreen
 import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
+import com.kazemieh.admin.academy.AdminAcademyScreen
+import com.kazemieh.admin.academy.courserequest.AdminCourseRequestScreen
+import com.kazemieh.admin.psychtest.AdminPsychTestScreen
+import com.kazemieh.admin.clinic.AdminClinicScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -47,17 +54,18 @@ fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
     navigateToManageBlog: (Long?, String?) -> Unit,
-    navigateToManageCategory: (Long?) -> Unit,
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val colors = AppTheme.colors
     var selectedTab by remember { mutableStateOf(0) }
+    var productToDelete by remember { mutableStateOf<com.kazemieh.domain.admin.AdminProduct?>(null) }
 
     val tabs = listOf(
-        "داشبورد", "محصولات", "واریانت‌ها", "سفارش‌ها",
-        "کد تخفیف", "استوری", "بلاگ", "کیف پول‌ها", "برداشت‌ها"
+        "داشبورد", "محصولات", "دوره و کارگاه", "درخواست دوره", "نوبت‌دهی", "تست‌ها",
+        "واریانت‌ها", "سفارش‌ها", "کد تخفیف", "استوری", "بلاگ",
+        "مالی و برداشت"
     )
 
     LaunchedEffect(Unit) {
@@ -102,7 +110,7 @@ fun AdminPanelScreen(
             // هر تب اکشنِ افزودنِ خودش را به‌صورت اینلاین دارد (مطابق مرجع)
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Column(modifier = Modifier.padding(padding).fillMaxSize().responsiveMaxWidth(ContentWidth.wide)) {
             if (selectedTab == 0) {
                 Text(
                     text = "خوش آمدید، مدیر فروشگاه کارمیلا",
@@ -129,24 +137,45 @@ fun AdminPanelScreen(
                     1 -> ProductsTab(
                         state = state,
                         onRefresh = { viewModel.handleIntent(AdminPanelIntent.Refresh) },
-                        onProductClick = { id -> navigateToManageProduct(id) },
+                        onEdit = { id -> navigateToManageProduct(id) },
+                        onVariants = { id -> navigateToManageProduct(id) },
+                        onDelete = { product -> productToDelete = product },
                         onAdd = { navigateToManageProduct(null) }
                     )
-                    2 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    3 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    4 -> AdminDiscountsScreen(navigateBack = { selectedTab = 1 }, embedded = true)
-                    5 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
-                    6 -> AdminBlogListScreen(
+                    2 -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    3 -> AdminCourseRequestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    4 -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    5 -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    6 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    7 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    8 -> AdminDiscountsScreen(navigateBack = { selectedTab = 1 }, embedded = true)
+                    9 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
+                    10 -> AdminBlogListScreen(
                         navigateToManageBlog = navigateToManageBlog,
-                        navigateToManageCategory = navigateToManageCategory,
                         navigateBack = { selectedTab = 1 },
                         embedded = true
                     )
-                    7 -> AdminWalletScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    8 -> AdminWithdrawalsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    11 -> AdminFinanceScreen(onBackClick = { selectedTab = 1 })
                 }
             }
         }
+    }
+
+    productToDelete?.let { product ->
+        AlertDialog(
+            onDismissRequest = { productToDelete = null },
+            title = { Text("حذف محصول") },
+            text = { Text("آیا از حذف «${product.title}» مطمئن هستید؟ این عمل قابل بازگشت نیست.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.handleIntent(AdminPanelIntent.DeleteProduct(product.id))
+                    productToDelete = null
+                }) { Text("حذف", color = colors.sale, fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = {
+                TextButton(onClick = { productToDelete = null }) { Text("انصراف") }
+            }
+        )
     }
 }
 
@@ -155,7 +184,9 @@ fun AdminPanelScreen(
 private fun ProductsTab(
     state: AdminPanelState,
     onRefresh: () -> Unit,
-    onProductClick: (Long) -> Unit,
+    onEdit: (Long) -> Unit,
+    onVariants: (Long) -> Unit,
+    onDelete: (AdminProduct) -> Unit,
     onAdd: () -> Unit
 ) {
     val colors = AppTheme.colors
@@ -209,7 +240,12 @@ private fun ProductsTab(
                         }
                     } else {
                         items(items = products, key = { it.id }) { product ->
-                            AdminProductCard(product = product, onClick = { onProductClick(product.id) })
+                            AdminProductCard(
+                                product = product,
+                                onEdit = { onEdit(product.id) },
+                                onVariants = { onVariants(product.id) },
+                                onDelete = { onDelete(product) }
+                            )
                         }
                     }
                 }
@@ -229,9 +265,15 @@ private fun AdminDashboard(stats: AdminStats) {
     val colors = AppTheme.colors
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            item { StatCard("درآمد کل", stringResource(Resources.String.PriceFormat, stats.totalRevenue), "تومان") }
-            item { StatCard("سفارش‌ها", stats.totalOrders.toString(), "عدد") }
-            item { StatCard("محصولات", stats.totalProducts.toString(), "عدد") }
+            item { StatCard("سفارش‌های امروز", stats.newOrdersToday.toString(), "عدد", trend = stats.ordersTrendPercent) }
+            item { StatCard("فروش امروز", stringResource(Resources.String.PriceFormat, formatToman(stats.salesToday)), "تومان", trend = stats.salesTrendPercent) }
+            item {
+                StatCard(
+                    "کالای موجود", stats.totalProducts.toString(), "عدد",
+                    highlight = if (stats.lowStockCount > 0) "${stats.lowStockCount} کم‌موجود" else null
+                )
+            }
+            item { StatCard("درآمد کل", stringResource(Resources.String.PriceFormat, formatToman(stats.totalRevenue)), "تومان") }
             item { StatCard("مشتریان", stats.totalCustomers.toString(), "نفر") }
         }
         Spacer(Modifier.height(16.dp))
@@ -287,7 +329,7 @@ private fun AdminDashboard(stats: AdminStats) {
 }
 
 @Composable
-private fun StatCard(label: String, value: String, sub: String) {
+private fun StatCard(label: String, value: String, sub: String, trend: Int? = null, highlight: String? = null) {
     val colors = AppTheme.colors
     Column(
         modifier = Modifier
@@ -297,14 +339,42 @@ private fun StatCard(label: String, value: String, sub: String) {
             .border(1.dp, colors.line, RoundedCornerShape(18.dp))
             .padding(18.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(colors.accentSoft),
-            contentAlignment = androidx.compose.ui.Alignment.Center
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
         ) {
-            Text(value.take(1), color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.accentSoft),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                Text(value.take(1), color = colors.primary, fontWeight = FontWeight.ExtraBold, fontSize = FontSize.MEDIUM)
+            }
+            // نشانِ روند (سبز/قرمز) یا برچسبِ کم‌موجودی
+            if (trend != null) {
+                val up = trend >= 0
+                Text(
+                    text = (if (up) "+" else "") + "$trend٪",
+                    color = if (up) colors.ok else colors.sale,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.EXTRA_SMALL
+                )
+            } else if (highlight != null) {
+                Text(
+                    text = highlight,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(colors.gold.copy(alpha = 0.15f))
+                        .padding(horizontal = 8.dp, vertical = 3.dp),
+                    color = colors.gold,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    maxLines = 1
+                )
+            }
         }
         Spacer(Modifier.height(14.dp))
         Text(value, fontSize = FontSize.MEDIUM, fontWeight = FontWeight.ExtraBold, color = colors.onSurface, maxLines = 1)

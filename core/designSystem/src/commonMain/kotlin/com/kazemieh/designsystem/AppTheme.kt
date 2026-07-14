@@ -8,11 +8,14 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
+import com.kazemieh.designsystem.brand.BrandColors
+import com.kazemieh.designsystem.brand.CarmilaBrandColors
 
 @Composable
 fun AppTheme(
     themeMode: AppThemeMode = AppThemeMode.LIGHT,
-    language: AppLanguage = AppLanguage.ENGLISH,
+    language: AppLanguage = AppLanguage.PERSIAN,
+    brandColors: BrandColors = CarmilaBrandColors,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (themeMode) {
@@ -20,8 +23,9 @@ fun AppTheme(
         AppThemeMode.DARK -> true
         AppThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
-    val colorScheme = if (darkTheme) DarkAppColorScheme else LightAppColorScheme
-    val appColors = provideAppColors(darkTheme)
+    val palette = if (darkTheme) brandColors.dark else brandColors.light
+    val colorScheme = buildColorScheme(palette, darkTheme)
+    val appColors = buildAppColors(palette)
     val layoutDirection = if (language == AppLanguage.PERSIAN) LayoutDirection.Rtl else LayoutDirection.Ltr
 
     CompositionLocalProvider(

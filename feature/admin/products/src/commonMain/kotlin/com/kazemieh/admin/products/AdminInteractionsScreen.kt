@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import com.kazemieh.designsystem.component.CarmillaFilterChip
+import com.kazemieh.designsystem.responsiveMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,7 +81,7 @@ fun AdminInteractionsScreen(
             } else {
                 val list = if (state.selectedTab == 0) state.reviews else state.questions
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {

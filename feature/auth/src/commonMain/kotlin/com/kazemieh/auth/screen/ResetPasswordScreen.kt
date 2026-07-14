@@ -26,6 +26,8 @@ import com.kazemieh.auth.component.AuthBrandHeader
 import com.kazemieh.auth.component.AuthButton
 import com.kazemieh.auth.component.AuthTextField
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
@@ -107,6 +109,7 @@ fun ResetPasswordScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .responsiveMaxWidth(ContentWidth.readable)
                         .clip(RoundedCornerShape(22.dp))
                         .background(MaterialTheme.colorScheme.surface)
                         .border(1.dp, AppTheme.colors.line, RoundedCornerShape(22.dp))

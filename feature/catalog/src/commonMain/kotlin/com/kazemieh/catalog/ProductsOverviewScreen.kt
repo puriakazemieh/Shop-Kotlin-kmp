@@ -58,10 +58,14 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
+import com.kazemieh.designsystem.adaptiveGridColumns
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.domain.blog.Blog
 import com.kazemieh.domain.catalog.Category
+import com.kazemieh.domain.academy.CourseSummary
+import com.kazemieh.domain.clinic.TherapistSummary
+import com.kazemieh.domain.psychtest.PsychTestSummary
 import com.seiko.imageloader.rememberImagePainter
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -72,10 +76,18 @@ fun ProductsOverviewScreen(
     navigateToDetails: (String) -> Unit,
     navigateToCategorySearch: (Long, String) -> Unit,
     navigateToBlogDetail: (String) -> Unit,
-    navigateToAuth: () -> Unit
+    navigateToAuth: () -> Unit,
+    navigateToCourseDetail: (String) -> Unit = {},
+    navigateToCourseCatalog: () -> Unit = {},
+    navigateToTherapistDetail: (String) -> Unit = {},
+    navigateToTherapistCatalog: () -> Unit = {},
+    navigateToPsychTestCatalog: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<ProductsOverviewViewModel>()
     val state by viewModel.state.collectAsState()
+    // تعدادِ ستونِ گریدِ محصولات و دسته‌ها بر اساسِ عرضِ صفحه (موبایل ۲ / تبلت ۳ / دسکتاپ ۴)
+    val productColumns = adaptiveGridColumns(compact = 2, medium = 3, expanded = 4)
+    val categoryColumns = adaptiveGridColumns(compact = 3, medium = 5, expanded = 6)
     val homeListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     // ترتیب آیتم‌های خانه مطابق اسپک: 0=استوری، 1=هیرو، (دسته‌ها)، (پیشنهاد شگفت‌انگیز)، سرتیتر جدیدترین
@@ -127,7 +139,7 @@ fun ProductsOverviewScreen(
                 InfoCard(
                     image = Resources.Image.Cat,
                     title = stringResource(Resources.String.Oops),
-                    subtitle = state.error
+                    subtitle = state.error?:""
                 )
             }
         } else {
@@ -172,7 +184,7 @@ fun ProductsOverviewScreen(
                                     modifier = Modifier.padding(horizontal = 16.dp),
                                     verticalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
-                                    state.categories.chunked(3).forEach { rowItems ->
+                                    state.categories.chunked(categoryColumns).forEach { rowItems ->
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -188,7 +200,7 @@ fun ProductsOverviewScreen(
                                                     }
                                                 )
                                             }
-                                            repeat(3 - rowItems.size) {
+                                            repeat(categoryColumns - rowItems.size) {
                                                 Spacer(modifier = Modifier.weight(1f))
                                             }
                                         }
@@ -220,6 +232,38 @@ fun ProductsOverviewScreen(
                             }
                         }
 
+                        // ---- عمودی‌های دیگرِ برند (دوره‌ها/مشاوره/تست‌های روان‌شناسی) — مستقیماً روی صفحه‌ی اصلی،
+                        // درست مثلِ محصولات، نه فقط داخلِ پروفایل ----
+                        if (state.courses.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                CourseHomeSection(
+                                    courses = state.courses,
+                                    onSeeAll = navigateToCourseCatalog,
+                                    onCourseClick = { navigateToCourseDetail(it.slug) }
+                                )
+                            }
+                        }
+                        if (state.therapists.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                TherapistHomeSection(
+                                    therapists = state.therapists,
+                                    onSeeAll = navigateToTherapistCatalog,
+                                    onTherapistClick = { navigateToTherapistDetail(it.slug) }
+                                )
+                            }
+                        }
+                        if (state.psychTests.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                PsychTestHomeSection(
+                                    tests = state.psychTests,
+                                    onSeeAll = navigateToPsychTestCatalog
+                                )
+                            }
+                        }
+
                         // جدیدترین محصولات — گرید دو ستونه
                         item {
                             Spacer(modifier = Modifier.height(36.dp))
@@ -231,7 +275,7 @@ fun ProductsOverviewScreen(
                         }
 
                         items(
-                            items = products.chunked(2),
+                            items = products.chunked(productColumns),
                             key = { row -> "grid_${row.first().id}" }
                         ) { rowItems ->
                             Row(
@@ -256,7 +300,9 @@ fun ProductsOverviewScreen(
                                         }
                                     )
                                 }
-                                if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
+                                repeat(productColumns - rowItems.size) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
                             }
                         }
 

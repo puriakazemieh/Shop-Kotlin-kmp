@@ -17,7 +17,8 @@ data class DetailsState(
     val selectedVariant: ProductVariant? = null,
     val selectedOptions: Map<String, String> = emptyMap(),
     val isAddedToCart: Boolean = false,
-    val isCounterMode: Boolean = true
+    val isCounterMode: Boolean = true,
+    val currentUserId: Long? = null
 )
 
 sealed interface DetailsIntent {

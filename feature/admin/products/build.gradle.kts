@@ -62,6 +62,9 @@ kotlin {
                 implementation(project(":feature:admin:orders"))
                 implementation(project(":feature:admin:wallet"))
                 implementation(project(":feature:admin:blog"))
+                implementation(project(":feature:admin:academy"))
+                implementation(project(":feature:admin:clinic"))
+                implementation(project(":feature:admin:psychtest"))
             }
         }
     }

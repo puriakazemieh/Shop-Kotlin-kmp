@@ -10,5 +10,6 @@ data class CartResponse(
     val totalQty: Int = 0,
     val discountAmount: Double = 0.0,
     val total: Double = 0.0,
-    val appliedDiscountCode: String? = null
+    val appliedDiscountCode: String? = null,
+    val updatedAt: String? = null
 )

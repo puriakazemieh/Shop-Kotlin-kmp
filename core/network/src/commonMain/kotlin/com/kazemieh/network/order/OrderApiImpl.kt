@@ -33,4 +33,8 @@ class OrderApiImpl(
     override suspend fun trackOrder(id: Long): OrderTrackingResponse = safeApiCallRaw {
         client.get("api/orders/$id/track")
     }
+
+    override suspend fun reorder(id: Long): ReorderResponse = safeApiCallRaw {
+        client.post("api/orders/$id/reorder")
+    }
 }

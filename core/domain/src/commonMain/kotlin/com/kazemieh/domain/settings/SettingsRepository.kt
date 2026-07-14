@@ -12,4 +12,9 @@ interface SettingsRepository {
     fun observeThemeMode(): Flow<AppThemeMode>
     suspend fun setThemeMode(mode: AppThemeMode)
     suspend fun getThemeMode(): AppThemeMode
+
+    // Recent searches (local history, most-recent-first)
+    suspend fun getRecentSearches(): List<String>
+    suspend fun addRecentSearch(query: String)
+    suspend fun clearRecentSearches()
 }

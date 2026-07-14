@@ -7,7 +7,8 @@ data class Cart(
     val totalQty: Int,
     val discountAmount: Double = 0.0,
     val total: Double = subtotal,
-    val appliedDiscountCode: String? = null
+    val appliedDiscountCode: String? = null,
+    val updatedAt: String? = null
 )
 
 data class CartItem(

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.responsiveMaxWidth
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +40,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.wallet.WalletTransaction
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -223,7 +225,7 @@ fun BalanceCard(
             is AppResult.Loading -> CircularProgressIndicator(color = Color.White)
             is AppResult.Success -> {
                 Text(
-                    text = stringResource(Resources.String.PriceFormat, balanceState.data.balance),
+                    text = stringResource(Resources.String.PriceFormat, formatToman(balanceState.data.balance)),
                     fontFamily = AppFont(),
                     fontSize = FontSize.EXTRA_LARGE,
                     fontWeight = FontWeight.ExtraBold,
@@ -296,7 +298,7 @@ fun TransactionsList(state: AppResult<com.kazemieh.domain.admin.AdminPage<Wallet
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(transactions) { transaction ->
@@ -355,7 +357,7 @@ fun TransactionItem(transaction: WalletTransaction) {
         }
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = stringResource(Resources.String.PriceFormat, transaction.amount),
+            text = stringResource(Resources.String.PriceFormat, formatToman(transaction.amount)),
             fontFamily = AppFont(),
             fontWeight = FontWeight.ExtraBold,
             color = accent

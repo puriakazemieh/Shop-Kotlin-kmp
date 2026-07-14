@@ -2,6 +2,10 @@ package com.kazemieh.admin.products
 
 import com.kazemieh.domain.admin.*
 import com.kazemieh.domain.story.*
+import com.kazemieh.domain.bundle.GetAdminBundlesUseCase
+import com.kazemieh.domain.bundle.CreateBundleUseCase
+import com.kazemieh.domain.bundle.UpdateBundleUseCase
+import com.kazemieh.domain.bundle.DeleteBundleUseCase
 import com.kazemieh.admin.story.AdminStoryViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -35,6 +39,12 @@ val adminProductsModule = module {
     factory { CreateOptionValueUseCase(get()) }
     factory { SetInventoryUseCase(get()) }
 
+    // Bundles
+    factory { GetAdminBundlesUseCase(get()) }
+    factory { CreateBundleUseCase(get()) }
+    factory { UpdateBundleUseCase(get()) }
+    factory { DeleteBundleUseCase(get()) }
+
     // Admin Story UseCases
     factory { GetAdminStoriesUseCase(get()) }
     factory { CreateStoryUseCase(get()) }
@@ -44,7 +54,8 @@ val adminProductsModule = module {
     viewModel {
         AdminPanelViewModel(
             getAdminProductsUseCase = get(),
-            getAdminStatsUseCase = get()
+            getAdminStatsUseCase = get(),
+            deleteAdminProductUseCase = get()
         )
     }
 
@@ -94,6 +105,15 @@ val adminProductsModule = module {
             createOptionValueUseCase = get(),
             setInventoryUseCase = get(),
             savedStateHandle = get()
+        )
+    }
+
+    viewModel {
+        AdminBundlesViewModel(
+            getAdminBundlesUseCase = get(),
+            createBundleUseCase = get(),
+            updateBundleUseCase = get(),
+            deleteBundleUseCase = get()
         )
     }
 }

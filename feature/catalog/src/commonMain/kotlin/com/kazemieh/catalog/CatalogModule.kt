@@ -1,5 +1,10 @@
 package com.kazemieh.catalog
 
+import com.kazemieh.catalog.assistant.ShoppingAssistantViewModel
+import com.kazemieh.catalog.bundle.BundleDetailViewModel
+import com.kazemieh.catalog.bundle.BundleListViewModel
+import com.kazemieh.domain.bundle.GetBundleDetailUseCase
+import com.kazemieh.domain.bundle.GetBundlesUseCase
 import com.kazemieh.domain.catalog.GetActiveCampaignUseCase
 import com.kazemieh.domain.catalog.GetBannersUseCase
 import com.kazemieh.domain.catalog.GetCategoriesUseCase
@@ -11,6 +16,12 @@ import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
 import com.kazemieh.domain.story.GetStoriesUseCase
 import com.kazemieh.domain.story.MarkStoryAsSeenUseCase
 import com.kazemieh.domain.recentlyviewed.GetRecentlyViewedUseCase
+import com.kazemieh.domain.settings.GetRecentSearchesUseCase
+import com.kazemieh.domain.settings.AddRecentSearchUseCase
+import com.kazemieh.domain.settings.ClearRecentSearchesUseCase
+import com.kazemieh.domain.academy.GetCoursesUseCase
+import com.kazemieh.domain.clinic.GetTherapistsUseCase
+import com.kazemieh.domain.psychtest.GetPsychTestsUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -30,6 +41,8 @@ val catalogModule = module {
     // Recently viewed
     factory { GetRecentlyViewedUseCase(get()) }
 
+    viewModel { ShoppingAssistantViewModel(getProductsUseCase = get()) }
+
     viewModel {
         ProductsOverviewViewModel(
             getProductsUseCase = get(),
@@ -42,7 +55,13 @@ val catalogModule = module {
             markStoryAsSeenUseCase = get(),
             getBlogsUseCase = get(),
             getRecentlyViewedUseCase = get(),
-            isUserLoggedInUseCase = get()
+            isUserLoggedInUseCase = get(),
+            // این سه UseCase در ماژول‌های academy/clinic/psychtest ثبت شده‌اند؛ چون همان
+            // کانتینرِ Koin است، اینجا هم قابلِ get() هستند (بدونِ نیازِ وابستگیِ gradle جدید).
+            getCoursesUseCase = get(),
+            getTherapistsUseCase = get(),
+            getPsychTestsUseCase = get(),
+            brandConfig = get()
         )
     }
 
@@ -62,4 +81,27 @@ val catalogModule = module {
             isUserLoggedInUseCase = get()
         )
     }
+
+    // Standalone search
+    factory { GetRecentSearchesUseCase(get()) }
+    factory { AddRecentSearchUseCase(get()) }
+    factory { ClearRecentSearchesUseCase(get()) }
+
+    viewModel {
+        SearchViewModel(
+            getProductsUseCase = get(),
+            observeFavoriteIdsUseCase = get(),
+            toggleFavoriteUseCase = get(),
+            isUserLoggedInUseCase = get(),
+            getRecentSearchesUseCase = get(),
+            addRecentSearchUseCase = get(),
+            clearRecentSearchesUseCase = get()
+        )
+    }
+
+    // Bundles
+    factory { GetBundlesUseCase(get()) }
+    factory { GetBundleDetailUseCase(get()) }
+    viewModel { BundleListViewModel(get()) }
+    viewModel { BundleDetailViewModel(get()) }
 }

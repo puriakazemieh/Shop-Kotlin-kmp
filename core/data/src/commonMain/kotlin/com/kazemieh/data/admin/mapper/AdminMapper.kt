@@ -30,6 +30,9 @@ fun AdminProductResponse.toAdminDomain() = AdminProduct(
     discountedPrice = discountedPrice,
     sku = sku,
     initialOnHand = initialOnHand,
+    categoryName = categoryName,
+    thumbnailUrl = thumbnailUrl,
+    stock = stock,
     isActive = isActive
 )
 

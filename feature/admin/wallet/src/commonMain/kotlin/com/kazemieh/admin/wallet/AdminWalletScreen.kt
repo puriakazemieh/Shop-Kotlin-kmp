@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -32,6 +33,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.designsystem.util.anyToString
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.wallet.AdminWalletUser
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -108,7 +110,7 @@ fun AdminWalletScreen(
                                 Text(stringResource(Resources.String.NothingHere), fontFamily = AppFont())
                             }
                         } else {
-                            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            LazyColumn(modifier = Modifier.responsiveMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 items(users) { user ->
                                     AdminUserWalletItem(
                                         user = user,
@@ -173,7 +175,7 @@ fun AdminUserWalletItem(user: AdminWalletUser, onClick: () -> Unit) {
         }
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = stringResource(Resources.String.PriceFormat, user.balance),
+            text = stringResource(Resources.String.PriceFormat, formatToman(user.balance)),
             fontFamily = AppFont(),
             fontWeight = FontWeight.ExtraBold,
             color = colors.primary

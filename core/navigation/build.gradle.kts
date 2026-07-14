@@ -70,6 +70,10 @@ kotlin {
                 implementation(project(":feature:details"))
                 implementation(project(":feature:support"))
                 implementation(project(":feature:blog"))
+                implementation(project(":feature:academy"))
+                implementation(project(":feature:clinic"))
+                implementation(project(":feature:psychtest"))
+                implementation(project(":feature:comparison"))
                 implementation(project(":core:common"))
 
                 implementation(libs.koin.compose)

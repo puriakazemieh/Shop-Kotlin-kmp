@@ -69,7 +69,15 @@ kotlin {
             implementation(project(":feature:admin:options"))
             implementation(project(":feature:admin:wallet"))
             implementation(project(":feature:admin:blog"))
+            implementation(project(":feature:admin:academy"))
+            implementation(project(":feature:admin:clinic"))
             implementation(project(":feature:blog"))
+            implementation(project(":feature:support"))
+            implementation(project(":feature:academy"))
+            implementation(project(":feature:clinic"))
+            implementation(project(":feature:psychtest"))
+            implementation(project(":feature:admin:psychtest"))
+            implementation(project(":feature:comparison"))
 
             implementation(project(":core:network"))
             implementation(project(":core:data"))
@@ -101,6 +109,43 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        // برندِ پیش‌فرض؛ هر فلِیور می‌تواند override کند.
+        buildConfigField("String", "BRAND", "\"carmila\"")
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    // ---- White-label: هر فلِیور یک اپِ جدا با applicationId و برندِ خودش ----
+    flavorDimensions += "brand"
+    productFlavors {
+        create("carmila") {
+            dimension = "brand"
+            // برندِ پیش‌فرض؛ از app_name و آیکنِ main استفاده می‌کند.
+        }
+        create("atris") {
+            dimension = "brand"
+            applicationIdSuffix = ".atris"
+            versionNameSuffix = "-atris"
+            buildConfigField("String", "BRAND", "\"atris\"")
+        }
+        create("chronos") {
+            dimension = "brand"
+            applicationIdSuffix = ".chronos"
+            versionNameSuffix = "-chronos"
+            buildConfigField("String", "BRAND", "\"chronos\"")
+        }
+        create("academy") {
+            dimension = "brand"
+            applicationIdSuffix = ".academy"
+            versionNameSuffix = "-academy"
+            buildConfigField("String", "BRAND", "\"academy\"")
+        }
+        create("psych") {
+            dimension = "brand"
+            applicationIdSuffix = ".psych"
+            versionNameSuffix = "-psych"
+            buildConfigField("String", "BRAND", "\"psych\"")
+        }
     }
     packaging {
         resources {

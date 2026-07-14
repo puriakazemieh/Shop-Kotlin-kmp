@@ -54,6 +54,7 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
 
                 implementation(project(":core:designSystem"))
+                implementation(project(":core:domain"))
                 implementation(project(":core:common"))
             }
         }

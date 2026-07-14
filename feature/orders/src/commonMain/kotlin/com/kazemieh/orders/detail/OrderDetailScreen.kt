@@ -2,17 +2,31 @@ package com.kazemieh.orders.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ContentWidth
+import com.kazemieh.designsystem.Radius
+import com.kazemieh.designsystem.responsiveMaxWidth
+import com.kazemieh.domain.order.OrderDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -30,6 +44,7 @@ import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.orders.list.UserStatusBadge
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -40,12 +55,14 @@ import org.koin.compose.viewmodel.koinViewModel
 fun OrderDetailScreen(
     orderId: Long,
     navigateBack: () -> Unit,
-    navigateToTracking: (Long) -> Unit
+    navigateToTracking: (Long) -> Unit,
+    navigateToReturnRequest: (Long, String) -> Unit = { _, _ -> }
 ) {
     val viewModel = koinViewModel<OrderDetailViewModel>()
     val state by viewModel.state.collectAsState()
     val messageBarState = rememberMessageBarState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    var showInvoice by remember { mutableStateOf(false) }
 
     LaunchedEffect(orderId) {
         viewModel.handleIntent(OrderDetailIntent.LoadOrderDetail(orderId))
@@ -57,6 +74,15 @@ fun OrderDetailScreen(
                 OrderDetailEffect.OrderCancelled -> messageBarState.addSuccess("Order cancelled successfully")
                 is OrderDetailEffect.NavigateToTracking -> navigateToTracking(effect.id)
                 is OrderDetailEffect.ShowError -> messageBarState.addError(effect.message)
+                is OrderDetailEffect.Reordered -> {
+                    if (effect.skippedTitles.isEmpty()) {
+                        messageBarState.addSuccess("آیتم‌ها به سبد اضافه شدند.")
+                    } else {
+                        messageBarState.addSuccess(
+                            "آیتم‌های موجود به سبد اضافه شدند. رد شد: ${effect.skippedTitles.joinToString("، ")}"
+                        )
+                    }
+                }
             }
         }
     }
@@ -109,6 +135,7 @@ fun OrderDetailScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
+                                .responsiveMaxWidth()
                                 .padding(16.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
@@ -128,6 +155,24 @@ fun OrderDetailScreen(
                                 UserStatusBadge(status = order.status)
                             }
 
+                            // ---- هدیه ----
+                            if (order.isGift) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(colors.gold.copy(alpha = 0.12f))
+                                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                                ) {
+                                    Text("این سفارش به‌عنوانِ هدیه ثبت شده", fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.gold)
+                                    order.giftMessage?.takeIf { it.isNotBlank() }?.let {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(it, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                                    }
+                                }
+                            }
+
                             // ---- کد رهگیری ----
                             order.trackingCode?.let { tracking ->
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -144,6 +189,10 @@ fun OrderDetailScreen(
                                     Text(tracking, fontFamily = AppFont(), fontSize = FontSize.REGULAR, fontWeight = FontWeight.ExtraBold, color = colors.primary)
                                 }
                             }
+
+                            // ---- تایم‌لاینِ وضعیتِ سفارش ----
+                            Spacer(modifier = Modifier.height(18.dp))
+                            OrderStatusTimeline(order)
 
                             // ---- آدرس تحویل ----
                             order.address?.let { address ->
@@ -195,14 +244,27 @@ fun OrderDetailScreen(
                                             Text(item.title, fontWeight = FontWeight.SemiBold, fontFamily = AppFont(), color = colors.onSurface)
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
-                                                text = item.options.entries.joinToString(" · ") { "${it.key}: ${it.value}" } + " · تعداد ${item.qty}",
+                                                text = (item.options.values.filter { it.isNotBlank() } + "تعداد ${item.qty}").joinToString(" · "),
                                                 fontSize = FontSize.SMALL,
                                                 fontFamily = AppFont(),
                                                 color = colors.onSurfaceVariant
                                             )
+                                            if (order.status == "COMPLETED" && order.address != null) {
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(
+                                                    text = "درخواستِ مرجوعی/تعویض",
+                                                    fontSize = FontSize.EXTRA_SMALL,
+                                                    fontFamily = AppFont(),
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = colors.primary,
+                                                    modifier = Modifier.clickable {
+                                                        navigateToReturnRequest(item.id, item.title)
+                                                    }
+                                                )
+                                            }
                                         }
                                         Text(
-                                            text = stringResource(Resources.String.PriceFormat, item.unitPrice),
+                                            text = stringResource(Resources.String.PriceFormat, formatToman(item.unitPrice)),
                                             fontWeight = FontWeight.ExtraBold,
                                             fontSize = FontSize.SMALL,
                                             fontFamily = AppFont(),
@@ -212,16 +274,16 @@ fun OrderDetailScreen(
                                     HorizontalDivider(color = colors.line)
                                 }
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, order.subtotalPrice))
+                                    OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, formatToman(order.subtotalPrice)))
                                     Spacer(modifier = Modifier.height(8.dp))
-                                    OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, order.shippingPrice))
+                                    OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, formatToman(order.shippingPrice)))
                                     if ((order.walletPaidAmount ?: 0.0) > 0) {
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        OrderSummaryLine(stringResource(Resources.String.WalletPaidAmount), stringResource(Resources.String.PriceFormat, order.walletPaidAmount ?: 0.0))
+                                        OrderSummaryLine(stringResource(Resources.String.WalletPaidAmount), stringResource(Resources.String.PriceFormat, formatToman(order.walletPaidAmount ?: 0.0)))
                                     }
                                     if ((order.gatewayPaidAmount ?: 0.0) > 0) {
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        OrderSummaryLine(stringResource(Resources.String.GatewayPaidAmount), stringResource(Resources.String.PriceFormat, order.gatewayPaidAmount ?: 0.0))
+                                        OrderSummaryLine(stringResource(Resources.String.GatewayPaidAmount), stringResource(Resources.String.PriceFormat, formatToman(order.gatewayPaidAmount ?: 0.0)))
                                     }
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
@@ -229,7 +291,7 @@ fun OrderDetailScreen(
                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Text(stringResource(Resources.String.TotalLabelSimple), fontWeight = FontWeight.Bold, fontFamily = AppFont(), color = colors.onSurface)
                                         Text(
-                                            stringResource(Resources.String.PriceFormat, order.totalPrice),
+                                            stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)),
                                             fontWeight = FontWeight.ExtraBold,
                                             fontSize = FontSize.EXTRA_REGULAR,
                                             color = colors.primary,
@@ -255,7 +317,174 @@ fun OrderDetailScreen(
                                 text = stringResource(Resources.String.TrackOrder),
                                 onClick = { viewModel.handleIntent(OrderDetailIntent.TrackOrder(order.id)) }
                             )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                PrimaryButton(
+                                    modifier = Modifier.weight(1f),
+                                    text = "دانلود فاکتور",
+                                    onClick = { showInvoice = true }
+                                )
+                                PrimaryButton(
+                                    modifier = Modifier.weight(1f),
+                                    text = "ثبتِ مجددِ سفارش",
+                                    onClick = { viewModel.handleIntent(OrderDetailIntent.Reorder(order.id)) },
+                                    enabled = !state.isReordering,
+                                    secondary = true
+                                )
+                            }
+
+                            if (showInvoice) {
+                                InvoiceDialog(order = order, onDismiss = { showInvoice = false })
+                            }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * فاکتورِ چاپیِ سفارش که از داده‌ی موجودِ سفارش ساخته می‌شود. روی وب/دسکتاپ کاربر می‌تواند
+ * از print مرورگر خروجیِ PDF بگیرد؛ روی موبایل با اسکرین‌شات ذخیره کند.
+ */
+@Composable
+private fun InvoiceDialog(order: OrderDetail, onDismiss: () -> Unit) {
+    val colors = AppTheme.colors
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+            Column(
+                modifier = Modifier
+                    .responsiveMaxWidth(ContentWidth.readable)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(Radius.lg))
+                    .background(colors.surface)
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp)
+            ) {
+                Text("فاکتورِ فروش", fontFamily = AppFont(), fontWeight = FontWeight.ExtraBold, fontSize = FontSize.LARGE, color = colors.onSurface)
+                Spacer(Modifier.height(4.dp))
+                Text("شماره سفارش: TR-${order.id}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                Text("تاریخ ثبت: ${order.createdAt}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
+                order.address?.let { addr ->
+                    Spacer(Modifier.height(10.dp))
+                    Text("خریدار: ${addr.receiverName} — ${addr.receiverPhone}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface)
+                    Text("${addr.province}، ${addr.city} — ${addr.addressLine1}", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                }
+                Spacer(Modifier.height(14.dp))
+                HorizontalDivider(color = colors.line)
+                Spacer(Modifier.height(10.dp))
+                order.items.forEach { item ->
+                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("${item.title} ×${item.qty}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface, modifier = Modifier.weight(1f))
+                        Text(stringResource(Resources.String.PriceFormat, formatToman(item.unitPrice * item.qty)), fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurface)
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                HorizontalDivider(color = colors.line)
+                Spacer(Modifier.height(10.dp))
+                OrderSummaryLine(stringResource(Resources.String.SubtotalLabel), stringResource(Resources.String.PriceFormat, formatToman(order.subtotalPrice)))
+                Spacer(Modifier.height(4.dp))
+                OrderSummaryLine(stringResource(Resources.String.ShippingLabel), stringResource(Resources.String.PriceFormat, formatToman(order.shippingPrice)))
+                Spacer(Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("مبلغ کل", fontFamily = AppFont(), fontWeight = FontWeight.ExtraBold, fontSize = FontSize.REGULAR, color = colors.onSurface)
+                    Text(stringResource(Resources.String.PriceFormat, formatToman(order.totalPrice)), fontFamily = AppFont(), fontWeight = FontWeight.ExtraBold, fontSize = FontSize.REGULAR, color = colors.primary)
+                }
+                Spacer(Modifier.height(16.dp))
+                PrimaryButton(text = "بستن", onClick = onDismiss, secondary = true)
+            }
+        }
+    }
+}
+
+/**
+ * تایم‌لاینِ چرخه‌ی سفارش (ثبت → آماده‌سازی → تحویل به پست → تحویل به مشتری) با تیکِ سبز
+ * برای مراحلِ طی‌شده. برای سفارش‌های دیجیتال (تست/نوبت/دوره) هم همین چرخه نمایش داده می‌شود.
+ */
+@Composable
+private fun OrderStatusTimeline(order: OrderDetail) {
+    val colors = AppTheme.colors
+    val status = order.status.uppercase()
+
+    if (status == "CANCELLED") {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(colors.sale.copy(alpha = 0.10f))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("این سفارش لغو شده است", fontFamily = AppFont(), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL, color = colors.sale)
+        }
+        return
+    }
+
+    val confirmed = status in listOf("PROCESSING", "SHIPPING", "COMPLETED")
+
+    data class TimelineStep(val label: String, val time: String?, val done: Boolean)
+    // سفارشِ دیجیتال (تست/نوبت/دوره) ارسالِ پستی ندارد؛ چرخه‌ی کوتاه‌تری نمایش می‌دهیم.
+    val steps = if (order.address == null) {
+        listOf(
+            TimelineStep("ثبتِ سفارش", order.createdAt, true),
+            TimelineStep("پرداخت و فعال‌سازیِ دسترسی", null, confirmed || status == "COMPLETED")
+        )
+    } else {
+        val reachedShipped = status in listOf("SHIPPING", "COMPLETED") || order.shippedAt != null
+        val reachedDelivered = status == "COMPLETED" || order.deliveredAt != null
+        listOf(
+            TimelineStep("ثبتِ سفارش", order.createdAt, true),
+            TimelineStep("در حالِ آماده‌سازی", null, confirmed),
+            TimelineStep("تحویل به پست", order.shippedAt, reachedShipped),
+            TimelineStep("تحویل به مشتری", order.deliveredAt, reachedDelivered)
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.line, RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        steps.forEachIndexed { i, step ->
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                Column(modifier = Modifier.weight(1f).padding(vertical = 6.dp)) {
+                    Text(
+                        step.label, fontFamily = AppFont(), fontWeight = FontWeight.Bold, fontSize = FontSize.SMALL,
+                        color = if (step.done) colors.onSurface else colors.onSurfaceVariant
+                    )
+                    step.time?.let {
+                        Spacer(Modifier.height(3.dp))
+                        Text(formatDateTime(it), fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                    }
+                }
+                Spacer(Modifier.width(12.dp))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(Modifier.height(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(if (step.done) colors.ok else colors.surface)
+                            .then(if (step.done) Modifier else Modifier.border(1.5.dp, colors.line, CircleShape)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (step.done) Icon(Icons.Default.Check, contentDescription = null, tint = Color.White, modifier = Modifier.size(14.dp))
+                    }
+                    if (i < steps.lastIndex) {
+                        Box(
+                            modifier = Modifier
+                                .width(2.dp)
+                                .height(30.dp)
+                                .background(if (steps[i + 1].done) colors.ok else colors.line)
+                        )
                     }
                 }
             }

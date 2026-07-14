@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class AdminPanelViewModel(
     private val getAdminProductsUseCase: GetAdminProductsUseCase,
-    private val getAdminStatsUseCase: GetAdminStatsUseCase
+    private val getAdminStatsUseCase: GetAdminStatsUseCase,
+    private val deleteAdminProductUseCase: DeleteAdminProductUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminPanelState())
@@ -48,6 +49,17 @@ class AdminPanelViewModel(
             is AdminPanelIntent.Refresh -> refresh()
             is AdminPanelIntent.SearchProducts -> {
                 _state.update { it.copy(searchQuery = intent.query) }
+            }
+            is AdminPanelIntent.DeleteProduct -> deleteProduct(intent.id)
+        }
+    }
+
+    private fun deleteProduct(id: Long) {
+        viewModelScope.launch {
+            when (val result = deleteAdminProductUseCase(id)) {
+                is AppResult.Success -> refresh()
+                is AppResult.Error -> _effect.send(AdminPanelEffect.ShowError(result.message))
+                else -> {}
             }
         }
     }
@@ -93,6 +105,7 @@ sealed interface AdminPanelIntent {
     data object LoadProducts : AdminPanelIntent
     data object Refresh : AdminPanelIntent
     data class SearchProducts(val query: String) : AdminPanelIntent
+    data class DeleteProduct(val id: Long) : AdminPanelIntent
 }
 
 sealed interface AdminPanelEffect {

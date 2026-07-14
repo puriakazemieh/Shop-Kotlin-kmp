@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Alpha
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.designsystem.Radius
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.catalog.ProductSummary
@@ -113,12 +114,12 @@ fun ProductCard(
             
             if (hasDiscount) {
                 val discountedPriceText = if (product.minDiscountedPrice == product.maxDiscountedPrice) {
-                    stringResource(Resources.String.PriceFormat, product.minDiscountedPrice ?: 0.0)
+                    stringResource(Resources.String.PriceFormat, formatToman(product.minDiscountedPrice))
                 } else {
                     stringResource(
                         Resources.String.PriceRangeFormat,
-                        stringResource(Resources.String.PriceFormat, product.minDiscountedPrice ?: 0.0),
-                        stringResource(Resources.String.PriceFormat, product.maxDiscountedPrice ?: 0.0)
+                        stringResource(Resources.String.PriceFormat, formatToman(product.minDiscountedPrice)),
+                        stringResource(Resources.String.PriceFormat, formatToman(product.maxDiscountedPrice))
                     )
                 }
                 Text(
@@ -129,12 +130,12 @@ fun ProductCard(
                 )
 
                 val originalPriceText = if (product.minPrice == product.maxPrice) {
-                    stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
+                    stringResource(Resources.String.PriceFormat, formatToman(product.minPrice))
                 } else {
                     stringResource(
                         Resources.String.PriceRangeFormat,
-                        stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
-                        stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
+                        stringResource(Resources.String.PriceFormat, formatToman(product.minPrice)),
+                        stringResource(Resources.String.PriceFormat, formatToman(product.maxPrice))
                     )
                 }
                 Text(
@@ -145,12 +146,12 @@ fun ProductCard(
                 )
             } else {
                 val priceText = if (product.minPrice == product.maxPrice) {
-                    stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0)
+                    stringResource(Resources.String.PriceFormat, formatToman(product.minPrice))
                 } else {
                     stringResource(
                         Resources.String.PriceRangeFormat,
-                        stringResource(Resources.String.PriceFormat, product.minPrice ?: 0.0),
-                        stringResource(Resources.String.PriceFormat, product.maxPrice ?: 0.0)
+                        stringResource(Resources.String.PriceFormat, formatToman(product.minPrice)),
+                        stringResource(Resources.String.PriceFormat, formatToman(product.maxPrice))
                     )
                 }
                 Text(
