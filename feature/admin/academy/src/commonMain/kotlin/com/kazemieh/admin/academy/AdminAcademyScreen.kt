@@ -972,7 +972,7 @@ private fun OrganizationsTab(state: AdminAcademyState, viewModel: AdminAcademyVi
         return
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
     ) {
@@ -1154,7 +1154,7 @@ private fun RefundRequestsTab(state: AdminAcademyState, viewModel: AdminAcademyV
         return
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 12.dp)
     ) {
