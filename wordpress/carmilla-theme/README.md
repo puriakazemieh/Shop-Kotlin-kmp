@@ -19,5 +19,14 @@
 ## پیش‌نمایش دیزاین (dev)
 `preview.html` یک صفحه‌ی نمایش توکن‌هاست (خارج از runtime پوسته). برای دیدن، در مرورگر بازش کنید یا اسکرین‌شات بگیرید.
 
-## قدم بعدی (فاز ۲ مسیر A)
-سلسله‌مراتب قالب: `front-page.php` (خانه)، override‌های WooCommerce، `single-product.php`، قالب‌های بلاگ، و قالب‌های CPT عمودی‌ها (`single-cb_course.php`, `single-cb_therapist.php`, تست) — مطابق `docs/RESPONSIVE_COVERAGE.md` و `docs/DESIGN_IMPLEMENTATION_PLAN.md` (برنچ eyraci).
+## فاز ۲ — سلسله‌مراتب قالب (انجام‌شده ✅)
+- **هسته:** `header.php` (نوار بالای چسبان + منو + آیکن جستجو/حساب/سبد)، `footer.php` (فوتر + **نوار پایین موبایل** مثل اپ)، `front-page.php` (خانه: هیرو/استوری/دسته/گرید محصول/تیزر بلاگ)، `index.php`/`archive.php`/`single.php` (بلاگ)، `search.php`/`searchform.php`/`404.php`.
+- **WooCommerce:** `woocommerce.php` (رَپر)، `woocommerce/content-product.php` (کارت محصول)، `inc/woocommerce.php` (عرضِ صفحه: single=readable، آرشیو=wide، سبد=medium؛ ستون گرید ۴).
+- **قالب‌های CPT عمودی‌ها:** `single-cb_course.php` + `archive-cb_course.php`، `single-cb_therapist.php`، `single-cb_psychtest.php` (لایه‌ی نمایش، آماده‌ی داده‌ی پلاگین؛ `inc/cpt-public.php` این CPTها را برای فرانت‌اند public می‌کند).
+- **کامپوننت‌ها:** `template-parts/card-product.php`، `card-post.php`؛ استایل‌ها در `assets/css/components.css`.
+- **کمکی:** `inc/template-functions.php` — `carmilla_price()` (ارقام فارسی + «٬» + «تومان»، معادل `formatToman`).
+
+**ریسپانسیو تأییدشده (اسکرین‌شات):** دسکتاپ ۴ ستون + منوی بالا؛ موبایل ۲ ستون + نوار پایین؛ جزئیات محصول در عرض ۶۴۰.
+
+## قدم بعدی
+پالیش WooCommerce (single-product کامل)، قالب‌های `TakeTest`/`AppointmentBooking`، و اتصال به دیتای واقعی پس از ساخت CPTهای عمودی در پلاگین (فاز B‑۱).

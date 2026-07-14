@@ -1,0 +1,131 @@
+/* =====================================================================================
+   Carmilla theme — components layer (header/nav, hero, sections, cards, footer, forms,
+   product detail, cart, pagination). Depends on tokens.css + base.css.
+   ===================================================================================== */
+
+/* ---- sticky header ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: saturate(1.2) blur(8px);
+  border-block-end: 1px solid var(--line);
+}
+.site-header .bar { display: flex; align-items: center; gap: var(--sp-lg); height: 64px; }
+.brand { font-weight: 800; font-size: 22px; color: var(--accent); white-space: nowrap; }
+.brand:hover { text-decoration: none; }
+
+.primary-menu { display: none; list-style: none; margin: 0; padding: 0; gap: var(--sp-lg); }
+.primary-menu li { display: inline-flex; }
+.primary-menu a { color: var(--ink); font-weight: 500; font-size: 14px; padding: 6px 0; }
+.primary-menu a:hover { color: var(--accent); text-decoration: none; }
+@media (min-width: 840px) { .primary-menu { display: flex; } }
+
+.header-actions { margin-inline-start: auto; display: flex; align-items: center; gap: var(--sp-sm); }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: var(--r-full);
+  background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
+  position: relative; cursor: pointer; font-size: 16px;
+}
+.icon-btn:hover { text-decoration: none; border-color: var(--accent); }
+.icon-btn .count {
+  position: absolute; inset-block-start: -4px; inset-inline-start: -4px;
+  min-width: 18px; height: 18px; padding: 0 4px; border-radius: var(--r-full);
+  background: var(--sale); color: #fff; font-size: 11px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ---- mobile bottom nav (hidden ≥840) ---- */
+.bottom-nav {
+  position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 50;
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  background: var(--surface); border-block-start: 1px solid var(--line);
+  padding-block: 6px; padding-block-end: calc(6px + env(safe-area-inset-bottom));
+}
+.bottom-nav a {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 11px; color: var(--ink-soft); padding: 4px 0;
+}
+.bottom-nav a .ic { font-size: 18px; line-height: 1; }
+.bottom-nav a.is-active, .bottom-nav a:hover { color: var(--accent); text-decoration: none; }
+.has-bottom-nav { padding-block-end: 72px; }
+@media (min-width: 840px) { .bottom-nav { display: none; } .has-bottom-nav { padding-block-end: 0; } }
+
+/* ---- hero ---- */
+.hero {
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; padding: clamp(24px, 5vw, 56px);
+  margin-block: var(--sp-lg);
+  box-shadow: var(--el-md);
+}
+.hero h1 { color: #fff; margin: 0 0 var(--sp-sm); }
+.hero p { color: rgba(255,255,255,.88); max-width: 46ch; }
+.hero .btn--gold { margin-block-start: var(--sp-md); }
+
+/* ---- section header ---- */
+.section { margin-block: var(--sp-xxl); }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; margin-block-end: var(--sp-lg); }
+.section-head .more { font-size: 13px; color: var(--accent); }
+
+/* ---- story rail ---- */
+.story-rail { display: flex; gap: var(--sp-md); overflow-x: auto; padding-block: var(--sp-xs); }
+.story-rail .story { flex: 0 0 auto; text-align: center; width: 76px; }
+.story-rail .story .cap { font-size: 11px; color: var(--ink-soft); margin-block-start: 4px; display: block; }
+
+/* ---- category pills ---- */
+.cat-rail { display: flex; gap: var(--sp-sm); flex-wrap: wrap; }
+
+/* ---- breadcrumb ---- */
+.breadcrumb { font-size: 12px; color: var(--ink-soft); margin-block: var(--sp-md); }
+.breadcrumb a { color: var(--ink-soft); }
+.breadcrumb a:hover { color: var(--accent); }
+
+/* ---- product detail layout ---- */
+.product-detail { display: grid; gap: var(--sp-xl); }
+@media (min-width: 600px) { .product-detail { grid-template-columns: 1fr 1fr; align-items: start; } }
+.product-detail .gallery { border-radius: var(--r-md); overflow: hidden; background: var(--surface-2); aspect-ratio: 3/4; }
+.product-detail .price-row { display: flex; align-items: baseline; gap: var(--sp-sm); margin-block: var(--sp-md); }
+.product-detail .price-row .price { font-size: 22px; }
+.spec-table { width: 100%; border-collapse: collapse; margin-block: var(--sp-md); }
+.spec-table td { padding: 8px 0; border-block-end: 1px solid var(--line); font-size: 14px; }
+.spec-table td:first-child { color: var(--ink-soft); width: 40%; }
+
+/* ---- variant chips ---- */
+.variant-row { display: flex; gap: var(--sp-sm); flex-wrap: wrap; margin-block: var(--sp-sm); }
+
+/* ---- forms / inputs ---- */
+.field { margin-block-end: var(--sp-md); }
+.field label { display: block; font-size: 13px; color: var(--ink-soft); margin-block-end: 6px; }
+.input, input[type="text"], input[type="email"], input[type="password"], input[type="search"], textarea, select {
+  width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: 11px 14px;
+}
+.input:focus, input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+
+/* ---- pagination ---- */
+.pagination, .woocommerce-pagination { display: flex; gap: var(--sp-xs); justify-content: center; margin-block: var(--sp-xl); flex-wrap: wrap; }
+.pagination a, .pagination span, .woocommerce-pagination a, .woocommerce-pagination span {
+  min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.pagination .current, .woocommerce-pagination .current { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+/* ---- empty state ---- */
+.empty-state { text-align: center; padding: var(--sp-xxl) var(--sp-lg); color: var(--ink-soft); }
+
+/* ---- footer ---- */
+.site-footer { background: var(--surface); border-block-start: 1px solid var(--line); margin-block-start: var(--sp-xxl); }
+.site-footer .cols { display: grid; gap: var(--sp-xl); grid-template-columns: 1fr; padding-block: var(--sp-xl); }
+@media (min-width: 600px) { .site-footer .cols { grid-template-columns: repeat(3, 1fr); } }
+.site-footer h4 { font-size: 14px; margin: 0 0 var(--sp-sm); }
+.site-footer a { display: block; color: var(--ink-soft); font-size: 13px; padding: 3px 0; }
+.site-footer a:hover { color: var(--accent); }
+.site-footer .copy { border-block-start: 1px solid var(--line); padding-block: var(--sp-md); font-size: 12px; color: var(--ink-soft); }
+
+/* ---- vertical cards (course / therapist) ---- */
+.meta-row { display: flex; gap: var(--sp-md); flex-wrap: wrap; font-size: 12px; color: var(--ink-soft); margin-block: 6px; }
+.avatar-lg { width: 96px; height: 96px; border-radius: var(--r-full); background: var(--surface-2); object-fit: cover; }
