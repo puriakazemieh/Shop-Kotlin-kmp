@@ -36,8 +36,29 @@ while ( have_posts() ) :
 
 	<div class="entry-content t-body"><?php the_content(); ?></div>
 
-	<?php if ( $cta_url ) : ?>
-		<a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>" style="margin-block-start:var(--sp-lg)"><?php esc_html_e( 'رزرو نوبت', 'carmilla' ); ?></a>
+	<?php
+	$accessible = carmilla_therapist_accessible( $id );
+	$slots      = $accessible ? carmilla_available_slots( $id ) : array();
+	?>
+	<h2 class="t-title-lg" style="margin-block:var(--sp-lg) var(--sp-sm)"><?php esc_html_e( 'رزرو نوبت', 'carmilla' ); ?></h2>
+
+	<?php if ( ! $accessible ) : ?>
+		<div class="card card--pad">
+			<p class="t-body"><?php esc_html_e( 'برای رزرو نوبت، ابتدا اعتبار جلسه را خریداری کنید.', 'carmilla' ); ?></p>
+			<?php if ( $cta_url ) : ?><a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>"><?php esc_html_e( 'خرید اعتبار جلسه', 'carmilla' ); ?></a><?php endif; ?>
+		</div>
+	<?php elseif ( $slots ) : ?>
+		<div id="bk" data-id="<?php echo esc_attr( $id ); ?>">
+			<p class="t-body-sm t-muted"><?php esc_html_e( 'یک بازه‌ی زمانی را انتخاب کنید:', 'carmilla' ); ?></p>
+			<div class="variant-row" id="bk-slots">
+				<?php foreach ( $slots as $s ) : ?>
+					<button class="chip bk-slot" data-slot="<?php echo esc_attr( $s ); ?>"><?php echo esc_html( carmilla_to_persian_digits( str_replace( 'T', ' ', $s ) ) ); ?></button>
+				<?php endforeach; ?>
+			</div>
+			<div id="bk-result" class="t-body" style="margin-block-start:var(--sp-md)"></div>
+		</div>
+	<?php else : ?>
+		<p class="t-body t-muted"><?php esc_html_e( 'فعلاً بازه‌ی خالی موجود نیست.', 'carmilla' ); ?></p>
 	<?php endif; ?>
 </main>
 	<?php

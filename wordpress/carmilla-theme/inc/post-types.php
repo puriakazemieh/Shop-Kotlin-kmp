@@ -33,6 +33,16 @@ function carmilla_register_post_types() {
 	// ---- Therapists (clinic) ----
 	if ( carmilla_feature_enabled( 'clinic' ) && ! post_type_exists( 'cb_therapist' ) ) {
 		register_post_type( 'cb_therapist', carmilla_cpt_args( 'مشاور', 'مشاوران', 'dashicons-heart', 'therapists', array( 'title', 'editor', 'thumbnail', 'excerpt' ) ) );
+
+		// Appointments (private; visible to admins for management).
+		if ( ! post_type_exists( 'cb_appointment' ) ) {
+			$args                = carmilla_cpt_args( 'نوبت', 'نوبت‌ها', 'dashicons-calendar-alt', 'appointments', array( 'title' ) );
+			$args['public']      = false;
+			$args['show_ui']     = true;
+			$args['has_archive']  = false;
+			$args['show_in_rest'] = false;
+			register_post_type( 'cb_appointment', $args );
+		}
 	}
 
 	// ---- Psychology tests ----

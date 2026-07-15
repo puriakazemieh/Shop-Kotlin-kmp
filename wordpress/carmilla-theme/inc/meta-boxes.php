@@ -27,7 +27,8 @@ function carmilla_meta_fields() {
 			'fields' => array(
 				'cb_specialty'    => array( 'تخصص', 'text' ),
 				'cb_approach'     => array( 'رویکرد درمانی', 'text' ),
-				'cb_product_slug' => array( 'اسلاگ محصول (اعتبار جلسه)', 'text' ),
+				'cb_product_slug' => array( 'اسلاگ محصول (اعتبار جلسه؛ خالی = رایگان)', 'text' ),
+				'cb_slots'        => array( 'بازه‌های زمانی (هر خط یک زمان، مثل 2026-08-01T14:00)', 'textarea' ),
 			),
 		),
 		'cb_psychtest' => array(
