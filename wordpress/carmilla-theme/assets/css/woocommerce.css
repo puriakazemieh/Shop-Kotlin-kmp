@@ -1,0 +1,112 @@
+/* =====================================================================================
+   WooCommerce → Carmilla design. Loaded only when WooCommerce is active.
+   Maps WC's default classes onto the theme tokens (buttons, prices, cards,
+   notices, forms, my-account nav) so shop/cart/checkout/account match the app.
+   ===================================================================================== */
+
+/* ---- buttons ---- */
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.woocommerce-page a.button,
+.wc-block-components-button,
+.wp-element-button {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border: 0 !important;
+  border-radius: var(--r-button) !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
+  padding: 12px 20px !important;
+  line-height: 1.2 !important;
+}
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce input.button.alt {
+  background: var(--gold) !important;
+  color: var(--on-gold) !important;
+}
+.woocommerce a.button:hover,
+.woocommerce button.button:hover { filter: brightness( 1.06 ); }
+
+/* ---- prices ---- */
+.woocommerce .price,
+.woocommerce span.price,
+.woocommerce ul.products li.product .price {
+  color: var(--ink) !important;
+  font-weight: 700;
+}
+.woocommerce del { color: var(--ink-soft); font-weight: 400; }
+.woocommerce ins { text-decoration: none; }
+
+/* ---- product loop cards ---- */
+.woocommerce ul.products li.product {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  padding-bottom: var(--sp-md) !important;
+  text-align: start;
+}
+.woocommerce ul.products li.product a img { margin: 0 0 var(--sp-sm); border-radius: 0; }
+.woocommerce ul.products li.product .woocommerce-loop-product__title { padding: 0 var(--sp-md); font-size: 14px; font-weight: 600; }
+.woocommerce ul.products li.product .price,
+.woocommerce ul.products li.product .button { margin-inline: var(--sp-md); }
+.woocommerce span.onsale {
+  background: var(--sale); color: #fff; border-radius: var(--r-full);
+  min-height: auto; min-width: auto; padding: 4px 10px; font-weight: 700;
+}
+
+/* ---- single product ---- */
+.woocommerce div.product .product_title { font-weight: 800; }
+.woocommerce div.product p.price,
+.woocommerce div.product span.price { color: var(--ink); font-size: 22px; }
+.woocommerce .woocommerce-tabs ul.tabs li { border-radius: var(--r-sm) var(--r-sm) 0 0; }
+
+/* ---- notices ---- */
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error,
+.woocommerce-noreviews {
+  border-radius: var(--r-sm);
+  border-top-color: var(--accent);
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.woocommerce-error { border-top-color: var(--sale); }
+
+/* ---- forms ---- */
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea,
+.woocommerce .select2-container .select2-selection--single,
+.woocommerce table.cart td.actions .coupon .input-text {
+  border-radius: var(--r-sm) !important;
+  border: 1px solid var(--line) !important;
+  padding: 10px 12px !important;
+  min-height: 44px;
+}
+
+/* ---- cart / checkout tables ---- */
+.woocommerce table.shop_table {
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  border-collapse: separate;
+}
+.woocommerce table.shop_table th { background: var(--surface-2); }
+.woocommerce-checkout #payment { background: var(--surface-2); border-radius: var(--r-md); }
+
+/* ---- my account ---- */
+.woocommerce-account .woocommerce-MyAccount-navigation ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.woocommerce-account .woocommerce-MyAccount-navigation li a {
+  display: block; padding: 10px 12px; border-radius: var(--r-sm);
+  color: var(--ink); text-decoration: none;
+}
+.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a,
+.woocommerce-account .woocommerce-MyAccount-navigation li a:hover {
+  background: var(--accent); color: var(--on-accent);
+}
+@media (min-width: 840px) {
+  .woocommerce-account .woocommerce-MyAccount-navigation { float: none; width: 240px; }
+  .woocommerce-account .woocommerce-MyAccount-content { width: calc( 100% - 280px ); }
+}

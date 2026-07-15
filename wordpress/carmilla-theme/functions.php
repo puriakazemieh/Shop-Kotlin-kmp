@@ -75,6 +75,9 @@ function carmilla_enqueue_assets() {
 	wp_enqueue_style( 'carmilla-tokens', $dir . '/assets/css/tokens.css', array(), $ver );
 	wp_enqueue_style( 'carmilla-base', $dir . '/assets/css/base.css', array( 'carmilla-tokens' ), $ver );
 	wp_enqueue_style( 'carmilla-components', $dir . '/assets/css/components.css', array( 'carmilla-base' ), $ver );
+	if ( class_exists( 'WooCommerce' ) ) {
+		wp_enqueue_style( 'carmilla-woo', $dir . '/assets/css/woocommerce.css', array( 'carmilla-components' ), $ver );
+	}
 
 	// Keep the required theme header stylesheet last (mostly metadata).
 	wp_enqueue_style( 'carmilla-style', get_stylesheet_uri(), array( 'carmilla-components' ), $ver );
