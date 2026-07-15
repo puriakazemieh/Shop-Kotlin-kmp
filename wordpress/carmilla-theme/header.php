@@ -23,6 +23,10 @@ $cart_count  = carmilla_cart_count();
 <body <?php body_class( 'has-bottom-nav' ); ?>>
 <?php wp_body_open(); ?>
 
+<div class="app-shell">
+	<?php get_template_part( 'template-parts/side-rail' ); ?>
+	<div class="app-col">
+
 <header class="site-header">
 	<div class="container container--wide">
 		<div class="bar">

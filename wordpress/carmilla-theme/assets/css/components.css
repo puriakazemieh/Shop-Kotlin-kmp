@@ -24,7 +24,8 @@
 .primary-menu li { display: inline-flex; }
 .primary-menu a { color: var(--ink); font-weight: 500; font-size: 14px; padding: 6px 0; }
 .primary-menu a:hover { color: var(--accent); text-decoration: none; }
-@media (min-width: 840px) { .primary-menu { display: flex; } }
+/* Primary navigation lives in the left rail on ≥600 (like Compose); the top
+   header keeps only the logo + search/account/cart actions. */
 
 .header-actions { margin-inline-start: auto; display: flex; align-items: center; gap: var(--sp-sm); }
 .icon-btn {
@@ -41,7 +42,7 @@
   display: inline-flex; align-items: center; justify-content: center;
 }
 
-/* ---- mobile bottom nav (hidden ≥840) ---- */
+/* ---- mobile bottom nav (Compact only; hidden ≥600 where the rail takes over) ---- */
 .bottom-nav {
   position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 50;
   display: flex;
@@ -56,7 +57,7 @@
 .bottom-nav a .ic { font-size: 18px; line-height: 1; }
 .bottom-nav a.is-active, .bottom-nav a:hover { color: var(--accent); text-decoration: none; }
 .has-bottom-nav { padding-block-end: 72px; }
-@media (min-width: 840px) { .bottom-nav { display: none; } .has-bottom-nav { padding-block-end: 0; } }
+@media (min-width: 600px) { .bottom-nav { display: none; } .has-bottom-nav { padding-block-end: 0; } }
 
 /* ---- hero ---- */
 .hero {

@@ -38,6 +38,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 </footer>
 
+</div><!-- .app-col -->
+</div><!-- .app-shell -->
+
 <nav class="bottom-nav" aria-label="<?php esc_attr_e( 'ناوبری موبایل', 'carmilla' ); ?>">
 	<?php
 	$current = home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) );
