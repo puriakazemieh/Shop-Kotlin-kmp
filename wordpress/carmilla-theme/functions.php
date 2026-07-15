@@ -19,6 +19,7 @@ require_once get_template_directory() . '/inc/rest.php';
 require_once get_template_directory() . '/inc/psychtest.php';
 require_once get_template_directory() . '/inc/booking.php';
 require_once get_template_directory() . '/inc/course.php';
+require_once get_template_directory() . '/inc/support.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
 if ( is_admin() ) {
 	require_once get_template_directory() . '/inc/admin-page.php';
