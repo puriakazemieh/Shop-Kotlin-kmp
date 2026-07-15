@@ -26,5 +26,8 @@ $on_sale = $product->is_on_sale();
 		<div class="price-row" style="margin-block-start:6px">
 			<span class="price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
 		</div>
+		<button type="button" class="cb-compare-toggle" data-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-pressed="false">
+			<?php echo carmilla_icon( 'grid', 15 ); ?><span><?php esc_html_e( 'مقایسه', 'carmilla' ); ?></span>
+		</button>
 	</div>
 </article>

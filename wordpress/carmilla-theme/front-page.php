@@ -31,14 +31,23 @@ $woo = class_exists( 'WooCommerce' );
 		?>
 		<section class="section">
 			<div class="story-rail">
-				<?php foreach ( $stories as $s ) : ?>
-					<div class="story">
-						<span class="story-ring"><span class="avatar" style="background-image:url('<?php echo esc_url( get_the_post_thumbnail_url( $s->ID, 'thumbnail' ) ?: '' ); ?>');background-size:cover"></span></span>
+				<?php foreach ( $stories as $i => $s ) :
+					$full = get_the_post_thumbnail_url( $s->ID, 'large' ) ?: ( get_post_meta( $s->ID, 'cb_image_url', true ) ?: '' );
+					$thumb = get_the_post_thumbnail_url( $s->ID, 'thumbnail' ) ?: $full;
+					$link  = get_post_meta( $s->ID, 'cb_link_url', true );
+					?>
+					<button type="button" class="story cb-story-open" data-index="<?php echo esc_attr( $i ); ?>"
+						data-image="<?php echo esc_url( $full ); ?>"
+						data-title="<?php echo esc_attr( get_the_title( $s ) ); ?>"
+						data-content="<?php echo esc_attr( wp_strip_all_tags( $s->post_content ) ); ?>"
+						data-link="<?php echo esc_url( $link ); ?>">
+						<span class="story-ring"><span class="avatar" style="background-image:url('<?php echo esc_url( $thumb ); ?>');background-size:cover"></span></span>
 						<span class="cap"><?php echo esc_html( get_the_title( $s ) ); ?></span>
-					</div>
+					</button>
 				<?php endforeach; ?>
 			</div>
 		</section>
+		<?php get_template_part( 'template-parts/story-viewer' ); ?>
 	<?php endif; ?>
 
 	<!-- Categories -->

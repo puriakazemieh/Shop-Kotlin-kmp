@@ -148,3 +148,27 @@
 .cb-qna__answer p { margin: 4px 0 0; }
 .cb-qna__form { display: flex; flex-direction: column; gap: var(--sp-sm); }
 .cb-qna__form .btn { align-self: flex-start; }
+
+/* ---- Product comparison ---- */
+.cb-compare-toggle { display: inline-flex; align-items: center; gap: 5px; margin-block-start: 8px; background: none; border: 1px solid var(--line); border-radius: var(--r-full); padding: 4px 10px; font-size: 12px; color: var(--ink-soft); cursor: pointer; }
+.cb-compare-toggle.is-on { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.cb-compare-bar { position: fixed; inset-inline: 0; bottom: 0; z-index: 900; display: flex; align-items: center; justify-content: center; gap: var(--sp-md); padding: var(--sp-md); background: var(--surface); border-block-start: 1px solid var(--line); box-shadow: 0 -4px 16px rgba(0,0,0,.08); }
+.cb-compare-bar[hidden] { display: none; }
+.cb-compare-bar__count { font-weight: 600; }
+.cb-compare__scroll { overflow-x: auto; }
+.cb-compare__t { width: 100%; border-collapse: collapse; min-width: 520px; }
+.cb-compare__t th, .cb-compare__t td { border: 1px solid var(--line); padding: var(--sp-md); text-align: center; vertical-align: middle; }
+.cb-compare__t thead th { background: var(--surface-2); }
+.cb-compare__t tbody th[scope="row"] { background: var(--surface-2); text-align: start; color: var(--ink-soft); font-weight: 600; white-space: nowrap; }
+.cb-compare__img { display: block; width: 88px; height: 88px; object-fit: cover; border-radius: var(--r-md); margin: 0 auto 6px; }
+
+/* ---- Bundles ---- */
+.cb-bundle-sum__row { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-md); flex-wrap: wrap; }
+.cb-bundle-card .thumb { display: block; }
+.cb-bundle-card .thumb img { width: 100%; height: auto; border-radius: var(--r-md) var(--r-md) 0 0; display: block; }
+.cb-bundle-card .body { padding: var(--sp-md); }
+
+/* ---- Shopping assistant ---- */
+.cb-assistant__step { margin-block-end: var(--sp-lg); }
+.cb-assistant__chips { display: flex; flex-wrap: wrap; gap: var(--sp-sm); margin-block-start: var(--sp-md); }
+.cb-assistant__chips .chip { cursor: pointer; }

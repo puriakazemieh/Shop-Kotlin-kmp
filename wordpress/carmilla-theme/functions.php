@@ -29,6 +29,9 @@ if ( is_admin() ) {
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once get_template_directory() . '/inc/woocommerce.php';
 	require_once get_template_directory() . '/inc/product.php';
+	require_once get_template_directory() . '/inc/compare.php';
+	require_once get_template_directory() . '/inc/bundle.php';
+	require_once get_template_directory() . '/inc/assistant.php';
 }
 
 if ( ! function_exists( 'carmilla_setup' ) ) {
@@ -84,6 +87,30 @@ function carmilla_enqueue_assets() {
 
 	// Keep the required theme header stylesheet last (mostly metadata).
 	wp_enqueue_style( 'carmilla-style', get_stylesheet_uri(), array( 'carmilla-components' ), $ver );
+
+	// Fullscreen story viewer on the home page.
+	if ( is_front_page() || is_home() ) {
+		wp_enqueue_script( 'carmilla-stories', $dir . '/assets/js/stories.js', array(), $ver, true );
+	}
+
+	// Product comparison (toggles on cards/single + the compare page). Woo only.
+	if ( class_exists( 'WooCommerce' ) ) {
+		wp_enqueue_script( 'carmilla-compare', $dir . '/assets/js/compare.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-compare', 'CarmillaData', array(
+			'restUrl' => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
+		) );
+	}
+
+	// Shopping assistant — only where the [carmilla_assistant] shortcode is used.
+	if ( class_exists( 'WooCommerce' ) && is_singular() ) {
+		$post = get_post();
+		if ( $post && has_shortcode( $post->post_content, 'carmilla_assistant' ) ) {
+			wp_enqueue_script( 'carmilla-assistant', $dir . '/assets/js/assistant.js', array(), $ver, true );
+			wp_localize_script( 'carmilla-assistant', 'CarmillaData', array(
+				'restUrl' => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
+			) );
+		}
+	}
 
 	// Product Q&A (theme REST + JS) on single product pages.
 	if ( function_exists( 'is_product' ) && is_product() ) {
