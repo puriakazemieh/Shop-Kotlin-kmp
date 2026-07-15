@@ -25,6 +25,7 @@ require_once get_template_directory() . '/inc/clinic-extra.php';
 require_once get_template_directory() . '/inc/academy-extra.php';
 require_once get_template_directory() . '/inc/orders-extra.php';
 require_once get_template_directory() . '/inc/wishlist.php';
+require_once get_template_directory() . '/inc/catalog-extra.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
 if ( is_admin() ) {
 	require_once get_template_directory() . '/inc/admin-page.php';

@@ -244,16 +244,90 @@ function carmilla_rest_recurring_cancel( WP_REST_Request $req ) {
 add_action( 'init', function () {
 	add_rewrite_endpoint( 'returns', EP_ROOT | EP_PAGES );
 	add_rewrite_endpoint( 'recurring', EP_ROOT | EP_PAGES );
+	add_rewrite_endpoint( 'membership', EP_ROOT | EP_PAGES );
 	add_rewrite_endpoint( 'settings', EP_ROOT | EP_PAGES );
 } );
 
 add_filter( 'woocommerce_account_menu_items', function ( $items ) {
 	$logout = isset( $items['customer-logout'] ) ? array( 'customer-logout' => $items['customer-logout'] ) : array();
 	unset( $items['customer-logout'] );
-	$items['returns']   = __( 'مرجوعی و تعویض', 'carmilla' );
-	$items['recurring'] = __( 'خریدهای تکراری', 'carmilla' );
-	$items['settings']  = __( 'تنظیمات', 'carmilla' );
+	$items['returns']    = __( 'مرجوعی و تعویض', 'carmilla' );
+	$items['recurring']  = __( 'خریدهای تکراری', 'carmilla' );
+	$items['membership'] = __( 'عضویت ویژه', 'carmilla' );
+	$items['settings']   = __( 'تنظیمات', 'carmilla' );
 	return array_merge( $items, $logout );
+} );
+
+/* -------- Membership: VIP subscription paid from wallet (← MembershipScreen) -------- */
+
+function carmilla_membership_price() {
+	return (float) apply_filters( 'carmilla_membership_price', 200000 ); // toman / 30 days
+}
+function carmilla_membership_discount() {
+	return (float) apply_filters( 'carmilla_membership_discount', 0.05 ); // 5%
+}
+function carmilla_membership_active( $user_id = 0 ) {
+	$user_id = $user_id ?: get_current_user_id();
+	$exp     = (int) get_user_meta( $user_id, 'cb_membership_expires', true );
+	return $exp > time();
+}
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'carmilla/v1', '/membership/subscribe', array(
+		'methods' => 'POST', 'permission_callback' => 'is_user_logged_in', 'callback' => 'carmilla_rest_membership_subscribe',
+	) );
+} );
+
+function carmilla_rest_membership_subscribe() {
+	$uid     = get_current_user_id();
+	$price   = carmilla_membership_price();
+	$balance = (float) get_user_meta( $uid, 'cb_wallet_balance', true );
+	if ( $balance < $price ) {
+		return new WP_Error( 'insufficient', 'موجودی کیف پول کافی نیست.', array( 'status' => 400 ) );
+	}
+	update_user_meta( $uid, 'cb_wallet_balance', $balance - $price );
+	$current = max( time(), (int) get_user_meta( $uid, 'cb_membership_expires', true ) );
+	update_user_meta( $uid, 'cb_membership_expires', $current + 30 * DAY_IN_SECONDS );
+	return rest_ensure_response( array(
+		'active'    => true,
+		'expiresAt' => gmdate( 'Y-m-d', $current + 30 * DAY_IN_SECONDS ),
+		'balance'   => $balance - $price,
+	) );
+}
+
+add_action( 'woocommerce_account_membership_endpoint', function () {
+	$uid    = get_current_user_id();
+	$active = carmilla_membership_active( $uid );
+	$exp    = (int) get_user_meta( $uid, 'cb_membership_expires', true );
+	$price  = carmilla_membership_price();
+	$pct    = (int) round( carmilla_membership_discount() * 100 );
+
+	echo '<div id="cb-membership" class="cb-membership">';
+	echo '<div class="card card--pad cb-membership__banner ' . ( $active ? 'is-active' : '' ) . '">';
+	echo '<h3 class="t-title-sm">' . ( $active ? esc_html__( 'عضویتِ ویژه فعال است', 'carmilla' ) : esc_html__( 'عضویتِ ویژه فعال نیست', 'carmilla' ) ) . '</h3>';
+	echo '<p class="t-body-sm">' . sprintf( esc_html__( '%d٪ تخفیفِ خودکار روی همه‌ی خریدها', 'carmilla' ), $pct );
+	if ( $active && $exp ) {
+		echo ' · ' . esc_html__( 'تا', 'carmilla' ) . ' ' . esc_html( carmilla_to_persian_digits( gmdate( 'Y-m-d', $exp ) ) );
+	}
+	echo '</p></div>';
+	echo '<p class="t-body-sm t-muted" style="margin-block:var(--sp-md)">' . sprintf( esc_html__( 'هزینه‌ی هر ۳۰ روز: %s (از کیف پول کسر می‌شود)', 'carmilla' ), wp_kses_post( carmilla_price( $price ) ) ) . '</p>';
+	echo '<button type="button" class="btn btn--primary cb-membership__btn" data-price="' . esc_attr( $price ) . '">' . ( $active ? esc_html__( 'تمدیدِ ۳۰ روزِ دیگر', 'carmilla' ) : esc_html__( 'فعال‌سازیِ عضویتِ ویژه', 'carmilla' ) ) . '</button>';
+	echo '<p class="cb-membership__msg" role="status"></p>';
+	echo '</div>';
+} );
+
+/** Apply the VIP auto-discount at checkout for active members. */
+add_action( 'woocommerce_cart_calculate_fees', function ( $cart ) {
+	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+		return;
+	}
+	if ( ! carmilla_membership_active() ) {
+		return;
+	}
+	$discount = $cart->get_subtotal() * carmilla_membership_discount();
+	if ( $discount > 0 ) {
+		$cart->add_fee( __( 'تخفیف عضویت ویژه', 'carmilla' ), -1 * $discount );
+	}
 } );
 
 add_action( 'woocommerce_account_returns_endpoint', function () {

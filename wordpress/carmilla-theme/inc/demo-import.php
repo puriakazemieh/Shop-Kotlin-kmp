@@ -140,6 +140,7 @@ function carmilla_import_demo() {
 		'support'   => array( 'پشتیبانی', '[carmilla_support]' ),
 		'placement' => array( 'آزمون تعیین سطح', '[carmilla_placement]' ),
 		'verify'    => array( 'تأیید گواهی', '[carmilla_verify]' ),
+		'categories' => array( 'دسته‌بندی‌ها', '[carmilla_categories]' ),
 	);
 	foreach ( $pages as $slug => $pg ) {
 		if ( ! get_page_by_path( $slug ) ) {

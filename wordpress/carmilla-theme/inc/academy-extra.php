@@ -178,6 +178,7 @@ function carmilla_rest_cert_verify( WP_REST_Request $req ) {
 
 add_action( 'init', function () {
 	add_rewrite_endpoint( 'certificates', EP_ROOT | EP_PAGES );
+	add_rewrite_endpoint( 'my-courses', EP_ROOT | EP_PAGES );
 } );
 
 add_filter( 'woocommerce_account_menu_items', function ( $items ) {
@@ -186,8 +187,42 @@ add_filter( 'woocommerce_account_menu_items', function ( $items ) {
 	}
 	$logout = isset( $items['customer-logout'] ) ? array( 'customer-logout' => $items['customer-logout'] ) : array();
 	unset( $items['customer-logout'] );
+	$items['my-courses']   = __( 'دوره‌های من', 'carmilla' );
 	$items['certificates'] = __( 'گواهی‌های من', 'carmilla' );
 	return array_merge( $items, $logout );
+} );
+
+/** My-account «my-courses» tab (← MyCoursesScreen): accessible courses + progress. */
+add_action( 'woocommerce_account_my-courses_endpoint', function () {
+	$ids = get_posts( array(
+		'post_type'      => 'cb_course',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+	) );
+	$mine = array();
+	foreach ( $ids as $id ) {
+		$slug = get_post_meta( $id, 'cb_product_slug', true );
+		// "Enrolled" = bought the linked paid course, or has recorded progress on any course.
+		$bought = $slug && function_exists( 'wc_customer_bought_product' ) && carmilla_course_accessible( $id );
+		if ( $bought || carmilla_course_progress( $id ) ) {
+			$mine[] = $id;
+		}
+	}
+	if ( ! $mine ) {
+		echo '<p class="t-body t-muted">' . esc_html__( 'هنوز در دوره‌ای ثبت‌نام نکرده‌اید.', 'carmilla' ) . ' <a href="' . esc_url( get_post_type_archive_link( 'cb_course' ) ) . '">' . esc_html__( 'مشاهده‌ی دوره‌ها', 'carmilla' ) . '</a></p>';
+		return;
+	}
+	echo '<div class="cb-mycourses">';
+	foreach ( $mine as $id ) {
+		$pct = carmilla_course_percent( $id );
+		echo '<a class="card card--pad cb-mycourse" href="' . esc_url( get_permalink( $id ) ) . '">';
+		echo '<div class="cb-mycourse__head"><span class="t-title-sm">' . esc_html( get_the_title( $id ) ) . '</span>';
+		echo '<span class="badge badge--rating">' . esc_html( carmilla_to_persian_digits( $pct ) ) . '٪</span></div>';
+		echo '<div class="cb-mycourse__bar"><span class="cb-mycourse__fill" style="width:' . esc_attr( $pct ) . '%"></span></div>';
+		echo '</a>';
+	}
+	echo '</div>';
 } );
 
 add_action( 'woocommerce_account_certificates_endpoint', function () {

@@ -93,6 +93,24 @@
 		api( 'recurring' ).then( paintRec );
 	}
 
+	/* ---- Membership (VIP subscription) ---- */
+	var memBtn = document.querySelector( '.cb-membership__btn' );
+	if ( memBtn ) {
+		var memMsg = document.querySelector( '.cb-membership__msg' );
+		memBtn.addEventListener( 'click', function () {
+			memBtn.disabled = true;
+			post( 'membership/subscribe', {} ).then( function ( r ) {
+				if ( r && r.active ) {
+					memMsg.textContent = 'عضویت ویژه فعال شد تا ' + r.expiresAt;
+					setTimeout( function () { location.reload(); }, 900 );
+				} else {
+					memMsg.textContent = ( r && r.message ) || 'خطا در فعال‌سازی.';
+					memBtn.disabled = false;
+				}
+			} );
+		} );
+	}
+
 	/* ---- Settings: theme + language ---- */
 	var setRoot = document.getElementById( 'cb-settings' );
 	if ( setRoot ) {

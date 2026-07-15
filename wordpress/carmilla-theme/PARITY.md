@@ -127,6 +127,55 @@
 ### کلینیک — تکمیل شد ✅ (v0.5.1)
 تب «نوبت‌های من» در حساب کاربری: فهرست نوبت‌ها + لغو، **رسید جلسه**، **پیام‌رسانی هر جلسه** (پاسخ مشاور از دیدگاه‌های نوبت در پیشخوان)، و **بنر اورژانس** با شماره‌ی قابل‌تنظیم در Customizer.
 
+## پوششِ کاملِ مسیرها (۷۰ route از `Screen.kt`) — قطعی ✅
+هر مسیرِ ناوبریِ اپ ↔ معادلِ وردپرس. **هیچ موردی بدون معادل نمانده.**
+
+| # | Route (اپ) | معادلِ وردپرس |
+|---|---|---|
+| 1 | Login/Register/ForgotPassword/ResetPassword/AuthGraph | WooCommerce `myaccount` (فرم‌های استایل‌شده) |
+| 2 | HomeGraph/ProductsOverview | `front-page.php` |
+| 3 | BlogList / BlogDetail | `index/archive.php` / `single.php` |
+| 4 | Cart / Checkout / PaymentCompleted | WooCommerce (سبد/تسویه/`order-received`) |
+| 5 | Categories | `[carmilla_categories]` (`inc/catalog-extra.php`) |
+| 6 | CategorySearch | آرشیوِ دسته‌ی WooCommerce (`taxonomy-product_cat`) |
+| 7 | Search | `search.php` + `searchform.php` |
+| 8 | Profile | داشبوردِ `myaccount` |
+| 9 | MyOrders / OrderDetail | سفارش‌های `myaccount` + `view-order` |
+| 10 | OrderTracking | تایم‌لاین زیرِ `view-order` (`inc/orders-extra.php`) |
+| 11 | ReturnRequest | تب `returns` (CPT `cb_return` + REST) |
+| 12 | RecurringOrders | تب `recurring` (user-meta + REST) |
+| 13 | Settings | تب `settings` (روشن/تاریک/سیستم + زبان) |
+| 14 | Wallet | تب `wallet` |
+| 15 | Favorites | قلبِ کارت‌ها + تب `favorites` (`inc/wishlist.php`) |
+| 16 | ContactUs | `[carmilla_support]` (چت با پاسخ ادمین) |
+| 17 | ProductDetail | تک‌محصولِ WooCommerce + `inc/product.php` |
+| 18 | CustomerClub | تب `club` (سطح/امتیاز) |
+| 19 | Referral | تب `referral` |
+| 20 | Membership | تب `membership` (عضویت ویژه از کیف پول + تخفیف خودکار) |
+| 21 | ShoppingAssistant | `[carmilla_assistant]` |
+| 22 | Comparison | `[carmilla_compare]` |
+| 23 | BundleList / BundleDetail | `[carmilla_bundles]` + محصولِ گروهی |
+| 24 | CourseCatalog | `archive-cb_course.php` |
+| 25 | MyCourses | تب `my-courses` (+نوار پیشرفت) |
+| 26 | FreeCourses | آرشیوِ دوره با `?free=1` |
+| 27 | CoursesByLevel | آرشیوِ دوره با `?level=` (لینکِ آزمونِ تعیینِ سطح) |
+| 28 | InstructorCourses | آرشیوِ دوره با `?instructor=` (نامِ مدرس کلیک‌پذیر) |
+| 29 | CourseDetail / CourseLearn | `single-cb_course.php` (+پلیر/پیشرفت) |
+| 30 | CourseQuiz / LessonQuiz | موتورِ آزمون `cb_quiz` (نمره‌دهیِ سمت سرور + صدور گواهی) |
+| 31 | Certificates / CertificateVerify | تب `certificates` + `[carmilla_verify]` |
+| 32 | PlacementQuiz | `[carmilla_placement]` |
+| 33 | ProjectSubmission / PeerReview | تک‌دوره: CPT `cb_submission` + نظرِ همتایان |
+| 34 | CourseRequests | `archive-cb_course_request.php` |
+| 35 | TherapistCatalog / TherapistDetail | آرشیو/تک‌مشاور + تقویمِ رزرو |
+| 36 | TherapistMatch | پرسشنامه‌ی تطبیق در آرشیوِ مشاوران |
+| 37 | MyAppointments / SessionReceipt / MessagingThread | تب `appointments` (لغو/رسید/پیام) |
+| 38 | MoodCheckIn / Journal / Homework | تب `clinic` (سه زیرتب) |
+| 39 | EmergencyResources | بنرِ اورژانس (قابل‌تنظیم در Customizer) |
+| 40 | PsychTestCatalog / TakeTest | آرشیو/تکِ تست + نمره‌دهیِ سمت سرور |
+| 41 | AdminPanel/ManageProduct/ManageOrders/ManageOptions/ManageDiscounts/ManageWallets/ManageWithdrawals/ManageStories/AdminBlogList/ManageBlog | 🔌 wp-admin + WooCommerce (پنلِ مدیریتِ بومیِ وردپرس) |
+
+> **LessonQuiz** و **CourseQuiz** یک نوع اسکرین‌اند (فرمِ آزمون)؛ هر دو با موتورِ آزمونِ مشترک سرو می‌شوند. **MainGraph/More** ناوبری‌اند (هدر + نوار پایینِ موبایل)، نه صفحه‌ی محتوایی.
+
 ### تکمیل صفحات باقی‌مانده — کامل شد ✅ (v0.6.0)
 مرورِ کاملِ ۷۵ اسکرینِ اپ و ساختِ تک‌تکِ موارد نداشته:
 - **رهگیری سفارش**: تایم‌لاینِ وضعیت (ثبت→پردازش→ارسال→تحویل) زیرِ جدولِ سفارش + کد رهگیری پستی.
@@ -138,6 +187,10 @@
 - **گواهی‌های من + تأییدِ گواهی**: تب حساب کاربری + صفحه‌ی عمومیِ `[carmilla_verify]`.
 - **آزمونِ تعیینِ سطح**: `[carmilla_placement]` → سطح + لینکِ دوره‌های همان سطح.
 - **پروژه‌ی پایانی + نقدِ همتایان**: ثبتِ پروژه (CPT `cb_submission`، بازخوردِ مدرس) + نظرِ هم‌دوره‌ای‌ها.
+- **دسته‌بندی‌ها**: شبکه‌ی دسته‌های WooCommerce (`[carmilla_categories]`) → آرشیوِ دسته.
+- **دوره‌های من**: تب حساب کاربری با نوارِ پیشرفتِ هر دوره.
+- **فیلترِ دوره‌ها**: رایگان/سطح/مدرس روی آرشیوِ دوره (چیپ‌های فیلتر + `?free=/?level=/?instructor=`).
+- **عضویت ویژه**: تب حساب کاربری — فعال‌سازی/تمدید از کیف پول + **تخفیفِ خودکارِ ۵٪** در تسویه.
 
 ### باقی‌مانده
 - **QA بصری** صفحه‌به‌صفحه روی نصب واقعی وردپرس در ۳ بریک‌پوینت (نیازمند محیط زنده).
