@@ -20,6 +20,7 @@ function carmilla_meta_fields() {
 				'cb_duration'     => array( 'مدت', 'text' ),
 				'cb_product_slug' => array( 'اسلاگ محصول WooCommerce (برای خرید)', 'text' ),
 				'cb_syllabus'     => array( 'سرفصل‌ها (هر خط یک مورد)', 'textarea' ),
+				'cb_lessons'      => array( 'درس‌ها — هر خط: «عنوان | آدرس ویدیو | free»', 'textarea' ),
 			),
 		),
 		'cb_therapist' => array(

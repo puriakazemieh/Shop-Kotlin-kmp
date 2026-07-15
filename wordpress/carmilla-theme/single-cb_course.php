@@ -60,8 +60,40 @@ while ( have_posts() ) :
 			<?php endif; ?>
 		<?php endif; ?>
 
-		<?php if ( $cta_url ) : ?>
-			<a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>"><?php esc_html_e( 'ثبت‌نام / خرید دوره', 'carmilla' ); ?></a>
+		<?php
+		$lessons    = carmilla_course_lessons( $id );
+		$accessible = carmilla_course_accessible( $id );
+		$done       = carmilla_course_progress( $id );
+		if ( $lessons ) :
+			?>
+			<h2 class="t-title-lg" style="margin-block:var(--sp-lg) var(--sp-sm)"><?php esc_html_e( 'درس‌ها', 'carmilla' ); ?></h2>
+
+			<?php if ( $accessible ) : ?>
+				<div class="card" style="margin-block-end:var(--sp-md);overflow:hidden">
+					<video id="cl-video" controls playsinline style="width:100%;display:block;background:#000;aspect-ratio:16/9"></video>
+				</div>
+				<div class="t-body-sm t-muted"><?php esc_html_e( 'پیشرفت:', 'carmilla' ); ?> <span id="cl-percent"><?php echo esc_html( carmilla_to_persian_digits( carmilla_course_percent( $id ) ) ); ?></span>٪</div>
+			<?php endif; ?>
+
+			<div id="cl" data-id="<?php echo esc_attr( $id ); ?>" style="margin-block-start:var(--sp-md)">
+				<?php foreach ( $lessons as $i => $lesson ) :
+					$playable = $accessible || $lesson['free'];
+					$is_done  = in_array( $i, $done, true );
+					?>
+					<div class="card card--pad cl-lesson<?php echo $is_done ? ' cl-done' : ''; ?>" data-index="<?php echo esc_attr( $i ); ?>" data-url="<?php echo esc_attr( $lesson['url'] ); ?>" data-playable="<?php echo $playable ? '1' : '0'; ?>" style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-md);margin-block-end:8px;cursor:<?php echo $playable ? 'pointer' : 'default'; ?>">
+						<div style="display:flex;align-items:center;gap:var(--sp-md)">
+							<span class="badge <?php echo $is_done ? 'badge--stock' : 'badge--new'; ?>"><?php echo $is_done ? '✓' : esc_html( carmilla_to_persian_digits( $i + 1 ) ); ?></span>
+							<span class="t-body" style="margin:0"><?php echo esc_html( $lesson['title'] ); ?></span>
+						</div>
+						<?php if ( $lesson['free'] && ! $accessible ) : ?><span class="badge badge--rating"><?php esc_html_e( 'پیش‌نمایش رایگان', 'carmilla' ); ?></span>
+						<?php elseif ( ! $playable ) : ?><span class="cico" style="color:var(--ink-soft)">🔒</span><?php endif; ?>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( $cta_url && ! $accessible ) : ?>
+			<a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>" style="margin-block-start:var(--sp-lg)"><?php esc_html_e( 'ثبت‌نام / خرید دوره', 'carmilla' ); ?></a>
 		<?php endif; ?>
 	</article>
 </main>
