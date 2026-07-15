@@ -21,6 +21,8 @@ function carmilla_meta_fields() {
 				'cb_product_slug' => array( 'اسلاگ محصول WooCommerce (برای خرید)', 'text' ),
 				'cb_syllabus'     => array( 'سرفصل‌ها (هر خط یک مورد)', 'textarea' ),
 				'cb_lessons'      => array( 'درس‌ها — هر خط: «عنوان | آدرس ویدیو | free»', 'textarea' ),
+				'cb_quiz'         => array( 'آزمون پایانی — هر خط: «سؤال؟ | گزینه درست* | گزینه | گزینه»', 'textarea' ),
+				'cb_pass_score'   => array( 'حد نصاب قبولی (درصد؛ پیش‌فرض ۶۰)', 'number' ),
 			),
 		),
 		'cb_therapist' => array(
@@ -53,6 +55,22 @@ function carmilla_meta_fields() {
 			'title'  => 'تنظیمات استوری',
 			'fields' => array(
 				'cb_link_url' => array( 'لینک مقصد', 'url' ),
+			),
+		),
+		'cb_return' => array(
+			'title'  => 'وضعیت درخواست مرجوعی',
+			'fields' => array(
+				'cb_type'       => array( 'نوع', 'select', array( 'RETURN' => 'مرجوعی', 'EXCHANGE' => 'تعویض' ) ),
+				'cb_status'     => array( 'وضعیت', 'select', array( 'PENDING' => 'در انتظار بررسی', 'APPROVED' => 'تاییدشده', 'REJECTED' => 'ردشده', 'COMPLETED' => 'تکمیل‌شده' ) ),
+				'cb_order_id'   => array( 'شماره سفارش', 'number' ),
+				'cb_admin_note' => array( 'پاسخ به مشتری', 'textarea' ),
+			),
+		),
+		'cb_submission' => array(
+			'title'  => 'بررسی پروژه‌ی پایانی',
+			'fields' => array(
+				'cb_status'          => array( 'وضعیت', 'select', array( 'PENDING' => 'در انتظار بررسی', 'APPROVED' => 'تاییدشده', 'REJECTED' => 'ردشده' ) ),
+				'cb_mentor_feedback' => array( 'بازخورد مدرس', 'textarea' ),
 			),
 		),
 	);

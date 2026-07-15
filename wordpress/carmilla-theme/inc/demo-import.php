@@ -138,6 +138,8 @@ function carmilla_import_demo() {
 		'assistant' => array( 'دستیار خرید', '[carmilla_assistant]' ),
 		'bundles'   => array( 'مجموعه‌ها', '[carmilla_bundles]' ),
 		'support'   => array( 'پشتیبانی', '[carmilla_support]' ),
+		'placement' => array( 'آزمون تعیین سطح', '[carmilla_placement]' ),
+		'verify'    => array( 'تأیید گواهی', '[carmilla_verify]' ),
 	);
 	foreach ( $pages as $slug => $pg ) {
 		if ( ! get_page_by_path( $slug ) ) {

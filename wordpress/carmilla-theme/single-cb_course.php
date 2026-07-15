@@ -92,6 +92,20 @@ while ( have_posts() ) :
 			</div>
 		<?php endif; ?>
 
+		<?php
+		// Final quiz + project/peer review — only for enrolled learners (← CourseQuiz/ProjectSubmission/PeerReview).
+		$has_quiz    = function_exists( 'carmilla_course_quiz' ) && carmilla_course_quiz( $id );
+		if ( $accessible && ( $has_quiz || is_user_logged_in() ) ) :
+			?>
+			<?php if ( $has_quiz ) : ?>
+				<h2 class="t-title-lg" style="margin-block:var(--sp-xl) var(--sp-sm)"><?php esc_html_e( 'آزمونِ پایانِ دوره', 'carmilla' ); ?></h2>
+				<div id="cb-quiz" data-course="<?php echo esc_attr( $id ); ?>"><p class="t-body-sm t-muted"><?php esc_html_e( 'در حال بارگذاری…', 'carmilla' ); ?></p></div>
+			<?php endif; ?>
+
+			<h2 class="t-title-lg" style="margin-block:var(--sp-xl) var(--sp-sm)"><?php esc_html_e( 'پروژه‌ی پایانی و نقدِ همتایان', 'carmilla' ); ?></h2>
+			<div id="cb-project" data-course="<?php echo esc_attr( $id ); ?>"><p class="t-body-sm t-muted"><?php esc_html_e( 'در حال بارگذاری…', 'carmilla' ); ?></p></div>
+		<?php endif; ?>
+
 		<?php if ( $cta_url && ! $accessible ) : ?>
 			<a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>" style="margin-block-start:var(--sp-lg)"><?php esc_html_e( 'ثبت‌نام / خرید دوره', 'carmilla' ); ?></a>
 		<?php endif; ?>

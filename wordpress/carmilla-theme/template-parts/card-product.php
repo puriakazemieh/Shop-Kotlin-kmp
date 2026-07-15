@@ -16,6 +16,7 @@ $on_sale = $product->is_on_sale();
 	<a href="<?php the_permalink(); ?>" class="thumb" aria-hidden="true">
 		<?php echo $product->get_image( 'carmilla-card' ); // phpcs:ignore ?>
 	</a>
+	<?php if ( function_exists( 'carmilla_wishlist_button' ) ) { carmilla_wishlist_button( $product->get_id(), 'cb-wish-toggle--card' ); } ?>
 	<div class="body">
 		<div class="variant-row" style="margin:0 0 6px">
 			<?php if ( $on_sale ) : ?><span class="badge badge--sale"><?php esc_html_e( 'حراج', 'carmilla' ); ?></span><?php endif; ?>

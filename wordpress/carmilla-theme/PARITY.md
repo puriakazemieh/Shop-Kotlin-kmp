@@ -28,13 +28,15 @@
 | اسکرین | قالب | وضعیت |
 |---|---|---|
 | Cart / Checkout / PaymentCompleted | WooCommerce (استایل کارمیلا) | 🟡 |
-| OrderList / OrderDetail (+فاکتور) / Tracking | `myaccount` (WC) + view سفارش | 🟡 |
-| RecurringOrders / ReturnRequest | افزونه/endpoint پلاگین | ⬜ |
+| OrderList / OrderDetail (+فاکتور) | `myaccount` (WC) + view سفارش | 🟡 |
+| OrderTracking (تایم‌لاین وضعیت) | `woocommerce_order_details_after_order_table` + `inc/orders-extra.php` | ✅ |
+| RecurringOrders / ReturnRequest | تب‌های `myaccount` (`orders-extra.js`+REST؛ CPT مرجوعی) | ✅ |
 
 ## پروفایل و باشگاه
 | اسکرین | قالب | وضعیت |
 |---|---|---|
-| Profile / Favorites / Wallet | `myaccount` تب‌ها (WC + wishlist) | 🟡 |
+| Profile / Wallet | `myaccount` تب‌ها (WC) | 🟡 |
+| Favorites (علاقه‌مندی) | قلبِ کارت‌ها + تب `myaccount` (`wishlist.js`+REST/user-meta) | ✅ |
 | CustomerClub / Membership / Referral | تب‌های `myaccount`: باشگاه (سطح+امتیاز از مجموع خرید) + معرفی + کیف پول | ✅ |
 
 ## بلاگ
@@ -47,8 +49,8 @@
 | اسکرین | قالب | وضعیت |
 |---|---|---|
 | Login / Register / Forgot / Reset | `myaccount` (WC) استایل‌شده | 🟡 |
-| Settings | تنظیمات کاربر (`myaccount`) | ⬜ |
-| Support / ContactUs (چت) | صفحه‌ی تماس + تیکت (REST) | ⬜ |
+| Settings | تب `myaccount`: پوسته (روشن/تاریک/سیستم) + زبان (`orders-extra.js`) | ✅ |
+| Support / ContactUs (چت) | `[carmilla_support]` (چت زنده با پاسخ ادمین) | ✅ |
 
 ## آکادمی (دوره)
 | اسکرین | قالب | وضعیت |
@@ -56,9 +58,10 @@
 | CourseList | `archive-cb_course.php` | 🟡 |
 | CourseDetail | `single-cb_course.php` | 🟡 |
 | CourseLearn (پخش‌کننده) | `single-cb_course.php` + `course-learn.js` (پلیر + پیشرفت) | ✅ |
-| CourseQuiz / LessonQuiz | فرم آزمون (JS+REST) | ⬜ |
-| Certificates / CertificateVerify | صفحه‌ی گواهی + تأیید | ⬜ |
-| PlacementQuiz / PeerReview / ProjectSubmission | فرم‌های REST | ⬜ |
+| CourseQuiz / LessonQuiz | آزمونِ پایانِ دوره در تک‌دوره (`cb_quiz` meta + `academy.js`+REST، نمره‌دهی سمت سرور) | ✅ |
+| Certificates / CertificateVerify | تب `myaccount` + `[carmilla_verify]` عمومی (صدور خودکار با قبولی) | ✅ |
+| PlacementQuiz | `[carmilla_placement]` (تعیین سطح → لینک دوره‌های همان سطح) | ✅ |
+| ProjectSubmission / PeerReview | تک‌دوره: CPT `cb_submission` + نظرِ همتایان (`academy.js`+REST) | ✅ |
 
 ## کلینیک (مشاوره/نوبت)
 | اسکرین | قالب | وضعیت |
@@ -123,6 +126,18 @@
 
 ### کلینیک — تکمیل شد ✅ (v0.5.1)
 تب «نوبت‌های من» در حساب کاربری: فهرست نوبت‌ها + لغو، **رسید جلسه**، **پیام‌رسانی هر جلسه** (پاسخ مشاور از دیدگاه‌های نوبت در پیشخوان)، و **بنر اورژانس** با شماره‌ی قابل‌تنظیم در Customizer.
+
+### تکمیل صفحات باقی‌مانده — کامل شد ✅ (v0.6.0)
+مرورِ کاملِ ۷۵ اسکرینِ اپ و ساختِ تک‌تکِ موارد نداشته:
+- **رهگیری سفارش**: تایم‌لاینِ وضعیت (ثبت→پردازش→ارسال→تحویل) زیرِ جدولِ سفارش + کد رهگیری پستی.
+- **مرجوعی/تعویض**: تب حساب کاربری با فرمِ ثبت + فهرستِ درخواست‌ها؛ مدیریت از wp-admin (CPT `cb_return`).
+- **خریدهای تکراری**: تب حساب کاربری (فهرست + لغو) با user-meta.
+- **تنظیمات**: تب حساب کاربری — سوییچِ پوسته (روشن/تاریک/سیستم با `data-theme` و ذخیره در مرورگر) + زبان.
+- **علاقه‌مندی‌ها (Favorites)**: دکمه‌ی قلب روی کارت‌ها و تک‌محصول + تب حساب کاربری (user-meta؛ مهمان‌ها localStorage).
+- **آزمونِ پایانِ دوره**: پارس سؤال‌ها از `cb_quiz`، نمره‌دهیِ امنِ سمت سرور، و **صدور خودکارِ گواهی** با قبولی.
+- **گواهی‌های من + تأییدِ گواهی**: تب حساب کاربری + صفحه‌ی عمومیِ `[carmilla_verify]`.
+- **آزمونِ تعیینِ سطح**: `[carmilla_placement]` → سطح + لینکِ دوره‌های همان سطح.
+- **پروژه‌ی پایانی + نقدِ همتایان**: ثبتِ پروژه (CPT `cb_submission`، بازخوردِ مدرس) + نظرِ هم‌دوره‌ای‌ها.
 
 ### باقی‌مانده
 - **QA بصری** صفحه‌به‌صفحه روی نصب واقعی وردپرس در ۳ بریک‌پوینت (نیازمند محیط زنده).

@@ -16,6 +16,8 @@ $cart_count  = carmilla_cart_count();
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script>/* theme-boot: apply the saved light/dark choice before paint (← SettingsScreen) */
+	(function(){try{var t=localStorage.getItem('cb_theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class( 'has-bottom-nav' ); ?>>

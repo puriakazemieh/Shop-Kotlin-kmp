@@ -154,3 +154,89 @@
 .cb-sv__title { margin: 0 0 4px; color: #fff; font-size: 18px; font-weight: 700; }
 .cb-sv__content { margin: 0 0 var(--sp-md); color: rgba(255,255,255,.9); font-size: 13px; line-height: 1.7; }
 .cb-sv__cta[hidden] { display: none; }
+
+/* ============================================================
+   v0.6.0 — order tracking, returns, recurring, settings,
+   wishlist, certificates/verify, placement, quiz, project/peer
+   ============================================================ */
+
+/* Order tracking timeline (← OrderTrackingScreen) */
+.cb-track { margin-block-start: var(--sp-lg); }
+.cb-track__line { list-style: none; margin: var(--sp-md) 0 0; padding: 0; }
+.cb-track__step { display: flex; align-items: flex-start; gap: var(--sp-md); position: relative; padding-block-end: var(--sp-lg); }
+.cb-track__step:not(:last-child)::before { content: ""; position: absolute; inset-inline-start: 10px; top: 22px; bottom: 0; width: 2px; background: var(--line); }
+.cb-track__step.is-done:not(:last-child)::before { background: var(--accent); }
+.cb-track__dot { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: #fff; }
+.cb-track__step.is-done .cb-track__dot { background: var(--accent); }
+.cb-track__label { padding-block-start: 2px; color: var(--ink-soft); }
+.cb-track__step.is-done .cb-track__label { color: var(--ink); }
+.cb-track__step.is-active .cb-track__label { font-weight: 800; }
+.cb-track__cancel { color: var(--sale); font-weight: 700; }
+.cb-track__code { margin-block-start: var(--sp-md); }
+
+/* Returns (← ReturnRequestScreen) */
+.cb-ret-form { display: flex; flex-direction: column; gap: var(--sp-sm); }
+.cb-ret-chips, .cb-ret-form input, .cb-ret-form textarea { width: 100%; }
+.cb-ret-chips { display: flex; gap: var(--sp-sm); }
+.cb-chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: var(--r-full); padding: 8px 16px; cursor: pointer; font: inherit; }
+.cb-chip.is-on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.cb-ret-list { display: flex; flex-direction: column; gap: var(--sp-sm); margin-block-start: var(--sp-sm); }
+.cb-ret-item__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-sm); }
+.cb-ret-note { color: var(--accent); }
+
+/* Recurring orders (← RecurringOrdersScreen) */
+.cb-rec-list { display: flex; flex-direction: column; gap: var(--sp-sm); }
+.cb-rec-item { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-md); }
+
+/* Settings (← SettingsScreen) */
+.cb-settings__group { display: flex; flex-direction: column; gap: 2px; }
+.cb-settings__row { display: flex; align-items: center; gap: var(--sp-sm); padding: 12px 4px; cursor: pointer; }
+.cb-settings__row + .cb-settings__row { border-block-start: 1px solid var(--line); }
+
+/* Wishlist heart (← FavoritesScreen) */
+.cb-wish-toggle { border: none; background: transparent; cursor: pointer; color: var(--ink-soft); padding: 4px; line-height: 0; }
+.cb-wish-toggle.is-on { color: var(--sale); }
+.cb-wish-toggle.is-on svg { fill: currentColor; }
+.cb-wish-toggle--card { position: absolute; inset-inline-end: 10px; inset-block-start: 10px; z-index: 2; background: var(--surface); border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.12); width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; }
+.product-card { position: relative; }
+.cb-wish-single { position: relative; }
+.cb-wish-toggle--float { position: absolute; inset-inline-end: var(--sp-md); inset-block-start: var(--sp-md); z-index: 3; background: var(--surface); border-radius: 50%; box-shadow: 0 1px 6px rgba(0,0,0,.15); width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; }
+.cb-fav-empty { text-align: center; padding: var(--sp-xl); color: var(--ink-soft); }
+.cb-fav-empty__emoji { font-size: 40px; display: block; margin-block-end: var(--sp-md); }
+
+/* Certificates + verify (← Certificates / CertificateVerify) */
+.cb-cert { border: 1px solid var(--gold); }
+.cb-cert__head { display: flex; align-items: center; gap: var(--sp-sm); color: var(--gold); }
+.cb-cert__course { margin: var(--sp-sm) 0; }
+.cb-verify { display: flex; flex-direction: column; gap: var(--sp-md); }
+.cb-verify__row { display: flex; gap: var(--sp-sm); }
+.cb-verify__input { flex: 1; }
+.cb-verify__ok { border-radius: var(--r-md, 14px); background: color-mix(in srgb, var(--ok, #2e9e6b) 12%, transparent); padding: var(--sp-md); border: 1px solid var(--ok, #2e9e6b); }
+.cb-verify__bad { border-radius: var(--r-md, 14px); background: color-mix(in srgb, var(--sale) 12%, transparent); padding: var(--sp-md); border: 1px solid var(--sale); }
+
+/* Placement (← PlacementQuizScreen) */
+.cb-placement { display: flex; flex-direction: column; gap: var(--sp-md); }
+.cb-place__result { text-align: center; padding: var(--sp-xl) 0; }
+.cb-place__level { color: var(--accent); margin: var(--sp-sm) 0 var(--sp-lg); }
+
+/* Quiz (← CourseQuizScreen) — shared with placement option styling */
+#cb-quiz, #cb-placement { display: flex; flex-direction: column; gap: var(--sp-md); }
+.cb-quiz__q { display: flex; flex-direction: column; gap: 6px; }
+.cb-quiz__text { font-weight: 700; margin: 0 0 6px; }
+.cb-quiz__opt { display: flex; align-items: center; gap: var(--sp-sm); padding: 10px 12px; border-radius: var(--r-md, 12px); background: var(--surface-2); cursor: pointer; }
+.cb-quiz__opt:has(input:checked) { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.cb-quiz__submit, .cb-place__submit { align-self: stretch; }
+.cb-quiz__result { text-align: center; padding: var(--sp-xl) var(--sp-md); }
+.cb-quiz__badge { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 30px; color: #fff; margin-block-end: var(--sp-md); }
+.cb-quiz__result.is-pass .cb-quiz__badge { background: var(--ok, #2e9e6b); }
+.cb-quiz__result.is-fail .cb-quiz__badge { background: var(--ink-soft); }
+
+/* Project submission + peer review (← ProjectSubmission / PeerReview) */
+.cb-proj__form { display: flex; flex-direction: column; gap: var(--sp-sm); margin-block: var(--sp-md); }
+.cb-proj__status.is-ok { border: 1px solid var(--ok, #2e9e6b); }
+.cb-proj__status.is-bad { border: 1px solid var(--sale); }
+.cb-peer { display: flex; flex-direction: column; gap: var(--sp-sm); }
+.cb-peer__toggle { border: none; background: transparent; color: var(--accent); cursor: pointer; padding: 6px 0; font: inherit; }
+.cb-peer__c { padding: 6px 0; border-block-start: 1px solid var(--line); font-size: 13px; }
+.cb-peer__form { display: flex; gap: var(--sp-sm); margin-block-start: var(--sp-sm); }
+.cb-peer__form input { flex: 1; }
