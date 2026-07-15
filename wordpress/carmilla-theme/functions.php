@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARMILLA_THEME_VERSION', '0.3.0' );
+define( 'CARMILLA_THEME_VERSION', '0.4.0' );
 
 require_once get_template_directory() . '/inc/icons.php';
 require_once get_template_directory() . '/inc/customizer.php';
@@ -28,6 +28,7 @@ if ( is_admin() ) {
 }
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once get_template_directory() . '/inc/woocommerce.php';
+	require_once get_template_directory() . '/inc/product.php';
 }
 
 if ( ! function_exists( 'carmilla_setup' ) ) {
@@ -83,6 +84,17 @@ function carmilla_enqueue_assets() {
 
 	// Keep the required theme header stylesheet last (mostly metadata).
 	wp_enqueue_style( 'carmilla-style', get_stylesheet_uri(), array( 'carmilla-components' ), $ver );
+
+	// Product Q&A (theme REST + JS) on single product pages.
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		wp_enqueue_script( 'carmilla-product-qna', $dir . '/assets/js/product-qna.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-product-qna', 'CarmillaData', array(
+			'restUrl'  => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
+			'nonce'    => wp_create_nonce( 'wp_rest' ),
+			'loggedIn' => is_user_logged_in(),
+			'loginUrl' => wp_login_url( get_permalink() ),
+		) );
+	}
 
 	// Course player (theme REST + JS).
 	if ( is_singular( 'cb_course' ) ) {

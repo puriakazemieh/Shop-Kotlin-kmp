@@ -18,7 +18,7 @@
 | ProductsOverview (خانه) | `front-page.php` | ✅ |
 | Categories / CategorySearch | `woocommerce/` archive + `taxonomy-product_cat` | 🟡 |
 | Search | `search.php` + `searchform.php` | ✅ |
-| DetailsScreen (محصول) | `single-product` (WC) + استایل | 🟡 |
+| DetailsScreen (محصول) | `single-product` (WC) + `inc/product.php` | ✅ |
 | Bundle List/Detail | قالب باندل (محصول WooCommerce) | ⬜ |
 | ShoppingAssistant | صفحه‌ی دستیار (JS + REST) | ⬜ |
 | StoryDetail | نمایشگر استوری (JS overlay) | ⬜ |
@@ -55,7 +55,7 @@
 |---|---|---|
 | CourseList | `archive-cb_course.php` | 🟡 |
 | CourseDetail | `single-cb_course.php` | 🟡 |
-| CourseLearn (پخش‌کننده) | `page-learn` (پلیر + پیشرفت، JS+REST) | ⬜ |
+| CourseLearn (پخش‌کننده) | `single-cb_course.php` + `course-learn.js` (پلیر + پیشرفت) | ✅ |
 | CourseQuiz / LessonQuiz | فرم آزمون (JS+REST) | ⬜ |
 | Certificates / CertificateVerify | صفحه‌ی گواهی + تأیید | ⬜ |
 | PlacementQuiz / PeerReview / ProjectSubmission | فرم‌های REST | ⬜ |
@@ -71,14 +71,14 @@
 ## تست روان‌شناسی
 | اسکرین | قالب | وضعیت |
 |---|---|---|
-| PsychTestList | `archive-cb_psychtest.php` | ⬜ |
-| PsychTest detail | `single-cb_psychtest.php` | 🟡 |
-| TakeTest | فرم انجام تست (JS+REST) | ⬜ |
+| PsychTestList | `archive-cb_psychtest.php` | ✅ |
+| PsychTest detail | `single-cb_psychtest.php` | ✅ |
+| TakeTest | `single-cb_psychtest.php` + `psychtest.js` (نمره‌دهی سمت سرور) | ✅ |
 
 ## درخواست دوره
 | اسکرین | قالب | وضعیت |
 |---|---|---|
-| CourseRequest (لیست + ثبت + لایک) | `archive-cb_course_request.php` + فرم (REST) | ⬜ |
+| CourseRequest (لیست + ثبت + لایک) | `archive-cb_course_request.php` + `course-requests.js` | ✅ |
 
 ## پنل ادمین (۱۶+ اسکرین)
 مدیریت محصول/سفارش/دوره/درمانگر/تست/مالی/بلاگ/استوری/تخفیف/باندل/... — 🔌 از طریق **wp-admin + WooCommerce + REST پلاگین** (معادل عملیاتی پنل ادمین اپ). در صورت نیاز به پنل فرانت‌اندِ سفارشی، فاز جداگانه.
@@ -103,7 +103,16 @@
 - فیچرهای تعاملیِ داده‌محور (theme-REST + JS): درخواست‌دوره، تست‌دادن، رزرو نوبت تقویمی، پخش دوره + پیشرفت، چت پشتیبانی ✅
 - WooCommerce: استایل کامل (دکمه/قیمت/کارت/سبد/تسویه/حساب) + تب‌های «کیف پول»/«معرفی» ✅
 
-### باقی‌مانده (صیقل)
-- QA بصری صفحه‌به‌صفحه روی نصب واقعی وردپرس در ۳ بریک‌پوینت.
-- گیت خرید عمودی‌ها به کیف‌پول/اعتبار جلسه‌ی واقعی (فعلاً بر پایه‌ی خرید محصول WooCommerce).
-- تقویم گرافیکی پیشرفته برای رزرو (فعلاً لیست بازه‌ها).
+### صفحه‌ی محصول (DetailsScreen) — کامل شد ✅
+`inc/product.php` بخش‌های زیر را طبق دیزاین اپ به تک‌محصولِ WooCommerce می‌افزاید (بدون تب، تک‌اسکرول):
+- «معرفی محصول» با بولت‌های تیک‌دار.
+- کارت «مشخصات» از ویژگی‌های محصول + برند.
+- «خلاصه‌ی امتیاز»: میانگین + نمودار میله‌ای توزیع ۵→۱ ستاره.
+- **نظرات دارای تصویر** (آپلود در فرم دیدگاه + نمایش زیر متن نظر).
+- «پرسش و پاسخ» جدا از نظرات (theme-REST `products/{id}/questions` + `product-qna.js`؛ پاسخ کارشناس از پیشخوان).
+
+### باقی‌مانده‌ی واقعی (اسکرین‌های فرعی، اولویت پایین)
+- **Comparison** (مقایسه‌ی محصولات)، **Bundle**، **ShoppingAssistant**، **StoryDetail** (نمایشگر تمام‌صفحه‌ی استوری).
+- کلینیک: **TherapistMatch**، **Journal/Homework/MoodCheckIn** (تب‌های کاربر).
+- باشگاه/عضویت (**CustomerClub/Membership**) — فعلاً فقط «معرفی به دوستان» و «کیف پول».
+- **QA بصری** صفحه‌به‌صفحه روی نصب واقعی وردپرس در ۳ بریک‌پوینت (نیازمند محیط زنده).
