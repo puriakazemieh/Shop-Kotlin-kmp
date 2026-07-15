@@ -19,10 +19,10 @@
 | Categories / CategorySearch | `woocommerce/` archive + `taxonomy-product_cat` | 🟡 |
 | Search | `search.php` + `searchform.php` | ✅ |
 | DetailsScreen (محصول) | `single-product` (WC) + `inc/product.php` | ✅ |
-| Bundle List/Detail | قالب باندل (محصول WooCommerce) | ⬜ |
-| ShoppingAssistant | صفحه‌ی دستیار (JS + REST) | ⬜ |
-| StoryDetail | نمایشگر استوری (JS overlay) | ⬜ |
-| Comparison | `page-compare` (جدول تمام‌عرض + JS) | ⬜ |
+| Bundle List/Detail | محصول گروهی + `[carmilla_bundles]` (`inc/bundle.php`) | ✅ |
+| ShoppingAssistant | `[carmilla_assistant]` + `assistant.js` (REST) | ✅ |
+| StoryDetail | نمایشگر تمام‌صفحه (`story-viewer` + `stories.js`) | ✅ |
+| Comparison | `[carmilla_compare]` + `compare.js` (جدول تمام‌عرض، REST) | ✅ |
 
 ## سبد، سفارش، پرداخت
 | اسکرین | قالب | وضعیت |
@@ -35,7 +35,7 @@
 | اسکرین | قالب | وضعیت |
 |---|---|---|
 | Profile / Favorites / Wallet | `myaccount` تب‌ها (WC + wishlist) | 🟡 |
-| CustomerClub / Membership / Referral | تب‌های سفارشی `myaccount` (REST پلاگین) | ⬜ |
+| CustomerClub / Membership / Referral | تب‌های `myaccount`: باشگاه (سطح+امتیاز از مجموع خرید) + معرفی + کیف پول | ✅ |
 
 ## بلاگ
 | اسکرین | قالب | وضعیت |
@@ -65,8 +65,9 @@
 |---|---|---|
 | TherapistList | `archive-cb_therapist.php` | 🟡 |
 | TherapistDetail (رزرو) | `single-cb_therapist.php` + تقویم اسلات (JS) | 🟡 |
-| TherapistMatch | پرسشنامه‌ی تطبیق (JS+REST) | ⬜ |
-| MyAppointments / Messaging / Journal / Homework / MoodCheckIn / SessionReceipt / Emergency | تب‌های کاربر (REST) | ⬜ |
+| TherapistMatch | پرسشنامه‌ی تطبیق در آرشیو مشاوران (`therapist-match.js`+REST) | ✅ |
+| MoodCheckIn / Journal / Homework | تب «پرونده‌ی مشاوره» در `myaccount` (`clinic.js`+REST) | ✅ |
+| MyAppointments / Messaging / SessionReceipt / Emergency | تب‌های کاربر (فاز بعد) | ⬜ |
 
 ## تست روان‌شناسی
 | اسکرین | قالب | وضعیت |
@@ -111,8 +112,15 @@
 - **نظرات دارای تصویر** (آپلود در فرم دیدگاه + نمایش زیر متن نظر).
 - «پرسش و پاسخ» جدا از نظرات (theme-REST `products/{id}/questions` + `product-qna.js`؛ پاسخ کارشناس از پیشخوان).
 
-### باقی‌مانده‌ی واقعی (اسکرین‌های فرعی، اولویت پایین)
-- **Comparison** (مقایسه‌ی محصولات)، **Bundle**، **ShoppingAssistant**، **StoryDetail** (نمایشگر تمام‌صفحه‌ی استوری).
-- کلینیک: **TherapistMatch**، **Journal/Homework/MoodCheckIn** (تب‌های کاربر).
-- باشگاه/عضویت (**CustomerClub/Membership**) — فعلاً فقط «معرفی به دوستان» و «کیف پول».
+### اسکرین‌های فرعی — کامل شد ✅ (v0.5.0)
+- **نمایشگر استوری** (overlay تمام‌صفحه با نوار پیشرفت و CTA).
+- **مقایسه‌ی محصولات** (لیست localStorage + دکمه‌ها + جدول تمام‌عرض).
+- **باندل** (محصول گروهی + خلاصه‌ی مجموع + شبکه).
+- **دستیار خرید** (جریان دسته/بودجه/مرتب‌سازی).
+- **تطبیق درمانگر** (پرسشنامه‌ی نگرانی در آرشیو مشاوران).
+- **پرونده‌ی مشاوره**: حال امروز (مود)، ژورنال، تمرین‌ها.
+- **باشگاه مشتریان** (سطح + امتیاز از مجموع خرید + نوار پیشرفت).
+
+### باقی‌مانده (اولویت پایین / فاز بعد)
+- کلینیک: پیام‌رسانی زنده‌ی جلسه، رسید جلسه، اورژانس (نیازمند زیرساخت پیام/ویدیوکال).
 - **QA بصری** صفحه‌به‌صفحه روی نصب واقعی وردپرس در ۳ بریک‌پوینت (نیازمند محیط زنده).

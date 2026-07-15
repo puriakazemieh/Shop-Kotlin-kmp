@@ -85,13 +85,17 @@ function carmilla_import_demo() {
 		'cb_ranges'    => "۰ | ۲ | استرس پایین — وضعیت مطلوب\n۳ | ۴ | استرس متوسط — مراقب باشید\n۵ | ۶ | استرس بالا — توصیه به مشاوره",
 	) ) ? 1 : 0;
 
-	// ---- Stories & banners ----
-	foreach ( array( 'تخفیف‌های هفته', 'محصولات جدید', 'دوره‌های تازه' ) as $s ) {
-		$n += carmilla_demo_post( 'cb_story', $s, '' ) ? 1 : 0;
+	// ---- Stories & banners (with destination links) ----
+	foreach ( array(
+		array( 'تخفیف‌های هفته', 'محصولات با بهترین قیمت این هفته.' ),
+		array( 'محصولات جدید', 'تازه‌ترین‌ها را ببینید.' ),
+		array( 'دوره‌های تازه', 'دوره‌های آموزشی جدید منتشر شد.' ),
+	) as $s ) {
+		$n += carmilla_demo_post( 'cb_story', $s[0], $s[1], array( 'cb_link_url' => home_url( '/shop/' ) ) ) ? 1 : 0;
 	}
 	$n += carmilla_demo_post( 'cb_banner', 'حراج پاییزی', '', array( 'cb_subtitle' => 'تا ۵۰٪ تخفیف', 'cb_sort' => 1 ) ) ? 1 : 0;
 
-	// ---- WooCommerce products ----
+	// ---- WooCommerce products (+ a grouped "bundle") ----
 	if ( class_exists( 'WC_Product_Simple' ) ) {
 		$products = array(
 			array( 'مانتو کتان مدل ترمه', '1280000', '1600000' ),
@@ -99,6 +103,7 @@ function carmilla_import_demo() {
 			array( 'کیف چرم دست‌دوز', '2100000', '' ),
 			array( 'کفش تابستانی', '890000', '' ),
 		);
+		$product_ids = array();
 		foreach ( $products as $p ) {
 			$product = new WC_Product_Simple();
 			$product->set_name( $p[0] );
@@ -108,7 +113,42 @@ function carmilla_import_demo() {
 			}
 			$product->set_status( 'publish' );
 			$product->set_catalog_visibility( 'visible' );
-			if ( $product->save() ) {
+			$pid = $product->save();
+			if ( $pid ) {
+				$n++;
+				$product_ids[] = $pid;
+			}
+		}
+		// A grouped product = a bundle (first three items).
+		if ( class_exists( 'WC_Product_Grouped' ) && count( $product_ids ) >= 3 ) {
+			$bundle = new WC_Product_Grouped();
+			$bundle->set_name( 'ست کامل پاییزی' );
+			$bundle->set_status( 'publish' );
+			$bundle->set_catalog_visibility( 'visible' );
+			$bundle->set_children( array_slice( $product_ids, 0, 3 ) );
+			if ( $bundle->save() ) {
+				$n++;
+			}
+		}
+	}
+
+	// ---- Shortcode pages (compare, assistant, bundles, support) ----
+	$pages = array(
+		'compare'   => array( 'مقایسه‌ی محصولات', '[carmilla_compare]' ),
+		'assistant' => array( 'دستیار خرید', '[carmilla_assistant]' ),
+		'bundles'   => array( 'مجموعه‌ها', '[carmilla_bundles]' ),
+		'support'   => array( 'پشتیبانی', '[carmilla_support]' ),
+	);
+	foreach ( $pages as $slug => $pg ) {
+		if ( ! get_page_by_path( $slug ) ) {
+			$pid = wp_insert_post( array(
+				'post_type'    => 'page',
+				'post_name'    => $slug,
+				'post_title'   => $pg[0],
+				'post_content' => $pg[1],
+				'post_status'  => 'publish',
+			) );
+			if ( $pid && ! is_wp_error( $pid ) ) {
 				$n++;
 			}
 		}

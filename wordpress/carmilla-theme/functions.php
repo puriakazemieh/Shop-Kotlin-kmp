@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARMILLA_THEME_VERSION', '0.4.0' );
+define( 'CARMILLA_THEME_VERSION', '0.5.0' );
 
 require_once get_template_directory() . '/inc/icons.php';
 require_once get_template_directory() . '/inc/customizer.php';
@@ -21,6 +21,7 @@ require_once get_template_directory() . '/inc/access.php';
 require_once get_template_directory() . '/inc/booking.php';
 require_once get_template_directory() . '/inc/course.php';
 require_once get_template_directory() . '/inc/support.php';
+require_once get_template_directory() . '/inc/clinic-extra.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
 if ( is_admin() ) {
 	require_once get_template_directory() . '/inc/admin-page.php';
@@ -130,6 +131,26 @@ function carmilla_enqueue_assets() {
 			'restUrl'  => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
 			'nonce'    => wp_create_nonce( 'wp_rest' ),
 			'loggedIn' => is_user_logged_in(),
+		) );
+	}
+
+	// Therapist match on the therapist archive.
+	if ( is_post_type_archive( 'cb_therapist' ) ) {
+		wp_enqueue_script( 'carmilla-therapist-match', $dir . '/assets/js/therapist-match.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-therapist-match', 'CarmillaData', array(
+			'restUrl' => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
+		) );
+		wp_localize_script( 'carmilla-therapist-match', 'CarmillaMatch', array(
+			'concerns' => carmilla_match_concerns(),
+		) );
+	}
+
+	// Clinic file tabs on the account page.
+	if ( function_exists( 'is_account_page' ) && is_account_page() ) {
+		wp_enqueue_script( 'carmilla-clinic', $dir . '/assets/js/clinic.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-clinic', 'CarmillaData', array(
+			'restUrl' => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
+			'nonce'   => wp_create_nonce( 'wp_rest' ),
 		) );
 	}
 
