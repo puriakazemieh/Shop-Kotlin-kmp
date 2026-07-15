@@ -1,33 +1,32 @@
 <?php
 /**
- * Minimal fallback template. Full template hierarchy (front-page, WooCommerce overrides,
- * single-product, blog, and CPT templates for course/therapist/psychtest) is Track A phase 2.
+ * Blog archive / fallback ← BlogListScreen (wide grid of post cards).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 get_header();
 ?>
-<main class="container" style="padding-block: var(--sp-xl);">
+<main class="container container--wide" style="padding-block: var(--sp-xl);">
+	<?php if ( is_home() && ! is_front_page() ) : ?>
+		<h1 class="t-title-lg"><?php echo esc_html( get_the_title( get_option( 'page_for_posts' ) ) ?: __( 'مجله', 'carmilla' ) ); ?></h1>
+	<?php endif; ?>
+
 	<?php if ( have_posts() ) : ?>
 		<div class="grid-adaptive">
-			<?php while ( have_posts() ) : the_post(); ?>
-				<article <?php post_class( 'card' ); ?>>
-					<?php if ( has_post_thumbnail() ) : ?>
-						<a href="<?php the_permalink(); ?>" class="thumb"><?php the_post_thumbnail( 'large' ); ?></a>
-					<?php endif; ?>
-					<div class="card--pad">
-						<h2 class="t-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-						<p class="t-body-sm t-muted"><?php echo esc_html( get_the_excerpt() ); ?></p>
-					</div>
-				</article>
-			<?php endwhile; ?>
+			<?php
+			while ( have_posts() ) :
+				the_post();
+				get_template_part( 'template-parts/card', 'post' );
+			endwhile;
+			?>
 		</div>
-		<?php the_posts_pagination(); ?>
+		<?php the_posts_pagination( array( 'mid_size' => 1, 'prev_text' => '‹', 'next_text' => '›' ) ); ?>
 	<?php else : ?>
-		<p class="t-body"><?php esc_html_e( 'محتوایی یافت نشد.', 'carmilla' ); ?></p>
+		<div class="empty-state">
+			<p class="t-body"><?php esc_html_e( 'محتوایی یافت نشد.', 'carmilla' ); ?></p>
+		</div>
 	<?php endif; ?>
 </main>
 <?php
