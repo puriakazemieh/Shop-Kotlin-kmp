@@ -3,7 +3,7 @@
  * Plugin Name:       Carmilla Bridge
  * Plugin URI:        https://github.com/puriakazemieh/Shop-Kotlin-kmp
  * Description:       REST bridge that exposes WordPress + WooCommerce content (products, articles, stories, banners, campaigns) to the Carmilla KMP client using the same API contract the app already speaks. Adds JWT auth so the mobile/desktop app can read and manage content directly on WordPress.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Carmilla
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct access.
 }
 
-define( 'CB_VERSION', '0.1.0' );
+define( 'CB_VERSION', '0.2.0' );
 define( 'CB_PLUGIN_FILE', __FILE__ );
 define( 'CB_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CB_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -34,6 +34,13 @@ require_once CB_PLUGIN_DIR . 'includes/class-cb-auth-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-catalog-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-blog-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-media-controller.php';
+// Phase 2: full commerce (cart, orders, payment, wallet, account, interactions).
+require_once CB_PLUGIN_DIR . 'includes/class-cb-cart-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-order-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-payment-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-wallet-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-account-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-interaction-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-plugin.php';
 
 /**

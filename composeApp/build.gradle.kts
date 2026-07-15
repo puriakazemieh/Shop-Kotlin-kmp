@@ -146,6 +146,14 @@ android {
             versionNameSuffix = "-psych"
             buildConfigField("String", "BRAND", "\"psych\"")
         }
+        // اپ ← وردپرس: به‌جای سرورِ Spring Boot، به سایتِ وردپرس (پلاگینِ Carmilla
+        // Bridge) وصل می‌شود. آدرسِ سایت در WpBrand.apiBaseUrl تنظیم می‌شود.
+        create("wp") {
+            dimension = "brand"
+            applicationIdSuffix = ".wp"
+            versionNameSuffix = "-wp"
+            buildConfigField("String", "BRAND", "\"wp\"")
+        }
     }
     packaging {
         resources {

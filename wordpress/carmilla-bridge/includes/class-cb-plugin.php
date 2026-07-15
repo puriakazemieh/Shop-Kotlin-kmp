@@ -27,6 +27,47 @@ class CB_Plugin {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		// Let a valid Bearer token authenticate normal WP REST requests too.
 		add_filter( 'determine_current_user', array( $this, 'authenticate_bearer' ), 20 );
+		// Keep product Q&A comments out of the normal comment feed/counts.
+		add_filter( 'comments_clauses', array( 'CB_Interaction_Controller', 'hide_qna_clauses' ) );
+		// A few app endpoints use a host-root path (/api/users/me, /api/addresses)
+		// that would fall outside /wp-json/carmilla/v1/. Alias them to the REST
+		// routes so the app needs no client-side change.
+		add_action( 'parse_request', array( $this, 'maybe_root_alias' ) );
+	}
+
+	/**
+	 * Dispatch root-level /api/users/me and /api/addresses* to the matching REST
+	 * route via rest_do_request, then emit the JSON and stop. No-op for any other
+	 * URL, so normal WordPress routing is untouched.
+	 */
+	public function maybe_root_alias(): void {
+		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) : '';
+		$uri = '/' . ltrim( untrailingslashit( $uri ), '/' );
+		$is_profile = ( $uri === '/api/users/me' );
+		$is_address = ( strpos( $uri, '/api/addresses' ) === 0 );
+		if ( ! $is_profile && ! $is_address ) {
+			return;
+		}
+
+		$method  = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : 'GET';
+		$request = new WP_REST_Request( $method, '/' . CB_REST_NAMESPACE . $uri );
+		foreach ( (array) $_GET as $k => $v ) {
+			$request->set_param( sanitize_text_field( (string) $k ), $v );
+		}
+		$body = file_get_contents( 'php://input' );
+		if ( $body !== '' && $body !== false ) {
+			$request->set_body( $body );
+			$request->set_header( 'Content-Type', 'application/json' );
+		}
+
+		$response = rest_do_request( $request );
+		$server   = rest_get_server();
+		$data     = $server->response_to_data( $response, false );
+
+		status_header( $response->get_status() );
+		header( 'Content-Type: application/json; charset=utf-8' );
+		echo wp_json_encode( $data );
+		exit;
 	}
 
 	public function register_routes(): void {
@@ -34,6 +75,13 @@ class CB_Plugin {
 		( new CB_Catalog_Controller() )->register_routes();
 		( new CB_Blog_Controller() )->register_routes();
 		( new CB_Media_Controller() )->register_routes();
+		// Phase 2: full commerce.
+		( new CB_Cart_Controller() )->register_routes();
+		( new CB_Order_Controller() )->register_routes();
+		( new CB_Payment_Controller() )->register_routes();
+		( new CB_Wallet_Controller() )->register_routes();
+		( new CB_Account_Controller() )->register_routes();
+		( new CB_Interaction_Controller() )->register_routes();
 	}
 
 	/**

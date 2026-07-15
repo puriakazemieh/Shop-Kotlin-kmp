@@ -291,13 +291,35 @@ val PsychBrand = BrandConfig(
 )
 
 /**
+ * برندِ «وردپرس» — همان اپِ کارمیلا که به‌جای سرورِ Spring Boot به یک سایتِ
+ * وردپرس (پلاگینِ Carmilla Bridge) وصل می‌شود. تنها تفاوت با CarmilaBrand،
+ * مقدارِ `apiBaseUrl` است که BASE_URL شبکه را به `/wp-json/carmilla/v1/` سایت
+ * تغییر می‌دهد (از طریقِ ApiConfig.baseUrlOverride در initKoin). صاحبِ هر سایت
+ * فقط همین یک آدرس را به دامنه‌ی خودش تغییر می‌دهد (الگویِ White-Label).
+ */
+val WpBrand = BrandConfig(
+    id = "wp",
+    appName = "کارمیلا",
+    colors = CarmilaBrandColors,
+    currency = "تومان",
+    // آدرسِ سایتِ وردپرس را اینجا تنظیم کنید (باید به «/» ختم شود).
+    apiBaseUrl = "https://example.com/wp-json/carmilla/v1/",
+    features = BrandFeatures(
+        academy = true, clinic = true, psychTests = true, productComparison = true,
+        academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
+        academyProjectAssessment = true, academyLessonResources = true,
+        productBundles = true, clinicPatientFile = true, clinicCrm = true
+    )
+)
+
+/**
  * رجیستریِ برندها. انتخابِ برندِ فعال در زمانِ اجرا بر اساسِ شناسه (از فلِیور/آرگومان).
  */
 object BrandRegistry {
     val default: BrandConfig = CarmilaBrand
 
     private val all: List<BrandConfig> =
-        listOf(CarmilaBrand, AtrisBrand, ChronosBrand, AcademyBrand, PsychBrand)
+        listOf(CarmilaBrand, AtrisBrand, ChronosBrand, AcademyBrand, PsychBrand, WpBrand)
 
     fun byId(id: String?): BrandConfig =
         all.firstOrNull { it.id.equals(id, ignoreCase = true) } ?: default

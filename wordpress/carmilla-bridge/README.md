@@ -80,3 +80,57 @@ https://<your-site>/wp-json/carmilla/v1/
 - ساخت/ویرایش محصول از اپ فعلاً **محصول ساده (simple)** را پشتیبانی می‌کند؛ مدیریت variation/option در افزایش بعدی.
 - بخش تجارت (سبد/تسویه/سفارش/کیف پول/پرداخت ZarinPal) در این فاز نیست؛ در فاز ۴ با WooCommerce Store API و درگاه ZarinPal افزوده می‌شود.
 - استوری/بنر/کمپین به‌صورت CPT ثبت می‌شوند؛ endpoint خواندن بنر و کمپین فعال آماده است.
+
+## فاز ۲ — تجارتِ کامل (نسخه ۰.۲.۰)
+
+سبد، سفارش، پرداخت (ZarinPal)، کیف‌پول، پروفایل/آدرس و نظر/پرسش افزوده شد — همه با همان قرارداد DTOِ اپ.
+
+### سبد (Bearer) — سبدِ سمتِ سرور در user-meta (مستقل از سشنِ WooCommerce)
+| متد | مسیر | بدنه |
+|---|---|---|
+| GET | `api/cart` | → CartResponse |
+| DELETE | `api/cart` | خالی‌کردن |
+| POST | `api/cart/items` | `{productId?,variantId?,qty}` |
+| PATCH | `api/cart/items/{itemId}` | `{qty}` |
+| DELETE | `api/cart/items/{itemId}` | حذف خط |
+| PUT | `api/cart/items/{variantId}` | `{qty}` |
+| PATCH | `api/cart/items/{variantId}/adjust` | `{delta}` |
+| POST | `api/cart/items/{itemId}/save-for-later` | |
+| POST | `api/cart/items/{itemId}/move-to-cart` | |
+| POST/DELETE | `api/cart/discount` | `{code}` (اعتبارسنجیِ کوپنِ WooCommerce) |
+
+### سفارش (Bearer) — سفارش‌های WooCommerce
+| متد | مسیر |
+|---|---|
+| GET | `api/orders` → List<OrderResponse> |
+| GET | `api/orders/{id}` → OrderDetailResponse |
+| POST | `api/orders` (`{items?,addressId?,useWallet?,isGift?,giftMessage?}`) — از سبد یا اقلامِ صریح؛ کسر از کیف‌پول |
+| POST | `api/orders/{id}/cancel` — بازگشتِ وجهِ کیف‌پول |
+| GET | `api/orders/{id}/track` → OrderTrackingResponse |
+| POST | `api/orders/{id}/reorder` → ReorderResponse |
+
+### پرداخت — درگاه ZarinPal
+| POST `api/payment/request` (`{orderId}`) → `{paymentUrl}` | GET `api/payment/verify` → ۳۰۲ به دیپ‌لینکِ اپ |
+
+تنظیمات (option در wp-admin یا ثابت در wp-config): `cb_zarinpal_merchant`، `cb_zarinpal_sandbox="1"`، `cb_app_return_url` (پیش‌فرض `carmilla://payment/result`). مبلغ پیش‌فرض تومان×۱۰ (ریال)، با فیلترِ `cb_zarinpal_amount` قابل‌تغییر.
+
+### کیف‌پول (Bearer) — user-meta `cb_wallet_balance` + `cb_wallet_txns`
+`GET api/wallet/balance` · `GET api/wallet/transactions?page&size` · `POST api/wallet/top-up {amount}` (شارژ با ZarinPal) · `POST api/wallet/withdraw {amount,iban}`
+
+### پروفایل و آدرس (Bearer)
+`GET/PATCH api/users/me` · `GET api/addresses[/default|/{id}]` · `POST/PATCH/DELETE api/addresses[/{id}]` · `POST api/addresses/{id}/default`
+
+> نکته‌ی مسیر: اپ برای پروفایل/آدرس از مسیرِ ریشه (`/api/users/me`) استفاده می‌کند که خارج از `/wp-json/carmilla/v1/` می‌افتد؛ پلاگین این‌ها را با یک aliasِ سطحِ ریشه (`parse_request` → `rest_do_request`) به همان route هدایت می‌کند تا **اپ نیازی به تغییر نداشته باشد**.
+
+### نظر و پرسش (کامنت‌محور)
+`GET api/reviews/product/{id}` · `POST/PUT/DELETE api/reviews[/{id}]` · `POST api/reviews/{id}/helpful` · `GET api/questions/product/{id}` · `POST/PUT/DELETE api/questions[/{id}]` (کامنتِ نوعِ `cb_qna`، مخفی از فیدِ عادی).
+
+### آزمونِ فاز ۲
+```
+php tests/smoke-phase2.php   # نگاشتِ وضعیتِ سفارش، ریاضیِ کوپن، شکل‌دهیِ آدرس
+```
+
+### اتصالِ اپِ اندروید به وردپرس (خروجی)
+- برندِ `wp` در `core/designSystem/.../brand/Brand.kt` (`WpBrand.apiBaseUrl` = آدرسِ سایتِ شما).
+- فلیورِ `wp` در `composeApp/build.gradle.kts` → `assembleWpDebug` / `assembleWpRelease`.
+- بیلدِ `carmila` (سرورِ فعلی) بدونِ تغییر — اثباتِ غیرمخرب‌بودن.
