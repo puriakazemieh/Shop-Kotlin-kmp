@@ -41,6 +41,13 @@ function carmilla_to_persian_digits( $str ) {
 	return str_replace( $en, $fa, (string) $str );
 }
 
+/** Persian/Arabic-Indic digits → ASCII (e.g. for tel: links). */
+function carmilla_to_english_digits( $str ) {
+	$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' );
+	$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+	return str_replace( $fa, $en, (string) $str );
+}
+
 /**
  * Primary-menu fallback: a simple list of pages when no menu is assigned.
  */

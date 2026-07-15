@@ -193,3 +193,20 @@
 .cb-club__tier { display: inline-block; margin-block-end: 4px; }
 .cb-club__bar { height: 10px; border-radius: var(--r-full); background: var(--surface-2); overflow: hidden; margin: var(--sp-sm) 0; }
 .cb-club__fill { display: block; height: 100%; background: var(--gold); border-radius: var(--r-full); }
+
+/* ---- My appointments / receipt / messaging / emergency ---- */
+.cb-emergency { border: 1px solid var(--sale); }
+.cb-emergency .btn { margin-block-start: var(--sp-sm); }
+.cb-appointments { display: flex; flex-direction: column; gap: var(--sp-md); }
+.cb-appt__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-md); }
+.cb-appt__actions { display: flex; flex-wrap: wrap; gap: var(--sp-sm); margin-block-start: var(--sp-sm); }
+.cb-appt__actions .btn { padding: 6px 12px; font-size: 13px; }
+.cb-appt__panel { margin-block-start: var(--sp-md); padding-block-start: var(--sp-md); border-block-start: 1px solid var(--line); }
+.cb-receipt__row { display: flex; justify-content: space-between; gap: var(--sp-md); padding-block: 8px; border-block-end: 1px dashed var(--line); }
+.cb-receipt__row:last-child { border-block-end: 0; }
+.cb-receipt__row span:first-child { color: var(--ink-soft); }
+.cb-msg__list { display: flex; flex-direction: column; gap: 6px; margin-block-end: var(--sp-md); max-height: 260px; overflow-y: auto; }
+.cb-msg__bubble { max-width: 80%; padding: 8px 12px; border-radius: var(--r-md); background: var(--surface-2); color: var(--ink); align-self: flex-end; }
+.cb-msg__bubble--me { align-self: flex-start; background: var(--accent); color: var(--on-accent); }
+.cb-msg__form { display: flex; gap: var(--sp-sm); }
+.cb-msg__form input { flex: 1; }

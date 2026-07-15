@@ -96,6 +96,28 @@ add_action( 'customize_register', function ( $wp_customize ) {
 		) );
 	}
 
+	// ---- Clinic / emergency ----
+	$wp_customize->add_section( 'carmilla_clinic', array(
+		'title' => __( 'مشاوره و اورژانس', 'carmilla' ),
+		'panel' => 'carmilla_panel',
+	) );
+	$clinic_texts = array(
+		'carmilla_emergency_phone' => array( __( 'شماره‌ی تماس اورژانس روانی', 'carmilla' ), '۱۴۸۰' ),
+		'carmilla_emergency_note'  => array( __( 'یادداشت اورژانس', 'carmilla' ), 'اگر در وضعیت بحرانی هستید یا افکار آسیب به خود دارید، همین حالا تماس بگیرید.' ),
+	);
+	foreach ( $clinic_texts as $id => $conf ) {
+		$wp_customize->add_setting( $id, array(
+			'default'           => $conf[1],
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		) );
+		$wp_customize->add_control( $id, array(
+			'label'   => $conf[0],
+			'section' => 'carmilla_clinic',
+			'type'    => 'text',
+		) );
+	}
+
 	// ---- Features ----
 	$wp_customize->add_section( 'carmilla_features', array(
 		'title'       => __( 'فعال/غیرفعال‌کردن بخش‌ها', 'carmilla' ),

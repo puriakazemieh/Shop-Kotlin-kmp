@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARMILLA_THEME_VERSION', '0.5.0' );
+define( 'CARMILLA_THEME_VERSION', '0.5.1' );
 
 require_once get_template_directory() . '/inc/icons.php';
 require_once get_template_directory() . '/inc/customizer.php';
@@ -145,13 +145,16 @@ function carmilla_enqueue_assets() {
 		) );
 	}
 
-	// Clinic file tabs on the account page.
+	// Clinic file + appointments tabs on the account page.
 	if ( function_exists( 'is_account_page' ) && is_account_page() ) {
-		wp_enqueue_script( 'carmilla-clinic', $dir . '/assets/js/clinic.js', array(), $ver, true );
-		wp_localize_script( 'carmilla-clinic', 'CarmillaData', array(
+		$clinic_data = array(
 			'restUrl' => esc_url_raw( rest_url( 'carmilla/v1/' ) ),
 			'nonce'   => wp_create_nonce( 'wp_rest' ),
-		) );
+		);
+		wp_enqueue_script( 'carmilla-clinic', $dir . '/assets/js/clinic.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-clinic', 'CarmillaData', $clinic_data );
+		wp_enqueue_script( 'carmilla-appointments', $dir . '/assets/js/appointments.js', array(), $ver, true );
+		wp_localize_script( 'carmilla-appointments', 'CarmillaData', $clinic_data );
 	}
 
 	// Appointment booking (theme REST + JS).
