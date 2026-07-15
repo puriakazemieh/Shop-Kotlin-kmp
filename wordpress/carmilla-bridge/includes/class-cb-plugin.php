@@ -82,6 +82,8 @@ class CB_Plugin {
 		( new CB_Wallet_Controller() )->register_routes();
 		( new CB_Account_Controller() )->register_routes();
 		( new CB_Interaction_Controller() )->register_routes();
+		// Phase 3: academy.
+		( new CB_Academy_Controller() )->register_routes();
 	}
 
 	/**

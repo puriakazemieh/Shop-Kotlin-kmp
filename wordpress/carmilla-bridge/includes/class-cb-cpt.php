@@ -22,6 +22,11 @@ class CB_CPT {
 		register_post_type( 'cb_story', self::args( 'Story', 'Stories', 'dashicons-format-image', array( 'title', 'thumbnail' ) ) );
 		register_post_type( 'cb_banner', self::args( 'Banner', 'Banners', 'dashicons-images-alt2', array( 'title', 'thumbnail' ) ) );
 		register_post_type( 'cb_campaign', self::args( 'Campaign', 'Campaigns', 'dashicons-megaphone', array( 'title', 'thumbnail' ) ) );
+		// Academy course. Guarded so it coexists with the Carmilla theme's own
+		// cb_course registration (whichever loads first wins; meta keys match).
+		if ( ! post_type_exists( 'cb_course' ) ) {
+			register_post_type( 'cb_course', self::args( 'Course', 'Courses', 'dashicons-welcome-learn-more', array( 'title', 'editor', 'thumbnail' ) ) );
+		}
 	}
 
 	private static function args( string $singular, string $plural, string $icon, array $supports ): array {
@@ -71,6 +76,23 @@ class CB_CPT {
 		self::meta( 'post', 'cb_meta_title', 'string' );
 		self::meta( 'post', 'cb_meta_description', 'string' );
 		self::meta( 'post', 'cb_summary', 'string' );
+
+		// Course meta (aligned with the Carmilla theme so a site running both
+		// shares the same data). Lessons are line-based in cb_lessons.
+		self::meta( 'cb_course', 'cb_instructor', 'string' );
+		self::meta( 'cb_course', 'cb_level', 'string' );
+		self::meta( 'cb_course', 'cb_format', 'string' );
+		self::meta( 'cb_course', 'cb_duration', 'string' );
+		self::meta( 'cb_course', 'cb_product_slug', 'string' );
+		self::meta( 'cb_course', 'cb_price', 'string' );
+		self::meta( 'cb_course', 'cb_discounted_price', 'string' );
+		self::meta( 'cb_course', 'cb_capacity', 'integer' );
+		self::meta( 'cb_course', 'cb_syllabus', 'string' );
+		self::meta( 'cb_course', 'cb_lessons', 'string' );
+		self::meta( 'cb_course', 'cb_quiz', 'string' );
+		self::meta( 'cb_course', 'cb_pass_score', 'integer' );
+		self::meta( 'cb_course', 'cb_instructor_bio', 'string' );
+		self::meta( 'cb_course', 'cb_requires_project', 'boolean' );
 	}
 
 	private static function meta( string $post_type, string $key, string $type ): void {

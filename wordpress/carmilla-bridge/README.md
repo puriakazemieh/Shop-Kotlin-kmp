@@ -134,3 +134,40 @@ php tests/smoke-phase2.php   # نگاشتِ وضعیتِ سفارش، ریاضی
 - برندِ `wp` در `core/designSystem/.../brand/Brand.kt` (`WpBrand.apiBaseUrl` = آدرسِ سایتِ شما).
 - فلیورِ `wp` در `composeApp/build.gradle.kts` → `assembleWpDebug` / `assembleWpRelease`.
 - بیلدِ `carmila` (سرورِ فعلی) بدونِ تغییر — اثباتِ غیرمخرب‌بودن.
+
+## فاز ۳ — آکادمی (نسخه ۰.۳.۰)
+
+عمودیِ آموزش کامل شد؛ CPTِ `cb_course` با مدلِ خطیِ درس (متایِ `cb_lessons`) — هم‌تراز با قالبِ کارمیلا تا سایتِ قالب+پلاگین دیتای مشترک داشته باشد. شناسه‌ی درس ساختگی و پایدار: `courseId*100000+(index+1)`.
+
+### دوره‌ها و درس‌ها
+| متد | مسیر | خروجی |
+|---|---|---|
+| GET | `api/courses` | List<CourseSummaryResponse> |
+| GET | `api/courses/{slug}` | CourseDetailResponse (بخش/درس، ویدیوِ درس‌های رایگان یا خریداری‌شده) |
+| GET | `api/academy/my-courses` | دوره‌های ثبت‌نام‌شده |
+| POST | `api/academy/courses/{id}/enroll` | ثبت‌نامِ دوره‌ی رایگان |
+| POST | `api/academy/courses/{id}/waitlist` | WaitlistResponse |
+| POST | `api/academy/lessons/{lessonId}/progress` | ثبتِ پیشرفت per-کاربر (`cb_course_prog_{id}`) |
+| POST | `api/academy/courses/{id}/mark-update-seen` | |
+
+### آزمون و گواهی (امتیازدهیِ سمتِ سرور)
+| GET | `api/academy/courses/{id}/quiz` — گزینه‌ها بدونِ لوِ پاسخ |
+| POST | `api/academy/courses/{id}/quiz/submit` → نمره/قبولی؛ **صدورِ خودکارِ گواهی** روی قبولی |
+| GET | `api/academy/certificates` — گواهی‌های من |
+| GET | `api/courses/certificates/verify/{certNumber}` — تأییدِ عمومی |
+
+شماره‌ی گواهی هم‌فرمولِ قالب: `CB-` + ۱۰ رقمِ md5(course-user-salt) — قطعی و یکتا per کاربر/دوره.
+
+### آزمونِ تعیینِ سطح
+`GET api/academy/placement-quiz` + `POST …/submit` → سطح (مبتدی/متوسط/پیشرفته) بر پایه‌ی مجموعِ امتیاز.
+
+### پروژه‌ی پایانی و نقدِ همتایان
+`POST api/academy/courses/{id}/project` (فایل) یا `…/project/link` (لینک) · `GET …/project` (MyProject) · `GET …/project/peers` (پروژه‌های تأییدشده‌ی دیگران) · `GET/POST api/academy/project/{submissionId}/comments`.
+
+### پرسش‌وپاسخِ درس و بازگشتِ وجه
+`GET/POST api/academy/lessons/{lessonId}/questions` (کامنتِ `cb_lesson_q` با متایِ ایندکسِ درس) · `POST api/academy/courses/{id}/refund-request` + `GET api/academy/refund-requests/mine`.
+
+### آزمونِ فاز ۳
+```
+php tests/smoke-phase3.php   # پارسِ کوییز (نشانِ پاسخ)، تعیینِ سطح، کدکِ شناسه‌ی درس، شماره‌ی گواهی
+```
