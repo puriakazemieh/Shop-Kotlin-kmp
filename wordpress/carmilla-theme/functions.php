@@ -23,6 +23,7 @@ require_once get_template_directory() . '/inc/support.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
 if ( is_admin() ) {
 	require_once get_template_directory() . '/inc/admin-page.php';
+	require_once get_template_directory() . '/inc/demo-import.php';
 }
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once get_template_directory() . '/inc/woocommerce.php';

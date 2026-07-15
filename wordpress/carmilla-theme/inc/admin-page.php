@@ -58,6 +58,16 @@ function carmilla_render_admin_dashboard() {
 	echo '<div class="wrap"><h1 style="display:flex;align-items:center;gap:8px"><span class="dashicons dashicons-store"></span> ' . esc_html__( 'مدیریت کارمیلا', 'carmilla' ) . '</h1>';
 	echo '<p class="description">' . esc_html__( 'میان‌بر به همه‌ی بخش‌های سایت. بخش‌های خاموش‌شده در «ظاهر و برند ← تنظیمات کارمیلا» اینجا نمایش داده نمی‌شوند.', 'carmilla' ) . '</p>';
 
+	// One-click demo content.
+	if ( ! get_option( 'carmilla_demo_imported' ) ) {
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="margin:12px 0;padding:14px;background:#fff;border:1px solid #dcdcde;border-radius:10px">';
+		wp_nonce_field( 'carmilla_import_demo' );
+		echo '<input type="hidden" name="action" value="carmilla_import_demo">';
+		echo '<strong>' . esc_html__( 'شروع سریع:', 'carmilla' ) . '</strong> ' . esc_html__( 'محتوای نمونه (محصول، مقاله، دوره، مشاور، تست، استوری، بنر) را با یک کلیک بسازید. ', 'carmilla' );
+		echo '<button type="submit" class="button button-primary">' . esc_html__( 'درون‌ریزی محتوای نمونه', 'carmilla' ) . '</button>';
+		echo '</form>';
+	}
+
 	echo '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px">';
 	foreach ( $cards as $card ) {
 		list( $title, $count, $url, $desc, $icon ) = $card;
