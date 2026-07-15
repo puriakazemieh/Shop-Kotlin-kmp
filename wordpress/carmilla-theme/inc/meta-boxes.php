@@ -33,8 +33,9 @@ function carmilla_meta_fields() {
 		'cb_psychtest' => array(
 			'title'  => 'مشخصات تست',
 			'fields' => array(
-				'cb_question_count' => array( 'تعداد سؤال', 'number' ),
-				'cb_product_slug'   => array( 'اسلاگ محصول (خرید تست)', 'text' ),
+				'cb_product_slug' => array( 'اسلاگ محصول (خرید تست؛ خالی = رایگان)', 'text' ),
+				'cb_questions'    => array( 'سؤال‌ها — هر خط: «متن؟ | گزینه=امتیاز , گزینه=امتیاز»', 'textarea' ),
+				'cb_ranges'       => array( 'بازه‌های نتیجه — هر خط: «حداقل | حداکثر | تفسیر»', 'textarea' ),
 			),
 		),
 		'cb_banner' => array(
