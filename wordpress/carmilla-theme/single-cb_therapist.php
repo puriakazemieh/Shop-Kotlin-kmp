@@ -48,11 +48,31 @@ while ( have_posts() ) :
 			<?php if ( $cta_url ) : ?><a class="btn btn--primary" href="<?php echo esc_url( $cta_url ); ?>"><?php esc_html_e( 'خرید اعتبار جلسه', 'carmilla' ); ?></a><?php endif; ?>
 		</div>
 	<?php elseif ( $slots ) : ?>
+		<?php
+		// Group available slots by day for a calendar-like layout.
+		$by_day = array();
+		foreach ( $slots as $s ) {
+			$ts  = strtotime( $s );
+			$day = $ts ? gmdate( 'Y-m-d', $ts ) : '—';
+			$by_day[ $day ][] = array( 'slot' => $s, 'time' => $ts ? gmdate( 'H:i', $ts ) : $s );
+		}
+		if ( get_post_meta( $id, 'cb_product_slug', true ) ) {
+			$credits = carmilla_therapist_credits( $id );
+			echo '<p class="t-body-sm"><span class="badge badge--stock">' . esc_html( carmilla_to_persian_digits( $credits ) ) . '</span> ' . esc_html__( 'اعتبار جلسه دارید.', 'carmilla' ) . '</p>';
+		}
+		?>
 		<div id="bk" data-id="<?php echo esc_attr( $id ); ?>">
 			<p class="t-body-sm t-muted"><?php esc_html_e( 'یک بازه‌ی زمانی را انتخاب کنید:', 'carmilla' ); ?></p>
-			<div class="variant-row" id="bk-slots">
-				<?php foreach ( $slots as $s ) : ?>
-					<button class="chip bk-slot" data-slot="<?php echo esc_attr( $s ); ?>"><?php echo esc_html( carmilla_to_persian_digits( str_replace( 'T', ' ', $s ) ) ); ?></button>
+			<div id="bk-slots" style="display:grid;gap:var(--sp-md);grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+				<?php foreach ( $by_day as $day => $times ) : ?>
+					<div class="card card--pad">
+						<div class="t-title-sm" style="margin-block-end:var(--sp-sm)"><?php echo esc_html( carmilla_to_persian_digits( $day ) ); ?></div>
+						<div class="variant-row">
+							<?php foreach ( $times as $t ) : ?>
+								<button class="chip bk-slot" data-slot="<?php echo esc_attr( $t['slot'] ); ?>"><?php echo esc_html( carmilla_to_persian_digits( $t['time'] ) ); ?></button>
+							<?php endforeach; ?>
+						</div>
+					</div>
 				<?php endforeach; ?>
 			</div>
 			<div id="bk-result" class="t-body" style="margin-block-start:var(--sp-md)"></div>

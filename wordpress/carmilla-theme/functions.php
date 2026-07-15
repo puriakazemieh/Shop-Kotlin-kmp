@@ -17,6 +17,7 @@ require_once get_template_directory() . '/inc/post-types.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
 require_once get_template_directory() . '/inc/rest.php';
 require_once get_template_directory() . '/inc/psychtest.php';
+require_once get_template_directory() . '/inc/access.php';
 require_once get_template_directory() . '/inc/booking.php';
 require_once get_template_directory() . '/inc/course.php';
 require_once get_template_directory() . '/inc/support.php';

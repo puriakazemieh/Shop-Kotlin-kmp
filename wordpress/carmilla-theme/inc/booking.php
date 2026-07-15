@@ -47,17 +47,17 @@ function carmilla_available_slots( $therapist_id ) {
 	return array_values( array_diff( carmilla_therapist_slots( $therapist_id ), carmilla_booked_slots( $therapist_id ) ) );
 }
 
-/** Purchase gating (mirrors psychtest): free unless a product slug is set + bought. */
+/** Gating: free unless a product slug is set; then requires ≥1 session credit
+ *  (credits granted on completed WooCommerce orders — see inc/access.php). */
 function carmilla_therapist_accessible( $therapist_id ) {
 	$slug = get_post_meta( $therapist_id, 'cb_product_slug', true );
-	if ( ! $slug || ! function_exists( 'wc_customer_bought_product' ) ) {
+	if ( ! $slug ) {
 		return true;
 	}
 	if ( ! is_user_logged_in() ) {
 		return false;
 	}
-	$product = get_page_by_path( $slug, OBJECT, 'product' );
-	return $product ? wc_customer_bought_product( '', get_current_user_id(), $product->ID ) : true;
+	return carmilla_therapist_credits( $therapist_id ) > 0;
 }
 
 function carmilla_appointment_dto( $id ) {
@@ -140,6 +140,11 @@ function carmilla_rest_book_appointment( WP_REST_Request $req ) {
 	update_post_meta( $id, 'cb_slot', $slot );
 	update_post_meta( $id, 'cb_status', 'BOOKED' );
 
+	// Consume one session credit when the therapist is paid.
+	if ( get_post_meta( $tid, 'cb_product_slug', true ) ) {
+		carmilla_spend_therapist_credit( $tid, get_current_user_id() );
+	}
+
 	return rest_ensure_response( carmilla_appointment_dto( $id ) );
 }
 
@@ -152,5 +157,11 @@ function carmilla_rest_cancel_appointment( WP_REST_Request $req ) {
 		return new WP_Error( 'forbidden', 'اجازه‌ی لغو ندارید.', array( 'status' => 403 ) );
 	}
 	update_post_meta( $id, 'cb_status', 'CANCELLED' );
+
+	// Refund the session credit if the therapist is paid.
+	$tid = (int) get_post_meta( $id, 'cb_therapist_id', true );
+	if ( get_post_meta( $tid, 'cb_product_slug', true ) ) {
+		carmilla_add_therapist_credit( $tid, (int) get_post_meta( $id, 'cb_user_id', true ), 1 );
+	}
 	return rest_ensure_response( carmilla_appointment_dto( $id ) );
 }
