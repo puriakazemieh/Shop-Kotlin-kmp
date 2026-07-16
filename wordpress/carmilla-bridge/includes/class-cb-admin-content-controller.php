@@ -24,6 +24,7 @@ class CB_Admin_Content_Controller {
 			array( 'methods' => 'POST', 'callback' => array( $this, 'create_course' ), 'permission_callback' => $admin ),
 		) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)', array(
+			array( 'methods' => 'GET', 'callback' => array( $this, 'course_detail' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_course' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_course' ), 'permission_callback' => $admin ),
 		) );
@@ -75,6 +76,7 @@ class CB_Admin_Content_Controller {
 			array( 'methods' => 'POST', 'callback' => array( $this, 'create_test' ), 'permission_callback' => $admin ),
 		) );
 		register_rest_route( $ns, '/api/admin/psych-tests/(?P<id>\d+)', array(
+			array( 'methods' => 'GET', 'callback' => array( $this, 'test_detail' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_test' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_test' ), 'permission_callback' => $admin ),
 		) );
@@ -110,6 +112,14 @@ class CB_Admin_Content_Controller {
 			$out[] = array( 'id' => (int) $p->ID, 'title' => get_the_title( $p ), 'slug' => $p->post_name, 'price' => (float) get_post_meta( $p->ID, 'cb_price', true ), 'isPublished' => $p->post_status === 'publish' );
 		}
 		return cb_response( $out );
+	}
+
+	public function course_detail( WP_REST_Request $request ): WP_REST_Response {
+		$dto = ( new CB_Academy_Controller() )->detail_by_id( (int) $request['id'], get_current_user_id() );
+		if ( ! $dto ) {
+			return cb_error( 'دوره یافت نشد', 404, 'NOT_FOUND', 'api/admin/courses' );
+		}
+		return cb_response( $dto );
 	}
 
 	public function create_course( WP_REST_Request $request ): WP_REST_Response {
@@ -602,6 +612,42 @@ class CB_Admin_Content_Controller {
 			$out[] = array( 'id' => (int) $p->ID, 'title' => get_the_title( $p ), 'slug' => $p->post_name, 'resultMode' => get_post_meta( $p->ID, 'cb_result_mode', true ) ?: 'AUTO', 'published' => $p->post_status === 'publish' );
 		}
 		return cb_response( $out );
+	}
+
+	public function test_detail( WP_REST_Request $request ): WP_REST_Response {
+		$id = (int) $request['id'];
+		$p  = get_post( $id );
+		if ( ! $p || $p->post_type !== 'cb_psychtest' ) {
+			return cb_error( 'تست یافت نشد', 404, 'NOT_FOUND', 'api/admin/psych-tests' );
+		}
+		// Admin sees questions WITH option scores + score ranges (for editing).
+		$questions = array();
+		foreach ( CB_Psychtest_Controller::parse_questions( (string) get_post_meta( $id, 'cb_questions', true ) ) as $q ) {
+			$opts = array();
+			foreach ( $q['options'] as $o ) {
+				$opts[] = array( 'text' => $o['text'], 'score' => (int) $o['score'] );
+			}
+			$questions[] = array( 'index' => $q['index'], 'text' => $q['text'], 'options' => $opts );
+		}
+		$ranges = array();
+		foreach ( CB_Psychtest_Controller::parse_ranges( (string) get_post_meta( $id, 'cb_ranges', true ) ) as $r ) {
+			$ranges[] = array( 'minScore' => (int) $r['min'], 'maxScore' => (int) $r['max'], 'interpretation' => (string) $r['interpretation'] );
+		}
+		$slug = get_post_meta( $id, 'cb_product_slug', true );
+		$d    = get_post_meta( $id, 'cb_discounted_price', true );
+		return cb_response( array(
+			'id'              => $id,
+			'title'           => get_the_title( $p ),
+			'slug'            => $p->post_name,
+			'description'     => $p->post_content ? wp_strip_all_tags( $p->post_content ) : null,
+			'price'           => (float) get_post_meta( $id, 'cb_price', true ),
+			'discountedPrice' => ( $d !== '' && $d !== null ) ? (float) $d : null,
+			'productId'       => $slug ? ( ( $pp = get_page_by_path( $slug, OBJECT, 'product' ) ) ? (int) $pp->ID : null ) : null,
+			'resultMode'      => strtoupper( (string) get_post_meta( $id, 'cb_result_mode', true ) ) === 'COUNSELOR' ? 'COUNSELOR' : 'AUTO',
+			'published'       => $p->post_status === 'publish',
+			'questions'       => $questions,
+			'ranges'          => $ranges,
+		) );
 	}
 
 	public function create_test( WP_REST_Request $request ): WP_REST_Response {

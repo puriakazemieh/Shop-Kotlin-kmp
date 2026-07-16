@@ -44,7 +44,7 @@ class CB_Admin_Controller {
 			array( 'methods' => 'POST', 'callback' => array( $this, 'create_discount' ), 'permission_callback' => $admin ),
 		) );
 		register_rest_route( $ns, '/api/admin/discounts/(?P<id>\d+)', array(
-			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_discount' ), 'permission_callback' => $admin ),
+			array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $this, 'update_discount' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_discount' ), 'permission_callback' => $admin ),
 		) );
 

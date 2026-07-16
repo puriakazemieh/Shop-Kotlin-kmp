@@ -270,6 +270,15 @@ class CB_Academy_Controller {
 		);
 	}
 
+	/** Public accessor so the admin controller can return CourseDetailResponse. */
+	public function detail_by_id( int $course_id, int $user_id ): ?array {
+		$course = get_post( $course_id );
+		if ( ! $course || $course->post_type !== 'cb_course' ) {
+			return null;
+		}
+		return $this->detail_dto( $course, $user_id );
+	}
+
 	private function detail_dto( WP_Post $course, int $user_id ): array {
 		$id        = (int) $course->ID;
 		$lessons   = $this->lessons( $id );

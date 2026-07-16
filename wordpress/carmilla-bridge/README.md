@@ -320,3 +320,12 @@ php tests/smoke-phase7.php   # پرسش‌های تطبیق: پیش‌فرض + o
 ```
 
 > **رفعِ تداخل:** مسیرِ `/api/users/me` که هم در کنترلرِ auth و هم account ثبت شده بود، اکنون فقط در **account** است (شکلِ `ProfileResponse`، مطابقِ `ProfileApi`).
+
+## بازبینیِ method-aware (نسخه ۰.۷.۱)
+
+بازبینیِ دوم این‌بار **بر پایه‌ی جفتِ (فعلِ HTTP + مسیر)** انجام شد (نه فقط مسیر). سه ناهماهنگیِ واقعی پیدا و رفع شد:
+- `PUT api/admin/discounts/{id}` (قبلاً فقط PATCH ثبت شده بود).
+- `GET api/admin/courses/{id}` — جزئیاتِ دوره برای ادمین (CourseDetailResponse).
+- `GET api/admin/psych-tests/{id}` — جزئیاتِ تست برای ادمین **با امتیازِ گزینه‌ها و بازه‌ها** (AdminPsychTestDetailResponse؛ فقط برای ادمین امتیازها فاش می‌شود).
+
+**نتیجه:** هر ۲۴۳ جفتِ (فعل، مسیر)ِ اپ توسطِ پلاگین سِرو می‌شود — پوششِ کامل و بدونِ تداخل.
