@@ -284,3 +284,39 @@ php tests/smoke-phase6.php   # رفت‌وبرگشتِ سازنده‌ی کوی�
 - **CRMِ مراجع:** `therapists/{id}/patients/*` (یادداشت/تمرین/ژورنال/پیام/برچسب)، `appointments/{id}/notes`.
 - **باندلِ ادمین:** `admin/bundles` (ساختِ محصولِ گروهی).
 > ساخت/ویرایشِ محصولِ ساده از فاز ۱ موجود است؛ این‌ها فقط مدیریتِ پیشرفته‌ی تنوع/موجودی‌اند.
+
+## پوششِ کامل (نسخه ۰.۷.۰) — مدیریتِ سرتاسری از اپ
+
+با پیاده‌سازیِ همه‌ی مسیرهای ادمینِ باقی‌مانده، **هر ۲۰۰ مسیرِ APIِ اپ توسطِ پلاگین سِرو می‌شود** (دیفِ برنامه‌ای: ۰ مسیرِ پوشش‌نداده). صاحبِ سایت می‌تواند **کلِ وردپرس را از داخلِ اپ مدیریت کند**.
+
+### مدیریتِ عمیقِ محصول (WooCommerce)
+- **تصویر:** `POST/DELETE api/admin/products/{id}/images[/{imgId}]` + `PATCH …/images/reorder`.
+- **ویدیو:** `POST/DELETE api/admin/products/{id}/videos[/{vid}]` (متایِ `cb_videos`).
+- **تنوع (variation):** `POST api/admin/products/{id}/variants`، `PATCH/DELETE api/admin/variants/{id}` — محصولِ ساده خودکار به «متغیر» ارتقا می‌یابد و ویژگی‌ها ساخته می‌شوند.
+- **موجودی:** `GET/PUT api/admin/variants/{id}/inventory` + `PATCH …/adjust` با **قفلِ خوش‌بینانه‌ی نسخه** (`version`).
+- **ویژگی‌های سراسری (option):** `GET api/admin/options`، `POST/PUT/DELETE …/options/types[/{id}]` و `…/options/values[/{id}]` (attribute taxonomyِ WooCommerce).
+
+### دوره — رسانه/سرفصل/فایل/آزمونِ درس
+- `POST api/admin/courses/media/upload`، `…/{id}/sections`، `…/{id}/sections/{sid}/lessons`.
+- فایلِ درس: `GET/POST …/lessons/{lid}/files`، `POST …/files/link`، `DELETE …/files/{index}`.
+- آزمونِ درس: `GET/PUT …/lessons/{lid}/quiz` — و **سمتِ خواندن هم به‌روز شد** (فایل‌ها و پرچمِ `hasQuiz` و امتیازدهیِ آزمونِ درس واقعی شدند).
+
+### CRMِ مراجع (کلینیک)
+- `GET api/admin/therapists/{id}/patients` + پرونده‌ی کامل `…/patients/{uid}` (نوبت‌ها + یادداشت‌ها + نتایجِ تست + برچسب‌ها).
+- برچسب `PUT …/tags`، پیام `GET/POST …/messages` (ادمین به‌عنوان THERAPIST)، تمرین `GET/POST …/homework`، ژورنالِ به‌اشتراک‌گذاشته `GET …/journal`.
+- یادداشتِ جلسه: `GET/POST api/admin/therapists/appointments/{id}/notes`.
+- بازه‌ی تکی: `POST api/admin/therapists/{id}/slots`.
+- پرسشِ تطبیق: `GET/POST api/admin/therapists/match-questions` + `DELETE …/{id}` (آپشنِ `cb_match_questions`).
+
+### B2B / صندلیِ سازمانی
+- `GET/POST api/admin/organizations`، صندلیِ دوره `…/{id}/seats[/assign]`، صندلیِ مشاوره `…/{id}/clinic-seats[/assign]` — تخصیص، دسترسیِ دوره یا اعتبارِ جلسه اعطا می‌کند.
+
+### باندلِ ادمین
+- `GET/POST api/admin/bundles`، `PATCH/DELETE …/{id}` (محصولِ groupedِ WooCommerce).
+
+### آزمونِ فاز ۷
+```
+php tests/smoke-phase7.php   # پرسش‌های تطبیق: پیش‌فرض + override و بازگشت
+```
+
+> **رفعِ تداخل:** مسیرِ `/api/users/me` که هم در کنترلرِ auth و هم account ثبت شده بود، اکنون فقط در **account** است (شکلِ `ProfileResponse`، مطابقِ `ProfileApi`).

@@ -34,11 +34,8 @@ class CB_Auth_Controller {
 			'permission_callback' => '__return_true',
 		) );
 
-		register_rest_route( $ns, '/api/users/me', array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'me' ),
-			'permission_callback' => array( 'CB_Plugin', 'require_login' ),
-		) );
+		// NOTE: GET/PATCH /api/users/me is owned by CB_Account_Controller
+		// (ProfileResponse), which is what the app's ProfileApi expects.
 
 		// Password reset + OTP login (all public).
 		foreach ( array(

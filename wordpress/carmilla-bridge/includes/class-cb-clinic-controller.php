@@ -505,17 +505,8 @@ class CB_Clinic_Controller {
 
 	// ---- therapist match ----------------------------------------------------
 
-	private function match_default_questions(): array {
-		return array(
-			array( 'id' => 1, 'questionText' => 'بیشتر با کدام موضوع درگیر هستید؟', 'tag' => 'اضطراب' ),
-			array( 'id' => 2, 'questionText' => 'آیا افسردگی را تجربه می‌کنید؟', 'tag' => 'افسردگی' ),
-			array( 'id' => 3, 'questionText' => 'مشاوره‌ی رابطه/زوج می‌خواهید؟', 'tag' => 'زوج' ),
-			array( 'id' => 4, 'questionText' => 'موضوعِ کودک و نوجوان مطرح است؟', 'tag' => 'کودک' ),
-		);
-	}
-
 	public function match_questions(): WP_REST_Response {
-		return cb_response( $this->match_default_questions() );
+		return cb_response( cb_match_questions() );
 	}
 
 	public function submit_match( WP_REST_Request $request ): WP_REST_Response {

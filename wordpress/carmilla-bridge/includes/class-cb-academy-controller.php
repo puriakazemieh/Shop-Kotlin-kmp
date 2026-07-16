@@ -281,6 +281,8 @@ class CB_Academy_Controller {
 		$lesson_dtos = array();
 		foreach ( $lessons as $idx => $l ) {
 			$open = $l['free'] || $access;
+			$files = (array) get_post_meta( $id, 'cb_lesson_files_' . $idx, true );
+			$quiz  = get_post_meta( $id, 'cb_lesson_quiz_' . $idx, true );
 			$lesson_dtos[] = array(
 				'id'                 => self::lesson_id( $id, $idx ),
 				'title'              => $l['title'],
@@ -289,7 +291,8 @@ class CB_Academy_Controller {
 				'videoUrl'           => $open ? ( $l['url'] ?: null ) : null,
 				'completed'          => in_array( $idx, $done, true ),
 				'lastPositionSeconds' => 0,
-				'hasQuiz'            => false,
+				'resourceFiles'      => $open ? array_values( $files ) : array(),
+				'hasQuiz'            => is_array( $quiz ) && ! empty( $quiz['questions'] ),
 			);
 		}
 		$syllabus_skills = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', (string) get_post_meta( $id, 'cb_syllabus', true ) ) ) );
@@ -459,24 +462,45 @@ class CB_Academy_Controller {
 	}
 
 	public function lesson_quiz( WP_REST_Request $request ): WP_REST_Response {
-		list( $course_id, ) = self::decode_lesson( (int) $request['lid'] );
-		// Per-lesson checkpoint quizzes are not modeled in the line format yet.
+		$lid = (int) $request['lid'];
+		list( $course_id, $index ) = self::decode_lesson( $lid );
+		$stored = get_post_meta( $course_id, 'cb_lesson_quiz_' . $index, true );
+		$questions = ( is_array( $stored ) && ! empty( $stored['questions'] ) )
+			? self::parse_quiz_lines( (string) $stored['questions'], false ) : array();
+		foreach ( $questions as &$q ) {
+			unset( $q['_correct'] );
+		}
+		unset( $q );
 		return cb_response( array(
-			'lessonId'      => (int) $request['lid'],
-			'title'         => 'آزمونِ این درس',
-			'passScore'     => $this->pass_score( $course_id ),
-			'questions'     => array(),
-			'alreadyPassed' => false,
+			'lessonId'      => $lid,
+			'title'         => is_array( $stored ) ? ( $stored['title'] ?? 'آزمونِ این درس' ) : 'آزمونِ این درس',
+			'passScore'     => is_array( $stored ) ? (int) ( $stored['passScore'] ?? 60 ) : 60,
+			'questions'     => $questions,
+			'alreadyPassed' => (bool) get_user_meta( get_current_user_id(), "cb_lquiz_passed_{$course_id}_{$index}", true ),
 		) );
 	}
 
 	public function lesson_quiz_submit( WP_REST_Request $request ): WP_REST_Response {
-		return cb_response( array(
-			'lessonId'  => (int) $request['lid'],
-			'score'     => 0,
-			'passed'    => true,
-			'passScore' => 60,
-		) );
+		$lid = (int) $request['lid'];
+		list( $course_id, $index ) = self::decode_lesson( $lid );
+		$stored    = get_post_meta( $course_id, 'cb_lesson_quiz_' . $index, true );
+		$questions = ( is_array( $stored ) && ! empty( $stored['questions'] ) )
+			? self::parse_quiz_lines( (string) $stored['questions'], true ) : array();
+		$answers = (array) ( $request->get_json_params()['answers'] ?? array() );
+		$correct = 0;
+		foreach ( $questions as $q ) {
+			$given = $answers[ (string) $q['index'] ] ?? ( $answers[ $q['index'] ] ?? null );
+			if ( $given !== null && (int) $given === (int) $q['_correct'] ) {
+				$correct++;
+			}
+		}
+		$pass   = is_array( $stored ) ? (int) ( $stored['passScore'] ?? 60 ) : 60;
+		$score  = $questions ? (int) round( $correct / count( $questions ) * 100 ) : 0;
+		$passed = $score >= $pass;
+		if ( $passed ) {
+			update_user_meta( get_current_user_id(), "cb_lquiz_passed_{$course_id}_{$index}", 1 );
+		}
+		return cb_response( array( 'lessonId' => $lid, 'score' => $score, 'passed' => $passed, 'passScore' => $pass ) );
 	}
 
 	public function certificates(): WP_REST_Response {

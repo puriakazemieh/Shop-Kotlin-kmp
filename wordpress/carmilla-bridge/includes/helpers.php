@@ -341,6 +341,23 @@ function cb_build_range_lines( array $ranges ): string {
 	return implode( "\n", $lines );
 }
 
+/**
+ * Therapist match questions — admin-managed (option cb_match_questions) with a
+ * sensible default set when none are configured.
+ */
+function cb_match_questions(): array {
+	$v = get_option( 'cb_match_questions', array() );
+	if ( is_array( $v ) && ! empty( $v ) ) {
+		return array_values( $v );
+	}
+	return array(
+		array( 'id' => 1, 'questionText' => 'بیشتر با کدام موضوع درگیر هستید؟', 'tag' => 'اضطراب' ),
+		array( 'id' => 2, 'questionText' => 'آیا افسردگی را تجربه می‌کنید؟', 'tag' => 'افسردگی' ),
+		array( 'id' => 3, 'questionText' => 'مشاوره‌ی رابطه/زوج می‌خواهید؟', 'tag' => 'زوج' ),
+		array( 'id' => 4, 'questionText' => 'موضوعِ کودک و نوجوان مطرح است؟', 'tag' => 'کودک' ),
+	);
+}
+
 /** Map an app order-status string to the closest WooCommerce status. */
 function cb_app_status_to_wc( string $status ): string {
 	switch ( strtoupper( $status ) ) {

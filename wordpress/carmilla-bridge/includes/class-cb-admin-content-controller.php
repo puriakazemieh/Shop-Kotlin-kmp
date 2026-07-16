@@ -27,8 +27,21 @@ class CB_Admin_Content_Controller {
 			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_course' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_course' ), 'permission_callback' => $admin ),
 		) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/quiz', array( 'methods' => 'POST', 'callback' => array( $this, 'upsert_course_quiz' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/quiz', array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'upsert_course_quiz' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/media/upload', array( 'methods' => 'POST', 'callback' => array( $this, 'upload_media' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/sections', array( 'methods' => 'POST', 'callback' => array( $this, 'add_section' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/sections/(?P<sid>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_section_lesson' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files', array(
+			array( 'methods' => 'GET', 'callback' => array( $this, 'lesson_files' ), 'permission_callback' => $admin ),
+			array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson_file' ), 'permission_callback' => $admin ),
+		) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files/link', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson_file_link' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files/(?P<index>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_lesson_file' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/quiz', array(
+			array( 'methods' => 'GET', 'callback' => array( $this, 'get_lesson_quiz' ), 'permission_callback' => $admin ),
+			array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'upsert_lesson_quiz' ), 'permission_callback' => $admin ),
+		) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/projects', array( 'methods' => 'GET', 'callback' => array( $this, 'course_projects' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist', array( 'methods' => 'GET', 'callback' => array( $this, 'course_waitlist' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist/notify-next', array( 'methods' => 'POST', 'callback' => array( $this, 'notify_next' ), 'permission_callback' => $admin ) );
@@ -46,8 +59,10 @@ class CB_Admin_Content_Controller {
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_therapist' ), 'permission_callback' => $admin ),
 		) );
 		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/generate-slots', array( 'methods' => 'POST', 'callback' => array( $this, 'generate_slots' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/therapists/match-questions', array( 'methods' => 'GET', 'callback' => array( $this, 'match_questions' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array(
+			array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ),
+			array( 'methods' => 'POST', 'callback' => array( $this, 'add_slot' ), 'permission_callback' => $admin ),
+		) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'appointments' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => array( $this, 'confirm_appointment' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => array( $this, 'complete_appointment' ), 'permission_callback' => $admin ) );
@@ -430,13 +445,135 @@ class CB_Admin_Content_Controller {
 		return cb_response( $out );
 	}
 
-	public function match_questions(): WP_REST_Response {
-		return cb_response( array(
-			array( 'id' => 1, 'questionText' => 'بیشتر با کدام موضوع درگیر هستید؟', 'tag' => 'اضطراب' ),
-			array( 'id' => 2, 'questionText' => 'آیا افسردگی را تجربه می‌کنید؟', 'tag' => 'افسردگی' ),
-			array( 'id' => 3, 'questionText' => 'مشاوره‌ی رابطه/زوج می‌خواهید؟', 'tag' => 'زوج' ),
-			array( 'id' => 4, 'questionText' => 'موضوعِ کودک و نوجوان مطرح است؟', 'tag' => 'کودک' ),
+	public function add_slot( WP_REST_Request $request ): WP_REST_Response {
+		$id    = (int) $request['id'];
+		$b     = $request->get_json_params();
+		$start = trim( (string) ( $b['startTime'] ?? '' ) );
+		if ( ! strtotime( $start ) ) {
+			return cb_error( 'زمان نامعتبر است', 400, 'INVALID_TIME', 'api/admin/therapists' );
+		}
+		$slot  = gmdate( 'Y-m-d\TH:i', strtotime( $start ) );
+		$raw   = (string) get_post_meta( $id, 'cb_slots', true );
+		$lines = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) );
+		if ( ! in_array( $slot, $lines, true ) ) {
+			$lines[] = $slot;
+			update_post_meta( $id, 'cb_slots', implode( "\n", $lines ) );
+		}
+		return cb_response( array( 'id' => CB_Clinic_Controller::slot_id( $id, count( $lines ) - 1 ) ), 201 );
+	}
+
+	// ---- course media / sections / lesson files / lesson quiz --------------
+
+	public function upload_media( WP_REST_Request $request ): WP_REST_Response {
+		if ( empty( $_FILES['file'] ) ) {
+			return cb_error( 'فایل ارسال نشد', 400, 'NO_FILE', 'api/admin/courses/media/upload' );
+		}
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		$aid = media_handle_upload( 'file', 0 );
+		if ( is_wp_error( $aid ) ) {
+			return cb_error( 'آپلود ناموفق بود', 400, 'UPLOAD_FAILED', 'api/admin/courses/media/upload' );
+		}
+		return cb_response( (string) wp_get_attachment_url( $aid ), 201 );
+	}
+
+	public function add_section( WP_REST_Request $request ): WP_REST_Response {
+		$id    = (int) $request['id'];
+		$title = sanitize_text_field( (string) ( $request->get_json_params()['title'] ?? 'سرفصل' ) );
+		$raw   = trim( (string) get_post_meta( $id, 'cb_sections', true ) );
+		$lines = $raw === '' ? array() : preg_split( '/\r\n|\r|\n/', $raw );
+		$lines[] = $title;
+		update_post_meta( $id, 'cb_sections', implode( "\n", $lines ) );
+		return cb_response( array( 'id' => count( $lines ) ), 201 ); // 1-based section id
+	}
+
+	/** Lessons are flat in cb_lessons; sectionId is accepted but not grouped. */
+	public function add_section_lesson( WP_REST_Request $request ): WP_REST_Response {
+		return $this->add_lesson( $request );
+	}
+
+	private function lesson_files_key( int $lesson_id ): string {
+		list( , $index ) = CB_Academy_Controller::decode_lesson( $lesson_id );
+		return 'cb_lesson_files_' . $index;
+	}
+
+	public function lesson_files( WP_REST_Request $request ): WP_REST_Response {
+		$key = $this->lesson_files_key( (int) $request['lid'] );
+		return cb_response( array_values( (array) get_post_meta( (int) $request['id'], $key, true ) ) );
+	}
+
+	private function append_lesson_file( int $course_id, int $lesson_id, array $file ): int {
+		$key  = $this->lesson_files_key( $lesson_id );
+		$list = array_values( (array) get_post_meta( $course_id, $key, true ) );
+		$list[] = $file;
+		update_post_meta( $course_id, $key, $list );
+		return count( $list ) - 1; // index of the added file
+	}
+
+	public function add_lesson_file( WP_REST_Request $request ): WP_REST_Response {
+		if ( empty( $_FILES['file'] ) ) {
+			return cb_error( 'فایل ارسال نشد', 400, 'NO_FILE', 'api/admin/courses' );
+		}
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		$aid = media_handle_upload( 'file', 0 );
+		if ( is_wp_error( $aid ) ) {
+			return cb_error( 'آپلود ناموفق بود', 400, 'UPLOAD_FAILED', 'api/admin/courses' );
+		}
+		$name = $request->get_param( 'displayName' ) ?: get_the_title( $aid );
+		$idx  = $this->append_lesson_file( (int) $request['id'], (int) $request['lid'], array( 'name' => (string) $name, 'url' => (string) wp_get_attachment_url( $aid ), 'sizeLabel' => size_format( filesize( get_attached_file( $aid ) ) ?: 0 ) ) );
+		return cb_response( array( 'index' => $idx ), 201 );
+	}
+
+	public function add_lesson_file_link( WP_REST_Request $request ): WP_REST_Response {
+		$b   = $request->get_json_params();
+		$idx = $this->append_lesson_file( (int) $request['id'], (int) $request['lid'], array(
+			'name'      => sanitize_text_field( (string) ( $b['name'] ?? 'فایل' ) ),
+			'url'       => esc_url_raw( (string) ( $b['url'] ?? '' ) ),
+			'sizeLabel' => isset( $b['sizeLabel'] ) ? sanitize_text_field( (string) $b['sizeLabel'] ) : null,
 		) );
+		return cb_response( array( 'index' => $idx ), 201 );
+	}
+
+	public function delete_lesson_file( WP_REST_Request $request ): WP_REST_Response {
+		$key   = $this->lesson_files_key( (int) $request['lid'] );
+		$list  = array_values( (array) get_post_meta( (int) $request['id'], $key, true ) );
+		$index = (int) $request['index'];
+		if ( isset( $list[ $index ] ) ) {
+			array_splice( $list, $index, 1 );
+			update_post_meta( (int) $request['id'], $key, $list );
+		}
+		return cb_response( null, 204 );
+	}
+
+	public function get_lesson_quiz( WP_REST_Request $request ): WP_REST_Response {
+		$lid = (int) $request['lid'];
+		list( , $index ) = CB_Academy_Controller::decode_lesson( $lid );
+		$stored = get_post_meta( (int) $request['id'], 'cb_lesson_quiz_' . $index, true );
+		if ( ! is_array( $stored ) || empty( $stored['questions'] ) ) {
+			return cb_response( array( 'found' => false, 'quiz' => null ) );
+		}
+		return cb_response( array( 'found' => true, 'quiz' => array(
+			'lessonId'      => $lid,
+			'title'         => $stored['title'] ?? 'آزمونِ این درس',
+			'passScore'     => (int) ( $stored['passScore'] ?? 60 ),
+			'questions'     => CB_Academy_Controller::parse_quiz_lines( (string) $stored['questions'], true ),
+			'alreadyPassed' => false,
+		) ) );
+	}
+
+	public function upsert_lesson_quiz( WP_REST_Request $request ): WP_REST_Response {
+		$lid = (int) $request['lid'];
+		list( , $index ) = CB_Academy_Controller::decode_lesson( $lid );
+		$b = $request->get_json_params();
+		update_post_meta( (int) $request['id'], 'cb_lesson_quiz_' . $index, array(
+			'title'     => sanitize_text_field( (string) ( $b['title'] ?? 'آزمونِ این درس' ) ),
+			'passScore' => (int) ( $b['passScore'] ?? 60 ),
+			'questions' => cb_build_quiz_lines( (array) ( $b['questions'] ?? array() ) ),
+		) );
+		return cb_response( null, 200 );
 	}
 
 	public function switch_requests(): WP_REST_Response {
