@@ -98,6 +98,9 @@ class CB_Plugin {
 		( new CB_Support_Controller() )->register_routes();
 		( new CB_Bundle_Controller() )->register_routes();
 		( new CB_Story_Controller() )->register_routes();
+		// Phase 6: admin panel.
+		( new CB_Admin_Controller() )->register_routes();
+		( new CB_Admin_Content_Controller() )->register_routes();
 	}
 
 	/**

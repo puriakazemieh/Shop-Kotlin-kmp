@@ -288,6 +288,80 @@ function cb_order_status( string $wc_status ): string {
 	}
 }
 
+/**
+ * Effective app-facing order status: an admin-set _cb_app_status meta (e.g.
+ * SHIPPED, which WooCommerce has no native status for) wins over the mapping
+ * from the WooCommerce status.
+ */
+function cb_effective_order_status( WC_Order $order ): string {
+	$app = $order->get_meta( '_cb_app_status' );
+	return $app ?: cb_order_status( $order->get_status() );
+}
+
+/**
+ * Build the line-based cb_quiz meta from an admin quiz payload
+ * (questions: [{text, options:[{text, correct}]}]). The correct option gets a
+ * trailing "*". Inverse of CB_Academy_Controller::parse_quiz_lines.
+ */
+function cb_build_quiz_lines( array $questions ): string {
+	$lines = array();
+	foreach ( $questions as $q ) {
+		$parts = array( trim( (string) ( $q['text'] ?? '' ) ) );
+		foreach ( (array) ( $q['options'] ?? array() ) as $o ) {
+			$text = trim( (string) ( $o['text'] ?? '' ) );
+			$parts[] = ! empty( $o['correct'] ) ? $text . '*' : $text;
+		}
+		$lines[] = implode( ' | ', $parts );
+	}
+	return implode( "\n", $lines );
+}
+
+/**
+ * Build line-based cb_questions meta for a psych test from an admin payload
+ * (questions: [{text, options:[{text, score}]}]) -> «text | label=score , ...».
+ */
+function cb_build_test_question_lines( array $questions ): string {
+	$lines = array();
+	foreach ( $questions as $q ) {
+		$opts = array();
+		foreach ( (array) ( $q['options'] ?? array() ) as $o ) {
+			$opts[] = trim( (string) ( $o['text'] ?? '' ) ) . '=' . (int) ( $o['score'] ?? 0 );
+		}
+		$lines[] = trim( (string) ( $q['text'] ?? '' ) ) . ' | ' . implode( ' , ', $opts );
+	}
+	return implode( "\n", $lines );
+}
+
+/** Build line-based cb_ranges meta -> «min | max | interpretation». */
+function cb_build_range_lines( array $ranges ): string {
+	$lines = array();
+	foreach ( $ranges as $r ) {
+		$lines[] = (int) ( $r['minScore'] ?? 0 ) . ' | ' . (int) ( $r['maxScore'] ?? 0 ) . ' | ' . trim( (string) ( $r['interpretation'] ?? '' ) );
+	}
+	return implode( "\n", $lines );
+}
+
+/** Map an app order-status string to the closest WooCommerce status. */
+function cb_app_status_to_wc( string $status ): string {
+	switch ( strtoupper( $status ) ) {
+		case 'COMPLETED':
+		case 'DELIVERED':
+			return 'completed';
+		case 'CANCELLED':
+		case 'CANCELED':
+			return 'cancelled';
+		case 'PROCESSING':
+		case 'SHIPPED':
+			return 'processing';
+		case 'PLACED':
+			return 'on-hold';
+		case 'AWAITING_PAYMENT':
+		case 'PENDING':
+		default:
+			return 'pending';
+	}
+}
+
 // ---- wallet (user meta cb_wallet_balance + cb_wallet_txns) -------------------
 
 function cb_wallet_balance( int $user_id ): float {

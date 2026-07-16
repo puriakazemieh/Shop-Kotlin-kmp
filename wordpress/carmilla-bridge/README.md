@@ -230,3 +230,40 @@ php tests/smoke-phase4.php   # کدکِ شناسه‌ی بازه، امتیاز�
 ```
 php tests/smoke-phase5.php   # پنجره‌ی فعالِ عضویت، کدِ قطعیِ معرفی
 ```
+
+## فاز ۶ — پنلِ ادمین (نسخه ۰.۶.۰)
+
+اپ به یک **پنلِ مدیریتِ کاملِ سایت** تبدیل شد. همه با نقشِ ادمین/مدیرِ فروشگاه.
+
+### داشبورد و فروشگاه
+| متد | مسیر |
+|---|---|
+| GET | `api/admin/stats` — درآمد/سفارش/محصول/مشتری، فروشِ ۷روز، شمارشِ عمودی‌ها، فروشِ امروز، کم‌موجودی |
+| GET | `api/admin/orders` (فیلترِ وضعیت/کاربر، صفحه‌بندی) · `…/{id}` · PATCH `…/{id}/status` |
+| GET/POST | `api/admin/categories` · PATCH/DELETE `…/{id}` (دسته‌های محصول) |
+| GET/POST | `api/admin/discounts` · PATCH/DELETE `…/{id}` (کوپنِ WooCommerce) |
+| GET | `api/admin/wallet/users/search` · POST `api/admin/wallet/adjust` |
+| GET | `api/admin/wallet/withdrawals` · POST `…/{id}/process` (تأیید/رد + بازگشتِ وجه) |
+| GET/DELETE | `api/admin/course-requests[/{id}]` |
+| GET/PATCH | `api/admin/return-requests[/{id}]` |
+
+> رهگیریِ وضعیتِ سفارش: `SHIPPED` (که ووکامرس ندارد) در متایِ `_cb_app_status` نگه‌داری و در خواندن اولویت داده می‌شود.
+
+### مدیریتِ محتوایِ عمودی‌ها
+| بخش | مسیرها |
+|---|---|
+| **دوره** | CRUD `api/admin/courses[/{id}]` · `…/{id}/quiz` (upsert) · `…/{id}/lessons` (افزودن) · `…/{id}/projects` · `…/projects/{sid}/review` |
+| **درمانگر** | CRUD `api/admin/therapists[/{id}]` · `…/{id}/generate-slots` · `…/appointments` · `…/appointments/{id}/confirm|complete` |
+| **تست** | CRUD `api/admin/psych-tests[/{id}]` · `…/pending-interpretations` · `…/user-tests/{id}/interpret` |
+| **استوری** | CRUD `api/admin/stories[/{id}]` |
+| **بازبینی** | `api/admin/academy/refund-requests[/{id}/review]` · `api/admin/clinic/switch-requests[/{id}/review]` |
+
+**نکته‌ی هم‌ترازی:** محتوایِ ساخته‌شده از اپ همان متایِ خطی را می‌نویسد که سمتِ خواندن پارس می‌کند — پس در اپ و در قالبِ کارمیلا **یکسان** دیده می‌شود (تستِ رفت‌وبرگشتِ سازنده↔پارسر در `smoke-phase6.php`).
+
+### آزمونِ فاز ۶
+```
+php tests/smoke-phase6.php   # رفت‌وبرگشتِ سازنده‌ی کوییز/تست/بازه + نگاشتِ وضعیتِ سفارش
+```
+
+### موارد به‌تعویق‌افتاده (نیازمندِ کارِ سنگین‌ترِ WooCommerce)
+مدیریتِ عمیقِ تنوع/آپشن/تصویر/ویدیو/موجودیِ محصول (`api/admin/products/{id}/variants|images|videos`, `api/admin/options`, `api/admin/variants/*/inventory`)، صندلیِ سازمانی/B2B (`api/admin/organizations/*`)، و CRMِ کاملِ مراجع (`api/admin/therapists/{id}/patients/*`) و مدیریتِ باندل (`api/admin/bundles`) در تکرارِ بعدی افزوده می‌شوند؛ ساختِ/ویرایشِ محصولِ ساده از فاز ۱ موجود است.
