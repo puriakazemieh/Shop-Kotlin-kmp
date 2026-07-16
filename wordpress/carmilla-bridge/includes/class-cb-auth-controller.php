@@ -39,6 +39,149 @@ class CB_Auth_Controller {
 			'callback'            => array( $this, 'me' ),
 			'permission_callback' => array( 'CB_Plugin', 'require_login' ),
 		) );
+
+		// Password reset + OTP login (all public).
+		foreach ( array(
+			'forgot-password'          => 'forgot_password',
+			'send-login-otp'           => 'send_login_otp',
+			'login-with-otp'           => 'login_with_otp',
+			'reset-password'           => 'reset_password',
+			'reset-password-with-otp'  => 'reset_password_with_otp',
+		) as $path => $method ) {
+			register_rest_route( $ns, '/api/auth/' . $path, array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, $method ),
+				'permission_callback' => '__return_true',
+			) );
+		}
+	}
+
+	// ---- OTP + password reset ----------------------------------------------
+
+	/** Find a user by their stored mobile (cb_mobile meta or login). */
+	private static function user_by_mobile( string $mobile ): ?WP_User {
+		$mobile = trim( $mobile );
+		if ( $mobile === '' ) {
+			return null;
+		}
+		$users = get_users( array( 'meta_key' => 'cb_mobile', 'meta_value' => $mobile, 'number' => 1 ) );
+		if ( ! empty( $users ) ) {
+			return $users[0];
+		}
+		$u = get_user_by( 'login', $mobile );
+		return $u ?: null;
+	}
+
+	/**
+	 * Generate + "send" a 6-digit OTP for a mobile. Sites wire a real SMS gateway
+	 * via the cb_send_otp filter; without one the code is stored in a transient
+	 * (and returned only when the cb_otp_debug option is on, for testing).
+	 */
+	private function issue_otp( string $mobile ): string {
+		$code = (string) wp_rand( 100000, 999999 );
+		set_transient( 'cb_otp_' . md5( $mobile ), $code, 5 * MINUTE_IN_SECONDS );
+		do_action( 'cb_send_otp', $mobile, $code );
+		return $code;
+	}
+
+	private function verify_otp( string $mobile, string $code ): bool {
+		$stored = get_transient( 'cb_otp_' . md5( $mobile ) );
+		if ( $stored && hash_equals( (string) $stored, trim( $code ) ) ) {
+			delete_transient( 'cb_otp_' . md5( $mobile ) );
+			return true;
+		}
+		return false;
+	}
+
+	public function send_login_otp( WP_REST_Request $request ) {
+		$mobile = trim( (string) $request->get_param( 'mobile' ) );
+		if ( $mobile === '' ) {
+			return cb_error( 'شماره موبایل الزامی است.', 400, 'VALIDATION' );
+		}
+		$code = $this->issue_otp( $mobile );
+		$out  = array( 'sent' => true );
+		if ( get_option( 'cb_otp_debug' ) === '1' ) {
+			$out['code'] = $code; // dev only
+		}
+		return cb_response( $out, 200 );
+	}
+
+	public function login_with_otp( WP_REST_Request $request ) {
+		$mobile = trim( (string) $request->get_param( 'mobile' ) );
+		$code   = (string) $request->get_param( 'otpCode' );
+		if ( ! $this->verify_otp( $mobile, $code ) ) {
+			return cb_error( 'کد تأیید نادرست یا منقضی است.', 401, 'BAD_OTP' );
+		}
+		$user = self::user_by_mobile( $mobile );
+		if ( ! $user ) {
+			// First OTP login registers the mobile-only account.
+			$uid = wp_insert_user( array( 'user_login' => $mobile, 'user_pass' => wp_generate_password( 20 ), 'role' => 'customer' ) );
+			if ( is_wp_error( $uid ) ) {
+				return cb_error( 'ساخت حساب ناموفق بود.', 400, 'REGISTER_FAILED' );
+			}
+			update_user_meta( $uid, 'cb_mobile', $mobile );
+			$user = get_user_by( 'id', $uid );
+		}
+		return cb_response( self::auth_response( $user ), 200 );
+	}
+
+	public function forgot_password( WP_REST_Request $request ) {
+		$email  = sanitize_email( (string) $request->get_param( 'email' ) );
+		$mobile = trim( (string) $request->get_param( 'mobile' ) );
+		if ( $email !== '' ) {
+			$user = get_user_by( 'email', $email );
+			if ( $user ) {
+				// Issue a reset token and email a WP reset link.
+				$key = get_password_reset_key( $user );
+				if ( ! is_wp_error( $key ) ) {
+					set_transient( 'cb_reset_' . $key, $user->ID, HOUR_IN_SECONDS );
+					retrieve_password( $user->user_login );
+				}
+			}
+		} elseif ( $mobile !== '' ) {
+			$this->issue_otp( $mobile ); // reuse OTP channel for mobile reset
+		} else {
+			return cb_error( 'ایمیل یا موبایل الزامی است.', 400, 'VALIDATION' );
+		}
+		// Always 200 so we don't leak which accounts exist.
+		return cb_response( array( 'sent' => true ), 200 );
+	}
+
+	public function reset_password( WP_REST_Request $request ) {
+		$token    = (string) $request->get_param( 'token' );
+		$password = (string) $request->get_param( 'newPassword' );
+		if ( strlen( $password ) < 6 ) {
+			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
+		}
+		$uid = get_transient( 'cb_reset_' . $token );
+		if ( ! $uid ) {
+			return cb_error( 'توکن نامعتبر یا منقضی است.', 400, 'INVALID_TOKEN' );
+		}
+		$user = get_user_by( 'id', (int) $uid );
+		if ( ! $user ) {
+			return cb_error( 'کاربر یافت نشد.', 404, 'USER_NOT_FOUND' );
+		}
+		reset_password( $user, $password );
+		delete_transient( 'cb_reset_' . $token );
+		return cb_response( self::auth_response( get_user_by( 'id', $user->ID ) ), 200 );
+	}
+
+	public function reset_password_with_otp( WP_REST_Request $request ) {
+		$mobile   = trim( (string) $request->get_param( 'mobile' ) );
+		$code     = (string) $request->get_param( 'otpCode' );
+		$password = (string) $request->get_param( 'newPassword' );
+		if ( strlen( $password ) < 6 ) {
+			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
+		}
+		if ( ! $this->verify_otp( $mobile, $code ) ) {
+			return cb_error( 'کد تأیید نادرست یا منقضی است.', 401, 'BAD_OTP' );
+		}
+		$user = self::user_by_mobile( $mobile );
+		if ( ! $user ) {
+			return cb_error( 'کاربر یافت نشد.', 404, 'USER_NOT_FOUND' );
+		}
+		reset_password( $user, $password );
+		return cb_response( self::auth_response( get_user_by( 'id', $user->ID ) ), 200 );
 	}
 
 	public function login( WP_REST_Request $request ) {

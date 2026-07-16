@@ -58,6 +58,45 @@ class CB_Admin_Controller {
 
 		register_rest_route( $ns, '/api/admin/return-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'return_requests' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/return-requests/(?P<id>\d+)', array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_return' ), 'permission_callback' => $admin ) );
+
+		register_rest_route( $ns, '/api/admin/reviews', array( 'methods' => 'GET', 'callback' => array( $this, 'reviews' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/questions', array( 'methods' => 'GET', 'callback' => array( $this, 'questions' ), 'permission_callback' => $admin ) );
+	}
+
+	// ---- reviews / questions moderation ------------------------------------
+
+	private function interactions( string $type, WP_REST_Request $request ): WP_REST_Response {
+		$page = max( 0, (int) $request->get_param( 'page' ) );
+		$size = max( 1, (int) ( $request->get_param( 'size' ) ?: 20 ) );
+		$args = array( 'type' => $type, 'status' => 'approve', 'number' => $size, 'offset' => $page * $size, 'orderby' => 'comment_date_gmt', 'order' => 'DESC' );
+		if ( $request->get_param( 'productId' ) ) {
+			$args['post_id'] = (int) $request->get_param( 'productId' );
+		}
+		$total = (int) get_comments( array_merge( $args, array( 'count' => true, 'number' => 0, 'offset' => 0 ) ) );
+		$week  = time() - 7 * DAY_IN_SECONDS;
+		$items = array();
+		foreach ( get_comments( $args ) as $c ) {
+			$items[] = array(
+				'id'           => (int) $c->comment_ID,
+				'productId'    => (int) $c->comment_post_ID,
+				'productTitle' => get_the_title( $c->comment_post_ID ),
+				'userId'       => (int) $c->user_id,
+				'userName'     => $c->comment_author ?: 'کاربر',
+				'content'      => $c->comment_content,
+				'rating'       => ( $r = get_comment_meta( $c->comment_ID, 'rating', true ) ) !== '' ? (int) $r : null,
+				'isNew'        => strtotime( $c->comment_date_gmt ) >= $week,
+				'createdAt'    => cb_iso( $c->comment_date_gmt ),
+			);
+		}
+		return cb_response( cb_page( $items, $page, $size, $total, (int) ceil( $total / $size ) ) );
+	}
+
+	public function reviews( WP_REST_Request $request ): WP_REST_Response {
+		return $this->interactions( 'review', $request );
+	}
+
+	public function questions( WP_REST_Request $request ): WP_REST_Response {
+		return $this->interactions( 'cb_qna', $request );
 	}
 
 	// ---- stats --------------------------------------------------------------

@@ -34,6 +34,9 @@ class CB_CPT {
 		if ( ! post_type_exists( 'cb_psychtest' ) ) {
 			register_post_type( 'cb_psychtest', self::args( 'Psych Test', 'Psych Tests', 'dashicons-forms', array( 'title', 'editor' ) ) );
 		}
+		if ( ! post_type_exists( 'cb_course_request' ) ) {
+			register_post_type( 'cb_course_request', self::args( 'Course Request', 'Course Requests', 'dashicons-megaphone', array( 'title', 'editor' ) ) );
+		}
 		if ( ! post_type_exists( 'cb_appointment' ) ) {
 			register_post_type( 'cb_appointment', array(
 				'labels'      => array( 'name' => 'Appointments', 'singular_name' => 'Appointment' ),

@@ -30,6 +30,8 @@ class CB_Admin_Content_Controller {
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/quiz', array( 'methods' => 'POST', 'callback' => array( $this, 'upsert_course_quiz' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/projects', array( 'methods' => 'GET', 'callback' => array( $this, 'course_projects' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist', array( 'methods' => 'GET', 'callback' => array( $this, 'course_waitlist' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist/notify-next', array( 'methods' => 'POST', 'callback' => array( $this, 'notify_next' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/courses/projects/(?P<sid>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_project' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/academy/refund-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'refund_requests' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/academy/refund-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_refund' ), 'permission_callback' => $admin ) );
@@ -44,6 +46,8 @@ class CB_Admin_Content_Controller {
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_therapist' ), 'permission_callback' => $admin ),
 		) );
 		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/generate-slots', array( 'methods' => 'POST', 'callback' => array( $this, 'generate_slots' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/therapists/match-questions', array( 'methods' => 'GET', 'callback' => array( $this, 'match_questions' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'appointments' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => array( $this, 'confirm_appointment' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => array( $this, 'complete_appointment' ), 'permission_callback' => $admin ) );
@@ -215,6 +219,41 @@ class CB_Admin_Content_Controller {
 		return isset( $updated ) ? cb_response( $updated ) : cb_error( 'یافت نشد', 404, 'NOT_FOUND', 'api/admin/courses/projects' );
 	}
 
+	public function course_waitlist( WP_REST_Request $request ): WP_REST_Response {
+		$id   = (int) $request['id'];
+		$list = (array) get_option( "cb_course_waitlist_$id", array() );
+		$out  = array();
+		$i    = 1;
+		foreach ( $list as $uid ) {
+			$u     = get_userdata( (int) $uid );
+			$out[] = array(
+				'id'         => $i,
+				'userId'     => (int) $uid,
+				'notified'   => (bool) get_user_meta( (int) $uid, "cb_waitlist_notified_$id", true ),
+				'createdAt'  => gmdate( 'c' ),
+				'notifiedAt' => get_user_meta( (int) $uid, "cb_waitlist_notified_$id", true ) ?: null,
+			);
+			$i++;
+		}
+		return cb_response( $out );
+	}
+
+	public function notify_next( WP_REST_Request $request ): WP_REST_Response {
+		$id   = (int) $request['id'];
+		$list = (array) get_option( "cb_course_waitlist_$id", array() );
+		foreach ( $list as $uid ) {
+			if ( ! get_user_meta( (int) $uid, "cb_waitlist_notified_$id", true ) ) {
+				update_user_meta( (int) $uid, "cb_waitlist_notified_$id", gmdate( 'c' ) );
+				$u = get_userdata( (int) $uid );
+				return cb_response( array(
+					'found' => true,
+					'entry' => array( 'id' => (int) $uid, 'userId' => (int) $uid, 'notified' => true, 'createdAt' => gmdate( 'c' ), 'notifiedAt' => gmdate( 'c' ) ),
+				) );
+			}
+		}
+		return cb_response( array( 'found' => false, 'entry' => null ) );
+	}
+
 	public function refund_requests(): WP_REST_Response {
 		$users = get_users( array( 'meta_key' => 'cb_course_refunds', 'number' => 500 ) );
 		$out   = array();
@@ -366,6 +405,38 @@ class CB_Admin_Content_Controller {
 	public function complete_appointment( WP_REST_Request $request ): WP_REST_Response {
 		update_post_meta( (int) $request['id'], 'cb_status', 'COMPLETED' );
 		return cb_response( null, 200 );
+	}
+
+	public function therapist_slots( WP_REST_Request $request ): WP_REST_Response {
+		$id       = (int) $request['id'];
+		$raw      = (string) get_post_meta( $id, 'cb_slots', true );
+		$lines    = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) ) );
+		$minutes  = (int) get_post_meta( $id, 'cb_duration', true ) ?: 45;
+		global $wpdb;
+		$booked   = $wpdb->get_col( $wpdb->prepare( 'SELECT slot_time FROM ' . cb_bookings_table() . ' WHERE therapist_id = %d', $id ) );
+		$booked   = is_array( $booked ) ? $booked : array();
+		$out      = array();
+		foreach ( $lines as $i => $s ) {
+			$ts    = strtotime( $s ) ?: time();
+			$out[] = array(
+				'id'          => CB_Clinic_Controller::slot_id( $id, $i ),
+				'startTime'   => gmdate( 'c', $ts ),
+				'endTime'     => gmdate( 'c', $ts + $minutes * 60 ),
+				'booked'      => in_array( $s, $booked, true ),
+				'capacity'    => 1,
+				'bookedCount' => in_array( $s, $booked, true ) ? 1 : 0,
+			);
+		}
+		return cb_response( $out );
+	}
+
+	public function match_questions(): WP_REST_Response {
+		return cb_response( array(
+			array( 'id' => 1, 'questionText' => 'بیشتر با کدام موضوع درگیر هستید؟', 'tag' => 'اضطراب' ),
+			array( 'id' => 2, 'questionText' => 'آیا افسردگی را تجربه می‌کنید؟', 'tag' => 'افسردگی' ),
+			array( 'id' => 3, 'questionText' => 'مشاوره‌ی رابطه/زوج می‌خواهید؟', 'tag' => 'زوج' ),
+			array( 'id' => 4, 'questionText' => 'موضوعِ کودک و نوجوان مطرح است؟', 'tag' => 'کودک' ),
+		) );
 	}
 
 	public function switch_requests(): WP_REST_Response {

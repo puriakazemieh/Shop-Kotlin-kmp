@@ -267,3 +267,20 @@ php tests/smoke-phase6.php   # رفت‌وبرگشتِ سازنده‌ی کوی�
 
 ### موارد به‌تعویق‌افتاده (نیازمندِ کارِ سنگین‌ترِ WooCommerce)
 مدیریتِ عمیقِ تنوع/آپشن/تصویر/ویدیو/موجودیِ محصول (`api/admin/products/{id}/variants|images|videos`, `api/admin/options`, `api/admin/variants/*/inventory`)، صندلیِ سازمانی/B2B (`api/admin/organizations/*`)، و CRMِ کاملِ مراجع (`api/admin/therapists/{id}/patients/*`) و مدیریتِ باندل (`api/admin/bundles`) در تکرارِ بعدی افزوده می‌شوند؛ ساختِ/ویرایشِ محصولِ ساده از فاز ۱ موجود است.
+
+## تکمیلِ پوشش (نسخه ۰.۶.۱) — بازبینیِ جامع
+
+بعد از یک بازبینیِ سرتاسری (تطبیقِ ۲۰۰ مسیرِ اپ با مسیرهای پلاگین)، شکاف‌های **کاربرـرو** رفع شد:
+
+- **احراز هویتِ کامل:** `api/auth/forgot-password`, `send-login-otp`, `login-with-otp`, `reset-password`, `reset-password-with-otp` — OTPِ ۶رقمی با ترنزینتِ ۵دقیقه‌ای؛ ارسالِ پیامک از طریقِ اکشنِ `cb_send_otp` (بدونِ گیت‌وی هم قابلِ تست با آپشنِ `cb_otp_debug`). ورودِ اولِ OTP، حسابِ موبایلی می‌سازد.
+- **درخواستِ دوره (کامل):** `GET api/course-requests` (+`liked`)، `GET api/course-requests/mine`، `POST api/course-requests`، `POST api/course-requests/{id}/like` (CPTِ `cb_course_request`، لایک در متایِ `cb_likers`).
+- **بازبینیِ ادمین:** `api/admin/reviews`, `api/admin/questions` (صفحه‌بندی + پرچمِ `isNew`)، `api/admin/therapists/{id}/slots`, `api/admin/therapists/match-questions`, `api/admin/courses/{id}/waitlist` + `notify-next`.
+
+### باقی‌مانده (۳۶ مسیر، همه `api/admin/*` عمیق) — عمداً به تعویق
+اینها مدیریتِ عمیقِ WooCommerce/B2B/CRM‌اند که معمولاً مستقیم در **wp-admin** (که قالبِ کارمیلا فراهم می‌کند) انجام می‌شوند و به‌ندرت از موبایل:
+- **محصولِ عمیق:** تنوع (`products/{id}/variants`, `variants/{id}/inventory[/adjust]`)، تصویر/ویدیو (`products/{id}/images|videos`)، آپشن/ویژگی (`options/types|values`).
+- **آپلودِ رسانه‌ی دوره + فایلِ درس + کوییزِ درس + سکشن:** `courses/media/upload`, `courses/{id}/lessons/{i}/files[...]`, `.../quiz`, `.../sections[...]`.
+- **B2B/سازمانی:** `organizations/*`, صندلیِ سازمانی و مشاوره.
+- **CRMِ مراجع:** `therapists/{id}/patients/*` (یادداشت/تمرین/ژورنال/پیام/برچسب)، `appointments/{id}/notes`.
+- **باندلِ ادمین:** `admin/bundles` (ساختِ محصولِ گروهی).
+> ساخت/ویرایشِ محصولِ ساده از فاز ۱ موجود است؛ این‌ها فقط مدیریتِ پیشرفته‌ی تنوع/موجودی‌اند.
