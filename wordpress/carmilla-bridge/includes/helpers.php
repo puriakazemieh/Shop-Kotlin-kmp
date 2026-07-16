@@ -457,3 +457,30 @@ function cb_app_return_url( array $args ): string {
 	$base = get_option( 'cb_app_return_url', 'carmilla://payment/result' );
 	return add_query_arg( $args, $base );
 }
+
+/**
+ * Create custom tables on activation. The bookings table has a UNIQUE key on
+ * (therapist_id, slot_time) so concurrent bookings of the same slot are
+ * rejected at the database level — the atomic slot lock the clinic relies on.
+ */
+function cb_create_tables(): void {
+	global $wpdb;
+	$charset = $wpdb->get_charset_collate();
+	$table   = $wpdb->prefix . 'cb_bookings';
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+	dbDelta( "CREATE TABLE $table (
+		id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+		therapist_id BIGINT UNSIGNED NOT NULL,
+		slot_time VARCHAR(40) NOT NULL,
+		appointment_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+		user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+		created_at DATETIME NOT NULL,
+		PRIMARY KEY  (id),
+		UNIQUE KEY uniq_slot (therapist_id, slot_time)
+	) $charset;" );
+}
+
+function cb_bookings_table(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'cb_bookings';
+}

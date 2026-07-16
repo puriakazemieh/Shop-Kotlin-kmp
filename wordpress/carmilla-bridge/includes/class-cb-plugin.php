@@ -84,6 +84,9 @@ class CB_Plugin {
 		( new CB_Interaction_Controller() )->register_routes();
 		// Phase 3: academy.
 		( new CB_Academy_Controller() )->register_routes();
+		// Phase 4: clinic + psych tests.
+		( new CB_Clinic_Controller() )->register_routes();
+		( new CB_Psychtest_Controller() )->register_routes();
 	}
 
 	/**

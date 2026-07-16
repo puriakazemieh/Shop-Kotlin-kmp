@@ -171,3 +171,39 @@ php tests/smoke-phase2.php   # نگاشتِ وضعیتِ سفارش، ریاضی
 ```
 php tests/smoke-phase3.php   # پارسِ کوییز (نشانِ پاسخ)، تعیینِ سطح، کدکِ شناسه‌ی درس، شماره‌ی گواهی
 ```
+
+## فاز ۴ — کلینیک + تستِ روان‌شناسی (نسخه ۰.۴.۰)
+
+عمودیِ مشاوره و تست کامل شد. CPTهای `cb_therapist`/`cb_psychtest`/`cb_appointment` (هم‌تراز با قالب) + جدولِ `wp_cb_bookings` با **کلیدِ یکتا روی (therapist_id, slot_time)** برای **قفلِ اتمیکِ رزرو** (روی activation ساخته می‌شود).
+
+### کلینیک (درمانگر/نوبت)
+| متد | مسیر | نکته |
+|---|---|---|
+| GET | `api/therapists` / `api/therapists/{slug}` | بازه‌های خالی (`slotId = therapistId*100000+index`) |
+| GET | `api/clinic/my-appointments` | نوبت‌های من |
+| POST | `api/clinic/appointments` (`{slotId,notes?}`) | **رزروِ اتمیک**: INSERT با کلیدِ یکتا → رزروِ هم‌زمان ۴۰۹؛ مصرفِ **اعتبار جلسه** برای درمانگرِ پولی |
+| POST | `api/clinic/appointments/{id}/cancel` | آزادسازیِ بازه + بازگشتِ اعتبار |
+| GET | `api/clinic/appointments/{id}/receipt` | رسیدِ جلسه |
+| GET/POST | `api/clinic/mood-checkins` | ثبتِ خلق‌وخو (۱..۵) |
+| GET/POST/DELETE | `api/clinic/journal[/{id}]` | ژورنالِ شخصی |
+| GET | `api/clinic/homework` + `…/{id}/complete` | تمرین‌های درمانگر |
+| GET/POST | `api/clinic/therapists/{id}/messages` + `messaging-status` | پیام (کامنتِ `cb_msg`، PATIENT/THERAPIST، ۳ پیامِ رایگان) |
+| POST | `api/clinic/switch-requests` + `…/mine` | درخواستِ تعویضِ درمانگر |
+| GET/POST | `api/clinic/therapist-match/questions` + `submit` | تطبیقِ درمانگر بر پایه‌ی تگ/تخصص |
+
+**اعتبارِ جلسه** در user-meta `cb_ther_credits_{therapistId}` (هم‌کلیدِ قالب) — با خریدِ بسته اعطا، با رزرو مصرف، با لغو بازگردانده می‌شود.
+
+### تستِ روان‌شناسی
+| متد | مسیر |
+|---|---|
+| GET | `api/psych-tests` / `api/psych-tests/{slug}` (گزینه‌ها **بدونِ امتیاز**) |
+| GET | `api/my-psych-tests` (attemptها؛ خریدِ محصول = مالکیت) |
+| GET | `api/my-psych-tests/{userTestId}/questions` |
+| POST | `api/my-psych-tests/{userTestId}/submit` → **امتیازدهیِ سمتِ سرور** + تفسیرِ بازه‌ای (AUTO) یا انتظارِ مشاور (COUNSELOR) |
+
+فرمتِ متا (هم‌ترازِ قالب): سؤال `text | label=score , …`؛ بازه `min | max | تفسیر`. **امتیازِ گزینه‌ها هرگز به کلاینت نمی‌رود.**
+
+### آزمونِ فاز ۴
+```
+php tests/smoke-phase4.php   # کدکِ شناسه‌ی بازه، امتیازِ تطبیق، پارس/امتیاز/تفسیرِ تست
+```
