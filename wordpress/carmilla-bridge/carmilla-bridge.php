@@ -3,7 +3,7 @@
  * Plugin Name:       Carmilla Bridge
  * Plugin URI:        https://github.com/puriakazemieh/Shop-Kotlin-kmp
  * Description:       REST bridge that exposes WordPress + WooCommerce content (products, articles, stories, banners, campaigns) to the Carmilla KMP client using the same API contract the app already speaks. Adds JWT auth so the mobile/desktop app can read and manage content directly on WordPress.
- * Version:           0.4.0
+ * Version:           0.5.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Carmilla
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct access.
 }
 
-define( 'CB_VERSION', '0.4.0' );
+define( 'CB_VERSION', '0.5.0' );
 define( 'CB_PLUGIN_FILE', __FILE__ );
 define( 'CB_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CB_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -46,6 +46,12 @@ require_once CB_PLUGIN_DIR . 'includes/class-cb-academy-controller.php';
 // Phase 4: clinic (therapists, atomic booking, credits) + psychological tests.
 require_once CB_PLUGIN_DIR . 'includes/class-cb-clinic-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-psychtest-controller.php';
+// Phase 5: shop extras (membership, referral, favorites, returns, recurring,
+// support, bundles, stories, stock/price alerts, frequently-bought-together).
+require_once CB_PLUGIN_DIR . 'includes/class-cb-extras-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-support-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-bundle-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-story-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-plugin.php';
 
 /**

@@ -484,3 +484,59 @@ function cb_bookings_table(): string {
 	global $wpdb;
 	return $wpdb->prefix . 'cb_bookings';
 }
+
+/**
+ * Shape a WooCommerce product into a ProductSummaryResponse (shared by
+ * favorites, recently-viewed, bundles and frequently-bought-together).
+ * Favorites are read from user meta cb_wishlist (theme-compatible).
+ */
+function cb_product_summary_dto( WC_Product $product, int $user_id = 0 ): array {
+	$cats   = $product->get_category_ids();
+	$cat_id = $cats ? (int) $cats[0] : null;
+
+	if ( $product->is_type( 'variable' ) ) {
+		$prices   = $product->get_variation_prices( true );
+		$reg      = array_map( 'floatval', $prices['regular_price'] ?? array() );
+		$sales    = array();
+		foreach ( ( $prices['sale_price'] ?? array() ) as $k => $sp ) {
+			if ( isset( $reg[ $k ] ) && (float) $sp < $reg[ $k ] ) {
+				$sales[] = (float) $sp;
+			}
+		}
+		$min_reg  = $reg ? min( $reg ) : null;
+		$max_reg  = $reg ? max( $reg ) : null;
+		$min_sale = $sales ? min( $sales ) : null;
+		$max_sale = $sales ? max( $sales ) : null;
+		$options  = array();
+		foreach ( $product->get_variation_attributes() as $name => $vals ) {
+			$options[ wc_attribute_label( str_replace( 'attribute_', '', $name ) ) ] = array_values( $vals );
+		}
+	} else {
+		$reg      = (float) $product->get_regular_price();
+		$sale     = $product->get_sale_price();
+		$min_reg  = $max_reg = $reg ?: (float) $product->get_price();
+		$min_sale = $max_sale = ( $sale !== '' && $sale !== null ) ? (float) $sale : null;
+		$options  = array();
+	}
+
+	$favs = $user_id ? (array) get_user_meta( $user_id, 'cb_wishlist', true ) : array();
+	$term = $cat_id ? get_term( $cat_id ) : null;
+
+	return array(
+		'id'                 => (int) $product->get_id(),
+		'title'              => $product->get_name(),
+		'slug'               => $product->get_slug(),
+		'thumbnailUrl'       => wp_get_attachment_url( $product->get_image_id() ) ?: null,
+		'minPrice'           => $min_reg,
+		'maxPrice'           => $max_reg,
+		'minDiscountedPrice' => $min_sale,
+		'maxDiscountedPrice' => $max_sale,
+		'inStock'            => $product->is_in_stock(),
+		'categoryId'         => $cat_id,
+		'categoryName'       => ( $term && ! is_wp_error( $term ) ) ? $term->name : null,
+		'options'            => (object) $options,
+		'isFavorite'         => in_array( (int) $product->get_id(), array_map( 'intval', $favs ), true ),
+		'averageRating'      => (float) $product->get_average_rating() ?: null,
+		'reviewCount'        => (int) $product->get_review_count(),
+	);
+}

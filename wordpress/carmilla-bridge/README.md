@@ -207,3 +207,26 @@ php tests/smoke-phase3.php   # پارسِ کوییز (نشانِ پاسخ)، ت�
 ```
 php tests/smoke-phase4.php   # کدکِ شناسه‌ی بازه، امتیازِ تطبیق، پارس/امتیاز/تفسیرِ تست
 ```
+
+## فاز ۵ — افزوده‌های فروشگاهی (نسخه ۰.۵.۰)
+
+| گروه | مسیرها | منبع |
+|---|---|---|
+| **عضویت/باشگاه** | `api/memberships/mine` · `api/memberships/subscribe` | user-meta `cb_membership_expires` + کسر از کیف‌پول |
+| **معرفی** | `api/referrals/mine` | کدِ قطعیِ per کاربر + شمارنده‌ها |
+| **علاقه‌مندی** | `GET/POST/DELETE api/favorites[/{id}]` | user-meta `cb_wishlist` (هم‌کلیدِ قالب) |
+| **اخیراً‌دیده** | `GET api/recently-viewed` · `POST …/{id}` | user-meta (۴۰ مورد آخر) |
+| **مرجوعی** | `POST api/return-requests` · `GET …/mine` | user-meta `cb_returns` |
+| **سفارشِ تکراری** | `POST api/recurring-orders` · `GET …/mine` · `POST …/{id}/cancel` | user-meta `cb_recurring` |
+| **اطلاع‌رسانی** | `POST api/stock-notifications` · `POST api/price-alerts` | user-meta |
+| **پشتیبانی** | `GET/POST api/support/tickets` · `GET …/{id}` · `POST …/{id}/messages` | user-meta `cb_tickets` (تِرِدِ پیام) |
+| **باندل** | `GET api/bundles` · `GET api/bundles/{slug}` | محصولِ **grouped**ِ WooCommerce |
+| **استوری** | `GET api/stories` | CPTِ `cb_story` (فعال/غیرمنقضی) |
+| **پیشنهادِ مکمل** | `GET api/products/{id}/frequently-bought-together` | محصولاتِ هم‌دسته |
+
+علاقه‌مندی/اخیراً‌دیده از مسیرِ ریشه (`/api/favorites`) استفاده می‌کنند؛ با همان aliasِ سطحِ ریشه هدایت می‌شوند (بدونِ تغییرِ اپ).
+
+### آزمونِ فاز ۵
+```
+php tests/smoke-phase5.php   # پنجره‌ی فعالِ عضویت، کدِ قطعیِ معرفی
+```

@@ -43,9 +43,15 @@ class CB_Plugin {
 	public function maybe_root_alias(): void {
 		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) : '';
 		$uri = '/' . ltrim( untrailingslashit( $uri ), '/' );
-		$is_profile = ( $uri === '/api/users/me' );
-		$is_address = ( strpos( $uri, '/api/addresses' ) === 0 );
-		if ( ! $is_profile && ! $is_address ) {
+		$root_paths = array( '/api/users/me', '/api/addresses', '/api/favorites', '/api/recently-viewed' );
+		$match = false;
+		foreach ( $root_paths as $rp ) {
+			if ( $uri === $rp || strpos( $uri, $rp . '/' ) === 0 ) {
+				$match = true;
+				break;
+			}
+		}
+		if ( ! $match ) {
 			return;
 		}
 
@@ -87,6 +93,11 @@ class CB_Plugin {
 		// Phase 4: clinic + psych tests.
 		( new CB_Clinic_Controller() )->register_routes();
 		( new CB_Psychtest_Controller() )->register_routes();
+		// Phase 5: shop extras.
+		( new CB_Extras_Controller() )->register_routes();
+		( new CB_Support_Controller() )->register_routes();
+		( new CB_Bundle_Controller() )->register_routes();
+		( new CB_Story_Controller() )->register_routes();
 	}
 
 	/**
