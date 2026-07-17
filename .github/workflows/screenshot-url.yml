@@ -1,0 +1,102 @@
+name: Screenshot URL
+
+# Screenshots any public URL across mobile/tablet/desktop and force-pushes the
+# images to the `claude/site-screenshots` branch — used to inspect a live site
+# (e.g. your installed theme) from CI, which has open internet access.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to screenshot (e.g. https://kazemieh.com/)'
+        type: string
+        required: true
+  # Also runs on push when .github/ci/site-url.txt changes (so it works before the
+  # workflow reaches the default branch, where manual dispatch becomes available).
+  push:
+    paths:
+      - '.github/ci/site-url.txt'
+      - '.github/workflows/screenshot-url.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  shoot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i -D playwright@1.48.0
+          npx playwright install --with-deps chromium
+      - name: Resolve URL
+        run: |
+          URL="${{ inputs.url }}"
+          if [ -z "$URL" ] && [ -f .github/ci/site-url.txt ]; then URL="$(head -1 .github/ci/site-url.txt | tr -d '[:space:]')"; fi
+          echo "TARGET_URL=$URL" >> "$GITHUB_ENV"
+          echo "target: $URL"
+      - name: Screenshot
+        run: |
+          cat > shot.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs';
+          const url = process.env.TARGET_URL;
+          const bps = [
+            { n: 'mobile', w: 390, h: 844 },
+            { n: 'tablet', w: 768, h: 1024 },
+            { n: 'desktop', w: 1280, h: 900 },
+          ];
+          fs.mkdirSync('shots', { recursive: true });
+          const b = await chromium.launch();
+          const report = [];
+          for (const bp of bps) {
+            const ctx = await b.newContext({ viewport: { width: bp.w, height: bp.h }, deviceScaleFactor: 2, locale: 'fa-IR' });
+            const page = await ctx.newPage();
+            const errs = [];
+            page.on('console', (m) => { if (m.type() === 'error') errs.push('console: ' + m.text()); });
+            page.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
+            page.on('requestfailed', (r) => errs.push('reqfail: ' + r.url() + ' ' + (r.failure()?.errorText || '')));
+            try {
+              const resp = await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
+              await page.waitForTimeout(1500);
+              await page.screenshot({ path: `shots/${bp.n}.png` });
+              await page.screenshot({ path: `shots/${bp.n}-full.png`, fullPage: true });
+              report.push(`[${bp.n}] status=${resp && resp.status()}`);
+            } catch (e) { report.push(`[${bp.n}] FAILED: ${e.message}`); }
+            if (errs.length) report.push(...errs.slice(0, 15).map((x) => `  ${bp.n} ${x}`));
+            await ctx.close();
+          }
+          await b.close();
+          fs.writeFileSync('shots/report.txt', `URL: ${url}\n` + report.join('\n') + '\n');
+          console.log(report.join('\n'));
+          JS
+          node shot.mjs
+      - name: Inspect HTML (theme + assets)
+        run: |
+          echo "== fetching HTML ==" >> shots/report.txt
+          curl -sSL --max-time 30 "$TARGET_URL" -o page.html || true
+          echo "-- active theme dirs --" >> shots/report.txt
+          grep -oiE "wp-content/themes/[a-z0-9-]+" page.html | sort -u >> shots/report.txt || true
+          echo "-- carmilla assets --" >> shots/report.txt
+          grep -oiE "carmilla[a-z0-9/_.-]*\.(css|js)" page.html | sort -u >> shots/report.txt || true
+          echo "-- body class --" >> shots/report.txt
+          grep -oiE "<body[^>]*>" page.html | head -1 >> shots/report.txt || true
+          cat shots/report.txt
+      - name: Push screenshots
+        if: always()
+        run: |
+          test -d shots || exit 0
+          git config user.name "carmilla-ci"
+          git config user.email "ci@example.com"
+          git checkout --orphan site-shots
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          rm -rf site-screenshots && mkdir -p site-screenshots
+          cp -r shots/* site-screenshots/ 2>/dev/null || true
+          git add site-screenshots
+          git commit -m "ci: site screenshots of $TARGET_URL" || exit 0
+          git push -f origin site-shots:claude/site-screenshots
