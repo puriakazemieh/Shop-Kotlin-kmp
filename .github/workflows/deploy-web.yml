@@ -43,15 +43,20 @@ jobs:
         run: |
           mkdir -p site
           cp -r composeApp/build/dist/js/productionExecutable/* site/
-          API="${{ inputs.api_base }}"
-          if [ -n "$API" ]; then
+          export API_BASE="${{ inputs.api_base }}"
+          if [ -n "$API_BASE" ]; then
             # If the page is opened without ?api=, redirect once to add the baked base.
-            node -e "
-              const fs=require('fs');const f='site/index.html';let h=fs.readFileSync(f,'utf8');
-              const s='<script>(function(){try{var u=new URL(location.href);if(!u.searchParams.get(\'api\')){u.searchParams.set(\'api\',\'$API\');location.replace(u.toString());}}catch(e){}})();</script>';
-              h=h.replace('</head>', s+'</head>');fs.writeFileSync(f,h);
-            "
-            echo "Baked API base: $API"
+            cat > bake.mjs <<'JS'
+          import fs from 'node:fs';
+          const api = process.env.API_BASE;
+          const f = 'site/index.html';
+          let h = fs.readFileSync(f, 'utf8');
+          const s = '<script>(function(){try{var u=new URL(location.href);if(!u.searchParams.get("api")){u.searchParams.set("api",' + JSON.stringify(api) + ');location.replace(u.toString());}}catch(e){}})();</script>';
+          h = h.replace('</head>', s + '</head>');
+          fs.writeFileSync(f, h);
+          console.log('Baked API base:', api);
+          JS
+            node bake.mjs
           fi
           # SPA fallback so deep links don't 404 on Pages.
           cp site/index.html site/404.html
@@ -69,4 +74,5 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
       - name: Show link
-        run: echo "### 🌐 Web app: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          echo "### Web app: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"

@@ -1,17 +1,28 @@
 name: Build All
 
 # Manual builds of every client output. Run from the Actions tab (Run workflow),
-# tick the targets you want, then download the artifacts from the finished run.
-#   - Android : one debug APK per brand flavor (carmila / atris / chronos /
-#               academy / psych / wp)
-#   - Desktop : a runnable uber-jar (java -jar …) for the current OS (Linux)
-#   - Web     : the Compose-Web static site, zipped (also see deploy-web.yml for
-#               a hosted link)
+# pick options, then download the artifacts from the finished run.
+#   - Android : debug APK(s) for the chosen brand flavor(s). Optionally bake a
+#               custom API base URL into the APK (e.g. your WordPress site or a
+#               run-server tunnel URL) so it talks to that backend with no rebuild.
+#               Building the "wp" (or "all") flavor also outputs the WordPress
+#               plugin zip, since that flavor needs the plugin installed on the site.
+#   - Desktop : a runnable uber-jar (java -jar …) for the current OS (Linux).
+#   - Web     : the Compose-Web static site, zipped (see deploy-web.yml for a link).
 on:
   workflow_dispatch:
     inputs:
+      flavor:
+        description: 'Android brand flavor to build'
+        type: choice
+        default: all
+        options: [all, carmila, atris, chronos, academy, psych, wp]
+      base_url:
+        description: 'Optional API base URL baked into the APK (e.g. https://kazemieh.com/wp-json/carmilla/v1/). Empty = flavor default.'
+        type: string
+        default: ''
       android:
-        description: 'Build Android APKs (all brand flavors)'
+        description: 'Build Android APK(s)'
         type: boolean
         default: true
       desktop:
@@ -38,12 +49,24 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build debug APKs (all flavors)
+      - name: Build debug APK(s)
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace \
-            assembleCarmilaDebug assembleAtrisDebug assembleChronosDebug \
-            assembleAcademyDebug assemblePsychDebug assembleWpDebug
+          FLAVOR="${{ inputs.flavor }}"
+          BASE="${{ inputs.base_url }}"
+          # map flavor → assemble task(s)
+          if [ "$FLAVOR" = "all" ]; then
+            TASKS="assembleCarmilaDebug assembleAtrisDebug assembleChronosDebug assembleAcademyDebug assemblePsychDebug assembleWpDebug"
+          else
+            CAP="$(echo "${FLAVOR:0:1}" | tr '[:lower:]' '[:upper:]')${FLAVOR:1}"
+            TASKS="assemble${CAP}Debug"
+          fi
+          echo "tasks: $TASKS"
+          if [ -n "$BASE" ]; then
+            ./gradlew --no-daemon --stacktrace $TASKS -PcarmillaApiBase="$BASE"
+          else
+            ./gradlew --no-daemon --stacktrace $TASKS
+          fi
       - name: Collect APKs
         if: always()
         run: |
@@ -55,6 +78,17 @@ jobs:
         with:
           name: android-apks
           path: out/*.apk
+          if-no-files-found: warn
+      - name: Package WordPress plugin (wp / all flavor)
+        if: ${{ inputs.flavor == 'wp' || inputs.flavor == 'all' }}
+        run: |
+          zip -rq wordpress-plugin.zip wordpress/carmilla-bridge -x '*/tests/*' -x '*/.DS_Store'
+          ls -la wordpress-plugin.zip
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.flavor == 'wp' || inputs.flavor == 'all' }}
+        with:
+          name: wordpress-plugin
+          path: wordpress-plugin.zip
           if-no-files-found: warn
 
   desktop:
