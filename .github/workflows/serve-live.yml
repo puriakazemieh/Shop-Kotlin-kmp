@@ -98,6 +98,47 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Start server (CORS allows the web tunnel)
+        env:
+          DATASOURCE_URL: jdbc:postgresql://localhost:5432/shopdb
+          DATASOURCE_USERNAME: postgres
+          DATASOURCE_PASSWORD: postgres
+          SERVER_PORT: '8080'
+        run: |
+          # Start the API FIRST (before the long web build) so it is testable
+          # within a few minutes — via Swagger, an Android APK, or ?api= override.
+          SEED="${{ inputs.seed_enabled }}"
+          APP_CORS_ORIGINS="$WEB_URL" FRONTEND_URL="$WEB_URL" NGROK_URL="$API_URL" SEED_ENABLED="$SEED" \
+            nohup java -jar app.jar > server.log 2>&1 &
+          echo "waiting for server…"
+          for i in $(seq 1 80); do
+            if curl -sSf http://localhost:8080/api/products >/dev/null 2>&1 || curl -sSf http://localhost:8080/ >/dev/null 2>&1; then echo "server up"; break; fi
+            sleep 3
+          done
+          tail -30 server.log || true
+
+      - name: Mark API live on the branch
+        run: |
+          # API is up now; web still building. Update the flag so the API link is
+          # known-good before the ~25–30 min web build finishes.
+          {
+            echo "run_id: ${GITHUB_RUN_ID}"
+            echo "api_url: ${API_URL}/"
+            echo "web_url: ${WEB_URL}"
+            echo "swagger: ${API_URL}/api/swagger-ui.html"
+            echo "status: api-live-web-building"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp2
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "api live (run ${GITHUB_RUN_ID})"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Compose-Web (pointed at the live API)
         run: |
           chmod +x gradlew
@@ -124,22 +165,26 @@ jobs:
           sleep 2
           curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ || true
 
-      - name: Start server (CORS allows the web tunnel)
-        env:
-          DATASOURCE_URL: jdbc:postgresql://localhost:5432/shopdb
-          DATASOURCE_USERNAME: postgres
-          DATASOURCE_PASSWORD: postgres
-          SERVER_PORT: '8080'
+      - name: Mark everything live on the branch
         run: |
-          SEED="${{ inputs.seed_enabled }}"
-          APP_CORS_ORIGINS="$WEB_URL" FRONTEND_URL="$WEB_URL" NGROK_URL="$API_URL" SEED_ENABLED="$SEED" \
-            nohup java -jar app.jar > server.log 2>&1 &
-          echo "waiting for server…"
-          for i in $(seq 1 60); do
-            if curl -sSf http://localhost:8080/api/products >/dev/null 2>&1 || curl -sSf http://localhost:8080/ >/dev/null 2>&1; then echo "server up"; break; fi
-            sleep 3
-          done
-          tail -30 server.log || true
+          # Both API and web are serving now — flip the flag to fully live.
+          {
+            echo "run_id: ${GITHUB_RUN_ID}"
+            echo "api_url: ${API_URL}/"
+            echo "web_url: ${WEB_URL}"
+            echo "swagger: ${API_URL}/api/swagger-ui.html"
+            echo "status: live"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp3
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "fully live (run ${GITHUB_RUN_ID})"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish the final link
         run: |
