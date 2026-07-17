@@ -1,0 +1,160 @@
+name: Design Compare
+
+# Builds the Kotlin Compose-Web app and the WordPress (Carmilla) theme, takes
+# Playwright screenshots of both across mobile/tablet/desktop, and force-pushes
+# them to the `claude/ci-screenshots` branch so they can be reviewed side by side.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'wordpress/carmilla-theme/**'
+      - 'wordpress/carmilla-bridge/**'
+      - '.github/workflows/design-compare.yml'
+      - '.github/ci/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: design-compare
+  cancel-in-progress: true
+
+jobs:
+  # ------------------------------------------------------------------ Kotlin web
+  kotlin-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Compose-Web distribution
+        run: ./gradlew :composeApp:jsBrowserDistribution --no-daemon --stacktrace
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i -D playwright@1.48.0
+          npx playwright install --with-deps chromium
+      - name: Screenshot Kotlin web
+        run: node .github/ci/shoot-kotlin.mjs
+      - name: List dist (for debugging)
+        if: always()
+        run: ls -R composeApp/build/dist 2>/dev/null | head -50 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kotlin-web-shots
+          path: shots/kotlin
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------ WordPress
+  wordpress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot" --health-interval=10s
+          --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, gd, zip, mbstring, curl, dom, imagick
+          tools: wp-cli
+      - name: Install WordPress
+        env:
+          WP_PATH: ${{ github.workspace }}/wp
+          WP_BASE: http://localhost:8090
+        run: |
+          set -e
+          mkdir -p "$WP_PATH"
+          WP="wp --allow-root --path=$WP_PATH"
+          $WP core download --version=latest
+          $WP config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306
+          $WP core install --url=$WP_BASE --title="Carmilla Demo" \
+            --admin_user=admin --admin_password=admin123 --admin_email=demo@example.com --skip-email
+          # link plugin + theme from the repo
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" "$WP_PATH/wp-content/plugins/carmilla-bridge"
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-theme"  "$WP_PATH/wp-content/themes/carmilla-theme"
+      - name: Seed demo content
+        env:
+          WP_PATH: ${{ github.workspace }}/wp
+          WP_BASE: http://localhost:8090
+        run: bash .github/ci/seed-wordpress.sh
+      - name: Start WordPress server
+        env:
+          WP_PATH: ${{ github.workspace }}/wp
+        run: |
+          wp --allow-root --path="$WP_PATH" server --host=0.0.0.0 --port=8090 >/tmp/wp-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sSf http://localhost:8090/ >/dev/null 2>&1; then echo "wp up"; break; fi
+            sleep 2
+          done
+          curl -sS -o /dev/null -w "home status: %{http_code}\n" http://localhost:8090/ || true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i -D playwright@1.48.0
+          npx playwright install --with-deps chromium
+      - name: Screenshot WordPress theme
+        env:
+          WP_BASE: http://localhost:8090
+        run: node .github/ci/shoot-wordpress.mjs
+      - name: WP server log (debug)
+        if: always()
+        run: tail -40 /tmp/wp-server.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wordpress-shots
+          path: shots/wordpress
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------ Publish
+  publish:
+    needs: [kotlin-web, wordpress]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: kotlin-web-shots
+          path: gathered/kotlin
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: wordpress-shots
+          path: gathered/wordpress
+      - name: Push screenshots to ci branch
+        run: |
+          git config user.name "carmilla-ci"
+          git config user.email "ci@example.com"
+          git checkout --orphan ci-shots
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          mkdir -p screenshots
+          cp -r gathered/* screenshots/ 2>/dev/null || true
+          echo "# CI design screenshots" > screenshots/README.md
+          echo "Run: ${{ github.run_id }} at $(date -u)" >> screenshots/README.md
+          find screenshots -type f | sort >> screenshots/README.md
+          git add screenshots
+          git commit -m "ci: design comparison screenshots (run ${{ github.run_id }})" || echo "nothing to commit"
+          git push -f origin ci-shots:claude/ci-screenshots
