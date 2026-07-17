@@ -39,6 +39,8 @@ while ( have_posts() ) :
 	?>
 	<div style="animation:fadeUp .35s both;padding-top:18px;">
 
+		<?php if ( function_exists( 'woocommerce_output_all_notices' ) ) { woocommerce_output_all_notices(); } ?>
+
 		<!-- breadcrumb -->
 		<div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;font-size:12px;color:var(--ink-soft);">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="color:var(--ink-soft);">خانه</a><span>/</span>

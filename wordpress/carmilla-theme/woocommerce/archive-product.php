@@ -49,6 +49,8 @@ $chip_on  = 'background:var(--accent);color:#fff;border-color:var(--accent) !imp
 ?>
 <div style="animation:fadeUp .35s both;padding-top:20px;">
 
+	<?php if ( function_exists( 'woocommerce_output_all_notices' ) ) { woocommerce_output_all_notices(); } ?>
+
 	<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
 		<div style="flex:1;">
 			<h1 style="font-size:clamp(19px,3vw,25px);font-weight:800;margin:0;letter-spacing:-.5px;"><?php echo esc_html( $title ?: 'فروشگاه' ); ?></h1>
