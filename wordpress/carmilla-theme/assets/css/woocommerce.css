@@ -210,3 +210,46 @@
 .cb-msg__bubble--me { align-self: flex-start; background: var(--accent); color: var(--on-accent); }
 .cb-msg__form { display: flex; gap: var(--sp-sm); }
 .cb-msg__form input { flex: 1; }
+
+/* =========================================================================
+   Checkout (form-checkout.php) — style WooCommerce's generated fields to match
+   the Carmilla tokens. Structure/JS stays WooCommerce; only the look changes.
+   ========================================================================= */
+.cb-checkout .form-row { margin: 0 0 12px; display: flex; flex-direction: column; }
+.cb-checkout .form-row label { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.cb-checkout .form-row .required { color: var(--sale); text-decoration: none; }
+.cb-checkout .woocommerce-input-wrapper { width: 100%; }
+.cb-checkout input.input-text,
+.cb-checkout textarea,
+.cb-checkout select,
+.cb-checkout .select2-selection {
+  width: 100%; box-sizing: border-box; border: 1px solid var(--line);
+  border-radius: 12px; padding: 12px 14px; font-family: var(--font-fa);
+  font-size: 13px; background: var(--surface-2); color: var(--ink); outline: none;
+}
+.cb-checkout input.input-text:focus,
+.cb-checkout textarea:focus,
+.cb-checkout select:focus { border-color: var(--accent); }
+.cb-checkout .select2-container .select2-selection--single { height: auto; }
+.cb-checkout .col2-set, .cb-checkout .col2-set .col-1, .cb-checkout .col2-set .col-2 { width: 100%; float: none; }
+
+/* Order review table → card */
+.cb-checkout #order_review { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; margin-top: 6px; }
+.cb-checkout .shop_table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.cb-checkout .shop_table th, .cb-checkout .shop_table td { text-align: start; padding: 9px 0; font-size: 13px; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
+.cb-checkout .shop_table .product-name { color: var(--ink); font-weight: 600; }
+.cb-checkout .shop_table .order-total th, .cb-checkout .shop_table .order-total td { font-size: 15px; font-weight: 800; color: var(--ink); border-bottom: none; }
+
+/* Payment methods */
+.cb-checkout #payment { background: transparent; border-radius: 14px; margin-top: 10px; }
+.cb-checkout #payment ul.payment_methods { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 10px; border: none; }
+.cb-checkout #payment ul.payment_methods li { border: 1.5px solid var(--line); border-radius: 14px; padding: 14px; }
+.cb-checkout #payment ul.payment_methods li label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.cb-checkout #payment div.payment_box { background: var(--surface-2); border-radius: 12px; font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+.cb-checkout #payment div.payment_box::before { display: none; }
+.cb-checkout #place_order,
+.cb-checkout button.button.alt {
+  width: 100%; background: var(--accent); color: #fff; font-weight: 700; font-size: 15px;
+  padding: 16px; border-radius: 14px; border: none; cursor: pointer; margin-top: 6px; font-family: var(--font-fa);
+}
+.cb-checkout .woocommerce-privacy-policy-text { font-size: 11.5px; color: var(--ink-soft); }
