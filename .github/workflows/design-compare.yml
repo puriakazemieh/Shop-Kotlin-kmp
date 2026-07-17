@@ -1,10 +1,10 @@
 name: Design Compare
 
 # Brings up one WordPress (WooCommerce + Carmilla Bridge plugin + Carmilla theme
-# + seeded demo data), builds the Kotlin Compose-Web app and points it at that
-# same WordPress via the ?api= param, then screenshots BOTH across
-# mobile/tablet/desktop with Playwright. Same data on both sides = a true design
-# comparison. Screenshots are force-pushed to the `claude/ci-screenshots` branch.
+# + seeded demo data), screenshots the theme, then builds the Kotlin Compose-Web
+# app pointed at that same WordPress and screenshots it too — same data on both
+# sides. The theme screenshots run FIRST so a Compose-Web build problem can never
+# cost us the theme review. Images are force-pushed to `claude/ci-screenshots`.
 on:
   workflow_dispatch:
   push:
@@ -12,6 +12,7 @@ on:
       - 'wordpress/carmilla-theme/**'
       - 'wordpress/carmilla-bridge/**'
       - 'composeApp/src/webMain/**'
+      - 'feature/details/src/jsMain/**'
       - '.github/workflows/design-compare.yml'
       - '.github/ci/**'
 
@@ -43,22 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ---- Kotlin Compose-Web build (the design reference) ------------------
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
-      - name: Build Compose-Web distribution
-        id: webbuild
-        run: |
-          chmod +x gradlew
-          ./gradlew :composeApp:jsBrowserDistribution --no-daemon --stacktrace
-      - name: List dist (debug)
-        if: always()
-        run: ls -R composeApp/build/dist 2>/dev/null | head -60 || true
-
-      # ---- WordPress + WooCommerce + plugin + theme + demo data -------------
+      # ---- WordPress + WooCommerce + plugin + theme + demo data (FIRST) -----
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -87,7 +73,6 @@ jobs:
           curl -sS -o /dev/null -w "home: %{http_code}\n" http://localhost:8090/ || true
           curl -sS -o /dev/null -w "rest products: %{http_code}\n" "http://localhost:8090/?rest_route=/carmilla/v1/api/products" || true
 
-      # ---- Playwright screenshots of BOTH ----------------------------------
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -97,16 +82,31 @@ jobs:
           npm i -D playwright@1.48.0
           npx playwright install --with-deps chromium
       - name: Screenshot WordPress theme
-        if: always()
         run: node .github/ci/shoot-wordpress.mjs
-      - name: Screenshot Kotlin web (pointed at the same WordPress)
-        if: always() && steps.webbuild.outcome == 'success'
-        env:
-          KWEB_API: http://localhost:8090/wp-json/carmilla/v1/
-        run: node .github/ci/shoot-kotlin.mjs
       - name: WP server log (debug)
         if: always()
         run: tail -60 /tmp/wp-server.log || true
+
+      # ---- Kotlin Compose-Web build + screenshots (best-effort) ------------
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Compose-Web distribution
+        id: webbuild
+        continue-on-error: true
+        run: |
+          chmod +x gradlew
+          ./gradlew :composeApp:jsBrowserDistribution --no-daemon --stacktrace
+      - name: List dist (debug)
+        if: always()
+        run: ls -R composeApp/build/dist 2>/dev/null | head -60 || true
+      - name: Screenshot Kotlin web (pointed at the same WordPress)
+        if: steps.webbuild.outcome == 'success'
+        env:
+          KWEB_API: http://localhost:8090/wp-json/carmilla/v1/
+        run: node .github/ci/shoot-kotlin.mjs
 
       # ---- Publish screenshots to a branch ---------------------------------
       - name: Push screenshots to ci branch
