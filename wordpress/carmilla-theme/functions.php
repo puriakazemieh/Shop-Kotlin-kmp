@@ -8,11 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARMILLA_THEME_VERSION', '0.6.1' );
+define( 'CARMILLA_THEME_VERSION', '0.7.0' );
 
 require_once get_template_directory() . '/inc/icons.php';
 require_once get_template_directory() . '/inc/customizer.php';
 require_once get_template_directory() . '/inc/template-functions.php';
+require_once get_template_directory() . '/inc/dc.php';
 require_once get_template_directory() . '/inc/post-types.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
 require_once get_template_directory() . '/inc/rest.php';
@@ -86,6 +87,8 @@ function carmilla_enqueue_assets() {
 	wp_enqueue_style( 'carmilla-tokens', $dir . '/assets/css/tokens.css', array(), $ver );
 	wp_enqueue_style( 'carmilla-base', $dir . '/assets/css/base.css', array( 'carmilla-tokens' ), $ver );
 	wp_enqueue_style( 'carmilla-components', $dir . '/assets/css/components.css', array( 'carmilla-base' ), $ver );
+	// Shared layer for the DC (Design-Compose) faithful templates (reset, utilities, keyframes).
+	wp_enqueue_style( 'carmilla-dc', $dir . '/assets/css/dc.css', array( 'carmilla-components' ), $ver );
 	if ( class_exists( 'WooCommerce' ) ) {
 		wp_enqueue_style( 'carmilla-woo', $dir . '/assets/css/woocommerce.css', array( 'carmilla-components' ), $ver );
 	}
