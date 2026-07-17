@@ -33,6 +33,37 @@ class CB_Plugin {
 		// that would fall outside /wp-json/carmilla/v1/. Alias them to the REST
 		// routes so the app needs no client-side change.
 		add_action( 'parse_request', array( $this, 'maybe_root_alias' ) );
+		// Allow the app (web/desktop build served from another origin) to call the
+		// REST API cross-origin. Filterable via `cb_enable_cors` (default: on).
+		add_action( 'rest_api_init', array( $this, 'enable_cors' ), 15 );
+	}
+
+	/**
+	 * Send permissive CORS headers for our REST API so a Compose-Web / desktop
+	 * build hosted on a different origin can read and manage the site. Echoes the
+	 * request Origin (with credentials) so JWT Authorization headers pass. This is
+	 * expected for a headless "bridge" plugin; disable with:
+	 *   add_filter( 'cb_enable_cors', '__return_false' );
+	 */
+	public function enable_cors(): void {
+		if ( ! apply_filters( 'cb_enable_cors', true ) ) {
+			return;
+		}
+		remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+		add_filter( 'rest_pre_serve_request', function ( $served ) {
+			$origin = get_http_origin();
+			header( 'Access-Control-Allow-Origin: ' . ( $origin ? esc_url_raw( $origin ) : '*' ) );
+			header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
+			header( 'Access-Control-Allow-Credentials: true' );
+			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce' );
+			header( 'Vary: Origin', false );
+			// Preflight: answer OPTIONS immediately with the headers above.
+			if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) ) {
+				status_header( 204 );
+				exit;
+			}
+			return $served;
+		} );
 	}
 
 	/**
