@@ -41,12 +41,16 @@ if [ -n "$FP" ]; then
   $WP option update page_on_front "$FP" || true
 fi
 
+echo "== account page id =="
+ACCT_ID=$($WP option get woocommerce_myaccount_page_id 2>/dev/null || echo "")
+
 echo "== routes.json =="
 mkdir -p shots
 {
   echo '['
   echo '  {"name":"home","url":"/"},'
   echo '  {"name":"shop","url":"/?post_type=product"},'
+  if [ -n "$ACCT_ID" ] && [ "$ACCT_ID" != "0" ]; then echo "  {\"name\":\"account\",\"url\":\"/?page_id=$ACCT_ID\"},"; fi
   if [ "${#PROD_IDS[@]}" -gt 0 ]; then
     echo "  {\"name\":\"product\",\"url\":\"/?post_type=product&p=${PROD_IDS[0]}\"},"
   fi
