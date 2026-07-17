@@ -48,11 +48,11 @@ mkdir -p shots
   echo '  {"name":"home","url":"/"},'
   echo '  {"name":"shop","url":"/?post_type=product"},'
   if [ "${#PROD_IDS[@]}" -gt 0 ]; then
-    echo "  {\"name\":\"product\",\"url\":\"/?p=${PROD_IDS[0]}\"},"
+    echo "  {\"name\":\"product\",\"url\":\"/?post_type=product&p=${PROD_IDS[0]}\"},"
   fi
   echo '  {"name":"blog","url":"/?post_type=post"},'
   echo '  {"name":"courses","url":"/?post_type=cb_course"},'
-  if [ -n "$COURSE_ID" ]; then echo "  {\"name\":\"course\",\"url\":\"/?p=$COURSE_ID\"},"; fi
+  if [ -n "$COURSE_ID" ]; then echo "  {\"name\":\"course\",\"url\":\"/?post_type=cb_course&p=$COURSE_ID\"},"; fi
   echo '  {"name":"therapists","url":"/?post_type=cb_therapist"},'
   echo '  {"name":"psychtests","url":"/?post_type=cb_psychtest"}'
   echo ']'

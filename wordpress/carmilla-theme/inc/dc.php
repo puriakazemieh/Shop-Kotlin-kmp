@@ -78,7 +78,8 @@ function carmilla_dc_product_card( $product ) {
 	$add_url = $in_stock ? esc_url( add_query_arg( 'add-to-cart', $id, wc_get_cart_url() ) ) : '#';
 	$wish_url = esc_url( add_query_arg( array( 'cb_wish' => $id ), $permalink ) );
 	?>
-	<a href="<?php echo esc_url( $permalink ); ?>" style="display:block;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 30px rgba(20,25,45,.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+	<div style="position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 30px rgba(20,25,45,.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+		<a href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php echo esc_attr( $name ); ?>" style="position:absolute;inset:0;z-index:1;"></a>
 		<div style="position:relative;aspect-ratio:.82;background:var(--surface-2);overflow:hidden;">
 			<?php if ( $img ) : ?>
 				<div style="position:absolute;inset:0;background:url('<?php echo esc_url( $img ); ?>') center/cover no-repeat;"></div>
@@ -93,7 +94,7 @@ function carmilla_dc_product_card( $product ) {
 			<?php elseif ( $badge ) : ?>
 				<div style="position:absolute;top:10px;right:10px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:9px;"><?php echo esc_html( $badge ); ?></div>
 			<?php endif; ?>
-			<a href="<?php echo $wish_url; // phpcs:ignore ?>" onclick="event.stopPropagation()" style="position:absolute;top:9px;left:9px;width:32px;height:32px;border-radius:10px;background:var(--surface);display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 3px 8px rgba(0,0,0,.08);">
+			<a href="<?php echo $wish_url; // phpcs:ignore ?>" style="position:absolute;top:9px;left:9px;z-index:3;width:32px;height:32px;border-radius:10px;background:var(--surface);display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 3px 8px rgba(0,0,0,.08);">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.4-9A5 5 0 0112 5a5 5 0 019.4 7C19 16.4 12 21 12 21z"/></svg>
 			</a>
 		</div>
@@ -113,12 +114,12 @@ function carmilla_dc_product_card( $product ) {
 					<div style="font-size:15px;font-weight:800;color:var(--ink);"><?php echo esc_html( carmilla_dc_num( $price ) ); ?> <span style="font-size:10px;font-weight:500;color:var(--ink-soft);">تومان</span></div>
 				</div>
 				<?php if ( $in_stock ) : ?>
-				<a href="<?php echo $add_url; // phpcs:ignore ?>" onclick="event.stopPropagation()" style="width:34px;height:34px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:#fff;flex-shrink:0;">
+				<a href="<?php echo $add_url; // phpcs:ignore ?>" style="position:relative;z-index:3;width:34px;height:34px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:#fff;flex-shrink:0;">
 					<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
 				</a>
 				<?php endif; ?>
 			</div>
 		</div>
-	</a>
+	</div>
 	<?php
 }
