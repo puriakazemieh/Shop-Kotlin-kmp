@@ -11,6 +11,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// "Only discounted" filter for the shop/category archive (?on_sale=1).
+add_action( 'woocommerce_product_query', function ( $q ) {
+	if ( is_admin() || ! isset( $_GET['on_sale'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return;
+	}
+	$ids = function_exists( 'wc_get_product_ids_on_sale' ) ? wc_get_product_ids_on_sale() : array();
+	$q->set( 'post__in', array_merge( array( 0 ), array_map( 'absint', (array) $ids ) ) );
+} );
+
 /** Moon/sun path for the header theme toggle (light shows moon, JS swaps to sun). */
 function carmilla_dc_theme_icon() {
 	return 'M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z';

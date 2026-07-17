@@ -46,7 +46,13 @@ async function main() {
         try {
           await page.goto(r.url, { waitUntil: 'networkidle', timeout: 45000 });
           await page.waitForTimeout(1500);
-          await page.screenshot({ path: `${OUT}/${bp.name}-${r.name}.png`, fullPage: true });
+          // Viewport shot: fixed elements (the floating bottom nav) sit where they
+          // really do on a device — nav docked at the bottom.
+          await page.screenshot({ path: `${OUT}/${bp.name}-${r.name}.png` });
+          // Full-page shot for whole-page content review, with the fixed bottom
+          // nav hidden so it doesn't smear near the top of the tall image.
+          await page.addStyleTag({ content: '.bottom-nav{display:none!important}' });
+          await page.screenshot({ path: `${OUT}/${bp.name}-${r.name}-full.png`, fullPage: true });
           console.log(`captured ${bp.name}/${r.name}`);
         } catch (e) {
           console.log(`FAILED ${bp.name}/${r.name}:`, e.message);

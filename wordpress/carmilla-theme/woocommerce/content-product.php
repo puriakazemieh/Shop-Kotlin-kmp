@@ -1,7 +1,9 @@
 <?php
 /**
- * WooCommerce loop item override → render the Carmilla product card.
- * Kept in sync with template-parts/card-product.php.
+ * WooCommerce loop item override → render the faithful Carmilla product card.
+ * Mirrors the product card in docs/design-reference/*.html.
+ *
+ * @package Carmilla
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -11,4 +13,4 @@ global $product;
 if ( empty( $product ) || ! $product->is_visible() ) {
 	return;
 }
-get_template_part( 'template-parts/card', 'product' );
+carmilla_dc_product_card( $product );
