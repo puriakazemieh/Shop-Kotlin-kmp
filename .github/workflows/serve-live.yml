@@ -20,7 +20,7 @@ on:
         default: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   live:
@@ -72,6 +72,31 @@ jobs:
           echo "API_URL=$API_URL" >> "$GITHUB_ENV"
           echo "WEB_URL=$WEB_URL" >> "$GITHUB_ENV"
           echo "api=$API_URL  web=$WEB_URL"
+
+      - name: Publish live URLs to a branch (readable while the job runs)
+        run: |
+          # The job stays alive (Keep alive) for the whole session, so its logs
+          # aren't downloadable meanwhile. Push the URLs to a tiny branch so they
+          # can be read the moment the tunnels are up — long before the web build
+          # finishes. WEB becomes fully usable only after the build completes.
+          RUN="${GITHUB_RUN_ID}"
+          {
+            echo "run_id: $RUN"
+            echo "api_url: ${API_URL}/"
+            echo "web_url: ${WEB_URL}"
+            echo "swagger: ${API_URL}/api/swagger-ui.html"
+            echo "status: tunnels-up-web-building"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "live urls (run $RUN)"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Compose-Web (pointed at the live API)
         run: |
