@@ -93,8 +93,12 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
+      # The Compose-Web build takes ~30 min and the app code rarely changes during
+      # theme work, so only build it on a manual dispatch. Theme pushes get a fast
+      # WordPress-only screenshot run.
       - name: Build Compose-Web distribution
         id: webbuild
+        if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
           chmod +x gradlew
