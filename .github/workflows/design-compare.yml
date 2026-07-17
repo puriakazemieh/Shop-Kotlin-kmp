@@ -1,0 +1,134 @@
+name: Design Compare
+
+# Brings up one WordPress (WooCommerce + Carmilla Bridge plugin + Carmilla theme
+# + seeded demo data), screenshots the theme, then builds the Kotlin Compose-Web
+# app pointed at that same WordPress and screenshots it too — same data on both
+# sides. The theme screenshots run FIRST so a Compose-Web build problem can never
+# cost us the theme review. Images are force-pushed to `claude/ci-screenshots`.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'wordpress/carmilla-theme/**'
+      - 'wordpress/carmilla-bridge/**'
+      - 'composeApp/src/webMain/**'
+      - 'feature/details/src/jsMain/**'
+      - '.github/workflows/design-compare.yml'
+      - '.github/ci/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: design-compare
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot" --health-interval=10s
+          --health-timeout=5s --health-retries=10
+    env:
+      WP_PATH: ${{ github.workspace }}/wp
+      WP_BASE: http://localhost:8090
+    steps:
+      - uses: actions/checkout@v4
+
+      # ---- WordPress + WooCommerce + plugin + theme + demo data (FIRST) -----
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, gd, zip, mbstring, curl, dom, imagick
+          tools: wp-cli
+      - name: Install WordPress
+        run: |
+          set -e
+          mkdir -p "$WP_PATH"
+          WP="wp --allow-root --path=$WP_PATH"
+          $WP core download --version=latest
+          $WP config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306
+          $WP core install --url=$WP_BASE --title="Carmilla Demo" \
+            --admin_user=admin --admin_password=admin123 --admin_email=demo@example.com --skip-email
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" "$WP_PATH/wp-content/plugins/carmilla-bridge"
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-theme"  "$WP_PATH/wp-content/themes/carmilla-theme"
+      - name: Seed demo content
+        run: bash .github/ci/seed-wordpress.sh
+      - name: Start WordPress server
+        run: |
+          wp --allow-root --path="$WP_PATH" server --host=0.0.0.0 --port=8090 >/tmp/wp-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sSf http://localhost:8090/ >/dev/null 2>&1; then echo "wp up"; break; fi
+            sleep 2
+          done
+          curl -sS -o /dev/null -w "home: %{http_code}\n" http://localhost:8090/ || true
+          curl -sS -o /dev/null -w "rest products: %{http_code}\n" "http://localhost:8090/?rest_route=/carmilla/v1/api/products" || true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i -D playwright@1.48.0
+          npx playwright install --with-deps chromium
+      - name: Screenshot WordPress theme
+        run: node .github/ci/shoot-wordpress.mjs
+      - name: WP server log (debug)
+        if: always()
+        run: tail -60 /tmp/wp-server.log || true
+
+      # ---- Kotlin Compose-Web build + screenshots (best-effort) ------------
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      # The Compose-Web build takes ~30 min and the app code rarely changes during
+      # theme work, so only build it on a manual dispatch. Theme pushes get a fast
+      # WordPress-only screenshot run.
+      - name: Build Compose-Web distribution
+        id: webbuild
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        run: |
+          chmod +x gradlew
+          ./gradlew :composeApp:jsBrowserDistribution --no-daemon --stacktrace
+      - name: List dist (debug)
+        if: always()
+        run: ls -R composeApp/build/dist 2>/dev/null | head -60 || true
+      - name: Screenshot Kotlin web (pointed at the same WordPress)
+        if: steps.webbuild.outcome == 'success'
+        env:
+          KWEB_API: http://localhost:8090/wp-json/carmilla/v1/
+        run: node .github/ci/shoot-kotlin.mjs
+
+      # ---- Publish screenshots to a branch ---------------------------------
+      - name: Push screenshots to ci branch
+        if: always()
+        run: |
+          test -d shots || { echo "no shots produced"; exit 0; }
+          git config user.name "carmilla-ci"
+          git config user.email "ci@example.com"
+          git checkout --orphan ci-shots
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          rm -rf screenshots && mkdir -p screenshots
+          cp -r shots/* screenshots/ 2>/dev/null || true
+          {
+            echo "# CI design screenshots"
+            echo "Run ${{ github.run_id }} at $(date -u)"
+            echo ""
+            find screenshots -type f | sort
+          } > screenshots/README.md
+          git add screenshots
+          git commit -m "ci: design comparison screenshots (run ${{ github.run_id }})" || { echo "nothing to commit"; exit 0; }
+          git push -f origin ci-shots:claude/ci-screenshots

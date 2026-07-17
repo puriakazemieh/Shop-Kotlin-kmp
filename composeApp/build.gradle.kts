@@ -111,6 +111,10 @@ android {
         versionName = "1.0"
         // برندِ پیش‌فرض؛ هر فلِیور می‌تواند override کند.
         buildConfigField("String", "BRAND", "\"carmila\"")
+        // آدرسِ API را می‌توان هنگامِ بیلد با -PcarmillaApiBase=... تنظیم کرد
+        // (مثلاً برای وصل‌کردنِ APK به یک وردپرس/سرورِ مشخص). خالی = پیش‌فرضِ برند.
+        val carmillaApiBase = (project.findProperty("carmillaApiBase") as String?)?.trim().orEmpty()
+        buildConfigField("String", "API_BASE_OVERRIDE", "\"$carmillaApiBase\"")
     }
     buildFeatures {
         buildConfig = true
@@ -145,6 +149,14 @@ android {
             applicationIdSuffix = ".psych"
             versionNameSuffix = "-psych"
             buildConfigField("String", "BRAND", "\"psych\"")
+        }
+        // اپ ← وردپرس: به‌جای سرورِ Spring Boot، به سایتِ وردپرس (پلاگینِ Carmilla
+        // Bridge) وصل می‌شود. آدرسِ سایت در WpBrand.apiBaseUrl تنظیم می‌شود.
+        create("wp") {
+            dimension = "brand"
+            applicationIdSuffix = ".wp"
+            versionNameSuffix = "-wp"
+            buildConfigField("String", "BRAND", "\"wp\"")
         }
     }
     packaging {

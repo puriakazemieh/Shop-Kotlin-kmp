@@ -1,44 +1,53 @@
 <?php
 /**
- * Therapist archive ← TherapistListScreen + TherapistMatch questionnaire on top.
+ * Therapist archive ← TherapistListScreen — DC grid of therapist cards, with the
+ * TherapistMatch questionnaire on top.
+ *
+ * @package Carmilla
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 get_header();
+global $wp_query;
 ?>
-<main class="container container--wide" style="padding-block: var(--sp-xl);">
-	<div class="section-head"><h1 class="t-title-lg"><?php esc_html_e( 'مشاوران', 'carmilla' ); ?></h1></div>
+<div style="animation:fadeUp .35s both;padding-top:20px;">
+	<div style="margin-bottom:16px;">
+		<h1 style="font-size:clamp(19px,3vw,25px);font-weight:800;margin:0;letter-spacing:-.5px;">مشاوران</h1>
+		<div style="font-size:12px;color:var(--ink-soft);margin-top:3px;"><?php echo esc_html( carmilla_to_persian_digits( (int) $wp_query->found_posts ) ); ?> مشاور</div>
+	</div>
 
 	<!-- Therapist match: pick a concern → filtered suggestions (JS + REST). -->
-	<section class="card card--pad cb-match" id="cb-match" style="margin-block-end:var(--sp-lg)">
-		<h2 class="t-title-sm"><?php esc_html_e( 'یافتن مشاور مناسب', 'carmilla' ); ?></h2>
-		<p class="t-body-sm t-muted"><?php esc_html_e( 'موضوع مورد نظرتان را انتخاب کنید تا مناسب‌ترین مشاوران را ببینید.', 'carmilla' ); ?></p>
-		<div class="cb-match__chips" id="cb-match-chips"></div>
-		<div class="grid-adaptive" id="cb-match-results" style="margin-block-start:var(--sp-md)"></div>
-	</section>
+	<div id="cb-match" style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:18px;">
+		<h2 style="font-size:15px;font-weight:800;margin:0 0 5px;">یافتن مشاور مناسب</h2>
+		<p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;line-height:1.8;">موضوع مورد نظرتان را انتخاب کنید تا مناسب‌ترین مشاوران را ببینید.</p>
+		<div class="cb-match__chips" id="cb-match-chips" style="display:flex;gap:9px;flex-wrap:wrap;"></div>
+		<div id="cb-match-results" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:14px;"></div>
+	</div>
 
 	<?php if ( have_posts() ) : ?>
-		<div class="grid-adaptive">
+		<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(12px,2vw,18px);">
 			<?php
 			while ( have_posts() ) :
 				the_post();
-				$specialty = get_post_meta( get_the_ID(), 'cb_specialty', true );
-				?>
-				<article class="card">
-					<a href="<?php the_permalink(); ?>" class="thumb"><?php the_post_thumbnail( 'carmilla-card' ); ?></a>
-					<div class="card--pad">
-						<h3 class="t-title-sm"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-						<?php if ( $specialty ) : ?><div class="meta-row"><span class="badge badge--new"><?php echo esc_html( $specialty ); ?></span></div><?php endif; ?>
-					</div>
-				</article>
-			<?php endwhile; ?>
+				$id = get_the_ID();
+				carmilla_dc_media_card( array(
+					'name'     => get_the_title(),
+					'url'      => get_permalink(),
+					'image'    => get_the_post_thumbnail_url( $id, 'large' ),
+					'subtitle' => get_post_meta( $id, 'cb_specialty', true ),
+					'badge'    => '',
+					'price'    => null,
+					'seed'     => $id,
+				) );
+			endwhile;
+			?>
 		</div>
-		<?php the_posts_pagination( array( 'mid_size' => 1, 'prev_text' => '‹', 'next_text' => '›' ) ); ?>
+		<div style="margin-top:24px;display:flex;justify-content:center;"><?php the_posts_pagination( array( 'mid_size' => 1, 'prev_text' => '‹', 'next_text' => '›' ) ); ?></div>
 	<?php else : ?>
-		<div class="empty-state"><p class="t-body"><?php esc_html_e( 'هنوز مشاوری ثبت نشده.', 'carmilla' ); ?></p></div>
+		<div style="text-align:center;padding:70px 20px;color:var(--ink-soft);"><div style="font-size:46px;margin-bottom:10px;">🧑‍⚕️</div><div style="font-size:15px;font-weight:600;">هنوز مشاوری ثبت نشده</div></div>
 	<?php endif; ?>
-</main>
+</div>
 <?php
 get_footer();

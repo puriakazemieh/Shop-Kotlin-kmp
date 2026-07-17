@@ -27,6 +27,84 @@ class CB_Plugin {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		// Let a valid Bearer token authenticate normal WP REST requests too.
 		add_filter( 'determine_current_user', array( $this, 'authenticate_bearer' ), 20 );
+		// Keep product Q&A comments out of the normal comment feed/counts.
+		add_filter( 'comments_clauses', array( 'CB_Interaction_Controller', 'hide_qna_clauses' ) );
+		// A few app endpoints use a host-root path (/api/users/me, /api/addresses)
+		// that would fall outside /wp-json/carmilla/v1/. Alias them to the REST
+		// routes so the app needs no client-side change.
+		add_action( 'parse_request', array( $this, 'maybe_root_alias' ) );
+		// Allow the app (web/desktop build served from another origin) to call the
+		// REST API cross-origin. Filterable via `cb_enable_cors` (default: on).
+		add_action( 'rest_api_init', array( $this, 'enable_cors' ), 15 );
+	}
+
+	/**
+	 * Send permissive CORS headers for our REST API so a Compose-Web / desktop
+	 * build hosted on a different origin can read and manage the site. Echoes the
+	 * request Origin (with credentials) so JWT Authorization headers pass. This is
+	 * expected for a headless "bridge" plugin; disable with:
+	 *   add_filter( 'cb_enable_cors', '__return_false' );
+	 */
+	public function enable_cors(): void {
+		if ( ! apply_filters( 'cb_enable_cors', true ) ) {
+			return;
+		}
+		remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+		add_filter( 'rest_pre_serve_request', function ( $served ) {
+			$origin = get_http_origin();
+			header( 'Access-Control-Allow-Origin: ' . ( $origin ? esc_url_raw( $origin ) : '*' ) );
+			header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
+			header( 'Access-Control-Allow-Credentials: true' );
+			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce' );
+			header( 'Vary: Origin', false );
+			// Preflight: answer OPTIONS immediately with the headers above.
+			if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) ) {
+				status_header( 204 );
+				exit;
+			}
+			return $served;
+		} );
+	}
+
+	/**
+	 * Dispatch root-level /api/users/me and /api/addresses* to the matching REST
+	 * route via rest_do_request, then emit the JSON and stop. No-op for any other
+	 * URL, so normal WordPress routing is untouched.
+	 */
+	public function maybe_root_alias(): void {
+		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) : '';
+		$uri = '/' . ltrim( untrailingslashit( $uri ), '/' );
+		$root_paths = array( '/api/users/me', '/api/addresses', '/api/favorites', '/api/recently-viewed' );
+		$match = false;
+		foreach ( $root_paths as $rp ) {
+			if ( $uri === $rp || strpos( $uri, $rp . '/' ) === 0 ) {
+				$match = true;
+				break;
+			}
+		}
+		if ( ! $match ) {
+			return;
+		}
+
+		$method  = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : 'GET';
+		$request = new WP_REST_Request( $method, '/' . CB_REST_NAMESPACE . $uri );
+		foreach ( (array) $_GET as $k => $v ) {
+			$request->set_param( sanitize_text_field( (string) $k ), $v );
+		}
+		$body = file_get_contents( 'php://input' );
+		if ( $body !== '' && $body !== false ) {
+			$request->set_body( $body );
+			$request->set_header( 'Content-Type', 'application/json' );
+		}
+
+		$response = rest_do_request( $request );
+		$server   = rest_get_server();
+		$data     = $server->response_to_data( $response, false );
+
+		status_header( $response->get_status() );
+		header( 'Content-Type: application/json; charset=utf-8' );
+		echo wp_json_encode( $data );
+		exit;
 	}
 
 	public function register_routes(): void {
@@ -34,6 +112,31 @@ class CB_Plugin {
 		( new CB_Catalog_Controller() )->register_routes();
 		( new CB_Blog_Controller() )->register_routes();
 		( new CB_Media_Controller() )->register_routes();
+		// Phase 2: full commerce.
+		( new CB_Cart_Controller() )->register_routes();
+		( new CB_Order_Controller() )->register_routes();
+		( new CB_Payment_Controller() )->register_routes();
+		( new CB_Wallet_Controller() )->register_routes();
+		( new CB_Account_Controller() )->register_routes();
+		( new CB_Interaction_Controller() )->register_routes();
+		// Phase 3: academy.
+		( new CB_Academy_Controller() )->register_routes();
+		// Phase 4: clinic + psych tests.
+		( new CB_Clinic_Controller() )->register_routes();
+		( new CB_Psychtest_Controller() )->register_routes();
+		// Phase 5: shop extras.
+		( new CB_Extras_Controller() )->register_routes();
+		( new CB_Support_Controller() )->register_routes();
+		( new CB_Bundle_Controller() )->register_routes();
+		( new CB_Story_Controller() )->register_routes();
+		( new CB_Course_Request_Controller() )->register_routes();
+		// Phase 6: admin panel.
+		( new CB_Admin_Controller() )->register_routes();
+		( new CB_Admin_Content_Controller() )->register_routes();
+		( new CB_Admin_Product_Controller() )->register_routes();
+		( new CB_Admin_Clinic_Controller() )->register_routes();
+		( new CB_Admin_B2B_Controller() )->register_routes();
+		( new CB_Admin_Bundle_Controller() )->register_routes();
 	}
 
 	/**
