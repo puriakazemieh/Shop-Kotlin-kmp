@@ -1,0 +1,138 @@
+name: Serve Live (server + web)
+
+# One-click live test environment: builds and runs the Spring Boot server +
+# PostgreSQL, exposes it on a free Cloudflare tunnel, builds the Compose-Web app
+# with that server URL baked in, serves the web on a second tunnel, and prints a
+# single FINAL LINK you can open to test the app against the live API.
+#
+# Everything is temporary — it lives only while this job runs (the minutes you
+# choose, max 350) and the URLs change each run.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: 'How long to keep everything up (minutes, max 350)'
+        type: string
+        default: '90'
+      seed_enabled:
+        description: 'Seed demo data on the server'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: shopdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d shopdb" --health-interval=10s
+          --health-timeout=5s --health-retries=10
+    steps:
+      - name: Checkout app (KMP)
+        uses: actions/checkout@v4
+      - name: Checkout server
+        uses: actions/checkout@v4
+        with:
+          repository: puriakazemieh/Shop-Kotlin-Spring-Boot
+          ref: develop
+          path: server
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build server jar
+        run: |
+          cd server
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace bootJar
+          cp "$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)" "$GITHUB_WORKSPACE/app.jar"
+
+      - name: Start Cloudflare tunnels
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+          chmod +x cloudflared
+          grab() { for i in $(seq 1 40); do U=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' "$1" | head -1 || true); [ -n "$U" ] && { echo "$U"; return; }; sleep 2; done; }
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8080 > api-tunnel.log 2>&1 &
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8090 > web-tunnel.log 2>&1 &
+          API_URL="$(grab api-tunnel.log)"
+          WEB_URL="$(grab web-tunnel.log)"
+          echo "API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "WEB_URL=$WEB_URL" >> "$GITHUB_ENV"
+          echo "api=$API_URL  web=$WEB_URL"
+
+      - name: Build Compose-Web (pointed at the live API)
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
+          mkdir -p web && cp -r composeApp/build/dist/js/productionExecutable/* web/
+          # Bake ?api=<server> so opening the web link just works.
+          export API_BASE="${API_URL}/wp-json/carmilla/v1/"
+          export SERVER_API_BASE="${API_URL}/"
+          cat > bake.mjs <<'JS'
+          import fs from 'node:fs';
+          // The Compose-Web app talks to the Spring Boot API at <server>/ , so bake
+          // that as the api base (not the WordPress path).
+          const api = process.env.SERVER_API_BASE;
+          const f = 'web/index.html';
+          let h = fs.readFileSync(f, 'utf8');
+          const s = '<script>(function(){try{var u=new URL(location.href);if(!u.searchParams.get("api")){u.searchParams.set("api",' + JSON.stringify(api) + ');location.replace(u.toString());}}catch(e){}})();</script>';
+          h = h.replace('</head>', s + '</head>');
+          fs.writeFileSync(f, h);
+          console.log('baked api =', api);
+          JS
+          node bake.mjs
+          # Serve the static web on :8090 (the second tunnel points here).
+          nohup python3 -m http.server 8090 --directory web > web-server.log 2>&1 &
+          sleep 2
+          curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ || true
+
+      - name: Start server (CORS allows the web tunnel)
+        env:
+          DATASOURCE_URL: jdbc:postgresql://localhost:5432/shopdb
+          DATASOURCE_USERNAME: postgres
+          DATASOURCE_PASSWORD: postgres
+          SERVER_PORT: '8080'
+        run: |
+          SEED="${{ inputs.seed_enabled }}"
+          APP_CORS_ORIGINS="$WEB_URL" FRONTEND_URL="$WEB_URL" NGROK_URL="$API_URL" SEED_ENABLED="$SEED" \
+            nohup java -jar app.jar > server.log 2>&1 &
+          echo "waiting for server…"
+          for i in $(seq 1 60); do
+            if curl -sSf http://localhost:8080/api/products >/dev/null 2>&1 || curl -sSf http://localhost:8080/ >/dev/null 2>&1; then echo "server up"; break; fi
+            sleep 3
+          done
+          tail -30 server.log || true
+
+      - name: Publish the final link
+        run: |
+          {
+            echo "## Live test environment"
+            echo ""
+            echo "**FINAL LINK (open this):** ${WEB_URL}"
+            echo ""
+            echo "- API base: ${API_URL}/"
+            echo "- Swagger:  ${API_URL}/api/swagger-ui.html"
+            echo "- The web is pre-pointed at the API; to override, open ${WEB_URL}/?api=<other>"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "FINAL LINK => ${WEB_URL}"
+          echo "API => ${API_URL}/"
+
+      - name: Keep alive
+        run: |
+          MIN="${{ inputs.minutes }}"; MIN=${MIN:-90}
+          if [ "$MIN" -gt 350 ]; then MIN=350; fi
+          echo "staying up for ${MIN} minutes — WEB ${WEB_URL} / API ${API_URL}"
+          sleep "$((MIN*60))" || true
