@@ -1,35 +1,47 @@
 <?php
 /**
- * Psychology-test archive ← PsychTestList (wide grid of test cards).
+ * Psychology-test archive ← PsychTestList — DC grid of test cards.
+ *
+ * @package Carmilla
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 get_header();
+global $wp_query;
 ?>
-<main class="container container--wide" style="padding-block: var(--sp-xl);">
-	<div class="section-head"><h1 class="t-title-lg"><?php esc_html_e( 'تست‌های روان‌شناسی', 'carmilla' ); ?></h1></div>
+<div style="animation:fadeUp .35s both;padding-top:20px;">
+	<div style="margin-bottom:16px;">
+		<h1 style="font-size:clamp(19px,3vw,25px);font-weight:800;margin:0;letter-spacing:-.5px;">تست‌های روان‌شناسی</h1>
+		<div style="font-size:12px;color:var(--ink-soft);margin-top:3px;"><?php echo esc_html( carmilla_to_persian_digits( (int) $wp_query->found_posts ) ); ?> تست</div>
+	</div>
+
 	<?php if ( have_posts() ) : ?>
-		<div class="grid-adaptive">
+		<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(12px,2vw,18px);">
 			<?php
 			while ( have_posts() ) :
 				the_post();
-				$count = count( carmilla_psychtest_questions( get_the_ID() ) );
-				?>
-				<article class="card">
-					<?php if ( has_post_thumbnail() ) : ?><a href="<?php the_permalink(); ?>" class="thumb"><?php the_post_thumbnail( 'carmilla-card' ); ?></a><?php endif; ?>
-					<div class="card--pad">
-						<h3 class="t-title-sm"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-						<?php if ( $count ) : ?><div class="meta-row"><span><?php echo esc_html( carmilla_to_persian_digits( $count ) ); ?> سؤال</span></div><?php endif; ?>
-					</div>
-				</article>
-			<?php endwhile; ?>
+				$id    = get_the_ID();
+				$count = function_exists( 'carmilla_psychtest_questions' ) ? count( carmilla_psychtest_questions( $id ) ) : 0;
+				$price = get_post_meta( $id, 'cb_price', true );
+				carmilla_dc_media_card( array(
+					'name'     => get_the_title(),
+					'url'      => get_permalink(),
+					'image'    => get_the_post_thumbnail_url( $id, 'large' ),
+					'subtitle' => $count ? carmilla_to_persian_digits( $count ) . ' سؤال' : '',
+					'badge'    => '',
+					'price'    => ( '' !== $price ) ? (float) $price : null,
+					'cta'      => 'شروع تست',
+					'seed'     => $id,
+				) );
+			endwhile;
+			?>
 		</div>
-		<?php the_posts_pagination( array( 'mid_size' => 1, 'prev_text' => '‹', 'next_text' => '›' ) ); ?>
+		<div style="margin-top:24px;display:flex;justify-content:center;"><?php the_posts_pagination( array( 'mid_size' => 1, 'prev_text' => '‹', 'next_text' => '›' ) ); ?></div>
 	<?php else : ?>
-		<div class="empty-state"><p class="t-body"><?php esc_html_e( 'هنوز تستی ثبت نشده.', 'carmilla' ); ?></p></div>
+		<div style="text-align:center;padding:70px 20px;color:var(--ink-soft);"><div style="font-size:46px;margin-bottom:10px;">🧠</div><div style="font-size:15px;font-weight:600;">هنوز تستی ثبت نشده</div></div>
 	<?php endif; ?>
-</main>
+</div>
 <?php
 get_footer();

@@ -20,6 +20,39 @@ add_action( 'woocommerce_product_query', function ( $q ) {
 	$q->set( 'post__in', array_merge( array( 0 ), array_map( 'absint', (array) $ids ) ) );
 } );
 
+/**
+ * Generic DC media card (course / therapist / psych-test). Cover image, title,
+ * a subtitle line, an optional badge and an optional price — same visual language
+ * as the product card, with a stretched link (no nested anchors).
+ *
+ * @param array $a name, url, image, subtitle, badge, price (float|null), cta.
+ */
+function carmilla_dc_media_card( array $a ) {
+	$img   = $a['image'] ?? '';
+	$badge = $a['badge'] ?? '';
+	$price = $a['price'] ?? null;
+	$seed  = $a['seed'] ?? 0;
+	?>
+	<div style="position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 30px rgba(20,25,45,.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+		<a href="<?php echo esc_url( $a['url'] ); ?>" aria-label="<?php echo esc_attr( $a['name'] ); ?>" style="position:absolute;inset:0;z-index:1;"></a>
+		<div style="position:relative;aspect-ratio:1.4;overflow:hidden;<?php echo $img ? "background:url('" . esc_url( $img ) . "') center/cover;" : 'background:' . esc_attr( carmilla_dc_placeholder_bg( $seed ) ) . ';'; ?>display:grid;place-items:center;">
+			<?php if ( ! $img ) : ?><svg width="30%" viewBox="0 0 24 24" fill="none" stroke="rgba(25,32,56,.2)" stroke-width="1.1"><path d="M4 5h16v14H4z M8 9h8 M8 13h5"/></svg><?php endif; ?>
+			<?php if ( $badge ) : ?><div style="position:absolute;top:10px;right:10px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:9px;"><?php echo esc_html( $badge ); ?></div><?php endif; ?>
+		</div>
+		<div style="padding:14px 15px 16px;">
+			<div style="font-size:14px;font-weight:700;color:var(--ink);line-height:1.6;height:45px;overflow:hidden;"><?php echo esc_html( $a['name'] ); ?></div>
+			<?php if ( ! empty( $a['subtitle'] ) ) : ?><div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);margin-top:8px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg><?php echo esc_html( $a['subtitle'] ); ?></div><?php endif; ?>
+			<?php if ( null !== $price ) : ?>
+				<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;">
+					<div style="font-size:15px;font-weight:800;color:var(--ink);"><?php echo $price > 0 ? esc_html( carmilla_dc_num( $price ) ) . ' <span style="font-size:10px;font-weight:500;color:var(--ink-soft);">تومان</span>' : '<span style="color:var(--ok);">رایگان</span>'; // phpcs:ignore ?></div>
+					<?php if ( ! empty( $a['cta'] ) ) : ?><span style="position:relative;z-index:3;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;padding:8px 14px;border-radius:11px;"><?php echo esc_html( $a['cta'] ); ?></span><?php endif; ?>
+				</div>
+			<?php endif; ?>
+		</div>
+	</div>
+	<?php
+}
+
 /** Moon/sun path for the header theme toggle (light shows moon, JS swaps to sun). */
 function carmilla_dc_theme_icon() {
 	return 'M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z';
