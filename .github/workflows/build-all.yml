@@ -33,6 +33,10 @@ on:
         description: 'Build Compose-Web (zip)'
         type: boolean
         default: true
+      ios:
+        description: 'Build iOS (KMP framework + simulator app; runs on macOS). Note: an installable device .ipa needs your Apple signing certs.'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -142,4 +146,51 @@ jobs:
         with:
           name: web-dist
           path: carmilla-web.zip
+          if-no-files-found: warn
+
+  ios:
+    if: ${{ inputs.ios }}
+    runs-on: macos-14
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build KMP iOS frameworks (device + simulator)
+        run: |
+          chmod +x gradlew
+          # Compiles the shared Kotlin/Native framework for a real device arch and
+          # the Apple-silicon simulator — proves the whole KMP layer builds for iOS.
+          ./gradlew --no-daemon --stacktrace \
+            :composeApp:linkReleaseFrameworkIosArm64 \
+            :composeApp:linkDebugFrameworkIosSimulatorArm64
+      - name: Build iOS app for the simulator (unsigned)
+        run: |
+          set -o pipefail
+          # -target (not -scheme) since the project ships no shared scheme.
+          # Simulator build needs no signing, so no Apple certs are required here.
+          xcodebuild \
+            -project iosApp/iosApp.xcodeproj \
+            -target iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build | tail -80
+      - name: Collect simulator .app
+        if: always()
+        run: |
+          mkdir -p out
+          APP="$(find ~/Library/Developer/Xcode/DerivedData iosApp/build -type d -name '*.app' -path '*iphonesimulator*' 2>/dev/null | head -1)"
+          if [ -n "$APP" ]; then
+            ( cd "$(dirname "$APP")" && zip -rq "$GITHUB_WORKSPACE/out/ios-simulator-app.zip" "$(basename "$APP")" )
+          fi
+          ls -la out || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-simulator-app
+          path: out/ios-simulator-app.zip
           if-no-files-found: warn
