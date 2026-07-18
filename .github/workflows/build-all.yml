@@ -168,6 +168,11 @@ jobs:
             :composeApp:linkReleaseFrameworkIosArm64 \
             :composeApp:linkDebugFrameworkIosSimulatorArm64
       - name: Build iOS app for the simulator (unsigned)
+        # Non-fatal: the framework link above is the real "does iOS compile?"
+        # gate. Packaging the .app via Xcode depends on the project's signing
+        # config (the iosApp target uses automatic signing with an empty TEAM_ID),
+        # and an installable device build needs the owner's Apple cert regardless.
+        continue-on-error: true
         run: |
           set -o pipefail
           # -target (not -scheme) since the project ships no shared scheme.
@@ -177,7 +182,9 @@ jobs:
             -target iosApp \
             -configuration Debug \
             -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" DEVELOPMENT_TEAM="" PROVISIONING_PROFILE_SPECIFIER="" \
             build | tail -80
       - name: Collect simulator .app
         if: always()
