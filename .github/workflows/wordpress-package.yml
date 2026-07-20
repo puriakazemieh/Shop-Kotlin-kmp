@@ -1,0 +1,78 @@
+name: WordPress Package (theme + plugin)
+
+# Builds installable WordPress zips straight from source — the Carmilla theme
+# and the Carmilla Bridge plugin — with the version read from each file baked
+# into the artifact name. Download from the finished run and upload via
+# «نمایش → پوسته‌ها → افزودن → بارگذاری» (theme) and «افزونه‌ها → افزودن →
+# بارگذاری» (plugin) in wp-admin.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'What to package'
+        type: choice
+        default: both
+        options: [both, theme, plugin]
+  push:
+    branches: [develop]
+    paths:
+      - 'wordpress/carmilla-theme/**'
+      - 'wordpress/carmilla-bridge/**'
+      - '.github/workflows/wordpress-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint PHP (fail fast on syntax errors)
+        run: |
+          find wordpress -name '*.php' -print0 | xargs -0 -n1 php -l >/dev/null
+
+      - name: Build zips
+        id: build
+        run: |
+          set -e
+          TARGET="${{ github.event.inputs.target || 'both' }}"
+          mkdir -p dist
+
+          theme_ver=$(grep -m1 -oiP 'Version:\s*\K[0-9.]+' wordpress/carmilla-theme/style.css || echo 0)
+          plug_ver=$(grep -m1 -oiP 'Version:\s*\K[0-9.]+' wordpress/carmilla-bridge/carmilla-bridge.php || echo 0)
+          echo "theme_ver=$theme_ver" >> "$GITHUB_OUTPUT"
+          echo "plug_ver=$plug_ver"  >> "$GITHUB_OUTPUT"
+
+          # Zip from wordpress/ so the archive's top-level folder is the
+          # theme/plugin dir exactly as WordPress expects on upload.
+          if [ "$TARGET" = "both" ] || [ "$TARGET" = "theme" ]; then
+            ( cd wordpress && zip -rq "$GITHUB_WORKSPACE/dist/carmilla-theme-v${theme_ver}.zip" \
+                carmilla-theme -x '*/.DS_Store' -x '*/node_modules/*' )
+          fi
+          if [ "$TARGET" = "both" ] || [ "$TARGET" = "plugin" ]; then
+            ( cd wordpress && zip -rq "$GITHUB_WORKSPACE/dist/carmilla-bridge-v${plug_ver}.zip" \
+                carmilla-bridge -x '*/tests/*' -x '*/.DS_Store' -x '*/node_modules/*' )
+          fi
+          echo "== built ==" && ls -la dist
+
+      - name: Summary
+        run: |
+          {
+            echo "## WordPress package"
+            echo ""
+            echo "- Theme version: **${{ steps.build.outputs.theme_ver }}**"
+            echo "- Plugin version: **${{ steps.build.outputs.plug_ver }}**"
+            echo ""
+            echo "Download the artifact below, then in wp-admin upload the theme under"
+            echo "«نمایش → پوسته‌ها → افزودن → بارگذاری» and the plugin under"
+            echo "«افزونه‌ها → افزودن → بارگذاری»."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-package
+          path: dist/*.zip
+          if-no-files-found: error
