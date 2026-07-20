@@ -338,7 +338,8 @@ class CB_Catalog_Controller {
 			'inStock'             => $product->is_in_stock(),
 			'categoryId'          => $cat_id,
 			'categoryName'        => $cat_id ? $this->cat_name( $cat_id ) : null,
-			'options'             => $this->variation_options( $product ),
+			// (object) so an empty map serializes as {} not [] (the app decodes a Map).
+			'options'             => (object) $this->variation_options( $product ),
 			'isFavorite'          => false,
 			'averageRating'       => (float) $product->get_average_rating() ?: null,
 			'reviewCount'         => (int) $product->get_review_count(),
@@ -437,7 +438,7 @@ class CB_Catalog_Controller {
 					'price'           => (float) $v->get_regular_price(),
 					'discountedPrice' => cb_price( $v->get_sale_price() ),
 					'compareAtPrice'  => null,
-					'options'         => $options,
+					'options'         => (object) $options,
 					'availableQty'    => $v->get_manage_stock() ? (int) $v->get_stock_quantity() : ( $v->is_in_stock() ? 999 : 0 ),
 					'active'          => $v->get_status() === 'publish',
 				);
@@ -450,7 +451,7 @@ class CB_Catalog_Controller {
 				'price'           => (float) $product->get_regular_price(),
 				'discountedPrice' => cb_price( $product->get_sale_price() ),
 				'compareAtPrice'  => null,
-				'options'         => array(),
+				'options'         => (object) array(),
 				'availableQty'    => $product->get_manage_stock() ? (int) $product->get_stock_quantity() : ( $product->is_in_stock() ? 999 : 0 ),
 				'active'          => $product->get_status() === 'publish',
 			);
