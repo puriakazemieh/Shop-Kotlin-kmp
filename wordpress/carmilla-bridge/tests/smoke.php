@@ -64,3 +64,18 @@ check( strpos( $html, '<!-- wp:separator -->' ) !== false, 'divider block' );
 
 echo "\n" . ( $fail === 0 ? 'ALL PASSED' : "$fail FAILED" ) . "\n";
 exit( $fail === 0 ? 0 : 1 );
+
+// Regression: empty variation options must serialize as {} (object), not [] (array),
+// or the app's Map<String,...> field throws a SerializationException (blank home).
+$empty = (object) array();
+$assert_obj = json_encode( array( 'options' => $empty ) );
+if ( strpos( $assert_obj, '"options":{}' ) === false ) {
+	fwrite( STDERR, "FAIL: empty options did not encode as {}\n" );
+	exit( 1 );
+}
+$nonempty = (object) array( 'رنگ' => array( 'قرمز' ) );
+if ( strpos( json_encode( array( 'options' => $nonempty ) ), '"options":{' ) === false ) {
+	fwrite( STDERR, "FAIL: non-empty options did not encode as object\n" );
+	exit( 1 );
+}
+echo "PASS: options map encodes as JSON object in both empty and non-empty cases\n";
