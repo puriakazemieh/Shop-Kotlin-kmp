@@ -17,6 +17,10 @@ $nav_items = carmilla_bottom_nav_items();
 	</div><!-- #content -->
 
 	<!-- ===== FOOTER (desktop) ===== -->
+	<?php
+	// Elementor Pro Theme Builder can take over the footer; otherwise render ours.
+	if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'footer' ) ) :
+		?>
 	<div class="mob-hide" style="border-top:1px solid var(--line);background:var(--surface);margin-top:40px;">
 		<div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px;padding:36px clamp(14px,4vw,28px);">
 			<div>
@@ -45,6 +49,7 @@ $nav_items = carmilla_bottom_nav_items();
 		</div>
 		<div style="border-top:1px solid var(--line);text-align:center;font-size:12px;color:var(--ink-soft);padding:16px;">© <?php echo esc_html( carmilla_to_persian_digits( date_i18n( 'Y' ) ) ); ?> <?php bloginfo( 'name' ); ?></div>
 	</div>
+	<?php endif; // end footer location fallback. ?>
 
 </div><!-- .dc-root -->
 

@@ -48,6 +48,10 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 <div class="dc-root" dir="rtl" style="min-height:100vh;background:var(--bg);color:var(--ink);transition:background .25s,color .25s;">
 
 	<!-- ===== HEADER ===== -->
+	<?php
+	// Elementor Pro Theme Builder can take over the header; otherwise render ours.
+	if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'header' ) ) :
+		?>
 	<div class="dc-header" style="position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.1);">
 		<div style="max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:clamp(10px,2vw,18px);padding:11px clamp(14px,4vw,28px);">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
@@ -96,5 +100,14 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 		</div>
 		<?php endif; ?>
 	</div>
+	<?php endif; // end header location fallback. ?>
 
-	<div id="content" class="route-pad" style="max-width:1240px;margin:0 auto;padding:0 clamp(14px,4vw,28px) 120px;min-height:60vh;">
+	<?php
+	// The «کارمیلا — تمام‌عرض (المنتور)» template gets an edge-to-edge content
+	// area (Elementor sections handle their own widths); everything else keeps
+	// the standard 1240px container.
+	$cb_content_style = is_page_template( 'page-templates/elementor-full-width.php' )
+		? 'padding:0 0 120px;min-height:60vh;'
+		: 'max-width:1240px;margin:0 auto;padding:0 clamp(14px,4vw,28px) 120px;min-height:60vh;';
+	?>
+	<div id="content" class="route-pad" style="<?php echo esc_attr( $cb_content_style ); ?>">
