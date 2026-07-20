@@ -45,6 +45,29 @@ add_filter( 'body_class', function ( $classes ) {
 	return $classes;
 } );
 
+/**
+ * Order status → [label, fg, bg] chip on the design tokens. Shared by the
+ * my-account orders list and the invoice view.
+ */
+function carmilla_acct_status_chip( $status ) {
+	switch ( $status ) {
+		case 'completed':
+			return array( __( 'تحویل شد', 'carmilla' ), 'var(--ok)', 'color-mix(in srgb, var(--ok) 12%, transparent)' );
+		case 'processing':
+			return array( __( 'در حال پردازش', 'carmilla' ), 'var(--accent)', 'var(--accent-soft)' );
+		case 'on-hold':
+		case 'pending':
+			return array( __( 'در انتظار پرداخت', 'carmilla' ), 'var(--gold)', 'color-mix(in srgb, var(--gold) 14%, transparent)' );
+		case 'cancelled':
+		case 'failed':
+			return array( __( 'لغو شده', 'carmilla' ), 'var(--sale)', 'color-mix(in srgb, var(--sale) 12%, transparent)' );
+		case 'refunded':
+			return array( __( 'مرجوع شده', 'carmilla' ), 'var(--ink-soft)', 'var(--surface-2)' );
+		default:
+			return array( wc_get_order_status_name( $status ), 'var(--ink-soft)', 'var(--surface-2)' );
+	}
+}
+
 /* -------------------------------------------------------------------------
  * Custom My-Account tabs: wallet + referral (native WooCommerce endpoints).
  * ---------------------------------------------------------------------- */
