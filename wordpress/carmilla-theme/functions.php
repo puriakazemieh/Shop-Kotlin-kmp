@@ -28,6 +28,7 @@ require_once get_template_directory() . '/inc/orders-extra.php';
 require_once get_template_directory() . '/inc/wishlist.php';
 require_once get_template_directory() . '/inc/catalog-extra.php';
 require_once get_template_directory() . '/inc/cpt-public.php';
+require_once get_template_directory() . '/inc/elementor.php'; // no-op without Elementor.
 if ( is_admin() ) {
 	require_once get_template_directory() . '/inc/admin-page.php';
 	require_once get_template_directory() . '/inc/demo-import.php';
