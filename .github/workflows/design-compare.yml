@@ -70,8 +70,12 @@ jobs:
             if curl -sSf http://localhost:8090/ >/dev/null 2>&1; then echo "wp up"; break; fi
             sleep 2
           done
-          curl -sS -o /dev/null -w "home: %{http_code}\n" http://localhost:8090/ || true
-          curl -sS -o /dev/null -w "rest products: %{http_code}\n" "http://localhost:8090/?rest_route=/carmilla/v1/api/products" || true
+          curl -sS -o /dev/null -w "home: %{http_code}\n" -L http://localhost:8090/ || true
+          curl -sS -o /dev/null -w "rest (rest_route): %{http_code}\n" "http://localhost:8090/?rest_route=/carmilla/v1/api/products" || true
+          # The Kotlin web/app uses THIS form — it must be 200, else the app spins forever.
+          code=$(curl -sS -o /dev/null -w "%{http_code}" "http://localhost:8090/wp-json/carmilla/v1/api/products" || echo 000)
+          echo "rest (/wp-json): $code"
+          if [ "$code" != "200" ]; then echo "::error::/wp-json REST base is not reachable (permalinks?)"; exit 1; fi
 
       - uses: actions/setup-node@v4
         with:

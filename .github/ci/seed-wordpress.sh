@@ -10,7 +10,11 @@ echo "== plugins/theme =="
 $WP plugin install woocommerce --activate || echo "woo install failed (continuing)"
 $WP plugin activate carmilla-bridge || echo "bridge activate failed (continuing)"
 $WP theme activate carmilla-theme
-$WP rewrite structure '' --hard || true   # plain permalinks (built-in server, no rewrite)
+# Pretty permalinks are REQUIRED: the Kotlin web/app talks to /wp-json/carmilla/v1/,
+# which 404s under plain permalinks. wp-cli's `wp server` router handles the
+# rewrites without .htaccess, so this works on the built-in PHP server too.
+$WP rewrite structure '/%postname%/' --hard || true
+$WP rewrite flush --hard || true
 
 echo "== demo products (WooCommerce) =="
 PROD_IDS=()

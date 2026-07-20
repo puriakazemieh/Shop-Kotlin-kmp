@@ -1,0 +1,208 @@
+name: Serve Live WP (wordpress + web)
+
+# One-click live test environment for the WORDPRESS path (Path B):
+# brings up WordPress + WooCommerce + the Carmilla Bridge plugin + the Carmilla
+# theme + demo data, exposes the site on a free Cloudflare tunnel, builds the
+# Compose-Web app pointed at that site's /wp-json/carmilla/v1/ REST base, serves
+# it on a second tunnel, screenshots the web (proof it renders WordPress data),
+# and prints a single FINAL LINK for testing.
+#
+# Everything is temporary — it lives only while the job runs (the minutes you
+# choose, max 350) and the URLs change each run.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: 'How long to keep everything up (minutes, max 350)'
+        type: string
+        default: '120'
+
+permissions:
+  contents: write
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot" --health-interval=10s
+          --health-timeout=5s --health-retries=10
+    env:
+      WP_PATH: ${{ github.workspace }}/wp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, gd, zip, mbstring, curl, dom, imagick
+          tools: wp-cli
+
+      - name: Start Cloudflare tunnels
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+          chmod +x cloudflared
+          grab() { for i in $(seq 1 40); do U=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' "$1" | head -1 || true); [ -n "$U" ] && { echo "$U"; return; }; sleep 2; done; }
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8090 > wp-tunnel.log 2>&1 &
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8091 > web-tunnel.log 2>&1 &
+          WP_URL="$(grab wp-tunnel.log)"
+          WEB_URL="$(grab web-tunnel.log)"
+          echo "WP_URL=$WP_URL" >> "$GITHUB_ENV"
+          echo "WEB_URL=$WEB_URL" >> "$GITHUB_ENV"
+          echo "wordpress=$WP_URL  web=$WEB_URL"
+
+      - name: Install WordPress (site URL = tunnel)
+        env:
+          WP_BASE: ${{ env.WP_URL }}
+        run: |
+          set -e
+          mkdir -p "$WP_PATH"
+          WP="wp --allow-root --path=$WP_PATH"
+          $WP core download --version=latest
+          $WP config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306
+          # Install with the PUBLIC tunnel URL so all links/redirects match what
+          # a visitor (and the Kotlin web) actually uses.
+          $WP core install --url="$WP_URL" --title="Carmilla Demo" \
+            --admin_user=admin --admin_password=admin123 --admin_email=demo@example.com --skip-email
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" "$WP_PATH/wp-content/plugins/carmilla-bridge"
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-theme"  "$WP_PATH/wp-content/themes/carmilla-theme"
+          bash .github/ci/seed-wordpress.sh
+
+      - name: Start WordPress server
+        run: |
+          wp --allow-root --path="$WP_PATH" server --host=0.0.0.0 --port=8090 >/tmp/wp-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sS -o /dev/null "http://localhost:8090/?rest_route=/" 2>/dev/null && { echo "wp up"; break; }
+            sleep 2
+          done
+          # The Kotlin web/app uses the /wp-json form — it must answer 200.
+          code=$(curl -sS -o /dev/null -w "%{http_code}" -H "Host: ${WP_URL#https://}" \
+            "http://localhost:8090/wp-json/carmilla/v1/api/products" || echo 000)
+          echo "rest (/wp-json): $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::/wp-json REST base not reachable (permalinks?)"; tail -40 /tmp/wp-server.log; exit 1
+          fi
+
+      - name: Publish live URLs to a branch (readable while the job runs)
+        run: |
+          {
+            echo "run_id: ${GITHUB_RUN_ID}"
+            echo "wordpress_url: ${WP_URL}"
+            echo "wp_admin: ${WP_URL}/wp-admin (admin / admin123)"
+            echo "rest_base: ${WP_URL}/wp-json/carmilla/v1/"
+            echo "web_url: ${WEB_URL}"
+            echo "status: wordpress-live-web-building"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "wp live urls (run ${GITHUB_RUN_ID})"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Compose-Web (pointed at the WordPress REST base)
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
+          mkdir -p web && cp -r composeApp/build/dist/js/productionExecutable/* web/
+          export WP_API_BASE="${WP_URL}/wp-json/carmilla/v1/"
+          cat > bake.mjs <<'JS'
+          import fs from 'node:fs';
+          // Bake ?api=<wp rest base> so opening the web link just works; the web
+          // entrypoint maps a bare ?api= to the `wp` brand automatically.
+          const api = process.env.WP_API_BASE;
+          const f = 'web/index.html';
+          let h = fs.readFileSync(f, 'utf8');
+          const s = '<script>(function(){try{var u=new URL(location.href);if(!u.searchParams.get("api")){u.searchParams.set("api",' + JSON.stringify(api) + ');location.replace(u.toString());}}catch(e){}})();</script>';
+          h = h.replace('</head>', s + '</head>');
+          fs.writeFileSync(f, h);
+          console.log('baked api =', api);
+          JS
+          node bake.mjs
+          nohup python3 -m http.server 8091 --directory web > web-server.log 2>&1 &
+          sleep 2
+          curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8091/ || true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Screenshot proof (Kotlin web rendering WordPress data)
+        continue-on-error: true
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i -D playwright@1.48.0
+          npx playwright install --with-deps chromium
+          # Shoot THROUGH the public URLs — exactly what a tester sees.
+          DIST_DIR=web OUT_DIR=shots/kotlin-wp SHOT_PORT=8092 \
+            KWEB_API="${WP_URL}/wp-json/carmilla/v1/" \
+            node .github/ci/shoot-kotlin.mjs
+
+      - name: Push proof screenshots
+        continue-on-error: true
+        run: |
+          test -d shots/kotlin-wp || { echo "no proof shots"; exit 0; }
+          git checkout --orphan wp-proof-tmp
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          mkdir -p screenshots && cp -r shots/kotlin-wp screenshots/
+          git add -f screenshots
+          git -c user.name=carmilla-ci -c user.email=ci@example.com \
+            commit -q -m "ci: kotlin-web-on-wordpress proof (run ${GITHUB_RUN_ID})" || exit 0
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/wp-live-proof
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Mark everything live on the branch
+        run: |
+          {
+            echo "run_id: ${GITHUB_RUN_ID}"
+            echo "wordpress_url: ${WP_URL}"
+            echo "wp_admin: ${WP_URL}/wp-admin (admin / admin123)"
+            echo "rest_base: ${WP_URL}/wp-json/carmilla/v1/"
+            echo "web_url: ${WEB_URL}"
+            echo "status: live"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git checkout --orphan live-url-tmp2 2>/dev/null || true
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "wp fully live (run ${GITHUB_RUN_ID})"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish the final link
+        run: |
+          {
+            echo "## Live WordPress test environment"
+            echo ""
+            echo "**Kotlin web (open this):** ${WEB_URL}"
+            echo "**WordPress site (theme):** ${WP_URL}"
+            echo "**wp-admin:** ${WP_URL}/wp-admin (admin / admin123)"
+            echo "**REST base:** ${WP_URL}/wp-json/carmilla/v1/"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "WEB => ${WEB_URL}"
+          echo "WORDPRESS => ${WP_URL}"
+
+      - name: Keep alive
+        run: |
+          MIN="${{ inputs.minutes }}"; MIN=${MIN:-120}
+          if [ "$MIN" -gt 350 ]; then MIN=350; fi
+          echo "staying up for ${MIN} minutes — WEB ${WEB_URL} / WORDPRESS ${WP_URL}"
+          sleep "$((MIN*60))" || true
