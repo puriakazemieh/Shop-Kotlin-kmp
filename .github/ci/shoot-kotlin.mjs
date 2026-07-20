@@ -8,7 +8,7 @@ import path from 'node:path';
 
 const DIST = process.env.DIST_DIR || 'composeApp/build/dist/js/productionExecutable';
 const OUT = process.env.OUT_DIR || 'shots/kotlin';
-const PORT = 8091;
+const PORT = Number(process.env.SHOT_PORT || 8091);
 // If set, the web app is pointed at this WordPress REST base (same data as the
 // theme) via the ?api= param the web entrypoint reads.
 const KWEB_API = process.env.KWEB_API || '';
@@ -65,6 +65,13 @@ async function main() {
       const page = await ctx.newPage();
       page.on('console', (m) => console.log(`[${bp.name}] console:`, m.text()));
       page.on('pageerror', (e) => console.log(`[${bp.name}] pageerror:`, e.message));
+      page.on('requestfailed', (r) => console.log(`[${bp.name}] REQFAIL:`, r.url(), r.failure()?.errorText));
+      page.on('response', (r) => {
+        // Surface API round-trips so a broken REST base is obvious in the log.
+        if (KWEB_API && r.url().startsWith(KWEB_API.replace(/\/$/, ''))) {
+          console.log(`[${bp.name}] api ${r.status()}: ${r.url()}`);
+        }
+      });
       await page.goto(`http://localhost:${PORT}${ENTRY}`, { waitUntil: 'networkidle', timeout: 60000 });
       // Compose canvas needs time to boot & paint.
       await page.waitForTimeout(9000);
