@@ -66,6 +66,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.adaptiveGridColumns
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.designsystem.component.AddressBottomSheet
 import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
@@ -172,6 +173,7 @@ fun ProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .responsiveMaxWidth()
                     .padding(horizontal = 24.dp)
                     .padding(top = 12.dp, bottom = 24.dp)
                     .imePadding()

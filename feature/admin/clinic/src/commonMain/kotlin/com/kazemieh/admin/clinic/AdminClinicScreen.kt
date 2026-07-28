@@ -785,7 +785,7 @@ private fun PatientsTab(
     onSetTags: (userId: Long, tags: List<String>) -> Unit
 ) {
     val colors = AppTheme.colors
-    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp)) {
         Text("ابتدا یک درمانگر را انتخاب کن:", color = colors.onSurfaceVariant, fontSize = FontSize.SMALL)
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -935,7 +935,7 @@ private fun SwitchRequestsTab(
         return
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(state.switchRequests) { req ->
@@ -1016,7 +1016,7 @@ private fun MatchQuestionsTab(
 ) {
     val colors = AppTheme.colors
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
