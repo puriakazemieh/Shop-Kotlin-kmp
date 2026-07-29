@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  php-test:
+    image: php:8.1-cli
+    volumes:
+      - ../../:/app
+    working_dir: /app
+    command: ["php", "-v"]
+
+  wordpress-test:
+    image: wordpress:latest
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ../../wordpress/carmilla-theme:/var/www/html/wp-content/themes/carmilla-theme
+      - ../../wordpress/carmilla-bridge:/var/www/html/wp-content/plugins/carmilla-bridge
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_password

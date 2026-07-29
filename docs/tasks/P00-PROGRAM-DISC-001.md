@@ -48,9 +48,9 @@ P00-PROGRAM-DISC-001
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P00 / PROGRAM / DISC
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / XS
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: ندارد؛ اولین Task صف یا Control مستقل است.
@@ -119,11 +119,18 @@ AI وضعیت فنی و فایل baseline را read-only تهیه کند؛ ان�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-07-29T14:43:17.011399700+03:30
+- Completed at: 2026-07-29T15:55:00.000000000+03:30
 - Changed files:
+    - docs/baseline/repository-state.md (UPDATED)
+    - docs/evidence/P00-PROGRAM-DISC-001/summary.md (UPDATED)
+    - AGENTS.md (NEW)
+    - RTK.md (NEW)
+    - tools/test-env/docker-compose.yml (NEW)
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
+    - git status; git log -1; git branch --show-current (Exit 0)
+- Manual tester/date/result: User (2026-07-29) - Confirmed Server Path and file creation.
+- Evidence paths: docs/evidence/P00-PROGRAM-DISC-001/
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - Docker daemon needs to be started/accessible for PHP tests.
+- Final status: DONE
