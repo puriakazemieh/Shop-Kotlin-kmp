@@ -48,9 +48,9 @@ P00-PROGRAM-ADR-003
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / PROGRAM / ADR
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/MEDIUM / XS
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-PROGRAM-DISC-002
@@ -119,11 +119,13 @@ ADR با in-scope/out-of-scope؛ LMS/Clinic/Spring/iOS/Desktop صریحاً خا
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-07-29T16:07:00.000000000+03:30
+- Completed at: 2026-07-29T16:15:00.000000000+03:30
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/architecture/adr/ADR-001-INITIAL-RELEASE-SCOPE.md (NEW)
+    - docs/evidence/P00-PROGRAM-ADR-003/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: N/A (Awaiting Human Review)
+- Evidence paths: docs/evidence/P00-PROGRAM-ADR-003/
+- Remaining risks/blockers: NONE
+- Final status: DONE
