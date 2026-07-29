@@ -48,9 +48,9 @@ P00-PROGRAM-DISC-002
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / PROGRAM / DISC
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-PROGRAM-DISC-001
@@ -119,11 +119,15 @@ inventory همه applicationId/bundleId، signing key owner، store track، doma
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-07-29T15:55:00.000000000+03:30
+- Completed at: 2026-07-29T16:15:00.000000000+03:30
 - Changed files:
+    - docs/inventory/app-identity.md (NEW)
+    - docs/evidence/P00-PROGRAM-DISC-002/summary.md (NEW)
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
+    - grep (Exit 0)
+- Manual tester/date/result: N/A (Awaiting Human Review)
+- Evidence paths: docs/evidence/P00-PROGRAM-DISC-002/
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - Signing keys and Store account details remain UNKNOWN.
+- Final status: DONE
