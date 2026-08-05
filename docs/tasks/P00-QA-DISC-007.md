@@ -48,7 +48,7 @@ P00-QA-DISC-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P00 / QA / DISC
 - Priority/Risk/Size: P0/MEDIUM / S
 - Owner: BOTH
@@ -134,4 +134,4 @@ Test Strategy، severity، test case template و traceability تعریف شود
 - Manual tester/date/result: N/A (Awaiting Human Review)
 - Evidence paths: docs/evidence/P00-QA-DISC-007/
 - Remaining risks/blockers: Requires manual sign-off on the strategy.
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE

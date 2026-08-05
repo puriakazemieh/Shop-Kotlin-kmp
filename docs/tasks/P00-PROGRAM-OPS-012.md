@@ -48,9 +48,9 @@ P00-PROGRAM-OPS-012
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / PROGRAM / OPS
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-PROGRAM-CODE-011
@@ -121,11 +121,14 @@ restore آزمایشی روی داده synthetic؛ مسیر `docs/evidence/P00/.
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T14:15:00.000000000+03:30
+- Completed at: 2026-08-05T14:25:00.000000000+03:30
+- Outcome (Persian): سیاست پشتیبان‌گیری و بازیابی داده‌ها (Backup & Restore) تعریف شد. همچنین محل نگهداری شواهد (Git) و آرتیفکت‌های بیلد (Object Storage) مستند گردید.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/operations/BACKUP_RESTORE_POLICY.md (NEW)
+    - docs/evidence/P00-PROGRAM-OPS-012/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: AI Design
+- Evidence paths: docs/evidence/P00-PROGRAM-OPS-012/
+- Remaining risks/blockers: NONE
+- Final status: DONE

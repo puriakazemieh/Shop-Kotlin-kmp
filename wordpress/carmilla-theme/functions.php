@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARMILLA_THEME_VERSION', '0.7.7' );
+define( 'CARMILLA_THEME_VERSION', '0.8.0' );
 
 require_once get_template_directory() . '/inc/icons.php';
 require_once get_template_directory() . '/inc/customizer.php';

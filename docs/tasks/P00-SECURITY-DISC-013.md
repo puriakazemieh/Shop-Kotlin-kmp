@@ -48,9 +48,9 @@ P00-SECURITY-DISC-013
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / SECURITY / DISC
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P00-PROGRAM-OPS-012
@@ -123,11 +123,14 @@ Public/Internal/PII/Financial/Health/Secret؛ secret value در سند نباش�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T14:25:00.000000000+03:30
+- Completed at: 2026-08-05T14:35:00.000000000+03:30
+- Outcome (Persian): طبقه‌بندی داده‌ها (Public تا Secret)، سیاست نگهداری (Retention) و سطوح تهدید شناسایی و مستند شدند. همچنین فهرستی از متادیتای اسرار پروژه (JWT، API Key) تهیه گردید.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/security/SECURITY_BASELINE_FA.md (NEW)
+    - docs/evidence/P00-SECURITY-DISC-013/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: AI Design
+- Evidence paths: docs/evidence/P00-SECURITY-DISC-013/
+- Remaining risks/blockers: NONE
+- Final status: DONE

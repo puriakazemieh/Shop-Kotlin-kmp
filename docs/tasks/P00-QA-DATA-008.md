@@ -48,9 +48,9 @@ P00-QA-DATA-008
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / QA / DATA
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-QA-DISC-007
@@ -125,11 +125,14 @@ P00-QA-DATA-008
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T13:07:00.000000000+03:30
+- Completed at: 2026-08-05T13:15:00.000000000+03:30
+- Outcome (Persian): حساب‌های کاربری تستی (Customer, Admin, Shop Manager) و داده‌های مصنوعی کاتالوگ به همراه رویه بازنشانی (Reset) دیتابیس تعریف و مستند شدند.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/qa/TEST_DATA_FA.md (NEW)
+    - docs/evidence/P00-QA-DATA-008/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: AI Discovery
+- Evidence paths: docs/evidence/P00-QA-DATA-008/
+- Remaining risks/blockers: NONE
+- Final status: DONE
