@@ -48,9 +48,9 @@ P00-QA-DISC-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P00 / QA / DISC
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/MEDIUM / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-CORE-DISC-006
@@ -123,11 +123,15 @@ Test Strategy، severity، test case template و traceability تعریف شود
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T12:45:00.000000000+03:30
+- Completed at: 2026-08-05T12:59:00.000000000+03:30
+- Outcome (Persian): سند استراتژی تست شامل سطوح شدت اشکال (Severity)، لایه‌های تست و قالب استاندارد تست‌کیس‌های دستی تدوین شد. همچنین اولین مجموعه تست Smoke برای بخش فروشگاه ایجاد گردید.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/qa/TEST_STRATEGY_FA.md (NEW)
+    - docs/qa/MANUAL_SUITES/MTC-SHOP-001-ADD-TO-CART.md (NEW)
+    - docs/evidence/P00-QA-DISC-007/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: N/A (Awaiting Human Review)
+- Evidence paths: docs/evidence/P00-QA-DISC-007/
+- Remaining risks/blockers: Requires manual sign-off on the strategy.
+- Final status: AWAITING_MANUAL_QA

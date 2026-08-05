@@ -48,9 +48,9 @@ P00-MANIFEST-DISC-005
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / MANIFEST / DISC
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/MEDIUM / S
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P00-ARCH-ADR-004
@@ -123,11 +123,14 @@ catalog همه featureهای فعلی و consumerهای UI/route/API/DI تهیه
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T12:00:00.000000000+03:30
+- Completed at: 2026-08-05T12:15:00.000000000+03:30
+- Outcome (Persian): کاتالوگ جامع قابلیت‌ها و مصرف‌کننده‌های مرتبط با آن‌ها (مسیرهای رابط کاربری، ماژول‌های تزریق وابستگی و APIها) تهیه شد. این سند مبنای پیاده‌سازی مانیفست قابلیت‌ها خواهد بود.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/inventory/feature-catalog.md (NEW)
+    - docs/evidence/P00-MANIFEST-DISC-005/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: AI Discovery
+- Evidence paths: docs/evidence/P00-MANIFEST-DISC-005/
+- Remaining risks/blockers: Boundary violations between some feature modules must be addressed during implementation.
+- Final status: DONE
