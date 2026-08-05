@@ -48,9 +48,9 @@ P00-OBSERVABILITY-ADR-014
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P00 / OBSERVABILITY / ADR
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-SECURITY-DISC-013
@@ -123,11 +123,15 @@ eventهای onboarding/import/PWA/checkout/build؛ هیچ PII/PHI/secret
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T13:45:00.000000000+03:30
+- Completed at: 2026-08-05T13:46:00.000000000+03:30
+- Outcome (Persian): استراتژی مانیتورینگ و آنالیتیکس از طریق سند ADR-003 تعریف شد و اولین لغت‌نامه رویدادها (نسخه ۰) تدوین گردید. این اسناد تفکیک بین لاگ‌های امنیتی، فنی و رفتاری را مشخص می‌کنند.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/architecture/adr/ADR-003-OBSERVABILITY-STRATEGY.md (NEW)
+    - docs/operations/EVENT_DICTIONARY.md (NEW)
+    - docs/evidence/P00-OBSERVABILITY-ADR-014/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: N/A (Awaiting Human Review)
+- Evidence paths: docs/evidence/P00-OBSERVABILITY-ADR-014/
+- Remaining risks/blockers: Requires manual sign-off on the event taxonomy.
+- Final status: AWAITING_MANUAL_QA
