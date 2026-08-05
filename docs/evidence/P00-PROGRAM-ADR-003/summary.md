@@ -2,6 +2,7 @@
 
 ## Task Outcome
 The scope for the initial release has been defined and documented in a new ADR (Architecture Decision Record).
+**خلاصه فارسی**: تصمیم بر این شد که نسخه ۱.۰ به صورت متمرکز فقط شامل بخش «فروشگاه» با بک‌اِند وردپرس (پوسته + PWA) باشد. ماژول‌های پیچیده (مانند LMS و کلینیک) و سرور Spring صراحتاً به نسخه‌های بعدی منتقل شدند تا پایداری و امنیت اولین عرضه تضمین شود.
 
 ## Metadata
 - **Timestamp**: 2026-07-29T16:07:00.000000000+03:30

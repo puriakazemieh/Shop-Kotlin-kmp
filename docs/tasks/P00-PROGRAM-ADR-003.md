@@ -121,6 +121,7 @@ ADR با in-scope/out-of-scope؛ LMS/Clinic/Spring/iOS/Desktop صریحاً خا
 ## Completion record
 - Started at: 2026-07-29T16:07:00.000000000+03:30
 - Completed at: 2026-07-29T16:15:00.000000000+03:30
+- Outcome (Persian): تصمیم بر این شد که نسخه ۱.۰ به صورت متمرکز فقط شامل بخش «فروشگاه» با بک‌اِند وردپرس (پوسته + PWA) باشد. ماژول‌های پیچیده (مانند LMS و کلینیک) و سرور Spring صراحتاً به نسخه‌های بعدی منتقل شدند تا پایداری و امنیت اولین عرضه تضمین شود.
 - Changed files:
     - docs/architecture/adr/ADR-001-INITIAL-RELEASE-SCOPE.md (NEW)
     - docs/evidence/P00-PROGRAM-ADR-003/summary.md (NEW)

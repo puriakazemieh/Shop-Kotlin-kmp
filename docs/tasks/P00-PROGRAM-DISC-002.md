@@ -121,6 +121,7 @@ inventory همه applicationId/bundleId، signing key owner، store track، doma
 ## Completion record
 - Started at: 2026-07-29T15:55:00.000000000+03:30
 - Completed at: 2026-07-29T16:15:00.000000000+03:30
+- Outcome (Persian): فهرست کاملی از هویت‌های اپلیکیشن (Application IDها برای اندروید)، Bundle IDهای iOS، دامنه‌ها و نقاط اتصال API تهیه شد. ۶ فلیور اندروید شناسایی و دامنه‌های فعلی (تونل‌ها و استقرارها) نقشه‌برداری شدند. همچنین نبود کلیدهای امضا در مخزن ثبت گردید.
 - Changed files:
     - docs/inventory/app-identity.md (NEW)
     - docs/evidence/P00-PROGRAM-DISC-002/summary.md (NEW)

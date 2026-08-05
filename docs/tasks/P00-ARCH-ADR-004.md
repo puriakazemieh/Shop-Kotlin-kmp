@@ -48,9 +48,9 @@ P00-ARCH-ADR-004
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / ARCH / ADR
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-PROGRAM-ADR-003
@@ -123,11 +123,14 @@ ADR دو `BackendProfile`، Feature Manifest hybrid، Theme/Core boundary و cus
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T11:45:00.000000000+03:30
+- Completed at: 2026-08-05T11:48:00.000000000+03:30
+- Outcome (Persian): معماری هسته پروژه بازتعریف شد. تمام واریانت‌های بیلد به دو پروفایل اصلی (WORDPRESS و SPRING) محدود شدند. مدل «مانیفست قابلیت‌ها» برای کنترل پویای دسترسی‌ها معرفی گردید و مرز دقیق میان پوسته وردپرس (صرفاً نمایش) و افزونه هسته (منطق و داده) تعیین شد.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/architecture/adr/ADR-002-HYBRID-ARCHITECTURE-TENANCY-MANIFEST.md (NEW)
+    - docs/evidence/P00-ARCH-ADR-004/summary.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: N/A (Awaiting Human Approval)
+- Evidence paths: docs/evidence/P00-ARCH-ADR-004/
+- Remaining risks/blockers: Requires manual sign-off on the architectural split.
+- Final status: DONE

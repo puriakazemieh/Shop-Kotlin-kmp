@@ -1,0 +1,209 @@
+{
+  "main": {
+    "id": "c04eed3d3764caba",
+    "type": "split",
+    "children": [
+      {
+        "id": "1fd458e2cbaec47c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8711e0212ad59b92",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "baseline/repository-state.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "repository-state"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e8fa2143140bc69d",
+    "type": "split",
+    "children": [
+      {
+        "id": "24098e9d0c624295",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "893a5e9d7062d2d9",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "4db78678a0210d43",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b878d2cb830d2b27",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "87e29cdb8971d934",
+    "type": "split",
+    "children": [
+      {
+        "id": "12f66fd01a46d025",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f194c768d6aa2f38",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "baseline/repository-state.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for repository-state"
+            }
+          },
+          {
+            "id": "0b338a734d351e64",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "baseline/repository-state.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from repository-state"
+            }
+          },
+          {
+            "id": "88600f5d1fc46af7",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "95e6cec0b9265016",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "92bc9e755dee5424",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "baseline/repository-state.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of repository-state"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "8711e0212ad59b92",
+  "lastOpenFiles": [
+    "engineering/PHP_WORDPRESS_GUIDE.md",
+    "engineering",
+    "evidence/P00-PROGRAM-ADR-003/summary.md",
+    "evidence/P00-PROGRAM-ADR-003",
+    "architecture/adr/ADR-001-INITIAL-RELEASE-SCOPE.md",
+    "architecture/adr",
+    "architecture",
+    "tasks.md~",
+    "evidence/P00-PROGRAM-DISC-001/summary.md",
+    "evidence/P00-PROGRAM-DISC-001/commands.md",
+    "evidence/P00-PROGRAM-DISC-002/summary.md~",
+    "evidence/P00-PROGRAM-DISC-002/summary.md",
+    "evidence/P00-PROGRAM-DISC-002",
+    "inventory/app-identity.md~",
+    "inventory/app-identity.md",
+    "inventory",
+    "baseline/repository-state.md~",
+    "tasks/P00-PROGRAM-DISC-001.md",
+    "tasks.md",
+    "baseline/repository-state.md"
+  ]
+}

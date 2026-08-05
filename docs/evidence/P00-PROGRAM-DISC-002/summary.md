@@ -2,6 +2,7 @@
 
 ## Task Outcome
 Inventory of Application IDs, Bundle IDs, Domains, and Artifacts has been completed and stored in `docs/inventory/app-identity.md`.
+**خلاصه فارسی**: فهرست کاملی از هویت‌های اپلیکیشن (Application IDها برای اندروید)، Bundle IDهای iOS، دامنه‌ها و نقاط اتصال API تهیه شد. ۶ فلیور اندروید شناسایی و دامنه‌های فعلی (تونل‌ها و استقرارها) نقشه‌برداری شدند. همچنین نبود کلیدهای امضا در مخزن ثبت گردید.
 
 ## Metadata
 - **Timestamp**: 2026-07-29T16:15:00.000000000+03:30
