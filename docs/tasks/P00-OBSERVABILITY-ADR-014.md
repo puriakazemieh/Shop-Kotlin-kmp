@@ -48,7 +48,7 @@ P00-OBSERVABILITY-ADR-014
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P00 / OBSERVABILITY / ADR
 - Priority/Risk/Size: P1/MEDIUM / S
 - Owner: BOTH
@@ -134,4 +134,4 @@ eventهای onboarding/import/PWA/checkout/build؛ هیچ PII/PHI/secret
 - Manual tester/date/result: N/A (Awaiting Human Review)
 - Evidence paths: docs/evidence/P00-OBSERVABILITY-ADR-014/
 - Remaining risks/blockers: Requires manual sign-off on the event taxonomy.
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE
