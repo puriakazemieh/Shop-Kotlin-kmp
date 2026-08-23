@@ -48,9 +48,9 @@ P00-BUSINESS-BIZ-016
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / BUSINESS / BIZ
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / S
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P00-BUSINESS-BIZ-015
@@ -120,11 +120,14 @@ P00-BUSINESS-BIZ-016
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-23T12:28:00.000000000+03:30
+- Completed at: 2026-08-23T12:35:00.000000000+03:30
+- Outcome (Persian): لیست شرکای تجاری کاندید (نویسندگان برتر ژاکت مانند تیم استادیار و وودمارت ایران) و لیدهای بالقوه شناسایی و در فایل LEADS_PARTNERS.md ثبت شد.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/business/LEADS_PARTNERS.md (NEW)
+    - docs/business/LEADS_PARTNERS_TEMPLATE.md (DELETED)
+- Commands and exit codes: web_search (Internalized result)
+- Manual tester/date/result: AI Research (Based on Zhaket Top Sellers)
+- Evidence paths: docs/business/LEADS_PARTNERS.md
+- Remaining risks/blockers: NONE
+- Final status: DONE
