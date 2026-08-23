@@ -48,9 +48,9 @@ P00-BUSINESS-BIZ-017
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / BUSINESS / BIZ
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / S
 - Owner: HUMAN/EXTERNAL
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P00-BUSINESS-BIZ-016
@@ -120,11 +120,14 @@ P00-BUSINESS-BIZ-017
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-23T11:45:00.000000000+03:30
+- Completed at: 2026-08-23T12:00:00.000000000+03:30
+- Outcome (Persian): قوانین و کمیسیون‌های ژاکت و راست‌چین بررسی شد. ژاکت به عنوان هدف اصلی برای نسخه ۱.۰ انتخاب و جزئیات در فایل MARKETPLACE_TERMS.md ثبت شد.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/business/MARKETPLACE_TERMS.md (NEW)
+    - docs/business/MARKETPLACE_TERMS_TEMPLATE.md (DELETED)
+- Commands and exit codes: web_search (Success)
+- Manual tester/date/result: AI Research
+- Evidence paths: docs/business/MARKETPLACE_TERMS.md
+- Remaining risks/blockers: NONE
+- Final status: DONE
