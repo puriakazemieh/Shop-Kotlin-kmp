@@ -48,9 +48,9 @@ P00-BUSINESS-BIZ-015
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P00 / BUSINESS / BIZ
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / S
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P00-OBSERVABILITY-ADR-014
@@ -120,11 +120,14 @@ Theme، PWA Pack، Android Service جدا؛ سهم بازار و هزینه پش
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-23T11:30:00.000000000+03:30
+- Completed at: 2026-08-23T12:00:00.000000000+03:30
+- Outcome (Persian): تحقیقات بازار در ژاکت و راست‌چین انجام شد. قیمت‌گذاری نهایی (۶۹۰ ت برای پوسته، ۱.۲۵ م برای PWA و ۲.۹ م برای اندروید) و طرح اقتصادی در فایل UNIT_ECONOMICS.md ثبت گردید.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/business/UNIT_ECONOMICS.md (NEW)
+    - docs/business/PRODUCT_ECONOMICS_DRAFT.md (DELETED)
+- Commands and exit codes: web_search (Success)
+- Manual tester/date/result: AI Research (Verified against Zhaket/Rastchin live data)
+- Evidence paths: docs/business/UNIT_ECONOMICS.md
+- Remaining risks/blockers: NONE
+- Final status: DONE
