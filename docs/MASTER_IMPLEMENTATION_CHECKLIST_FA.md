@@ -1041,6 +1041,7 @@ Internal Alpha
 
 ### Gate فاز ۱۰
 
+- [ ] تمامی مستندات پوشه `docs/business/` بازبینی و از حالت R&D به Operational تبدیل شده‌اند.
 - [ ] Theme/Plugin/PWA هرکدام artifact/version مستقل دارند.
 - [ ] listing با قابلیت واقعی هم‌خوان است.
 - [ ] benchmark و قوانین جاری کانال طبق `CB-MARKET-BIZ-002/003` و `CB-CHANNEL-BIZ-009/010` evidence دارند.

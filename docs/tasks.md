@@ -288,6 +288,11 @@
 
 ### P10 — انتشار محدود WordPress/PWA، Marketplace و Partner Pilot
 
+> [!IMPORTANT]
+> **شرط لازم پیش از شروع (Business Traceability):**
+> تمامی مستندات موجود در پوشه `docs/business/` (شامل قیمت‌گذاری، لیست پارتنرها و قوانین مارکت‌پلیس) باید توسط مالک محصول بازبینی شده و از حالت Baseline/R&D به حالت **عملیاتی (Operational)** تغییر یابند.
+
+
 | Status | Task ID | Owner | Depends on | کارت |
 |---|---|---|---|---|
 | TODO | P10-BUSINESS-BIZ-001 | HUMAN | P09-QA-GATE-018 | [P10-BUSINESS-BIZ-001](tasks/P10-BUSINESS-BIZ-001.md) |
