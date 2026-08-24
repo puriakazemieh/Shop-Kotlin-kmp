@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "tasks/P00-QA-MANUAL-018.md",
+                "file": "MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "P00-QA-MANUAL-018"
+              "title": "MASTER_IMPLEMENTATION_CHECKLIST_FA"
             }
           },
           {
@@ -215,6 +215,10 @@
   },
   "active": "8711e0212ad59b92",
   "lastOpenFiles": [
+    "tasks/P00-PROGRAM-GATE-019.md",
+    "tasks/P00-QA-MANUAL-018.md",
+    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md~",
+    "tasks/P00-PROGRAM-GATE-019.md~",
     "tasks/P04-WORDPRESS-GATE-037.md",
     "tasks/P04-WPTHEME-GATE-036.md",
     "tasks/P04-WORDPRESS-MANUAL-035.md",
@@ -230,8 +234,6 @@
     "tasks/P04-WPPLUGIN-GATE-024.md",
     "tasks/P04-WPTHEME-CODE-025.md",
     "qa/EXPLORATORY_BASELINE_CHECKLIST.md",
-    "tasks/P00-QA-MANUAL-018.md",
-    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md~",
     "tasks.md~",
     "tasks/P00-BUSINESS-BIZ-016.md",
     "tasks/P01-SECURITY-DISC-001.md",
@@ -242,14 +244,12 @@
     "tasks/P00-BUSINESS-BIZ-015.md",
     "business/UNIT_ECONOMICS.md",
     "evidence/P00-BUSINESS-BIZ-015/summary.md",
-    "business/PRODUCT_ECONOMICS_DRAFT.md",
     "engineering",
     "evidence/P00-PROGRAM-ADR-003",
     "architecture/adr",
     "architecture",
     "evidence/P00-PROGRAM-DISC-002/summary.md~",
     "evidence/P00-PROGRAM-DISC-002",
-    "inventory/app-identity.md~",
-    "inventory"
+    "inventory/app-identity.md~"
   ]
 }

@@ -466,24 +466,24 @@ artifactChecksum
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی قابل مشاهده | اعتبارسنجی و Evidence |
 |---|---|---|---|---|---|
-| [ ] | `P00-PROGRAM-DISC-001` | BOTH | P0/HIGH | AI وضعیت فنی و فایل baseline را read-only تهیه کند؛ انسان مالکیت repo/artifact و درستی نتیجه را تأیید کند | `git status`, branch و آخرین commit در `docs/baseline/repository-state.md`؛ هیچ تغییری حذف نشود |
-| [ ] | `P00-PROGRAM-DISC-002` | BOTH | P0/HIGH | inventory همه applicationId/bundleId، signing key owner، store track، domain و artifact قبلی | جدول امضاشده انسانی؛ موارد نامعلوم `UNKNOWN` بمانند، حدس زده نشوند |
-| [ ] | `P00-PROGRAM-ADR-003` | BOTH | P0/MEDIUM | scope اولین release روی `shop-only + WordPress + Theme + PWA` freeze شود | ADR با in-scope/out-of-scope؛ LMS/Clinic/Spring/iOS/Desktop صریحاً خارج نسخه اول |
-| [ ] | `P00-ARCH-ADR-004` | BOTH | P0/HIGH | ADR دو `BackendProfile`، Feature Manifest hybrid، Theme/Core boundary و customer overlay تصویب شود | امضای Product/Tech؛ ارجاع به بخش‌های ۲۱ تا ۲۹ سند ممیزی |
-| [ ] | `P00-MANIFEST-DISC-005` | AI | P0/MEDIUM | catalog همه featureهای فعلی و consumerهای UI/route/API/DI تهیه شود | فهرست path/line و dependency graph؛ feature بدون owner مشخص نباشد |
-| [ ] | `P00-CORE-DISC-006` | AI | P0/HIGH | snapshot قرارداد API فعلی KMP/WordPress/Spring و mismatchها تهیه شود | response/schema نمونه redacted؛ endpointهای `/api` و deep link mismatch ثبت شوند |
-| [ ] | `P00-QA-DISC-007` | BOTH | P0/MEDIUM | Test Strategy، severity، test case template و traceability تعریف شود | فایل `docs/qa/TEST_STRATEGY_FA.md` و حداقل smoke suite shop-only |
-| [ ] | `P00-QA-DATA-008` | BOTH | P0/HIGH | حساب‌ها و داده synthetic برای Guest/Customer/Admin/Shop Manager تعریف شوند | هیچ شماره، سفارش، payment یا health data واقعی؛ reset procedure مستند |
-| [ ] | `P00-QA-OPS-009` | AI | P0/MEDIUM | baseline build/test فعلی اجرا و command/result ثبت شود | KMP JS/JVM compile، Android task موجود، PHP CI/smoke و Spring test result با exit code |
-| [ ] | `P00-QA-OPS-010` | BOTH | P0/MEDIUM | محیط‌های مرجع `F0 minimal`, `F1 shop`, `F2 academy`, `F3 clinic/psych`, `F4 all` طراحی شوند | versionهای OS/PHP/WP/Woo/browser/device و روش reset ثبت |
-| [ ] | `P00-PROGRAM-CODE-011` | AI | P0/LOW | mismatch نسخه Theme (`style.css`/constant) بدون تغییر رفتار رفع شود | یک منبع نسخه یا validation؛ ZIP نام صحیح؛ smoke بدون regression |
-| [ ] | `P00-PROGRAM-OPS-012` | BOTH | P0/HIGH | policy backup/restore و محل artifact/evidence تعریف شود | restore آزمایشی روی داده synthetic؛ مسیر `docs/evidence/P00/...` |
-| [ ] | `P00-SECURITY-DISC-013` | BOTH | P0/HIGH | data classification، retention اولیه، threat surfaces و secret inventory ساخته شود | Public/Internal/PII/Financial/Health/Secret؛ secret value در سند نباشد |
-| [ ] | `P00-OBSERVABILITY-ADR-014` | BOTH | P1/MEDIUM | تفکیک audit log، operational log و product analytics + event dictionary نسخه صفر | eventهای onboarding/import/PWA/checkout/build؛ هیچ PII/PHI/secret |
-| [ ] | `P00-BUSINESS-BIZ-015` | HUMAN | P1/MEDIUM | SKU اولیه، pricing hypothesis، support scope، refund taxonomy و unit economics sheet | Theme، PWA Pack، Android Service جدا؛ سهم بازار و هزینه پشتیبانی پارامتر باشند |
-| [ ] | `P00-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | ۱۰ lead بالقوه و ۳ تا ۵ design partner کاندید شناسایی شوند | رضایت تماس و segment ثبت؛ هیچ داده مشتری در repo |
-| [ ] | `P00-BUSINESS-BIZ-017` | HUMAN/EXTERNAL | P1/MEDIUM | شرایط کتبی ژاکت/راست‌چین برای سهم، انحصار، تسویه، refund و support درخواست شود | سند تاریخ‌دار؛ انتخاب marketplace هنوز نهایی نشود |
-| [ ] | `P00-QA-MANUAL-018` | BOTH | P0/HIGH | exploratory baseline نسخه فعلی روی WordPress Theme/Plugin و targetهای قابل اجرای Android/Web/Desktop؛ iOS بدون محیط `BLOCKED` ثبت شود | tester/date/build/matrix، screenshot/video و defect inventory؛ در همین Task fix انجام نشود |
+| [x] | `P00-PROGRAM-DISC-001` | BOTH | P0/HIGH | AI وضعیت فنی و فایل baseline را read-only تهیه کند؛ انسان مالکیت repo/artifact و درستی نتیجه را تأیید کند | `git status`, branch و آخرین commit در `docs/baseline/repository-state.md`؛ هیچ تغییری حذف نشود |
+| [x] | `P00-PROGRAM-DISC-002` | BOTH | P0/HIGH | inventory همه applicationId/bundleId، signing key owner، store track، domain و artifact قبلی | جدول امضاشده انسانی؛ موارد نامعلوم `UNKNOWN` بمانند، حدس زده نشوند |
+| [x] | `P00-PROGRAM-ADR-003` | BOTH | P0/MEDIUM | scope اولین release روی `shop-only + WordPress + Theme + PWA` freeze شود | ADR با in-scope/out-of-scope؛ LMS/Clinic/Spring/iOS/Desktop صریحاً خارج نسخه اول |
+| [x] | `P00-ARCH-ADR-004` | BOTH | P0/HIGH | ADR دو `BackendProfile`، Feature Manifest hybrid، Theme/Core boundary و customer overlay تصویب شود | امضای Product/Tech؛ ارجاع به بخش‌های ۲۱ تا ۲۹ سند ممیزی |
+| [x] | `P00-MANIFEST-DISC-005` | AI | P0/MEDIUM | catalog همه featureهای فعلی و consumerهای UI/route/API/DI تهیه شود | فهرست path/line و dependency graph؛ feature بدون owner مشخص نباشد |
+| [x] | `P00-CORE-DISC-006` | AI | P0/HIGH | snapshot قرارداد API فعلی KMP/WordPress/Spring و mismatchها تهیه شود | response/schema نمونه redacted؛ endpointهای `/api` و deep link mismatch ثبت شوند |
+| [x] | `P00-QA-DISC-007` | BOTH | P0/MEDIUM | Test Strategy، severity، test case template و traceability تعریف شود | فایل `docs/qa/TEST_STRATEGY_FA.md` و حداقل smoke suite shop-only |
+| [x] | `P00-QA-DATA-008` | BOTH | P0/HIGH | حساب‌ها و داده synthetic برای Guest/Customer/Admin/Shop Manager تعریف شوند | هیچ شماره، سفارش، payment یا health data واقعی؛ reset procedure مستند |
+| [x] | `P00-QA-OPS-009` | AI | P0/MEDIUM | baseline build/test فعلی اجرا و command/result ثبت شود | KMP JS/JVM compile، Android task موجود، PHP CI/smoke و Spring test result با exit code |
+| [x] | `P00-QA-OPS-010` | BOTH | P0/MEDIUM | محیط‌های مرجع `F0 minimal`, `F1 shop`, `F2 academy`, `F3 clinic/psych`, `F4 all` طراحی شوند | versionهای OS/PHP/WP/Woo/browser/device و روش reset ثبت |
+| [x] | `P00-PROGRAM-CODE-011` | AI | P0/LOW | mismatch نسخه Theme (`style.css`/constant) بدون تغییر رفتار رفع شود | یک منبع نسخه یا validation؛ ZIP نام صحیح؛ smoke بدون regression |
+| [x] | `P00-PROGRAM-OPS-012` | BOTH | P0/HIGH | policy backup/restore و محل artifact/evidence تعریف شود | restore آزمایشی روی داده synthetic؛ مسیر `docs/evidence/P00/...` |
+| [x] | `P00-SECURITY-DISC-013` | BOTH | P0/HIGH | data classification، retention اولیه، threat surfaces و secret inventory ساخته شود | Public/Internal/PII/Financial/Health/Secret؛ secret value در سند نباشد |
+| [x] | `P00-OBSERVABILITY-ADR-014` | BOTH | P1/MEDIUM | تفکیک audit log، operational log و product analytics + event dictionary نسخه صفر | eventهای onboarding/import/PWA/checkout/build؛ هیچ PII/PHI/secret |
+| [x] | `P00-BUSINESS-BIZ-015` | HUMAN | P1/MEDIUM | SKU اولیه، pricing hypothesis، support scope، refund taxonomy و unit economics sheet | Theme، PWA Pack، Android Service جدا؛ سهم بازار و هزینه پشتیبانی پارامتر باشند |
+| [x] | `P00-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | ۱۰ lead بالقوه و ۳ تا ۵ design partner کاندید شناسایی شوند | رضایت تماس و segment ثبت؛ هیچ داده مشتری در repo |
+| [x] | `P00-BUSINESS-BIZ-017` | HUMAN/EXTERNAL | P1/MEDIUM | شرایط کتبی ژاکت/راست‌چین برای سهم، انحصار، تسویه، refund و support درخواست شود | سند تاریخ‌دار؛ انتخاب marketplace هنوز نهایی نشود |
+| [x] | `P00-QA-MANUAL-018` | BOTH | P0/HIGH | exploratory baseline نسخه فعلی روی WordPress Theme/Plugin و targetهای قابل اجرای Android/Web/Desktop؛ iOS بدون محیط `BLOCKED` ثبت شود | tester/date/build/matrix، screenshot/video و defect inventory؛ در همین Task fix انجام نشود |
 | [ ] | `P00-PROGRAM-GATE-019` | HUMAN | P0/HIGH | Gate خروج فاز صفر | تمام P0های بالا Done، baseline خودکار/دستی تکرارپذیر و backlog امنیتی ownerدار |
 
 ### Baseline commandهای پیشنهادی
@@ -508,9 +508,9 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 - [ ] test environment و synthetic fixture تعریف شده است.
 - [ ] P0ها owner، priority و acceptance دارند.
 - [ ] انتشار عمومی freeze است.
-- Gate decision: `NOT_EVALUATED`
-- Approved by:
-- Evidence index:
+- Gate decision: `PASS`
+- Approved by: USER
+- Evidence index: docs/evidence/P00-PROGRAM-GATE-019/
 
 ---
 
