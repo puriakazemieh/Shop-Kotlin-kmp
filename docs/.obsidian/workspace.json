@@ -215,9 +215,9 @@
   },
   "active": "8711e0212ad59b92",
   "lastOpenFiles": [
+    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md~",
     "tasks/P00-PROGRAM-GATE-019.md",
     "tasks/P00-QA-MANUAL-018.md",
-    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md~",
     "tasks/P00-PROGRAM-GATE-019.md~",
     "tasks/P04-WORDPRESS-GATE-037.md",
     "tasks/P04-WPTHEME-GATE-036.md",
@@ -243,7 +243,6 @@
     "business/LEADS_PARTNERS_TEMPLATE.md",
     "tasks/P00-BUSINESS-BIZ-015.md",
     "business/UNIT_ECONOMICS.md",
-    "evidence/P00-BUSINESS-BIZ-015/summary.md",
     "engineering",
     "evidence/P00-PROGRAM-ADR-003",
     "architecture/adr",

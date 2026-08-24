@@ -484,7 +484,7 @@ artifactChecksum
 | [x] | `P00-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | ۱۰ lead بالقوه و ۳ تا ۵ design partner کاندید شناسایی شوند | رضایت تماس و segment ثبت؛ هیچ داده مشتری در repo |
 | [x] | `P00-BUSINESS-BIZ-017` | HUMAN/EXTERNAL | P1/MEDIUM | شرایط کتبی ژاکت/راست‌چین برای سهم، انحصار، تسویه، refund و support درخواست شود | سند تاریخ‌دار؛ انتخاب marketplace هنوز نهایی نشود |
 | [x] | `P00-QA-MANUAL-018` | BOTH | P0/HIGH | exploratory baseline نسخه فعلی روی WordPress Theme/Plugin و targetهای قابل اجرای Android/Web/Desktop؛ iOS بدون محیط `BLOCKED` ثبت شود | tester/date/build/matrix، screenshot/video و defect inventory؛ در همین Task fix انجام نشود |
-| [ ] | `P00-PROGRAM-GATE-019` | HUMAN | P0/HIGH | Gate خروج فاز صفر | تمام P0های بالا Done، baseline خودکار/دستی تکرارپذیر و backlog امنیتی ownerدار |
+| [x] | `P00-PROGRAM-GATE-019` | HUMAN | P0/HIGH | Gate خروج فاز صفر | تمام P0های بالا Done، baseline خودکار/دستی تکرارپذیر و backlog امنیتی ownerدار |
 
 ### Baseline commandهای پیشنهادی
 
@@ -501,13 +501,13 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 ### Gate فاز صفر
 
-- [ ] baseline commit/hash و build result ثبت شده است.
-- [ ] تغییرات کاربر حفظ شده‌اند.
-- [ ] scope `shop-only` و non-goalها تأیید شده‌اند.
-- [ ] ADRهای اصلی تصویب شده‌اند.
-- [ ] test environment و synthetic fixture تعریف شده است.
-- [ ] P0ها owner، priority و acceptance دارند.
-- [ ] انتشار عمومی freeze است.
+- [x] baseline commit/hash و build result ثبت شده است.
+- [x] تغییرات کاربر حفظ شده‌اند.
+- [x] scope `shop-only` و non-goalها تأیید شده‌اند.
+- [x] ADRهای اصلی تصویب شده‌اند.
+- [x] test environment و synthetic fixture تعریف شده است.
+- [x] P0ها owner، priority و acceptance دارند.
+- [x] انتشار عمومی freeze است.
 - Gate decision: `PASS`
 - Approved by: USER
 - Evidence index: docs/evidence/P00-PROGRAM-GATE-019/

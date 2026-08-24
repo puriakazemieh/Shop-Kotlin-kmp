@@ -48,7 +48,7 @@ P00-QA-MANUAL-018
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P00 / QA / MANUAL
 - Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
@@ -132,7 +132,7 @@ tester/date/build/matrix، screenshot/video و defect inventory؛ در همین 
 - Changed files:
     - docs/qa/EXPLORATORY_BASELINE_CHECKLIST.md (NEW)
 - Commands and exit codes: N/A
-- Manual tester/date/result: N/A (Awaiting Human Review)
+- Manual tester/date/result: USER / 2026-08-24 / PASS
 - Evidence paths: docs/qa/EXPLORATORY_BASELINE_CHECKLIST.md
-- Remaining risks/blockers: Requires the user to actually run the apps and report findings.
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: NONE
+- Final status: DONE
