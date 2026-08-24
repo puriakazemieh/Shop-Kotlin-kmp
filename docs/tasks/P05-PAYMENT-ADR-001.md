@@ -53,7 +53,7 @@ P05-PAYMENT-ADR-001
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P04-WPPLUGIN-GATE-024
+- Depends on: P04-WORDPRESS-GATE-037
 - Blocks: P05-PAYMENT-CODE-002
 - Requirement source: Master checklist row P05-PAYMENT-ADR-001 و Source audit بخش PAYMENT
 
@@ -69,7 +69,7 @@ create/verify/query/reverse/refund/deliver/settlement
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-GATE-024
+- Dependencyها: P04-WORDPRESS-GATE-037
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

@@ -1,133 +1,100 @@
-# P04-WPPLUGIN-GATE-024 — Gate WordPress Alpha/RC
+# P04-WPPLUGIN-GATE-024 — Gate مستقل Carmilla Bridge/App Builder
 
 ## Prompt اجرای همین Task
 
 ```text
 نقش تو Implementer و Verifier فقط همین Task است.
+Repository: D:\Android\AndroidStudioProjects\kmp-shop
+Master checklist: D:\Android\AndroidStudioProjects\kmp-shop\docs\MASTER_IMPLEMENTATION_CHECKLIST_FA.md
+Source audit: D:\Android\AndroidStudioProjects\kmp-shop\docs\PROJECT_AUDIT_AND_PUBLICATION_PLAN_FA.md
+Task ID: P04-WPPLUGIN-GATE-024
 
-Repository:
-D:\Android\AndroidStudioProjects\kmp-shop
-
-Master checklist:
-D:\Android\AndroidStudioProjects\kmp-shop\docs\MASTER_IMPLEMENTATION_CHECKLIST_FA.md
-
-Source audit:
-D:\Android\AndroidStudioProjects\kmp-shop\docs\PROJECT_AUDIT_AND_PUBLICATION_PLAN_FA.md
-
-Task ID:
-P04-WPPLUGIN-GATE-024
-
-قبل از تغییر:
-1. AGENTS.md و هر دستور ارجاع‌شده‌ای که واقعاً وجود دارد را بخوان.
-2. Task، dependency، scope، acceptance و source reference را کامل بخوان.
-3. git status را بررسی و تغییرات موجود کاربر را حفظ کن.
-4. baseline test مشخص‌شده را اجرا کن.
-5. اگر Task بزرگ‌تر از M یا مبهم است، اجرا نکن؛ آن را به Taskهای کوچک‌تر پیشنهاد بده.
-
-قواعد:
-- فقط همین Task را انجام بده.
-- کمترین diff لازم را بساز.
-- خارج از Allowed scope تغییر نده.
-- dependency upgrade،refactor جانبی یا تغییر API contract انجام نده.
-- secret یا داده واقعی ایجاد/ثبت نکن.
-- deploy/publish/production/payment واقعی انجام نده مگر Task صریح و تأییدشده باشد.
-- ابتدا تست شکست یا characterization مناسب را اضافه کن.
-- همه commandهای verification را واقعاً اجرا کن.
-- تست دستی اجرا‌نشده را تیک نزن و وضعیت را AWAITING_MANUAL_QA بگذار.
-- بدون Evidence Task را DONE نکن.
-- فقط checkbox/status/evidence همین Task را به‌روزرسانی کن.
-- به Task بعدی نرو.
-
-شرایط توقف:
-- تداخل با تغییرات حل‌نشده کاربر
-- نبود credential/contract/تصمیم ضروری
-- نیاز به عملیات مخرب یا Production
-- baseline failure مرتبط
-- نیاز به تغییر contract خارج از Scope
-
-پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
+قبل از تغییر AGENTS.md،Task و dependencyها را بخوان؛git status و baseline evidence را ثبت کن.
+فقط Gate را ارزیابی کن؛کد،dependency،contract،production و داده واقعی را تغییر نده.
+هر معیار فاقد Evidence برابر FAIL/NOT_EVALUATED است؛تست دستی اجرا‌نشده را تیک نزن.
+بدون authority انسانی DONE نکن و به Task بعدی نرو.
+پاسخ نهایی: Outcome،Evidence reviewed،Manual QA،Acceptance،Checklist change،Risks و Rollback.
 ```
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / GATE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / S
 - Owner: HUMAN
-- Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P04-WPPLUGIN-DOC-023
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
-- Requirement source: Master checklist row P04-WPPLUGIN-GATE-024 و Source audit بخش WPPLUGIN
+- Completion authority: HUMAN Product Owner + WordPress/QA Lead
+- Depends on: P04-WPPLUGIN-DOC-023، P04-WPPLUGIN-MANUAL-034
+- Blocks: P04-WORDPRESS-GATE-037
+- Requirement source: Master row P04-WPPLUGIN-GATE-024 و dual-standalone product contract
 
 ## هدف قابل اندازه‌گیری
-Gate WordPress Alpha/RC
+
+استقلال Bridge/App Builder از Carmilla Theme و آمادگی artifact برای RC داخلی بر اساس Evidence ارزیابی شود.
 
 ## خروجی مورد انتظار
-artifact نصب‌شونده، P0 صفر، Theme مستقل
+
+تصمیم `PASS` یا `FAIL` امضاشده با defect/blockerها؛ این Gate مالک bugهای presentation قالب مانند Elementor نیست.
 
 ## خارج از محدوده
-- هر Feature،provider،platform یا refactor خارج از همین Task ID.
-- deploy/publish،پرداخت واقعی،تغییر Production و تغییر داده مشتری.
+
+- اصلاح کد یا بستن defect بدون Task جدا.
+- ارزیابی نهایی Theme standalone یا coexistence که Gateهای جدا دارند.
+- انتشار marketplace/production.
 
 ## Preconditions
-- Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-DOC-023
-- git status و baseline پیش از تغییر ثبت شوند.
+
+- dependencyها DONE و Evidence ماتریس Bridge-only موجود باشد.
+- ZIP Bridge همان artifact تست‌شده،versioned و checksumدار باشد.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `docs/evidence/P04-WPPLUGIN-GATE-024/**`
+- status/checkbox همین Gate در `docs/**`
 
 ## Forbidden actions
-- حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
-- ثبت credential،داده واقعی مشتری یا داده سلامت در repo/Evidence.
-- عملیات Production یا migration تخریبی.
+
+- تغییر source،ساخت artifact جدید،نادیده‌گرفتن P0 یا تأیید شفاهی بدون Evidence.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. dependency/status و hash artifact را تطبیق بده.
+2. نتایج Storefront و قالب ثالث،Android/PWA،REST/CRUD،security/privacy و lifecycle را review کن.
+3. بررسی کن App Builder فقط control plane است و native build روی WordPress اجرا نمی‌شود.
+4. defectهای باز را بر اساس severity فهرست کن.
+5. authority انسانی تصمیم PASS/FAIL را ثبت کند.
 
 ## Automated tests با command و expected result
-- Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
-- Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: artifact نصب‌شونده، P0 صفر، Theme مستقل
+
+- reports `P04-QA-AUTO-020` و CI باید سبز،قابل رهگیری و متعلق به همان checksum باشند؛ اجرای مجدد بدون دلیل لازم نیست.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: artifact نصب‌شونده، P0 صفر، Theme مستقل
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- Evidence تسک `P04-WPPLUGIN-MANUAL-034` روی Storefront و Theme ثالث review شود.
+- Expected: activation و CRUD/sync بدون Carmilla،navigation مطابق manifest،data loss/fatal/P0 صفر.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] Bridge ZIP بدون Carmilla Theme نصب/فعال شده است.
+- [ ] قرارداد feature/client روی Android و PWA تأیید شده است.
+- [ ] security/privacy/lifecycle و any-theme compatibility Evidence دارند.
+- [ ] P0 باز صفر و تصمیم انسانی ثبت شده است.
 
 ## Security/Privacy/Migration checks
-- Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
-- برای API/write path،authorization و ownership بررسی شود.
-- برای migration،forward fix/rollback و backup بررسی شود.
+
+- wildcard CORS با credentials،permission callback باز،secret در diagnostics یا migration بدون rollback قابل قبول نیست.
 
 ## Evidence
-- مسیر: docs/evidence/P04-WPPLUGIN-GATE-024/
-- baseline commit/build،command/cwd/exit code،test report،screenshot redacted و reviewer را ثبت کن.
+
+- `docs/evidence/P04-WPPLUGIN-GATE-024/`: decision،artifact hash،linked reports،reviewers و open-risk register.
 
 ## Rollback
-- روش بازگشت کم‌خطر یا forward-fix پیش از تغییر ثبت شود.
-- Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
+
+Gate فقط تصمیم مستندی است؛در FAIL artifact منتشر نشود و defectها به Taskهای مستقل برگردند.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
+
+- Reviewed at:
+- Artifact/version/checksum:
+- Reviewers:
 - Evidence paths:
+- Decision/reason:
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: TODO | AWAITING_MANUAL_QA | DONE | BLOCKED

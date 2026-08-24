@@ -50,18 +50,18 @@ P04-QA-MANUAL-022
 
 - Status: TODO
 - Phase/Area/Type: P04 / QA / MANUAL
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1 / MEDIUM / M
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P04-QA-MANUAL-021
+- Depends on: P04-WORDPRESS-MANUAL-035
 - Blocks: P04-WPPLUGIN-DOC-023
 - Requirement source: Master checklist row P04-QA-MANUAL-022 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری
-UI/RTL/accessibility/empty/error/offline states
+UI/RTL/LTR/accessibility و empty/loading/error/offline states در Theme-only،Bridge-only و co-install regression شوند.
 
 ## خروجی مورد انتظار
-screenshot/video + defect IDs
+screenshot/video،browser/device matrix و defect ID برای هر سه mode ثبت شود و P0 باز صفر باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +69,7 @@ screenshot/video + defect IDs
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-QA-MANUAL-021
+- Dependencyها: P04-WORDPRESS-MANUAL-035
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -97,13 +97,13 @@ screenshot/video + defect IDs
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: screenshot/video + defect IDs
+- معیار اختصاصی: سه mode دارای matrix UI/RTL/LTR/accessibility/empty/error/offline باشند.
 
 ## Manual tests با environment/data/steps/expected
 - این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
 - AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: screenshot/video + defect IDs
+- انتظار: screenshot/video/device matrix و defect ID با P0 باز صفر ثبت شود.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

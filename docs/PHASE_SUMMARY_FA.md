@@ -104,34 +104,50 @@
   - [P03-MANIFEST-OPS-021](tasks/P03-MANIFEST-OPS-021.md) — aliasهای legacy با deprecation/telemetry نگه داشته شوند
   - [P03-MANIFEST-GATE-022](tasks/P03-MANIFEST-GATE-022.md) — Gate Manifest
 
-## P04 — WordPress Core، Connector و Theme shop-only
+## P04 — دو محصول مستقل WordPress: Theme کامل و Bridge/App Builder
 
-- هدف: قالب presentation-only و افزونه مالک داده/REST/Commerce/Privacy شود. اولین vertical slice کامل: ```text Install → Onboarding → Product → Cart → Checkout → Verified Order ``` LMS و Clinic/Psych در این فاز public نیستند، حتی اگر کد اولیه آن‌ها وجود داشته باشد.
-- Taskها:
-  - [P04-WPPLUGIN-ADR-001](tasks/P04-WPPLUGIN-ADR-001.md) — ownership matrix همه entityها و write pathها freeze شود
-  - [P04-WPPLUGIN-ADR-002](tasks/P04-WPPLUGIN-ADR-002.md) — مرز packageهای Core/Commerce/Connector/Add-on تصویب شود
-  - [P04-WPPLUGIN-CODE-003](tasks/P04-WPPLUGIN-CODE-003.md) — schema version و migration runner resumable ایجاد شود
-  - [P04-WPPLUGIN-CODE-004](tasks/P04-WPPLUGIN-CODE-004.md) — CPT/table/business writeهای Theme به Plugin منتقل شوند
-  - [P04-WPTHEME-CODE-005](tasks/P04-WPTHEME-CODE-005.md) — registration، payment، auth، booking، seed و business REST از Theme خارج شوند
-  - [P04-WPPLUGIN-CODE-006](tasks/P04-WPPLUGIN-CODE-006.md) — degraded mode استاندارد برای Theme بدون Plugin
-  - [P04-WPPLUGIN-CODE-007](tasks/P04-WPPLUGIN-CODE-007.md) — Plugin با Theme پیش‌فرض/Storefront/Theme ثالث کار کند
-  - [P04-WPPLUGIN-CODE-008](tasks/P04-WPPLUGIN-CODE-008.md) — WooCommerce منبع product/order/cart و CRUD رسمی باشد
-  - [P04-WPPLUGIN-CODE-009](tasks/P04-WPPLUGIN-CODE-009.md) — REST contract v1، error envelope، pagination cap و validation
-  - [P04-WPPLUGIN-CODE-010](tasks/P04-WPPLUGIN-CODE-010.md) — نقش‌ها و capabilityهای Content/Shop/LMS/Clinic/Support تعریف شوند
-  - [P04-WPPLUGIN-CODE-011](tasks/P04-WPPLUGIN-CODE-011.md) — onboarding/preflight برای HTTPS/Woo/permalink/REST/cron/version
-  - [P04-WPPLUGIN-CODE-012](tasks/P04-WPPLUGIN-CODE-012.md) — activation/deactivation/uninstall policy و opt-in cleanup
-  - [P04-WPPLUGIN-CODE-013](tasks/P04-WPPLUGIN-CODE-013.md) — Privacy Policy guide، exporter/eraser و retention hooks
-  - [P04-WPPLUGIN-CODE-014](tasks/P04-WPPLUGIN-CODE-014.md) — settings API با nonce/capability/sanitize و audit
-  - [P04-WPPLUGIN-CODE-015](tasks/P04-WPPLUGIN-CODE-015.md) — Woo HPOS و Cart/Checkout Blocks compatibility
-  - [P04-WPTHEME-CODE-016](tasks/P04-WPTHEME-CODE-016.md) — template hierarchy، RTL/LTR، light/dark و responsive تثبیت
-  - [P04-WPTHEME-CODE-017](tasks/P04-WPTHEME-CODE-017.md) — accessibility فرم/checkout/menu/account
-  - [P04-WPPLUGIN-CODE-018](tasks/P04-WPPLUGIN-CODE-018.md) — textdomain/POT، escaping و i18n کامل شود
-  - [P04-CI-CODE-019](tasks/P04-CI-CODE-019.md) — Plugin Check، Theme Check، WPCS، PHP matrix و QIT به CI
-  - [P04-QA-AUTO-020](tasks/P04-QA-AUTO-020.md) — clean install/upgrade/deactivate/reactivate/uninstall tests
-  - [P04-QA-MANUAL-021](tasks/P04-QA-MANUAL-021.md) — shop-only golden path روی Theme Carmilla و Storefront
-  - [P04-QA-MANUAL-022](tasks/P04-QA-MANUAL-022.md) — UI/RTL/accessibility/empty/error/offline states
-  - [P04-WPPLUGIN-DOC-023](tasks/P04-WPPLUGIN-DOC-023.md) — architecture، API، lifecycle، known limitations و compatibility داخلی
-  - [P04-WPPLUGIN-GATE-024](tasks/P04-WPPLUGIN-GATE-024.md) — Gate WordPress Alpha/RC
+- هدف: Theme بدون Bridge همه featureهای موجود را ارائه دهد؛ Bridge نیز بدون Carmilla Theme روی قالب ثالث، سایت را به clientها متصل و App Builder را به‌صورت control plane مدیریت کند. هر دو ZIP یک Shared Core versioned را بسته‌بندی می‌کنند و در نصب هم‌زمان فقط یک kernel boot می‌شود.
+- مرحله ۱ — قرارداد و foundation:
+  - [P04-WPPLUGIN-ADR-001](tasks/P04-WPPLUGIN-ADR-001.md) — قرارداد دو محصول مستقل، مالکیت داده و کانال انتشار
+  - [P04-WPPLUGIN-ADR-002](tasks/P04-WPPLUGIN-ADR-002.md) — مرز Shared Core،Theme Host،Bridge Host و version authority
+  - [P04-WPPLUGIN-CODE-003](tasks/P04-WPPLUGIN-CODE-003.md) — schema version و migration runner resumable
+  - [P04-WPPLUGIN-CODE-004](tasks/P04-WPPLUGIN-CODE-004.md) — bootstrap و package اولیه Shared Core
+  - [P04-WPTHEME-CODE-005](tasks/P04-WPTHEME-CODE-005.md) — اتصال Theme Host به kernel بسته‌بندی‌شده
+  - [P04-WPPLUGIN-CODE-006](tasks/P04-WPPLUGIN-CODE-006.md) — capability/prerequisite/fail-closed مشترک
+  - [P04-WPPLUGIN-CODE-007](tasks/P04-WPPLUGIN-CODE-007.md) — Bridge baseline روی قالب‌های ثالث
+- مرحله ۲ — قرارداد داده،امنیت و UI پایه:
+  - [P04-WPPLUGIN-CODE-008](tasks/P04-WPPLUGIN-CODE-008.md) — WooCommerce canonical CRUD
+  - [P04-WPPLUGIN-CODE-009](tasks/P04-WPPLUGIN-CODE-009.md) — REST contract v1
+  - [P04-WPPLUGIN-CODE-010](tasks/P04-WPPLUGIN-CODE-010.md) — role/capability matrix
+  - [P04-WPPLUGIN-CODE-011](tasks/P04-WPPLUGIN-CODE-011.md) — onboarding/preflight
+  - [P04-WPPLUGIN-CODE-012](tasks/P04-WPPLUGIN-CODE-012.md) — lifecycle و opt-in cleanup
+  - [P04-WPPLUGIN-CODE-013](tasks/P04-WPPLUGIN-CODE-013.md) — Privacy/export/erase/retention
+  - [P04-WPPLUGIN-CODE-014](tasks/P04-WPPLUGIN-CODE-014.md) — settings امن و audit
+  - [P04-WPPLUGIN-CODE-015](tasks/P04-WPPLUGIN-CODE-015.md) — HPOS و Checkout Blocks
+  - [P04-WPTHEME-CODE-016](tasks/P04-WPTHEME-CODE-016.md) — template hierarchy و responsive
+  - [P04-WPTHEME-CODE-017](tasks/P04-WPTHEME-CODE-017.md) — accessibility
+  - [P04-WPTHEME-CODE-025](tasks/P04-WPTHEME-CODE-025.md) — Elementor Canvas/Full Width و برگه‌ها
+  - [P04-WPPLUGIN-CODE-018](tasks/P04-WPPLUGIN-CODE-018.md) — i18n/escaping/textdomain
+- مرحله ۳ — انتقال featureها و استقلال دو محصول:
+  - [P04-WORDPRESS-CODE-026](tasks/P04-WORDPRESS-CODE-026.md) — Content/Pages/Media/Store در Shared Core
+  - [P04-WORDPRESS-CODE-027](tasks/P04-WORDPRESS-CODE-027.md) — Academy/LMS در Shared Core
+  - [P04-WORDPRESS-CODE-028](tasks/P04-WORDPRESS-CODE-028.md) — Clinic/Therapist/Appointment در Shared Core
+  - [P04-WORDPRESS-CODE-029](tasks/P04-WORDPRESS-CODE-029.md) — PsychTest/Support/Interactions در Shared Core
+  - [P04-WPTHEME-CODE-030](tasks/P04-WPTHEME-CODE-030.md) — Theme standalone کامل
+  - [P04-WPPLUGIN-CODE-031](tasks/P04-WPPLUGIN-CODE-031.md) — Bridge standalone و any-theme کامل
+  - [P04-WORDPRESS-CODE-032](tasks/P04-WORDPRESS-CODE-032.md) — co-install arbitration و version compatibility
+  - [P04-WPPLUGIN-CODE-033](tasks/P04-WPPLUGIN-CODE-033.md) — App Builder control plane
+- مرحله ۴ — package،QA و Gate:
+  - [P04-CI-CODE-019](tasks/P04-CI-CODE-019.md) — دو ZIP مستقل و reproducible و CI
+  - [P04-QA-AUTO-020](tasks/P04-QA-AUTO-020.md) — ماتریس خودکار Theme-only/Bridge-only/both/upgrade
+  - [P04-QA-MANUAL-021](tasks/P04-QA-MANUAL-021.md) — UAT کامل Theme standalone
+  - [P04-WPPLUGIN-MANUAL-034](tasks/P04-WPPLUGIN-MANUAL-034.md) — UAT Bridge روی قالب ثالث و clientها
+  - [P04-WORDPRESS-MANUAL-035](tasks/P04-WORDPRESS-MANUAL-035.md) — UAT co-install/upgrade/theme switch
+  - [P04-QA-MANUAL-022](tasks/P04-QA-MANUAL-022.md) — UI/RTL/accessibility/error/offline regression
+  - [P04-WPPLUGIN-DOC-023](tasks/P04-WPPLUGIN-DOC-023.md) — مستند دو SKU و compatibility
+  - [P04-WPTHEME-GATE-036](tasks/P04-WPTHEME-GATE-036.md) — Theme Standalone Gate
+  - [P04-WPPLUGIN-GATE-024](tasks/P04-WPPLUGIN-GATE-024.md) — Bridge/App Builder Standalone Gate
+  - [P04-WORDPRESS-GATE-037](tasks/P04-WORDPRESS-GATE-037.md) — Coexistence و WordPress RC Gate
 
 ## P05 — Payment Platform، زرین‌پال، BNPL و بانک مستقیم
 

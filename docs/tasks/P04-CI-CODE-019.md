@@ -1,4 +1,4 @@
-# P04-CI-CODE-019 — Plugin Check، Theme Check، WPCS، PHP matrix و QIT به CI
+# P04-CI-CODE-019 — دو ZIP مستقل و reproducible همراه WordPress quality gates در CI
 
 ## Prompt اجرای همین Task
 
@@ -50,18 +50,18 @@ P04-CI-CODE-019
 
 - Status: TODO
 - Phase/Area/Type: P04 / CI / CODE
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P04-WPPLUGIN-CODE-018
+- Depends on: P04-WPPLUGIN-CODE-033
 - Blocks: P04-QA-AUTO-020
 - Requirement source: Master checklist row P04-CI-CODE-019 و Source audit بخش CI
 
 ## هدف قابل اندازه‌گیری
-Plugin Check، Theme Check، WPCS، PHP matrix و QIT به CI
+CI دو ZIP مستقل Theme و Bridge را از یک Shared Core build و روی WordPress تمیز نصب کند و Plugin Check،Theme Check،WPCS،PHP matrix و QIT را اجرا کند.
 
 ## خروجی مورد انتظار
-blocker باعث failure
+build reproducible،version manifest و checksum تولید شود؛ syntax/install/quality blocker باعث failure شود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,11 +69,12 @@ blocker باعث failure
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-CODE-018
+- Dependencyها: P04-WPPLUGIN-CODE-033
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
 - .github/**
+- wordpress/**
 - gradle/**
 - build-logic/**
 - tools/**
@@ -97,12 +98,12 @@ blocker باعث failure
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: blocker باعث failure
+- معیار اختصاصی: دو ZIP مستقل reproducible با version manifest/checksum از CI تولید و نصب شوند.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: blocker باعث failure
+- انتظار: Plugin/Theme Check،WPCS،PHP matrix،QIT و clean ZIP install blocker را fail کنند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

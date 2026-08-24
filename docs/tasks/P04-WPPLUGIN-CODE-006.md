@@ -1,4 +1,4 @@
-# P04-WPPLUGIN-CODE-006 — degraded mode استاندارد برای Theme بدون Plugin
+# P04-WPPLUGIN-CODE-006 — capability/prerequisite/fail-closed مشترک جایگزین degraded mode شود
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-WPPLUGIN-CODE-006
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPTHEME-CODE-005
@@ -58,10 +58,10 @@ P04-WPPLUGIN-CODE-006
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-006 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-degraded mode استاندارد برای Theme بدون Plugin
+مدل مشترک available/enabled/enforced برای featureها و prerequisiteهای WooCommerce،Elementor،Payment،SMS و Email در هر دو artifact پیاده شود.
 
 ## خروجی مورد انتظار
-پیام admin واضح؛ fatal و data write پنهان صفر
+Theme بدون Bridge degraded نباشد؛ نبود dependency ثالث فقط capability مرتبط را با پیام actionable غیرفعال کند و fatal/data write پنهان صفر باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,8 +73,11 @@ degraded mode استاندارد برای Theme بدون Plugin
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
+- wordpress/carmilla-theme/**
 - wordpress/**/tests/**
+- tools/test-env/**
 - docs/**
 - اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
 
@@ -94,12 +97,12 @@ degraded mode استاندارد برای Theme بدون Plugin
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: پیام admin واضح؛ fatal و data write پنهان صفر
+- معیار اختصاصی: available/enabled/enforced و prerequisiteها در هر دو artifact یکسان باشند.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: پیام admin واضح؛ fatal و data write پنهان صفر
+- انتظار: Theme بدون Bridge کامل باشد و فقط dependency ثالث مرتبط actionable غیرفعال شود.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

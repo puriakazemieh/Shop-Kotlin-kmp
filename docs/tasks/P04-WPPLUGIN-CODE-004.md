@@ -1,4 +1,4 @@
-# P04-WPPLUGIN-CODE-004 — CPT/table/business writeهای Theme به Plugin منتقل شوند
+# P04-WPPLUGIN-CODE-004 — bootstrap و package اولیه Shared Core ساخته شود
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-WPPLUGIN-CODE-004
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-003
@@ -58,10 +58,10 @@ P04-WPPLUGIN-CODE-004
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-004 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-CPT/table/business writeهای Theme به Plugin منتقل شوند
+یک Shared Core namespaced و versioned با bootstrap guard ایجاد و از یک source داخل Theme ZIP و Bridge ZIP بسته‌بندی شود، بدون extraction هم‌زمان همه verticalها.
 
 ## خروجی مورد انتظار
-تغییر Theme داده/endpoint را حذف نکند
+Theme-only،Bridge-only و co-install بدون class/function collision یا duplicate boot فعال شوند و characterization inventory قبل/بعد ثبت شود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,8 +73,13 @@ CPT/table/business writeهای Theme به Plugin منتقل شوند
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
+- wordpress/carmilla-theme/**
 - wordpress/**/tests/**
+- wordpress/build-theme-zip.sh
+- wordpress/build-bridge-zip.sh
+- tools/test-env/**
 - docs/**
 - اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
 
@@ -94,12 +99,12 @@ CPT/table/business writeهای Theme به Plugin منتقل شوند
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: تغییر Theme داده/endpoint را حذف نکند
+- معیار اختصاصی: Theme-only،Bridge-only و both بدون collision و duplicate bootstrap فعال شوند.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: تغییر Theme داده/endpoint را حذف نکند
+- انتظار: package/namespace/version guard و inventory قبل/بعد Evidence داشته باشد.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

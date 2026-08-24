@@ -1,4 +1,4 @@
-# P04-WPPLUGIN-CODE-007 — Plugin با Theme پیش‌فرض/Storefront/Theme ثالث کار کند
+# P04-WPPLUGIN-CODE-007 — Bridge Host روی Theme پیش‌فرض/Storefront/Theme ثالث مستقل شود
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-WPPLUGIN-CODE-007
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-006
@@ -58,10 +58,10 @@ P04-WPPLUGIN-CODE-007
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-007 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-Plugin با Theme پیش‌فرض/Storefront/Theme ثالث کار کند
+وابستگی‌های presentation-specific Bridge حذف/adapter شوند و activation،REST،data management و checkout روی Theme پیش‌فرض،Storefront و یک Theme ثالث smoke شوند.
 
 ## خروجی مورد انتظار
-smoke بدون Carmilla Theme؛ REST/checkout سالم
+Bridge بدون Carmilla Theme و بدون تغییر ظاهر Theme میزبان فعال شود؛ REST/CRUD/checkout سالم و خطای fatal صفر باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -75,6 +75,7 @@ smoke بدون Carmilla Theme؛ REST/checkout سالم
 ## Allowed files/directories
 - wordpress/carmilla-bridge/**
 - wordpress/**/tests/**
+- tools/test-env/**
 - docs/**
 - اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
 
@@ -94,12 +95,12 @@ smoke بدون Carmilla Theme؛ REST/checkout سالم
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: smoke بدون Carmilla Theme؛ REST/checkout سالم
+- معیار اختصاصی: Bridge روی Theme پیش‌فرض،Storefront و Theme ثالث بدون presentation coupling فعال شود.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: smoke بدون Carmilla Theme؛ REST/checkout سالم
+- انتظار: REST/CRUD/checkout سالم،ظاهر Theme میزبان unchanged و fatal صفر باشد.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

@@ -8,6 +8,8 @@
 
 > **قاعده خواندن نسخه ۲:** جزئیات و ترتیب اجرایی بخش‌های ۱۴، ۱۵، ۱۷ و ۲۱ تا ۲۹ جایگزین ترتیب کلی نسخه قبلی شده‌اند. امنیت پرداخت، دسترسی و داده حساس در هر خروجی همچنان شرط توقف انتشار است؛ «عقب‌افتادن Spring» به‌معنای عقب‌انداختن امنیت مسیر WordPress یا کلاینت نیست.
 
+> **الحاقیه تصمیم محصول — ۲۴ اوت ۲۰۲۶:** مرز WordPress به دو SKU مستقل تغییر کرده است: `Carmilla Theme` باید بدون `Carmilla Bridge` همه capabilityهای موجود پروژه را ارائه دهد و `Carmilla Bridge/App Builder` باید بدون Carmilla Theme روی قالب‌های ثالث،داده و featureها را به clientها متصل و مدیریت کند. برای جلوگیری از split-brain،منطق دامنه/CPT/REST/schema در یک Shared Core versioned نگه‌داری و داخل هر دو ZIP بسته‌بندی می‌شود؛نصب هم‌زمان فقط یک kernel سازگار را boot می‌کند. بنابراین عبارت‌های قدیمی این سند درباره Theme صرفاً presentation-only،حالت degraded بدون Plugin،shop-only بودن Gate فاز ۴ یا انتقال یک‌طرفه همه منطق به Plugin،از نظر Roadmap فعال **منسوخ** هستند و بخش P04 در Master checklist و `docs/tasks.md` مرجع اجرایی جدید است. این تصمیم به‌خودی‌خود eligibility برای WordPress.org را تضمین نمی‌کند و channel policy باید در ADR همان فاز تأیید شود.
+
 ---
 
 ## ۱. خلاصه مدیریتی

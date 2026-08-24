@@ -27,6 +27,7 @@ function Allowed-Paths([string]$Area) {
     switch ($Area) {
         'WPPLUGIN' { return @('wordpress/carmilla-bridge/**', 'wordpress/**/tests/**', 'docs/**') }
         'WPTHEME' { return @('wordpress/carmilla-theme/**', 'wordpress/**/tests/**', 'docs/**') }
+        'WORDPRESS' { return @('wordpress/packages/**', 'wordpress/carmilla-theme/**', 'wordpress/carmilla-bridge/**', 'wordpress/**/tests/**', 'tools/test-env/**', 'docs/**') }
         'SPRING' { return @('D:\Android\AndroidStudioProjects\ShopServer\Shop\**', 'docs/**') }
         'ANDROID' { return @('composeApp/**', 'core/**', 'feature/**', 'docs/**') }
         'PWA' { return @('composeApp/**', 'core/**', 'feature/**', 'docs/**') }
@@ -50,7 +51,7 @@ function Auto-Test-Lines($Task) {
     if ($Task.Type -in @('BIZ','LEGAL','DISC','ADR','DOC','EXPERIMENT','REVIEW','SAFETY')) {
         return @('- تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.', ('- معیار اختصاصی: ' + $Task.Validation))
     }
-    if ($Task.Area -in @('WPPLUGIN','WPTHEME','SEED','MIGRATION','MESSAGE')) {
+    if ($Task.Area -in @('WPPLUGIN','WPTHEME','WORDPRESS','SEED','MIGRATION','MESSAGE')) {
         return @('- Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.', '- Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.', ('- معیار اختصاصی: ' + $Task.Validation))
     }
     if ($Task.Area -eq 'SPRING') {
@@ -134,19 +135,76 @@ foreach ($phase in $phases.Values) {
     $phase.Goal = (($goal -join ' ') -replace '\s+',' ').Trim()
 }
 
+$p04ExecutionIds = @(
+    'P04-WPPLUGIN-ADR-001','P04-WPPLUGIN-ADR-002','P04-WPPLUGIN-CODE-003','P04-WPPLUGIN-CODE-004',
+    'P04-WPTHEME-CODE-005','P04-WPPLUGIN-CODE-006','P04-WPPLUGIN-CODE-007','P04-WPPLUGIN-CODE-008',
+    'P04-WPPLUGIN-CODE-009','P04-WPPLUGIN-CODE-010','P04-WPPLUGIN-CODE-011','P04-WPPLUGIN-CODE-012',
+    'P04-WPPLUGIN-CODE-013','P04-WPPLUGIN-CODE-014','P04-WPPLUGIN-CODE-015','P04-WPTHEME-CODE-016',
+    'P04-WPTHEME-CODE-017','P04-WPTHEME-CODE-025','P04-WPPLUGIN-CODE-018','P04-WORDPRESS-CODE-026',
+    'P04-WORDPRESS-CODE-027','P04-WORDPRESS-CODE-028','P04-WORDPRESS-CODE-029','P04-WPTHEME-CODE-030',
+    'P04-WPPLUGIN-CODE-031','P04-WORDPRESS-CODE-032','P04-WPPLUGIN-CODE-033','P04-CI-CODE-019',
+    'P04-QA-AUTO-020','P04-QA-MANUAL-021','P04-WPPLUGIN-MANUAL-034','P04-WORDPRESS-MANUAL-035',
+    'P04-QA-MANUAL-022','P04-WPPLUGIN-DOC-023','P04-WPTHEME-GATE-036','P04-WPPLUGIN-GATE-024',
+    'P04-WORDPRESS-GATE-037'
+)
+$p04ExecutionOrder = @{}
+for ($i = 0; $i -lt $p04ExecutionIds.Count; $i++) { $p04ExecutionOrder[$p04ExecutionIds[$i]] = $i }
+function Task-Order($Task) {
+    if ($Task.Phase -eq 'P04' -and $p04ExecutionOrder.ContainsKey($Task.Id)) { return $p04ExecutionOrder[$Task.Id] }
+    return $Task.Number
+}
+
 $firstDependencies = @{
     P00=@(); P01=@('P00-PROGRAM-GATE-019'); P02=@('P01-SECURITY-GATE-023'); P03=@('P02-CORE-GATE-018');
-    P04=@('P03-MANIFEST-GATE-022'); P05=@('P04-WPPLUGIN-GATE-024'); P06=@('P05-PAYMENT-GATE-024');
+    P04=@('P03-MANIFEST-GATE-022'); P05=@('P04-WORDPRESS-GATE-037'); P06=@('P05-PAYMENT-GATE-024');
     P07=@('P06-MESSAGE-GATE-016'); P08=@('P07-SEED-GATE-026'); P09=@('P08-PWA-GATE-019');
     P10=@('P09-QA-GATE-018'); P11=@('P10-PROGRAM-OPS-019'); P12=@('P11-ANDROID-GATE-021');
     P13=@('P12-BUILDER-GATE-019'); P14=@('P13-LMS-GATE-027'); P15=@('P14-CLINIC-GATE-032');
     P16=@('P15-SPRING-GATE-029'); P17=@('P16-IOS-GATE-022')
 }
 foreach ($group in ($records | Where-Object { $_.Kind -match '^P\d{2}$' } | Group-Object Phase)) {
-    $ordered = @($group.Group | Sort-Object Number)
+    $ordered = @($group.Group | Sort-Object @{ Expression = { Task-Order $_ } })
     for ($i = 0; $i -lt $ordered.Count; $i++) {
         if ($i -eq 0) { $ordered[$i].Depends = @($firstDependencies[$group.Name]) }
         else { $ordered[$i].Depends = @($ordered[$i - 1].Id); $ordered[$i - 1].Blocks = @($ordered[$i].Id) }
+    }
+}
+
+# P04 intentionally keeps stable historical IDs while executing in product/dependency order.
+# These overrides prevent a future pre-execution regeneration from restoring the obsolete
+# shop-only sequence. The generator is still destructive and must never be run with
+# -Overwrite after Status/Evidence records exist.
+$p04Dependencies = @{
+    'P04-WPTHEME-CODE-025'=@('P04-WPTHEME-CODE-017')
+    'P04-WPPLUGIN-CODE-018'=@('P04-WPTHEME-CODE-025')
+    'P04-WORDPRESS-CODE-026'=@('P04-WPPLUGIN-CODE-018')
+    'P04-WORDPRESS-CODE-027'=@('P04-WORDPRESS-CODE-026')
+    'P04-WORDPRESS-CODE-028'=@('P04-WORDPRESS-CODE-027')
+    'P04-WORDPRESS-CODE-029'=@('P04-WORDPRESS-CODE-028')
+    'P04-WPTHEME-CODE-030'=@('P04-WORDPRESS-CODE-029')
+    'P04-WPPLUGIN-CODE-031'=@('P04-WPTHEME-CODE-030')
+    'P04-WORDPRESS-CODE-032'=@('P04-WPPLUGIN-CODE-031')
+    'P04-WPPLUGIN-CODE-033'=@('P04-WORDPRESS-CODE-032')
+    'P04-CI-CODE-019'=@('P04-WPPLUGIN-CODE-033')
+    'P04-QA-AUTO-020'=@('P04-CI-CODE-019')
+    'P04-QA-MANUAL-021'=@('P04-QA-AUTO-020')
+    'P04-WPPLUGIN-MANUAL-034'=@('P04-QA-MANUAL-021')
+    'P04-WORDPRESS-MANUAL-035'=@('P04-WPPLUGIN-MANUAL-034')
+    'P04-QA-MANUAL-022'=@('P04-WORDPRESS-MANUAL-035')
+    'P04-WPPLUGIN-DOC-023'=@('P04-QA-MANUAL-022')
+    'P04-WPTHEME-GATE-036'=@('P04-WPPLUGIN-DOC-023','P04-QA-MANUAL-021')
+    'P04-WPPLUGIN-GATE-024'=@('P04-WPPLUGIN-DOC-023','P04-WPPLUGIN-MANUAL-034')
+    'P04-WORDPRESS-GATE-037'=@('P04-WPTHEME-GATE-036','P04-WPPLUGIN-GATE-024','P04-WORDPRESS-MANUAL-035')
+}
+foreach ($taskId in $p04Dependencies.Keys) {
+    $task = $records | Where-Object { $_.Id -eq $taskId } | Select-Object -First 1
+    if ($task) { $task.Depends = @($p04Dependencies[$taskId]) }
+}
+foreach ($task in $records) { $task.Blocks = @() }
+foreach ($task in $records) {
+    foreach ($dependencyId in $task.Depends) {
+        $dependency = $records | Where-Object { $_.Id -eq $dependencyId } | Select-Object -First 1
+        if ($dependency) { $dependency.Blocks = @($dependency.Blocks + $task.Id | Select-Object -Unique) }
     }
 }
 ($records | Where-Object { $_.Id -eq 'P00-PROGRAM-DISC-001' } | Select-Object -First 1).Status = 'READY'
@@ -290,7 +348,7 @@ $index = New-Object System.Text.StringBuilder
 [void]$index.AppendLine('## Taskهای فازی')
 [void]$index.AppendLine()
 foreach ($phase in ($phases.Values | Sort-Object Key)) {
-    $phaseTasks = @($records | Where-Object { $_.Phase -eq $phase.Key } | Sort-Object Number)
+    $phaseTasks = @($records | Where-Object { $_.Phase -eq $phase.Key } | Sort-Object @{ Expression = { Task-Order $_ } })
     if ($phaseTasks.Count -eq 0) { continue }
     [void]$index.AppendLine('### ' + $phase.Key + ' — ' + $phase.Title)
     [void]$index.AppendLine()
@@ -317,7 +375,7 @@ $summary = New-Object System.Text.StringBuilder
 [void]$summary.AppendLine('برای اجرای جزئیات به docs/tasks.md و کارت هر Task مراجعه کن.')
 [void]$summary.AppendLine()
 foreach ($phase in ($phases.Values | Sort-Object Key)) {
-    $phaseTasks = @($records | Where-Object { $_.Phase -eq $phase.Key } | Sort-Object Number)
+    $phaseTasks = @($records | Where-Object { $_.Phase -eq $phase.Key } | Sort-Object @{ Expression = { Task-Order $_ } })
     [void]$summary.AppendLine('## ' + $phase.Key + ' — ' + $phase.Title)
     [void]$summary.AppendLine()
     [void]$summary.AppendLine('- هدف: ' + $phase.Goal)

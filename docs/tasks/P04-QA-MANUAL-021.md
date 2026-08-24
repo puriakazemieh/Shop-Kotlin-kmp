@@ -1,4 +1,4 @@
-# P04-QA-MANUAL-021 — shop-only golden path روی Theme Carmilla و Storefront
+# P04-QA-MANUAL-021 — UAT کامل Carmilla Theme standalone بدون Bridge
 
 ## Prompt اجرای همین Task
 
@@ -50,18 +50,18 @@ P04-QA-MANUAL-021
 
 - Status: TODO
 - Phase/Area/Type: P04 / QA / MANUAL
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P04-QA-AUTO-020
-- Blocks: P04-QA-MANUAL-022
+- Blocks: P04-WPPLUGIN-MANUAL-034 و P04-WPTHEME-GATE-036
 - Requirement source: Master checklist row P04-QA-MANUAL-021 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری
-shop-only golden path روی Theme Carmilla و Storefront
+Theme ZIP روی WordPress تمیز و بدون Bridge نصب و تمام capabilityهای فعال Content/Store/Academy/Clinic/PsychTest/Support به‌صورت دستی آزمون شوند.
 
 ## خروجی مورد انتظار
-install تا verified order + admin sync
+onboarding،CRUD/admin،frontend،feature toggle و verticalهای فعال بدون Bridge کار کنند؛ defectهای P0 صفر و evidence تصویری کامل باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -97,13 +97,13 @@ install تا verified order + admin sync
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: install تا verified order + admin sync
+- معیار اختصاصی: تمام capabilityهای Theme standalone بدون Bridge UAT شوند.
 
 ## Manual tests با environment/data/steps/expected
 - این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
 - AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: install تا verified order + admin sync
+- انتظار: verticalهای enabled،admin/frontend/toggle و error states بدون P0 کار کنند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

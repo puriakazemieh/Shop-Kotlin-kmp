@@ -1,4 +1,4 @@
-# P04-WPPLUGIN-ADR-002 — مرز packageهای Core/Commerce/Connector/Add-on تصویب شود
+# P04-WPPLUGIN-ADR-002 — مرز Shared Core، Theme Host، Bridge Host و version authority تصویب شود
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-WPPLUGIN-ADR-002
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / ADR
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-ADR-001
@@ -58,10 +58,10 @@ P04-WPPLUGIN-ADR-002
 - Requirement source: Master checklist row P04-WPPLUGIN-ADR-002 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-مرز packageهای Core/Commerce/Connector/Add-on تصویب شود
+مرز namespace و packageهای Shared Core، Theme Host، Bridge Host، Connector و App Builder control plane همراه سیاست version negotiation تصویب شود.
 
 ## خروجی مورد انتظار
-نسخه اول می‌تواند یک ZIP باشد ولی namespace/module مستقل
+هر دو ZIP مستقل یک source مشترک را package کنند و در co-install فقط یک kernel سازگار boot شود؛ native build روی WordPress اجرا نشود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -93,12 +93,12 @@ P04-WPPLUGIN-ADR-002
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: نسخه اول می‌تواند یک ZIP باشد ولی namespace/module مستقل
+- معیار اختصاصی: Shared Core/hostها/version authority و منع native build روی WordPress تصویب شده باشد.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: نسخه اول می‌تواند یک ZIP باشد ولی namespace/module مستقل
+- انتظار: دو ZIP مستقل یک source مشترک را package و co-install یک kernel را boot کند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

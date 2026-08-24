@@ -54,7 +54,7 @@ P04-WPTHEME-CODE-017
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPTHEME-CODE-016
-- Blocks: P04-WPPLUGIN-CODE-018
+- Blocks: P04-WPTHEME-CODE-025
 - Requirement source: Master checklist row P04-WPTHEME-CODE-017 و Source audit بخش WPTHEME
 
 ## هدف قابل اندازه‌گیری

@@ -1,4 +1,4 @@
-# P04-WPPLUGIN-DOC-023 — architecture، API، lifecycle، known limitations و compatibility داخلی
+# P04-WPPLUGIN-DOC-023 — مستند دو SKU، Shared Core، API، lifecycle و App Builder
 
 ## Prompt اجرای همین Task
 
@@ -50,18 +50,18 @@ P04-WPPLUGIN-DOC-023
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / DOC
-- Priority/Risk/Size: P1/LOW / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-QA-MANUAL-022
-- Blocks: P04-WPPLUGIN-GATE-024
+- Blocks: P04-WPTHEME-GATE-036 و P04-WPPLUGIN-GATE-024
 - Requirement source: Master checklist row P04-WPPLUGIN-DOC-023 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-architecture، API، lifecycle، known limitations و compatibility داخلی
+نصب و استفاده مستقل Theme و Bridge،Feature Manifest،Shared Core،API،data ownership،App Builder control plane،upgrade/rollback و known limitations مستند شود.
 
 ## خروجی مورد انتظار
-مستند با behavior واقعی تطبیق
+دو راهنمای SKU مستقل و compatibility matrix با artifact واقعی،نسخه‌های پشتیبانی‌شده و evidence آزمون تطبیق داشته باشند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -93,12 +93,12 @@ architecture، API، lifecycle، known limitations و compatibility داخلی
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: مستند با behavior واقعی تطبیق
+- معیار اختصاصی: دو راهنمای SKU،Shared Core،Feature Manifest،App Builder و compatibility با artifact تطبیق کنند.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: مستند با behavior واقعی تطبیق
+- انتظار: نصب مستقل،lifecycle،upgrade/rollback و known limitations هر دو محصول دقیق باشد.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

@@ -1,4 +1,4 @@
-# P04-QA-AUTO-020 — clean install/upgrade/deactivate/reactivate/uninstall tests
+# P04-QA-AUTO-020 — ماتریس خودکار Theme-only، Bridge-only، co-install و upgrade
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-QA-AUTO-020
 
 - Status: TODO
 - Phase/Area/Type: P04 / QA / AUTO
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-CI-CODE-019
@@ -58,10 +58,10 @@ P04-QA-AUTO-020
 - Requirement source: Master checklist row P04-QA-AUTO-020 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری
-clean install/upgrade/deactivate/reactivate/uninstall tests
+clean install،upgrade،deactivate/reactivate،uninstall،theme switch و kernel mismatch در سه mode با fixtureهای feature manifest اجرا شود.
 
 ## خروجی مورد انتظار
-دو نسخه قبلی fixture؛ count/data checksum
+دو نسخه قبلی fixture،route/CPT/hook inventory،count/data checksum و parity contract سبز باشند؛ duplicate registration و data loss صفر.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -97,12 +97,12 @@ clean install/upgrade/deactivate/reactivate/uninstall tests
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: دو نسخه قبلی fixture؛ count/data checksum
+- معیار اختصاصی: Theme-only،Bridge-only،both،upgrade و mismatch با inventory/checksum تست شوند.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: دو نسخه قبلی fixture؛ count/data checksum
+- انتظار: parity سبز و duplicate/data loss صفر باشد.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

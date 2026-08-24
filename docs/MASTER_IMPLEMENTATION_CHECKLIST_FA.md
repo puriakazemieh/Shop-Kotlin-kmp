@@ -172,7 +172,7 @@ Clinic/Psych نیز Add-onهای مستقل‌اند و نبود یکی، دیگ
 | ۱ | رفع P0 قابل exploit | internal security build | ۲–۴ هفته |
 | ۲ | CI/test/build foundation | internal | ۲–۵ هفته |
 | ۳ | دو profile و Feature Manifest | shadow/internal | ۳–۶ هفته |
-| ۴ | WordPress Core/Theme shop-only | alpha/RC | ۴–۸ هفته |
+| ۴ | Theme مستقل + Bridge/App Builder مستقل + Shared Core | alpha/RC | پس از تخمین Taskهای P04 |
 | ۵ | Payment Platform و gatewayها | sandbox/RC | ۳–۶ هفته |
 | ۶ | SMS/Email Integrations | sandbox/RC | ۲–۴ هفته |
 | ۷ | Seed/Import/Export/Migration | RC | ۳–۶ هفته |
@@ -659,29 +659,30 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 ---
 
-## ۱۱. فاز ۴ — WordPress Core، Connector و Theme shop-only
+## ۱۱. فاز ۴ — دو محصول مستقل WordPress: Theme کامل و Bridge/App Builder
 
 ### هدف
 
-قالب presentation-only و افزونه مالک داده/REST/Commerce/Privacy شود. اولین vertical slice کامل:
+دو artifact مستقل و قابل فروش ساخته شوند که یک هسته versioned مشترک را بسته‌بندی می‌کنند:
 
 ```text
-Install → Onboarding → Product → Cart → Checkout → Verified Order
+Theme ZIP  = Shared Core + Full Theme UI + Elementor/Woo integrations
+Bridge ZIP = Shared Core + Any-Theme Connector + Data Management + App Builder Control Plane
 ```
 
-LMS و Clinic/Psych در این فاز public نیستند، حتی اگر کد اولیه آن‌ها وجود داشته باشد.
+Theme بدون Bridge تمام featureهای موجود پروژه را مطابق Feature Manifest ارائه می‌دهد. Bridge نیز بدون Carmilla Theme روی قالب ثالث، داده و featureهای سایت را به Android/PWA/Web/iOS/Desktop متصل می‌کند. پرداخت‌های provider-specific، پیام‌رسانی، import و hardening پلتفرم‌ها در فازهای تخصصی بعدی ادامه دارند، اما contract و extension point آن‌ها در این فاز تثبیت می‌شود.
 
 ### Tasks
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P04-WPPLUGIN-ADR-001` | BOTH | P0/HIGH | ownership matrix همه entityها و write pathها freeze شود | برای هر CPT/table/option فقط یک owner |
-| [ ] | `P04-WPPLUGIN-ADR-002` | BOTH | P0/MEDIUM | مرز packageهای Core/Commerce/Connector/Add-on تصویب شود | نسخه اول می‌تواند یک ZIP باشد ولی namespace/module مستقل |
+| [ ] | `P04-WPPLUGIN-ADR-001` | BOTH | P0/HIGH | قرارداد دو محصول مستقل، ownership داده و کانال انتشار freeze شود | Theme بدون Bridge؛ Bridge بدون Theme؛ داده site-owned |
+| [ ] | `P04-WPPLUGIN-ADR-002` | BOTH | P0/HIGH | مرز Shared Core/Theme Host/Bridge Host/App Builder و version authority تصویب شود | یک source برای domain؛ co-install فقط یک kernel |
 | [ ] | `P04-WPPLUGIN-CODE-003` | AI | P0/HIGH | schema version و migration runner resumable ایجاد شود | clean DB، upgrade و failed migration recovery |
-| [ ] | `P04-WPPLUGIN-CODE-004` | BOTH | P0/HIGH | CPT/table/business writeهای Theme به Plugin منتقل شوند | تغییر Theme داده/endpoint را حذف نکند |
-| [ ] | `P04-WPTHEME-CODE-005` | AI | P0/MEDIUM | registration، payment، auth، booking، seed و business REST از Theme خارج شوند | Theme Check؛ Theme فقط template/style/integration |
-| [ ] | `P04-WPPLUGIN-CODE-006` | AI | P0/MEDIUM | degraded mode استاندارد برای Theme بدون Plugin | پیام admin واضح؛ fatal و data write پنهان صفر |
-| [ ] | `P04-WPPLUGIN-CODE-007` | BOTH | P0/HIGH | Plugin با Theme پیش‌فرض/Storefront/Theme ثالث کار کند | smoke بدون Carmilla Theme؛ REST/checkout سالم |
+| [ ] | `P04-WPPLUGIN-CODE-004` | BOTH | P0/HIGH | bootstrap و package اولیه Shared Core با namespace/version guard ساخته شود | Theme-only، Bridge-only و both بدون duplicate boot |
+| [ ] | `P04-WPTHEME-CODE-005` | AI | P0/HIGH | Theme Host به kernel بسته‌بندی‌شده متصل و implementation تکراری host حذف شود | Theme بدون Bridge boot شود؛ capability حذف نشود |
+| [ ] | `P04-WPPLUGIN-CODE-006` | AI | P0/HIGH | feature capability/prerequisite/fail-closed مشترک جایگزین degraded mode شود | نبود Woo/Elementor/provider fatal نسازد؛ وضعیت روشن |
+| [ ] | `P04-WPPLUGIN-CODE-007` | BOTH | P0/HIGH | Bridge Host با Theme پیش‌فرض/Storefront/Theme ثالث مستقل شود | smoke بدون Carmilla Theme؛ REST/data management سالم |
 | [ ] | `P04-WPPLUGIN-CODE-008` | BOTH | P0/HIGH | WooCommerce منبع product/order/cart و CRUD رسمی باشد | SQL مستقیم order ممنوع؛ HPOS on/off |
 | [ ] | `P04-WPPLUGIN-CODE-009` | BOTH | P0/HIGH | REST contract v1، error envelope، pagination cap و validation | contract tests KMP/WP؛ breaking change detection |
 | [ ] | `P04-WPPLUGIN-CODE-010` | BOTH | P0/HIGH | نقش‌ها و capabilityهای Content/Shop/LMS/Clinic/Support تعریف شوند | matrix تست؛ least privilege |
@@ -692,25 +693,40 @@ LMS و Clinic/Psych در این فاز public نیستند، حتی اگر کد 
 | [ ] | `P04-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | Woo HPOS و Cart/Checkout Blocks compatibility | declaration + integration tests |
 | [ ] | `P04-WPTHEME-CODE-016` | AI | P1/MEDIUM | template hierarchy، RTL/LTR، light/dark و responsive تثبیت | 360/390/600/840/1024/1440 visual evidence |
 | [ ] | `P04-WPTHEME-CODE-017` | BOTH | P1/MEDIUM | accessibility فرم/checkout/menu/account | keyboard، focus، label، contrast، zoom 200% |
+| [ ] | `P04-WPTHEME-CODE-025` | AI | P0/MEDIUM | template hierarchy برگه و Elementor Canvas/Full Width اصلاح شود | matrix layout؛ `the_content`؛ Bridge اثری بر render ندارد |
 | [ ] | `P04-WPPLUGIN-CODE-018` | AI | P1/LOW | textdomain/POT، escaping و i18n کامل شود | WPCS/i18n scan؛ locale switch |
-| [ ] | `P04-CI-CODE-019` | AI | P0/MEDIUM | Plugin Check، Theme Check، WPCS، PHP matrix و QIT به CI | blocker باعث failure |
-| [ ] | `P04-QA-AUTO-020` | AI | P0/HIGH | clean install/upgrade/deactivate/reactivate/uninstall tests | دو نسخه قبلی fixture؛ count/data checksum |
-| [ ] | `P04-QA-MANUAL-021` | HUMAN | P0/HIGH | shop-only golden path روی Theme Carmilla و Storefront | install تا verified order + admin sync |
-| [ ] | `P04-QA-MANUAL-022` | HUMAN | P1/MEDIUM | UI/RTL/accessibility/empty/error/offline states | screenshot/video + defect IDs |
-| [ ] | `P04-WPPLUGIN-DOC-023` | AI | P1/LOW | architecture، API، lifecycle، known limitations و compatibility داخلی | مستند با behavior واقعی تطبیق |
-| [ ] | `P04-WPPLUGIN-GATE-024` | HUMAN | P0/HIGH | Gate WordPress Alpha/RC | artifact نصب‌شونده، P0 صفر، Theme مستقل |
-| [ ] | `P04-WPTHEME-CODE-025` | AI | P1/MEDIUM | بررسی و رفع تداخل با قالب‌های المنتور (Elementor Canvas/Full Width) | نمایش صحیح محتوای المنتور در کنار پوسته |
+| [ ] | `P04-WORDPRESS-CODE-026` | BOTH | P0/HIGH | Content/Pages/Media/Store از implementationهای تکراری به Shared Core منتقل شوند | parity Theme/Bridge و canonical Woo CRUD |
+| [ ] | `P04-WORDPRESS-CODE-027` | BOTH | P0/HIGH | Academy/LMS به Shared Core منتقل و در هر دو artifact ارائه شود | course/enrollment/progress/certificate parity |
+| [ ] | `P04-WORDPRESS-CODE-028` | BOTH | P0/HIGH | Clinic/Therapist/Appointment به Shared Core منتقل شود | availability/booking/ownership parity |
+| [ ] | `P04-WORDPRESS-CODE-029` | BOTH | P0/HIGH | PsychTest/Support/Interactions به Shared Core منتقل شود | scoring privacy،ticket ownership و parity |
+| [ ] | `P04-WPTHEME-CODE-030` | BOTH | P0/HIGH | Theme standalone تمام capabilityهای فعال را با UI/admin کامل یکپارچه کند | بدون Bridge تمام verticalهای موجود قابل استفاده |
+| [ ] | `P04-WPPLUGIN-CODE-031` | BOTH | P0/HIGH | Bridge standalone داده و featureها را روی قالب ثالث به clientها ارائه/مدیریت کند | Carmilla/Storefront/قالب ثالث contract parity |
+| [ ] | `P04-WORDPRESS-CODE-032` | BOTH | P0/HIGH | arbitration نصب هم‌زمان و compatibility matrix kernel پیاده شود | route/CPT/hook/migration تکراری صفر |
+| [ ] | `P04-WPPLUGIN-CODE-033` | BOTH | P0/HIGH | pairing،feature manifest،build request و artifact delivery به‌عنوان App Builder control plane | build native روی WP اجرا نشود؛ audit و least privilege |
+| [ ] | `P04-CI-CODE-019` | AI | P0/HIGH | دو ZIP مستقل و reproducible همراه Plugin/Theme Check،WPCS،PHP matrix و QIT در CI | install از ZIP تمیز؛ checksum/version manifest |
+| [ ] | `P04-QA-AUTO-020` | AI | P0/HIGH | ماتریس Theme-only/Bridge-only/both/upgrade/mismatch خودکار شود | lifecycle،route inventory،data checksum و parity سبز |
+| [ ] | `P04-QA-MANUAL-021` | HUMAN | P0/HIGH | UAT کامل Theme standalone برای همه featureهای فعال | بدون Bridge از onboarding تا verticalهای فعال |
+| [ ] | `P04-WPPLUGIN-MANUAL-034` | HUMAN | P0/HIGH | UAT Bridge روی Storefront و یک قالب ثالث با Android/PWA | CRUD/sync/navigation مطابق manifest |
+| [ ] | `P04-WORDPRESS-MANUAL-035` | HUMAN | P0/HIGH | UAT co-install،theme switch،upgrade و kernel mismatch | duplicate/data loss/fatal صفر؛ rollback اثبات‌شده |
+| [ ] | `P04-QA-MANUAL-022` | HUMAN | P1/MEDIUM | UI/RTL/accessibility/empty/error/offline states در سه mode | screenshot/video + defect IDs |
+| [ ] | `P04-WPPLUGIN-DOC-023` | AI | P1/MEDIUM | معماری،API،feature manifest،lifecycle،App Builder و compatibility هر دو SKU مستند شود | مستند با artifact واقعی تطبیق |
+| [ ] | `P04-WPTHEME-GATE-036` | HUMAN | P0/HIGH | Gate مستقل Carmilla Theme | ZIP مستقل،feature parity،P0 صفر و Manual QA تأیید |
+| [ ] | `P04-WPPLUGIN-GATE-024` | HUMAN | P0/HIGH | Gate مستقل Carmilla Bridge/App Builder | any-theme/client parity،security و P0 صفر |
+| [ ] | `P04-WORDPRESS-GATE-037` | HUMAN | P0/HIGH | Gate نهایی coexistence و WordPress RC | هر سه mode،upgrade/rollback و دو ZIP checksumدار |
 
 ### Gate فاز ۴
 
-- [ ] Theme هیچ business data مالک نیست.
-- [ ] Plugin بدون Theme Carmilla کار می‌کند.
-- [ ] تغییر Theme داده را از بین نمی‌برد.
+- [ ] Theme بدون Bridge و Bridge بدون Carmilla Theme کامل و قابل نصب‌اند.
+- [ ] Shared Core تنها source منطق دامنه/REST/CPT/schema است و داخل هر دو ZIP بسته‌بندی می‌شود.
+- [ ] نصب هم‌زمان فقط یک kernel سازگار boot می‌کند؛ duplicate route/CPT/hook/migration صفر است.
+- [ ] تمام featureهای موجود پروژه در capability matrix هر دو artifact وضعیت و parity اثبات‌شده دارند.
+- [ ] تغییر Theme یا deactivate کردن Bridge داده را حذف نمی‌کند.
+- [ ] App Builder در WordPress فقط control plane است و build native را روی هاست اجرا نمی‌کند.
 - [ ] clean install و upgrade/rollback موفق‌اند.
 - [ ] Woo HPOS و Checkout Blocks پاس‌اند.
 - [ ] privacy/export/erase/uninstall policy تست شده است.
-- [ ] shop-only golden path خودکار و دستی سبز است.
-- [ ] ZIPهای RC versioned و checksumدارند.
+- [ ] Theme-only،Bridge-only و co-install خودکار و دستی سبزند.
+- [ ] ZIPهای مستقل RC versioned،reproducible و checksumدارند.
 - Gate decision: `NOT_EVALUATED`
 
 ---

@@ -53,8 +53,8 @@ P04-WPPLUGIN-CODE-018
 - Priority/Risk/Size: P1/LOW / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P04-WPTHEME-CODE-017
-- Blocks: P04-CI-CODE-019
+- Depends on: P04-WPTHEME-CODE-025
+- Blocks: P04-WORDPRESS-CODE-026
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-018 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
@@ -69,7 +69,7 @@ WPCS/i18n scan؛ locale switch
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPTHEME-CODE-017
+- Dependencyها: P04-WPTHEME-CODE-025
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

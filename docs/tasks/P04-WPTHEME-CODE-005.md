@@ -1,4 +1,4 @@
-# P04-WPTHEME-CODE-005 — registration، payment، auth، booking، seed و business REST از Theme خارج شوند
+# P04-WPTHEME-CODE-005 — Theme Host به Shared Core بسته‌بندی‌شده متصل شود
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-WPTHEME-CODE-005
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPTHEME / CODE
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-004
@@ -58,10 +58,10 @@ P04-WPTHEME-CODE-005
 - Requirement source: Master checklist row P04-WPTHEME-CODE-005 و Source audit بخش WPTHEME
 
 ## هدف قابل اندازه‌گیری
-registration، payment، auth، booking، seed و business REST از Theme خارج شوند
+bootstrap قالب از Shared Core بسته‌بندی‌شده استفاده کند و implementation تکراری host به‌تدریج پشت adapter قرار گیرد، بدون وابستگی runtime به Bridge.
 
 ## خروجی مورد انتظار
-Theme Check؛ Theme فقط template/style/integration
+Theme بدون Bridge boot شود و feature یا داده موجود حذف نشود؛ template/style/Elementor در Theme Host و منطق canonical در Shared Core بماند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,8 +73,11 @@ Theme Check؛ Theme فقط template/style/integration
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-theme/**
 - wordpress/**/tests/**
+- wordpress/build-theme-zip.sh
+- tools/test-env/**
 - docs/**
 - اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
 
@@ -94,12 +97,12 @@ Theme Check؛ Theme فقط template/style/integration
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: Theme Check؛ Theme فقط template/style/integration
+- معیار اختصاصی: Theme Host از kernel بسته‌بندی‌شده استفاده و بدون Bridge boot شود.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: Theme Check؛ Theme فقط template/style/integration
+- انتظار: capability حذف نشود و implementation canonical در Shared Core بماند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

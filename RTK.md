@@ -9,7 +9,7 @@ This document outlines the technical standards, forbidden patterns, and environm
 - **Backend**: Only two profiles: `WORDPRESS` and `SPRING`.
 
 ## Forbidden Patterns (Stop-Ship)
-1. **Business Logic in Themes**: WordPress themes must be presentation-only. No CPT registration, REST controller logic, or payment handling inside the theme.
+1. **Standalone WordPress Products**: Carmilla Theme and Carmilla Bridge are separate installable products. Templates remain presentation-focused, but each artifact may bundle the same versioned `carmilla-core` kernel so the Theme works without Bridge and Bridge works with any Theme. Duplicated domain/CPT/REST/payment implementations in host-specific files are forbidden; co-install must boot exactly one compatible kernel.
 2. **Direct SQL for Orders**: Always use WooCommerce CRUD or Store API.
 3. **Non-Atomic Financials**: Wallet withdrawals and Booking slots must use locks/transactions. No read-modify-write on user-meta arrays.
 4. **Hardcoded Secrets**: No hardcoded JWT secrets or merchant keys.

@@ -1,4 +1,4 @@
-# P04-WPPLUGIN-ADR-001 — ownership matrix همه entityها و write pathها freeze شود
+# P04-WPPLUGIN-ADR-001 — قرارداد دو محصول مستقل، ownership داده و کانال انتشار freeze شود
 
 ## Prompt اجرای همین Task
 
@@ -50,7 +50,7 @@ P04-WPPLUGIN-ADR-001
 
 - Status: TODO
 - Phase/Area/Type: P04 / WPPLUGIN / ADR
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P03-MANIFEST-GATE-022
@@ -58,10 +58,10 @@ P04-WPPLUGIN-ADR-001
 - Requirement source: Master checklist row P04-WPPLUGIN-ADR-001 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-ownership matrix همه entityها و write pathها freeze شود
+ADR قابل تصویب برای Carmilla Theme مستقل و Carmilla Bridge/App Builder مستقل ایجاد شود؛ مالکیت همه entityها، write pathها، داده site-owned، prerequisiteهای ثالث و کانال‌های انتشار مشخص باشد.
 
 ## خروجی مورد انتظار
-برای هر CPT/table/option فقط یک owner
+Theme بدون Bridge و Bridge بدون Theme قابل استفاده تعریف شوند؛ برای هر CPT/table/option یک مالک canonical وجود داشته و تعویض Theme یا deactivate داده را حذف نکند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -93,12 +93,12 @@ ownership matrix همه entityها و write pathها freeze شود
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: برای هر CPT/table/option فقط یک owner
+- معیار اختصاصی: دو SKU مستقل،داده site-owned و مالک canonical هر entity/write path تصویب شده باشد.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: برای هر CPT/table/option فقط یک owner
+- انتظار: Theme بدون Bridge و Bridge بدون Theme تعریف و channel/data ownership freeze شده باشد.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
