@@ -154,7 +154,7 @@ class CB_Academy_Controller {
 		return (float) get_post_meta( $course_id, 'cb_price', true );
 	}
 
-	private function discounted( int $course_id ): ?float {
+	private function discounted( int $course_id ) {
 		$d = get_post_meta( $course_id, 'cb_discounted_price', true );
 		return ( $d !== '' && $d !== null ) ? (float) $d : null;
 	}
@@ -271,7 +271,7 @@ class CB_Academy_Controller {
 	}
 
 	/** Public accessor so the admin controller can return CourseDetailResponse. */
-	public function detail_by_id( int $course_id, int $user_id ): ?array {
+	public function detail_by_id( int $course_id, int $user_id ) {
 		$course = get_post( $course_id );
 		if ( ! $course || $course->post_type !== 'cb_course' ) {
 			return null;
@@ -609,7 +609,7 @@ class CB_Academy_Controller {
 		);
 	}
 
-	private function store_submission( int $course_id, int $uid, string $file_url, ?string $note ): array {
+	private function store_submission( int $course_id, int $uid, string $file_url, $note ) {
 		$all = $this->submissions();
 		// One submission per user per course (upsert).
 		foreach ( $all as &$s ) {

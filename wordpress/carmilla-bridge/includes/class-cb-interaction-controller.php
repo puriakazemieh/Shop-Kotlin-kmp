@@ -170,7 +170,7 @@ class CB_Interaction_Controller {
 	}
 
 	/** A comment owned by the current user (or the user is an admin). */
-	private function owned_comment( int $id ): ?WP_Comment {
+	private function owned_comment( int $id ) {
 		$comment = get_comment( $id );
 		if ( ! $comment ) {
 			return null;

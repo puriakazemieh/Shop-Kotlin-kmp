@@ -56,7 +56,7 @@ class CB_Auth_Controller {
 	// ---- OTP + password reset ----------------------------------------------
 
 	/** Find a user by their stored mobile (cb_mobile meta or login). */
-	private static function user_by_mobile( string $mobile ): ?WP_User {
+	private static function user_by_mobile( string $mobile ) {
 		$mobile = trim( $mobile );
 		if ( $mobile === '' ) {
 			return null;

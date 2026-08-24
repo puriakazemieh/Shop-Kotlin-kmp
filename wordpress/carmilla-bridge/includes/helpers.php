@@ -36,7 +36,7 @@ function cb_error( string $message, int $status = 400, string $error_code = 'ERR
 /**
  * Cast a WooCommerce price string to a nullable float (null when empty).
  */
-function cb_price( $value ): ?float {
+function cb_price( $value ) {
 	if ( $value === '' || $value === null ) {
 		return null;
 	}
@@ -140,7 +140,7 @@ function cb_variation_options( WC_Product $p ): array {
  *
  * @param array $line ['id'=>int,'variantId'=>int,'qty'=>int,'saved'=>bool]
  */
-function cb_cart_item_dto( array $line ): ?array {
+function cb_cart_item_dto( array $line ) {
 	$variant_id = (int) ( $line['variantId'] ?? 0 );
 	$parts      = cb_variant_parts( $variant_id );
 	if ( ! $parts ) {
@@ -203,7 +203,7 @@ function cb_cart_next_id( int $user_id ): int {
 /**
  * Compute a coupon's discount amount against a subtotal (best-effort, headless).
  */
-function cb_coupon_discount( ?string $code, float $subtotal, int $qty ): float {
+function cb_coupon_discount( $code, float $subtotal, int $qty ): float {
 	if ( ! $code || ! cb_woo_active() || ! class_exists( 'WC_Coupon' ) ) {
 		return 0.0;
 	}
@@ -389,7 +389,7 @@ function cb_wallet_balance( int $user_id ): float {
  * Append a wallet transaction and update the balance atomically-ish.
  * $amount is signed (positive = credit, negative = debit). Returns new balance.
  */
-function cb_wallet_add( int $user_id, float $amount, string $type, ?string $description = null, ?string $reference = null ): float {
+function cb_wallet_add( int $user_id, float $amount, string $type, $description = null, $reference = null ): float {
 	$balance = cb_wallet_balance( $user_id ) + $amount;
 	update_user_meta( $user_id, 'cb_wallet_balance', $balance );
 	$txns = get_user_meta( $user_id, 'cb_wallet_txns', true );
@@ -424,7 +424,7 @@ function cb_save_addresses( int $user_id, array $list ): void {
 	update_user_meta( $user_id, 'cb_addresses', array_values( $list ) );
 }
 
-function cb_find_address( int $user_id, int $id ): ?array {
+function cb_find_address( int $user_id, int $id ) {
 	foreach ( cb_addresses( $user_id ) as $a ) {
 		if ( (int) $a['id'] === $id ) {
 			return $a;
@@ -456,7 +456,7 @@ function cb_address_dto( array $a ): array {
  * Shape a stored address into the order's AddressSnapshotResponse (all fields
  * present; snapshot is embedded in the order and never null on the app side).
  */
-function cb_address_snapshot( ?array $a ): array {
+function cb_address_snapshot( $a ) {
 	$a = is_array( $a ) ? $a : array();
 	return array(
 		'receiverName'  => (string) ( $a['receiverName'] ?? '' ),
@@ -495,7 +495,7 @@ function cb_zp_amount( float $total ): int {
 }
 
 /** Create a payment request; returns the authority string or null on failure. */
-function cb_zp_request( int $amount, string $callback, string $description ): ?string {
+function cb_zp_request( int $amount, string $callback, string $description ) {
 	$merchant = cb_zp_merchant();
 	if ( ! $merchant ) {
 		return null;
@@ -522,7 +522,7 @@ function cb_zp_request( int $amount, string $callback, string $description ): ?s
 }
 
 /** Verify a payment; returns the ref_id string on success, null otherwise. */
-function cb_zp_verify( int $amount, string $authority ): ?string {
+function cb_zp_verify( int $amount, string $authority ) {
 	$response = wp_remote_post( cb_zp_base() . '/pg/v4/payment/verify.json', array(
 		'headers' => array( 'Content-Type' => 'application/json', 'Accept' => 'application/json' ),
 		'timeout' => 20,

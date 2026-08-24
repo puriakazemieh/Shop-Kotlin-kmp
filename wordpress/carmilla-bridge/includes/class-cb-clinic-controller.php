@@ -185,7 +185,7 @@ class CB_Clinic_Controller {
 		) );
 	}
 
-	private function product_id_for_slug( $slug ): ?int {
+	private function product_id_for_slug( $slug ) {
 		if ( ! $slug ) {
 			return null;
 		}

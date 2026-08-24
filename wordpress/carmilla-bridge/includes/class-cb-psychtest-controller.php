@@ -81,7 +81,7 @@ class CB_Psychtest_Controller {
 	}
 
 	/** First range containing the score, or null. */
-	public static function interpret( array $ranges, int $score ): ?string {
+	public static function interpret( array $ranges, int $score ) {
 		foreach ( $ranges as $r ) {
 			if ( $score >= (int) $r['min'] && $score <= (int) $r['max'] ) {
 				return (string) $r['interpretation'];
@@ -122,7 +122,7 @@ class CB_Psychtest_Controller {
 		return get_post_meta( $test_id, 'cb_product_slug', true ) ?: null;
 	}
 
-	private function product_id( int $test_id ): ?int {
+	private function product_id( int $test_id ) {
 		$slug = $this->product_slug( $test_id );
 		if ( ! $slug ) {
 			return null;
@@ -266,7 +266,7 @@ class CB_Psychtest_Controller {
 		return $n;
 	}
 
-	private function find_attempt( int $uid, int $attempt_id ): ?array {
+	private function find_attempt( int $uid, int $attempt_id ) {
 		foreach ( $this->attempts( $uid ) as $a ) {
 			if ( (int) $a['id'] === $attempt_id ) {
 				return $a;

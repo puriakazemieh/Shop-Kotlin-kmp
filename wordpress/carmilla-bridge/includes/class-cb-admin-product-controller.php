@@ -385,7 +385,7 @@ class CB_Admin_Product_Controller {
 		return cb_response( null, 204 );
 	}
 
-	private function taxonomy_for_attribute( int $attribute_id ): ?string {
+	private function taxonomy_for_attribute( int $attribute_id ) {
 		foreach ( wc_get_attribute_taxonomies() as $tax ) {
 			if ( (int) $tax->attribute_id === $attribute_id ) {
 				return wc_attribute_taxonomy_name( $tax->attribute_name );

@@ -39,7 +39,7 @@ class CB_Order_Controller {
 		) );
 	}
 
-	private function guard_woo(): ?WP_REST_Response {
+	private function guard_woo() {
 		if ( ! cb_woo_active() ) {
 			return cb_error( 'WooCommerce غیرفعال است', 400, 'WOO_INACTIVE', 'api/orders' );
 		}
@@ -47,7 +47,7 @@ class CB_Order_Controller {
 	}
 
 	/** Load an order and ensure it belongs to the current user. */
-	private function owned_order( int $id ): ?WC_Order {
+	private function owned_order( int $id ) {
 		$order = wc_get_order( $id );
 		if ( ! $order || (int) $order->get_customer_id() !== get_current_user_id() ) {
 			return null;

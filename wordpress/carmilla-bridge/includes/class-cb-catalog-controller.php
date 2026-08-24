@@ -379,7 +379,7 @@ class CB_Catalog_Controller {
 		);
 	}
 
-	private function cat_name( int $id ): ?string {
+	private function cat_name( int $id ) {
 		$term = get_term( $id, 'product_cat' );
 		return ( $term && ! is_wp_error( $term ) ) ? $term->name : null;
 	}

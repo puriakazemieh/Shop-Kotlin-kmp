@@ -165,7 +165,7 @@ class CB_Plugin {
 
 	// ---- static accessors used by controllers -------------------------------
 
-	public static function bearer_token(): ?string {
+	public static function bearer_token() {
 		$header = '';
 		if ( isset( $_SERVER['HTTP_AUTHORIZATION'] ) ) {
 			$header = $_SERVER['HTTP_AUTHORIZATION'];
@@ -189,7 +189,7 @@ class CB_Plugin {
 	/**
 	 * The WP_User for the current request (from Bearer or logged-in cookie), or null.
 	 */
-	public static function current_user( ?WP_REST_Request $request = null ): ?WP_User {
+	public static function current_user( $request = null ) {
 		$id = get_current_user_id();
 		if ( $id ) {
 			return get_user_by( 'id', $id );

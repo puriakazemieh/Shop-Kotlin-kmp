@@ -65,7 +65,7 @@ class CB_JWT {
 	/**
 	 * Verify and decode a token. Returns the payload array or null when invalid/expired.
 	 */
-	public static function decode( string $jwt ): ?array {
+	public static function decode( string $jwt ) {
 		$parts = explode( '.', $jwt );
 		if ( count( $parts ) !== 3 ) {
 			return null;

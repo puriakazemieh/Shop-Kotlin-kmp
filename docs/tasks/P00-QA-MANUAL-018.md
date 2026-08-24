@@ -48,9 +48,9 @@ P00-QA-MANUAL-018
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P00 / QA / MANUAL
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P00-BUSINESS-BIZ-017
@@ -126,11 +126,13 @@ tester/date/build/matrix، screenshot/video و defect inventory؛ در همین 
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-05T14:12:00.000000000+03:30
+- Completed at: 2026-08-05T14:15:00.000000000+03:30
+- Outcome (Persian): چک‌لیست تست اکتشافی برای وردپرس، اندروید و وب آماده شد تا تستر انسانی وضعیت فعلی را ممیزی کند.
 - Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+    - docs/qa/EXPLORATORY_BASELINE_CHECKLIST.md (NEW)
+- Commands and exit codes: N/A
+- Manual tester/date/result: N/A (Awaiting Human Review)
+- Evidence paths: docs/qa/EXPLORATORY_BASELINE_CHECKLIST.md
+- Remaining risks/blockers: Requires the user to actually run the apps and report findings.
+- Final status: AWAITING_MANUAL_QA

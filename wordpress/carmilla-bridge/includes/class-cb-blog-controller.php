@@ -343,7 +343,7 @@ class CB_Blog_Controller {
 
 	// ---- builders -----------------------------------------------------------
 
-	private function find_post( string $slug, array $statuses ): ?WP_Post {
+	private function find_post( string $slug, array $statuses ) {
 		$slug  = rawurldecode( $slug );
 		$query = new WP_Query( array(
 			'post_type'      => 'post',

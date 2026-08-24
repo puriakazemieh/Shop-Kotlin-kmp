@@ -35,7 +35,7 @@ class CB_Blocks {
 		return $out;
 	}
 
-	private static function map_block( array $block ): ?array {
+	private static function map_block( array $block ) {
 		$name  = $block['blockName'] ?? null;
 		$attrs = $block['attrs'] ?? array();
 		$html  = trim( $block['innerHTML'] ?? '' );
@@ -160,7 +160,7 @@ class CB_Blocks {
 		return 2;
 	}
 
-	private static function first_attr( string $html, string $tag, string $attr ): ?string {
+	private static function first_attr( string $html, string $tag, string $attr ) {
 		if ( preg_match( '/<' . preg_quote( $tag, '/' ) . '[^>]*\b' . preg_quote( $attr, '/' ) . '=["\']([^"\']+)["\']/i', $html, $m ) ) {
 			return $m[1];
 		}

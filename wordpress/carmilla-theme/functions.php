@@ -10,35 +10,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CARMILLA_THEME_VERSION', '0.8.0' );
 
-require_once get_template_directory() . '/inc/icons.php';
-require_once get_template_directory() . '/inc/customizer.php';
-require_once get_template_directory() . '/inc/template-functions.php';
-require_once get_template_directory() . '/inc/dc.php';
-require_once get_template_directory() . '/inc/post-types.php';
-require_once get_template_directory() . '/inc/meta-boxes.php';
-require_once get_template_directory() . '/inc/rest.php';
-require_once get_template_directory() . '/inc/psychtest.php';
-require_once get_template_directory() . '/inc/access.php';
-require_once get_template_directory() . '/inc/booking.php';
-require_once get_template_directory() . '/inc/course.php';
-require_once get_template_directory() . '/inc/support.php';
-require_once get_template_directory() . '/inc/clinic-extra.php';
-require_once get_template_directory() . '/inc/academy-extra.php';
-require_once get_template_directory() . '/inc/orders-extra.php';
-require_once get_template_directory() . '/inc/wishlist.php';
-require_once get_template_directory() . '/inc/catalog-extra.php';
-require_once get_template_directory() . '/inc/cpt-public.php';
-require_once get_template_directory() . '/inc/elementor.php'; // no-op without Elementor.
-if ( is_admin() ) {
-	require_once get_template_directory() . '/inc/admin-page.php';
-	require_once get_template_directory() . '/inc/demo-import.php';
+/**
+ * Helper to include files safely.
+ */
+function carmilla_require_inc( $file ) {
+	$path = get_template_directory() . '/inc/' . $file;
+	if ( file_exists( $path ) ) {
+		require_once $path;
+	}
 }
+
+carmilla_require_inc( 'icons.php' );
+carmilla_require_inc( 'customizer.php' );
+carmilla_require_inc( 'template-functions.php' );
+carmilla_require_inc( 'dc.php' );
+carmilla_require_inc( 'post-types.php' );
+carmilla_require_inc( 'meta-boxes.php' );
+carmilla_require_inc( 'rest.php' );
+carmilla_require_inc( 'psychtest.php' );
+carmilla_require_inc( 'access.php' );
+carmilla_require_inc( 'booking.php' );
+carmilla_require_inc( 'course.php' );
+carmilla_require_inc( 'support.php' );
+carmilla_require_inc( 'clinic-extra.php' );
+carmilla_require_inc( 'academy-extra.php' );
+carmilla_require_inc( 'orders-extra.php' );
+carmilla_require_inc( 'wishlist.php' );
+carmilla_require_inc( 'catalog-extra.php' );
+carmilla_require_inc( 'cpt-public.php' );
+carmilla_require_inc( 'elementor.php' );
+
+if ( is_admin() ) {
+	carmilla_require_inc( 'admin-page.php' );
+	carmilla_require_inc( 'demo-import.php' );
+}
+
 if ( class_exists( 'WooCommerce' ) ) {
-	require_once get_template_directory() . '/inc/woocommerce.php';
-	require_once get_template_directory() . '/inc/product.php';
-	require_once get_template_directory() . '/inc/compare.php';
-	require_once get_template_directory() . '/inc/bundle.php';
-	require_once get_template_directory() . '/inc/assistant.php';
+	carmilla_require_inc( 'woocommerce.php' );
+	carmilla_require_inc( 'product.php' );
+	carmilla_require_inc( 'compare.php' );
+	carmilla_require_inc( 'bundle.php' );
+	carmilla_require_inc( 'assistant.php' );
 }
 
 if ( ! function_exists( 'carmilla_setup' ) ) {

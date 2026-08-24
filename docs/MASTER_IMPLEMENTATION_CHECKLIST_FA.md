@@ -699,6 +699,7 @@ LMS و Clinic/Psych در این فاز public نیستند، حتی اگر کد 
 | [ ] | `P04-QA-MANUAL-022` | HUMAN | P1/MEDIUM | UI/RTL/accessibility/empty/error/offline states | screenshot/video + defect IDs |
 | [ ] | `P04-WPPLUGIN-DOC-023` | AI | P1/LOW | architecture، API، lifecycle، known limitations و compatibility داخلی | مستند با behavior واقعی تطبیق |
 | [ ] | `P04-WPPLUGIN-GATE-024` | HUMAN | P0/HIGH | Gate WordPress Alpha/RC | artifact نصب‌شونده، P0 صفر، Theme مستقل |
+| [ ] | `P04-WPTHEME-CODE-025` | AI | P1/MEDIUM | بررسی و رفع تداخل با قالب‌های المنتور (Elementor Canvas/Full Width) | نمایش صحیح محتوای المنتور در کنار پوسته |
 
 ### Gate فاز ۴
 
