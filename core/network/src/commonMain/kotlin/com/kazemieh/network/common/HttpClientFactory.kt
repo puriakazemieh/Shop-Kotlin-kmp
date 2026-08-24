@@ -3,6 +3,8 @@ package com.kazemieh.network.common
 import com.kazemieh.network.auth.dto.response.RefreshTokenResponse
 
 import com.kazemieh.common.ld
+import com.kazemieh.common.isDebugLoggingEnabled
+import com.kazemieh.common.redactedForLog
 import com.kazemieh.network.auth.dto.request.RefreshTokenRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -41,10 +43,10 @@ object HttpClientFactory {
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
-                        message.ld("ktor ")
+                        if (isDebugLoggingEnabled) message.redactedForLog().ld("ktor")
                     }
                 }
-                level = LogLevel.ALL
+                level = if (isDebugLoggingEnabled) LogLevel.ALL else clientHttpLogLevel
             }
 
             install(HttpTimeout) {

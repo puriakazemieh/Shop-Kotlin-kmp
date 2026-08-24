@@ -48,9 +48,9 @@ P01-SECURITY-CODE-003
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P01 / SECURITY / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / M
 - Owner: AI
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P01-SECURITY-OPS-002
@@ -129,11 +129,11 @@ request/response/token logging کلاینت redacted و debug-only شود
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-24
+- Completed at: N/A — QA دستی باقی است
+- Changed files: core/common/src/commonMain/kotlin/com/kazemieh/common/Log.kt; core/network/**; docs/**
+- Commands and exit codes: `:core:network:jvmTest` exit 0; `:composeApp:compileKotlinJvm :composeApp:compileKotlinJs` exit 1 (baseline مستقل core:data)
+- Manual tester/date/result: اجرا نشده؛ Android/Web با داده synthetic و بررسی Logcat/console لازم است.
+- Evidence paths: docs/evidence/P01-SECURITY-CODE-003/RESULTS.md
+- Remaining risks/blockers: baseline سراسری به WalletBalanceResponse ناموجود در core:data شکست می‌خورد؛ خارج از Scope این Task.
+- Final status: AWAITING_MANUAL_QA

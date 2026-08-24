@@ -83,6 +83,12 @@ kotlin {
                 implementation("io.ktor:ktor-client-cio:3.3.3")
             }
         }
+
+        jvmTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 
 }

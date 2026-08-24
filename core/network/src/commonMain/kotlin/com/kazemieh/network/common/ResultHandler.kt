@@ -1,7 +1,6 @@
 package com.kazemieh.network.common
 
 import com.kazemieh.common.AppResult
-import com.kazemieh.common.ld
 import com.kazemieh.common.toUserMessage
 import com.kazemieh.network.common.ApiError
 import com.kazemieh.network.common.ApiException
@@ -45,12 +44,8 @@ suspend inline fun <reified T> safeApiCallRaw(
         } catch (e: Exception) {
             ""
         }
-        "Response status: ${response.status}".ld("safeApiCallRaw")
-        "Response body: $bodyText".ld("safeApiCallRaw")
-
         if (response.status.isSuccess()) {
             if (T::class == Unit::class) {
-                "Returning Unit".ld("safeApiCallRaw")
                 return Unit as T
             }
             if (T::class == String::class) {
@@ -62,21 +57,16 @@ suspend inline fun <reified T> safeApiCallRaw(
             }
             try {
                 json.decodeFromString<T>(bodyText)
-            } catch (e: SerializationException) {
-                e.ld("SerializationException")
+            } catch (_: SerializationException) {
                 throw ApiException(
                     messageText = Res.string.errorParsingData,
                     code = 0
                 )
             }
         } else {
-            response.status.value.ld("❌ API Error - Status ")
-            bodyText.ld("Response Body:")
-
             val apiError = try {
                 json.decodeFromString<ApiError>(bodyText)
-            } catch (e: Exception) {
-                e.message.ld("⚠️ Failed to parse ApiError")
+            } catch (_: Exception) {
                 ApiError(
                     message = "Server error",
                     status = response.status.value.toString(),
@@ -93,11 +83,8 @@ suspend inline fun <reified T> safeApiCallRaw(
             )
         }
     } catch (e: ApiException) {
-        e.message.ld("ApiException")
         throw e
-    } catch (e: Exception) {
-        "Exception: ${e::class.simpleName} - ${e.message}".ld("❌ Unexpected Error in safeApiCallRaw")
-        e.printStackTrace()
+    } catch (_: Exception) {
         throw ApiException(
             messageText = Res.string.unknownError,
             code = 0
