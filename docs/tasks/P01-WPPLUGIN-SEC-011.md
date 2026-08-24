@@ -60,6 +60,11 @@ P01-WPPLUGIN-SEC-011
 ## هدف قابل اندازه‌گیری
 OTP hash، purpose، expiry، attempts، resend cooldown و debug-off
 
+## Threat/Exploit Surface
+- حملات Brute-force برای حدس زدن کدهای OTP.
+- استفاده از یک کد برای اهداف مختلف (مثلاً ورود و تغییر رمز).
+- نشت کد در پاسخ‌های API در حالت دیباگ.
+
 ## خروجی مورد انتظار
 brute force/rate/account enumeration tests
 

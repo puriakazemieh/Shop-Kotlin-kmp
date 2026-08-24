@@ -60,6 +60,10 @@ P01-WPPLUGIN-SEC-010
 ## هدف قابل اندازه‌گیری
 JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود
 
+## Threat/Exploit Surface
+- استفاده از توکن‌های منقضی نشده برای دسترسی دائمی به حساب کاربران.
+- عدم امکان ابطال (Revocation) توکن در صورت نشت اطلاعات یا لاگ‌اوت کاربر.
+
 ## خروجی مورد انتظار
 tamper/expired/wrong audience/revoked token رد شوند
 

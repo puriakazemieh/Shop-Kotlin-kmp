@@ -60,6 +60,10 @@ P01-PAYMENT-CODE-007
 ## هدف قابل اندازه‌گیری
 نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد
 
+## Threat/Exploit Surface
+- جعل وضعیت پرداخت با ارسال `status=success` در URL دیپ‌لینک برای دور زدن مرحله Verify.
+- ثبت سفارش‌های رایگان یا غیرقانونی.
+
 ## خروجی مورد انتظار
 success جعلی سفارش/cart را تغییر ندهد
 

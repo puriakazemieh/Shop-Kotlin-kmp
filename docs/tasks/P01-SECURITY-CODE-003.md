@@ -60,6 +60,10 @@ P01-SECURITY-CODE-003
 ## هدف قابل اندازه‌گیری
 request/response/token logging کلاینت redacted و debug-only شود
 
+## Threat/Exploit Surface
+- نشت توکن‌های دسترسی (Bearer Tokens) در لاگ‌های کنسول یا ابزارهای مانیتورینگ.
+- ثبت کدهای OTP و اطلاعات حساس پرداخت در Logcat یا فایل‌های لاگ که توسط اپلیکیشن‌های دیگر قابل خواندن باشند.
+
 ## خروجی مورد انتظار
 تست عدم ثبت Authorization، OTP، payment و health fields
 

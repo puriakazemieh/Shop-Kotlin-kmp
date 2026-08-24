@@ -60,6 +60,10 @@ P01-WPPLUGIN-SEC-012
 ## هدف قابل اندازه‌گیری
 CORS default بسته و origin دقیق tenant allowlist شود
 
+## Threat/Exploit Surface
+- حملات Cross-Origin Resource Sharing (CORS) که به سایت‌های مخرب اجازه می‌دهد از طرف کاربر به API وردپرس درخواست بفرستند.
+- سرقت کوکی‌ها و توکن‌های احراز هویت.
+
 ## خروجی مورد انتظار
 unapproved origin رد؛ credential policy روشن
 

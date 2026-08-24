@@ -60,6 +60,10 @@ P01-SECURITY-CODE-019
 ## هدف قابل اندازه‌گیری
 hardcoded/demo secret و credential پیش‌فرض از artifactها حذف شوند
 
+## Threat/Exploit Surface
+- استفاده از JWT Secretهای پیش‌فرض یا کلیدهای دمو که در کد سورس قرار دارند و توسط مهاجمان قابل حدس هستند.
+- دسترسی به دیتابیس یا سرویس‌های جانبی با استفاده از یوزرنیم و پسوردهای هاردکد شده.
+
 ## خروجی مورد انتظار
 secret scan؛ production بدون secret لازم fail-closed
 

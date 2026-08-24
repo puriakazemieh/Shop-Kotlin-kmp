@@ -60,6 +60,10 @@ P01-WPPLUGIN-CODE-015
 ## هدف قابل اندازه‌گیری
 Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود
 
+## Threat/Exploit Surface
+- اکسپلویت‌های مربوط به کیف پول (Wallet) مانند Race conditions در برداشت وجه که منجر به موجودی منفی می‌شود.
+- شارژ تکراری اعتبار در صورت عدم وجود Ledger اتمیک.
+
 ## خروجی مورد انتظار
 feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر
 

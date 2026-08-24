@@ -60,6 +60,10 @@ P01-WPPLUGIN-CODE-016
 ## هدف قابل اندازه‌گیری
 Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است
 
+## Threat/Exploit Surface
+- رزرو همزمان یک اسلات خالی توسط دو کاربر (Double Booking) به دلیل عدم وجود تراکنش اتمیک.
+- لغو نوبت توسط افرادی غیر از مراجع یا درمانگر مربوطه.
+
 ## خروجی مورد انتظار
 feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner
 

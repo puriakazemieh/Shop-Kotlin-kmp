@@ -60,6 +60,10 @@ P01-SECURITY-CODE-006
 ## هدف قابل اندازه‌گیری
 `?api=` و override origin آزاد از production حذف یا allowlist شود
 
+## Threat/Exploit Surface
+- امکان هدایت اپلیکیشن وب به یک API مخرب با تزریق پارامتر در URL.
+- سرقت توکن‌های کاربر توسط سرور مهاجم.
+
 ## خروجی مورد انتظار
 localhost/private/foreign URL در release رد شود
 

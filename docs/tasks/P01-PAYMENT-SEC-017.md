@@ -60,6 +60,10 @@ P01-PAYMENT-SEC-017
 ## هدف قابل اندازه‌گیری
 amount/currency/order/reference قبل از verify تطبیق و replay مسدود شود
 
+## Threat/Exploit Surface
+- حملات Replay که در آن یک کال‌بک قدیمی و معتبر برای یک سفارش جدید استفاده می‌شود.
+- پرداخت مبلغ کمتر برای سفارشی با مبلغ بیشتر با دستکاری پارامترهای ارسالی به درگاه.
+
 ## خروجی مورد انتظار
 wrong amount و duplicate callback هر دو fail/idempotent
 

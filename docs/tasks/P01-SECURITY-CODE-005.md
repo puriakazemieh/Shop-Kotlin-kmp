@@ -60,6 +60,10 @@ P01-SECURITY-CODE-005
 ## هدف قابل اندازه‌گیری
 token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود
 
+## Threat/Exploit Surface
+- سرقت توکن‌ها از فایل‌های تنظیمات عادی (SharedPreferences/NSUserDefaults).
+- ارسال توکن به دامنه‌های شخص ثالث یا مخرب در صورتی که دامنه‌ی API به درستی کنترل نشود.
+
 ## خروجی مورد انتظار
 foreign host test فاقد header؛ logout/expiry/rotation test
 

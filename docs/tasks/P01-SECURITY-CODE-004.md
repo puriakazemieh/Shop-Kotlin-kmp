@@ -60,6 +60,10 @@ P01-SECURITY-CODE-004
 ## هدف قابل اندازه‌گیری
 cleartext و trust-all TLS حذف؛ debug exception صریح و محدود
 
+## Threat/Exploit Surface
+- حملات Man-in-the-Middle (MITM) به دلیل عدم اعتبارسنجی گواهینامه‌های SSL.
+- نشت اطلاعات در شبکه‌های ناامن (مانند Wi-Fi عمومی) به دلیل استفاده از پروتکل HTTP به جای HTTPS.
+
 ## خروجی مورد انتظار
 HTTPS production pass؛ MITM/invalid cert fail
 

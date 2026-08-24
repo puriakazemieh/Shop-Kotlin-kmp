@@ -60,6 +60,10 @@ P01-WPPLUGIN-SEC-018
 ## هدف قابل اندازه‌گیری
 LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fail-closed شود؛ entitlement کامل به فازهای ۱۳/۱۴ موکول شود
 
+## Threat/Exploit Surface
+- اکسپوز شدن APIها و مسیرهای مربوط به بخش‌های حساس (LMS/Clinic) در سایت‌هایی که فقط نیاز به فروشگاه دارند.
+- دسترسی مستقیم به مدیاهای آموزشی بدون داشتن اشتراک فعال.
+
 ## خروجی مورد انتظار
 با toggle خاموش URL مستقیم/API discovery دسترسی ندهد
 

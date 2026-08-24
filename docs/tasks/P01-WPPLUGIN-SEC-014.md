@@ -60,6 +60,10 @@ P01-WPPLUGIN-SEC-014
 ## هدف قابل اندازه‌گیری
 ownership/IDOR و post type validation برای read/write/delete
 
+## Threat/Exploit Surface
+- حملات Insecure Direct Object Reference (IDOR) که به کاربر A اجازه می‌دهد محتوای کاربر B را حذف یا ویرایش کند.
+- حذف اتفاقی یا عمدی محتوا با ارسال ID اشتباه بدون چک کردن Post Type.
+
 ## خروجی مورد انتظار
 user A به resource user B دسترسی ندارد
 

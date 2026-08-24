@@ -53,7 +53,7 @@ P01-SECURITY-SEC-022
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P01-QA-MANUAL-021
+- Depends on: P01-WPPLUGIN-ARCH-029
 - Blocks: P01-SECURITY-GATE-023
 - Requirement source: Master checklist row P01-SECURITY-SEC-022 و Source audit بخش SECURITY
 

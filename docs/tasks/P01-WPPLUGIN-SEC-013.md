@@ -60,6 +60,10 @@ P01-WPPLUGIN-SEC-013
 ## هدف قابل اندازه‌گیری
 role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد
 
+## Threat/Exploit Surface
+- دسترسی بیش از حد نقش‌هایی مانند Shop Manager به رکوردهای درمانی یا تست‌های روان‌شناسی (Privilege Escalation).
+- عدم وجود تفکیک وظایف (Separation of Duties).
+
 ## خروجی مورد انتظار
 تست نقش‌ها روی همه endpointهای حساس
 
