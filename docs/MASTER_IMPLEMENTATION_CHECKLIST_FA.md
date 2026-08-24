@@ -533,7 +533,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [ ] | `P01-SECURITY-DISC-001` | BOTH | P0/HIGH | تمام یافته‌های P0 سند ممیزی به ticketهای اتمیک خصوصی تبدیل شوند | هر ticket owner، exploit surface، test و rollback دارد |
-| [ ] | `P01-SECURITY-OPS-002` | HUMAN | P0/HIGH | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود |
+| [x] | `P01-SECURITY-OPS-002` | HUMAN | P0/HIGH | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود |
 | [ ] | `P01-SECURITY-CODE-003` | AI | P0/HIGH | request/response/token logging کلاینت redacted و debug-only شود | تست عدم ثبت Authorization، OTP، payment و health fields |
 | [ ] | `P01-SECURITY-CODE-004` | BOTH | P0/HIGH | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود | HTTPS production pass؛ MITM/invalid cert fail |
 | [ ] | `P01-SECURITY-CODE-005` | BOTH | P0/HIGH | token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود | foreign host test فاقد header؛ logout/expiry/rotation test |

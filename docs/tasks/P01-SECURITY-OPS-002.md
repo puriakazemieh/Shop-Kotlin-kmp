@@ -48,9 +48,9 @@ P01-SECURITY-OPS-002
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P01 / SECURITY / OPS
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / S (عملیات زیرساختی انسانی محدود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P01-SECURITY-DISC-001
@@ -130,11 +130,25 @@ scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رو�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-08-24 (AI handoff)
+- Completed at: 2026-08-24 (پیاده‌سازی، اعتبارسنجی خودکار و تأیید دستی کاربر انجام شد)
 - Changed files:
+  - docs/tasks.md
+  - docs/tasks/P01-SECURITY-OPS-002.md
+  - docs/evidence/P01-SECURITY-OPS-002/MANUAL_QA.md (NEW)
+  - D:\Android\AndroidStudioProjects\ShopServer\Shop\src\main\resources\application.properties
+  - D:\Android\AndroidStudioProjects\ShopServer\Shop\docker-compose.yml
+  - D:\Android\AndroidStudioProjects\ShopServer\Shop\src\main\kotlin\com\kazemieh\shop\payment\application\ZarinPalService.kt
+  - D:\Android\AndroidStudioProjects\ShopServer\Shop\src\test\kotlin\com\kazemieh\shop\payment\application\ZarinPalServiceTest.kt (NEW)
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `D:\Android\AndroidStudioProjects\ShopServer\Shop> docker compose config --quiet` — exit code 0
+  - `D:\Android\AndroidStudioProjects\ShopServer\Shop> .\gradlew.bat compileKotlin --console=plain` — exit code 0
+  - `D:\Android\AndroidStudioProjects\ShopServer\Shop> docker compose up -d --wait --wait-timeout 60 db` — exit code 0 (PostgreSQL healthy, loopback-only)
+  - `D:\Android\AndroidStudioProjects\ShopServer\Shop> docker compose exec -T db psql -U postgres -d shopdb ...` — exit code 0
+  - `D:\Android\AndroidStudioProjects\ShopServer\Shop> .\gradlew.bat test --console=plain` — exit code 0
+  - `D:\Android\AndroidStudioProjects\ShopServer\Shop> .\gradlew.bat test --tests com.kazemieh.shop.payment.application.ZarinPalServiceTest --console=plain` — exit code 0
+  - بررسی HTTP بدون credential برای hostname تونل سابق — DNS resolve نشد (`No such host is known`)
+- Manual tester/date/result: کاربر / 2026-08-24 / تأیید محدودسازی و ادامهٔ Task.
+- Evidence paths: docs/evidence/P01-SECURITY-OPS-002/MANUAL_QA.md
+- Remaining risks/blockers: سه پرداخت آزمایشیِ unverified در job زمان‌بندی‌شده بازیابی نشدند؛ رسیدگی آن در Taskهای payment بعدی است.
+- Final status: DONE
