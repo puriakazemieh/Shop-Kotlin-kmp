@@ -551,7 +551,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [ ] | `P01-PAYMENT-SEC-017` | BOTH | P0/HIGH | amount/currency/order/reference قبل از verify تطبیق و replay مسدود شود | wrong amount و duplicate callback هر دو fail/idempotent |
 | [ ] | `P01-WPPLUGIN-SEC-018` | BOTH | P0/HIGH | LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fail-closed شود؛ entitlement کامل به فازهای ۱۳/۱۴ موکول شود | با toggle خاموش URL مستقیم/API discovery دسترسی ندهد |
 | [x] | `P01-SECURITY-CODE-019` | AI | P0/HIGH | hardcoded/demo secret و credential پیش‌فرض از artifactها حذف شوند | secret scan؛ production بدون secret لازم fail-closed |
-| [ ] | `P01-QA-AUTO-020` | AI | P0/HIGH | حداقل harness hermetic موردنیاز و regression خودکار یافته‌های ۰۰۳ تا ۰۱۹ اضافه شود | تست قبل از fix fail و بعد از fix pass؛ بدون DB/service دستی؛ report ذخیره |
+| [x] | `P01-QA-AUTO-020` | AI | P0/HIGH | حداقل harness hermetic موردنیاز و regression خودکار یافته‌های ۰۰۳ تا ۰۱۹ اضافه شود | تست قبل از fix fail و بعد از fix pass؛ بدون DB/service دستی؛ report ذخیره |
 | [ ] | `P01-QA-MANUAL-021` | HUMAN | P0/HIGH | تست دستی auth/IDOR/payment و اثبات بسته‌بودن Wallet/Booking/LMS/Clinic خارج Scope | tester/date/device/request IDs redacted ثبت |
 | [ ] | `P01-SECURITY-SEC-022` | BOTH | P0/HIGH | review مستقل diffهای امنیتی و threat model به‌روز شود | هیچ Sev0/Sev1 باز در surface منتشرشدنی |
 | [ ] | `P01-SECURITY-GATE-023` | HUMAN | P0/HIGH | Gate خروج امنیت | P0 باز صفر؛ rollback و hotfix artifact آماده |
