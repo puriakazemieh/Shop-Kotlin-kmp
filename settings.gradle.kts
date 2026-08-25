@@ -2,6 +2,7 @@ rootProject.name = "kmp-shop"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
 //        maven {url = uri("https://maven.myket.ir") }
         google {
@@ -73,3 +74,5 @@ include(":feature:clinic")
 include(":feature:psychtest")
 include(":feature:admin:psychtest")
 include(":feature:comparison")
+
+

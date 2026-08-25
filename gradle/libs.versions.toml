@@ -36,6 +36,9 @@ imageLoader = "1.9.0"
 pagingCompose = "3.4.0-rc01"
 
 [libraries]
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-gradlePlugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "composeMultiplatform" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -108,3 +111,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
+

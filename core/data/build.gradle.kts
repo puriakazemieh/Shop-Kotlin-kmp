@@ -1,42 +1,12 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
+    id("carmilla.kmp.library")
     alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
     androidLibrary {
         namespace = "com.kazemieh.data"
-        compileSdk = 36
-        minSdk = 24
     }
-
-    val xcfName = "core:dataKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    js {
-        browser()
-    }
-
-    jvm()
 
     sourceSets {
         commonMain {
@@ -54,27 +24,10 @@ kotlin {
             }
         }
 
-
         androidMain {
             dependencies {
                 implementation(libs.androidx.security.crypto)
             }
         }
-
-        iosMain {
-            dependencies {
-            }
-        }
-
-        jsMain {
-            dependencies {
-            }
-        }
-
-        jvmMain {
-            dependencies {
-            }
-        }
     }
-
 }
