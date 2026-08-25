@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
+                "file": "tasks/P01-SECURITY-DISC-001.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "MASTER_IMPLEMENTATION_CHECKLIST_FA"
+              "title": "P01-SECURITY-DISC-001"
             }
           },
           {
@@ -215,6 +215,19 @@
   },
   "active": "8711e0212ad59b92",
   "lastOpenFiles": [
+    "evidence/P01-SECURITY-CODE-003/RESULTS.md",
+    "evidence/P01-SECURITY-CODE-003",
+    "evidence/P01-SECURITY-OPS-002/MANUAL_QA.md",
+    "evidence/P01-SECURITY-OPS-002",
+    "tasks.md~",
+    "tasks/P01-WPPLUGIN-ARCH-029.md",
+    "tasks/P01-WPPLUGIN-DATA-028.md",
+    "tasks/P01-SPRING-DATA-027.md",
+    "tasks/P01-SPRING-SEC-026.md",
+    "tasks/P01-SPRING-SEC-025.md",
+    "tasks/P01-SPRING-SEC-024.md",
+    "tasks/CB-SUCCESS-BIZ-036.md",
+    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
     "MASTER_IMPLEMENTATION_CHECKLIST_FA.md~",
     "tasks/P00-PROGRAM-GATE-019.md",
     "tasks/P00-QA-MANUAL-018.md",
@@ -233,22 +246,10 @@
     "tasks/P04-WORDPRESS-CODE-026.md",
     "tasks/P04-WPPLUGIN-GATE-024.md",
     "tasks/P04-WPTHEME-CODE-025.md",
-    "qa/EXPLORATORY_BASELINE_CHECKLIST.md",
-    "tasks.md~",
-    "tasks/P00-BUSINESS-BIZ-016.md",
-    "tasks/P01-SECURITY-DISC-001.md",
-    "business/LEADS_PARTNERS.md",
-    "business/MARKETPLACE_TERMS.md",
-    "tasks/P01-WPPLUGIN-CODE-016.md",
-    "business/LEADS_PARTNERS_TEMPLATE.md",
-    "tasks/P00-BUSINESS-BIZ-015.md",
-    "business/UNIT_ECONOMICS.md",
     "engineering",
     "evidence/P00-PROGRAM-ADR-003",
     "architecture/adr",
     "architecture",
-    "evidence/P00-PROGRAM-DISC-002/summary.md~",
-    "evidence/P00-PROGRAM-DISC-002",
-    "inventory/app-identity.md~"
+    "evidence/P00-PROGRAM-DISC-002/summary.md~"
   ]
 }

@@ -94,7 +94,7 @@ class CB_Interaction_Controller {
 	}
 
 	public function update_review( WP_REST_Request $request ): WP_REST_Response {
-		$comment = $this->owned_comment( (int) $request['id'] );
+		$comment = $this->owned_comment( (int) $request['id'], self::T_REVIEW );
 		if ( ! $comment ) {
 			return cb_error( 'نظر یافت نشد', 404, 'NOT_FOUND', 'api/reviews' );
 		}
@@ -107,7 +107,7 @@ class CB_Interaction_Controller {
 	}
 
 	public function delete_review( WP_REST_Request $request ): WP_REST_Response {
-		return $this->delete_comment( (int) $request['id'], 'api/reviews' );
+		return $this->delete_comment( (int) $request['id'], self::T_REVIEW, 'api/reviews' );
 	}
 
 	public function helpful( WP_REST_Request $request ): WP_REST_Response {
@@ -140,7 +140,7 @@ class CB_Interaction_Controller {
 	}
 
 	public function update_question( WP_REST_Request $request ): WP_REST_Response {
-		$comment = $this->owned_comment( (int) $request['id'] );
+		$comment = $this->owned_comment( (int) $request['id'], self::T_QNA );
 		if ( ! $comment ) {
 			return cb_error( 'پرسش یافت نشد', 404, 'NOT_FOUND', 'api/questions' );
 		}
@@ -149,7 +149,7 @@ class CB_Interaction_Controller {
 	}
 
 	public function delete_question( WP_REST_Request $request ): WP_REST_Response {
-		return $this->delete_comment( (int) $request['id'], 'api/questions' );
+		return $this->delete_comment( (int) $request['id'], self::T_QNA, 'api/questions' );
 	}
 
 	// ---- shared -------------------------------------------------------------
@@ -170,9 +170,9 @@ class CB_Interaction_Controller {
 	}
 
 	/** A comment owned by the current user (or the user is an admin). */
-	private function owned_comment( int $id ) {
+	private function owned_comment( int $id, string $type ) {
 		$comment = get_comment( $id );
-		if ( ! $comment ) {
+		if ( ! $comment || $comment->comment_type !== $type ) {
 			return null;
 		}
 		if ( (int) $comment->user_id !== get_current_user_id() && ! CB_Plugin::require_admin() ) {
@@ -181,8 +181,8 @@ class CB_Interaction_Controller {
 		return $comment;
 	}
 
-	private function delete_comment( int $id, string $path ): WP_REST_Response {
-		$comment = $this->owned_comment( $id );
+	private function delete_comment( int $id, string $type, string $path ): WP_REST_Response {
+		$comment = $this->owned_comment( $id, $type );
 		if ( ! $comment ) {
 			return cb_error( 'یافت نشد', 404, 'NOT_FOUND', $path );
 		}

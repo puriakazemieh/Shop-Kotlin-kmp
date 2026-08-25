@@ -187,7 +187,11 @@ class CB_Admin_Content_Controller {
 	}
 
 	public function delete_course( WP_REST_Request $request ): WP_REST_Response {
-		wp_delete_post( (int) $request['id'], true );
+		$id = (int) $request['id'];
+		if ( get_post_type( $id ) !== 'cb_course' ) {
+			return cb_error( 'دوره یافت نشد', 404, 'NOT_FOUND', 'api/admin/courses' );
+		}
+		wp_delete_post( $id, true );
 		return cb_response( null, 204 );
 	}
 
@@ -366,7 +370,11 @@ class CB_Admin_Content_Controller {
 	}
 
 	public function delete_therapist( WP_REST_Request $request ): WP_REST_Response {
-		wp_delete_post( (int) $request['id'], true );
+		$id = (int) $request['id'];
+		if ( get_post_type( $id ) !== 'cb_therapist' ) {
+			return cb_error( 'درمانگر یافت نشد', 404, 'NOT_FOUND', 'api/admin/therapists' );
+		}
+		wp_delete_post( $id, true );
 		return cb_response( null, 204 );
 	}
 
@@ -709,7 +717,11 @@ class CB_Admin_Content_Controller {
 	}
 
 	public function delete_test( WP_REST_Request $request ): WP_REST_Response {
-		wp_delete_post( (int) $request['id'], true );
+		$id = (int) $request['id'];
+		if ( get_post_type( $id ) !== 'cb_psychtest' ) {
+			return cb_error( 'تست یافت نشد', 404, 'NOT_FOUND', 'api/admin/psych-tests' );
+		}
+		wp_delete_post( $id, true );
 		return cb_response( null, 204 );
 	}
 
@@ -816,7 +828,11 @@ class CB_Admin_Content_Controller {
 	}
 
 	public function delete_story( WP_REST_Request $request ): WP_REST_Response {
-		wp_delete_post( (int) $request['id'], true );
+		$id = (int) $request['id'];
+		if ( get_post_type( $id ) !== 'cb_story' ) {
+			return cb_error( 'استوری یافت نشد', 404, 'NOT_FOUND', 'api/admin/stories' );
+		}
+		wp_delete_post( $id, true );
 		return cb_response( null, 204 );
 	}
 

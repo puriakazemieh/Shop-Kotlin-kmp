@@ -376,7 +376,11 @@ class CB_Admin_Controller {
 	}
 
 	public function update_discount( WP_REST_Request $request ): WP_REST_Response {
-		$coupon = cb_woo_active() ? new WC_Coupon( (int) $request['id'] ) : null;
+		$id = (int) $request['id'];
+		if ( ! cb_woo_active() || get_post_type( $id ) !== 'shop_coupon' ) {
+			return cb_error( 'کد تخفیف یافت نشد', 404, 'NOT_FOUND', 'api/admin/discounts' );
+		}
+		$coupon = new WC_Coupon( $id );
 		if ( ! $coupon || ! $coupon->get_id() ) {
 			return cb_error( 'کد تخفیف یافت نشد', 404, 'NOT_FOUND', 'api/admin/discounts' );
 		}
@@ -401,7 +405,11 @@ class CB_Admin_Controller {
 	}
 
 	public function delete_discount( WP_REST_Request $request ): WP_REST_Response {
-		wp_delete_post( (int) $request['id'], true );
+		$id = (int) $request['id'];
+		if ( get_post_type( $id ) !== 'shop_coupon' ) {
+			return cb_error( 'کد تخفیف یافت نشد', 404, 'NOT_FOUND', 'api/admin/discounts' );
+		}
+		wp_delete_post( $id, true );
 		return cb_response( null, 204 );
 	}
 
@@ -509,7 +517,11 @@ class CB_Admin_Controller {
 	}
 
 	public function delete_course_request( WP_REST_Request $request ): WP_REST_Response {
-		wp_delete_post( (int) $request['id'], true );
+		$id = (int) $request['id'];
+		if ( get_post_type( $id ) !== 'cb_course_request' ) {
+			return cb_error( 'درخواست یافت نشد', 404, 'NOT_FOUND', 'api/admin/course-requests' );
+		}
+		wp_delete_post( $id, true );
 		return cb_response( null, 204 );
 	}
 
