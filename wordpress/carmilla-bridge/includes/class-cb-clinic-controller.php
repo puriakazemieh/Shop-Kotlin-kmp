@@ -31,10 +31,10 @@ class CB_Clinic_Controller {
 		register_rest_route( $ns, '/api/therapists', array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $pub ) );
 		register_rest_route( $ns, '/api/therapists/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $pub ) );
 
-		register_rest_route( $ns, '/api/clinic/my-appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'my_appointments' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/clinic/appointments', array( 'methods' => 'POST', 'callback' => array( $this, 'book' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/cancel', array( 'methods' => 'POST', 'callback' => array( $this, 'cancel' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/receipt', array( 'methods' => 'GET', 'callback' => array( $this, 'receipt' ), 'permission_callback' => $login ) );
+		register_rest_route( $ns, '/api/clinic/my-appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+		register_rest_route( $ns, '/api/clinic/appointments', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+		register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/cancel', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+		register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/receipt', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
 
 		register_rest_route( $ns, '/api/clinic/mood-checkins', array(
 			array( 'methods' => 'GET', 'callback' => array( $this, 'mood_history' ), 'permission_callback' => $login ),
@@ -65,6 +65,10 @@ class CB_Clinic_Controller {
 	// ---- therapist model ----------------------------------------------------
 
 	/** Future slots as [ index => 'YYYY-mm-ddTHH:MM', ... ] preserving stable indices. */
+	public function disabled_feature(): WP_REST_Response {
+		return cb_error( 'این قابلیت در حال حاضر غیرفعال است', 403, 'FEATURE_DISABLED' );
+	}
+
 	private function all_slots( int $tid ): array {
 		$raw   = (string) get_post_meta( $tid, 'cb_slots', true );
 		$lines = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) ) );

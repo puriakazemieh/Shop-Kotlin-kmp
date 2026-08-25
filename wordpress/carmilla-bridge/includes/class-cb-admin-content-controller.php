@@ -64,9 +64,9 @@ class CB_Admin_Content_Controller {
 			array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ),
 			array( 'methods' => 'POST', 'callback' => array( $this, 'add_slot' ), 'permission_callback' => $admin ),
 		) );
-		register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'appointments' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => array( $this, 'confirm_appointment' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => array( $this, 'complete_appointment' ), 'permission_callback' => $admin ) );
+		register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
+		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
+		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
 		register_rest_route( $ns, '/api/admin/clinic/switch-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'switch_requests' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/clinic/switch-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_switch' ), 'permission_callback' => $admin ) );
 

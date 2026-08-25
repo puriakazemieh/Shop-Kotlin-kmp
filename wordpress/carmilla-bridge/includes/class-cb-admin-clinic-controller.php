@@ -25,8 +25,8 @@ class CB_Admin_Clinic_Controller {
 		$admin = array( 'CB_Plugin', 'require_health_admin' );
 
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<aid>\d+)/notes', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'list_notes' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'POST', 'callback' => array( $this, 'add_note' ), 'permission_callback' => $admin ),
+			array( 'methods' => 'GET', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ),
+			array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ),
 		) );
 
 		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/patients', array( 'methods' => 'GET', 'callback' => array( $this, 'list_patients' ), 'permission_callback' => $admin ) );
@@ -82,7 +82,7 @@ class CB_Admin_Clinic_Controller {
 
 	/** Appointment posts for a therapist. */
 	private function therapist_appointments( int $tid ): array {
-		return get_posts( array( 'post_type' => 'cb_appointment', 'post_status' => 'publish', 'numberposts' => 500, 'meta_key' => 'cb_therapist_id', 'meta_value' => $tid ) );
+		return array();
 	}
 
 	private function tags( int $tid, int $uid ): array {
