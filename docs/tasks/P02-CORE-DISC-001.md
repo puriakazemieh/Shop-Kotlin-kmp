@@ -48,7 +48,7 @@ P02-CORE-DISC-001
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CORE / DISC
 - Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -130,4 +130,4 @@ graph + فهرست couplingهای profile/admin/navigation
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: DONE

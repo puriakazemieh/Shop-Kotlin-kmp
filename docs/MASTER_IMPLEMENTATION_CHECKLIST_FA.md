@@ -582,7 +582,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P02-CORE-DISC-001` | AI | P1/MEDIUM | dependency graph ۲۹ ماژول، cycle و boundary violation مستند شود | graph + فهرست couplingهای profile/admin/navigation |
+| [x] | `P02-CORE-DISC-001` | AI | P1/MEDIUM | dependency graph ۲۹ ماژول، cycle و boundary violation مستند شود | graph + فهرست couplingهای profile/admin/navigation |
 | [ ] | `P02-CORE-CODE-002` | AI | P1/LOW | versionهای hardcoded به Version Catalog موجود منتقل شوند | build بدون تغییر dependency resolution؛ diff lockfile بررسی |
 | [ ] | `P02-CORE-ADR-003` | BOTH | P1/MEDIUM | scope convention plugin و pluginهای مجاز تصویب شود | از استخراج تمام config در یک Task جلوگیری شود |
 | [ ] | `P02-CORE-CODE-004` | AI | P2/MEDIUM | `build-logic` و اولین convention plugin برای KMP library ساخته شود | دو ماژول pilot build؛ سپس rollout taskهای کوچک |
