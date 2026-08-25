@@ -38,7 +38,6 @@ require_once CB_PLUGIN_DIR . 'includes/class-cb-media-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-cart-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-order-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-payment-controller.php';
-require_once CB_PLUGIN_DIR . 'includes/class-cb-wallet-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-account-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-interaction-controller.php';
 // Phase 3: academy (courses, lessons, enrollment, quiz, certificates, project).
