@@ -2066,7 +2066,7 @@ Suggested next READY task:
 | ۳۳ | `P01-WPPLUGIN-SEC-014` | IDOR/ownership |
 | ۳۴ | [x] `P01-WPPLUGIN-CODE-015` | Wallet قطعی Scope fail-closed؛ legacy حذف محکم |
 | ۳۵ | [x] `P01-WPPLUGIN-CODE-016` | Booking خارج Scope fail-closed؛ legacy فعال اتمیک |
-| ۳۶ | `P01-PAYMENT-SEC-017` | amount/reference/replay |
+| ۳۶ | [x] `P01-PAYMENT-SEC-017` | amount/reference/replay |
 | ۳۷ | `P01-WPPLUGIN-SEC-018` | بستن کامل surfaceهای LMS/Clinic/Psych تا فاز مربوط |
 | ۳۸ | `P01-SECURITY-CODE-019` | حذف secret/defaultهای artifact |
 | ۳۹ | `P01-QA-AUTO-020` | مجموعه regression امنیت |

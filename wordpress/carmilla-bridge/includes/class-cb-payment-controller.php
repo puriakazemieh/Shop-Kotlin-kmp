@@ -85,11 +85,24 @@ class CB_Payment_Controller {
 			return $this->redirect( cb_app_return_url( array( 'order' => $order_id, 'status' => 'success' ) ) );
 		}
 		if ( strtoupper( $status ) !== 'OK' ) {
-			$order->update_status( 'failed', 'پرداخت توسط کاربر لغو شد' );
+			$order->update_status( 'failed', 'لغو پرداخت توسط کاربر یا بانک.' );
 			return $this->redirect( cb_app_return_url( array( 'order' => $order_id, 'status' => 'failed' ) ) );
 		}
 
-		$ref = cb_zp_verify( (int) $order->get_meta( '_cb_zp_amount' ), $authority );
+		$saved_authority = (string) $order->get_meta( '_cb_zp_authority' );
+		if ( ! $saved_authority || $saved_authority !== $authority ) {
+			$order->update_status( 'failed', 'خطای امنیتی: عدم تطابق شناسه پرداخت.' );
+			return $this->redirect( cb_app_return_url( array( 'order' => $order_id, 'status' => 'failed' ) ) );
+		}
+
+		$expected_amount = cb_zp_amount( (float) $order->get_total() );
+		$saved_amount    = (int) $order->get_meta( '_cb_zp_amount' );
+		if ( $saved_amount !== $expected_amount ) {
+			$order->update_status( 'failed', 'خطای امنیتی: تغییر مبلغ سفارش.' );
+			return $this->redirect( cb_app_return_url( array( 'order' => $order_id, 'status' => 'failed' ) ) );
+		}
+
+		$ref = cb_zp_verify( $expected_amount, $authority );
 		if ( $ref !== null ) {
 			$order->payment_complete( $ref );
 			$order->add_order_note( 'پرداخت ZarinPal موفق. کد پیگیری: ' . $ref );
