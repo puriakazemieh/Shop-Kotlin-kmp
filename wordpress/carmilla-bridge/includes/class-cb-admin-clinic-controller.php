@@ -22,7 +22,7 @@ class CB_Admin_Clinic_Controller {
 
 	public function register_routes(): void {
 		$ns    = CB_REST_NAMESPACE;
-		$admin = array( 'CB_Plugin', 'require_admin' );
+		$admin = array( 'CB_Plugin', 'require_health_admin' );
 
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<aid>\d+)/notes', array(
 			array( 'methods' => 'GET', 'callback' => array( $this, 'list_notes' ), 'permission_callback' => $admin ),

@@ -544,7 +544,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P01-WPPLUGIN-SEC-010` | BOTH | P0/HIGH | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود | tamper/expired/wrong audience/revoked token رد شوند |
 | [x] | `P01-WPPLUGIN-SEC-011` | BOTH | P0/HIGH | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off | brute force/rate/account enumeration tests |
 | [x] | `P01-WPPLUGIN-SEC-012` | BOTH | P0/HIGH | CORS default بسته و origin دقیق tenant allowlist شود | unapproved origin رد؛ credential policy روشن |
-| [ ] | `P01-WPPLUGIN-SEC-013` | BOTH | P0/HIGH | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد | تست نقش‌ها روی همه endpointهای حساس |
+| [x] | `P01-WPPLUGIN-SEC-013` | BOTH | P0/HIGH | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد | تست نقش‌ها روی همه endpointهای حساس |
 | [ ] | `P01-WPPLUGIN-SEC-014` | BOTH | P0/HIGH | ownership/IDOR و post type validation برای read/write/delete | user A به resource user B دسترسی ندارد |
 | [ ] | `P01-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود | feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر |
 | [ ] | `P01-WPPLUGIN-CODE-016` | BOTH | P0/HIGH | Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است | feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner |

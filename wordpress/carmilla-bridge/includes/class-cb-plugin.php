@@ -231,4 +231,12 @@ class CB_Plugin {
 	public static function require_admin(): bool {
 		return current_user_can( 'edit_others_posts' ) || current_user_can( 'manage_woocommerce' );
 	}
+
+	/**
+	 * Write access to health records (clinic, psychtests) = Administrator only.
+	 * Shop Managers should not see patient files or test results.
+	 */
+	public static function require_health_admin(): bool {
+		return current_user_can( 'manage_options' );
+	}
 }
