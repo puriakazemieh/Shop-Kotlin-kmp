@@ -48,9 +48,9 @@ P01-SECURITY-CODE-005
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P01 / SECURITY / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / L
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P01-SECURITY-CODE-004
@@ -129,11 +129,11 @@ foreign host test فاقد header؛ logout/expiry/rotation test
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-25
+- Completed at: 2026-08-25
+- Changed files: تغییرات پلتفرمی token storage،contract وب،host allowlist و کارت‌های 005A تا 005E.
+- Commands and exit codes: compile Android/JS/JVM و `:core:network:jvmTest` exit 0؛ShopServer test با PostgreSQL Docker exit 0.
+- Manual tester/date/result: تأیید مالک پروژه برای iOS Keychain و QA مرورگر در 2026-08-25.
+- Evidence paths: `docs/evidence/P01-SECURITY-CODE-005C/`; `docs/evidence/P01-SECURITY-CODE-005D/`; `docs/evidence/P01-SECURITY-CODE-005E/`.
+- Remaining risks/blockers: بازبینی Keychain پیش از انتشار iOS در `P16-IOS-SEC-023` باقی می‌ماند.
+- Final status: DONE

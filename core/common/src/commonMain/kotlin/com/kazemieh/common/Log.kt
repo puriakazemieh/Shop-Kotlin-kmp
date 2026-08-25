@@ -5,7 +5,7 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import co.touchlab.kermit.platformLogWriter
 
-expect val isDebugLoggingEnabled: Boolean
+expect var isDebugLoggingEnabled: Boolean
 
 val AppLogger = Logger(
     config = StaticConfig(
@@ -30,4 +30,3 @@ fun <T> T.le(message: String = ""): T {
 
 fun String.redactedForLog(): String =
     replace(Regex("(?i)(authorization|bearer|token|password|otp|authority|payment)[^\\r\\n]*"), "\$1=<redacted>")
-

@@ -12,6 +12,7 @@ import com.kazemieh.network.auth.dto.request.LoginWithOtpRequest
 import com.kazemieh.network.auth.dto.request.ForgotPasswordRequest
 import com.kazemieh.network.auth.dto.request.ResetPasswordWithOtpRequest
 import com.kazemieh.network.auth.dto.response.AuthResponse
+import com.kazemieh.network.common.PlatformConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -20,17 +21,20 @@ class AuthApiImpl(
     private val client: HttpClient
 ) : AuthApi {
 
+    private fun endpoint(name: String): String =
+        if (PlatformConfig.usesWebSessionCookie) "api/auth/web/$name" else "api/auth/$name"
+
     //puriakazemieh@gmail.com
     override suspend fun login(
         request: LoginRequest
     ): AuthResponse = safeApiCallRaw {
-        client.post("api/auth/login") { setBody(request) }
+        client.post(endpoint("login")) { setBody(request) }
     }
 
     override suspend fun register(
         request: RegisterRequest
     ): AuthResponse = safeApiCallRaw {
-        client.post("api/auth/register") { setBody(request) }
+        client.post(endpoint("register")) { setBody(request) }
     }
 
     override suspend fun forgotPassword(
@@ -50,7 +54,7 @@ class AuthApiImpl(
     }
 
     override suspend fun loginWithOtp(request: LoginWithOtpRequest): AuthResponse = safeApiCallRaw {
-        client.post("api/auth/login-with-otp") { setBody(request) }
+        client.post(endpoint("login-with-otp")) { setBody(request) }
     }
 
     override suspend fun resetPasswordWithOtp(request: ResetPasswordWithOtpRequest) = safeApiCallRaw<Unit> {

@@ -2,6 +2,7 @@ package com.kazemieh.shop
 
 
 import android.app.Application
+import com.kazemieh.common.isDebugLoggingEnabled
 import com.kazemieh.designsystem.brand.BrandConfig
 import com.kazemieh.designsystem.brand.BrandRegistry
 import org.koin.android.ext.koin.androidContext
@@ -11,6 +12,7 @@ class ShopApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        isDebugLoggingEnabled = BuildConfig.DEBUG
 
         // برندِ فعال از فلِیورِ build (BuildConfig.BRAND) انتخاب می‌شود.
         initKoin(brand = resolveBrand()) {

@@ -29,7 +29,7 @@ import kotlinx.serialization.json.Json
 object HttpClientFactory {
 
     fun create(tokenProvider: TokenProvider): HttpClient {
-        return HttpClient(httpClientEngine()) {
+        return createPlatformHttpClient {
 
             install(ContentNegotiation) {
                 json(Json {
@@ -63,15 +63,17 @@ object HttpClientFactory {
                         val accessToken = tokenProvider.getAccessToken()
                         val refreshToken = tokenProvider.getRefreshToken()
 
-                        if (accessToken != null && refreshToken != null) {
+                        if (accessToken != null) {
                             BearerTokens(
                                 accessToken = accessToken,
-                                refreshToken = refreshToken
+                                refreshToken = refreshToken.orEmpty()
                             )
                         } else null
                     }
 
-                    sendWithoutRequest { true }
+                    sendWithoutRequest { request ->
+                        ApiConfig.isApprovedApiHost(request.url.host)
+                    }
 
                     refreshTokens {
                         val refreshToken = tokenProvider.getRefreshToken()
@@ -83,9 +85,11 @@ object HttpClientFactory {
                         try {
                             // درخواست refresh token
                             val response: RefreshTokenResponse =
-                                client.post("${ApiConfig.baseUrl}api/auth/refresh") {
+                                client.post("${ApiConfig.baseUrl}${if (PlatformConfig.usesWebSessionCookie) "api/auth/web/refresh" else "api/auth/refresh"}") {
                                     markAsRefreshTokenRequest()
-                                    setBody(RefreshTokenRequest(refreshToken))
+                                    if (!PlatformConfig.usesWebSessionCookie) {
+                                        setBody(RefreshTokenRequest(refreshToken))
+                                    }
                                 }.body()
 
                             // ذخیره توکن‌های جدید

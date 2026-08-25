@@ -536,7 +536,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P01-SECURITY-OPS-002` | HUMAN | P0/HIGH | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود |
 | [x] | `P01-SECURITY-CODE-003` | AI | P0/HIGH | request/response/token logging کلاینت redacted و debug-only شود | تست عدم ثبت Authorization، OTP، payment و health fields |
 | [x] | `P01-SECURITY-CODE-004` | BOTH | P0/HIGH | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود | HTTPS production pass؛ MITM/invalid cert fail |
-| [ ] | `P01-SECURITY-CODE-005` | BOTH | P0/HIGH | token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود | foreign host test فاقد header؛ logout/expiry/rotation test |
+| [x] | `P01-SECURITY-CODE-005` | BOTH | P0/HIGH | token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود | foreign host test فاقد header؛ logout/expiry/rotation test |
 | [ ] | `P01-SECURITY-CODE-006` | AI | P0/HIGH | `?api=` و override origin آزاد از production حذف یا allowlist شود | localhost/private/foreign URL در release رد شود |
 | [ ] | `P01-PAYMENT-CODE-007` | BOTH | P0/HIGH | نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد | success جعلی سفارش/cart را تغییر ندهد |
 | [ ] | `P01-PAYMENT-CODE-008` | BOTH | P0/HIGH | پاک‌شدن cart فقط بعد از verify authoritative موفق انجام شود | fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد |

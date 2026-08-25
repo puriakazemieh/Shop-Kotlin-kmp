@@ -32,6 +32,7 @@ import com.kazemieh.data.favorite.source.FavoriteDataSource
 import com.kazemieh.data.favorite.source.FavoriteDataSourceImpl
 import com.kazemieh.data.local.ProfileLocalDataSource
 import com.kazemieh.data.local.TokenManager
+import com.kazemieh.data.local.createTokenSettings
 import com.kazemieh.data.order.repository.OrderRepositoryImpl
 import com.kazemieh.data.order.source.OrderDataSource
 import com.kazemieh.data.order.source.OrderDataSourceImpl
@@ -239,7 +240,7 @@ val dataModule = module {
         AdminBundleRepositoryImpl(get())
     }
 
-    single { TokenManager(settings = get()) }
+    single { TokenManager(settings = createTokenSettings()) }
     single<TokenProvider> { get<TokenManager>() }
 
 }

@@ -57,6 +57,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation(libs.androidx.security.crypto)
             }
         }
 
