@@ -1,6 +1,6 @@
 # P01-WPPLUGIN-DATA-028 — اصلاح IDهای محلی و Ledger در وردپرس (P0-11)
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P01 / SECURITY / DATA
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI
