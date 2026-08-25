@@ -44,13 +44,13 @@ kotlin {
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.koin.core)
 
-                implementation("io.ktor:ktor-client-core:3.3.3")
-                implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.3")
-                implementation("io.ktor:ktor-client-logging:3.3.3")
-                implementation("io.ktor:ktor-client-auth:3.3.3")
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.auth)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation(libs.kotlinx.coroutines.core)
                 implementation(project(":core:common"))
                 implementation(libs.compose.components.resources)
 //                implementation("io.arrow-kt:arrow-core:2.2.2.1")
@@ -61,26 +61,26 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation("io.ktor:ktor-client-android:3.3.3")
+                implementation(libs.ktor.client.android)
                 implementation(libs.koin.android)
             }
         }
 
         iosMain {
             dependencies {
-                implementation("io.ktor:ktor-client-darwin:3.3.3")
+                implementation(libs.ktor.client.darwin)
             }
         }
 
         jsMain {
             dependencies {
-                implementation("io.ktor:ktor-client-js:3.3.3")
+                implementation(libs.ktor.client.js)
             }
         }
 
         jvmMain {
             dependencies {
-                implementation("io.ktor:ktor-client-cio:3.3.3")
+                implementation(libs.ktor.client.cio)
             }
         }
 

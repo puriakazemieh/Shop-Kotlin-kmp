@@ -48,7 +48,7 @@ P02-CORE-CODE-002
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CORE / CODE
 - Priority/Risk/Size: P1/LOW / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -132,4 +132,4 @@ build بدون تغییر dependency resolution؛ diff lockfile بررسی
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: DONE

@@ -59,7 +59,7 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.image.loader)
 
-                implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+                implementation(libs.coil.compose)
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))

@@ -47,7 +47,7 @@ kotlin {
                 implementation(project(":core:network"))
                 implementation(project(":core:common"))
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.multiplatform.settings.coroutines)
                 implementation(libs.multiplatform.settings.make.observable)

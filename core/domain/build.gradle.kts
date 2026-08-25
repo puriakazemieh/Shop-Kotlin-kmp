@@ -42,7 +42,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlinx.serialization)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation(libs.kotlinx.coroutines.core)
                 implementation(project(":core:common"))
                 implementation(libs.compose.components.resources)
                 implementation(libs.koin.core)
