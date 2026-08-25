@@ -2064,7 +2064,7 @@ Suggested next READY task:
 | ۳۱ | `P01-WPPLUGIN-SEC-012` | CORS tenant allowlist |
 | ۳۲ | `P01-WPPLUGIN-SEC-013` | role/capability matrix |
 | ۳۳ | `P01-WPPLUGIN-SEC-014` | IDOR/ownership |
-| ۳۴ | `P01-WPPLUGIN-CODE-015` | Wallet خارج Scope fail-closed؛ legacy فعال اتمیک |
+| ۳۴ | [x] `P01-WPPLUGIN-CODE-015` | Wallet قطعی Scope fail-closed؛ legacy حذف محکم |
 | ۳۵ | `P01-WPPLUGIN-CODE-016` | Booking خارج Scope fail-closed؛ legacy فعال اتمیک |
 | ۳۶ | `P01-PAYMENT-SEC-017` | amount/reference/replay |
 | ۳۷ | `P01-WPPLUGIN-SEC-018` | بستن کامل surfaceهای LMS/Clinic/Psych تا فاز مربوط |

@@ -138,7 +138,6 @@ class CB_Plugin {
 		( new CB_Cart_Controller() )->register_routes();
 		( new CB_Order_Controller() )->register_routes();
 		( new CB_Payment_Controller() )->register_routes();
-		( new CB_Wallet_Controller() )->register_routes();
 		( new CB_Account_Controller() )->register_routes();
 		( new CB_Interaction_Controller() )->register_routes();
 		// Phase 3: academy.

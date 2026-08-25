@@ -144,22 +144,10 @@ class CB_Order_Controller {
 
 		$order->calculate_totals();
 
-		// Optional wallet payment: cover as much of the total as the balance allows.
-		$wallet_paid = 0.0;
-		if ( ! empty( $body['useWallet'] ) ) {
-			$balance = cb_wallet_balance( $uid );
-			$total   = (float) $order->get_total();
-			$wallet_paid = min( $balance, $total );
-			if ( $wallet_paid > 0 ) {
-				cb_wallet_add( $uid, -$wallet_paid, 'ORDER', 'پرداخت سفارش #' . $order->get_id(), (string) $order->get_id() );
-				$order->update_meta_data( '_cb_wallet_paid', $wallet_paid );
-				if ( $wallet_paid >= $total ) {
-					$order->payment_complete();
-				}
-			}
-		}
+		$gateway_amount = (float) $order->get_total();
+		$order->update_status( 'pending', 'ساخته‌شده از اپ', true );
 
-		$order->update_status( $wallet_paid >= (float) $order->get_total() && $wallet_paid > 0 ? 'processing' : 'pending', 'ساخته‌شده از اپ', true );
+		$order->update_meta_data( '_cb_app_status', 'AWAITING_PAYMENT' );
 		$order->save();
 
 		// Clear the purchased items from the cart.
@@ -183,11 +171,6 @@ class CB_Order_Controller {
 		}
 		if ( in_array( $order->get_status(), array( 'completed', 'cancelled', 'refunded' ), true ) ) {
 			return cb_error( 'این سفارش قابل لغو نیست', 409, 'NOT_CANCELLABLE', 'api/orders' );
-		}
-		// Refund any wallet-paid amount back to the customer.
-		$wallet_paid = (float) $order->get_meta( '_cb_wallet_paid' );
-		if ( $wallet_paid > 0 ) {
-			cb_wallet_add( $order->get_customer_id(), $wallet_paid, 'REFUND', 'بازگشت وجه سفارش #' . $order->get_id(), (string) $order->get_id() );
 		}
 		$order->update_status( 'cancelled', 'لغو توسط کاربر', true );
 		return cb_response( null, 200 );
@@ -317,7 +300,6 @@ class CB_Order_Controller {
 			'postalCode'    => $order->get_billing_postcode() ?: null,
 		);
 
-		$wallet_paid = (float) $order->get_meta( '_cb_wallet_paid' );
 		return array(
 			'id'                => (int) $order->get_id(),
 			'status'            => cb_order_status( $order->get_status() ),
@@ -331,8 +313,6 @@ class CB_Order_Controller {
 			'trackingCode'      => $order->get_meta( '_cb_tracking_code' ) ?: null,
 			'shippedAt'         => $order->get_meta( '_cb_shipped_at' ) ?: null,
 			'deliveredAt'       => $order->get_date_completed() ? $order->get_date_completed()->date( 'c' ) : null,
-			'walletPaidAmount'  => $wallet_paid > 0 ? $wallet_paid : null,
-			'gatewayPaidAmount' => max( 0.0, (float) $order->get_total() - $wallet_paid ) ?: null,
 			'isGift'            => (bool) $order->get_meta( '_cb_is_gift' ),
 			'giftMessage'       => $order->get_meta( '_cb_gift_message' ) ?: null,
 		);

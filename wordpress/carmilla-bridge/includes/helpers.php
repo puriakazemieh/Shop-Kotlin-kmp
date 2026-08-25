@@ -379,40 +379,6 @@ function cb_app_status_to_wc( string $status ): string {
 	}
 }
 
-// ---- wallet (user meta cb_wallet_balance + cb_wallet_txns) -------------------
-
-function cb_wallet_balance( int $user_id ): float {
-	return (float) get_user_meta( $user_id, 'cb_wallet_balance', true );
-}
-
-/**
- * Append a wallet transaction and update the balance atomically-ish.
- * $amount is signed (positive = credit, negative = debit). Returns new balance.
- */
-function cb_wallet_add( int $user_id, float $amount, string $type, $description = null, $reference = null ): float {
-	$balance = cb_wallet_balance( $user_id ) + $amount;
-	update_user_meta( $user_id, 'cb_wallet_balance', $balance );
-	$txns = get_user_meta( $user_id, 'cb_wallet_txns', true );
-	$txns = is_array( $txns ) ? $txns : array();
-	$seq  = (int) get_user_meta( $user_id, 'cb_wallet_seq', true ) + 1;
-	update_user_meta( $user_id, 'cb_wallet_seq', $seq );
-	array_unshift( $txns, array(
-		'id'          => $seq,
-		'amount'      => $amount,
-		'type'        => $type,
-		'description' => $description,
-		'referenceId' => $reference,
-		'createdAt'   => gmdate( 'c' ),
-	) );
-	update_user_meta( $user_id, 'cb_wallet_txns', $txns );
-	return $balance;
-}
-
-function cb_wallet_txns( int $user_id ): array {
-	$txns = get_user_meta( $user_id, 'cb_wallet_txns', true );
-	return is_array( $txns ) ? array_values( $txns ) : array();
-}
-
 // ---- addresses (user meta cb_addresses) -------------------------------------
 
 function cb_addresses( int $user_id ): array {

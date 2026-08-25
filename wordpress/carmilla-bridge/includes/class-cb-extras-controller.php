@@ -86,17 +86,7 @@ class CB_Extras_Controller {
 	}
 
 	public function membership_subscribe(): WP_REST_Response {
-		$uid   = get_current_user_id();
-		$price = $this->membership_price();
-		if ( cb_wallet_balance( $uid ) < $price ) {
-			return cb_error( 'موجودی کیف پول کافی نیست', 402, 'INSUFFICIENT_BALANCE', 'api/memberships/subscribe' );
-		}
-		cb_wallet_add( $uid, -$price, 'MEMBERSHIP', 'اشتراک باشگاه مشتریان', null );
-		$base    = get_user_meta( $uid, 'cb_membership_expires', true );
-		$start   = ( $base && strtotime( $base ) > time() ) ? strtotime( $base ) : time();
-		$expires = gmdate( 'c', strtotime( '+30 days', $start ) );
-		update_user_meta( $uid, 'cb_membership_expires', $expires );
-		return $this->membership_mine();
+		return cb_error( 'کیف پول غیرفعال است', 400, 'WALLET_DISABLED', 'api/membership/buy' );
 	}
 
 	// ---- referral -----------------------------------------------------------

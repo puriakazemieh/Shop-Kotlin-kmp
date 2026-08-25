@@ -48,10 +48,7 @@ class CB_Admin_Controller {
 			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_discount' ), 'permission_callback' => $admin ),
 		) );
 
-		register_rest_route( $ns, '/api/admin/wallet/users/search', array( 'methods' => 'GET', 'callback' => array( $this, 'wallet_search' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/wallet/adjust', array( 'methods' => 'POST', 'callback' => array( $this, 'wallet_adjust' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/wallet/withdrawals', array( 'methods' => 'GET', 'callback' => array( $this, 'withdrawals' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/wallet/withdrawals/(?P<id>\d+)/process', array( 'methods' => 'POST', 'callback' => array( $this, 'process_withdrawal' ), 'permission_callback' => $admin ) );
+
 
 		register_rest_route( $ns, '/api/admin/course-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'course_requests' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/course-requests/(?P<id>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_course_request' ), 'permission_callback' => $admin ) );
@@ -242,8 +239,6 @@ class CB_Admin_Controller {
 				'postalCode'    => $o->get_billing_postcode() ?: null,
 			),
 			'items'             => $items,
-			'walletPaidAmount'  => (float) $o->get_meta( '_cb_wallet_paid' ) ?: null,
-			'gatewayPaidAmount' => null,
 		) );
 	}
 
@@ -413,90 +408,7 @@ class CB_Admin_Controller {
 		return cb_response( null, 204 );
 	}
 
-	// ---- wallet admin -------------------------------------------------------
 
-	public function wallet_search( WP_REST_Request $request ): WP_REST_Response {
-		$q     = sanitize_text_field( (string) $request->get_param( 'query' ) );
-		$users = get_users( array( 'search' => '*' . $q . '*', 'search_columns' => array( 'user_email', 'user_login', 'display_name' ), 'number' => 20 ) );
-		$out   = array();
-		foreach ( $users as $u ) {
-			$out[] = array(
-				'userId'   => (int) $u->ID,
-				'email'    => $u->user_email,
-				'fullName' => $u->display_name,
-				'balance'  => cb_wallet_balance( $u->ID ),
-			);
-		}
-		return cb_response( $out );
-	}
-
-	public function wallet_adjust( WP_REST_Request $request ): WP_REST_Response {
-		$body   = $request->get_json_params();
-		$uid    = (int) ( $body['userId'] ?? 0 );
-		$amount = (float) ( $body['amount'] ?? 0 );
-		if ( ! get_user_by( 'id', $uid ) ) {
-			return cb_error( 'کاربر یافت نشد', 404, 'NOT_FOUND', 'api/admin/wallet/adjust' );
-		}
-		cb_wallet_add( $uid, $amount, 'ADMIN_ADJUST', isset( $body['description'] ) ? sanitize_text_field( (string) $body['description'] ) : 'تعدیل توسط مدیر', null );
-		return cb_response( null, 200 );
-	}
-
-	public function withdrawals( WP_REST_Request $request ): WP_REST_Response {
-		$filter = $request->get_param( 'status' );
-		$out    = array();
-		$users  = get_users( array( 'meta_key' => 'cb_wallet_txns', 'number' => 500 ) );
-		foreach ( $users as $u ) {
-			foreach ( cb_wallet_txns( $u->ID ) as $txn ) {
-				if ( ( $txn['type'] ?? '' ) !== 'WITHDRAW' ) {
-					continue;
-				}
-				$status = $txn['status'] ?? 'PENDING';
-				if ( $filter && strtoupper( (string) $filter ) !== strtoupper( $status ) ) {
-					continue;
-				}
-				$out[] = array(
-					'id'           => (int) $txn['id'],
-					'userId'       => (int) $u->ID,
-					'userFullName' => $u->display_name,
-					'userEmail'    => $u->user_email,
-					'amount'       => abs( (float) $txn['amount'] ),
-					'iban'         => (string) ( $txn['referenceId'] ?? '' ),
-					'status'       => $status,
-					'adminNote'    => $txn['adminNote'] ?? null,
-					'createdAt'    => (string) ( $txn['createdAt'] ?? gmdate( 'c' ) ),
-				);
-			}
-		}
-		return cb_response( $out );
-	}
-
-	public function process_withdrawal( WP_REST_Request $request ): WP_REST_Response {
-		// Mark the matching withdrawal transaction; refund the balance if rejected.
-		$txn_id = (int) $request['id'];
-		$body   = $request->get_json_params();
-		$status = strtoupper( (string) ( $body['status'] ?? 'APPROVED' ) );
-		$users  = get_users( array( 'meta_key' => 'cb_wallet_txns', 'number' => 500 ) );
-		foreach ( $users as $u ) {
-			$txns    = cb_wallet_txns( $u->ID );
-			$changed = false;
-			foreach ( $txns as &$txn ) {
-				if ( (int) $txn['id'] === $txn_id && ( $txn['type'] ?? '' ) === 'WITHDRAW' ) {
-					$txn['status']    = $status;
-					$txn['adminNote'] = isset( $body['adminNote'] ) ? sanitize_text_field( (string) $body['adminNote'] ) : null;
-					$changed          = true;
-					if ( $status === 'REJECTED' ) {
-						cb_wallet_add( $u->ID, abs( (float) $txn['amount'] ), 'REFUND', 'رد درخواست برداشت', null );
-					}
-				}
-			}
-			unset( $txn );
-			if ( $changed ) {
-				update_user_meta( $u->ID, 'cb_wallet_txns', $txns );
-				return cb_response( null, 200 );
-			}
-		}
-		return cb_error( 'درخواست یافت نشد', 404, 'NOT_FOUND', 'api/admin/wallet/withdrawals' );
-	}
 
 	// ---- course requests (cb_course_request CPT) ---------------------------
 

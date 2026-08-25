@@ -314,9 +314,7 @@ class CB_Admin_Clinic_Controller {
 				$user               = get_user_by( 'email', $email );
 				if ( $user ) {
 					$s['assignedUserId'] = (int) $user->ID;
-					// Grant session credits equal to the seat's sessionCount.
-					$cur = max( 0, (int) get_user_meta( $user->ID, "cb_ther_credits_$tid", true ) );
-					update_user_meta( $user->ID, "cb_ther_credits_$tid", $cur + (int) $s['sessionCount'] );
+
 				}
 				update_option( 'cb_clinic_seats', $seats, false );
 				return cb_response( $s );

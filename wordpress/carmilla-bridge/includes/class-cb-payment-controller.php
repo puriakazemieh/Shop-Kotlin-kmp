@@ -51,7 +51,7 @@ class CB_Payment_Controller {
 			return cb_error( 'این سفارش قبلاً پرداخت شده است', 409, 'ALREADY_PAID', 'api/payment/request' );
 		}
 
-		$due = (float) $order->get_total() - (float) $order->get_meta( '_cb_wallet_paid' );
+		$due = (float) $order->get_total();
 		if ( $due <= 0 ) {
 			$order->payment_complete();
 			$order->update_status( 'processing' );

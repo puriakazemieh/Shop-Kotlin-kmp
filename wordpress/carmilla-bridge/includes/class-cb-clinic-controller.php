@@ -86,9 +86,7 @@ class CB_Clinic_Controller {
 		return is_array( $rows ) ? $rows : array();
 	}
 
-	private function credits( int $tid, int $uid ): int {
-		return $uid ? max( 0, (int) get_user_meta( $uid, "cb_ther_credits_$tid", true ) ) : 0;
-	}
+
 
 	private function requires_purchase( int $tid ): bool {
 		return (bool) get_post_meta( $tid, 'cb_product_slug', true );
@@ -142,7 +140,7 @@ class CB_Clinic_Controller {
 			'availableSlotCount' => count( $this->slot_dtos( $id ) ),
 			'requiresPurchase'   => (bool) $slug,
 			'productSlug'        => $slug ?: null,
-			'sessionCredits'     => $this->credits( $id, $uid ),
+			'isPaid'             => (bool) get_post_meta( $id, 'cb_is_paid', true ),
 		);
 	}
 
@@ -178,7 +176,7 @@ class CB_Clinic_Controller {
 			'slots'                 => $this->slot_dtos( $id ),
 			'requiresPurchase'      => (bool) $slug,
 			'productSlug'           => $slug ?: null,
-			'sessionCredits'        => $this->credits( $id, $uid ),
+			'isPaid'                => (bool) get_post_meta( $id, 'cb_is_paid', true ),
 			'mode'                  => get_post_meta( $id, 'cb_mode', true ) ?: 'ONLINE',
 			'location'              => get_post_meta( $id, 'cb_location', true ) ?: null,
 			'productId'             => $this->product_id_for_slug( $slug ),
@@ -213,12 +211,6 @@ class CB_Clinic_Controller {
 		$slot_time = $slots[ $index ];
 		$uid       = get_current_user_id();
 
-		// Gate paid therapists on an available session credit.
-		$paid = $this->requires_purchase( $tid );
-		if ( $paid && $this->credits( $tid, $uid ) < 1 ) {
-			return cb_error( 'اعتبار جلسه ندارید؛ ابتدا بسته‌ی مشاوره را بخرید', 402, 'NO_CREDIT', 'api/clinic/appointments' );
-		}
-
 		// Atomic lock: UNIQUE(therapist_id, slot_time) rejects a double booking.
 		$table    = cb_bookings_table();
 		$inserted = $wpdb->query( $wpdb->prepare(
@@ -230,9 +222,7 @@ class CB_Clinic_Controller {
 		}
 		$booking_id = (int) $wpdb->insert_id;
 
-		if ( $paid ) {
-			$this->spend_credit( $tid, $uid );
-		}
+
 
 		$appt_id = wp_insert_post( array(
 			'post_type'   => 'cb_appointment',
@@ -252,13 +242,6 @@ class CB_Clinic_Controller {
 		return cb_response( $this->appointment_dto( get_post( $appt_id ) ), 201 );
 	}
 
-	private function spend_credit( int $tid, int $uid ): void {
-		$cur = $this->credits( $tid, $uid );
-		if ( $cur > 0 ) {
-			update_user_meta( $uid, "cb_ther_credits_$tid", $cur - 1 );
-		}
-	}
-
 	public function cancel( WP_REST_Request $request ): WP_REST_Response {
 		global $wpdb;
 		$appt = get_post( (int) $request['id'] );
@@ -271,11 +254,8 @@ class CB_Clinic_Controller {
 		$tid = (int) get_post_meta( $appt->ID, 'cb_therapist_id', true );
 		$uid = (int) get_post_meta( $appt->ID, 'cb_user_id', true );
 		update_post_meta( $appt->ID, 'cb_status', 'CANCELLED' );
-		// Free the slot lock and refund the session credit on a paid therapist.
+		// Free the slot lock
 		$wpdb->delete( cb_bookings_table(), array( 'appointment_id' => $appt->ID ) );
-		if ( $this->requires_purchase( $tid ) ) {
-			update_user_meta( $uid, "cb_ther_credits_$tid", $this->credits( $tid, $uid ) + 1 );
-		}
 		return cb_response( null, 200 );
 	}
 
@@ -467,7 +447,7 @@ class CB_Clinic_Controller {
 		$tid  = (int) $request['id'];
 		$uid  = get_current_user_id();
 		$sent = (int) get_comments( array( 'post_id' => $tid, 'type' => 'cb_msg', 'meta_key' => 'cb_user_id', 'meta_value' => $uid, 'count' => true ) );
-		$has_plan = (bool) get_post_meta( $tid, 'cb_messaging_product_slug', true ) && $this->credits( $tid, $uid ) > 0;
+		$has_plan = (bool) get_post_meta( $tid, 'cb_messaging_product_slug', true );
 		return cb_response( array(
 			'therapistId'          => $tid,
 			'active'               => $has_plan || $sent < self::FREE_MESSAGES,
