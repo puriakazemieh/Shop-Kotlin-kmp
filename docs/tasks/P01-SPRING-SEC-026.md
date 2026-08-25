@@ -1,6 +1,6 @@
 # P01-SPRING-SEC-026 — لغو نوبت (Cancel Appointment) به‌صورت Idempotent در Spring
 
-- Status: BLOCKED
+- Status: TODO
 - Phase/Area/Type: P01 / SECURITY / SEC
 - Priority/Risk/Size: P0/HIGH / S
 - Owner: AI

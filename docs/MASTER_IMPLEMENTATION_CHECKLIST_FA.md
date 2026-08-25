@@ -532,7 +532,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P01-SECURITY-DISC-001` | BOTH | P0/HIGH | تمام یافته‌های P0 سند ممیزی به ticketهای اتمیک خصوصی تبدیل شوند | هر ticket owner، exploit surface، test و rollback دارد |
+| [x] | `P01-SECURITY-DISC-001` | BOTH | P0/HIGH | تمام یافته‌های P0 سند ممیزی به ticketهای اتمیک خصوصی تبدیل شوند | هر ticket owner، exploit surface، test و rollback دارد |
 | [x] | `P01-SECURITY-OPS-002` | HUMAN | P0/HIGH | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود |
 | [x] | `P01-SECURITY-CODE-003` | AI | P0/HIGH | request/response/token logging کلاینت redacted و debug-only شود | تست عدم ثبت Authorization، OTP، payment و health fields |
 | [x] | `P01-SECURITY-CODE-004` | BOTH | P0/HIGH | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود | HTTPS production pass؛ MITM/invalid cert fail |
@@ -545,16 +545,16 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P01-WPPLUGIN-SEC-011` | BOTH | P0/HIGH | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off | brute force/rate/account enumeration tests |
 | [x] | `P01-WPPLUGIN-SEC-012` | BOTH | P0/HIGH | CORS default بسته و origin دقیق tenant allowlist شود | unapproved origin رد؛ credential policy روشن |
 | [x] | `P01-WPPLUGIN-SEC-013` | BOTH | P0/HIGH | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد | تست نقش‌ها روی همه endpointهای حساس |
-| [ ] | `P01-WPPLUGIN-SEC-014` | BOTH | P0/HIGH | ownership/IDOR و post type validation برای read/write/delete | user A به resource user B دسترسی ندارد |
-| [ ] | `P01-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود | feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر |
-| [ ] | `P01-WPPLUGIN-CODE-016` | BOTH | P0/HIGH | Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است | feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner |
-| [ ] | `P01-PAYMENT-SEC-017` | BOTH | P0/HIGH | amount/currency/order/reference قبل از verify تطبیق و replay مسدود شود | wrong amount و duplicate callback هر دو fail/idempotent |
-| [ ] | `P01-WPPLUGIN-SEC-018` | BOTH | P0/HIGH | LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fail-closed شود؛ entitlement کامل به فازهای ۱۳/۱۴ موکول شود | با toggle خاموش URL مستقیم/API discovery دسترسی ندهد |
+| [x] | `P01-WPPLUGIN-SEC-014` | BOTH | P0/HIGH | ownership/IDOR و post type validation برای read/write/delete | user A به resource user B دسترسی ندارد |
+| [x] | `P01-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود | feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر |
+| [x] | `P01-WPPLUGIN-CODE-016` | BOTH | P0/HIGH | Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است | feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner |
+| [x] | `P01-PAYMENT-SEC-017` | BOTH | P0/HIGH | amount/currency/order/reference قبل از verify تطبیق و replay مسدود شود | wrong amount و duplicate callback هر دو fail/idempotent |
+| [x] | `P01-WPPLUGIN-SEC-018` | BOTH | P0/HIGH | LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fail-closed شود؛ entitlement کامل به فازهای ۱۳/۱۴ موکول شود | با toggle خاموش URL مستقیم/API discovery دسترسی ندهد |
 | [x] | `P01-SECURITY-CODE-019` | AI | P0/HIGH | hardcoded/demo secret و credential پیش‌فرض از artifactها حذف شوند | secret scan؛ production بدون secret لازم fail-closed |
 | [x] | `P01-QA-AUTO-020` | AI | P0/HIGH | حداقل harness hermetic موردنیاز و regression خودکار یافته‌های ۰۰۳ تا ۰۱۹ اضافه شود | تست قبل از fix fail و بعد از fix pass؛ بدون DB/service دستی؛ report ذخیره |
 | [x] | `P01-QA-MANUAL-021` | HUMAN | P0/HIGH | تست دستی auth/IDOR/payment و اثبات بسته‌بودن Wallet/Booking/LMS/Clinic خارج Scope | tester/date/device/request IDs redacted ثبت |
-| [B] | `P01-SECURITY-SEC-022` | BOTH | P0/HIGH | review مستقل diffهای امنیتی و threat model به‌روز شود | هیچ Sev0/Sev1 باز در surface منتشرشدنی |
-| [B] | `P01-SECURITY-GATE-023` | HUMAN | P0/HIGH | Gate خروج امنیت | P0 باز صفر؛ rollback و hotfix artifact آماده |
+| [ ] | `P01-SECURITY-SEC-022` | BOTH | P0/HIGH | review مستقل diffهای امنیتی و threat model به‌روز شود | هیچ Sev0/Sev1 باز در surface منتشرشدنی |
+| [ ] | `P01-SECURITY-GATE-023` | HUMAN | P0/HIGH | Gate خروج امنیت | P0 باز صفر؛ rollback و hotfix artifact آماده |
 
 ### Gate فاز ۱
 
@@ -584,7 +584,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 |---|---|---|---|---|---|
 | [x] | `P02-CORE-DISC-001` | AI | P1/MEDIUM | dependency graph ۲۹ ماژول، cycle و boundary violation مستند شود | graph + فهرست couplingهای profile/admin/navigation |
 | [x] | `P02-CORE-CODE-002` | AI | P1/LOW | versionهای hardcoded به Version Catalog موجود منتقل شوند | build بدون تغییر dependency resolution؛ diff lockfile بررسی |
-| [ ] | `P02-CORE-ADR-003` | BOTH | P1/MEDIUM | scope convention plugin و pluginهای مجاز تصویب شود | از استخراج تمام config در یک Task جلوگیری شود |
+| [x] | `P02-CORE-ADR-003` | BOTH | P1/MEDIUM | scope convention plugin و pluginهای مجاز تصویب شود | از استخراج تمام config در یک Task جلوگیری شود |
 | [ ] | `P02-CORE-CODE-004` | AI | P2/MEDIUM | `build-logic` و اولین convention plugin برای KMP library ساخته شود | دو ماژول pilot build؛ سپس rollout taskهای کوچک |
 | [ ] | `P02-CORE-CODE-005` | AI | P2/MEDIUM | conventionهای Android/KMP/Compose/test مرحله‌ای اعمال شوند | همه targetهای قبلی compile؛ تغییر رفتار صفر |
 | [ ] | `P02-QA-CODE-006` | AI | P0/MEDIUM | harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی ارتقا یابد | یک unit test واقعی domain و یک network contract test در CI |

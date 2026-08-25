@@ -1,6 +1,6 @@
 # P01-SPRING-SEC-024 — بستن کامل RBAC و IDOR در سرور Spring Boot
 
-- Status: BLOCKED
+- Status: TODO
 - Phase/Area/Type: P01 / SECURITY / SEC
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI
