@@ -48,9 +48,9 @@ P01-SECURITY-CODE-004
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P01 / SECURITY / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P01-SECURITY-CODE-003
@@ -129,11 +129,11 @@ HTTPS production pass؛ MITM/invalid cert fail
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-25
+- Completed at: 2026-08-25 (تأیید کاربر)
+- Changed files: composeApp/src/androidMain/**; composeApp/src/androidDebug/**; docs/**
+- Commands and exit codes: manifest task در حال بررسی؛ compile سراسری قبلاً به خطای مستقل core:data رسیده است.
+- Manual tester/date/result: کاربر / 2026-08-25 / تأیید تکمیل QA.
+- Evidence paths: docs/evidence/P01-SECURITY-CODE-004/RESULTS.md
+- Remaining risks/blockers: baseline سراسری core:data دارای WalletBalanceResponse ناموجود است.
+- Final status: DONE

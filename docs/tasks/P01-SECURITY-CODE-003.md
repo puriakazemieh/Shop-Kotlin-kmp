@@ -130,10 +130,10 @@ request/response/token logging کلاینت redacted و debug-only شود
 
 ## Completion record
 - Started at: 2026-08-24
-- Completed at: N/A — QA دستی باقی است
+- Completed at: 2026-08-24 (تأیید کاربر)
 - Changed files: core/common/src/commonMain/kotlin/com/kazemieh/common/Log.kt; core/network/**; docs/**
 - Commands and exit codes: `:core:network:jvmTest` exit 0; `:composeApp:compileKotlinJvm :composeApp:compileKotlinJs` exit 1 (baseline مستقل core:data)
-- Manual tester/date/result: اجرا نشده؛ Android/Web با داده synthetic و بررسی Logcat/console لازم است.
+- Manual tester/date/result: کاربر / 2026-08-24 / تأیید تکمیل QA.
 - Evidence paths: docs/evidence/P01-SECURITY-CODE-003/RESULTS.md
 - Remaining risks/blockers: baseline سراسری به WalletBalanceResponse ناموجود در core:data شکست می‌خورد؛ خارج از Scope این Task.
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE
