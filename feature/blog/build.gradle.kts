@@ -1,43 +1,14 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
+    id("carmilla.compose")
 }
 
 kotlin {
     androidLibrary {
         namespace = "com.kazemieh.blog"
-        compileSdk = 36
-        minSdk = 24
+        
     }
 
-    val xcfName = "feature:blog"
 
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    js {
-        browser()
-    }
-
-    jvm()
 
     sourceSets {
         commonMain {
@@ -61,3 +32,4 @@ kotlin {
         }
     }
 }
+

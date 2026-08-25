@@ -592,9 +592,9 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P02-CORE-CODE-002` | AI | P1/LOW | versionهای hardcoded به Version Catalog موجود منتقل شوند | build بدون تغییر dependency resolution؛ diff lockfile بررسی |
 | [x] | `P02-CORE-ADR-003` | BOTH | P1/MEDIUM | scope convention plugin و pluginهای مجاز تصویب شود | از استخراج تمام config در یک Task جلوگیری شود |
 | [x] | `P02-CORE-CODE-004` | AI | P2/MEDIUM | `build-logic` و اولین convention plugin برای KMP library ساخته شود | دو ماژول pilot build؛ سپس rollout taskهای کوچک |
-| [ ] | `P02-CORE-CODE-005A` | AI | P2/SMALL | Apply carmilla.kmp.library to remaining core modules | All core targets compile |
-  | [ ] | `P02-CORE-CODE-005B` | AI | P2/MEDIUM | Create carmilla.compose and apply to feature modules | All feature targets compile |
-  | [ ] | `P02-CORE-CODE-005C` | BOTH | P2/SMALL | Create carmilla.android.application and apply to composeApp | app module compiles |
+| [x] | `P02-CORE-CODE-005A` | AI | P2/SMALL | Apply carmilla.kmp.library to remaining core modules | All core targets compile |
+  | [x] | `P02-CORE-CODE-005B` | AI | P2/MEDIUM | Create carmilla.compose and apply to feature modules | All feature targets compile |
+  | [x] | `P02-CORE-CODE-005C` | BOTH | P2/SMALL | Create carmilla.android.application and apply to composeApp | app module compiles |
 | [ ] | `P02-QA-CODE-006` | AI | P0/MEDIUM | harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی ارتقا یابد | یک unit test واقعی domain و یک network contract test در CI |
 | [ ] | `P02-QA-CODE-007` | AI | P0/MEDIUM | harness WordPress فاز ۱ به integration environment با WP/Woo/PHP matrix ارتقا یابد | clean install، activation و smokeهای موجود در CI واقعاً اجرا شوند |
 | [ ] | `P02-QA-CODE-008` | AI | P1/MEDIUM | Spring test profile یا Testcontainers مستقل شود | context test بدون PostgreSQL دستی سبز؛ production config استفاده نشود |

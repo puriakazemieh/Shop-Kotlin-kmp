@@ -48,7 +48,7 @@ P02-CORE-CODE-005C
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CORE / CODE
 - Priority/Risk/Size: P2/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI

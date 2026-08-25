@@ -1,7 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
+    id("carmilla.kmp.library")
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -9,41 +7,11 @@ plugins {
 }
 
 kotlin {
-
     androidLibrary {
         namespace = "com.kazemieh.navigation"
-        compileSdk = 36
-        minSdk = 24
-    }
-
-    val xcfName = "core:navigationKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    jvm()
-
-    js {
-        browser()
     }
 
     sourceSets {
-
         commonMain {
             dependencies {
                 implementation(libs.compose.runtime)
@@ -78,20 +46,7 @@ kotlin {
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
-
-
-            }
-        }
-
-        androidMain {
-            dependencies {
-            }
-        }
-
-        iosMain {
-            dependencies {
             }
         }
     }
-
 }

@@ -1,53 +1,23 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
+    id("carmilla.kmp.library")
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinxSerialization)
 }
+
 compose.resources {
     publicResClass = true
     packageOfResClass = "com.kazemieh.designsystem"
 }
-kotlin {
 
+kotlin {
     androidLibrary {
         namespace = "com.kazemieh.designsystem"
-        compileSdk = 36
-        minSdk = 24
         androidResources.enable = true
     }
 
-    val xcfName = "core:designSystemKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    jvm()
-
-    js {
-        browser()
-    }
-
     sourceSets {
-
         commonMain {
             dependencies {
                 implementation(libs.compose.runtime)
@@ -71,11 +41,5 @@ kotlin {
                 implementation(libs.androidx.core.ktx)
             }
         }
-
-        iosMain {
-            dependencies {
-            }
-        }
     }
-
 }

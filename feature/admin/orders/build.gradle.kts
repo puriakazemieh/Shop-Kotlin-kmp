@@ -1,44 +1,14 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
+    id("carmilla.compose")
 }
 
 kotlin {
     androidLibrary {
         namespace = "com.kazemieh.admin.orders"
-        compileSdk = 36
-        minSdk = 24
+        
     }
 
-    val xcfName = "feature:admin:orders"
 
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    js {
-        browser()
-    }
-
-    jvm()
 
     sourceSets {
         commonMain {
@@ -62,3 +32,4 @@ kotlin {
         }
     }
 }
+

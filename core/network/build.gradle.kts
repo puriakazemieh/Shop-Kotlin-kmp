@@ -1,42 +1,12 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
+    id("carmilla.kmp.library")
     alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
     androidLibrary {
         namespace = "com.kazemieh.network"
-        compileSdk = 36
-        minSdk = 24
     }
-
-    val xcfName = "core:networkKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    js {
-        browser()
-    }
-
-    jvm()
 
     sourceSets {
         commonMain {
@@ -53,11 +23,8 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(project(":core:common"))
                 implementation(libs.compose.components.resources)
-//                implementation("io.arrow-kt:arrow-core:2.2.2.1")
-
             }
         }
-
 
         androidMain {
             dependencies {
@@ -90,5 +57,4 @@ kotlin {
             }
         }
     }
-
 }
