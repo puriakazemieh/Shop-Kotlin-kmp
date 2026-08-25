@@ -52,9 +52,31 @@ class CB_Plugin {
 		remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 		add_filter( 'rest_pre_serve_request', function ( $served ) {
 			$origin = get_http_origin();
-			header( 'Access-Control-Allow-Origin: ' . ( $origin ? esc_url_raw( $origin ) : '*' ) );
+			$allowed = false;
+			if ( $origin ) {
+				$origin_clean = untrailingslashit( $origin );
+				$allowed_origins = apply_filters( 'cb_allowed_origins', array(
+					untrailingslashit( get_site_url() ),
+					'http://localhost:8080',
+					'http://localhost:8081',
+				) );
+				if ( defined( 'CB_ALLOWED_ORIGINS' ) ) {
+					$env_origins = array_map( 'trim', explode( ',', CB_ALLOWED_ORIGINS ) );
+					$allowed_origins = array_merge( $allowed_origins, $env_origins );
+				}
+				if ( in_array( $origin_clean, $allowed_origins, true ) ) {
+					$allowed = true;
+					header( 'Access-Control-Allow-Origin: ' . esc_url_raw( $origin_clean ) );
+					header( 'Access-Control-Allow-Credentials: true' );
+				}
+			}
+			
+			if ( ! $allowed ) {
+				// Do not allow credentials for unapproved origins.
+				header( 'Access-Control-Allow-Origin: null' );
+			}
+			
 			header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
-			header( 'Access-Control-Allow-Credentials: true' );
 			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce' );
 			header( 'Vary: Origin', false );
 			// Preflight: answer OPTIONS immediately with the headers above.
