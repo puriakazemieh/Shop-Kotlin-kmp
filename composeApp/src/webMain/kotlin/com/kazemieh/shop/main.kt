@@ -26,7 +26,8 @@ fun main() {
  */
 private fun resolveBrand(): com.kazemieh.designsystem.brand.BrandConfig {
     val params = URLSearchParams(window.location.search)
-    val api = params.get("api")?.takeIf { it.isNotBlank() }
+    val isLocalhost = window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1"
+    val api = if (isLocalhost) params.get("api")?.takeIf { it.isNotBlank() } else null
     val brandId = params.get("brand")?.takeIf { it.isNotBlank() }
     val base = when {
         brandId != null -> BrandRegistry.byId(brandId)

@@ -129,11 +129,11 @@ localhost/private/foreign URL در release رد شود
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-25T13:46:28+03:30
+- Completed at: 2026-08-25T13:48:39+03:30
+- Changed files: composeApp/src/webMain/kotlin/com/kazemieh/shop/main.kt
+- Commands and exit codes: `.\gradlew.bat :composeApp:compileKotlinJs` (Exit Code 0)
+- Manual tester/date/result: Human verified on localhost (success) - 2026-08-25
+- Evidence paths: docs/evidence/P01-SECURITY-CODE-006/
+- Remaining risks/blockers: None.
+- Final status: DONE
