@@ -1,4 +1,4 @@
-# P02-CORE-CODE-005 — conventionهای Android/KMP/Compose/test مرحله‌ای اعمال شوند
+# P02-CORE-CODE-005B — conventionهای Android/KMP/Compose/test مرحله‌ای اعمال شوند
 
 ## Prompt اجرای همین Task
 
@@ -15,7 +15,7 @@ Source audit:
 D:\Android\AndroidStudioProjects\kmp-shop\docs\PROJECT_AUDIT_AND_PUBLICATION_PLAN_FA.md
 
 Task ID:
-P02-CORE-CODE-005
+P02-CORE-CODE-005B
 
 قبل از تغییر:
 1. AGENTS.md و هر دستور ارجاع‌شده‌ای که واقعاً وجود دارد را بخوان.
@@ -53,9 +53,9 @@ P02-CORE-CODE-005
 - Priority/Risk/Size: P2/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P02-CORE-CODE-004
-- Blocks: P02-QA-CODE-006
-- Requirement source: Master checklist row P02-CORE-CODE-005 و Source audit بخش CORE
+- Depends on: P02-CORE-CODE-005A
+- Blocks: P02-CORE-CODE-005C
+- Requirement source: Master checklist row P02-CORE-CODE-005B و Source audit بخش CORE
 
 ## هدف قابل اندازه‌گیری
 conventionهای Android/KMP/Compose/test مرحله‌ای اعمال شوند
@@ -117,7 +117,7 @@ conventionهای Android/KMP/Compose/test مرحله‌ای اعمال شوند
 - برای migration،forward fix/rollback و backup بررسی شود.
 
 ## Evidence
-- مسیر: docs/evidence/P02-CORE-CODE-005/
+- مسیر: docs/evidence/P02-CORE-CODE-005B/
 - baseline commit/build،command/cwd/exit code،test report،screenshot redacted و reviewer را ثبت کن.
 
 ## Rollback
@@ -133,3 +133,4 @@ conventionهای Android/KMP/Compose/test مرحله‌ای اعمال شوند
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
