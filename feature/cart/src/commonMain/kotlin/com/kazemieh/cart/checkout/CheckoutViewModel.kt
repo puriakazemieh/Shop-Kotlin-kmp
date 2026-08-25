@@ -129,15 +129,19 @@ class CheckoutViewModel(
             is CheckoutIntent.SelectAddress -> {
                 _state.update { it.copy(selectedAddressId = intent.addressId, showAddNewAddressForm = false) }
                 validateForm()
+                pendingOrderId = null
             }
             is CheckoutIntent.ToggleUseWallet -> {
                 _state.update { it.copy(useWallet = intent.use) }
+                pendingOrderId = null
             }
             is CheckoutIntent.ToggleGift -> {
                 _state.update { it.copy(isGift = intent.isGift) }
+                pendingOrderId = null
             }
             is CheckoutIntent.UpdateGiftMessage -> {
                 _state.update { it.copy(giftMessage = intent.value) }
+                pendingOrderId = null
             }
             is CheckoutIntent.ToggleAddNewAddress -> {
                 _state.update { it.copy(showAddNewAddressForm = intent.show) }
@@ -243,6 +247,8 @@ class CheckoutViewModel(
         _state.update { it.copy(isFormValid = isValid) }
     }
 
+    private var pendingOrderId: Long? = null
+
     private fun payWithZarinpal() {
         viewModelScope.launch {
             val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
@@ -259,29 +265,34 @@ class CheckoutViewModel(
 
             _state.update { it.copy(isLoading = true) }
 
-            val orderResult = createOrderUseCase(
-                items, addressId, _state.value.useWallet,
-                _state.value.isGift, _state.value.giftMessage.takeIf { _state.value.isGift }
-            )
-            when (orderResult) {
-                is AppResult.Success -> {
-                    val orderId = orderResult.data.id
-                    val paymentResult = requestPaymentUseCase(orderId)
-                    when (paymentResult) {
-                        is AppResult.Success -> {
-                            _state.update { it.copy(isLoading = false) }
-                            _effect.send(CheckoutEffect.OpenZarinpal(paymentResult.data))
-                        }
-                        is AppResult.Error -> {
-                            _state.update { it.copy(isLoading = false) }
-                            _effect.send(CheckoutEffect.ShowError(paymentResult.message))
-                        }
-                        else -> {}
+            val orderIdToPay = if (pendingOrderId != null) {
+                pendingOrderId!!
+            } else {
+                val orderResult = createOrderUseCase(
+                    items, addressId, _state.value.useWallet,
+                    _state.value.isGift, _state.value.giftMessage.takeIf { _state.value.isGift }
+                )
+                if (orderResult is AppResult.Success) {
+                    pendingOrderId = orderResult.data.id
+                    orderResult.data.id
+                } else {
+                    _state.update { it.copy(isLoading = false) }
+                    if (orderResult is AppResult.Error) {
+                        _effect.send(CheckoutEffect.ShowError(orderResult.message))
                     }
+                    return@launch
+                }
+            }
+
+            val paymentResult = requestPaymentUseCase(orderIdToPay)
+            when (paymentResult) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(isLoading = false) }
+                    _effect.send(CheckoutEffect.OpenZarinpal(paymentResult.data))
                 }
                 is AppResult.Error -> {
                     _state.update { it.copy(isLoading = false) }
-                    _effect.send(CheckoutEffect.ShowError(orderResult.message))
+                    _effect.send(CheckoutEffect.ShowError(paymentResult.message))
                 }
                 else -> {}
             }
@@ -303,17 +314,27 @@ class CheckoutViewModel(
                 return@launch
             }
 
-            val result = createOrderUseCase(
-                items, addressId, _state.value.useWallet,
-                _state.value.isGift, _state.value.giftMessage.takeIf { _state.value.isGift }
-            )
-            when (result) {
-                is AppResult.Success -> {
-                    CartEventBus.refresh()
-                    _effect.send(CheckoutEffect.NavigateToPaymentCompleted(true, null))
+            val isSuccess = if (pendingOrderId != null) {
+                true
+            } else {
+                val result = createOrderUseCase(
+                    items, addressId, _state.value.useWallet,
+                    _state.value.isGift, _state.value.giftMessage.takeIf { _state.value.isGift }
+                )
+                if (result is AppResult.Success) {
+                    pendingOrderId = result.data.id
+                    true
+                } else {
+                    if (result is AppResult.Error) {
+                        _effect.send(CheckoutEffect.ShowError(result.message))
+                    }
+                    false
                 }
-                is AppResult.Error -> _effect.send(CheckoutEffect.ShowError(result.message))
-                else -> {}
+            }
+            
+            if (isSuccess) {
+                CartEventBus.refresh()
+                _effect.send(CheckoutEffect.NavigateToPaymentCompleted(true, null))
             }
         }
     }
