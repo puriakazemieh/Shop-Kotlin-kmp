@@ -555,6 +555,12 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P01-QA-MANUAL-021` | HUMAN | P0/HIGH | تست دستی auth/IDOR/payment و اثبات بسته‌بودن Wallet/Booking/LMS/Clinic خارج Scope | tester/date/device/request IDs redacted ثبت |
 | [ ] | `P01-SECURITY-SEC-022` | BOTH | P0/HIGH | review مستقل diffهای امنیتی و threat model به‌روز شود | هیچ Sev0/Sev1 باز در surface منتشرشدنی |
 | [ ] | `P01-SECURITY-GATE-023` | HUMAN | P0/HIGH | Gate خروج امنیت | P0 باز صفر؛ rollback و hotfix artifact آماده |
+| [x] | P01-SPRING-SEC-024 | BOTH | P0/HIGH | Spring Boot RBAC / Admin Controllers | All admin controllers require ADMIN role |
+| [x] | P01-SPRING-SEC-025 | BOTH | P0/HIGH | Spring Boot Paywall / Private Files | Files in /uploads/ require authentication |
+| [ ] | P01-SPRING-SEC-026 | BOTH | P0/HIGH | Spring Boot IDOR Prevention | Service methods check ownership (e.g. Orders, Addresses) |
+| [ ] | P01-SPRING-DATA-027 | BOTH | P0/HIGH | Spring Boot DB Hardening / SQLi Prevention | Ensure JPA/Hibernate parameters are safe |
+| [ ] | P01-WPPLUGIN-DATA-028 | BOTH | P0/HIGH | WP Plugin Data Security | Safe queries and input sanitization in WP |
+| [ ] | P01-WPPLUGIN-ARCH-029 | BOTH | P0/HIGH | WP Plugin Architecture Security | Secure internal APIs and boundaries |
 
 ### Gate فاز ۱
 
@@ -2179,3 +2185,4 @@ Final status:
 
 این فایل یک سند زنده است. هر تغییر ترتیب فاز،Gate،Scope یا Risk Acceptance باید با
 تاریخ،مالک و دلیل ثبت شود؛ تیک‌ها جایگزین Evidence نیستند.
+
