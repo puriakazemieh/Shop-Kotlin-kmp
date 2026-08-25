@@ -25,17 +25,17 @@ carmilla_require_inc( 'customizer.php' );
 carmilla_require_inc( 'template-functions.php' );
 carmilla_require_inc( 'dc.php' );
 carmilla_require_inc( 'post-types.php' );
-carmilla_require_inc( 'meta-boxes.php' );
-carmilla_require_inc( 'rest.php' );
-carmilla_require_inc( 'psychtest.php' );
-carmilla_require_inc( 'access.php' );
-carmilla_require_inc( 'booking.php' );
-carmilla_require_inc( 'course.php' );
-carmilla_require_inc( 'support.php' );
-carmilla_require_inc( 'clinic-extra.php' );
-carmilla_require_inc( 'academy-extra.php' );
-carmilla_require_inc( 'orders-extra.php' );
-carmilla_require_inc( 'wishlist.php' );
+// removed
+// removed
+// removed
+// removed
+// removed
+// removed
+// removed
+// removed
+// removed
+// removed
+// removed
 carmilla_require_inc( 'catalog-extra.php' );
 carmilla_require_inc( 'cpt-public.php' );
 carmilla_require_inc( 'elementor.php' );

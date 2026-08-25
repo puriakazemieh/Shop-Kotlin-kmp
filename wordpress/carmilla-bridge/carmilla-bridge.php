@@ -30,6 +30,7 @@ require_once CB_PLUGIN_DIR . 'includes/helpers.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-jwt.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-blocks.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-cpt.php';
+require_once CB_PLUGIN_DIR . 'includes/meta-boxes.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-auth-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-catalog-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-blog-controller.php';
