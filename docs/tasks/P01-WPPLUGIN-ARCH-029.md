@@ -1,6 +1,6 @@
 # P01-WPPLUGIN-ARCH-029 — حذف وضعیت Split-brain میان پوسته و افزونه وردپرس
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P01 / SECURITY / ARCH
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI
