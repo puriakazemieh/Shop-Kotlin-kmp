@@ -70,23 +70,47 @@ class CB_Auth_Controller {
 	}
 
 	/**
-	 * Generate + "send" a 6-digit OTP for a mobile. Sites wire a real SMS gateway
-	 * via the cb_send_otp filter; without one the code is stored in a transient
-	 * (and returned only when the cb_otp_debug option is on, for testing).
+	 * Generate + "send" a 6-digit OTP for a mobile with purpose, cooldown, and hash.
 	 */
-	private function issue_otp( string $mobile ): string {
+	private function issue_otp( string $mobile, string $purpose ): string {
+		$hash_key = md5( $mobile . '_' . $purpose );
+
+		if ( get_transient( 'cb_otp_cooldown_' . $hash_key ) ) {
+			throw new Exception( 'لطفاً یک دقیقه صبر کنید.' );
+		}
+
 		$code = (string) wp_rand( 100000, 999999 );
-		set_transient( 'cb_otp_' . md5( $mobile ), $code, 5 * MINUTE_IN_SECONDS );
-		do_action( 'cb_send_otp', $mobile, $code );
+		$hashed = wp_hash_password( $code );
+
+		set_transient( 'cb_otp_' . $hash_key, $hashed, 3 * MINUTE_IN_SECONDS );
+		set_transient( 'cb_otp_cooldown_' . $hash_key, '1', MINUTE_IN_SECONDS );
+		delete_transient( 'cb_otp_attempts_' . $hash_key );
+
+		do_action( 'cb_send_otp', $mobile, $code, $purpose );
 		return $code;
 	}
 
-	private function verify_otp( string $mobile, string $code ): bool {
-		$stored = get_transient( 'cb_otp_' . md5( $mobile ) );
-		if ( $stored && hash_equals( (string) $stored, trim( $code ) ) ) {
-			delete_transient( 'cb_otp_' . md5( $mobile ) );
+	private function verify_otp( string $mobile, string $code, string $purpose ): bool {
+		$hash_key = md5( $mobile . '_' . $purpose );
+		$stored = get_transient( 'cb_otp_' . $hash_key );
+		if ( ! $stored ) {
+			return false;
+		}
+
+		$attempts = (int) get_transient( 'cb_otp_attempts_' . $hash_key );
+		if ( $attempts >= 3 ) {
+			delete_transient( 'cb_otp_' . $hash_key );
+			delete_transient( 'cb_otp_attempts_' . $hash_key );
+			return false;
+		}
+
+		if ( wp_check_password( trim( $code ), $stored ) ) {
+			delete_transient( 'cb_otp_' . $hash_key );
+			delete_transient( 'cb_otp_attempts_' . $hash_key );
 			return true;
 		}
+
+		set_transient( 'cb_otp_attempts_' . $hash_key, $attempts + 1, 3 * MINUTE_IN_SECONDS );
 		return false;
 	}
 
@@ -95,18 +119,18 @@ class CB_Auth_Controller {
 		if ( $mobile === '' ) {
 			return cb_error( 'شماره موبایل الزامی است.', 400, 'VALIDATION' );
 		}
-		$code = $this->issue_otp( $mobile );
-		$out  = array( 'sent' => true );
-		if ( get_option( 'cb_otp_debug' ) === '1' ) {
-			$out['code'] = $code; // dev only
+		try {
+			$this->issue_otp( $mobile, 'login' );
+		} catch ( Exception $e ) {
+			return cb_error( $e->getMessage(), 429, 'RATE_LIMIT' );
 		}
-		return cb_response( $out, 200 );
+		return cb_response( array( 'sent' => true ), 200 );
 	}
 
 	public function login_with_otp( WP_REST_Request $request ) {
 		$mobile = trim( (string) $request->get_param( 'mobile' ) );
 		$code   = (string) $request->get_param( 'otpCode' );
-		if ( ! $this->verify_otp( $mobile, $code ) ) {
+		if ( ! $this->verify_otp( $mobile, $code, 'login' ) ) {
 			return cb_error( 'کد تأیید نادرست یا منقضی است.', 401, 'BAD_OTP' );
 		}
 		$user = self::user_by_mobile( $mobile );
@@ -136,7 +160,12 @@ class CB_Auth_Controller {
 				}
 			}
 		} elseif ( $mobile !== '' ) {
-			$this->issue_otp( $mobile ); // reuse OTP channel for mobile reset
+			try {
+				$this->issue_otp( $mobile, 'reset' ); // reuse OTP channel for mobile reset
+			} catch ( Exception $e ) {
+				// To prevent user enumeration or rate limits showing up differently,
+				// we just ignore it. But it's better to just proceed and return 200.
+			}
 		} else {
 			return cb_error( 'ایمیل یا موبایل الزامی است.', 400, 'VALIDATION' );
 		}
@@ -171,7 +200,7 @@ class CB_Auth_Controller {
 		if ( strlen( $password ) < 6 ) {
 			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
 		}
-		if ( ! $this->verify_otp( $mobile, $code ) ) {
+		if ( ! $this->verify_otp( $mobile, $code, 'reset' ) ) {
 			return cb_error( 'کد تأیید نادرست یا منقضی است.', 401, 'BAD_OTP' );
 		}
 		$user = self::user_by_mobile( $mobile );
