@@ -303,7 +303,7 @@ val WpBrand = BrandConfig(
     colors = CarmilaBrandColors,
     currency = "تومان",
     // آدرسِ سایتِ وردپرس را اینجا تنظیم کنید (باید به «/» ختم شود).
-    apiBaseUrl = "https://example.com/wp-json/carmilla/v1/",
+    apiBaseUrl = null,
     features = BrandFeatures(
         academy = true, clinic = true, psychTests = true, productComparison = true,
         academyQuiz = true, academyFreeCoursesTab = true, academyInstructorProfiles = true,
