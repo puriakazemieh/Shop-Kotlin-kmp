@@ -1,6 +1,6 @@
 # P01-SPRING-DATA-027 — استراتژی مهاجرت دیتابیس (Migration) برای پروداکشن در Spring
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P01 / SECURITY / DATA
 - Priority/Risk/Size: P0/HIGH / S
 - Owner: AI
