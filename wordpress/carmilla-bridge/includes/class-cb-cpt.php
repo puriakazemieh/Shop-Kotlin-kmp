@@ -22,32 +22,34 @@ class CB_CPT {
 		register_post_type( 'cb_story', self::args( 'Story', 'Stories', 'dashicons-format-image', array( 'title', 'thumbnail' ) ) );
 		register_post_type( 'cb_banner', self::args( 'Banner', 'Banners', 'dashicons-images-alt2', array( 'title', 'thumbnail' ) ) );
 		register_post_type( 'cb_campaign', self::args( 'Campaign', 'Campaigns', 'dashicons-megaphone', array( 'title', 'thumbnail' ) ) );
-		// Academy course. Guarded so it coexists with the Carmilla theme's own
-		// cb_course registration (whichever loads first wins; meta keys match).
-		if ( ! post_type_exists( 'cb_course' ) ) {
-			register_post_type( 'cb_course', self::args( 'Course', 'Courses', 'dashicons-welcome-learn-more', array( 'title', 'editor', 'thumbnail' ) ) );
-		}
-		// Clinic + psych test (guarded, theme-aligned meta).
-		if ( ! post_type_exists( 'cb_therapist' ) ) {
-			register_post_type( 'cb_therapist', self::args( 'Therapist', 'Therapists', 'dashicons-heart', array( 'title', 'editor', 'thumbnail' ) ) );
-		}
-		if ( ! post_type_exists( 'cb_psychtest' ) ) {
-			register_post_type( 'cb_psychtest', self::args( 'Psych Test', 'Psych Tests', 'dashicons-forms', array( 'title', 'editor' ) ) );
-		}
-		if ( ! post_type_exists( 'cb_course_request' ) ) {
-			register_post_type( 'cb_course_request', self::args( 'Course Request', 'Course Requests', 'dashicons-megaphone', array( 'title', 'editor' ) ) );
-		}
-		if ( ! post_type_exists( 'cb_appointment' ) ) {
-			register_post_type( 'cb_appointment', array(
-				'labels'      => array( 'name' => 'Appointments', 'singular_name' => 'Appointment' ),
-				'public'      => false,
-				'show_ui'     => true,
-				'show_in_menu' => true,
-				'show_in_rest' => false,
-				'menu_icon'   => 'dashicons-calendar-alt',
-				'supports'    => array( 'title' ),
-				'has_archive' => false,
-			) );
+		if ( apply_filters( 'cb_enable_health_lms', false ) ) {
+			// Academy course. Guarded so it coexists with the Carmilla theme's own
+			// cb_course registration (whichever loads first wins; meta keys match).
+			if ( ! post_type_exists( 'cb_course' ) ) {
+				register_post_type( 'cb_course', self::args( 'Course', 'Courses', 'dashicons-welcome-learn-more', array( 'title', 'editor', 'thumbnail' ) ) );
+			}
+			// Clinic + psych test (guarded, theme-aligned meta).
+			if ( ! post_type_exists( 'cb_therapist' ) ) {
+				register_post_type( 'cb_therapist', self::args( 'Therapist', 'Therapists', 'dashicons-heart', array( 'title', 'editor', 'thumbnail' ) ) );
+			}
+			if ( ! post_type_exists( 'cb_psychtest' ) ) {
+				register_post_type( 'cb_psychtest', self::args( 'Psych Test', 'Psych Tests', 'dashicons-forms', array( 'title', 'editor' ) ) );
+			}
+			if ( ! post_type_exists( 'cb_course_request' ) ) {
+				register_post_type( 'cb_course_request', self::args( 'Course Request', 'Course Requests', 'dashicons-megaphone', array( 'title', 'editor' ) ) );
+			}
+			if ( ! post_type_exists( 'cb_appointment' ) ) {
+				register_post_type( 'cb_appointment', array(
+					'labels'      => array( 'name' => 'Appointments', 'singular_name' => 'Appointment' ),
+					'public'      => false,
+					'show_ui'     => true,
+					'show_in_menu' => true,
+					'show_in_rest' => false,
+					'menu_icon'   => 'dashicons-calendar-alt',
+					'supports'    => array( 'title' ),
+					'has_archive' => false,
+				) );
+			}
 		}
 	}
 

@@ -17,53 +17,68 @@ class CB_Admin_Content_Controller {
 	public function register_routes(): void {
 		$ns    = CB_REST_NAMESPACE;
 		$admin = array( 'CB_Plugin', 'require_admin' );
+		// Phase 3 & 4: LMS, Clinic, Psych tests (Disabled by default until Phase 13/14).
+		if ( apply_filters( 'cb_enable_health_lms', false ) ) {
+			// Courses.
+			register_rest_route( $ns, '/api/admin/courses', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'list_courses' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'POST', 'callback' => array( $this, 'create_course' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'course_detail' ), 'permission_callback' => $admin ),
+				array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_course' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_course' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/quiz', array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'upsert_course_quiz' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/media/upload', array( 'methods' => 'POST', 'callback' => array( $this, 'upload_media' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/sections', array( 'methods' => 'POST', 'callback' => array( $this, 'add_section' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/sections/(?P<sid>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_section_lesson' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files', array(
+				array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson_file' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files/link', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson_file_link' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files/(?P<index>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_lesson_file' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/quiz', array(
+				array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'upsert_lesson_quiz' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_lesson_quiz' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/projects', array( 'methods' => 'GET', 'callback' => array( $this, 'course_projects' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist', array( 'methods' => 'GET', 'callback' => array( $this, 'course_waitlist' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist/notify-next', array( 'methods' => 'POST', 'callback' => array( $this, 'notify_next' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/courses/projects/(?P<sid>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_project' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/academy/refund-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'refund_requests' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/academy/refund-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_refund' ), 'permission_callback' => $admin ) );
 
-		// Courses.
-		register_rest_route( $ns, '/api/admin/courses', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'list_courses' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'POST', 'callback' => array( $this, 'create_course' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'course_detail' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_course' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_course' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/quiz', array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'upsert_course_quiz' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/media/upload', array( 'methods' => 'POST', 'callback' => array( $this, 'upload_media' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/sections', array( 'methods' => 'POST', 'callback' => array( $this, 'add_section' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/sections/(?P<sid>\d+)/lessons', array( 'methods' => 'POST', 'callback' => array( $this, 'add_section_lesson' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'lesson_files' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson_file' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files/link', array( 'methods' => 'POST', 'callback' => array( $this, 'add_lesson_file_link' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/files/(?P<index>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_lesson_file' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/lessons/(?P<lid>\d+)/quiz', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'get_lesson_quiz' ), 'permission_callback' => $admin ),
-			array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'upsert_lesson_quiz' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/projects', array( 'methods' => 'GET', 'callback' => array( $this, 'course_projects' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist', array( 'methods' => 'GET', 'callback' => array( $this, 'course_waitlist' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/(?P<id>\d+)/waitlist/notify-next', array( 'methods' => 'POST', 'callback' => array( $this, 'notify_next' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/courses/projects/(?P<sid>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_project' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/academy/refund-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'refund_requests' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/academy/refund-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_refund' ), 'permission_callback' => $admin ) );
-
-		// Therapists.
-		register_rest_route( $ns, '/api/admin/therapists', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'POST', 'callback' => array( $this, 'create_therapist' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)', array(
-			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_therapist' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_therapist' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/generate-slots', array( 'methods' => 'POST', 'callback' => array( $this, 'generate_slots' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'POST', 'callback' => array( $this, 'add_slot' ), 'permission_callback' => $admin ),
-		) );
+			// Therapists.
+			register_rest_route( $ns, '/api/admin/therapists', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'POST', 'callback' => array( $this, 'create_therapist' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $admin ),
+				array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_therapist' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_therapist' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/generate-slots', array( 'methods' => 'POST', 'callback' => array( $this, 'generate_slots' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'POST', 'callback' => array( $this, 'add_slot' ), 'permission_callback' => $admin ),
+			) );
+			
+			// Psych tests.
+			register_rest_route( $ns, '/api/admin/psych-tests', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'list_tests' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'POST', 'callback' => array( $this, 'create_test' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/psych-tests/(?P<id>\d+)', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'test_detail' ), 'permission_callback' => $admin ),
+				array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_test' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_test' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/psych-tests/pending-interpretations', array( 'methods' => 'GET', 'callback' => array( $this, 'pending_interpretations' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/psych-tests/user-tests/(?P<uid>\d+)/interpret', array( 'methods' => 'POST', 'callback' => array( $this, 'interpret' ), 'permission_callback' => $admin ) );
+		}
 		register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
 		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );

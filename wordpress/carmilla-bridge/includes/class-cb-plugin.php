@@ -140,22 +140,22 @@ class CB_Plugin {
 		( new CB_Payment_Controller() )->register_routes();
 		( new CB_Account_Controller() )->register_routes();
 		( new CB_Interaction_Controller() )->register_routes();
-		// Phase 3: academy.
-		( new CB_Academy_Controller() )->register_routes();
-		// Phase 4: clinic + psych tests.
-		( new CB_Clinic_Controller() )->register_routes();
-		( new CB_Psychtest_Controller() )->register_routes();
-		// Phase 5: shop extras.
+		// Phase 3 & 4: LMS, Clinic, Psych tests (Disabled by default until Phase 13/14).
+		if ( apply_filters( 'cb_enable_health_lms', false ) ) {
+			( new CB_Academy_Controller() )->register_routes();
+			( new CB_Clinic_Controller() )->register_routes();
+			( new CB_Psychtest_Controller() )->register_routes();
+			( new CB_Course_Request_Controller() )->register_routes();
+			( new CB_Admin_Clinic_Controller() )->register_routes();
+		}
 		( new CB_Extras_Controller() )->register_routes();
 		( new CB_Support_Controller() )->register_routes();
 		( new CB_Bundle_Controller() )->register_routes();
 		( new CB_Story_Controller() )->register_routes();
-		( new CB_Course_Request_Controller() )->register_routes();
 		// Phase 6: admin panel.
 		( new CB_Admin_Controller() )->register_routes();
 		( new CB_Admin_Content_Controller() )->register_routes();
 		( new CB_Admin_Product_Controller() )->register_routes();
-		( new CB_Admin_Clinic_Controller() )->register_routes();
 		( new CB_Admin_B2B_Controller() )->register_routes();
 		( new CB_Admin_Bundle_Controller() )->register_routes();
 	}
