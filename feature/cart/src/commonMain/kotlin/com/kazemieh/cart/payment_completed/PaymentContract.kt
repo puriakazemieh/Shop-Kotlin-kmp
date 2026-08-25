@@ -7,7 +7,7 @@ data class PaymentState(
 )
 
 sealed interface PaymentIntent {
-    data object ClearCart : PaymentIntent
+    data class VerifyPayment(val orderId: Long?) : PaymentIntent
     data object OnBackClick : PaymentIntent
 }
 

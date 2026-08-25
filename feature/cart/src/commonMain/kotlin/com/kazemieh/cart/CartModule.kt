@@ -62,6 +62,7 @@ val cartModule = module {
 
     viewModel {
         PaymentViewModel(
+            getOrderUseCase = get(),
             clearCartUseCase = get()
         )
     }

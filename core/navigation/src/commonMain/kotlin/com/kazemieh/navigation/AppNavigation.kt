@@ -95,8 +95,9 @@ fun AppNavHost(
         PaymentEventBus.events.collect { result ->
             if (result.status == "success" || result.status == "failed") {
                 val success = result.status == "success"
+                val orderId = result.orderId?.toLongOrNull()
                 PaymentEventBus.reset()
-                navController.navigate(Screen.PaymentCompleted(success)) {
+                navController.navigate(Screen.PaymentCompleted(orderId = orderId, success = success)) {
                     popUpTo<Screen.Checkout> { inclusive = true }
                 }
             }
@@ -738,7 +739,7 @@ fun AppNavHost(
                 totalAmount = args.totalAmount,
                 navigateBack = { navController.navigateBack() },
                 navigateToPaymentCompleted = { success, error ->
-                    navController.navigate(Screen.PaymentCompleted(success ?: false, error)) {
+                    navController.navigate(Screen.PaymentCompleted(orderId = null, success = success ?: false, error = error)) {
                         popUpTo<Screen.Checkout> { inclusive = true }
                     }
                 }
@@ -756,6 +757,7 @@ fun AppNavHost(
             // Screen.PaymentCompleted(success: Boolean, error: String?)
 
             PaymentCompleted(
+                orderId = args.orderId,
                 navigateBack = {
                     navController.navigate(Screen.HomeGraph()) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }

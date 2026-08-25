@@ -24,6 +24,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PaymentCompleted(
+    orderId: Long?,
     navigateBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<PaymentViewModel>()
@@ -35,6 +36,10 @@ fun PaymentCompleted(
                 is PaymentEffect.NavigateBack -> navigateBack()
             }
         }
+    }
+
+    LaunchedEffect(orderId) {
+        viewModel.handleIntent(PaymentIntent.VerifyPayment(orderId))
     }
 
     Column(
