@@ -39,10 +39,9 @@ private fun resolveBrand(): com.kazemieh.designsystem.brand.BrandConfig {
 
 private fun handleWebDeepLink() {
     val searchParams = URLSearchParams(window.location.search)
-    val status = searchParams.get("status")
-    val orderId = searchParams.get("orderId")
+    val token = searchParams.get("token")
     
-    if (status != null) {
-        PaymentEventBus.publish(PaymentResult(status, orderId))
+    if (token != null) {
+        PaymentEventBus.publish(PaymentResult(token))
     }
 }

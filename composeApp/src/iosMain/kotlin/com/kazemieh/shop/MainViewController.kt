@@ -26,8 +26,9 @@ fun handleDeepLink(url: String) {
     if (nsUrl.scheme == "myapp" && nsUrl.host == "payment-result") {
         val components = NSURLComponents.componentsWithURL(nsUrl, false)
         val queryItems = components?.queryItems as? List<NSURLQueryItem>
-        val status = (queryItems?.find { it.name == "status" }?.value) ?: "failed"
-        val orderId = queryItems?.find { it.name == "orderId" }?.value
-        PaymentEventBus.publish(PaymentResult(status, orderId))
+        val token = queryItems?.find { it.name == "token" }?.value
+        if (token != null) {
+            PaymentEventBus.publish(PaymentResult(token))
+        }
     }
 }

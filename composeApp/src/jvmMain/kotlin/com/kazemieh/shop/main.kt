@@ -52,9 +52,10 @@ private fun handleUri(uriString: String) {
                 val pair = it.split("=")
                 pair[0] to pair.getOrNull(1)
             }
-            val status = params["status"] ?: "failed"
-            val orderId = params["orderId"]
-            PaymentEventBus.publish(PaymentResult(status, orderId))
+            val token = params["token"]
+            if (token != null) {
+                PaymentEventBus.publish(PaymentResult(token))
+            }
         }
     } catch (e: Exception) {
         e.printStackTrace()

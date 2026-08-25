@@ -17,11 +17,10 @@ object PaymentEventBus {
     }
 
     fun reset() {
-        _events.tryEmit(PaymentResult("none", null))
+        _events.tryEmit(PaymentResult(null))
     }
 }
 
 data class PaymentResult(
-    val status: String,
-    val orderId: String?
+    val token: String?
 )

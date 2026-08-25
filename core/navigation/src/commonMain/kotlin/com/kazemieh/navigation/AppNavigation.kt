@@ -91,15 +91,14 @@ fun AppNavHost(
         }
     }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         PaymentEventBus.events.collect { result ->
-            if (result.status == "success" || result.status == "failed") {
-                val success = result.status == "success"
-                val orderId = result.orderId?.toLongOrNull()
-                PaymentEventBus.reset()
-                navController.navigate(Screen.PaymentCompleted(orderId = orderId, success = success)) {
+            val token = result.token
+            if (token != null) {
+                navController.navigate(Screen.PaymentCompleted(orderId = token.toLongOrNull(), success = true)) {
                     popUpTo<Screen.Checkout> { inclusive = true }
                 }
+                PaymentEventBus.reset()
             }
         }
     }

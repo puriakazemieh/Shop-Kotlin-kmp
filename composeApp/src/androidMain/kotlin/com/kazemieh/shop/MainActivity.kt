@@ -26,9 +26,10 @@ class MainActivity : ComponentActivity() {
     private fun handleIntent(intent: Intent?) {
         intent?.data?.let { uri ->
             if (uri.scheme == "myapp" && uri.host == "payment-result") {
-                val status = uri.getQueryParameter("status") ?: "failed"
-                val orderId = uri.getQueryParameter("orderId")
-                PaymentEventBus.publish(PaymentResult(status, orderId))
+                val token = uri.getQueryParameter("token")
+                if (token != null) {
+                    PaymentEventBus.publish(PaymentResult(token))
+                }
             }
         }
     }
