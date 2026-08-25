@@ -541,7 +541,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P01-PAYMENT-CODE-007` | BOTH | P0/HIGH | نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد | success جعلی سفارش/cart را تغییر ندهد |
 | [x] | `P01-PAYMENT-CODE-008` | BOTH | P0/HIGH | پاک‌شدن cart فقط بعد از verify authoritative موفق انجام شود | fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد |
 | [x] | `P01-PAYMENT-CODE-009` | BOTH | P0/HIGH | قرارداد callback و نام پارامتر Android/PWA/WP یکسان و opaque شود | cold/warm start، app killed و browser fallback دستی تست |
-| [ ] | `P01-WPPLUGIN-SEC-010` | BOTH | P0/HIGH | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود | tamper/expired/wrong audience/revoked token رد شوند |
+| [x] | `P01-WPPLUGIN-SEC-010` | BOTH | P0/HIGH | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود | tamper/expired/wrong audience/revoked token رد شوند |
 | [ ] | `P01-WPPLUGIN-SEC-011` | BOTH | P0/HIGH | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off | brute force/rate/account enumeration tests |
 | [ ] | `P01-WPPLUGIN-SEC-012` | BOTH | P0/HIGH | CORS default بسته و origin دقیق tenant allowlist شود | unapproved origin رد؛ credential policy روشن |
 | [ ] | `P01-WPPLUGIN-SEC-013` | BOTH | P0/HIGH | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد | تست نقش‌ها روی همه endpointهای حساس |

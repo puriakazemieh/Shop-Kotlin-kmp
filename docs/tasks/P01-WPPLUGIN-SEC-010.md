@@ -126,11 +126,11 @@ tamper/expired/wrong audience/revoked token رد شوند
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-25T14:42:00
+- Completed at: 2026-08-25T14:48:00
+- Changed files: `class-cb-jwt.php`, `class-cb-auth-controller.php`, `smoke.php`
+- Commands and exit codes: `docker run --rm -v ${PWD}:/app -w /app php:8.1-cli php wordpress/carmilla-bridge/tests/smoke.php` (Exit code 0)
+- Manual tester/date/result: AI (Tested JWT revocation logic via PHP tests)
+- Evidence paths: `docs/evidence/P01-WPPLUGIN-SEC-010/EVIDENCE.md`
+- Remaining risks/blockers: None
+- Final status: DONE

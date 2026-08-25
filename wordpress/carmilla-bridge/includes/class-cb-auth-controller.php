@@ -159,6 +159,7 @@ class CB_Auth_Controller {
 			return cb_error( 'کاربر یافت نشد.', 404, 'USER_NOT_FOUND' );
 		}
 		reset_password( $user, $password );
+		CB_JWT::revoke_for_user( $user->ID );
 		delete_transient( 'cb_reset_' . $token );
 		return cb_response( self::auth_response( get_user_by( 'id', $user->ID ) ), 200 );
 	}
@@ -178,6 +179,7 @@ class CB_Auth_Controller {
 			return cb_error( 'کاربر یافت نشد.', 404, 'USER_NOT_FOUND' );
 		}
 		reset_password( $user, $password );
+		CB_JWT::revoke_for_user( $user->ID );
 		return cb_response( self::auth_response( get_user_by( 'id', $user->ID ) ), 200 );
 	}
 

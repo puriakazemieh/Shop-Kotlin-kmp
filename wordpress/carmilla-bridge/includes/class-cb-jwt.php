@@ -20,10 +20,10 @@ class CB_JWT {
 		if ( defined( 'CB_JWT_SECRET' ) && CB_JWT_SECRET ) {
 			return CB_JWT_SECRET;
 		}
-		if ( defined( 'AUTH_KEY' ) && AUTH_KEY ) {
+		if ( defined( 'AUTH_KEY' ) && AUTH_KEY && AUTH_KEY !== 'put your unique phrase here' ) {
 			return AUTH_KEY;
 		}
-		return 'carmilla-bridge-insecure-default-change-me';
+		throw new Exception( 'Insecure JWT configuration. Please define CB_JWT_SECRET in wp-config.php.' );
 	}
 
 	private static function base64url_encode( string $data ): string {
@@ -42,6 +42,8 @@ class CB_JWT {
 		$ttl = ( $type === 'refresh' ) ? self::REFRESH_TTL : self::ACCESS_TTL;
 
 		$payload = array(
+			'iss'  => get_site_url(),
+			'aud'  => 'carmilla-client',
 			'sub'  => $user->user_email,
 			'uid'  => (int) $user->ID,
 			'role' => self::primary_role( $user ),
@@ -72,7 +74,12 @@ class CB_JWT {
 		}
 		list( $head64, $body64, $sig64 ) = $parts;
 
-		$expected = hash_hmac( 'sha256', "$head64.$body64", self::secret(), true );
+		try {
+			$expected = hash_hmac( 'sha256', "$head64.$body64", self::secret(), true );
+		} catch ( Exception $e ) {
+			return null;
+		}
+		
 		$provided = self::base64url_decode( $sig64 );
 		if ( ! hash_equals( $expected, $provided ) ) {
 			return null;
@@ -85,12 +92,25 @@ class CB_JWT {
 		if ( isset( $payload['exp'] ) && time() >= (int) $payload['exp'] ) {
 			return null;
 		}
+		if ( ! isset( $payload['iss'] ) || $payload['iss'] !== get_site_url() ) {
+			return null;
+		}
+		if ( ! isset( $payload['aud'] ) || $payload['aud'] !== 'carmilla-client' ) {
+			return null;
+		}
+		
+		if ( isset( $payload['uid'], $payload['iat'] ) ) {
+			$revoked_before = (int) get_user_meta( $payload['uid'], 'cb_jwt_revoked_before', true );
+			if ( $revoked_before > 0 && (int) $payload['iat'] < $revoked_before ) {
+				return null;
+			}
+		}
+
 		return $payload;
 	}
 
 	/**
 	 * Map WP roles to the app's CUSTOMER / ADMIN convention.
-	 * administrator + shop_manager => ADMIN (may write), everyone else => CUSTOMER.
 	 */
 	public static function primary_role( WP_User $user ): string {
 		$roles = (array) $user->roles;
@@ -98,5 +118,12 @@ class CB_JWT {
 			return 'ADMIN';
 		}
 		return 'CUSTOMER';
+	}
+	
+	/**
+	 * Revoke all tokens for a user by updating the 'cb_jwt_revoked_before' timestamp.
+	 */
+	public static function revoke_for_user( int $user_id ) {
+		update_user_meta( $user_id, 'cb_jwt_revoked_before', time() );
 	}
 }

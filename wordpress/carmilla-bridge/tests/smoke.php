@@ -6,10 +6,20 @@
  */
 
 define( 'ABSPATH', __DIR__ . '/' );
+define( 'AUTH_KEY', 'this-is-a-secure-mock-key-1234567890' );
 function wp_json_encode( $d ) { return json_encode( $d ); }
 function esc_html( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); }
 function esc_url( $s ) { return filter_var( (string) $s, FILTER_SANITIZE_URL ); }
 function wp_strip_all_tags( $s ) { return trim( strip_tags( (string) $s ) ); }
+function get_site_url() { return 'http://localhost'; }
+global $mock_revoked_time;
+$mock_revoked_time = 0;
+function get_user_meta( $user_id, $key, $single ) { 
+	global $mock_revoked_time;
+	if ( $key === 'cb_jwt_revoked_before' ) return $mock_revoked_time;
+	return ''; 
+}
+function update_user_meta( $user_id, $key, $value ) { return true; }
 class WP_User {
 	public $ID;
 	public $user_email;
@@ -43,6 +53,11 @@ $cust = new WP_User( 9, 'c@x.com', array( 'customer' ) );
 check( CB_JWT::decode( CB_JWT::issue( $cust, 'access' ) )['role'] === 'CUSTOMER', 'customer -> CUSTOMER' );
 check( CB_JWT::decode( $access . 'x' ) === null, 'tampered token rejected' );
 check( CB_JWT::decode( CB_JWT::issue( $admin, 'refresh' ) )['typ'] === 'refresh', 'refresh typ' );
+
+// Test revocation by setting global $mock_revoked_time to a future timestamp
+$mock_revoked_time = time() + 3600;
+check( CB_JWT::decode( $access ) === null, 'revoked token rejected' );
+$mock_revoked_time = 0; // reset
 
 $blocks = array(
 	array( 'type' => 'header', 'content' => 'سلام', 'level' => 2 ),
