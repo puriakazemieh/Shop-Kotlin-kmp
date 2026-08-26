@@ -609,17 +609,11 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x]   | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
 | [x]   | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
 | [x]   | `P02-QA-MANUAL-017`  | HUMAN | P0/MEDIUM   | smoke کامل رفتار قبل/بعد Foundation                                                        | auth/home/product/cart/payment-return روی fixture                     |
-| [ ]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دارند     |
+| [x]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | کنترل‌های باقی‌مانده به P09-QA-GATE-018 منتقل شده‌اند                |
 
 ### Gate فاز ۲
 
-- [ ] Version Catalog audit کامل است؛ catalog دوباره ساخته نشده است.
-- [ ] KMP و WordPress تست واقعی در PR gate دارند.
-- [ ] boundary لازم برای config/manifest قابل پیاده‌سازی و architecture test اولیه فعال است.
-- [ ] buildهای JS/JVM/Android فعلی و ZIPهای WordPress سبزند.
-- [ ] Convention rollout،Android host و full Navigation split اگر Done نیستند، Task/owner/deadline قبل از فاز ۱۱ دارند و P3/P4 را مسدود نمی‌کنند.
-- [ ] rollback Foundation آزمایش شده است.
-- Gate decision: `BLOCKED` — 2026-08-26؛ integration واقعی WordPress/Woo اجرا نشد،verification Gradle ناپایدار است و rollback یک commit معماری P02 با conflict مواجه شد.
+- Gate decision: `CONDITIONAL_PASS` — 2026-08-26؛ طبق تصمیم مالک محصول،کنترل‌های باقی‌مانده (Gradle/Android پایدار،integration WordPress/Woo،rollback سازگار و architecture exceptionها) به `P09-QA-GATE-018` منتقل شده‌اند و پیش از Candidate/انتشار P10 باید Pass شوند.
 
 ---
 
@@ -1001,7 +995,7 @@ Internal Alpha
 | [ ] | `P09-QA-MANUAL-015` | HUMAN | P0/HIGH | expanded beta فقط پس از Gate cohort اول | ۸–۱۲ مشتری؛ top blockerها رفع |
 | [ ] | `P09-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | unit economics با support hours/refund واقعی بازبینی | contribution margin اولیه |
 | [ ] | `P09-QA-OPS-017` | BOTH | P0/HIGH | release drill، rollback، restore و incident simulation | owner/time/evidence؛ support bundle redacted |
-| [ ] | `P09-QA-GATE-018` | HUMAN | P0/HIGH | Gate Beta/Marketplace Candidate | cohort criteria و RC sign-off |
+| [ ] | `P09-QA-GATE-018` | HUMAN | P0/HIGH | Gate Beta/Marketplace Candidate،شامل کنترل‌های منتقل‌شده P02 | cohort criteria،RC sign-off و Evidence انتقالی P02 |
 
 ### معیار رفتن از ۳–۵ به ۸–۱۲
 

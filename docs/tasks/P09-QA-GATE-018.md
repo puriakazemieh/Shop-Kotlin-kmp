@@ -61,7 +61,7 @@ P09-QA-GATE-018
 Gate Beta/Marketplace Candidate
 
 ## خروجی مورد انتظار
-cohort criteria و RC sign-off
+cohort criteria و RC sign-off،به‌همراه کنترل‌های منتقل‌شده از `P02-CORE-GATE-018`
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -104,12 +104,18 @@ cohort criteria و RC sign-off
 - AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
 - Environment/device/browser و داده synthetic را ثبت کن.
 - انتظار: cohort criteria و RC sign-off
+- کنترل‌های منتقل‌شده از P02،همگی روی Release Candidate و با Evidence redacted انجام شوند:
+  - `architectureCheck`،`compileKotlinJvm`،`compileKotlinJs` و Android release build در یک محیط پایدار یا CI سبز باشند.
+  - integration واقعی WordPress/Woo شامل نصب تمیز،فعال‌سازی Theme/Bridge و smokeهای موجود سبز باشد.
+  - rollback سازگار یا forward-fix مستند برای commit معماری `b2ebfb3d` ثبت و آزموده شده باشد.
+  - dependencyهای گزارش‌شده توسط architecture check یا رفع شده،یا با owner و deadline پذیرفته شده باشند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [ ] کنترل‌های منتقل‌شده از `P02-CORE-GATE-018` روی Release Candidate با Evidence ثبت شده‌اند.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks

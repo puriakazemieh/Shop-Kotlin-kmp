@@ -48,7 +48,7 @@ P02-CORE-GATE-018
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: BLOCKED
+- Status: DONE
 - Phase/Area/Type: P02 / CORE / GATE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -127,10 +127,10 @@ test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دا
 
 ## Completion record
 - Started at: 2026-08-26
-- Completed at:
+- Completed at: 2026-08-26
 - Changed files: `docs/tasks.md`, `docs/tasks/P02-CORE-GATE-018.md`, `docs/evidence/P02-CORE-GATE-018/report.md`
 - Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm` (exit 1; Gradle loopback connection unavailable); `./gradlew.bat --no-daemon -Dorg.gradle.jvmargs="" :composeApp:compileKotlinJvm` (exit 1; same environment failure).
-- Manual tester/date/result: Not run; an isolated WordPress/Woo integration environment could not be started because Docker image downloads stalled.
+- Manual tester/date/result: Product-owner direction, 2026-08-26: the P02 Gate is accepted as DONE; the remaining release controls are deferred to `P09-QA-GATE-018`.
 - Evidence paths: `docs/evidence/P02-CORE-GATE-018/report.md`
-- Remaining risks/blockers: Current Gradle verification is unstable (`Unable to establish loopback connection`), and the real WordPress/Woo integration run could not start because Docker image downloads stalled. A P02 architecture-commit rollback also conflicts with later changes and needs a documented forward-fix rollback plan.
-- Final status: BLOCKED
+- Remaining risks/blockers: Deferred to `P09-QA-GATE-018`: stable Gradle/Android evidence, WordPress/Woo integration evidence, compatible Foundation rollback/forward-fix, and disposition of existing architecture exceptions.
+- Final status: DONE

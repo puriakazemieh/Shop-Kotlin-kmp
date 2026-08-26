@@ -4,6 +4,10 @@
 
 `BLOCKED` on 2026-08-26. This is not a release or production decision.
 
+## Disposition
+
+The product owner accepted this Phase 02 Gate as `DONE` on 2026-08-26. The remaining controls are not waived: they are mandatory inputs to `P09-QA-GATE-018` before the Phase 10 limited-release decision.
+
 ## Baseline recovery update
 
 The product owner supplied successful verification output on 2026-08-26 after the JVM-toolchain fix:
