@@ -48,7 +48,7 @@ P02-ARCH-ADR-012
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P02 / ARCH / ADR
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -124,10 +124,10 @@ package/signing/resources/source-set migration و rollback روشن
 
 ## Completion record
 - Started at: 2026-08-26T11:04:30+03:30
-- Completed at: 2026-08-26T11:05:00+03:30
+- Completed at: 2026-08-26T11:22:00+03:30
 - Changed files: docs/evidence/P02-ARCH-ADR-012/ADR-002-Android-App-Shell-AGP9.md
 - Commands and exit codes: N/A
-- Manual tester/date/result: AWAITING USER REVIEW
+- Manual tester/date/result: USER / 2026-08-26 / APPROVED
 - Evidence paths: docs/evidence/P02-ARCH-ADR-012/ADR-002-Android-App-Shell-AGP9.md
-- Remaining risks/blockers: Awaiting user approval of the ADR before actual implementation (P02-ARCH-CODE-013).
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: None
+- Final status: DONE
