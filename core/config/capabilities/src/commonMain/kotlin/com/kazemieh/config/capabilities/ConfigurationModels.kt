@@ -9,6 +9,14 @@ enum class BackendKind {
     SPRING
 }
 
+/** هویت tenant مستقل از backend و branding؛ در cache و manifest namespace می‌شود. */
+@Serializable
+data class TenantConfig(val id: String) {
+    init {
+        require(id.isNotBlank()) { "Tenant id must not be blank." }
+    }
+}
+
 /**
  * هویت تغییرناپذیر backend که از branding و قابلیت‌های tenant جدا نگه داشته می‌شود.
  * Manifest فقط tenant و capability را حمل می‌کند و نمی‌تواند این originها را تغییر دهد.

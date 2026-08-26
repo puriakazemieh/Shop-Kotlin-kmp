@@ -3,6 +3,7 @@ package com.kazemieh.shop
 import com.kazemieh.config.capabilities.BackendProfile
 import com.kazemieh.config.capabilities.LocalFeatureManifestConfig
 import com.kazemieh.config.capabilities.LocalFeatureManifestSource
+import com.kazemieh.config.capabilities.TenantConfig
 
 /**
  * تنها نقطهٔ local/generated برای flagهای پایهٔ این app.
@@ -10,10 +11,10 @@ import com.kazemieh.config.capabilities.LocalFeatureManifestSource
  * flagها در BrandConfig یا feature moduleها.
  */
 object GeneratedLocalFeatureManifest {
-    fun sourceFor(profile: BackendProfile): LocalFeatureManifestSource = LocalFeatureManifestSource(
+    fun sourceFor(profile: BackendProfile, tenant: TenantConfig = TenantConfig("local-default")): LocalFeatureManifestSource = LocalFeatureManifestSource(
         LocalFeatureManifestConfig(
             backendKind = profile.kind,
-            tenantId = "local-default",
+            tenantId = tenant.id,
             contentBlog = true,
             commerceCore = true,
             commercePhysical = true,

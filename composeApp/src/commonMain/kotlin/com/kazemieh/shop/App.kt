@@ -44,6 +44,7 @@ import com.kazemieh.designsystem.brand.BrandRegistry
 import com.kazemieh.network.common.ApiConfig
 import com.kazemieh.config.capabilities.AssetUrlResolver
 import com.kazemieh.config.capabilities.BackendProfile
+import com.kazemieh.config.capabilities.BackendKind
 import com.kazemieh.config.capabilities.BootstrapProfiles
 import com.kazemieh.config.capabilities.EndpointResolver
 import com.kazemieh.config.capabilities.FeatureManifestBootstrapCoordinator
@@ -55,6 +56,7 @@ import com.kazemieh.config.capabilities.KtorRemoteManifestTransport
 import com.kazemieh.config.capabilities.ManifestBootstrapState
 import com.kazemieh.config.capabilities.RemoteFeatureManifestClient
 import com.kazemieh.config.capabilities.RemoteManifestTransport
+import com.kazemieh.config.capabilities.TenantConfig
 import com.kazemieh.navigation.FeatureRouteGuard
 import com.kazemieh.config.capabilities.ProfileAssetUrlResolver
 import com.kazemieh.config.capabilities.ProfileEndpointResolver
@@ -126,10 +128,11 @@ fun App() {
 }
 
 fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclaration? = null) {
-    // اگر برند BASE_URL اختصاصی داشته باشد، شبکه از آن استفاده می‌کند.
+    // backend فقط یک dimension دوحالته است؛ tenant و branding مستقل می‌مانند.
     ApiConfig.baseUrlOverride = brand.apiBaseUrl
-    val backendProfile: BackendProfile = BootstrapProfiles.fromLegacyApiRoot(ApiConfig.baseUrl)
-    val privateSessionNamespace = backendProfile.privateSessionNamespace(tenantId = "legacy")
+    val backendKind = if (brand.id.equals("wp", ignoreCase = true)) BackendKind.WORDPRESS else BackendKind.SPRING
+    val tenantConfig = TenantConfig("local-default")
+    val backendProfile: BackendProfile = BootstrapProfiles.forBackend(backendKind, ApiConfig.baseUrl)
     startKoin {
         printLogger()
         config?.invoke(this)
@@ -137,7 +140,8 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
             org.koin.dsl.module {
                 single { brand }
                 single { backendProfile }
-                single { privateSessionNamespace }
+                single { tenantConfig }
+                single { get<BackendProfile>().privateSessionNamespace(get<TenantConfig>().id) }
                 single<EndpointResolver> { ProfileEndpointResolver(get()) }
                 single<AssetUrlResolver> { ProfileAssetUrlResolver(get()) }
                 single<RemoteManifestTransport> { KtorRemoteManifestTransport(get()) }
@@ -145,14 +149,14 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                 single {
                     RemoteFeatureManifestClient(
                         profile = get(),
-                        expectedTenantId = "local-default",
+                        expectedTenantId = get<TenantConfig>().id,
                         transport = get()
                     )
                 }
                 single<FeatureFlagShadowReporter> { FeatureFlagShadowReporter { } }
                 single { FeatureFlagShadowMode(get()) }
                 single {
-                    GeneratedLocalFeatureManifest.sourceFor(get<BackendProfile>()).resolveFor(get<BackendProfile>().kind)
+                    GeneratedLocalFeatureManifest.sourceFor(get<BackendProfile>(), get<TenantConfig>()).resolveFor(get<BackendProfile>().kind)
                 }
                 single { FeatureUseCaseGuard(get()) }
                 single { FeatureRouteGuard(get()) }
