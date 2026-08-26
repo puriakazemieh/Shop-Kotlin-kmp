@@ -9,22 +9,24 @@ import com.kazemieh.data.cart.source.CartDataSource
 import com.kazemieh.data.cart.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
 
 
 
 
 class CartRepositoryImpl(
-    private val dataSource: CartDataSource
+    private val dataSource: CartDataSource,
+    private val assetUrlResolver: AssetUrlResolver
 ) : CartRepository {
 
     override fun getCart(): Flow<AppResult<Cart>> = flow {
         emit(AppResult.Loading)
-        emit(dataSource.getCart().map { it.toDomain() })
+        emit(dataSource.getCart().map { it.toDomain(assetUrlResolver) })
     }
 
     override suspend fun addItem(productId: Long?, variantId: Long?, qty: Int): AppResult<Cart> {
-        val result = dataSource.addItem(AddCartItemRequest(productId, variantId, qty)).map { it.toDomain() }
+        val result = dataSource.addItem(AddCartItemRequest(productId, variantId, qty)).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -32,7 +34,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun updateQty(itemId: Long, qty: Int): AppResult<Cart> {
-        val result = dataSource.updateQty(itemId, UpdateCartItemRequest(qty)).map { it.toDomain() }
+        val result = dataSource.updateQty(itemId, UpdateCartItemRequest(qty)).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -40,7 +42,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun remove(itemId: Long): AppResult<Cart> {
-        val result = dataSource.remove(itemId).map { it.toDomain() }
+        val result = dataSource.remove(itemId).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -56,7 +58,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun setVariantQty(variantId: Long, qty: Int): AppResult<Cart> {
-        val result = dataSource.setVariantQty(variantId, SetCartVariantQtyRequest(qty)).map { it.toDomain() }
+        val result = dataSource.setVariantQty(variantId, SetCartVariantQtyRequest(qty)).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -64,7 +66,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun adjustVariantQty(variantId: Long, delta: Int): AppResult<Cart> {
-        val result = dataSource.adjustVariantQty(variantId, AdjustCartVariantQtyRequest(delta)).map { it.toDomain() }
+        val result = dataSource.adjustVariantQty(variantId, AdjustCartVariantQtyRequest(delta)).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -72,7 +74,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun moveToSaveForLater(itemId: Long): AppResult<Cart> {
-        val result = dataSource.moveToSaveForLater(itemId).map { it.toDomain() }
+        val result = dataSource.moveToSaveForLater(itemId).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -80,7 +82,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun moveToCart(itemId: Long): AppResult<Cart> {
-        val result = dataSource.moveToCart(itemId).map { it.toDomain() }
+        val result = dataSource.moveToCart(itemId).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -88,7 +90,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun applyDiscount(code: String): AppResult<Cart> {
-        val result = dataSource.applyDiscount(ApplyDiscountRequest(code)).map { it.toDomain() }
+        val result = dataSource.applyDiscount(ApplyDiscountRequest(code)).map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }
@@ -96,7 +98,7 @@ class CartRepositoryImpl(
     }
 
     override suspend fun removeDiscount(): AppResult<Cart> {
-        val result = dataSource.removeDiscount().map { it.toDomain() }
+        val result = dataSource.removeDiscount().map { it.toDomain(assetUrlResolver) }
         if (result is AppResult.Success) {
             CartEventBus.refresh()
         }

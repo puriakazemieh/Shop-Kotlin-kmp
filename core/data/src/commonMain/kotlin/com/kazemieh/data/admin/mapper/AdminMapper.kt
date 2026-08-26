@@ -4,6 +4,7 @@ import com.kazemieh.network.admin.dto.request.*
 import com.kazemieh.network.admin.dto.response.*
 import com.kazemieh.domain.admin.*
 import com.kazemieh.network.common.*
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
 
 
@@ -36,15 +37,15 @@ fun AdminProductResponse.toAdminDomain() = AdminProduct(
     isActive = isActive
 )
 
-fun AdminProductImageResponse.toAdminDomain() = AdminProductImage(
+fun AdminProductImageResponse.toAdminDomain(assetUrlResolver: AssetUrlResolver) = AdminProductImage(
     id = id,
-    url = if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
+    url = assetUrlResolver.resolve(url),
     sortOrder = sortOrder
 )
 
-fun AdminProductVideoResponse.toAdminDomain() = AdminProductVideo(
+fun AdminProductVideoResponse.toAdminDomain(assetUrlResolver: AssetUrlResolver) = AdminProductVideo(
     id = id,
-    url = if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
+    url = assetUrlResolver.resolve(url),
     sortOrder = sortOrder
 )
 
@@ -67,10 +68,10 @@ fun AdminInventoryResponse.toAdminDomain() = AdminInventory(
     version = version
 )
 
-fun AdminProductDetailResponse.toAdminDomain() = AdminProductDetail(
+fun AdminProductDetailResponse.toAdminDomain(assetUrlResolver: AssetUrlResolver) = AdminProductDetail(
     product = product.toAdminDomain(),
-    images = images.map { it.toAdminDomain() },
-    videos = videos.map { it.toAdminDomain() },
+    images = images.map { it.toAdminDomain(assetUrlResolver) },
+    videos = videos.map { it.toAdminDomain(assetUrlResolver) },
     variants = variants.map { it.toAdminDomain() }
 )
 

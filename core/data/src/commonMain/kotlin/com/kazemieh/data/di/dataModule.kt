@@ -97,7 +97,7 @@ val dataModule = module {
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 
     single<RecentlyViewedDataSource> { RecentlyViewedDataSourceImpl(get()) }
-    single<RecentlyViewedRepository> { RecentlyViewedRepositoryImpl(get()) }
+    single<RecentlyViewedRepository> { RecentlyViewedRepositoryImpl(get(), get()) }
 
     single<AuthRepository> {
         AuthRepositoryImpl(
@@ -131,7 +131,7 @@ val dataModule = module {
     }
 
     single<AdminRepository> {
-        AdminRepositoryImpl(get())
+        AdminRepositoryImpl(get(), get())
     }
 
     single<AdminDataSource> {
@@ -139,7 +139,7 @@ val dataModule = module {
     }
 
     single<CatalogRepository> {
-        CatalogRepositoryImpl(get(), get())
+        CatalogRepositoryImpl(get(), get(), get())
     }
 
     single<InteractionRepository> {
@@ -151,7 +151,7 @@ val dataModule = module {
     }
 
     single<FavoriteRepository> {
-        FavoriteRepositoryImpl(get())
+        FavoriteRepositoryImpl(get(), get())
     }
 
     single<FavoriteDataSource> {
@@ -159,7 +159,7 @@ val dataModule = module {
     }
 
     single<CartRepository> {
-        CartRepositoryImpl(get())
+        CartRepositoryImpl(get(), get())
     }
 
     single<CartDataSource> {
@@ -233,7 +233,7 @@ val dataModule = module {
     }
 
     single<BundleRepository> {
-        BundleRepositoryImpl(get())
+        BundleRepositoryImpl(get(), get())
     }
 
     single<AdminBundleRepository> {

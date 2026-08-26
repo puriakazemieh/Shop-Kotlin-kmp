@@ -11,8 +11,12 @@ import com.kazemieh.domain.favorite.FavoriteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
-class FavoriteRepositoryImpl(private val dataSource: FavoriteDataSource) : FavoriteRepository {
+class FavoriteRepositoryImpl(
+    private val dataSource: FavoriteDataSource,
+    private val assetUrlResolver: AssetUrlResolver
+) : FavoriteRepository {
     private val favoriteIds = MutableStateFlow<Set<Long>>(emptySet())
 
     override fun observeFavoriteIds(): Flow<Set<Long>> = favoriteIds
@@ -46,7 +50,7 @@ class FavoriteRepositoryImpl(private val dataSource: FavoriteDataSource) : Favor
     override suspend fun getFavorites(page: Int, size: Int): AppResult<AdminPage<ProductSummary>> {
         return dataSource.getFavorites(page, size).map { response ->
             val adminPage = response.toAdminPage { 
-                it.toCatalogDomain().copy(isFavorite = true) 
+                it.toCatalogDomain(assetUrlResolver).copy(isFavorite = true) 
             }
             val ids = adminPage.items.map { it.id }.toSet()
             if (page == 0) {

@@ -9,11 +9,13 @@ import com.kazemieh.data.catalog.mapper.*
 import com.kazemieh.data.admin.mapper.toAdminPage
 import com.kazemieh.data.catalog.source.CatalogDataSource
 import com.kazemieh.domain.favorite.FavoriteRepository
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
 
 class CatalogRepositoryImpl(
     private val dataSource: CatalogDataSource,
-    private val favoriteRepository: FavoriteRepository
+    private val favoriteRepository: FavoriteRepository,
+    private val assetUrlResolver: AssetUrlResolver
 ) : CatalogRepository {
 
     override suspend fun getCategories(): AppResult<List<Category>> =
@@ -33,7 +35,7 @@ class CatalogRepositoryImpl(
     ): AppResult<AdminPage<ProductSummary>> =
         dataSource.getProducts(query, categoryId, options, minPrice, maxPrice, inStock, page, size, sort, discountedOnly)
             .map { pageResponse -> 
-                val adminPage = pageResponse.toAdminPage { dto -> dto.toCatalogDomain() }
+                val adminPage = pageResponse.toAdminPage { dto -> dto.toCatalogDomain(assetUrlResolver) }
                 adminPage.items.forEach { 
                     favoriteRepository.updateFavoriteStatus(it.id, it.isFavorite)
                 }
@@ -42,22 +44,22 @@ class CatalogRepositoryImpl(
 
     override suspend fun getProductDetail(slug: String): AppResult<ProductDetail> =
         dataSource.getProductDetail(slug).map {
-            val product = it.toCatalogDomain()
+            val product = it.toCatalogDomain(assetUrlResolver)
             favoriteRepository.updateFavoriteStatus(product.id, product.isFavorite)
             product
         }
 
     override suspend fun getActiveCampaign(): AppResult<Campaign?> =
-        dataSource.getActiveCampaign().map { response -> response?.toCampaignDomain() }
+        dataSource.getActiveCampaign().map { response -> response?.toCampaignDomain(assetUrlResolver) }
 
     override suspend fun getBanners(): AppResult<List<Banner>> =
-        dataSource.getBanners().map { list -> list.map { it.toBannerDomain() } }
+        dataSource.getBanners().map { list -> list.map { it.toBannerDomain(assetUrlResolver) } }
 
     override suspend fun requestBackInStock(productId: Long, variantId: Long): AppResult<Unit> =
         dataSource.requestBackInStock(productId, variantId)
 
     override suspend fun getFrequentlyBoughtTogether(productId: Long): AppResult<List<ProductSummary>> =
-        dataSource.getFrequentlyBoughtTogether(productId).map { list -> list.map { it.toCatalogDomain() } }
+        dataSource.getFrequentlyBoughtTogether(productId).map { list -> list.map { it.toCatalogDomain(assetUrlResolver) } }
 
     override suspend fun subscribeToPriceAlert(productId: Long, variantId: Long, targetPrice: Double): AppResult<Unit> =
         dataSource.subscribeToPriceAlert(productId, variantId, targetPrice)

@@ -9,9 +9,11 @@ import com.kazemieh.network.bundle.BundleApi
 import com.kazemieh.network.bundle.dto.BundleDetailResponse
 import com.kazemieh.network.bundle.dto.BundleSummaryResponse
 import com.kazemieh.network.common.safeApiCall
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
 class BundleRepositoryImpl(
-    private val api: BundleApi
+    private val api: BundleApi,
+    private val assetUrlResolver: AssetUrlResolver
 ) : BundleRepository {
 
     override suspend fun listBundles(): AppResult<List<BundleSummary>> = safeApiCall {
@@ -24,11 +26,11 @@ class BundleRepositoryImpl(
 
     private fun BundleSummaryResponse.toDomain() = BundleSummary(
         id = id, title = title, slug = slug, description = description,
-        product = product.toCatalogDomain(), memberCount = memberCount
+        product = product.toCatalogDomain(assetUrlResolver), memberCount = memberCount
     )
 
     private fun BundleDetailResponse.toDomain() = BundleDetail(
         id = id, title = title, slug = slug, description = description,
-        product = product.toCatalogDomain(), members = members.map { it.toCatalogDomain() }
+        product = product.toCatalogDomain(assetUrlResolver), members = members.map { it.toCatalogDomain(assetUrlResolver) }
     )
 }

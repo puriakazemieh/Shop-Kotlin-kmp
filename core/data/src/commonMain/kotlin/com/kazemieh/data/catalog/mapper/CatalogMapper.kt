@@ -5,6 +5,7 @@ import com.kazemieh.domain.catalog.*
 import com.kazemieh.domain.admin.AdminPage
 import com.kazemieh.network.common.*
 import com.kazemieh.common.*
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
 
 
@@ -19,11 +20,11 @@ fun CategoryResponse.toCatalogDomain(): Category = Category(
     parentId = parentId
 )
 
-fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
+fun ProductSummaryResponse.toCatalogDomain(assetUrlResolver: AssetUrlResolver) = ProductSummary(
     id = id,
     title = title,
     slug = slug,
-    thumbnailUrl = if (thumbnailUrl?.startsWith("http") == true) thumbnailUrl else "${PlatformConfig.baseUrl.removeSuffix("/")}$thumbnailUrl",
+    thumbnailUrl = thumbnailUrl?.let(assetUrlResolver::resolve),
     minPrice = minPrice,
     maxPrice = maxPrice,
     minDiscountedPrice = minDiscountedPrice,
@@ -37,25 +38,23 @@ fun ProductSummaryResponse.toCatalogDomain() = ProductSummary(
     reviewCount = reviewCount
 )
 
-fun CampaignResponse.toCampaignDomain() = Campaign(
+fun CampaignResponse.toCampaignDomain(assetUrlResolver: AssetUrlResolver) = Campaign(
     id = id,
     title = title,
     endsAt = endsAt,
     remainingSeconds = remainingSeconds,
-    products = products.map { it.toCatalogDomain() }
+    products = products.map { it.toCatalogDomain(assetUrlResolver) }
 )
 
-fun BannerResponse.toBannerDomain() = Banner(
+fun BannerResponse.toBannerDomain(assetUrlResolver: AssetUrlResolver) = Banner(
     id = id,
     title = title,
     subtitle = subtitle,
-    imageUrl = imageUrl?.let {
-        if (it.startsWith("http")) it else "${PlatformConfig.baseUrl.removeSuffix("/")}$it"
-    },
+    imageUrl = imageUrl?.let(assetUrlResolver::resolve),
     categoryId = categoryId
 )
 
-fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
+fun ProductDetailResponse.toCatalogDomain(assetUrlResolver: AssetUrlResolver) = ProductDetail(
     id = id,
     title = title,
     slug = slug,
@@ -64,22 +63,22 @@ fun ProductDetailResponse.toCatalogDomain() = ProductDetail(
     attributes = attributes.map { com.kazemieh.domain.catalog.ProductAttribute(it.name, it.value) },
     categoryId = categoryId,
     categoryName = categoryName,
-    images = images.map { it.toCatalogDomain() },
-    videos = videos.map { it.toCatalogDomain() },
+    images = images.map { it.toCatalogDomain(assetUrlResolver) },
+    videos = videos.map { it.toCatalogDomain(assetUrlResolver) },
     variants = variants.map { it.toCatalogDomain() },
     createdAt = createdAt,
     isFavorite = isFavorite
 )
 
-fun ProductImageResponse.toCatalogDomain() = ProductImage(
+fun ProductImageResponse.toCatalogDomain(assetUrlResolver: AssetUrlResolver) = ProductImage(
     id = id ?: 0L,
-    url =  if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
+    url = assetUrlResolver.resolve(url),
     sortOrder = sortOrder
 )
 
-fun ProductVideoResponse.toCatalogDomain() = ProductVideo(
+fun ProductVideoResponse.toCatalogDomain(assetUrlResolver: AssetUrlResolver) = ProductVideo(
     id = id ?: 0L,
-    url =  if (url.startsWith("http")) url else "${PlatformConfig.baseUrl.removeSuffix("/")}$url",
+    url = assetUrlResolver.resolve(url),
     sortOrder = sortOrder
 )
 

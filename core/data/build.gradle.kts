@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":core:domain"))
                 implementation(project(":core:network"))
                 implementation(project(":core:common"))
+                implementation(project(":core:config:capabilities"))
 
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.multiplatform.settings)

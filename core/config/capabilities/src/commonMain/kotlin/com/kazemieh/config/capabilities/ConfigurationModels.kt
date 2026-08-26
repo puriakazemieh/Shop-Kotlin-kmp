@@ -81,7 +81,8 @@ data class FeatureManifest(
 }
 
 private fun String.isTrustedHttpsUrl(): Boolean =
-    startsWith("https://") && length > "https://".length && none(Char::isWhitespace)
+    (startsWith("https://") || startsWith("http://localhost") || startsWith("http://127.0.0.1")) &&
+        none(Char::isWhitespace)
 
 private fun String.isValidHostName(): Boolean =
     isNotBlank() && none(Char::isWhitespace) && !contains("://") && !contains('/')

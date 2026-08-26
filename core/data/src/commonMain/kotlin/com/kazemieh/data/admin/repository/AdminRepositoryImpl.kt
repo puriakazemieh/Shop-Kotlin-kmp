@@ -7,12 +7,14 @@ import com.kazemieh.network.common.*
 import com.kazemieh.common.*
 import com.kazemieh.data.admin.mapper.*
 import com.kazemieh.data.admin.source.AdminDataSource
+import com.kazemieh.config.capabilities.AssetUrlResolver
 
 
 
 
 class AdminRepositoryImpl(
-    private val dataSource: AdminDataSource
+    private val dataSource: AdminDataSource,
+    private val assetUrlResolver: AssetUrlResolver
 ) : AdminRepository {
 
     override suspend fun listCategories(): AppResult<List<AdminCategory>> =
@@ -72,7 +74,7 @@ class AdminRepositoryImpl(
         ).map { it.toAdminDomain() }
 
     override suspend fun getProductDetail(id: Long): AppResult<AdminProductDetail> =
-        dataSource.getProductDetail(id).map { it.toAdminDomain() }
+        dataSource.getProductDetail(id).map { it.toAdminDomain(assetUrlResolver) }
 
     override suspend fun updateProduct(
         id: Long,
@@ -105,16 +107,16 @@ class AdminRepositoryImpl(
         dataSource.deleteProduct(id)
 
     override suspend fun addImage(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductImage> =
-        dataSource.addImage(productId, bytes, sortOrder).map { it.toAdminDomain() }
+        dataSource.addImage(productId, bytes, sortOrder).map { it.toAdminDomain(assetUrlResolver) }
 
     override suspend fun reorderImages(productId: Long, items: List<Pair<Long, Int>>): AppResult<List<AdminProductImage>> =
-        dataSource.reorderImages(productId, AdminReorderImagesRequest(items.map { ReorderItem(it.first, it.second) })).map { list -> list.map { it.toAdminDomain() } }
+        dataSource.reorderImages(productId, AdminReorderImagesRequest(items.map { ReorderItem(it.first, it.second) })).map { list -> list.map { it.toAdminDomain(assetUrlResolver) } }
 
     override suspend fun deleteImage(productId: Long, imageId: Long): AppResult<Unit> =
         dataSource.deleteImage(productId, imageId)
 
     override suspend fun addVideo(productId: Long, bytes: ByteArray, sortOrder: Int?): AppResult<AdminProductVideo> =
-        dataSource.addVideo(productId, bytes, sortOrder).map { it.toAdminDomain() }
+        dataSource.addVideo(productId, bytes, sortOrder).map { it.toAdminDomain(assetUrlResolver) }
 
     override suspend fun deleteVideo(productId: Long, videoId: Long): AppResult<Unit> =
         dataSource.deleteVideo(productId, videoId)
