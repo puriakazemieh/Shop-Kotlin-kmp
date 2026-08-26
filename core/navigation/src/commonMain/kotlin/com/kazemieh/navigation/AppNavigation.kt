@@ -1,6 +1,7 @@
 package com.kazemieh.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -77,11 +78,26 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AppNavHost(
     startDestination: Any = getInitialDestination() ?: Screen.HomeGraph(),
+    routeGuard: FeatureRouteGuard? = null,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
 
     BindBrowserHistory(navController)
+
+    DisposableEffect(navController, routeGuard) {
+        val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
+            val route = destination.route ?: return@OnDestinationChangedListener
+            if (routeGuard?.checkRoute(route) is RouteGuardDecision.Blocked) {
+                controller.navigate(Screen.HomeGraph()) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+        navController.addOnDestinationChangedListener(listener)
+        onDispose { navController.removeOnDestinationChangedListener(listener) }
+    }
 
     LaunchedEffect(true) {
         TokenExpiredEventBus.events.collect { authState ->

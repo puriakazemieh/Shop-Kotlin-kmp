@@ -48,7 +48,7 @@ P03-MANIFEST-CODE-013
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / MANIFEST / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -128,8 +128,8 @@ central route/deep-link guard
 - Started at:
 - Completed at:
 - Changed files:
-- Commands and exit codes:
+- Commands and exit codes: `.\gradlew.bat --no-daemon :core:navigation:jvmTest :composeApp:compileKotlinJvm` (exit 0); `.\gradlew.bat --no-daemon :composeApp:compileKotlinJs` (exit 0).
 - Manual tester/date/result:
-- Evidence paths:
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-013/summary.md`.
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: DONE

@@ -47,6 +47,7 @@ kotlin {
                 implementation(project(":feature:admin:psychtest"))
                 implementation(project(":core:common"))
                 implementation(project(":core:domain"))
+                implementation(project(":core:config:capabilities"))
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)

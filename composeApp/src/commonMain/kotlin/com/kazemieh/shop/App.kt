@@ -54,6 +54,7 @@ import com.kazemieh.config.capabilities.KtorRemoteManifestTransport
 import com.kazemieh.config.capabilities.ManifestBootstrapState
 import com.kazemieh.config.capabilities.RemoteFeatureManifestClient
 import com.kazemieh.config.capabilities.RemoteManifestTransport
+import com.kazemieh.navigation.FeatureRouteGuard
 import com.kazemieh.config.capabilities.ProfileAssetUrlResolver
 import com.kazemieh.config.capabilities.ProfileEndpointResolver
 import com.kazemieh.config.capabilities.privateSessionNamespace
@@ -87,6 +88,7 @@ fun App() {
 
     val brand = koinInject<BrandConfig>()
     val bootstrapCoordinator = koinInject<FeatureManifestBootstrapCoordinator>()
+    val routeGuard = koinInject<FeatureRouteGuard>()
     var bootstrapState by remember { mutableStateOf<ManifestBootstrapState>(bootstrapCoordinator.state) }
     val scope = rememberCoroutineScope()
 
@@ -105,10 +107,10 @@ fun App() {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
-                is ManifestBootstrapState.Ready -> AppNavHost()
+                is ManifestBootstrapState.Ready -> AppNavHost(routeGuard = routeGuard)
                 is ManifestBootstrapState.Error -> {
                     Box(Modifier.fillMaxSize()) {
-                        AppNavHost()
+                        AppNavHost(routeGuard = routeGuard)
                         Column(Modifier.align(Alignment.TopCenter).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("پیکربندی راه‌دور در دسترس نیست؛ حالت امن فعال است.", color = MaterialTheme.colorScheme.error)
                             Button(onClick = { scope.launch { bootstrapState = bootstrapCoordinator.retry() } }) {
@@ -149,8 +151,12 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                 single<FeatureFlagShadowReporter> { FeatureFlagShadowReporter { } }
                 single { FeatureFlagShadowMode(get()) }
                 single {
+                    GeneratedLocalFeatureManifest.sourceFor(get<BackendProfile>()).resolveFor(get<BackendProfile>().kind)
+                }
+                single { FeatureRouteGuard(get()) }
+                single {
                     FeatureManifestBootstrapCoordinator(
-                        localFeatures = GeneratedLocalFeatureManifest.sourceFor(get()).resolveFor(get<BackendProfile>().kind),
+                        localFeatures = get(),
                         remoteClient = get(),
                         cache = get(),
                         namespace = get(),
