@@ -48,7 +48,7 @@ P03-QA-MANUAL-020
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P03 / QA / MANUAL
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -108,9 +108,9 @@ toggle واقعی بدون rebuild در WordPress/PWA/client internal
 
 ## Acceptance Criteria
 - [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] تست دستی هنوز اجرا نشده و وضعیت درست `AWAITING_MANUAL_QA` است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -126,11 +126,11 @@ toggle واقعی بدون rebuild در WordPress/PWA/client internal
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
+- Started at: 2026-08-26
 - Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Changed files: `docs/tasks.md`, `docs/tasks/P03-QA-MANUAL-020.md`, `docs/evidence/P03-QA-MANUAL-020/summary.md`
+- Commands and exit codes: prerequisite `:core:navigation:jvmTest`, `:core:config:capabilities:jvmTest`, `:composeApp:compileKotlinJvm`, `:composeApp:compileKotlinJs` all exit 0.
+- Manual tester/date/result: منتظر اجرای کاربر روی WordPress/PWA/client internal.
+- Evidence paths: `docs/evidence/P03-QA-MANUAL-020/summary.md`
+- Remaining risks/blockers: تأیید انسانی خاموش/روشن،stale/invalid،deep link و process restart انجام نشده؛ `P03-MANIFEST-OPS-021` تا این تأیید متوقف است.
+- Final status: AWAITING_MANUAL_QA
