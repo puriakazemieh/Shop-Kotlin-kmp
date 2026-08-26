@@ -602,10 +602,12 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [ ]   | `P02-CI-CODE-010`    | AI    | P1/MEDIUM   | ktlint/detekt و WPCS/Plugin Check/Theme Check تنظیم شوند                                   | baseline debt جدا؛ کد جدید violation اضافه نکند                       |
 | [ ]   | `P02-CI-CODE-011`    | AI    | P1/MEDIUM   | dependency locking/verification و secret scan اضافه شود                                    | tampered dependency/known secret fixture CI را fail کند               |
 | [ ]   | `P02-ARCH-ADR-012`   | BOTH  | P0/HIGH     | ADR جداسازی Android application shell برای AGP 9                                           | package/signing/resources/source-set migration و rollback روشن        |
-| [ ]   | `P02-ARCH-CODE-013`  | BOTH  | P2/HIGH     | thin `androidApp` ایجاد و application plugin از shared KMP جدا شود؛ deadline قبل از فاز ۱۱ | current applicationIdها و build behavior حفظ؛ upgrade test            |
-| [ ]   | `P02-ARCH-CODE-014`  | AI    | P2/MEDIUM   | Navigation تدریجی به graphهای feature تقسیم شود؛ full split پیش‌شرط Manifest نیست          | navigation characterization/deep-link tests قبل و بعد یکسان           |
-| [ ]   | `P02-CORE-CODE-015`  | AI    | P1/MEDIUM   | dependency inversionهای navigation/profile/admin به‌صورت Taskهای کوچک                      | architecture test مانع import معکوس جدید شود                          |
-| [ ]   | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
+| [x]   | `P02-ARCH-CODE-013`  | BOTH  | P2/HIGH     | thin `androidApp` ایجاد و application plugin از shared KMP جدا شود؛ deadline قبل از فاز ۱۱ | current applicationIdها و build behavior حفظ؛ upgrade test            |
+| [x]   | `P02-ARCH-CODE-014`  | AI    | P2/MEDIUM   | Navigation تدریجی به graphهای feature تقسیم شود؛ full split پیش‌شرط Manifest نیست          | navigation characterization/deep-link tests قبل و بعد یکسان           |
+| [x]   | `P02-CORE-CODE-015`  | AI    | P1/MEDIUM   | dependency inversionهای navigation/profile/admin به‌صورت Taskهای کوچک                      | architecture test مانع import معکوس جدید شود                          |
+| [x]   | `P02-CORE-CODE-015A` | AI    | P1/MEDIUM   | ایجاد اسکریپت تست معماری در گریدل برای جلوگیری از وابستگی مستقیم فیچرها                    | fail شدن بیلد در صورت وجود وابستگی غیرمجاز                            |
+| [ ]   | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
+| [x]   | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
 | [ ]   | `P02-QA-MANUAL-017`  | HUMAN | P0/MEDIUM   | smoke کامل رفتار قبل/بعد Foundation                                                        | auth/home/product/cart/payment-return روی fixture                     |
 | [ ]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دارند     |
 

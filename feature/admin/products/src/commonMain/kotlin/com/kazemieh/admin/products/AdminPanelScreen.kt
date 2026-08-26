@@ -35,15 +35,7 @@ import com.kazemieh.designsystem.component.InfoCard
 import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.util.formatToman
 import com.kazemieh.domain.catalog.ProductSummary
-import com.kazemieh.admin.options.ManageOptionsScreen
-import com.kazemieh.admin.orders.AdminOrderScreen
-import com.kazemieh.admin.wallet.AdminFinanceScreen
-import com.kazemieh.admin.blog.AdminBlogListScreen
 import com.kazemieh.admin.story.AdminStoryScreen
-import com.kazemieh.admin.academy.AdminAcademyScreen
-import com.kazemieh.admin.academy.courserequest.AdminCourseRequestScreen
-import com.kazemieh.admin.psychtest.AdminPsychTestScreen
-import com.kazemieh.admin.clinic.AdminClinicScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,6 +46,14 @@ fun AdminPanelScreen(
     navigateBack: () -> Unit,
     navigateToManageProduct: (Long?) -> Unit,
     navigateToManageBlog: (Long?, String?) -> Unit,
+    academyContent: @Composable (onBackClick: () -> Unit) -> Unit = {},
+    courseRequestContent: @Composable (onBackClick: () -> Unit) -> Unit = {},
+    clinicContent: @Composable (onBackClick: () -> Unit) -> Unit = {},
+    psychTestContent: @Composable (onBackClick: () -> Unit) -> Unit = {},
+    optionsContent: @Composable (onBackClick: () -> Unit) -> Unit = {},
+    orderContent: @Composable (onBackClick: () -> Unit) -> Unit = {},
+    blogListContent: @Composable (navigateToManageBlog: (Long?, String?) -> Unit, onBackClick: () -> Unit) -> Unit = { _, _ -> },
+    financeContent: @Composable (onBackClick: () -> Unit) -> Unit = {}
 ) {
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val state by viewModel.state.collectAsState()
@@ -142,20 +142,19 @@ fun AdminPanelScreen(
                         onDelete = { product -> productToDelete = product },
                         onAdd = { navigateToManageProduct(null) }
                     )
-                    2 -> AdminAcademyScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    3 -> AdminCourseRequestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    4 -> AdminClinicScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    5 -> AdminPsychTestScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    6 -> ManageOptionsScreen(onBackClick = { selectedTab = 1 }, embedded = true)
-                    7 -> AdminOrderScreen(onBackClick = { selectedTab = 1 }, embedded = true)
+                    2 -> academyContent({ selectedTab = 1 })
+                    3 -> courseRequestContent({ selectedTab = 1 })
+                    4 -> clinicContent({ selectedTab = 1 })
+                    5 -> psychTestContent({ selectedTab = 1 })
+                    6 -> optionsContent({ selectedTab = 1 })
+                    7 -> orderContent({ selectedTab = 1 })
                     8 -> AdminDiscountsScreen(navigateBack = { selectedTab = 1 }, embedded = true)
                     9 -> AdminStoryScreen(navigateBack = { selectedTab = 1 }, embedded = true)
-                    10 -> AdminBlogListScreen(
-                        navigateToManageBlog = navigateToManageBlog,
-                        navigateBack = { selectedTab = 1 },
-                        embedded = true
+                    10 -> blogListContent(
+                        navigateToManageBlog,
+                        { selectedTab = 1 }
                     )
-                    11 -> AdminFinanceScreen(onBackClick = { selectedTab = 1 })
+                    11 -> financeContent({ selectedTab = 1 })
                 }
             }
         }

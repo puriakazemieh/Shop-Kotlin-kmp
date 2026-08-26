@@ -27,6 +27,54 @@ fun NavGraphBuilder.adminNavGraph(navController: NavController) {
                 },
                 navigateToManageBlog = { id: Long?, slug: String? ->
                     navController.navigate(Screen.ManageBlog(id, slug))
+                },
+                academyContent = { onBackClick ->
+                    com.kazemieh.admin.academy.AdminAcademyScreen(
+                        onBackClick = onBackClick,
+                        embedded = true
+                    )
+                },
+                courseRequestContent = { onBackClick ->
+                    com.kazemieh.admin.academy.courserequest.AdminCourseRequestScreen(
+                        onBackClick = onBackClick,
+                        embedded = true
+                    )
+                },
+                clinicContent = { onBackClick ->
+                    com.kazemieh.admin.clinic.AdminClinicScreen(
+                        onBackClick = onBackClick,
+                        embedded = true
+                    )
+                },
+                psychTestContent = { onBackClick ->
+                    com.kazemieh.admin.psychtest.AdminPsychTestScreen(
+                        onBackClick = onBackClick,
+                        embedded = true
+                    )
+                },
+                optionsContent = { onBackClick ->
+                    com.kazemieh.admin.options.ManageOptionsScreen(
+                        onBackClick = onBackClick,
+                        embedded = true
+                    )
+                },
+                orderContent = { onBackClick ->
+                    com.kazemieh.admin.orders.AdminOrderScreen(
+                        onBackClick = onBackClick,
+                        embedded = true
+                    )
+                },
+                blogListContent = { navBlog, onBackClick ->
+                    com.kazemieh.admin.blog.AdminBlogListScreen(
+                        navigateToManageBlog = navBlog,
+                        navigateBack = onBackClick,
+                        embedded = true
+                    )
+                },
+                financeContent = { onBackClick ->
+                    com.kazemieh.admin.wallet.AdminFinanceScreen(
+                        onBackClick = onBackClick
+                    )
                 }
             )
         }

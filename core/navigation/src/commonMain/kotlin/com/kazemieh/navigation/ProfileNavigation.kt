@@ -57,6 +57,40 @@ fun NavGraphBuilder.profileNavGraph(navController: NavController) {
                     navController.navigate(Screen.HomeGraph()) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }
                     }
+                },
+                courseListContent = {
+                    CourseListScreen(
+                        mine = true,
+                        title = "دوره‌های من",
+                        navigateBack = {},
+                        navigateToCourse = { slug -> navController.navigate(Screen.CourseDetail(slug)) },
+                        navigateToCatalog = { navController.navigate(Screen.CourseCatalog) },
+                        embedded = true
+                    )
+                },
+                psychTestListContent = {
+                    com.kazemieh.psychtest.list.PsychTestListScreen(
+                        navigateBack = {},
+                        navigateToProduct = { slug -> navController.navigate(Screen.ProductDetail(slug)) },
+                        navigateToTakeTest = { testId -> navController.navigate(Screen.TakeTest(testId)) },
+                        embedded = true
+                    )
+                },
+                appointmentsContent = {
+                    com.kazemieh.clinic.appointments.MyAppointmentsScreen(
+                        navigateBack = {},
+                        navigateToCatalog = { navController.navigate(Screen.TherapistCatalog) },
+                        navigateToReceipt = { id -> navController.navigate(Screen.SessionReceipt(id)) },
+                        embedded = true
+                    )
+                },
+                productCardContent = { product, modifier, onClick, onFavoriteClick ->
+                    com.kazemieh.catalog.MainProductCard(
+                        product = product,
+                        modifier = modifier,
+                        onClick = onClick,
+                        onFavoriteClick = onFavoriteClick
+                    )
                 }
             )
         }
@@ -85,6 +119,14 @@ fun NavGraphBuilder.profileNavGraph(navController: NavController) {
                 },
                 navigateToDetail = { slug ->
                     navController.navigate(Screen.ProductDetail(slug))
+                },
+                productCardContent = { product, modifier, onClick, onFavoriteClick ->
+                    com.kazemieh.catalog.MainProductCard(
+                        product = product,
+                        modifier = modifier,
+                        onClick = onClick,
+                        onFavoriteClick = onFavoriteClick
+                    )
                 }
             )
         }

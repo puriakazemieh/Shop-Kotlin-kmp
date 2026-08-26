@@ -42,7 +42,11 @@ kotlin {
                 implementation(project(":feature:clinic"))
                 implementation(project(":feature:psychtest"))
                 implementation(project(":feature:comparison"))
+                implementation(project(":feature:admin:academy"))
+                implementation(project(":feature:admin:clinic"))
+                implementation(project(":feature:admin:psychtest"))
                 implementation(project(":core:common"))
+                implementation(project(":core:domain"))
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)

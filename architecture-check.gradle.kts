@@ -24,18 +24,7 @@ tasks.register("architectureCheck") {
         }
         
         val allowedViolations = setOf(
-            ":feature:profile -> :feature:catalog",
-            ":feature:profile -> :feature:academy",
-            ":feature:profile -> :feature:psychtest",
-            ":feature:profile -> :feature:clinic",
-            
-            ":feature:admin:products -> :feature:admin:options",
-            ":feature:admin:products -> :feature:admin:orders",
-            ":feature:admin:products -> :feature:admin:wallet",
-            ":feature:admin:products -> :feature:admin:blog",
-            ":feature:admin:products -> :feature:admin:academy",
-            ":feature:admin:products -> :feature:admin:clinic",
-            ":feature:admin:products -> :feature:admin:psychtest",
+
             ":feature:academy -> :feature:details",
             ":feature:clinic -> :feature:details",
             ":feature:main -> :feature:cart",

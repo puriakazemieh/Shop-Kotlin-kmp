@@ -30,10 +30,7 @@ kotlin {
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
-                implementation(project(":feature:catalog"))
-                implementation(project(":feature:academy"))
-                implementation(project(":feature:psychtest"))
-                implementation(project(":feature:clinic"))
+
             }
         }
 

@@ -56,10 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalUriHandler
-import com.kazemieh.catalog.MainProductCard
-import com.kazemieh.academy.list.CourseListScreen
-import com.kazemieh.psychtest.list.PsychTestListScreen
-import com.kazemieh.clinic.appointments.MyAppointmentsScreen
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.AppTheme
@@ -96,7 +93,11 @@ fun ProfileScreen(
     navigateToTakeTest: (Long) -> Unit = {},
     navigateToTherapistCatalog: () -> Unit = {},
     navigateToSessionReceipt: (Long) -> Unit = {},
-    onSignedOut: () -> Unit = {}
+    onSignedOut: () -> Unit = {},
+    courseListContent: @Composable () -> Unit = {},
+    psychTestListContent: @Composable () -> Unit = {},
+    appointmentsContent: @Composable () -> Unit = {},
+    productCardContent: @Composable (product: ProductSummary, modifier: Modifier, onClick: (String) -> Unit, onFavoriteClick: () -> Unit) -> Unit = { _, _, _, _ -> }
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
@@ -348,11 +349,11 @@ fun ProfileScreen(
                                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                                             ) {
                                                 rowItems.forEach { product ->
-                                                    MainProductCard(
-                                                        modifier = Modifier.weight(1f),
-                                                        product = product,
-                                                        onClick = navigateToDetail,
-                                                        onFavoriteClick = { viewModel.handleIntent(ProfileIntent.ToggleFavorite(product)) }
+                                                    productCardContent(
+                                                        product,
+                                                        Modifier.weight(1f),
+                                                        navigateToDetail,
+                                                        { viewModel.handleIntent(ProfileIntent.ToggleFavorite(product)) }
                                                     )
                                                 }
                                                 repeat(favoriteColumns - rowItems.size) { Spacer(Modifier.weight(1f)) }
@@ -363,30 +364,13 @@ fun ProfileScreen(
                                 }
 
                                 // ---- دوره‌های من (درجا) ----
-                                5 -> CourseListScreen(
-                                    mine = true,
-                                    title = "دوره‌های من",
-                                    navigateBack = {},
-                                    navigateToCourse = navigateToCourse,
-                                    navigateToCatalog = navigateToCourseCatalog,
-                                    embedded = true
-                                )
+                                5 -> courseListContent()
 
                                 // ---- آزمون‌های من (درجا) ----
-                                6 -> PsychTestListScreen(
-                                    navigateBack = {},
-                                    navigateToProduct = navigateToDetail,
-                                    navigateToTakeTest = navigateToTakeTest,
-                                    embedded = true
-                                )
+                                6 -> psychTestListContent()
 
                                 // ---- مشاوره‌های من (درجا) ----
-                                else -> MyAppointmentsScreen(
-                                    navigateBack = {},
-                                    navigateToCatalog = navigateToTherapistCatalog,
-                                    navigateToReceipt = navigateToSessionReceipt,
-                                    embedded = true
-                                )
+                                else -> appointmentsContent()
                             }
                         }
                     }

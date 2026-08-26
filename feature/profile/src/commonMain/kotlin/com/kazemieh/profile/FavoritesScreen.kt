@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.kazemieh.catalog.MainProductCard
+import com.kazemieh.domain.catalog.ProductSummary
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
@@ -45,7 +45,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FavoritesScreen(
     navigateBack: () -> Unit,
-    navigateToDetail: (String) -> Unit
+    navigateToDetail: (String) -> Unit,
+    productCardContent: @Composable (product: ProductSummary, modifier: Modifier, onClick: (String) -> Unit, onFavoriteClick: () -> Unit) -> Unit
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val state by viewModel.state.collectAsState()
@@ -121,11 +122,11 @@ fun FavoritesScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 rowItems.forEach { product ->
-                                    MainProductCard(
-                                        modifier = Modifier.weight(1f),
-                                        product = product,
-                                        onClick = navigateToDetail,
-                                        onFavoriteClick = {
+                                    productCardContent(
+                                        product,
+                                        Modifier.weight(1f),
+                                        navigateToDetail,
+                                        {
                                             viewModel.handleIntent(ProfileIntent.ToggleFavorite(product))
                                         }
                                     )
