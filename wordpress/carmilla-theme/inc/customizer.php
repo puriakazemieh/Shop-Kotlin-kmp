@@ -3,7 +3,7 @@
  * Theme options via the WordPress Customizer:
  *   - Branding: logo (native), brand colors
  *   - Header/Home: header title, hero title + subtitle
- *   - Features: enable/disable shop, blog, courses, clinic, psych-tests, stories
+ *   - Features: visibility is read from the Bridge manifest (not Theme Mods)
  *
  * Colors are emitted as CSS custom properties that override tokens.css, so the
  * whole design (app-derived) re-skins live — full white-label from the dashboard.
@@ -25,7 +25,7 @@ function carmilla_color_defaults() {
 	);
 }
 
-/** The feature toggles (slug => label), all default-on. */
+/** Legacy labels retained for documentation/backward-compatible customizer UI. */
 function carmilla_feature_toggles() {
 	return array(
 		'shop'       => __( 'فروشگاه (WooCommerce)', 'carmilla' ),
@@ -37,9 +37,59 @@ function carmilla_feature_toggles() {
 	);
 }
 
-/** Whether a feature is enabled (default true). */
+/**
+ * Read the canonical feature policy shared with Carmilla Bridge.
+ * Theme Mods are deliberately not consulted: the plugin option is the only
+ * runtime source of truth, while these defaults keep Theme-only installs safe.
+ */
+function carmilla_manifest_features() {
+	$defaults = array(
+		'content.blog' => true, 'commerce.core' => true, 'commerce.physical' => true,
+		'commerce.digital' => false, 'academy.core' => false, 'academy.quiz' => false,
+		'academy.certificate' => false, 'clinic.booking' => false, 'clinic.messaging' => false,
+		'psych.tests' => false, 'wallet' => false, 'admin.mobile' => false,
+	);
+	$configured = get_option( 'cb_manifest_features', array() );
+	if ( ! is_array( $configured ) ) {
+		$configured = array();
+	}
+	foreach ( $defaults as $id => $default ) {
+		if ( array_key_exists( $id, $configured ) ) {
+			$defaults[ $id ] = (bool) $configured[ $id ];
+		}
+	}
+	$dependencies = array(
+		'commerce.physical' => array( 'commerce.core' ), 'commerce.digital' => array( 'commerce.core' ),
+		'academy.core' => array( 'content.blog' ), 'academy.quiz' => array( 'academy.core' ),
+		'academy.certificate' => array( 'academy.core' ), 'clinic.booking' => array( 'content.blog' ),
+		'clinic.messaging' => array( 'clinic.booking' ), 'psych.tests' => array( 'content.blog' ),
+		'wallet' => array( 'commerce.core' ),
+	);
+	foreach ( $dependencies as $child => $parents ) {
+		foreach ( $parents as $parent ) {
+			if ( empty( $defaults[ $parent ] ) ) {
+				$defaults[ $child ] = false;
+				break;
+			}
+		}
+	}
+	return $defaults;
+}
+
+/** Whether a theme surface is enabled by the canonical manifest. */
 function carmilla_feature_enabled( $slug ) {
-	return (bool) get_theme_mod( "carmilla_enable_$slug", true );
+	$map = array(
+		'shop'       => 'commerce.core',
+		'blog'       => 'content.blog',
+		'courses'    => 'academy.core',
+		'clinic'     => 'clinic.booking',
+		'psychtests' => 'psych.tests',
+		// The manifest has no standalone stories flag; stories follow content.
+		'stories'    => 'content.blog',
+	);
+	$id = isset( $map[ $slug ] ) ? $map[ $slug ] : $slug;
+	$features = carmilla_manifest_features();
+	return ! empty( $features[ $id ] );
 }
 
 add_action( 'customize_register', function ( $wp_customize ) {
@@ -121,21 +171,9 @@ add_action( 'customize_register', function ( $wp_customize ) {
 	// ---- Features ----
 	$wp_customize->add_section( 'carmilla_features', array(
 		'title'       => __( 'فعال/غیرفعال‌کردن بخش‌ها', 'carmilla' ),
-		'description' => __( 'هر بخش را می‌توانید روشن یا خاموش کنید؛ خاموش‌کردن، ناوبری و محتوای آن را پنهان می‌کند.', 'carmilla' ),
+		'description' => __( 'وضعیت بخش‌ها فقط از Carmilla Feature Manifest افزونه خوانده می‌شود؛ Theme Mod قدیمی دیگر منبع حقیقت نیست.', 'carmilla' ),
 		'panel'       => 'carmilla_panel',
 	) );
-	foreach ( carmilla_feature_toggles() as $slug => $label ) {
-		$wp_customize->add_setting( "carmilla_enable_$slug", array(
-			'default'           => true,
-			'sanitize_callback' => 'carmilla_sanitize_bool',
-			'transport'         => 'refresh',
-		) );
-		$wp_customize->add_control( "carmilla_enable_$slug", array(
-			'label'   => $label,
-			'section' => 'carmilla_features',
-			'type'    => 'checkbox',
-		) );
-	}
 } );
 
 /** Boolean sanitizer for checkboxes. */

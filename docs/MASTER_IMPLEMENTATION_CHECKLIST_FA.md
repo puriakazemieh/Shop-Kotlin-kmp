@@ -641,8 +641,8 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [ ] | `P03-MANIFEST-CODE-012` | AI | P0/HIGH | shadow mode و telemetry اختلاف flag قدیم/جدید | ابتدا رفتار عوض نشود؛ اختلاف‌ها redacted |
 | [ ] | `P03-MANIFEST-CODE-013` | AI | P0/HIGH | central route/deep-link guard | لینک مستقیم feature خاموش safe error/home |
 | [ ] | `P03-MANIFEST-CODE-014` | AI | P0/HIGH | use-case/repository/background guard | feature خاموش network call نداشته باشد |
-| [ ] | `P03-WPPLUGIN-SEC-015` | BOTH | P0/HIGH | backend endpoint enforcement بر همان policy | پنهان‌سازی UI تنها کنترل نباشد؛ `FEATURE_DISABLED` استاندارد |
-| [ ] | `P03-WPTHEME-CODE-016` | AI | P0/MEDIUM | Theme visibility از manifest/plugin config واحد | Theme Mod موازی منبع حقیقت نباشد |
+| [x] | `P03-WPPLUGIN-SEC-015` | BOTH | P0/HIGH | backend endpoint enforcement بر همان policy | پنهان‌سازی UI تنها کنترل نباشد؛ `FEATURE_DISABLED` استاندارد |
+| [x] | `P03-WPTHEME-CODE-016` | AI | P0/MEDIUM | Theme visibility از manifest/plugin config واحد | Theme Mod موازی منبع حقیقت نباشد |
 | [ ] | `P03-ANDROID-CODE-017` | BOTH | P0/HIGH | dimension backend فقط `wordpress/spring`؛ tenant config جدا | دو profile build؛ شش brand flavor حذف مرحله‌ای |
 | [ ] | `P03-MIGRATION-DATA-018` | BOTH | P0/HIGH | mapping flavor/package/token legacy و one-time migration | هر package منتشرشده upgrade؛ ID/signing/versionCode حفظ |
 | [ ] | `P03-QA-AUTO-019` | AI | P0/HIGH | matrix tests برای F0/F1/F2/F3/F4 و دو profile fixture | UI/route/network/backend expectations |
