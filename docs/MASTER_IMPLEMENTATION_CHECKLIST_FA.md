@@ -596,17 +596,17 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x]   | `P02-CORE-CODE-005B` | AI    | P2/MEDIUM   | Create carmilla.compose and apply to feature modules                                       | All feature targets compile                                           |
 | [x]   | `P02-CORE-CODE-005C` | BOTH  | P2/SMALL    | Create carmilla.android.application and apply to composeApp                                | app module compiles                                                   |
 | [x]   | `P02-QA-CODE-006`    | AI    | P0/MEDIUM   | harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی ارتقا یابد                  | یک unit test واقعی domain و یک network contract test در CI            |
-| [ ]   | `P02-QA-CODE-007`    | AI    | P0/MEDIUM   | harness WordPress فاز ۱ به integration environment با WP/Woo/PHP matrix ارتقا یابد         | clean install، activation و smokeهای موجود در CI واقعاً اجرا شوند     |
-| [ ]   | `P02-QA-CODE-008`    | AI    | P1/MEDIUM   | Spring test profile یا Testcontainers مستقل شود                                            | context test بدون PostgreSQL دستی سبز؛ production config استفاده نشود |
-| [ ]   | `P02-CI-CODE-009`    | AI    | P0/MEDIUM   | PR gate برای lint/unit/integration/package و artifact report                               | failure تست PR را fail کند؛ best-effort برای gate حیاتی ممنوع         |
-| [ ]   | `P02-CI-CODE-010`    | AI    | P1/MEDIUM   | ktlint/detekt و WPCS/Plugin Check/Theme Check تنظیم شوند                                   | baseline debt جدا؛ کد جدید violation اضافه نکند                       |
-| [ ]   | `P02-CI-CODE-011`    | AI    | P1/MEDIUM   | dependency locking/verification و secret scan اضافه شود                                    | tampered dependency/known secret fixture CI را fail کند               |
-| [ ]   | `P02-ARCH-ADR-012`   | BOTH  | P0/HIGH     | ADR جداسازی Android application shell برای AGP 9                                           | package/signing/resources/source-set migration و rollback روشن        |
+| [x]   | `P02-QA-CODE-007`    | AI    | P0/MEDIUM   | harness WordPress فاز ۱ به integration environment با WP/Woo/PHP matrix ارتقا یابد         | clean install، activation و smokeهای موجود در CI واقعاً اجرا شوند     |
+| [x]   | `P02-QA-CODE-008`    | AI    | P1/MEDIUM   | Spring test profile یا Testcontainers مستقل شود                                            | context test بدون PostgreSQL دستی سبز؛ production config استفاده نشود |
+| [x]   | `P02-CI-CODE-009`    | AI    | P0/MEDIUM   | PR gate برای lint/unit/integration/package و artifact report                               | failure تست PR را fail کند؛ best-effort برای gate حیاتی ممنوع         |
+| [x]   | `P02-CI-CODE-010`    | AI    | P1/MEDIUM   | ktlint/detekt و WPCS/Plugin Check/Theme Check تنظیم شوند                                   | baseline debt جدا؛ کد جدید violation اضافه نکند                       |
+| [x]   | `P02-CI-CODE-011`    | AI    | P1/MEDIUM   | dependency locking/verification و secret scan اضافه شود                                    | tampered dependency/known secret fixture CI را fail کند               |
+| [x]   | `P02-ARCH-ADR-012`   | BOTH  | P0/HIGH     | ADR جداسازی Android application shell برای AGP 9                                           | package/signing/resources/source-set migration و rollback روشن        |
 | [x]   | `P02-ARCH-CODE-013`  | BOTH  | P2/HIGH     | thin `androidApp` ایجاد و application plugin از shared KMP جدا شود؛ deadline قبل از فاز ۱۱ | current applicationIdها و build behavior حفظ؛ upgrade test            |
 | [x]   | `P02-ARCH-CODE-014`  | AI    | P2/MEDIUM   | Navigation تدریجی به graphهای feature تقسیم شود؛ full split پیش‌شرط Manifest نیست          | navigation characterization/deep-link tests قبل و بعد یکسان           |
 | [x]   | `P02-CORE-CODE-015`  | AI    | P1/MEDIUM   | dependency inversionهای navigation/profile/admin به‌صورت Taskهای کوچک                      | architecture test مانع import معکوس جدید شود                          |
 | [x]   | `P02-CORE-CODE-015A` | AI    | P1/MEDIUM   | ایجاد اسکریپت تست معماری در گریدل برای جلوگیری از وابستگی مستقیم فیچرها                    | fail شدن بیلد در صورت وجود وابستگی غیرمجاز                            |
-| [ ]   | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
+| [x]   | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
 | [x]   | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
 | [x]   | `P02-QA-MANUAL-017`  | HUMAN | P0/MEDIUM   | smoke کامل رفتار قبل/بعد Foundation                                                        | auth/home/product/cart/payment-return روی fixture                     |
 | [ ]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دارند     |
@@ -619,7 +619,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 - [ ] buildهای JS/JVM/Android فعلی و ZIPهای WordPress سبزند.
 - [ ] Convention rollout،Android host و full Navigation split اگر Done نیستند، Task/owner/deadline قبل از فاز ۱۱ دارند و P3/P4 را مسدود نمی‌کنند.
 - [ ] rollback Foundation آزمایش شده است.
-- Gate decision: `BLOCKED` — 2026-08-26؛ baseline Gradle قابل اجرا نیست و معیارهای الزامی Gate هنوز Evidence سبز ندارند.
+- Gate decision: `NOT_EVALUATED` — 2026-08-26؛ blocker قبلی JVM با verification سبز رفع شده،اما معیارهای باقی‌مانده Gate هنوز باید Evidence جداگانه داشته باشند.
 
 ---
 

@@ -4,6 +4,18 @@
 
 `BLOCKED` on 2026-08-26. This is not a release or production decision.
 
+## Baseline recovery update
+
+The product owner supplied successful verification output on 2026-08-26 after the JVM-toolchain fix:
+
+| Command | Exit | Result |
+|---|---:|---|
+| `./gradlew.bat architectureCheck` | 0 | Architecture check passed; the reported existing violations are `academy -> details`, `clinic -> details`, and `main -> cart/catalog`. |
+| `./gradlew.bat :composeApp:compileKotlinJvm` | 0 | Build successful. |
+| `./gradlew.bat :composeApp:compileKotlinJs` | 0 | Build successful; one non-blocking Elvis-operator warning was reported in `main.kt`. |
+
+The prior loopback-connection blocker is resolved. The Gate itself remains unevaluated until the remaining criteria below have evidence.
+
 ## Evidence reviewed
 
 - `P02-QA-MANUAL-017` is recorded as complete for the phase; its release-candidate recheck is scheduled in `P09-QA-MANUAL-004`.
