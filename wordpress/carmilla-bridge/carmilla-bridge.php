@@ -29,6 +29,7 @@ define( 'CB_REST_NAMESPACE', 'carmilla/v1' );
 require_once CB_PLUGIN_DIR . 'includes/helpers.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-jwt.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-manifest-controller.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-legacy-migration.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-blocks.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-cpt.php';
 require_once CB_PLUGIN_DIR . 'includes/meta-boxes.php';
@@ -71,6 +72,9 @@ function carmilla_bridge() {
 	return CB_Plugin::instance();
 }
 carmilla_bridge();
+
+// Migrate legacy Theme Mod flags once, without touching client credentials.
+add_action( 'init', array( 'CB_Legacy_Migration', 'run' ), 1 );
 
 // Register CPTs + custom tables on activation and flush rewrite rules.
 register_activation_hook( __FILE__, function () {

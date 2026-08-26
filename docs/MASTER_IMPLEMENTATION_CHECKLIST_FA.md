@@ -644,7 +644,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-WPPLUGIN-SEC-015` | BOTH | P0/HIGH | backend endpoint enforcement بر همان policy | پنهان‌سازی UI تنها کنترل نباشد؛ `FEATURE_DISABLED` استاندارد |
 | [x] | `P03-WPTHEME-CODE-016` | AI | P0/MEDIUM | Theme visibility از manifest/plugin config واحد | Theme Mod موازی منبع حقیقت نباشد |
 | [x] | `P03-ANDROID-CODE-017` | BOTH | P0/HIGH | dimension backend فقط `wordpress/spring`؛ tenant config جدا | دو profile build؛ شش brand flavor حذف مرحله‌ای |
-| [ ] | `P03-MIGRATION-DATA-018` | BOTH | P0/HIGH | mapping flavor/package/token legacy و one-time migration | هر package منتشرشده upgrade؛ ID/signing/versionCode حفظ |
+| [x] | `P03-MIGRATION-DATA-018` | BOTH | P0/HIGH | mapping flavor/package/token legacy و one-time migration | هر package منتشرشده upgrade؛ ID/signing/versionCode حفظ |
 | [ ] | `P03-QA-AUTO-019` | AI | P0/HIGH | matrix tests برای F0/F1/F2/F3/F4 و دو profile fixture | UI/route/network/backend expectations |
 | [ ] | `P03-QA-MANUAL-020` | HUMAN | P0/HIGH | toggle واقعی بدون rebuild در WordPress/PWA/client internal | خاموش/روشن، stale/invalid، deep link و process restart |
 | [ ] | `P03-MANIFEST-OPS-021` | BOTH | P1/MEDIUM | aliasهای legacy با deprecation/telemetry نگه داشته شوند | یک client cycle؛ حذف در Task جدا |
