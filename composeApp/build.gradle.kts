@@ -73,74 +73,11 @@ kotlin {
 android {
     namespace = "com.kazemieh.shop"
     
-
-    defaultConfig {
-        applicationId = "com.kazemieh.shop"
-        
-        
-        versionCode = 1
-        versionName = "1.0"
-        // برندِ پیش‌فرض؛ هر فلِیور می‌تواند override کند.
-        buildConfigField("String", "BRAND", "\"carmila\"")
-        // آدرسِ API را می‌توان هنگامِ بیلد با -PcarmillaApiBase=... تنظیم کرد
-        // (مثلاً برای وصل‌کردنِ APK به یک وردپرس/سرورِ مشخص). خالی = پیش‌فرضِ برند.
-        val carmillaApiBase = (project.findProperty("carmillaApiBase") as String?)?.trim().orEmpty()
-        buildConfigField("String", "API_BASE_OVERRIDE", "\"$carmillaApiBase\"")
-    }
-    buildFeatures {
-        buildConfig = true
-    }
-    // ---- White-label: هر فلِیور یک اپِ جدا با applicationId و برندِ خودش ----
-    flavorDimensions += "brand"
-    productFlavors {
-        create("carmila") {
-            dimension = "brand"
-            // برندِ پیش‌فرض؛ از app_name و آیکنِ main استفاده می‌کند.
-        }
-        create("atris") {
-            dimension = "brand"
-            applicationIdSuffix = ".atris"
-            versionNameSuffix = "-atris"
-            buildConfigField("String", "BRAND", "\"atris\"")
-        }
-        create("chronos") {
-            dimension = "brand"
-            applicationIdSuffix = ".chronos"
-            versionNameSuffix = "-chronos"
-            buildConfigField("String", "BRAND", "\"chronos\"")
-        }
-        create("academy") {
-            dimension = "brand"
-            applicationIdSuffix = ".academy"
-            versionNameSuffix = "-academy"
-            buildConfigField("String", "BRAND", "\"academy\"")
-        }
-        create("psych") {
-            dimension = "brand"
-            applicationIdSuffix = ".psych"
-            versionNameSuffix = "-psych"
-            buildConfigField("String", "BRAND", "\"psych\"")
-        }
-        // اپ ← وردپرس: به‌جای سرورِ Spring Boot، به سایتِ وردپرس (پلاگینِ Carmilla
-        // Bridge) وصل می‌شود. آدرسِ سایت در WpBrand.apiBaseUrl تنظیم می‌شود.
-        create("wp") {
-            dimension = "brand"
-            applicationIdSuffix = ".wp"
-            versionNameSuffix = "-wp"
-            buildConfigField("String", "BRAND", "\"wp\"")
-        }
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    
 }
 
 dependencies {

@@ -7,12 +7,12 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_carmilla"
         android:supportsRtl="true"
-        android:name=".ShopApplication"
+        android:name="com.kazemieh.shop.ShopApplication"
         android:usesCleartextTraffic="false"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
-            android:name=".MainActivity">
+            android:name="com.kazemieh.shop.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

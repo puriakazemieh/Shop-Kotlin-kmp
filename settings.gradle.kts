@@ -76,3 +76,4 @@ include(":feature:admin:psychtest")
 include(":feature:comparison")
 
 
+include(":androidApp")
