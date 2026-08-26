@@ -47,6 +47,7 @@ plugins {
 
 include(":composeApp")
 include(":core:designSystem")
+include(":core:config:capabilities")
 include(":feature:auth")
 include(":core:domain")
 include(":core:data")
