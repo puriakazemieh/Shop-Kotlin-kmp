@@ -29,6 +29,7 @@ kotlin {
             implementation(project(":core:domain"))
 
             implementation(libs.kotlinx.serialization)
+            implementation(libs.ktor.client.core)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
 

@@ -1,6 +1,6 @@
 # P03-MANIFEST-CODE-011E — اتصال DI و UI پیش از NavHost
 
-- Status: TODO
+- Status: DONE
 - Owner: AI
 - Depends on: P03-MANIFEST-CODE-011D
 - Blocks: P03-MANIFEST-CODE-012
@@ -19,6 +19,6 @@ coordinator پیش از `AppNavHost` به DI و Compose متصل شود و loadi
 
 ## تکمیل
 
-- Commands and exit codes:
-- Evidence paths:
-- Final status: TODO | DONE | BLOCKED
+- Commands and exit codes: `.\gradlew.bat --no-daemon :composeApp:compileKotlinJvm` (exit 0, BUILD SUCCESSFUL); `.\gradlew.bat --no-daemon :composeApp:compileKotlinJs` (exit 0, BUILD SUCCESSFUL).
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-011E/summary.md`.
+- Final status: DONE

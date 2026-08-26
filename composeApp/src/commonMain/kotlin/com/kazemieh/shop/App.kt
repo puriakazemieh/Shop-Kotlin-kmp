@@ -1,8 +1,24 @@
 package com.kazemieh.shop
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.kazemieh.admin.options.adminOptionsModule
 import com.kazemieh.admin.orders.adminOrdersModule
 import com.kazemieh.admin.products.adminProductsModule
@@ -30,6 +46,12 @@ import com.kazemieh.config.capabilities.AssetUrlResolver
 import com.kazemieh.config.capabilities.BackendProfile
 import com.kazemieh.config.capabilities.BootstrapProfiles
 import com.kazemieh.config.capabilities.EndpointResolver
+import com.kazemieh.config.capabilities.FeatureManifestBootstrapCoordinator
+import com.kazemieh.config.capabilities.InMemoryLastKnownGoodManifestCache
+import com.kazemieh.config.capabilities.KtorRemoteManifestTransport
+import com.kazemieh.config.capabilities.ManifestBootstrapState
+import com.kazemieh.config.capabilities.RemoteFeatureManifestClient
+import com.kazemieh.config.capabilities.RemoteManifestTransport
 import com.kazemieh.config.capabilities.ProfileAssetUrlResolver
 import com.kazemieh.config.capabilities.ProfileEndpointResolver
 import com.kazemieh.config.capabilities.privateSessionNamespace
@@ -49,6 +71,8 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
+import kotlinx.coroutines.launch
+import kotlin.time.Clock
 
 @OptIn(InternalResourceApi::class)
 @Composable
@@ -60,6 +84,13 @@ fun App() {
     val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.LIGHT)
 
     val brand = koinInject<BrandConfig>()
+    val bootstrapCoordinator = koinInject<FeatureManifestBootstrapCoordinator>()
+    var bootstrapState by remember { mutableStateOf<ManifestBootstrapState>(bootstrapCoordinator.state) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(bootstrapCoordinator) {
+        bootstrapState = bootstrapCoordinator.load()
+    }
 
     AppTheme(
         themeMode = themeMode,
@@ -67,7 +98,24 @@ fun App() {
         brandColors = brand.colors
     ) {
         ProvideWindowSizeClass {
-            AppNavHost()
+            when (val state = bootstrapState) {
+                ManifestBootstrapState.Loading ->
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                is ManifestBootstrapState.Ready -> AppNavHost()
+                is ManifestBootstrapState.Error -> {
+                    Box(Modifier.fillMaxSize()) {
+                        AppNavHost()
+                        Column(Modifier.align(Alignment.TopCenter).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("پیکربندی راه‌دور در دسترس نیست؛ حالت امن فعال است.", color = MaterialTheme.colorScheme.error)
+                            Button(onClick = { scope.launch { bootstrapState = bootstrapCoordinator.retry() } }) {
+                                Text("تلاش دوباره")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -87,6 +135,24 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                 single { privateSessionNamespace }
                 single<EndpointResolver> { ProfileEndpointResolver(get()) }
                 single<AssetUrlResolver> { ProfileAssetUrlResolver(get()) }
+                single<RemoteManifestTransport> { KtorRemoteManifestTransport(get()) }
+                single { InMemoryLastKnownGoodManifestCache() }
+                single {
+                    RemoteFeatureManifestClient(
+                        profile = get(),
+                        expectedTenantId = "local-default",
+                        transport = get()
+                    )
+                }
+                single {
+                    FeatureManifestBootstrapCoordinator(
+                        localFeatures = GeneratedLocalFeatureManifest.sourceFor(get()).resolveFor(get<BackendProfile>().kind),
+                        remoteClient = get(),
+                        cache = get(),
+                        namespace = get(),
+                        nowEpochMillis = { Clock.System.now().toEpochMilliseconds() }
+                    )
+                }
             },
             platformModule(),
             networkModule,
