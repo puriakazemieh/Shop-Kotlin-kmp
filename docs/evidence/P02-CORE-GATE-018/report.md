@@ -16,6 +16,20 @@ The product owner supplied successful verification output on 2026-08-26 after th
 
 The prior loopback-connection blocker is resolved. The Gate itself remains unevaluated until the remaining criteria below have evidence.
 
+## Additional automated verification
+
+| Check | Exit | Result |
+|---|---:|---|
+| PHP 8.1 lint in Docker | 0 | All PHP files in `carmilla-bridge` and `carmilla-theme` passed syntax validation. |
+| WordPress package | 0 | Theme and Bridge ZIPs were built, extracted successfully, and had SHA-256 fingerprints recorded outside the repository. |
+| Existing PHP smoke suite | 0 | `smoke.php`, `smoke-security.php`, and `smoke-phase2.php` through `smoke-phase7.php` all reported `ALL PASSED`. |
+| Rollback dry run: `7e6b9840` | 0 | Revert applied in a temporary detached worktree; `revert --abort` restored a clean worktree. |
+| Rollback dry run: `b2ebfb3d` | 1 | Revert conflicts with later changes to `architecture-check.gradle.kts` and `docs/tasks.md`; abort restored a clean worktree. |
+| Local WordPress/Woo integration | 1 | Docker image download stalled before services started; no test environment was created. |
+| Current combined Gradle verification | 1 | `architectureCheck`, JVM, JS, and Android build invocation did not start because Gradle could not establish a loopback connection. |
+
+The successful Gradle outputs supplied by the product owner remain valid evidence for that run, but the current local Gradle daemon behavior is not stable enough to close the Gate.
+
 ## Evidence reviewed
 
 - `P02-QA-MANUAL-017` is recorded as complete for the phase; its release-candidate recheck is scheduled in `P09-QA-MANUAL-004`.
@@ -32,10 +46,11 @@ The prior loopback-connection blocker is resolved. The Gate itself remains uneva
 
 ## Required actions to unblock
 
-1. Resolve the local Gradle loopback-connection failure without discarding the current user-owned changes.
-2. Validate the current working tree in CI or a repaired local environment: `architectureCheck`, `:composeApp:compileKotlinJvm`, `:composeApp:compileKotlinJs`, the Android release build, and the applicable WordPress ZIP/test jobs must all pass.
-3. Attach redacted command/CI results, commit/build fingerprint, and a Foundation rollback drill to this evidence directory.
-4. Complete or formally record owners and deadlines for any deferred Foundation work, then have the human owner review the evidence and record the Gate decision.
+1. Resolve the local Gradle loopback-connection failure without discarding the current user-owned changes, then rerun the required Gradle jobs in one stable environment or CI.
+2. Complete the WordPress/Woo integration matrix after Docker can pull the required images, then attach its redacted result.
+3. Define a forward-fix rollback procedure for `b2ebfb3d` or test a compatible revert sequence, because a standalone revert conflicts with later work.
+4. Attach redacted command/CI results, commit/build fingerprint, and the final rollback result to this evidence directory.
+5. Complete or formally record owners and deadlines for any deferred Foundation work, then have the human owner review the evidence and record the Gate decision.
 
 ## Manual QA handoff
 

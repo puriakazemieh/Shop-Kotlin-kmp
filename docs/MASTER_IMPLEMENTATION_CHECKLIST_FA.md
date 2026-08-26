@@ -619,7 +619,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 - [ ] buildهای JS/JVM/Android فعلی و ZIPهای WordPress سبزند.
 - [ ] Convention rollout،Android host و full Navigation split اگر Done نیستند، Task/owner/deadline قبل از فاز ۱۱ دارند و P3/P4 را مسدود نمی‌کنند.
 - [ ] rollback Foundation آزمایش شده است.
-- Gate decision: `NOT_EVALUATED` — 2026-08-26؛ blocker قبلی JVM با verification سبز رفع شده،اما معیارهای باقی‌مانده Gate هنوز باید Evidence جداگانه داشته باشند.
+- Gate decision: `BLOCKED` — 2026-08-26؛ integration واقعی WordPress/Woo اجرا نشد،verification Gradle ناپایدار است و rollback یک commit معماری P02 با conflict مواجه شد.
 
 ---
 
