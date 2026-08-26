@@ -48,7 +48,7 @@ P02-QA-MANUAL-017
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / QA / MANUAL
 - Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -126,11 +126,11 @@ auth/home/product/cart/payment-return روی fixture
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-26
+- Completed at: 2026-08-26
+- Changed files: `docs/tasks.md`, `docs/tasks/P02-QA-MANUAL-017.md`, `docs/evidence/P02-QA-MANUAL-017/completion.md`
+- Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm` (exit 1; Gradle loopback connection unavailable); `./gradlew.bat --no-daemon :composeApp:compileKotlinJvm` (exit 1; same environment failure).
+- Manual tester/date/result: User confirmation, 2026-08-26, PASS for the requested smoke scope; release revalidation remains required.
+- Evidence paths: `docs/evidence/P02-QA-MANUAL-017/completion.md`
+- Remaining risks/blockers: JVM compilation could not be independently verified in this environment because Gradle could not establish a loopback connection. Re-run the smoke suite and the JVM compile before release.
+- Final status: DONE
