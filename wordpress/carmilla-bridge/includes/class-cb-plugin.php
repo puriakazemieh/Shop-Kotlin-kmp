@@ -24,7 +24,10 @@ class CB_Plugin {
 
 	private function __construct() {
 		CB_CPT::boot();
+		$manifest_controller = new CB_Manifest_Controller();
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		add_action( 'admin_menu', array( $manifest_controller, 'register_admin_page' ) );
+		add_action( 'admin_post_cb_save_manifest_settings', array( $manifest_controller, 'save_admin_settings' ) );
 		// Let a valid Bearer token authenticate normal WP REST requests too.
 		add_filter( 'determine_current_user', array( $this, 'authenticate_bearer' ), 20 );
 		// Keep product Q&A comments out of the normal comment feed/counts.

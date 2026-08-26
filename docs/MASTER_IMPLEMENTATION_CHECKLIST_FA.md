@@ -636,7 +636,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-MANIFEST-CODE-007` | AI | P0/HIGH | feature catalog و dependency resolver پیاده شود | parent خاموش child را خاموش؛ cycle/unknown schema رد |
 | [x] | `P03-MANIFEST-CODE-008` | AI | P0/HIGH | compiled feature ceiling و platform policy اضافه شود | Clinic/Psych/Admin/Payment خارج ceiling روشن نشوند |
 | [x] | `P03-WPPLUGIN-CODE-009` | BOTH | P0/HIGH | endpoint canonical `client-manifest` در WordPress | ETag/version/minClient؛ بدون secret؛ disabled feature واقعی |
-| [ ] | `P03-WPPLUGIN-CODE-010` | BOTH | P0/HIGH | پنل toggle و dependency validation در wp-admin | invalid combination ذخیره نشود؛ audit ثبت |
+| [x] | `P03-WPPLUGIN-CODE-010` | BOTH | P0/HIGH | پنل toggle و dependency validation در wp-admin | invalid combination ذخیره نشود؛ audit ثبت |
 | [ ] | `P03-MANIFEST-CODE-011` | AI | P0/HIGH | bootstrap state و source precedence: فایل generated/local قابل ویرایش برای هر app، سپس manifest معتبر tenant؛ قبل از NavHost و با last-known-good محدود | چهار boolean اصلی بدون تغییر source پراکنده قابل تنظیم؛ invalid/remote-over-ceiling fail-closed؛ retry/error UX |
 | [ ] | `P03-MANIFEST-CODE-012` | AI | P0/HIGH | shadow mode و telemetry اختلاف flag قدیم/جدید | ابتدا رفتار عوض نشود؛ اختلاف‌ها redacted |
 | [ ] | `P03-MANIFEST-CODE-013` | AI | P0/HIGH | central route/deep-link guard | لینک مستقیم feature خاموش safe error/home |

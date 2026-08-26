@@ -48,7 +48,7 @@ P03-WPPLUGIN-CODE-010
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -122,11 +122,11 @@ invalid combination ذخیره نشود؛ audit ثبت
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-26T17:00:00+03:30
+- Completed at: 2026-08-26T17:05:49+03:30
+- Changed files: `wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-plugin.php`, `wordpress/carmilla-bridge/tests/smoke-manifest.php`, `docs/tasks.md`, `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
+- Commands and exit codes: baseline و final lint/smoke با PHP 8.1 Docker، exit code 0؛ characterization پیش از پیاده‌سازی با فراخوانی validator ناموجود، exit code 255.
+- Manual tester/date/result: به درخواست کاربر به `P03-QA-MANUAL-020` در انتهای فاز ۳ منتقل شد؛ اجرا نشده است.
+- Evidence paths: `docs/evidence/P03-WPPLUGIN-CODE-010/`
+- Remaining risks/blockers: نصب و کنترل واقعی wp-admin و مشاهدهٔ audit log تا QA پایانی فاز انجام نشده است.
+- Final status: DONE
