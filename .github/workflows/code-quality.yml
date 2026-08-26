@@ -1,0 +1,67 @@
+name: Lint & Code Quality
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ktlint:
+    name: ktlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ktlint via reviewdog
+        uses: ScaCap/action-ktlint@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_on_error: true
+          # reviewdog only reports on the lines changed in the PR, 
+          # so existing tech debt is ignored automatically!
+
+  detekt:
+    name: detekt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: detekt via reviewdog
+        uses: alauda/action-detekt@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          detekt_config: detekt-config.yml
+          fail_on_error: true
+
+  wpcs:
+    name: WordPress Coding Standards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: WPCS via reviewdog
+        uses: reviewdog/action-phpcs@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          phpcs_standard: WordPress
+          phpcs_args: "--ignore=*/vendor/*,*/node_modules/*,*/tests/*"
+          target_directory: "./wordpress/carmilla-bridge"
+          reporter: github-pr-review
+          fail_on_error: true
+
+  wp-plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './wordpress/carmilla-bridge'
