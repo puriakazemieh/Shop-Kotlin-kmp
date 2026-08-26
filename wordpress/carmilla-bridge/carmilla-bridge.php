@@ -28,6 +28,7 @@ define( 'CB_REST_NAMESPACE', 'carmilla/v1' );
 
 require_once CB_PLUGIN_DIR . 'includes/helpers.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-jwt.php';
+require_once CB_PLUGIN_DIR . 'includes/class-cb-manifest-controller.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-blocks.php';
 require_once CB_PLUGIN_DIR . 'includes/class-cb-cpt.php';
 require_once CB_PLUGIN_DIR . 'includes/meta-boxes.php';

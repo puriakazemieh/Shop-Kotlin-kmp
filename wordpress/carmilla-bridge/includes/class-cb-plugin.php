@@ -130,6 +130,7 @@ class CB_Plugin {
 	}
 
 	public function register_routes(): void {
+		( new CB_Manifest_Controller() )->register_routes();
 		( new CB_Auth_Controller() )->register_routes();
 		( new CB_Catalog_Controller() )->register_routes();
 		( new CB_Blog_Controller() )->register_routes();

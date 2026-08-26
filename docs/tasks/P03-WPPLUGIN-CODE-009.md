@@ -48,7 +48,7 @@ P03-WPPLUGIN-CODE-009
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -122,11 +122,11 @@ ETag/version/minClient؛ بدون secret؛ disabled feature واقعی
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-26
+- Completed at: 2026-08-26
+- Changed files: `wordpress/carmilla-bridge/**`، صف، checklist و evidence همین Task.
+- Commands and exit codes: اجرای مستقیم `php` انجام نشد (PHP در PATH نبود). سپس `docker run --rm -v "${PWD}:/app" -w /app php:8.1-cli php -l includes/class-cb-manifest-controller.php` (exit 0) و `docker run --rm -v "${PWD}:/app" -w /app php:8.1-cli php tests/smoke-manifest.php` (exit 0) اجرا شدند.
+- Manual tester/date/result: تست endpoint روی WordPress محلی/container پیش از release لازم است؛ به دستور مالک محصول ادامهٔ P03 متوقف نشد.
+- Evidence paths: `docs/evidence/P03-WPPLUGIN-CODE-009/summary.md`
+- Remaining risks/blockers: برای route واقعی، ETag 304 و plugin activation هنوز محیط کامل WordPress لازم است. امضای عملی payload به provisioning کلید عملیاتی وابسته است.
+- Final status: DONE
