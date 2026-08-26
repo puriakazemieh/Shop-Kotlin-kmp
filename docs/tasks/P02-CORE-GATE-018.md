@@ -48,7 +48,7 @@ P02-CORE-GATE-018
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: READY
+- Status: BLOCKED
 - Phase/Area/Type: P02 / CORE / GATE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -126,11 +126,11 @@ test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دا
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
+- Started at: 2026-08-26
 - Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Changed files: `docs/tasks.md`, `docs/tasks/P02-CORE-GATE-018.md`, `docs/evidence/P02-CORE-GATE-018/report.md`
+- Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm` (exit 1; Gradle loopback connection unavailable); `./gradlew.bat --no-daemon -Dorg.gradle.jvmargs="" :composeApp:compileKotlinJvm` (exit 1; same environment failure).
+- Manual tester/date/result: Not run; Gate review is blocked before human sign-off because the required baseline is not available.
+- Evidence paths: `docs/evidence/P02-CORE-GATE-018/report.md`
+- Remaining risks/blockers: Gate criteria in the Master checklist remain open, including real KMP/WordPress PR gates, JS/JVM/Android/WordPress artifact validation, and a tested Foundation rollback. User-owned uncommitted build changes also require validation before a Gate decision.
+- Final status: BLOCKED

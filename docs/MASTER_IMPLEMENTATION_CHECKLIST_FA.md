@@ -619,7 +619,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 - [ ] buildهای JS/JVM/Android فعلی و ZIPهای WordPress سبزند.
 - [ ] Convention rollout،Android host و full Navigation split اگر Done نیستند، Task/owner/deadline قبل از فاز ۱۱ دارند و P3/P4 را مسدود نمی‌کنند.
 - [ ] rollback Foundation آزمایش شده است.
-- Gate decision: `NOT_EVALUATED`
+- Gate decision: `BLOCKED` — 2026-08-26؛ baseline Gradle قابل اجرا نیست و معیارهای الزامی Gate هنوز Evidence سبز ندارند.
 
 ---
 
