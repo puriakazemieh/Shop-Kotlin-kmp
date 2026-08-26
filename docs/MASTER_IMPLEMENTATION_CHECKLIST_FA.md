@@ -530,37 +530,37 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 ### Tasks
 
-| انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
-|---|---|---|---|---|---|
-| [x] | `P01-SECURITY-DISC-001` | BOTH | P0/HIGH | تمام یافته‌های P0 سند ممیزی به ticketهای اتمیک خصوصی تبدیل شوند | هر ticket owner، exploit surface، test و rollback دارد |
-| [x] | `P01-SECURITY-OPS-002` | HUMAN | P0/HIGH | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود |
-| [x] | `P01-SECURITY-CODE-003` | AI | P0/HIGH | request/response/token logging کلاینت redacted و debug-only شود | تست عدم ثبت Authorization، OTP، payment و health fields |
-| [x] | `P01-SECURITY-CODE-004` | BOTH | P0/HIGH | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود | HTTPS production pass؛ MITM/invalid cert fail |
-| [x] | `P01-SECURITY-CODE-005` | BOTH | P0/HIGH | token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود | foreign host test فاقد header؛ logout/expiry/rotation test |
-| [x] | `P01-SECURITY-CODE-006` | AI | P0/HIGH | `?api=` و override origin آزاد از production حذف یا allowlist شود | localhost/private/foreign URL در release رد شود |
-| [x] | `P01-PAYMENT-CODE-007` | BOTH | P0/HIGH | نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد | success جعلی سفارش/cart را تغییر ندهد |
-| [x] | `P01-PAYMENT-CODE-008` | BOTH | P0/HIGH | پاک‌شدن cart فقط بعد از verify authoritative موفق انجام شود | fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد |
-| [x] | `P01-PAYMENT-CODE-009` | BOTH | P0/HIGH | قرارداد callback و نام پارامتر Android/PWA/WP یکسان و opaque شود | cold/warm start، app killed و browser fallback دستی تست |
-| [x] | `P01-WPPLUGIN-SEC-010` | BOTH | P0/HIGH | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود | tamper/expired/wrong audience/revoked token رد شوند |
-| [x] | `P01-WPPLUGIN-SEC-011` | BOTH | P0/HIGH | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off | brute force/rate/account enumeration tests |
-| [x] | `P01-WPPLUGIN-SEC-012` | BOTH | P0/HIGH | CORS default بسته و origin دقیق tenant allowlist شود | unapproved origin رد؛ credential policy روشن |
-| [x] | `P01-WPPLUGIN-SEC-013` | BOTH | P0/HIGH | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد | تست نقش‌ها روی همه endpointهای حساس |
-| [x] | `P01-WPPLUGIN-SEC-014` | BOTH | P0/HIGH | ownership/IDOR و post type validation برای read/write/delete | user A به resource user B دسترسی ندارد |
-| [x] | `P01-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود | feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر |
-| [x] | `P01-WPPLUGIN-CODE-016` | BOTH | P0/HIGH | Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است | feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner |
-| [x] | `P01-PAYMENT-SEC-017` | BOTH | P0/HIGH | amount/currency/order/reference قبل از verify تطبیق و replay مسدود شود | wrong amount و duplicate callback هر دو fail/idempotent |
-| [x] | `P01-WPPLUGIN-SEC-018` | BOTH | P0/HIGH | LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fail-closed شود؛ entitlement کامل به فازهای ۱۳/۱۴ موکول شود | با toggle خاموش URL مستقیم/API discovery دسترسی ندهد |
-| [x] | `P01-SECURITY-CODE-019` | AI | P0/HIGH | hardcoded/demo secret و credential پیش‌فرض از artifactها حذف شوند | secret scan؛ production بدون secret لازم fail-closed |
-| [x] | `P01-QA-AUTO-020` | AI | P0/HIGH | حداقل harness hermetic موردنیاز و regression خودکار یافته‌های ۰۰۳ تا ۰۱۹ اضافه شود | تست قبل از fix fail و بعد از fix pass؛ بدون DB/service دستی؛ report ذخیره |
-| [x] | `P01-QA-MANUAL-021` | HUMAN | P0/HIGH | تست دستی auth/IDOR/payment و اثبات بسته‌بودن Wallet/Booking/LMS/Clinic خارج Scope | tester/date/device/request IDs redacted ثبت |
-| [x] | `P01-SECURITY-SEC-022` | BOTH | P0/HIGH | review مستقل diffهای امنیتی و threat model به‌روز شود | هیچ Sev0/Sev1 باز در surface منتشرشدنی |
-| [ ] | `P01-SECURITY-GATE-023` | HUMAN | P0/HIGH | Gate خروج امنیت | P0 باز صفر؛ rollback و hotfix artifact آماده |
-| [x] | P01-SPRING-SEC-024 | BOTH | P0/HIGH | Spring Boot RBAC / Admin Controllers | All admin controllers require ADMIN role |
-| [x] | P01-SPRING-SEC-025 | BOTH | P0/HIGH | Spring Boot Paywall / Private Files | Files in /uploads/ require authentication |
-| [x] | P01-SPRING-SEC-026 | BOTH | P0/HIGH | Spring Boot IDOR Prevention | Service methods check ownership (e.g. Orders, Addresses) |
-| [x] | P01-SPRING-DATA-027 | BOTH | P0/HIGH | Spring Boot DB Hardening / SQLi Prevention | Ensure JPA/Hibernate parameters are safe |
-| [x] | P01-WPPLUGIN-DATA-028 | BOTH | P0/HIGH | WP Plugin Data Security | Safe queries and input sanitization in WP |
-| [x] | P01-WPPLUGIN-ARCH-029 | BOTH | P0/HIGH | WP Plugin Architecture Security | Secure internal APIs and boundaries |
+| انجام | Task ID                 | مجری  | اولویت/ریسک | کار و خروجی                                                                                                                                                       | اعتبارسنجی                                                                                |
+|-------|-------------------------|-------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| [x]   | `P01-SECURITY-DISC-001` | BOTH  | P0/HIGH     | تمام یافته‌های P0 سند ممیزی به ticketهای اتمیک خصوصی تبدیل شوند                                                                                                   | هر ticket owner، exploit surface، test و rollback دارد                                    |
+| [x]   | `P01-SECURITY-OPS-002`  | HUMAN | P0/HIGH     | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود                                                                                             | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود                               |
+| [x]   | `P01-SECURITY-CODE-003` | AI    | P0/HIGH     | request/response/token logging کلاینت redacted و debug-only شود                                                                                                   | تست عدم ثبت Authorization، OTP، payment و health fields                                   |
+| [x]   | `P01-SECURITY-CODE-004` | BOTH  | P0/HIGH     | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود                                                                                                       | HTTPS production pass؛ MITM/invalid cert fail                                             |
+| [x]   | `P01-SECURITY-CODE-005` | BOTH  | P0/HIGH     | token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود                                                                                                | foreign host test فاقد header؛ logout/expiry/rotation test                                |
+| [x]   | `P01-SECURITY-CODE-006` | AI    | P0/HIGH     | `?api=` و override origin آزاد از production حذف یا allowlist شود                                                                                                 | localhost/private/foreign URL در release رد شود                                           |
+| [x]   | `P01-PAYMENT-CODE-007`  | BOTH  | P0/HIGH     | نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد                                                                                               | success جعلی سفارش/cart را تغییر ندهد                                                     |
+| [x]   | `P01-PAYMENT-CODE-008`  | BOTH  | P0/HIGH     | پاک‌شدن cart فقط بعد از verify authoritative موفق انجام شود                                                                                                       | fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد                               |
+| [x]   | `P01-PAYMENT-CODE-009`  | BOTH  | P0/HIGH     | قرارداد callback و نام پارامتر Android/PWA/WP یکسان و opaque شود                                                                                                  | cold/warm start، app killed و browser fallback دستی تست                                   |
+| [x]   | `P01-WPPLUGIN-SEC-010`  | BOTH  | P0/HIGH     | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود                                                                                          | tamper/expired/wrong audience/revoked token رد شوند                                       |
+| [x]   | `P01-WPPLUGIN-SEC-011`  | BOTH  | P0/HIGH     | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off                                                                                                  | brute force/rate/account enumeration tests                                                |
+| [x]   | `P01-WPPLUGIN-SEC-012`  | BOTH  | P0/HIGH     | CORS default بسته و origin دقیق tenant allowlist شود                                                                                                              | unapproved origin رد؛ credential policy روشن                                              |
+| [x]   | `P01-WPPLUGIN-SEC-013`  | BOTH  | P0/HIGH     | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد                                                                                                 | تست نقش‌ها روی همه endpointهای حساس                                                       |
+| [x]   | `P01-WPPLUGIN-SEC-014`  | BOTH  | P0/HIGH     | ownership/IDOR و post type validation برای read/write/delete                                                                                                      | user A به resource user B دسترسی ندارد                                                    |
+| [x]   | `P01-WPPLUGIN-CODE-015` | BOTH  | P0/HIGH     | Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود | feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر |
+| [x]   | `P01-WPPLUGIN-CODE-016` | BOTH  | P0/HIGH     | Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است                                                        | feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner                 |
+| [x]   | `P01-PAYMENT-SEC-017`   | BOTH  | P0/HIGH     | amount/currency/order/reference قبل از verify تطبیق و replay مسدود شود                                                                                            | wrong amount و duplicate callback هر دو fail/idempotent                                   |
+| [x]   | `P01-WPPLUGIN-SEC-018`  | BOTH  | P0/HIGH     | LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fail-closed شود؛ entitlement کامل به فازهای ۱۳/۱۴ موکول شود                                             | با toggle خاموش URL مستقیم/API discovery دسترسی ندهد                                      |
+| [x]   | `P01-SECURITY-CODE-019` | AI    | P0/HIGH     | hardcoded/demo secret و credential پیش‌فرض از artifactها حذف شوند                                                                                                 | secret scan؛ production بدون secret لازم fail-closed                                      |
+| [x]   | `P01-QA-AUTO-020`       | AI    | P0/HIGH     | حداقل harness hermetic موردنیاز و regression خودکار یافته‌های ۰۰۳ تا ۰۱۹ اضافه شود                                                                                | تست قبل از fix fail و بعد از fix pass؛ بدون DB/service دستی؛ report ذخیره                 |
+| [x]   | `P01-QA-MANUAL-021`     | HUMAN | P0/HIGH     | تست دستی auth/IDOR/payment و اثبات بسته‌بودن Wallet/Booking/LMS/Clinic خارج Scope                                                                                 | tester/date/device/request IDs redacted ثبت                                               |
+| [x]   | `P01-SECURITY-SEC-022`  | BOTH  | P0/HIGH     | review مستقل diffهای امنیتی و threat model به‌روز شود                                                                                                             | هیچ Sev0/Sev1 باز در surface منتشرشدنی                                                    |
+| [x]   | `P01-SECURITY-GATE-023` | HUMAN | P0/HIGH     | Gate خروج امنیت                                                                                                                                                   | P0 باز صفر؛ rollback و hotfix artifact آماده                                              |
+| [x]   | `P01-SPRING-SEC-024`    | BOTH  | P0/HIGH     | Spring Boot RBAC / Admin Controllers                                                                                                                              | All admin controllers require ADMIN role                                                  |
+| [x]   | `P01-SPRING-SEC-025`    | BOTH  | P0/HIGH     | Spring Boot Paywall / Private Files                                                                                                                               | Files in /uploads/ require authentication                                                 |
+| [x]   | `P01-SPRING-SEC-026`    | BOTH  | P0/HIGH     | Spring Boot IDOR Prevention                                                                                                                                       | Service methods check ownership (e.g. Orders, Addresses)                                  |
+| [x]   | `P01-SPRING-DATA-027`   | BOTH  | P0/HIGH     | Spring Boot DB Hardening / SQLi Prevention                                                                                                                        | Ensure JPA/Hibernate parameters are safe                                                  |
+| [x]   | `P01-WPPLUGIN-DATA-028` | BOTH  | P0/HIGH     | WP Plugin Data Security                                                                                                                                           | Safe queries and input sanitization in WP                                                 |
+| [x]   | `P01-WPPLUGIN-ARCH-029` | BOTH  | P0/HIGH     | WP Plugin Architecture Security                                                                                                                                   | Secure internal APIs and boundaries                                                       |
 
 ### Gate فاز ۱
 
@@ -586,28 +586,28 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 ### Tasks
 
-| انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
-|---|---|---|---|---|---|
-| [x] | `P02-CORE-DISC-001` | AI | P1/MEDIUM | dependency graph ۲۹ ماژول، cycle و boundary violation مستند شود | graph + فهرست couplingهای profile/admin/navigation |
-| [x] | `P02-CORE-CODE-002` | AI | P1/LOW | versionهای hardcoded به Version Catalog موجود منتقل شوند | build بدون تغییر dependency resolution؛ diff lockfile بررسی |
-| [x] | `P02-CORE-ADR-003` | BOTH | P1/MEDIUM | scope convention plugin و pluginهای مجاز تصویب شود | از استخراج تمام config در یک Task جلوگیری شود |
-| [x] | `P02-CORE-CODE-004` | AI | P2/MEDIUM | `build-logic` و اولین convention plugin برای KMP library ساخته شود | دو ماژول pilot build؛ سپس rollout taskهای کوچک |
-| [x] | `P02-CORE-CODE-005A` | AI | P2/SMALL | Apply carmilla.kmp.library to remaining core modules | All core targets compile |
-  | [x] | `P02-CORE-CODE-005B` | AI | P2/MEDIUM | Create carmilla.compose and apply to feature modules | All feature targets compile |
-  | [x] | `P02-CORE-CODE-005C` | BOTH | P2/SMALL | Create carmilla.android.application and apply to composeApp | app module compiles |
-| [x] | `P02-QA-CODE-006` | AI | P0/MEDIUM | harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی ارتقا یابد | یک unit test واقعی domain و یک network contract test در CI |
-| [ ] | `P02-QA-CODE-007` | AI | P0/MEDIUM | harness WordPress فاز ۱ به integration environment با WP/Woo/PHP matrix ارتقا یابد | clean install، activation و smokeهای موجود در CI واقعاً اجرا شوند |
-| [ ] | `P02-QA-CODE-008` | AI | P1/MEDIUM | Spring test profile یا Testcontainers مستقل شود | context test بدون PostgreSQL دستی سبز؛ production config استفاده نشود |
-| [ ] | `P02-CI-CODE-009` | AI | P0/MEDIUM | PR gate برای lint/unit/integration/package و artifact report | failure تست PR را fail کند؛ best-effort برای gate حیاتی ممنوع |
-| [ ] | `P02-CI-CODE-010` | AI | P1/MEDIUM | ktlint/detekt و WPCS/Plugin Check/Theme Check تنظیم شوند | baseline debt جدا؛ کد جدید violation اضافه نکند |
-| [ ] | `P02-CI-CODE-011` | AI | P1/MEDIUM | dependency locking/verification و secret scan اضافه شود | tampered dependency/known secret fixture CI را fail کند |
-| [ ] | `P02-ARCH-ADR-012` | BOTH | P0/HIGH | ADR جداسازی Android application shell برای AGP 9 | package/signing/resources/source-set migration و rollback روشن |
-| [ ] | `P02-ARCH-CODE-013` | BOTH | P2/HIGH | thin `androidApp` ایجاد و application plugin از shared KMP جدا شود؛ deadline قبل از فاز ۱۱ | current applicationIdها و build behavior حفظ؛ upgrade test |
-| [ ] | `P02-ARCH-CODE-014` | AI | P2/MEDIUM | Navigation تدریجی به graphهای feature تقسیم شود؛ full split پیش‌شرط Manifest نیست | navigation characterization/deep-link tests قبل و بعد یکسان |
-| [ ] | `P02-CORE-CODE-015` | AI | P1/MEDIUM | dependency inversionهای navigation/profile/admin به‌صورت Taskهای کوچک | architecture test مانع import معکوس جدید شود |
-| [ ] | `P02-CI-OPS-016` | BOTH | P1/MEDIUM | release artifact workflow از debug build جدا شود | artifact دارای version/checksum/SBOM و retention |
-| [ ] | `P02-QA-MANUAL-017` | HUMAN | P0/MEDIUM | smoke کامل رفتار قبل/بعد Foundation | auth/home/product/cart/payment-return روی fixture |
-| [ ] | `P02-CORE-GATE-018` | HUMAN | P0/HIGH | Gate حداقل Foundation برای ورود به Manifest/WordPress | test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دارند |
+| انجام | Task ID              | مجری  | اولویت/ریسک | کار و خروجی                                                                                | اعتبارسنجی                                                            |
+|-------|----------------------|-------|-------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| [x]   | `P02-CORE-DISC-001`  | AI    | P1/MEDIUM   | dependency graph ۲۹ ماژول، cycle و boundary violation مستند شود                            | graph + فهرست couplingهای profile/admin/navigation                    |
+| [x]   | `P02-CORE-CODE-002`  | AI    | P1/LOW      | versionهای hardcoded به Version Catalog موجود منتقل شوند                                   | build بدون تغییر dependency resolution؛ diff lockfile بررسی           |
+| [x]   | `P02-CORE-ADR-003`   | BOTH  | P1/MEDIUM   | scope convention plugin و pluginهای مجاز تصویب شود                                         | از استخراج تمام config در یک Task جلوگیری شود                         |
+| [x]   | `P02-CORE-CODE-004`  | AI    | P2/MEDIUM   | `build-logic` و اولین convention plugin برای KMP library ساخته شود                         | دو ماژول pilot build؛ سپس rollout taskهای کوچک                        |
+| [x]   | `P02-CORE-CODE-005A` | AI    | P2/SMALL    | Apply carmilla.kmp.library to remaining core modules                                       | All core targets compile                                              |
+| [x]   | `P02-CORE-CODE-005B` | AI    | P2/MEDIUM   | Create carmilla.compose and apply to feature modules                                       | All feature targets compile                                           |
+| [x]   | `P02-CORE-CODE-005C` | BOTH  | P2/SMALL    | Create carmilla.android.application and apply to composeApp                                | app module compiles                                                   |
+| [x]   | `P02-QA-CODE-006`    | AI    | P0/MEDIUM   | harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی ارتقا یابد                  | یک unit test واقعی domain و یک network contract test در CI            |
+| [ ]   | `P02-QA-CODE-007`    | AI    | P0/MEDIUM   | harness WordPress فاز ۱ به integration environment با WP/Woo/PHP matrix ارتقا یابد         | clean install، activation و smokeهای موجود در CI واقعاً اجرا شوند     |
+| [ ]   | `P02-QA-CODE-008`    | AI    | P1/MEDIUM   | Spring test profile یا Testcontainers مستقل شود                                            | context test بدون PostgreSQL دستی سبز؛ production config استفاده نشود |
+| [ ]   | `P02-CI-CODE-009`    | AI    | P0/MEDIUM   | PR gate برای lint/unit/integration/package و artifact report                               | failure تست PR را fail کند؛ best-effort برای gate حیاتی ممنوع         |
+| [ ]   | `P02-CI-CODE-010`    | AI    | P1/MEDIUM   | ktlint/detekt و WPCS/Plugin Check/Theme Check تنظیم شوند                                   | baseline debt جدا؛ کد جدید violation اضافه نکند                       |
+| [ ]   | `P02-CI-CODE-011`    | AI    | P1/MEDIUM   | dependency locking/verification و secret scan اضافه شود                                    | tampered dependency/known secret fixture CI را fail کند               |
+| [ ]   | `P02-ARCH-ADR-012`   | BOTH  | P0/HIGH     | ADR جداسازی Android application shell برای AGP 9                                           | package/signing/resources/source-set migration و rollback روشن        |
+| [ ]   | `P02-ARCH-CODE-013`  | BOTH  | P2/HIGH     | thin `androidApp` ایجاد و application plugin از shared KMP جدا شود؛ deadline قبل از فاز ۱۱ | current applicationIdها و build behavior حفظ؛ upgrade test            |
+| [ ]   | `P02-ARCH-CODE-014`  | AI    | P2/MEDIUM   | Navigation تدریجی به graphهای feature تقسیم شود؛ full split پیش‌شرط Manifest نیست          | navigation characterization/deep-link tests قبل و بعد یکسان           |
+| [ ]   | `P02-CORE-CODE-015`  | AI    | P1/MEDIUM   | dependency inversionهای navigation/profile/admin به‌صورت Taskهای کوچک                      | architecture test مانع import معکوس جدید شود                          |
+| [ ]   | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
+| [ ]   | `P02-QA-MANUAL-017`  | HUMAN | P0/MEDIUM   | smoke کامل رفتار قبل/بعد Foundation                                                        | auth/home/product/cart/payment-return روی fixture                     |
+| [ ]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دارند     |
 
 ### Gate فاز ۲
 
@@ -2187,6 +2187,8 @@ Final status:
 
 این فایل یک سند زنده است. هر تغییر ترتیب فاز،Gate،Scope یا Risk Acceptance باید با
 تاریخ،مالک و دلیل ثبت شود؛ تیک‌ها جایگزین Evidence نیستند.
+
+
 
 
 
