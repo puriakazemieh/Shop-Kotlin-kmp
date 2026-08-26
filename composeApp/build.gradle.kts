@@ -23,6 +23,7 @@ kotlin {
             implementation(libs.compose.components.resources)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.core.designSystem)
+            implementation(project(":core:config:capabilities"))
 
             implementation(project(":core:common"))
             implementation(project(":core:domain"))

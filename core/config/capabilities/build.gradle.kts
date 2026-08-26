@@ -1,5 +1,6 @@
 plugins {
     id("carmilla.kmp.library")
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -8,8 +9,12 @@ kotlin {
     }
 
     sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.serialization)
+        }
         jvmTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
