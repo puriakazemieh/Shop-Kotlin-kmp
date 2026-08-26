@@ -45,6 +45,9 @@ class InMemoryLastKnownGoodManifestCache(
         entries.remove(namespace.fingerprint)
     }
 
+    fun resolve(entry: CachedRemoteManifest): ResolvedFeatures =
+        ceiling.apply(catalog.resolve(entry.manifest))
+
     private fun isValid(namespace: PrivateSessionNamespace, entry: CachedRemoteManifest): Boolean =
         entry.namespaceFingerprint == namespace.fingerprint && isValid(namespace, entry.manifest)
 

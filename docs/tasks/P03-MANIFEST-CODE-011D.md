@@ -1,6 +1,6 @@
 # P03-MANIFEST-CODE-011D — coordinator و ترتیب منابع bootstrap
 
-- Status: TODO
+- Status: DONE
 - Owner: AI
 - Depends on: P03-MANIFEST-CODE-011C
 - Blocks: P03-MANIFEST-CODE-011E
@@ -19,6 +19,6 @@ coordinator مستقل از UI ترتیب local → remote معتبر → last-k
 
 ## تکمیل
 
-- Commands and exit codes:
-- Evidence paths:
-- Final status: TODO | DONE | BLOCKED
+- Commands and exit codes: `.\gradlew.bat --no-daemon :core:config:capabilities:jvmTest` (exit 0, BUILD SUCCESSFUL).
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-011D/summary.md`.
+- Final status: DONE

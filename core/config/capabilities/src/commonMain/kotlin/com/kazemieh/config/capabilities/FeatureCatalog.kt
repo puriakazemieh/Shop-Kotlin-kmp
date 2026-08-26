@@ -5,6 +5,14 @@ data class FeatureDefinition(val id: String, val requires: Set<String> = emptySe
 data class ResolvedFeatures(private val values: Map<String, Boolean>) {
     fun isEnabled(id: String): Boolean = values[id] == true
     fun asMap(): Map<String, Boolean> = values
+
+    /** overlayهای remote فقط می‌توانند feature فعالِ منبع پایه را نگه دارند. */
+    fun restrictedTo(allowed: ResolvedFeatures): ResolvedFeatures =
+        ResolvedFeatures(values.mapValues { (id, enabled) -> enabled && allowed.isEnabled(id) })
+
+    companion object {
+        fun fromMap(values: Map<String, Boolean>): ResolvedFeatures = ResolvedFeatures(values.toMap())
+    }
 }
 
 /** catalog ثابت v1 و resolver fail-closed وابستگی‌های FeatureManifest. */
