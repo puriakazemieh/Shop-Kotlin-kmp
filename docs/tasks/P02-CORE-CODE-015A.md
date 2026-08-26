@@ -36,7 +36,7 @@ P02-CORE-CODE-015A
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CORE / CODE
 - Priority/Risk/Size: P1/MEDIUM / S
 - Owner: AI
@@ -58,16 +58,18 @@ P02-CORE-CODE-015A
 - build-logic/**
 - core/**
 - docs/**
+- architecture-check.gradle.kts
+- build.gradle.kts
 
 ## Evidence
 - مسیر: docs/evidence/P02-CORE-CODE-015A/
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-26T11:47:00+03:30
+- Completed at: 2026-08-26T11:51:00+03:30
+- Changed files: architecture-check.gradle.kts, build.gradle.kts
+- Commands and exit codes: `./gradlew.bat architectureCheck` (0)
+- Manual tester/date/result: N/A
+- Evidence paths: docs/evidence/P02-CORE-CODE-015A/EVIDENCE.md
+- Remaining risks/blockers: None
+- Final status: DONE
