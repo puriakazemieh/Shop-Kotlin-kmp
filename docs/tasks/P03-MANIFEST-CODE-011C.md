@@ -1,6 +1,6 @@
 # P03-MANIFEST-CODE-011C — last-known-good محدود و namespaced
 
-- Status: TODO
+- Status: DONE
 - Owner: AI
 - Depends on: P03-MANIFEST-CODE-011B
 - Blocks: P03-MANIFEST-CODE-011D
@@ -19,6 +19,6 @@ manifest معتبر remote با expiry محدود و namespace backend/tenant ذ
 
 ## تکمیل
 
-- Commands and exit codes:
-- Evidence paths:
-- Final status: TODO | DONE | BLOCKED
+- Commands and exit codes: `.\gradlew.bat --no-daemon :core:config:capabilities:jvmTest` (exit 0, BUILD SUCCESSFUL).
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-011C/summary.md`.
+- Final status: DONE
