@@ -35,6 +35,14 @@ set APP_HOME=%DIRNAME%
 @rem Resolve any "." and ".." in APP_HOME to make it shorter.
 for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 
+@rem Java 17+ uses TEMP/TMP to create a short-lived local socket for NIO selectors.
+@rem A long sandboxed path can exceed Windows AF_UNIX limits and prevent Gradle
+@rem from starting. KMP_GRADLE_TMP allows callers to override this short path.
+if "%KMP_GRADLE_TMP%"=="" set "KMP_GRADLE_TMP=%SystemDrive%\jtmp"
+if not exist "%KMP_GRADLE_TMP%" mkdir "%KMP_GRADLE_TMP%"
+set "TEMP=%KMP_GRADLE_TMP%"
+set "TMP=%KMP_GRADLE_TMP%"
+
 @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
 

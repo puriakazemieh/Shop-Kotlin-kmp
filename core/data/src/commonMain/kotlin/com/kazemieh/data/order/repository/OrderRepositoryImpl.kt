@@ -8,6 +8,7 @@ import com.kazemieh.common.*
 import com.kazemieh.data.cart.mapper.toDomain
 import com.kazemieh.data.order.source.OrderDataSource
 import com.kazemieh.data.order.mapper.toDomain
+import com.kazemieh.config.capabilities.AssetUrlResolver
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.flow
 
 
 class OrderRepositoryImpl(
-    private val dataSource: OrderDataSource
+    private val dataSource: OrderDataSource,
+    private val assetUrlResolver: AssetUrlResolver
 ) : OrderRepository {
 
     override fun getMyOrders(): Flow<AppResult<List<Order>>> = flow {
@@ -54,7 +56,7 @@ class OrderRepositoryImpl(
 
     override suspend fun reorder(id: Long): AppResult<ReorderResult> {
         return dataSource.reorder(id).map {
-            ReorderResult(cart = it.cart.toDomain(), skippedTitles = it.skippedTitles)
+            ReorderResult(cart = it.cart.toDomain(assetUrlResolver), skippedTitles = it.skippedTitles)
         }
     }
 }

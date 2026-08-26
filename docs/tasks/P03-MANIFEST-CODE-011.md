@@ -131,5 +131,5 @@ bootstrap state و source precedence: فایل generated/local قابل ویرا
 - Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm`، exit code 1 پیش از پیکربندی پروژه: `Unable to establish loopback connection`.
 - Manual tester/date/result: N/A؛ پیاده‌سازی آغاز نشد.
 - Evidence paths: `docs/evidence/P03-MANIFEST-CODE-011/`
-- Remaining risks/blockers: این کارت از M بزرگ‌تر است: (۱) local/generated config و storage چندپلتفرمی، (۲) client امن remote manifest با ETag/timeout، (۳) last-known-good و cache policy، (۴) state/UI retry/error پیش از NavHost، و (۵) اتصال DI/bootstrap. باید به Taskهای مستقل با acceptance و مالک روشن تقسیم شود. تا آن زمان dependency تسک ۰۱۲ پاس نیست.
+- Remaining risks/blockers: این کارت به زیرتسک‌های `P03-MANIFEST-CODE-011A` تا `011E` تقسیم شد. تا تکمیل `011E` dependency تسک ۰۱۲ پاس نیست.
 - Final status: BLOCKED
