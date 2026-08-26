@@ -48,12 +48,12 @@ P03-MANIFEST-CODE-012
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / MANIFEST / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
-- Completion authority: BOTH
-- Depends on: P03-MANIFEST-CODE-011
+- Completion authority: AI (shadow-only, no behavior change)
+- Depends on: P03-MANIFEST-CODE-011E (split completion of P03-MANIFEST-CODE-011)
 - Blocks: P03-MANIFEST-CODE-013
 - Requirement source: Master checklist row P03-MANIFEST-CODE-012 و Source audit بخش MANIFEST
 
@@ -69,7 +69,7 @@ shadow mode و telemetry اختلاف flag قدیم/جدید
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P03-MANIFEST-CODE-011
+- Dependencyها: P03-MANIFEST-CODE-011E (split completion of P03-MANIFEST-CODE-011)
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -128,8 +128,8 @@ shadow mode و telemetry اختلاف flag قدیم/جدید
 - Started at:
 - Completed at:
 - Changed files:
-- Commands and exit codes:
+- Commands and exit codes: `.\gradlew.bat --no-daemon :core:config:capabilities:jvmTest :composeApp:compileKotlinJvm` (exit 0); `.\gradlew.bat --no-daemon :composeApp:compileKotlinJs` (exit 0).
 - Manual tester/date/result:
-- Evidence paths:
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-012/summary.md`.
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: DONE

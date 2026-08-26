@@ -47,6 +47,8 @@ import com.kazemieh.config.capabilities.BackendProfile
 import com.kazemieh.config.capabilities.BootstrapProfiles
 import com.kazemieh.config.capabilities.EndpointResolver
 import com.kazemieh.config.capabilities.FeatureManifestBootstrapCoordinator
+import com.kazemieh.config.capabilities.FeatureFlagShadowMode
+import com.kazemieh.config.capabilities.FeatureFlagShadowReporter
 import com.kazemieh.config.capabilities.InMemoryLastKnownGoodManifestCache
 import com.kazemieh.config.capabilities.KtorRemoteManifestTransport
 import com.kazemieh.config.capabilities.ManifestBootstrapState
@@ -144,13 +146,16 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                         transport = get()
                     )
                 }
+                single<FeatureFlagShadowReporter> { FeatureFlagShadowReporter { } }
+                single { FeatureFlagShadowMode(get()) }
                 single {
                     FeatureManifestBootstrapCoordinator(
                         localFeatures = GeneratedLocalFeatureManifest.sourceFor(get()).resolveFor(get<BackendProfile>().kind),
                         remoteClient = get(),
                         cache = get(),
                         namespace = get(),
-                        nowEpochMillis = { Clock.System.now().toEpochMilliseconds() }
+                        nowEpochMillis = { Clock.System.now().toEpochMilliseconds() },
+                        shadowMode = get()
                     )
                 }
             },

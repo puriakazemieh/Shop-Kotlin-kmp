@@ -26,7 +26,8 @@ class FeatureManifestBootstrapCoordinator(
     private val cache: InMemoryLastKnownGoodManifestCache,
     private val namespace: PrivateSessionNamespace,
     private val nowEpochMillis: () -> Long,
-    private val cacheTtlMillis: Long = DEFAULT_CACHE_TTL_MILLIS
+    private val cacheTtlMillis: Long = DEFAULT_CACHE_TTL_MILLIS,
+    private val shadowMode: FeatureFlagShadowMode? = null
 ) {
     init {
         require(cacheTtlMillis > 0) { "Manifest cache TTL must be positive." }
@@ -47,7 +48,10 @@ class FeatureManifestBootstrapCoordinator(
             is RemoteManifestFetchResult.Success -> {
                 val now = nowEpochMillis()
                 cache.write(namespace, result.manifest, result.etag, now + cacheTtlMillis, now)
-                ManifestBootstrapState.Ready(result.features.restrictedTo(localFeatures), ManifestBootstrapSource.REMOTE, result.etag)
+                val remoteFeatures = result.features.restrictedTo(localFeatures)
+                val effectiveFeatures = shadowMode?.observe(localFeatures, remoteFeatures, result.manifest.manifestVersion)
+                    ?: remoteFeatures
+                ManifestBootstrapState.Ready(effectiveFeatures, ManifestBootstrapSource.REMOTE, result.etag)
             }
             is RemoteManifestFetchResult.NotModified -> {
                 cached?.let {
