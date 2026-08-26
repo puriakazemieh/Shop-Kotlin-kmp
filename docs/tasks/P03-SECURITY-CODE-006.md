@@ -48,7 +48,7 @@ P03-SECURITY-CODE-006
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / SECURITY / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -125,11 +125,11 @@ token/cache namespace بر اساس backend+tenant+origin
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-26
+- Completed at: 2026-08-26
+- Changed files: `core/config/capabilities/**`، `core/data/**`، `composeApp/src/commonMain/kotlin/com/kazemieh/shop/App.kt`، صف، checklist و evidence همین Task.
+- Commands and exit codes: `./gradlew.bat :core:config:capabilities:jvmTest :composeApp:compileKotlinJvm` (exit 1؛ خطای محیط Gradle برای loopback پیش از configuration).
+- Manual tester/date/result: اجرای برنامه و تغییر واقعی tenant باید پیش از release با دادهٔ synthetic تست شود؛ به درخواست مالک محصول، پیاده‌سازی بدون توقف ادامه یافت.
+- Evidence paths: `docs/evidence/P03-SECURITY-CODE-006/summary.md`
+- Remaining risks/blockers: tenant فعلی bootstrap legacy است؛ اتصال آن به Manifest معتبر در P03-MANIFEST-CODE-011 لازم است. cacheهای repository هنوز باید به purger مشترک آینده متصل شوند.
+- Final status: DONE

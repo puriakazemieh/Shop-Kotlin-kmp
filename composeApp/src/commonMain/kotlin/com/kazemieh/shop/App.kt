@@ -32,6 +32,7 @@ import com.kazemieh.config.capabilities.BootstrapProfiles
 import com.kazemieh.config.capabilities.EndpointResolver
 import com.kazemieh.config.capabilities.ProfileAssetUrlResolver
 import com.kazemieh.config.capabilities.ProfileEndpointResolver
+import com.kazemieh.config.capabilities.privateSessionNamespace
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.settings.ObserveThemeModeUseCase
@@ -75,6 +76,7 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
     // اگر برند BASE_URL اختصاصی داشته باشد، شبکه از آن استفاده می‌کند.
     ApiConfig.baseUrlOverride = brand.apiBaseUrl
     val backendProfile: BackendProfile = BootstrapProfiles.fromLegacyApiRoot(ApiConfig.baseUrl)
+    val privateSessionNamespace = backendProfile.privateSessionNamespace(tenantId = "legacy")
     startKoin {
         printLogger()
         config?.invoke(this)
@@ -82,6 +84,7 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
             org.koin.dsl.module {
                 single { brand }
                 single { backendProfile }
+                single { privateSessionNamespace }
                 single<EndpointResolver> { ProfileEndpointResolver(get()) }
                 single<AssetUrlResolver> { ProfileAssetUrlResolver(get()) }
             },

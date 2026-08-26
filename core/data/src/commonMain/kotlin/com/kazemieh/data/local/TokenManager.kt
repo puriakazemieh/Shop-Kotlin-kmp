@@ -5,8 +5,12 @@ import com.kazemieh.common.*
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import com.kazemieh.config.capabilities.PrivateSessionNamespace
 
-class TokenManager(private val settings: Settings) : TokenProvider {
+class TokenManager(
+    private val settings: Settings,
+    private var namespace: PrivateSessionNamespace
+) : TokenProvider {
 
     companion object {
         private const val KEY_ACCESS_TOKEN = "access_token"
@@ -16,21 +20,21 @@ class TokenManager(private val settings: Settings) : TokenProvider {
     private var onTokenExpiredListener: (() -> Unit)? = null
 
     override fun saveTokens(accessToken: String, refreshToken: String) {
-        settings[KEY_ACCESS_TOKEN] = accessToken
-        settings[KEY_REFRESH_TOKEN] = refreshToken
+        settings[namespace.key(KEY_ACCESS_TOKEN)] = accessToken
+        settings[namespace.key(KEY_REFRESH_TOKEN)] = refreshToken
     }
 
     override fun getAccessToken(): String? {
-        return settings.getStringOrNull(KEY_ACCESS_TOKEN)
+        return settings.getStringOrNull(namespace.key(KEY_ACCESS_TOKEN))
     }
 
     override fun getRefreshToken(): String? {
-        return settings.getStringOrNull(KEY_REFRESH_TOKEN)
+        return settings.getStringOrNull(namespace.key(KEY_REFRESH_TOKEN))
     }
 
     override fun clearTokens() {
-        settings.remove(KEY_ACCESS_TOKEN)
-        settings.remove(KEY_REFRESH_TOKEN)
+        settings.remove(namespace.key(KEY_ACCESS_TOKEN))
+        settings.remove(namespace.key(KEY_REFRESH_TOKEN))
     }
 
     override fun setOnTokenExpiredListener(listener: () -> Unit) {
@@ -43,5 +47,13 @@ class TokenManager(private val settings: Settings) : TokenProvider {
 
     fun hasValidToken(): Boolean {
         return !getAccessToken().isNullOrEmpty()
+    }
+
+    /** تغییر tenant/backend/origin باید logout و پاک‌سازی دادهٔ خصوصی فعال را اجباری کند. */
+    fun switchNamespace(next: PrivateSessionNamespace): Boolean {
+        if (namespace.fingerprint == next.fingerprint) return false
+        clearTokens()
+        namespace = next
+        return true
     }
 }
