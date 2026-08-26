@@ -17,6 +17,17 @@
 
 این نتیجه برای `DONE` کافی نیست؛ کارت عمداً در `AWAITING_MANUAL_QA` باقی می‌ماند.
 
+## Build آمادهٔ انتشار
+
+از checkout فعلی دو بستهٔ قابل‌نصب ساخته و ساختار داخلی ZIP آن‌ها بررسی شد؛ هنوز
+به سایت ارسال نشده‌اند چون file-picker مرورگر داخلی مسیر محلی را نمی‌پذیرد:
+
+- `artifacts/p03-20260826/carmilla-bridge-p03-20260826.zip` — 118999 bytes
+- `artifacts/p03-20260826/carmilla-theme-p03-20260826.zip` — 254753 bytes
+
+اعتبارسنجی محلی با Docker و PHP 8.1 برای lint و smokeهای Manifest، security،
+legacy migration و theme همگی `exit code 0` و `ALL PASSED` بودند.
+
 ## راهنمای اجرای باقی‌مانده
 
 محیط لازم: سایت WordPress فعال `kazemieh.com` با نسخهٔ deploy‌شده‌ای که
