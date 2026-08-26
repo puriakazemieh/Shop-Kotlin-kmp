@@ -1,0 +1,78 @@
+name: WordPress Integration
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'wordpress/**'
+      - '.github/workflows/wordpress-integration.yml'
+  pull_request:
+    paths:
+      - 'wordpress/**'
+      - '.github/workflows/wordpress-integration.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.1', '8.2']
+        wp: ['latest', '6.4.3']
+        woo: ['latest']
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli, pdo_mysql, json
+          tools: wp-cli
+
+      - name: Start MySQL
+        run: |
+          sudo systemctl start mysql.service
+          mysql -e "CREATE DATABASE wordpress;" -uroot -proot || mysql -e "CREATE DATABASE wordpress;" -uroot
+          mysql -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'root'@'localhost';" -uroot -proot || true
+
+      - name: Install WordPress
+        run: |
+          mkdir wp-env
+          cd wp-env
+          if [ "${{ matrix.wp }}" = "latest" ]; then
+            wp core download
+          else
+            wp core download --version="${{ matrix.wp }}"
+          fi
+          wp config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1
+          wp core install --url="http://localhost:8080" --title="Integration Test" --admin_user=admin --admin_password=admin --admin_email=admin@example.com
+
+      - name: Link Theme and Plugin
+        run: |
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" "$GITHUB_WORKSPACE/wp-env/wp-content/plugins/carmilla-bridge"
+          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-theme" "$GITHUB_WORKSPACE/wp-env/wp-content/themes/carmilla-theme"
+
+      - name: Install WooCommerce
+        run: |
+          cd wp-env
+          if [ "${{ matrix.woo }}" = "latest" ]; then
+            wp plugin install woocommerce --activate
+          else
+            wp plugin install woocommerce --version="${{ matrix.woo }}" --activate
+          fi
+
+      - name: Activate Carmilla Bridge and Theme
+        run: |
+          cd wp-env
+          wp plugin activate carmilla-bridge
+          wp theme activate carmilla-theme
+
+      - name: Run Existing Smokes
+        run: |
+          cd wordpress/carmilla-bridge/tests
+          for f in smoke*.php; do
+            echo "Running $f..."
+            php "$f"
+          done
