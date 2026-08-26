@@ -61,7 +61,7 @@ P09-QA-MANUAL-004
 Functional suite کامل shop-only
 
 ## خروجی مورد انتظار
-۱۰۰٪ critical؛ expected/actual/evidence
+۱۰۰٪ critical؛ expected/actual/evidence؛ بازآزمایی `P02-QA-MANUAL-017` شامل auth/home/product/cart/payment-return روی Release Candidate
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -104,12 +104,14 @@ Functional suite کامل shop-only
 - AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
 - Environment/device/browser و داده synthetic را ثبت کن.
 - انتظار: ۱۰۰٪ critical؛ expected/actual/evidence
+- بازآزمایی اجباری پیش از Gate انتشار: روی Release Candidate و fixture مصنوعی،مسیرهای auth/home/product/cart/payment-return را اجرا کن؛برای نتیجه payment فقط state authoritative بک‌اند معتبر است و پرداخت ناموفق/لغوشده/تأییدنشده نباید cart را پاک کند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [ ] بازآزمایی `P02-QA-MANUAL-017` روی Release Candidate با Evidence ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
