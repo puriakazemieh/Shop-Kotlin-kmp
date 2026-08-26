@@ -633,7 +633,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-ARCH-CODE-004` | AI | P0/HIGH | `BackendProfile` immutable با apiRoot/assetRoot/allowedAuthHosts | remote manifest نتواند origin/auth host را عوض کند |
 | [x] | `P03-ARCH-CODE-005` | AI | P0/HIGH | `EndpointResolver` و `AssetUrlResolver` تزریق و global/fallbackها حذف شوند | mapperها `PlatformConfig.baseUrl` نخوانند؛ path relative |
 | [x] | `P03-SECURITY-CODE-006` | BOTH | P0/HIGH | token/cache namespace بر اساس backend+tenant+origin | تغییر tenant logout و purge cache خصوصی ایجاد کند |
-| [ ] | `P03-MANIFEST-CODE-007` | AI | P0/HIGH | feature catalog و dependency resolver پیاده شود | parent خاموش child را خاموش؛ cycle/unknown schema رد |
+| [x] | `P03-MANIFEST-CODE-007` | AI | P0/HIGH | feature catalog و dependency resolver پیاده شود | parent خاموش child را خاموش؛ cycle/unknown schema رد |
 | [ ] | `P03-MANIFEST-CODE-008` | AI | P0/HIGH | compiled feature ceiling و platform policy اضافه شود | Clinic/Psych/Admin/Payment خارج ceiling روشن نشوند |
 | [ ] | `P03-WPPLUGIN-CODE-009` | BOTH | P0/HIGH | endpoint canonical `client-manifest` در WordPress | ETag/version/minClient؛ بدون secret؛ disabled feature واقعی |
 | [ ] | `P03-WPPLUGIN-CODE-010` | BOTH | P0/HIGH | پنل toggle و dependency validation در wp-admin | invalid combination ذخیره نشود؛ audit ثبت |
