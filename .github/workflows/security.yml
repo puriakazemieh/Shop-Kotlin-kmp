@@ -1,0 +1,42 @@
+name: Security Scan
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+  push:
+    branches: [ develop, main ]
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Secret Scanner (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # tampered dependency/known secret fixture CI را fail کند
+
+  dependency-verification:
+    name: Gradle Dependency Verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Verify Dependencies
+        # Gradle will automatically verify signatures and checksums 
+        # using gradle/verification-metadata.xml during resolving.
+        # This checks the dependency locking and verification.
+        run: ./gradlew dependencies --no-daemon
