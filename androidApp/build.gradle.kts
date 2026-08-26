@@ -5,6 +5,10 @@ plugins {
     id("org.jetbrains.compose")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
     namespace = "com.kazemieh.shop.app"
     compileSdk = 36
@@ -24,8 +28,8 @@ android {
         buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     flavorDimensions += "brand"
     productFlavors {
@@ -77,6 +81,8 @@ android {
 
 dependencies {
     implementation(project(":composeApp"))
+    implementation(project(":core:common"))
+    implementation(project(":core:designSystem"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.android)
     debugImplementation(libs.compose.uiTooling)

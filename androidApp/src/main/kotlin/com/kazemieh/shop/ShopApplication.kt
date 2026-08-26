@@ -2,6 +2,7 @@ package com.kazemieh.shop
 
 
 import android.app.Application
+import com.kazemieh.shop.app.BuildConfig
 import com.kazemieh.common.isDebugLoggingEnabled
 import com.kazemieh.designsystem.brand.BrandConfig
 import com.kazemieh.designsystem.brand.BrandRegistry

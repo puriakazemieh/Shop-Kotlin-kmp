@@ -7,6 +7,7 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(17)
     androidLibrary {
         compileSdk = 36
         minSdk = 24
