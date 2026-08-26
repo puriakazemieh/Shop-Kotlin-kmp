@@ -1,13 +1,16 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("org.jetbrains.compose.hot-reload")
 }
 
 kotlin {
-    androidTarget()
+    androidLibrary {
+        compileSdk = 36
+        minSdk = 24
+    }
 
     iosX64 {
         binaries.framework {
@@ -36,14 +39,4 @@ kotlin {
     }
 }
 
-android {
-    compileSdk = 36
-    defaultConfig {
-        minSdk = 24
-        targetSdk = 34
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
+
