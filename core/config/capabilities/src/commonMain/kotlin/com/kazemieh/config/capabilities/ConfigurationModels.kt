@@ -10,13 +10,28 @@ enum class BackendKind {
 }
 
 /**
- * هویت backend که از branding و قابلیت‌های tenant جدا نگه داشته می‌شود.
- * endpointهای تغییرناپذیر در P03-ARCH-CODE-004 به این مدل افزوده می‌شوند.
+ * هویت تغییرناپذیر backend که از branding و قابلیت‌های tenant جدا نگه داشته می‌شود.
+ * Manifest فقط tenant و capability را حمل می‌کند و نمی‌تواند این originها را تغییر دهد.
  */
 @Serializable
 data class BackendProfile(
-    val kind: BackendKind
-)
+    val kind: BackendKind,
+    val apiRoot: String,
+    val assetRoot: String,
+    val allowedAuthHosts: Set<String>,
+    val contractVersion: Int,
+    val manifestPath: String
+) {
+    init {
+        require(apiRoot.isTrustedHttpsUrl()) { "API root must use HTTPS." }
+        require(assetRoot.isTrustedHttpsUrl()) { "Asset root must use HTTPS." }
+        require(allowedAuthHosts.isNotEmpty() && allowedAuthHosts.all { it.isValidHostName() }) {
+            "At least one valid authentication host is required."
+        }
+        require(contractVersion > 0) { "Contract version must be positive." }
+        require(manifestPath.startsWith("/")) { "Manifest path must be absolute." }
+    }
+}
 
 /** داده‌های هویتی/نمایشی برند؛ بدون endpoint و بدون feature flag. */
 @Serializable
@@ -64,3 +79,9 @@ data class FeatureManifest(
         require(tenantId.isNotBlank()) { "Tenant id must not be blank." }
     }
 }
+
+private fun String.isTrustedHttpsUrl(): Boolean =
+    startsWith("https://") && length > "https://".length && none(Char::isWhitespace)
+
+private fun String.isValidHostName(): Boolean =
+    isNotBlank() && none(Char::isWhitespace) && !contains("://") && !contains('/')

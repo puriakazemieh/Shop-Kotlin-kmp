@@ -630,7 +630,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-MANIFEST-ADR-001` | BOTH | P0/HIGH | schema نهایی `FeatureManifest v1`، dependency و fail-closed rules freeze شود | JSON Schema + examples F0–F4 + backward policy |
 | [x] | `P03-ARCH-CODE-002` | AI | P0/MEDIUM | ماژول `core:config/capabilities` ساخته شود | designSystem دیگر مالک backend config نباشد |
 | [x] | `P03-ARCH-CODE-003` | AI | P0/HIGH | `BackendProfile`, `BrandingConfig`, `BuildIdentity`, `FeatureManifest` جدا شوند | unit tests serialization/validation |
-| [ ] | `P03-ARCH-CODE-004` | AI | P0/HIGH | `BackendProfile` immutable با apiRoot/assetRoot/allowedAuthHosts | remote manifest نتواند origin/auth host را عوض کند |
+| [x] | `P03-ARCH-CODE-004` | AI | P0/HIGH | `BackendProfile` immutable با apiRoot/assetRoot/allowedAuthHosts | remote manifest نتواند origin/auth host را عوض کند |
 | [ ] | `P03-ARCH-CODE-005` | AI | P0/HIGH | `EndpointResolver` و `AssetUrlResolver` تزریق و global/fallbackها حذف شوند | mapperها `PlatformConfig.baseUrl` نخوانند؛ path relative |
 | [ ] | `P03-SECURITY-CODE-006` | BOTH | P0/HIGH | token/cache namespace بر اساس backend+tenant+origin | تغییر tenant logout و purge cache خصوصی ایجاد کند |
 | [ ] | `P03-MANIFEST-CODE-007` | AI | P0/HIGH | feature catalog و dependency resolver پیاده شود | parent خاموش child را خاموش؛ cycle/unknown schema رد |
