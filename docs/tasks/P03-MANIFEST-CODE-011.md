@@ -48,7 +48,7 @@ P03-MANIFEST-CODE-011
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P03 / MANIFEST / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -125,11 +125,11 @@ bootstrap state و source precedence: فایل generated/local قابل ویرا
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-08-26T17:08:00+03:30
+- Completed at: 2026-08-26T17:09:00+03:30
+- Changed files: فقط مستندات وضعیت و Evidence؛ هیچ تغییر کد انجام نشد.
+- Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm`، exit code 1 پیش از پیکربندی پروژه: `Unable to establish loopback connection`.
+- Manual tester/date/result: N/A؛ پیاده‌سازی آغاز نشد.
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-011/`
+- Remaining risks/blockers: این کارت از M بزرگ‌تر است: (۱) local/generated config و storage چندپلتفرمی، (۲) client امن remote manifest با ETag/timeout، (۳) last-known-good و cache policy، (۴) state/UI retry/error پیش از NavHost، و (۵) اتصال DI/bootstrap. باید به Taskهای مستقل با acceptance و مالک روشن تقسیم شود. تا آن زمان dependency تسک ۰۱۲ پاس نیست.
+- Final status: BLOCKED
