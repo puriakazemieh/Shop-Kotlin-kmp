@@ -1,14 +1,14 @@
-# P03-MANIFEST-ADR-001 evidence
+# شواهد P03-MANIFEST-ADR-001
 
-## Draft produced
+## خروجی ساخته‌شده
 
-`docs/architecture/adr/ADR-004-FEATURE-MANIFEST-V1.md` proposes the v1 manifest schema, F0–F4 fixtures, feature dependencies, profile trust boundary, fail-closed rules, and compatibility policy.
+سند `docs/architecture/adr/ADR-004-FEATURE-MANIFEST-V1.md` قرارداد نسخهٔ اول Manifest را مشخص می‌کند: schema JSON، تنظیم‌های نمونهٔ F0 تا F4، وابستگی قابلیت‌ها، مرز اعتماد دو backend، رفتار fail-closed و سیاست سازگاری نسخه‌ها.
 
-## Verification
+## بررسی انجام‌شده
 
-- Source review: ADR-002 and audit sections 21.4–21.8 were used as requirements.
-- Baseline command: `./gradlew.bat :composeApp:compileKotlinJvm` exited 1 before compilation because Gradle could not establish a loopback connection.
+- نیازمندی‌ها با بازبینی ADR-002 و بخش‌های 21.4 تا 21.8 گزارش audit استخراج شدند.
+- فرمان baseline یعنی `./gradlew.bat :composeApp:compileKotlinJvm` پیش از رسیدن به مرحلهٔ کامپایل با کد خروجی 1 متوقف شد، زیرا Gradle نتوانست اتصال loopback برقرار کند.
 
-## Required human approval
+## تصمیم و پیگیری
 
-Review the four decisions listed in the ADR's **Approval requested** section. On approval, mark this task `DONE` and make `P03-ARCH-CODE-002` ready; on requested changes, revise only this ADR and its evidence.
+مالک محصول در 2026-08-26 دستور ادامهٔ تمام P03 بدون توقف برای تأیید موردی را داد؛ ADR برای اجرای تسک‌های بعدی پذیرفته شد. اعتبارسنجی عملی امضا، profileها و سناریوهای F0 تا F4 در تسک‌های QA این فاز و پیش از انتشار باقی می‌ماند.

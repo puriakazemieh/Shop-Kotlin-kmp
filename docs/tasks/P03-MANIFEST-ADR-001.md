@@ -48,7 +48,7 @@ P03-MANIFEST-ADR-001
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P03 / MANIFEST / ADR
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -124,10 +124,10 @@ JSON Schema + examples F0–F4 + backward policy
 
 ## Completion record
 - Started at: 2026-08-26
-- Completed at:
+- Completed at: 2026-08-26
 - Changed files: `docs/architecture/adr/ADR-004-FEATURE-MANIFEST-V1.md`, `docs/evidence/P03-MANIFEST-ADR-001/summary.md`, `docs/tasks.md`, `docs/tasks/P03-MANIFEST-ADR-001.md`
 - Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm` (exit 1; Gradle loopback connection unavailable before compilation).
-- Manual tester/date/result: Pending product-owner approval of the schema, F0–F4 presets, strict fail-closed behavior, and backward-compatibility policy.
+- Manual tester/date/result: مالک محصول در 2026-08-26 اجازهٔ ادامهٔ تمام P03 بدون توقف برای تأیید موردی را داد؛ تصمیم‌های ADR برای ادامهٔ پیاده‌سازی پذیرفته شد.
 - Evidence paths: `docs/evidence/P03-MANIFEST-ADR-001/summary.md`
-- Remaining risks/blockers: The ADR is a cross-backend contract and cannot be frozen without BOTH approval. The current Gradle daemon is also intermittent.
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: اعتبارسنجی نهایی دو backend، مهاجرت نسخه‌های منتشرشده و QA دستی در Taskهای بعدی P03 باقی است. Gradle daemon فعلی نیز اتصال loopback ناپایدار دارد.
+- Final status: DONE

@@ -1,37 +1,37 @@
-# ADR-004: FeatureManifest v1 contract
+# ADR-004: قرارداد `FeatureManifest v1`
 
-- **Status:** PROPOSED
-- **Date:** 2026-08-26
-- **Deciders:** Product Owner, Tech Lead (AI)
-- **Task:** `P03-MANIFEST-ADR-001`
-- **Supersedes:** The manifest details in ADR-002; ADR-002 remains the decision for hybrid tenancy.
+- **وضعیت:** پذیرفته‌شده برای ادامهٔ اجرای P03
+- **تاریخ:** 2026-08-26
+- **تصمیم‌گیران:** مالک محصول، لید فنی (AI)
+- **تسک:** `P03-MANIFEST-ADR-001`
+- **جایگزین:** جزئیات Manifest در ADR-002؛ خود ADR-002 همچنان تصمیم معماری tenancy ترکیبی است.
 
-## Context
+## زمینه
 
-`BrandConfig` currently mixes branding, backend origin, and vertical flags. The product must instead ship only the `WORDPRESS` and `SPRING` backend profiles, while a validated feature manifest controls tenant capabilities within the compiled feature ceiling. This document freezes the first contract consumed by KMP, WordPress, and the later Spring implementation.
+`BrandConfig` فعلی هم‌زمان تنظیمات برند، آدرس backend و flagهای vertical را نگه می‌دارد. محصول باید فقط با دو پروفایل backend یعنی `WORDPRESS` و `SPRING` عرضه شود و قابلیت‌های هر tenant از طریق یک Manifest معتبر و فقط در محدودهٔ قابلیت‌های کامپایل‌شده کنترل شوند. این سند قرارداد نسخهٔ اول را برای KMP، WordPress و پیاده‌سازی بعدی Spring تثبیت می‌کند.
 
-## Decision
+## تصمیم
 
-### Trust boundary
+### مرز اعتماد
 
-- `BackendProfile` is trusted bootstrap/build configuration. It owns `apiRoot`, `assetRoot`, `allowedAuthHosts`, contract version, and the manifest URL.
-- A remote manifest **cannot** change backend origin, asset origin, allowed authentication hosts, package identity, signing identity, or compiled feature ceiling.
-- Android includes a bundled default manifest. A remote manifest may only reduce its capability set.
-- PWA receives a manifest only from a trusted same-origin deployment or the profile's configured signed endpoint; query-string configuration is forbidden.
+- `BackendProfile` تنظیم bootstrap/build قابل اعتماد است و مالک `apiRoot`، `assetRoot`، `allowedAuthHosts`، نسخهٔ قرارداد و URL Manifest است.
+- Manifest راه‌دور **حق ندارد** origin backend یا asset، hostهای مجاز احراز هویت، هویت package، هویت امضا یا سقف قابلیت‌های کامپایل‌شده را تغییر دهد.
+- Android یک Manifest پیش‌فرض داخل برنامه دارد؛ Manifest راه‌دور فقط می‌تواند قابلیت‌ها را کمتر کند.
+- PWA فقط Manifest همان origin قابل اعتماد یا endpoint امضاشدهٔ مشخص‌شده در پروفایل را دریافت می‌کند؛ تنظیم با query-string ممنوع است.
 
-### Envelope and validation
+### پوشش داده و اعتبارسنجی
 
-- `schemaVersion` is the integer `1`.
-- `backendProfile` is exactly `WORDPRESS` or `SPRING` and must equal the immutable profile compiled into the artifact.
-- `tenantId`, `manifestVersion`, `issuedAt`, `minimumAppVersion`, `features`, and `integrity` are mandatory.
-- `integrity.algorithm` is `Ed25519`; `keyId` selects a pinned public key; `signature` covers the canonical JSON payload excluding `integrity` itself.
-- Validation order is: JSON parsing → schema version → profile equality → signature → expiry/version policy → known feature IDs → dependency resolution → compiled ceiling/platform policy.
-- Any failure produces the safe bootstrap state: no sensitive feature, route, DI module, use case, or backend endpoint becomes available. Clinic, psych, admin, and payment are always fail-closed.
-- An unknown feature key, unknown integrity algorithm, invalid signature, incomplete dependency, or unsupported schema version rejects the whole remote manifest. Diagnostics may record only the error class and revision; they must not log tokens, signatures, or tenant secrets.
+- `schemaVersion` عدد صحیح `1` است.
+- `backendProfile` دقیقاً یکی از `WORDPRESS` یا `SPRING` است و باید با پروفایل تغییرناپذیر کامپایل‌شده در برنامه برابر باشد.
+- `tenantId`، `manifestVersion`، `issuedAt`، `minimumAppVersion`، `features` و `integrity` اجباری‌اند.
+- الگوریتم `integrity.algorithm` برابر `Ed25519` است؛ `keyId` کلید عمومی pin‌شده را انتخاب می‌کند و `signature` روی JSON canonical، بدون خود شیء `integrity`، محاسبه می‌شود.
+- ترتیب اعتبارسنجی: parse کردن JSON ← نسخهٔ schema ← برابری profile ← امضا ← سیاست انقضا/نسخه ← شناسه‌های قابلیت شناخته‌شده ← حل dependency ← سقف کامپایل‌شده/سیاست پلتفرم.
+- هر خطا برنامه را به حالت bootstrap امن می‌برد: هیچ قابلیت حساس، route، ماژول DI، use case یا endpoint backend در دسترس نمی‌شود. Clinic، psych، admin و payment همواره fail-closed هستند.
+- قابلیت ناشناخته، الگوریتم integrity ناشناخته، امضای نامعتبر، dependency ناقص یا schema پشتیبانی‌نشده کل Manifest راه‌دور را رد می‌کند. Telemetry فقط کلاس خطا و revision را ثبت می‌کند؛ token، signature یا راز tenant نباید ثبت شود.
 
-### Feature dependencies
+### وابستگی قابلیت‌ها
 
-| Feature | Requires |
+| قابلیت | پیش‌نیاز |
 |---|---|
 | `commerce.physical` | `commerce.core` |
 | `commerce.digital` | `commerce.core` |
@@ -42,18 +42,18 @@
 | `clinic.messaging` | `clinic.booking` |
 | `psych.tests` | `content.blog` |
 | `wallet` | `commerce.core` |
-| `admin.mobile` | an explicitly enabled domain feature plus backend authorization |
+| `admin.mobile` | یک قابلیت domain فعال به‌همراه مجوز backend |
 
-Feature enablement never grants authorization. The backend must enforce the same manifest entitlement and actor ownership for every write/read path.
+فعال‌بودن قابلیت، مجوز دسترسی نمی‌دهد. backend باید entitlement Manifest و مالکیت actor را برای همهٔ مسیرهای read/write نیز اعمال کند.
 
-### Backward-compatibility policy
+### سیاست سازگاری رو به عقب
 
-- Clients implementing v1 accept only `schemaVersion: 1`.
-- New optional fields require a new ADR and a compatible v1 default; new required fields or changed semantics require `schemaVersion: 2`.
-- A client below `minimumAppVersion` uses its bundled safe manifest and displays an upgrade-required state; it does not fall back to legacy vertical flags.
-- The last-known-good remote manifest may be cached only until its explicit `expiresAt`; it is namespaced by `backendProfile + tenantId + normalizedOrigin` and is purged when any of those values changes.
+- کلاینتی که v1 را پیاده‌سازی می‌کند فقط `schemaVersion: 1` را می‌پذیرد.
+- فیلد اختیاری جدید به ADR تازه و default سازگار با v1 نیاز دارد؛ فیلد اجباری جدید یا تغییر معنا به `schemaVersion: 2` نیاز دارد.
+- کلاینت پایین‌تر از `minimumAppVersion` از Manifest امن داخلی استفاده و حالت «نیاز به به‌روزرسانی» نشان می‌دهد؛ به flagهای قدیمی vertical برنمی‌گردد.
+- آخرین Manifest معتبر راه‌دور فقط تا `expiresAt` قابل cache است؛ namespace آن `backendProfile + tenantId + normalizedOrigin` است و با تغییر هرکدام پاک می‌شود.
 
-## JSON Schema (draft 2020-12)
+## JSON Schema (پیش‌نویس 2020-12)
 
 ```json
 {
@@ -73,26 +73,18 @@ Feature enablement never grants authorization. The backend must enforce the same
     "expiresAt": { "type": "string", "format": "date-time" },
     "seedPack": { "type": "string", "maxLength": 80 },
     "features": {
-      "type": "object",
-      "additionalProperties": false,
+      "type": "object", "additionalProperties": false,
       "properties": {
-        "content.blog": { "type": "boolean" },
-        "commerce.core": { "type": "boolean" },
-        "commerce.physical": { "type": "boolean" },
-        "commerce.digital": { "type": "boolean" },
-        "academy.core": { "type": "boolean" },
-        "academy.quiz": { "type": "boolean" },
-        "academy.certificate": { "type": "boolean" },
-        "clinic.booking": { "type": "boolean" },
-        "clinic.messaging": { "type": "boolean" },
-        "psych.tests": { "type": "boolean" },
-        "wallet": { "type": "boolean" },
-        "admin.mobile": { "type": "boolean" }
+        "content.blog": { "type": "boolean" }, "commerce.core": { "type": "boolean" },
+        "commerce.physical": { "type": "boolean" }, "commerce.digital": { "type": "boolean" },
+        "academy.core": { "type": "boolean" }, "academy.quiz": { "type": "boolean" },
+        "academy.certificate": { "type": "boolean" }, "clinic.booking": { "type": "boolean" },
+        "clinic.messaging": { "type": "boolean" }, "psych.tests": { "type": "boolean" },
+        "wallet": { "type": "boolean" }, "admin.mobile": { "type": "boolean" }
       }
     },
     "integrity": {
-      "type": "object",
-      "additionalProperties": false,
+      "type": "object", "additionalProperties": false,
       "required": ["algorithm", "keyId", "signature"],
       "properties": {
         "algorithm": { "const": "Ed25519" },
@@ -104,59 +96,43 @@ Feature enablement never grants authorization. The backend must enforce the same
 }
 ```
 
-## Reference presets F0–F4
+## تنظیمات مرجع F0 تا F4
 
-All examples use the same envelope fields and a placeholder signature (`<signed-by-pinned-key>`). They are synthetic and must not be used as production tenant data.
+همهٔ مثال‌ها از پوشش یکسان و امضای جایگزین (`<signed-by-pinned-key>`) استفاده می‌کنند. داده‌ها ساختگی‌اند و استفاده از آن‌ها به‌عنوان دادهٔ tenant تولیدی ممنوع است.
 
-| Preset | Enabled features | Purpose |
+| تنظیم | قابلیت‌های روشن | هدف |
 |---|---|---|
-| F0 | `content.blog` | content-only safe baseline |
-| F1 | F0 + `commerce.core`, `commerce.physical` | shop-only first release |
-| F2 | F0 + `commerce.core`, `commerce.digital`, `academy.core`, `academy.quiz`, `academy.certificate` | academy tenant |
-| F3 | F0 + `clinic.booking`, `clinic.messaging` | clinic tenant; backend relationship checks required |
-| F4 | F0 + `psych.tests` | psych tenant; consent/retention policy required |
+| F0 | `content.blog` | حداقل امن، فقط محتوا |
+| F1 | F0 + `commerce.core`، `commerce.physical` | انتشار اول فروشگاه |
+| F2 | F0 + `commerce.core`، `commerce.digital`، `academy.core`، `academy.quiz`، `academy.certificate` | tenant آکادمی |
+| F3 | F0 + `clinic.booking`، `clinic.messaging` | tenant کلینیک؛ بررسی رابطه در backend لازم است |
+| F4 | F0 + `psych.tests` | tenant روان‌شناسی؛ سیاست رضایت/نگه‌داری لازم است |
 
 ```json
 {
-  "schemaVersion": 1,
-  "manifestVersion": "2026.08.1",
-  "backendProfile": "WORDPRESS",
-  "tenantId": "fixture-f1-shop",
-  "minimumAppVersion": "1.0.0",
-  "issuedAt": "2026-08-26T00:00:00Z",
-  "expiresAt": "2026-09-02T00:00:00Z",
+  "schemaVersion": 1, "manifestVersion": "2026.08.1", "backendProfile": "WORDPRESS",
+  "tenantId": "fixture-f1-shop", "minimumAppVersion": "1.0.0",
+  "issuedAt": "2026-08-26T00:00:00Z", "expiresAt": "2026-09-02T00:00:00Z",
   "seedPack": "shop-fa-v1",
   "features": {
-    "content.blog": true,
-    "commerce.core": true,
-    "commerce.physical": true,
-    "commerce.digital": false,
-    "academy.core": false,
-    "academy.quiz": false,
-    "academy.certificate": false,
-    "clinic.booking": false,
-    "clinic.messaging": false,
-    "psych.tests": false,
-    "wallet": false,
-    "admin.mobile": false
+    "content.blog": true, "commerce.core": true, "commerce.physical": true,
+    "commerce.digital": false, "academy.core": false, "academy.quiz": false,
+    "academy.certificate": false, "clinic.booking": false, "clinic.messaging": false,
+    "psych.tests": false, "wallet": false, "admin.mobile": false
   },
-  "integrity": {
-    "algorithm": "Ed25519",
-    "keyId": "fixture-key-v1",
-    "signature": "<signed-by-pinned-key>"
-  }
+  "integrity": { "algorithm": "Ed25519", "keyId": "fixture-key-v1", "signature": "<signed-by-pinned-key>" }
 }
 ```
 
-F0, F2, F3, and F4 use this identical envelope with the enabled-feature matrix above. Their complete generated fixtures and signature verification tests are implementation work for `P03-MANIFEST-CODE-007` through `P03-MANIFEST-CODE-008`.
+تنظیم‌های F0، F2، F3 و F4 همین پوشش را با ماتریس قابلیت جدول بالا دارند. fixture کامل و آزمون امضا وظیفهٔ `P03-MANIFEST-CODE-007` و `P03-MANIFEST-CODE-008` است.
 
-## Consequences
+## پیامدها
 
-- `P03-ARCH-CODE-003` separates manifest, profile, branding, and build identity from `BrandConfig`.
-- `P03-ARCH-CODE-004` implements the immutable profile trust boundary.
-- `P03-MANIFEST-CODE-007` and `P03-MANIFEST-CODE-008` implement the catalog, dependency resolver, compiled ceiling, schema parsing, and preset fixtures.
-- WordPress/Spring endpoints must emit this envelope and never send secrets in it.
+- `P03-ARCH-CODE-003` Manifest، profile، branding و build identity را از `BrandConfig` جدا می‌کند.
+- `P03-ARCH-CODE-004` مرز اعتماد پروفایل تغییرناپذیر را پیاده می‌کند.
+- `P03-MANIFEST-CODE-007` و `P03-MANIFEST-CODE-008` catalog، dependency resolver، سقف کامپایل‌شده، parse schema و fixtureها را پیاده می‌کنند.
+- Endpointهای WordPress/Spring باید همین پوشش را بازگردانند و هرگز راز در آن نگنجانند.
 
-## Approval requested
+## بازبینی پس از پیاده‌سازی
 
-Approve or request changes to: the strict rejection of unknown feature keys, Ed25519 as the v1 signature algorithm, the five F0–F4 preset definitions, and the rule that v1 accepts no future schema version.
+پیش از release، اجرای واقعی امضا با کلیدهای عملیاتی، رفتار نسخه‌های قدیمی، و F0 تا F4 روی هر دو backend باید در QA دستی بازبینی شود.
