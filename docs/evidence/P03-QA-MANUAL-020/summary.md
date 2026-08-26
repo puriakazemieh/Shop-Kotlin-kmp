@@ -1,10 +1,28 @@
-# راهنمای QA دستی P03-QA-MANUAL-020
+# Evidence — P03-QA-MANUAL-020
 
-این تست عمداً توسط AI اجرا نشد و کارت در وضعیت `AWAITING_MANUAL_QA` است.
-محیط پیشنهادی: سایت WordPress فعال `kazemieh.com` با افزونه Carmilla Bridge،
-یک مرورگر Chrome با DevTools، و build فعلی PWA/client internal بدون rebuild.
-فقط داده‌ی synthetic استفاده شود؛ توکن، ایمیل یا سفارش واقعی در screenshot ثبت
-نشود.
+## نتیجهٔ اجرای AI در محیط موجود
+
+در تاریخ 2026-08-26 با مرورگر Chrome داخلی Codex روی `https://kazemieh.com/`
+تلاش شد. هیچ setting، سفارش، حساب یا دادهٔ واقعی تغییر داده نشد و screenshot
+حاوی نام کاربر/PII ذخیره نشد.
+
+| بخش | نتیجه | مشاهدهٔ قابل‌تکرار |
+|---|---|---|
+| دسترسی پنل Manifest | **BLOCKED** | `wp-admin/options-general.php?page=cb-feature-manifest` پیام «اجازهٔ دسترسی به این برگه را ندارید» داد. |
+| مشاهدهٔ endpoint | **BLOCKED** | بازکردن `/wp-json/carmilla/v1/client-manifest` با `net::ERR_BLOCKED_BY_CLIENT` متوقف شد؛ بنابراین status/ETag/بدنه قابل تأیید نبود. |
+| نسخهٔ افزونهٔ live | **INFO** | صفحهٔ افزونه‌ها `Carmilla Bridge 0.7.3` را نشان داد؛ build/نسخهٔ deploy‌شدهٔ P03 قابل اثبات نیست. |
+| `commerce.core` خاموش | **FAIL/UNVERIFIED** | `/shop/` با عنوان «فروشگاه» و ۱۲ کالا و `/cart/` با «سبد خرید شما در حال حاضر خالی است» بدون rebuild باز شدند؛ manifest guard در این محیط قابل مشاهده نیست. |
+| deep linkهای عمودی | **FAIL/UNVERIFIED** | `/courses/` صفحهٔ «دوره‌های آموزشی» را باز کرد و `/appointment/` صفحهٔ عمومی 404 را نشان داد؛ safe-home/feature-guard قابل تأیید نیست. |
+| stale/invalid و restart | **NOT RUN** | به PWA/client داخلی deploy‌شده و امکان block/synthetic response دسترسی نبود. |
+
+این نتیجه برای `DONE` کافی نیست؛ کارت عمداً در `AWAITING_MANUAL_QA` باقی می‌ماند.
+
+## راهنمای اجرای باقی‌مانده
+
+محیط لازم: سایت WordPress فعال `kazemieh.com` با نسخهٔ deploy‌شده‌ای که
+Manifest P03 را دارد، حساب دارای capability `manage_options`، یک مرورگر Chrome
+با DevTools، و build فعلی PWA/client internal بدون rebuild. فقط دادهٔ synthetic
+استفاده شود؛ توکن، ایمیل یا سفارش واقعی در screenshot ثبت نشود.
 
 ## مراحل دقیق
 

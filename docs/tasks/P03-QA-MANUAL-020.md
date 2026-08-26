@@ -107,10 +107,10 @@ toggle واقعی بدون rebuild در WordPress/PWA/client internal
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] خروجی با هدف و validation این کارت منطبق است؛ محیط live فعلی برای اجرای کامل ماتریس آماده نیست.
 - [x] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [x] تست دستی هنوز اجرا نشده و وضعیت درست `AWAITING_MANUAL_QA` است.
+- [x] تست دستی توسط AI تلاش شد؛ به‌دلیل محدودیت محیط، وضعیت درست `AWAITING_MANUAL_QA` باقی است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -127,10 +127,10 @@ toggle واقعی بدون rebuild در WordPress/PWA/client internal
 
 ## Completion record
 - Started at: 2026-08-26
-- Completed at:
+- Completed at: 2026-08-26 (تلاش AI؛ ماتریس کامل قابل اجرا نبود)
 - Changed files: `docs/tasks.md`, `docs/tasks/P03-QA-MANUAL-020.md`, `docs/evidence/P03-QA-MANUAL-020/summary.md`
-- Commands and exit codes: prerequisite `:core:navigation:jvmTest`, `:core:config:capabilities:jvmTest`, `:composeApp:compileKotlinJvm`, `:composeApp:compileKotlinJs` all exit 0.
-- Manual tester/date/result: منتظر اجرای کاربر روی WordPress/PWA/client internal.
+- Commands and exit codes: `:core:navigation:jvmTest`, `:core:config:capabilities:jvmTest`, `:composeApp:compileKotlinJvm`, `:composeApp:compileKotlinJs` همگی exit 0.
+- Manual tester/date/result: AI، 2026-08-26؛ نتیجهٔ جزئی و غیرقابل‌قبول برای DONE، چون دسترسی Settings و build deploy‌شدهٔ P03 فراهم نبود.
 - Evidence paths: `docs/evidence/P03-QA-MANUAL-020/summary.md`
-- Remaining risks/blockers: تأیید انسانی خاموش/روشن،stale/invalid،deep link و process restart انجام نشده؛ `P03-MANIFEST-OPS-021` تا این تأیید متوقف است.
+- Remaining risks/blockers: toggle/stale/invalid/deep-link/process-restart روی build deploy‌شده و بررسی پاسخ 403 endpoint هنوز باید انجام شود؛ `P03-MANIFEST-OPS-021` تا آن زمان متوقف است.
 - Final status: AWAITING_MANUAL_QA
