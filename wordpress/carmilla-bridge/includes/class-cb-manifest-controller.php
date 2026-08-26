@@ -90,6 +90,73 @@ class CB_Manifest_Controller {
 		) );
 	}
 
+	/**
+	 * Enforce the manifest policy at the REST dispatch boundary. Controllers may
+	 * still expose routes for compatibility, but a disabled feature never reaches
+	 * its callback. Authentication/manifest routes are intentionally unmapped.
+	 */
+	public static function guard_rest_request( $result, $server, $request ) {
+		if ( $result !== null ) {
+			return $result;
+		}
+		$feature = self::feature_for_route( $request->get_route() );
+		if ( $feature === null ) {
+			return $result;
+		}
+		$features = self::resolve_features( get_option( self::FEATURES_OPTION, array() ) );
+		if ( ! empty( $features[ $feature ] ) ) {
+			return $result;
+		}
+		return new WP_Error(
+			'FEATURE_DISABLED',
+			__( 'این قابلیت در حال حاضر فعال نیست.', 'carmilla-bridge' ),
+			array( 'status' => 403, 'feature' => $feature )
+		);
+	}
+
+	/** Map public REST paths to the canonical feature identifier. */
+	public static function feature_for_route( $route ): ?string {
+		$route = '/' . ltrim( (string) $route, '/' );
+		$api_position = strpos( $route, '/api/' );
+		if ( $api_position === false ) {
+			return null;
+		}
+		$path = substr( $route, $api_position );
+		$prefixes = array(
+			'/api/admin/psych-tests' => 'psych.tests',
+			'/api/psych-tests'       => 'psych.tests',
+			'/api/admin/therapists'  => 'clinic.booking',
+			'/api/therapists'        => 'clinic.booking',
+			'/api/clinic'            => 'clinic.booking',
+			'/api/admin/courses'     => 'academy.core',
+			'/api/courses'           => 'academy.core',
+			'/api/academy'           => 'academy.core',
+			'/api/course-requests'   => 'academy.core',
+			'/api/admin/blogs'       => 'content.blog',
+			'/api/blogs'             => 'content.blog',
+			'/api/admin/products'    => 'commerce.core',
+			'/api/admin/variants'    => 'commerce.core',
+			'/api/admin/options'     => 'commerce.core',
+			'/api/admin/bundles'     => 'commerce.core',
+			'/api/products'          => 'commerce.core',
+			'/api/categories'        => 'commerce.core',
+			'/api/campaigns'         => 'commerce.core',
+			'/api/banners'           => 'commerce.core',
+			'/api/cart'              => 'commerce.core',
+			'/api/orders'            => 'commerce.core',
+			'/api/payments'          => 'commerce.core',
+			'/api/bundles'           => 'commerce.core',
+			'/api/wallet'            => 'wallet',
+			'/api/admin'             => 'admin.mobile',
+		);
+		foreach ( $prefixes as $prefix => $feature ) {
+			if ( $path === $prefix || strpos( $path, $prefix . '/' ) === 0 ) {
+				return $feature;
+			}
+		}
+		return null;
+	}
+
 	public function get_manifest( WP_REST_Request $request ): WP_REST_Response {
 		$payload = array(
 			'schemaVersion'     => 1,

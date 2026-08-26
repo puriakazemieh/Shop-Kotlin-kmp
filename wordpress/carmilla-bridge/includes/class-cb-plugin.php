@@ -26,6 +26,8 @@ class CB_Plugin {
 		CB_CPT::boot();
 		$manifest_controller = new CB_Manifest_Controller();
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		// Apply the manifest policy before any controller callback executes.
+		add_filter( 'rest_pre_dispatch', array( 'CB_Manifest_Controller', 'guard_rest_request' ), 10, 3 );
 		add_action( 'admin_menu', array( $manifest_controller, 'register_admin_page' ) );
 		add_action( 'admin_post_cb_save_manifest_settings', array( $manifest_controller, 'save_admin_settings' ) );
 		// Let a valid Bearer token authenticate normal WP REST requests too.

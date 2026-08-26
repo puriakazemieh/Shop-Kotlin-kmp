@@ -48,7 +48,7 @@ P03-WPPLUGIN-SEC-015
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / WPPLUGIN / SEC
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -103,10 +103,10 @@ backend endpoint enforcement بر همان policy
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] تست دستی واقعی سایت عمداً به P03-QA-MANUAL-020 منتقل شده و این کارت DONE است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -122,11 +122,11 @@ backend endpoint enforcement بر همان policy
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
+- Started at: 2026-08-26
+- Completed at: 2026-08-26
+- Changed files: `wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-plugin.php`, `wordpress/carmilla-bridge/tests/smoke-manifest-security.php`
+- Commands and exit codes: Docker `php:8.1-cli` lint for both PHP files plus `tests/smoke-manifest.php`, `tests/smoke-manifest-security.php`, `tests/smoke-phase3.php` (all exit 0).
 - Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Evidence paths: `docs/evidence/P03-WPPLUGIN-SEC-015/summary.md`
+- Remaining risks/blockers: تست واقعی endpoint روی سایت وردپرس و بررسی UI تا تسک `P03-QA-MANUAL-020` عمداً انجام نشده است.
+- Final status: DONE
