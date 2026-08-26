@@ -47,6 +47,7 @@ import com.kazemieh.config.capabilities.BackendProfile
 import com.kazemieh.config.capabilities.BootstrapProfiles
 import com.kazemieh.config.capabilities.EndpointResolver
 import com.kazemieh.config.capabilities.FeatureManifestBootstrapCoordinator
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
 import com.kazemieh.config.capabilities.FeatureFlagShadowMode
 import com.kazemieh.config.capabilities.FeatureFlagShadowReporter
 import com.kazemieh.config.capabilities.InMemoryLastKnownGoodManifestCache
@@ -153,6 +154,7 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                 single {
                     GeneratedLocalFeatureManifest.sourceFor(get<BackendProfile>()).resolveFor(get<BackendProfile>().kind)
                 }
+                single { FeatureUseCaseGuard(get()) }
                 single { FeatureRouteGuard(get()) }
                 single {
                     FeatureManifestBootstrapCoordinator(
