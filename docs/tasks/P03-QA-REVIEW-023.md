@@ -61,10 +61,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
+- [x] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
 
 ## Evidence و Rollback
 
@@ -74,13 +74,13 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY
+- Started at: 2026-09-06
+- Completed at: 2026-09-06
+- Changed files: `docs/evidence/P03-QA-REVIEW-023/summary.md`, `docs/tasks/P03-QA-REVIEW-023.md`, `docs/tasks.md`
+- Commands and exit codes: `git diff --check` (Exit code: 0)
+- Manual tester/date/build/result: N/A (تغییر صرفاً مستنداتی است و طبق کارت نیازی به تست دستی انسانی نیست)
+- Evidence paths: `docs/evidence/P03-QA-REVIEW-023/summary.md`
+- Remaining risks/blockers: شواهد قبلی ناقص هستند و باید در Gateهای مربوطه بررسی شوند.
+- Final status: DONE
 
 </div>
