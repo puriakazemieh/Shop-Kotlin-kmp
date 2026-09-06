@@ -27,7 +27,7 @@ class RemoteFeatureManifestClientTest {
             expectedTenantId = "tenant-1",
             transport = transport,
             timeoutMillis = 1_250L
-        ).fetch("\"old\"")
+        , ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))).fetch("\"old\"")
 
         assertEquals("https://tenant.example.test/wp-json/carmilla/v1/client-manifest", request?.url)
         assertEquals(1_250L, request?.timeoutMillis)
@@ -41,7 +41,7 @@ class RemoteFeatureManifestClientTest {
         val result = RemoteFeatureManifestClient(
             profile = profile,
             expectedTenantId = "tenant-1",
-            transport = RemoteManifestTransport { RemoteManifestResponse(304, "", null) }
+            transport = RemoteManifestTransport { RemoteManifestResponse(304, "", null, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))) }
         ).fetch("\"cached\"")
 
         assertEquals(RemoteManifestFetchResult.NotModified("\"cached\""), result)
@@ -59,7 +59,7 @@ class RemoteFeatureManifestClientTest {
             val result = RemoteFeatureManifestClient(
                 profile = profile,
                 expectedTenantId = "tenant-1",
-                transport = RemoteManifestTransport { RemoteManifestResponse(200, body, null) }
+                transport = RemoteManifestTransport { RemoteManifestResponse(200, body, null, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))) }
             ).fetch()
             assertTrue(result is RemoteManifestFetchResult.Failure)
         }
@@ -67,7 +67,7 @@ class RemoteFeatureManifestClientTest {
         val timeout = RemoteFeatureManifestClient(
             profile = profile,
             expectedTenantId = "tenant-1",
-            transport = RemoteManifestTransport { error("timeout") }
+            transport = RemoteManifestTransport { error("timeout", ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))) }
         ).fetch()
         assertTrue(timeout is RemoteManifestFetchResult.Failure)
     }

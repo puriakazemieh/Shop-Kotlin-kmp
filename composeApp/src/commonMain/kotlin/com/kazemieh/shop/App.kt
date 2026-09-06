@@ -130,17 +130,20 @@ fun App() {
     }
 }
 
-fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclaration? = null) {
-    // backend فقط یک dimension دوحالته است؛ tenant و branding مستقل می‌مانند.
-    ApiConfig.baseUrlOverride = brand.apiBaseUrl
-    val backendKind = if (brand.id.equals("wp", ignoreCase = true)) BackendKind.WORDPRESS else BackendKind.SPRING
-    val tenantConfig = TenantConfig("local-default")
-    val backendProfile: BackendProfile = BootstrapProfiles.forBackend(backendKind, ApiConfig.baseUrl)
+fun initKoin(sku: String, apiBaseUrlOverride: String? = null, config: KoinAppDeclaration? = null) {
+    val spec = GeneratedProductSpecs.specs[sku] ?: throw IllegalStateException("Unknown SKU: $sku")
+    
+    val brand = com.kazemieh.designsystem.brand.BrandRegistry.byId(spec.branding.id)
+    ApiConfig.baseUrlOverride = apiBaseUrlOverride ?: spec.backendProfile.apiRoot
+    val tenantConfig = spec.tenant
+    val backendProfile = spec.backendProfile.copy(apiRoot = ApiConfig.baseUrl)
+
     startKoin {
         printLogger()
         config?.invoke(this)
         modules(
             org.koin.dsl.module {
+                single<ProductBuildSpec> { spec }
                 single { brand }
                 single { backendProfile }
                 single { tenantConfig }
@@ -159,14 +162,11 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                 }
                 single<FeatureFlagShadowReporter> { FeatureFlagShadowReporter { } }
                 single { FeatureFlagShadowMode(get()) }
-                single<ProductBuildSpec> { 
-                    GeneratedProductSpecs.specs[brand.id] ?: throw IllegalStateException("Unknown SKU: ${brand.id}")
-                }
                 single {
                     CompiledFeatureCeiling(get<ProductBuildSpec>().compiledFeatureIds)
                 }
                 single {
-                    val localConfig = GeneratedProductSpecs.localConfigs[brand.id] ?: throw IllegalStateException("Unknown SKU local config: ${brand.id}")
+                    val localConfig = GeneratedProductSpecs.localConfigs[sku] ?: throw IllegalStateException("Unknown SKU local config: $sku")
                     val source = LocalFeatureManifestSource(localConfig, ceiling = get())
                     source.resolveFor(get<ProductBuildSpec>().backendProfile.kind)
                 }

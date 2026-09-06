@@ -11,8 +11,10 @@ import java.awt.Dimension
 import java.net.URI
 
 fun main(args: Array<String>) = application {
-    // انتخابِ برند برای دسکتاپ با آرگومانِ اجرا: -Dbrand=atris (پیش‌فرض carmila)
-    initKoin(brand = com.kazemieh.designsystem.brand.BrandRegistry.byId(System.getProperty("brand")))
+    val sku = System.getProperty("brand")?.takeIf { it.isNotBlank() } ?: "carmila"
+    val apiOverride = System.getProperty("api")?.takeIf { it.isNotBlank() }
+    
+    initKoin(sku = sku, apiBaseUrlOverride = apiOverride)
 
     // Handle deep link from arguments (if app was launched with URI)
     args.firstOrNull()?.let { handleUri(it) }

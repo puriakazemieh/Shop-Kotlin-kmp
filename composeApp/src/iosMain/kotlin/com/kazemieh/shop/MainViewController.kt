@@ -10,9 +10,9 @@ import platform.UIKit.UIViewController
 
 private var koinInitialized = false
 
-fun MainViewController(): UIViewController {
+fun MainViewController(sku: String = "carmila", apiOverride: String? = null): UIViewController {
     if (!koinInitialized) {
-        initKoin()
+        initKoin(sku = sku, apiBaseUrlOverride = apiOverride)
         koinInitialized = true
     }
 

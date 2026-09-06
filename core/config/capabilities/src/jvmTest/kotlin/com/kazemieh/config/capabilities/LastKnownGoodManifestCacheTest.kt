@@ -14,7 +14,7 @@ class LastKnownGoodManifestCacheTest {
 
     @Test
     fun `writes only validated non expired entries and expires them`() {
-        val cache = InMemoryLastKnownGoodManifestCache()
+        val cache = InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
         assertFalse(cache.write(wordpress, manifest, "\"v1\"", 100L, 100L))
         assertTrue(cache.write(wordpress, manifest, "\"v1\"", 200L, 100L))
         assertNotNull(cache.read(wordpress, 199L))
@@ -23,7 +23,7 @@ class LastKnownGoodManifestCacheTest {
 
     @Test
     fun `backend tenant and invalidation are isolated`() {
-        val cache = InMemoryLastKnownGoodManifestCache()
+        val cache = InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
         assertTrue(cache.write(wordpress, manifest, null, 500L, 100L))
         assertNull(cache.read(spring, 101L))
         assertNull(cache.read(otherTenant, 101L))
@@ -34,7 +34,7 @@ class LastKnownGoodManifestCacheTest {
 
     @Test
     fun `invalid manifest is never reactivated`() {
-        val cache = InMemoryLastKnownGoodManifestCache()
+        val cache = InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
         val invalid = manifest.copy(features = mapOf("unknown.feature" to true))
         assertFalse(cache.write(wordpress, invalid, null, 500L, 100L))
         assertNull(cache.read(wordpress, 101L))

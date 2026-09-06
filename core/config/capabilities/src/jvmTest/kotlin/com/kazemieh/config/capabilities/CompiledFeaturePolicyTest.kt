@@ -12,7 +12,7 @@ class CompiledFeaturePolicyTest {
             "psych.tests" to true, "admin.mobile" to true
         )))
 
-        val effective = CompiledFeatureCeiling.shopOnly.apply(resolved)
+        val effective = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")).apply(resolved)
 
         assertTrue(effective.isEnabled("commerce.core"))
         assertFalse(effective.isEnabled("clinic.booking"))

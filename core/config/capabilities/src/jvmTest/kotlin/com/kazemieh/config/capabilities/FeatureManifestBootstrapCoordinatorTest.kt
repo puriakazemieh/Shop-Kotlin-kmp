@@ -24,7 +24,7 @@ class FeatureManifestBootstrapCoordinatorTest {
     fun `remote failure keeps safe local fallback and retry only calls remote`() = runBlocking {
         var calls = 0
         val client = client(RemoteManifestTransport { calls++; RemoteManifestResponse(503, "", null) })
-        val coordinator = FeatureManifestBootstrapCoordinator(local, client, InMemoryLastKnownGoodManifestCache(), namespace, { 100L })
+        val coordinator = FeatureManifestBootstrapCoordinator(local, client, InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet", ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))))), namespace, { 100L })
         val first = coordinator.load()
         coordinator.retry()
         assertTrue(first is ManifestBootstrapState.Error)
@@ -36,19 +36,19 @@ class FeatureManifestBootstrapCoordinatorTest {
     @Test
     fun `valid cache is used on remote failure and stale cache is ignored`() = runBlocking {
         var now = 100L
-        val cache = InMemoryLastKnownGoodManifestCache()
+        val cache = InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
         cache.write(namespace, FeatureManifest(1, "cached", BackendKind.WORDPRESS, "tenant-1", mapOf("content.blog" to true)), null, 200L, now)
-        val cachedState = FeatureManifestBootstrapCoordinator(local, client(RemoteManifestResponse(503, "", null)), cache, namespace, { now }, 50L).load()
+        val cachedState = FeatureManifestBootstrapCoordinator(local, client(RemoteManifestResponse(503, "", null, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))), cache, namespace, { now }, 50L).load()
         assertEquals(ManifestBootstrapSource.LAST_KNOWN_GOOD, (cachedState as ManifestBootstrapState.Error).source)
         now = 201L
-        val staleState = FeatureManifestBootstrapCoordinator(local, client(RemoteManifestResponse(503, "", null)), cache, namespace, { now }, 50L).load()
+        val staleState = FeatureManifestBootstrapCoordinator(local, client(RemoteManifestResponse(503, "", null, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))), cache, namespace, { now }, 50L).load()
         assertEquals(ManifestBootstrapSource.LOCAL, (staleState as ManifestBootstrapState.Error).source)
     }
 
     private fun client(response: RemoteManifestResponse): RemoteFeatureManifestClient =
         client(RemoteManifestTransport { response })
 
-    private fun client(transport: RemoteManifestTransport) = RemoteFeatureManifestClient(profile, "tenant-1", transport)
+    private fun client(transport: RemoteManifestTransport) = RemoteFeatureManifestClient(profile, "tenant-1", transport, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
 
-    private fun coordinator(response: RemoteManifestResponse) = FeatureManifestBootstrapCoordinator(local, client(response), InMemoryLastKnownGoodManifestCache(), namespace, { 100L })
+    private fun coordinator(response: RemoteManifestResponse) = FeatureManifestBootstrapCoordinator(local, client(response, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))), InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))), namespace, { 100L })
 }
