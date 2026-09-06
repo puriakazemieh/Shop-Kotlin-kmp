@@ -79,13 +79,13 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+- Started at: 2026-09-06T18:00
+- Completed at: 2026-09-06T18:15
+- Changed files: `composeApp/build.gradle.kts`, `App.kt`, `tools/build-config/products.json`, `LocalFeatureManifestSource.kt`, `CompiledFeaturePolicy.kt`
+- Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm` exit 0
+- Manual tester/date/build/result: Pending
+- Evidence paths: `docs/evidence/P03-ARCH-CODE-024A/summary.md`
+- Remaining risks/blockers: Pending Manual QA
+- Final status: AWAITING_MANUAL_QA
 
 </div>

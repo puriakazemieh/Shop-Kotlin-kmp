@@ -1,0 +1,170 @@
+{
+  "carmila": {
+    "productKind": "APP",
+    "sku": "carmila",
+    "platform": "ANDROID",
+    "tenant": {
+      "id": "local-default"
+    },
+    "branding": {
+      "id": "carmila",
+      "displayName": "Carmila Shop",
+      "currency": "IRR"
+    },
+    "backendProfile": {
+      "kind": "WORDPRESS",
+      "apiRoot": "http://10.0.2.2:8080",
+      "assetRoot": "http://10.0.2.2:8080",
+      "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
+      "contractVersion": 1,
+      "manifestPath": "/wp-json/cb/v1/manifest"
+    },
+    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"],
+    "localFeatures": {
+      "contentBlog": true,
+      "commerceCore": true,
+      "commercePhysical": true,
+      "commerceDigital": false
+    }
+  },
+  "atris": {
+    "productKind": "APP",
+    "sku": "atris",
+    "platform": "ANDROID",
+    "tenant": {
+      "id": "local-default"
+    },
+    "branding": {
+      "id": "atris",
+      "displayName": "Atris",
+      "currency": "IRR"
+    },
+    "backendProfile": {
+      "kind": "WORDPRESS",
+      "apiRoot": "http://10.0.2.2:8080",
+      "assetRoot": "http://10.0.2.2:8080",
+      "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
+      "contractVersion": 1,
+      "manifestPath": "/wp-json/cb/v1/manifest"
+    },
+    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical", "wallet"],
+    "localFeatures": {
+      "contentBlog": true,
+      "commerceCore": true,
+      "commercePhysical": true,
+      "commerceDigital": false
+    }
+  },
+  "chronos": {
+    "productKind": "APP",
+    "sku": "chronos",
+    "platform": "ANDROID",
+    "tenant": {
+      "id": "local-default"
+    },
+    "branding": {
+      "id": "chronos",
+      "displayName": "Chronos",
+      "currency": "IRR"
+    },
+    "backendProfile": {
+      "kind": "WORDPRESS",
+      "apiRoot": "http://10.0.2.2:8080",
+      "assetRoot": "http://10.0.2.2:8080",
+      "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
+      "contractVersion": 1,
+      "manifestPath": "/wp-json/cb/v1/manifest"
+    },
+    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical"],
+    "localFeatures": {
+      "contentBlog": false,
+      "commerceCore": true,
+      "commercePhysical": true,
+      "commerceDigital": false
+    }
+  },
+  "academy": {
+    "productKind": "APP",
+    "sku": "academy",
+    "platform": "ANDROID",
+    "tenant": {
+      "id": "local-default"
+    },
+    "branding": {
+      "id": "academy",
+      "displayName": "Academy",
+      "currency": "IRR"
+    },
+    "backendProfile": {
+      "kind": "SPRING",
+      "apiRoot": "http://10.0.2.2:8080",
+      "assetRoot": "http://10.0.2.2:8080",
+      "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
+      "contractVersion": 1,
+      "manifestPath": "/api/v1/manifest"
+    },
+    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.digital", "academy"],
+    "localFeatures": {
+      "contentBlog": true,
+      "commerceCore": true,
+      "commercePhysical": false,
+      "commerceDigital": true
+    }
+  },
+  "psych": {
+    "productKind": "APP",
+    "sku": "psych",
+    "platform": "ANDROID",
+    "tenant": {
+      "id": "local-default"
+    },
+    "branding": {
+      "id": "psych",
+      "displayName": "Psych",
+      "currency": "IRR"
+    },
+    "backendProfile": {
+      "kind": "SPRING",
+      "apiRoot": "http://10.0.2.2:8080",
+      "assetRoot": "http://10.0.2.2:8080",
+      "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
+      "contractVersion": 1,
+      "manifestPath": "/api/v1/manifest"
+    },
+    "compiledFeatureIds": ["psychtest", "clinic", "wallet"],
+    "localFeatures": {
+      "contentBlog": false,
+      "commerceCore": false,
+      "commercePhysical": false,
+      "commerceDigital": false
+    }
+  },
+  "wp": {
+    "productKind": "THEME",
+    "sku": "wp",
+    "platform": "WEB",
+    "tenant": {
+      "id": "local-default"
+    },
+    "branding": {
+      "id": "wp",
+      "displayName": "WordPress Theme",
+      "currency": "IRR"
+    },
+    "backendProfile": {
+      "kind": "WORDPRESS",
+      "apiRoot": "http://localhost:8080",
+      "assetRoot": "http://localhost:8080",
+      "allowedAuthHosts": ["localhost", "127.0.0.1"],
+      "contractVersion": 1,
+      "manifestPath": "/wp-json/cb/v1/manifest"
+    },
+    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"],
+    "localFeatures": {
+      "contentBlog": true,
+      "commerceCore": true,
+      "commercePhysical": true,
+      "commerceDigital": false
+    }
+  }
+}

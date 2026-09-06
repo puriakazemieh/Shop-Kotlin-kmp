@@ -61,6 +61,9 @@ import com.kazemieh.navigation.FeatureRouteGuard
 import com.kazemieh.config.capabilities.ProfileAssetUrlResolver
 import com.kazemieh.config.capabilities.ProfileEndpointResolver
 import com.kazemieh.config.capabilities.privateSessionNamespace
+import com.kazemieh.config.capabilities.LocalFeatureManifestSource
+import com.kazemieh.config.capabilities.CompiledFeatureCeiling
+import com.kazemieh.config.capabilities.ProductBuildSpec
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.settings.ObserveThemeModeUseCase
@@ -145,18 +148,27 @@ fun initKoin(brand: BrandConfig = BrandRegistry.default, config: KoinAppDeclarat
                 single<EndpointResolver> { ProfileEndpointResolver(get()) }
                 single<AssetUrlResolver> { ProfileAssetUrlResolver(get()) }
                 single<RemoteManifestTransport> { KtorRemoteManifestTransport(get()) }
-                single { InMemoryLastKnownGoodManifestCache() }
+                single { InMemoryLastKnownGoodManifestCache(ceiling = get()) }
                 single {
                     RemoteFeatureManifestClient(
                         profile = get(),
                         expectedTenantId = get<TenantConfig>().id,
-                        transport = get()
+                        transport = get(),
+                        ceiling = get()
                     )
                 }
                 single<FeatureFlagShadowReporter> { FeatureFlagShadowReporter { } }
                 single { FeatureFlagShadowMode(get()) }
+                single<ProductBuildSpec> { 
+                    GeneratedProductSpecs.specs[brand.id] ?: throw IllegalStateException("Unknown SKU: ${brand.id}")
+                }
                 single {
-                    GeneratedLocalFeatureManifest.sourceFor(get<BackendProfile>(), get<TenantConfig>()).resolveFor(get<BackendProfile>().kind)
+                    CompiledFeatureCeiling(get<ProductBuildSpec>().compiledFeatureIds)
+                }
+                single {
+                    val localConfig = GeneratedProductSpecs.localConfigs[brand.id] ?: throw IllegalStateException("Unknown SKU local config: ${brand.id}")
+                    val source = LocalFeatureManifestSource(localConfig, ceiling = get())
+                    source.resolveFor(get<ProductBuildSpec>().backendProfile.kind)
                 }
                 single { FeatureUseCaseGuard(get()) }
                 single { FeatureRouteGuard(get()) }

@@ -34,7 +34,7 @@ data class LocalFeatureManifestConfig(
 class LocalFeatureManifestSource(
     private val config: LocalFeatureManifestConfig,
     private val catalog: FeatureCatalog = FeatureCatalog(),
-    private val ceiling: CompiledFeatureCeiling = CompiledFeatureCeiling.shopOnly
+    private val ceiling: CompiledFeatureCeiling
 ) {
     fun resolveFor(expectedBackend: BackendKind): ResolvedFeatures = runCatching {
         require(config.backendKind == expectedBackend) { "Local manifest backend mismatch." }

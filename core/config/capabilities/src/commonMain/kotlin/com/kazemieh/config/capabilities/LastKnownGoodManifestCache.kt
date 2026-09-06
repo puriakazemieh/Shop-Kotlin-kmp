@@ -11,7 +11,7 @@ data class CachedRemoteManifest(
 /** LKG محدود و namespaced؛ storage واقعی هر platform می‌تواند این API را جایگزین کند. */
 class InMemoryLastKnownGoodManifestCache(
     private val catalog: FeatureCatalog = FeatureCatalog(),
-    private val ceiling: CompiledFeatureCeiling = CompiledFeatureCeiling.shopOnly
+    private val ceiling: CompiledFeatureCeiling
 ) {
     private val entries = mutableMapOf<String, CachedRemoteManifest>()
 

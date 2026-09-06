@@ -84,7 +84,7 @@ class RemoteFeatureManifestClient(
     private val expectedTenantId: String,
     private val transport: RemoteManifestTransport,
     private val catalog: FeatureCatalog = FeatureCatalog(),
-    private val ceiling: CompiledFeatureCeiling = CompiledFeatureCeiling.shopOnly,
+    private val ceiling: CompiledFeatureCeiling,
     private val timeoutMillis: Long = DEFAULT_TIMEOUT_MILLIS,
     private val json: Json = strictJson
 ) {
