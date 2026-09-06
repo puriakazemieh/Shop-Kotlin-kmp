@@ -10,13 +10,16 @@ actual object AppLocale {
     @Composable
     actual infix fun provides(value: String): ProvidedValue<*> {
         val configuration = LocalConfiguration.current
-        val locale = Locale(value)
-        Locale.setDefault(locale)
-        configuration.setLocale(locale)
-        
-        val context = LocalContext.current
-        val resources = context.resources
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+        val locale = Locale.forLanguageTag(value)
+        if (configuration.locales.isEmpty || (configuration.locales[0] != locale)) {
+            Locale.setDefault(locale)
+            configuration.setLocale(locale)
+            
+            val context = LocalContext.current
+            val resources = context.resources
+            @Suppress("DEPRECATION")
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
         
         return LocalConfiguration.provides(configuration)
     }

@@ -88,6 +88,6 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 - Manual tester/date/build/result: Pending
 - Evidence paths: `docs/evidence/P03-ARCH-CODE-024/summary.md`
 - Remaining risks/blockers: Pending Manual QA
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE
 
 </div>

@@ -127,7 +127,7 @@ data class ProductBuildSpec(
 }
 
 private fun String.isTrustedHttpsUrl(): Boolean =
-    (startsWith("https://") || startsWith("http://localhost") || startsWith("http://127.0.0.1")) &&
+    (startsWith("https://") || startsWith("http://localhost") || startsWith("http://127.0.0.1") || startsWith("http://10.0.2.2")) &&
         none(Char::isWhitespace)
 
 private fun String.isValidHostName(): Boolean =

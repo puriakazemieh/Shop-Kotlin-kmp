@@ -8,7 +8,7 @@ data class PrivateSessionNamespace(
 ) {
     init {
         require(tenantId.isNotBlank()) { "Tenant id must not be blank." }
-        require(origin.startsWith("https://") || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
+        require(origin.startsWith("https://") || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1") || origin.startsWith("http://10.0.2.2")) {
             "Origin must be trusted."
         }
     }

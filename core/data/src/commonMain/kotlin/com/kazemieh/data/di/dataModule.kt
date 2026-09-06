@@ -240,7 +240,7 @@ val dataModule = module {
         AdminBundleRepositoryImpl(get())
     }
 
-    single { TokenManager(settings = createTokenSettings(), namespace = get()) }
+    single { TokenManager(settings = get(), namespace = get()) }
     single<TokenProvider> { get<TokenManager>() }
 
 }
