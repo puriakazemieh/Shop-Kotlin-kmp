@@ -68,9 +68,9 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
 - [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
 
 ## Evidence و Rollback
@@ -81,13 +81,13 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+- Started at: 2026-09-06
+- Completed at: 2026-09-06 (کد نویسی و تست خودکار)
+- Changed files: `core/config/capabilities/src/commonMain/kotlin/com/kazemieh/config/capabilities/ConfigurationModels.kt`, `core/config/capabilities/src/jvmTest/kotlin/com/kazemieh/config/capabilities/ProductBuildSpecTest.kt`
+- Commands and exit codes: `./gradlew.bat :core:config:capabilities:jvmTest :core:navigation:jvmTest :core:network:jvmTest` (Exit 0)
+- Manual tester/date/build/result: Pending
+- Evidence paths: `docs/evidence/P03-ARCH-CODE-024/summary.md`
+- Remaining risks/blockers: Pending Manual QA
+- Final status: AWAITING_MANUAL_QA
 
 </div>

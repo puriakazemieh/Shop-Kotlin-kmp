@@ -88,6 +88,44 @@ data class FeatureManifest(
     }
 }
 
+@Serializable
+enum class ProductKind {
+    APP,
+    THEME,
+    PLUGIN_ONLY,
+    PORTAL
+}
+
+@Serializable
+enum class ClientPlatform {
+    ANDROID,
+    IOS,
+    DESKTOP,
+    WEB,
+    PWA
+}
+
+/** 
+ * مشخصات کامل یک artifact بیلد شده که شامل تمام داده‌های پیکربندی و سقف قابلیت‌های استاتیک می‌باشد.
+ */
+@Serializable
+data class ProductBuildSpec(
+    val productKind: ProductKind,
+    val sku: String,
+    val platform: ClientPlatform,
+    val tenant: TenantConfig,
+    val branding: BrandingConfig,
+    val buildIdentity: BuildIdentity,
+    val backendProfile: BackendProfile,
+    val compiledFeatureIds: Set<String>
+) {
+    init {
+        require(sku.isNotBlank()) { "SKU must not be blank." }
+        // Note: The rest of the validation is delegated to the init blocks of 
+        // TenantConfig, BrandingConfig, BuildIdentity, and BackendProfile.
+    }
+}
+
 private fun String.isTrustedHttpsUrl(): Boolean =
     (startsWith("https://") || startsWith("http://localhost") || startsWith("http://127.0.0.1")) &&
         none(Char::isWhitespace)
