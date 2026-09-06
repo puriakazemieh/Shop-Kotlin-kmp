@@ -113,6 +113,11 @@ class CB_Plugin {
 			return;
 		}
 
+		// Telemetry and Deprecation for legacy root aliases
+		error_log( 'Carmilla Bridge Legacy Alias Usage: ' . $uri );
+		header( 'X-Carmilla-Deprecated: root-alias' );
+		header( 'Warning: 299 - "Legacy root alias is deprecated and will be removed in the next client cycle"' );
+
 		$method  = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : 'GET';
 		$request = new WP_REST_Request( $method, '/' . CB_REST_NAMESPACE . $uri );
 		foreach ( (array) $_GET as $k => $v ) {
