@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-008 — WooCommerce منبع product/order/cart و CRUD رسمی باشد
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-008 — قرارداد و adapter رسمی WooCommerce در هسته مشترک
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +58,15 @@ P04-WPPLUGIN-CODE-008
 - Depends on: P04-WPPLUGIN-CODE-007
 - Blocks: P04-WPPLUGIN-CODE-009
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-008 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-WooCommerce منبع product/order/cart و CRUD رسمی باشد
+
+WooCommerce منبع محصولات و سفارش‌ها بماند؛ قرارداد adapter مشترک محصولات/سفارش/سبد و inventory مسیرهای نوشتن تعریف و یک fixture read/write رسمی آزموده شود؛ انتقال کامل در 026A/026B است.
 
 ## خروجی مورد انتظار
-SQL مستقیم order ممنوع؛ HPOS on/off
+
+قرارداد CRUD/Store API و مسئولیت cart با Woo روشن باشد؛ SQL مستقیم سفارش ممنوع و fixture در HPOS روشن/خاموش روی دو میزبان نتیجه یکسان بدهد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,11 @@ SQL مستقیم order ممنوع؛ HPOS on/off
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-008/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ SQL مستقیم order ممنوع؛ HPOS on/off
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. مسیرهای product/order/cart دو میزبان و storage فعلی cart را inventory کن.
+2. مرز adapter رسمی Woo را با قرارداد cart مشخص کن؛ موتور فروشگاه جدید نساز.
+3. fixture کوچک read/write محصول/سفارش را با API رسمی در هر دو host اجرا کن.
+4. نتیجه HPOS روشن/خاموش و شکاف‌های انتقال 026A/026B را ثبت کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: SQL مستقیم order ممنوع؛ HPOS on/off
+- معیار اختصاصی: قرارداد CRUD/Store API و مسئولیت cart با Woo روشن باشد؛ SQL مستقیم سفارش ممنوع و fixture در HPOS روشن/خاموش روی دو میزبان نتیجه یکسان بدهد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: SQL مستقیم order ممنوع؛ HPOS on/off
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: محصول/سفارش آزمایشی در WooCommerce و صفحه تشخیص اتصال هر میزبان.
+- چگونه: با Woo فعال fixture بسازید و HPOS را در محیط آزمایشی تغییر دهید؛ سپس Woo را غیرفعال کنید.
+- معیار موفقیت: داده با API رسمی برابر باشد؛ نبود Woo فقط قابلیت وابسته را با پیام روشن محدود کند.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] Woo پیش‌نیاز مجاز و منبع رسمی commerce باقی مانده است.
+- [ ] adapter و storage cart قرارداد روشن دارند.
+- [ ] fixture HPOS روشن/خاموش در هر دو host ثبت شده است.
+- [ ] مهاجرت کامل دامنه و موتور commerce جدید در این کارت انجام نشده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ SQL مستقیم order ممنوع؛ HPOS on/off
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

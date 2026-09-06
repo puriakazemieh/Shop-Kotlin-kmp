@@ -53,7 +53,7 @@ P13-LMS-DATA-010
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P13-LMS-CODE-009
+- Depends on: P13-LMS-CODE-028
 - Blocks: P13-LMS-CODE-011
 - Requirement source: Master checklist row P13-LMS-DATA-010 و Source audit بخش LMS
 
@@ -69,7 +69,7 @@ duplicate/out-of-order update داده را عقب نبرد
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P13-LMS-CODE-009
+- Dependencyها: P13-LMS-CODE-028
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

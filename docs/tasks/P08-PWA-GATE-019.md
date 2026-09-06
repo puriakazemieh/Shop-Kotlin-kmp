@@ -1,4 +1,4 @@
-# P08-PWA-GATE-019 — Gate PWA RC
+# P08-PWA-GATE-019 — Gate مستقل Web/PWA با محدوده backend تأییدشده
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +54,15 @@ P08-PWA-GATE-019
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P08-PWA-OPS-018
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P09-QA-DOC-001, P11-ANDROID-DISC-001, P12-BUILDER-CODE-020, P18-QA-AUTO-001
 - Requirement source: Master checklist row P08-PWA-GATE-019 و Source audit بخش PWA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Gate PWA RC
+RC وب/PWA را برای artifact و backend مشخص ارزیابی کن؛ WordPress Theme-only، Plugin-only و co-install باید عملی باشند و Spring تولیدی تا Gate P15 باز بماند.
 
 ## خروجی مورد انتظار
-install/update/security/perf/accessibility pass
+install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,9 @@ install/update/security/perf/accessibility pass
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- .github/**
+- tools/**
+- build-logic/**
 - composeApp/**
 - core/**
 - feature/**
@@ -85,28 +89,27 @@ install/update/security/perf/accessibility pass
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P08 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: RC وب/PWA را برای artifact و backend مشخص ارزیابی کن؛ WordPress Theme-only، Plugin-only و co-install باید عملی باشند و Spring تولیدی تا Gate P15 باز بماند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: install/update/security/perf/accessibility pass
+- معیار اختصاصی: install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: install/update/security/perf/accessibility pass
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

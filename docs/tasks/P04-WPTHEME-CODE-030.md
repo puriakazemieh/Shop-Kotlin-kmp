@@ -1,4 +1,6 @@
-# P04-WPTHEME-CODE-030 — یکپارچه‌سازی کامل Carmilla Theme standalone
+<div dir="rtl" align="right">
+
+# P04-WPTHEME-CODE-030 — یکپارچه‌سازی UI و مدیریت آماده‌شده پوسته مستقل
 
 ## Prompt اجرای همین Task
 
@@ -19,21 +21,22 @@ Task ID: P04-WPTHEME-CODE-030
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH؛ Manual QA الزامی
-- Depends on: P04-WORDPRESS-CODE-029
+- Depends on: P04-WORDPRESS-CODE-029B
 - Blocks: P04-WPPLUGIN-CODE-031
 - Requirement source: Master row P04-WPTHEME-CODE-030 و dual-standalone Theme contract
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
 
-Carmilla Theme ZIP بدون Bridge برای تمام capabilityهای موجود پروژه،صفحه/منو/admin setting/feature toggle و stateهای UI کامل داشته باشد.
+خروجی تکمیل‌شده کارت‌های دامنه و پنل قابلیت در Theme-only یکپارچه و regression شود؛ این کارت فقط اتصال navigation/template/adapterهای آماده و رفع خطای integration کوچک است.
 
 ## خروجی مورد انتظار
 
-نصب تمیز Theme-only با Content/Store/Academy/Clinic/PsychTest/Support فعال طبق manifest؛هیچ CTA/route به Bridge اجباری نباشد.
+capabilityهای حاضر،مجاز و آماده فاز چهار در UI و مدیریت پوسته بدون Bridge کار کنند؛ شکاف یک vertical به کارت همان دامنه ارجاع شود و Gate P13/P14 ادعا نشود.
 
 ## خارج از محدوده
 
-- بازنویسی domain logic Shared Core،provider certification،App Builder و redesign کلی.
+- ساخت همه UI/دامنه‌ها در یک کارت،بازنویسی kernel،provider certification،App Builder واقعی و redesign کلی خارج محدوده است.
 
 ## Preconditions
 
@@ -42,10 +45,11 @@ Carmilla Theme ZIP بدون Bridge برای تمام capabilityهای موجود
 
 ## Allowed files/directories
 
-- `wordpress/carmilla-theme/**`
-- adapter/config محدود `wordpress/packages/carmilla-core/**`
-- `wordpress/**/tests/**`،`tools/test-env/**`
-- `docs/evidence/P04-WPTHEME-CODE-030/**` و status همین Task
+- `wordpress/packages/carmilla-core/**`
+- فایل‌های integration/template/navigation در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- rendererهای همین دامنه مطابق قرارداد frontend افزونه؛ بدون بازطراحی قالب میزبان
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPTHEME-CODE-030/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 
@@ -53,11 +57,10 @@ Carmilla Theme ZIP بدون Bridge برای تمام capabilityهای موجود
 
 ## مراحل پیاده‌سازی
 
-1. capability-to-screen/admin/navigation matrix را با وضعیت موجود مقایسه کن.
-2. characterization برای link/template/toggleهای ناقص بساز.
-3. Theme Host را برای هر capability به Shared Core وصل و missing UI/state را تکمیل کن.
-4. prerequisiteهای Woo/Elementor/providers را actionable و fail-closed کن.
-5. Theme-only clean install و regression viewport/RTL/accessibility را اجرا کن.
+1. ماتریس capability→صفحه→مدیریت→API را با شواهد کارت‌های دامنه تطبیق بده.
+2. منو،template و adapter آماده را به وضعیت مؤثر kernel وصل کن.
+3. بسته پایه،تک‌قابلیت و ترکیبی را بدون Bridge نصب و لینک/وضعیت خاموش را regression کن.
+4. خطای محدود integration را اصلاح کن؛ UI یا منطق دامنه تکمیل‌نشده را به تسک مستقل برگردان.
 
 ## Automated tests با command و expected result
 
@@ -67,20 +70,21 @@ docker compose -f tools/test-env/docker-compose.yml config
 git diff --check
 ```
 
-- Expected: ZIP مستقل روی WordPress تمیز نصب؛manifest coverage 100% featureهای declared؛link/template fatal و dependency Bridge صفر.
+- نتیجه مورد انتظار آزمون خودکار: capabilityهای حاضر،مجاز و آماده فاز چهار در UI و مدیریت پوسته بدون Bridge کار کنند؛ شکاف یک vertical به کارت همان دامنه ارجاع شود و Gate P13/P14 ادعا نشود.
 
 ## Manual tests با environment/data/steps/expected
 
-- Theme ZIP فقط،Woo و Elementor در سناریوهای حاضر/غایب؛fixture هر vertical.
-- همه منوها،admin CRUD،frontend،toggle،empty/error و responsive را اجرا کن.
-- Expected: همه capabilityهای enabled قابل استفاده؛نبود prerequisite پیام روشن؛سپس AWAITING_MANUAL_QA.
+- کجا: صفحه خانه،منوها،پنل قابلیت و صفحات دامنه‌های آماده روی Theme-only.
+- چگونه: ZIP پایه و یک ZIP ترکیبی را آزمایش کنید؛ یک فیچر مجاز را خاموش/روشن و لینک مستقیم فیچر غیرمجاز را باز کنید.
+- معیار موفقیت: بدون Bridge مسیر خریداری‌شده قابل استفاده،مسیر غیرمجاز بسته و اطلاعات قبلی محفوظ باشد؛ capabilityهای خارج Gate فروش فعال اعلام نشوند.
+- سه حالت Theme-only، Plugin-only با قالب پیش‌فرض/ثالث و co-install با داده مصنوعی و ZIP دارای checksum ثبت شود؛ تا تأیید انسانی `AWAITING_MANUAL_QA` بماند.
 
 ## Acceptance Criteria
 
-- [ ] Theme به Bridge وابستگی runtime ندارد.
-- [ ] capability matrix و UI/admin coverage کامل است.
-- [ ] prerequisite و feature toggle رفتار صحیح دارند.
-- [ ] automated و Manual QA Evidence سبز است.
+- [ ] این کارت فقط integration خروجی آماده دامنه‌هاست.
+- [ ] Theme-only بسته پایه و ترکیبی بدون Bridge اجرا می‌شود.
+- [ ] وضعیت UI/admin/API با resolver یکسان است.
+- [ ] شواهد regression و QA انسانی موجود و محدودیت انتشار صریح است.
 
 ## Security/Privacy/Migration checks
 
@@ -103,3 +107,5 @@ host adapter/UI تغییرات را revert کن؛Shared Core data/schema را ro
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

@@ -1,4 +1,6 @@
-# P04-WORDPRESS-GATE-037 — Gate نهایی Coexistence و WordPress RC
+<div dir="rtl" align="right">
+
+# P04-WORDPRESS-GATE-037 — Gate سازگاری دو ZIP مستقل و نصب هم‌زمان
 
 ## Prompt اجرای همین Task
 
@@ -18,17 +20,17 @@ AGENTS.md،سه dependency Gate/UAT،artifact checksums و Evidence را review 
 - Priority/Risk/Size: P0 / CRITICAL / S
 - Owner: HUMAN
 - Completion authority: Product Owner + Architecture + Security + QA Leads
-- Depends on: P04-WPTHEME-GATE-036، P04-WPPLUGIN-GATE-024، P04-WORDPRESS-MANUAL-035
-- Blocks: P05-PAYMENT-ADR-001
+- Depends on: P04-WPTHEME-GATE-036, P04-WPPLUGIN-GATE-024, P04-WORDPRESS-MANUAL-035
+- Blocks: P05-PAYMENT-ADR-001, P12-BUILDER-ADR-001, P13-LMS-DISC-001, P14-CLINIC-DISC-001, P18-QA-AUTO-001
 - Requirement source: Master row P04-WORDPRESS-GATE-037 و Phase 4 Gate
 
 ## هدف قابل اندازه‌گیری
 
-آمادگی نهایی دو SKU مستقل و حالت co-install برای خروج از فاز ۴ و شروع hardening providerهای بعدی ارزیابی شود.
+هم‌زیستی دو محصول و قالب/افزونه مستقل با هسته و entitlement سازگار را بر همان artifactهای SKU ارزیابی کن؛ داده/route/cron/job canonical باشند.
 
 ## خروجی مورد انتظار
 
-تصمیم PASS/FAIL امضاشده برای WordPress RC با دو ZIP versioned/reproducible/checksumدار و risk register.
+هر سه mode،دو ترتیب نصب/upgrade و SKU متفاوت با شواهد؛ بدون duplicate/data loss؛ حفظ خدمات API مستقل از روشن‌بودن builder؛ این Gate پایان همه قابلیت‌ها و پلتفرم‌ها نیست.
 
 ## خارج از محدوده
 
@@ -49,6 +51,8 @@ AGENTS.md،سه dependency Gate/UAT،artifact checksums و Evidence را review 
 
 ## مراحل پیاده‌سازی
 
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
+
 1. سه dependency و checksums را verify کن.
 2. Theme-only،Bridge-only،both،upgrade/mismatch/rollback و security/privacy reports را review کن.
 3. feature parity و App Builder control-plane boundary را تطبیق بده.
@@ -65,6 +69,8 @@ AGENTS.md،سه dependency Gate/UAT،artifact checksums و Evidence را review 
 - Expected: duplicate/data loss/fatal/P0 صفر؛rollback recoverable؛دو محصول مستقل.
 
 ## Acceptance Criteria
+
+- [ ] هر سه mode،دو ترتیب نصب/upgrade و SKU متفاوت با شواهد؛ بدون duplicate/data loss؛ حفظ خدمات API مستقل از روشن‌بودن builder؛ این Gate پایان همه قابلیت‌ها و پلتفرم‌ها نیست.
 
 - [ ] هر سه mode و upgrade/rollback پاس‌اند.
 - [ ] دو Gate محصول PASS هستند.
@@ -93,3 +99,5 @@ AGENTS.md،سه dependency Gate/UAT،artifact checksums و Evidence را review 
 - Decision/reason:
 - Remaining risks/blockers:
 - Final status: TODO | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

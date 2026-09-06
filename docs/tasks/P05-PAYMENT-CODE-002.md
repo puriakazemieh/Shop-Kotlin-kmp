@@ -1,4 +1,4 @@
-# P05-PAYMENT-CODE-002 — domain Money، PaymentIntent/Event/Refund/Settlement/Entitlement
+# P05-PAYMENT-CODE-002 — Payment Core مشترک Theme و Plugin با مسیر نوشتن واحد
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P05-PAYMENT-CODE-002
 - Depends on: P05-PAYMENT-ADR-001
 - Blocks: P05-PAYMENT-DATA-003
 - Requirement source: Master checklist row P05-PAYMENT-CODE-002 و Source audit بخش PAYMENT
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-domain Money، PaymentIntent/Event/Refund/Settlement/Entitlement
+مدل Money، PaymentIntent/Event/Refund/Settlement/Entitlement و state transition در Shared Core هر دو ZIP پیاده شود؛ hostها adapter باشند و write path مالی یکتا بماند.
 
 ## خروجی مورد انتظار
-IRR/IRT integer minor unit؛ state transition tests
+IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,10 @@ IRR/IRT integer minor unit؛ state transition tests
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
 - composeApp/**
 - core/**
@@ -86,27 +91,27 @@ IRR/IRT integer minor unit؛ state transition tests
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P05 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: مدل Money، PaymentIntent/Event/Refund/Settlement/Entitlement و state transition در Shared Core هر دو ZIP پیاده شود؛ hostها adapter باشند و write path مالی یکتا بماند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: IRR/IRT integer minor unit؛ state transition tests
+- معیار اختصاصی: IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: IRR/IRT integer minor unit؛ state transition tests
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: checkout و پنل پرداخت/سفارش همان میزبان.
+- چگونه: همان سناریوی کارت را با داده synthetic در Theme-only، Plugin-only روی قالب ثالث و co-install اجرا کن؛ SKU مجاز، خاموش و غیرخریداری‌شده را مقایسه کن.
+- معیار موفقیت: IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

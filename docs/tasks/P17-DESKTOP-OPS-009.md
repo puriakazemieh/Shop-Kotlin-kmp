@@ -1,4 +1,4 @@
-# P17-DESKTOP-OPS-009 — installer/package برای OSهای Scope
+# P17-DESKTOP-OPS-009 — بسته‌های مستقل Desktop و artifact contract برای Builder
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +53,16 @@ P17-DESKTOP-OPS-009
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P17-DESKTOP-CODE-008
+- Depends on: P17-DESKTOP-CODE-021
 - Blocks: P17-DESKTOP-OPS-010
 - Requirement source: Master checklist row P17-DESKTOP-OPS-009 و Source audit بخش DESKTOP
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-installer/package برای OSهای Scope
+installer/package برای OSهای Scope از config مشتری تولید شود؛ package metadata و adapter contract برای P17-BUILDER-CODE-020 آماده باشد.
 
 ## خروجی مورد انتظار
-clean install/upgrade/uninstall
+clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +70,7 @@ clean install/upgrade/uninstall
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P17-DESKTOP-CODE-008
+- Dependencyها: P17-DESKTOP-CODE-021
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -85,27 +86,27 @@ clean install/upgrade/uninstall
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P17 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: installer/package برای OSهای Scope از config مشتری تولید شود؛ package metadata و adapter contract برای P17-BUILDER-CODE-020 آماده باشد.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: clean install/upgrade/uninstall
+- معیار اختصاصی: clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: clean install/upgrade/uninstall
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: نصب‌کننده Desktop روی OSهای پشتیبانی‌شده و app نصب‌شده.
+- چگونه: artifact همین target را نصب/میزبانی و سناریوی کارت را با دو tenant اجرا کن؛ WORDPRESS به سه حالت میزبان و SPRING به محیط صریح آزمون وصل شود. fixture و backend تولیدی جدا ثبت شوند.
+- معیار موفقیت: clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

@@ -1,4 +1,4 @@
-# P14-CLINIC-CODE-006 — پروفایل و فرایند تأیید مشاور
+# P14-CLINIC-CODE-006 — نمایش و مدیریت مشاور در Theme و Plugin مستقل
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +53,16 @@ P14-CLINIC-CODE-006
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P14-CLINIC-DATA-005
+- Depends on: P14-CLINIC-CODE-033
 - Blocks: P14-CLINIC-CODE-007
 - Requirement source: Master checklist row P14-CLINIC-CODE-006 و Source audit بخش CLINIC
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-پروفایل و فرایند تأیید مشاور
+پروفایل و فرایند تأیید مشاور در admin و نمایش عمومی هر دو میزبان کامل شود؛ Plugin صفحه/بلوک/فرم خودش را با CSS محدود روی قالب ثالث ارائه کند.
 
 ## خروجی مورد انتظار
-مدارک خصوصی؛ وضعیت تأیید در audit ثبت شود
+مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,10 +70,14 @@ P14-CLINIC-CODE-006
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P14-CLINIC-DATA-005
+- Dependencyها: P14-CLINIC-CODE-033
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
 - composeApp/**
 - core/**
@@ -86,27 +91,27 @@ P14-CLINIC-CODE-006
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P14 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: پروفایل و فرایند تأیید مشاور در admin و نمایش عمومی هر دو میزبان کامل شود؛ Plugin صفحه/بلوک/فرم خودش را با CSS محدود روی قالب ثالث ارائه کند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: مدارک خصوصی؛ وضعیت تأیید در audit ثبت شود
+- معیار اختصاصی: مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: مدارک خصوصی؛ وضعیت تأیید در audit ثبت شود
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: پروفایل مشاور، فرم رزرو، نوبت‌های من و پنل پذیرش synthetic.
+- چگونه: همان سناریوی کارت را با داده synthetic در Theme-only، Plugin-only روی قالب ثالث و co-install اجرا کن؛ SKU مجاز، خاموش و غیرخریداری‌شده را مقایسه کن.
+- معیار موفقیت: مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

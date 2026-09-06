@@ -1,4 +1,4 @@
-# P13-LMS-ADR-002 — ADR مالکیت داده و مدل canonical آموزش
+# P13-LMS-ADR-002 — مالکیت canonical آموزش و مجوز بسته مستقل
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P13-LMS-ADR-002
 - Depends on: P13-LMS-DISC-001
 - Blocks: P13-LMS-DATA-003
 - Requirement source: Master checklist row P13-LMS-ADR-002 و Source audit بخش LMS
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-ADR مالکیت داده و مدل canonical آموزش
+Course/Section/Lesson/Enrollment/Progress/Quiz/Certificate در Shared Core هر دو ZIP یک owner و write path داشته باشند؛ entitlement خرید نرم‌افزار از enrollment دانشجو جدا شود.
 
 ## خروجی مورد انتظار
-منبع حقیقت هر entity و write path یکتا باشد
+نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,10 @@ ADR مالکیت داده و مدل canonical آموزش
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
 - composeApp/**
 - core/**
@@ -86,25 +91,25 @@ ADR مالکیت داده و مدل canonical آموزش
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P13 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: Course/Section/Lesson/Enrollment/Progress/Quiz/Certificate در Shared Core هر دو ZIP یک owner و write path داشته باشند؛ entitlement خرید نرم‌افزار از enrollment دانشجو جدا شود.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: منبع حقیقت هر entity و write path یکتا باشد
+- معیار اختصاصی: نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: منبع حقیقت هر entity و write path یکتا باشد
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

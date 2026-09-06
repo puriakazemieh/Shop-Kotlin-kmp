@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-006 — capability/prerequisite/fail-closed مشترک جایگزین degraded mode شود
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-006 — resolver مشترک قابلیت، پیش‌نیاز و آمادگی انتشار
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +56,17 @@ P04-WPPLUGIN-CODE-006
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPTHEME-CODE-005
-- Blocks: P04-WPPLUGIN-CODE-007
+- Blocks: P04-ENTITLEMENT-CODE-040
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-006 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-مدل مشترک available/enabled/enforced برای featureها و prerequisiteهای WooCommerce،Elementor،Payment،SMS و Email در هر دو artifact پیاده شود.
+
+resolver خالص kernel وضعیت مؤثر را از کد بسته، حق خرید معتبر، انتخاب مدیر، وابستگی‌ها و آمادگی انتشار محاسبه کند؛ adapter اعتبار مجوز در کارت 040 تکمیل می‌شود.
 
 ## خروجی مورد انتظار
-Theme بدون Bridge degraded نباشد؛ نبود dependency ثالث فقط capability مرتبط را با پیام actionable غیرفعال کند و fatal/data write پنهان صفر باشد.
+
+دو میزبان از یک resolver استفاده کنند؛ نبود WooCommerce فقط فروشگاه وابسته را محدود کند و نبود میزبان Carmilla دیگر پیش‌نیاز محسوب نشود؛ UI-only پایه قابل اجرا بماند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,13 +78,11 @@ Theme بدون Bridge degraded نباشد؛ نبود dependency ثالث فقط 
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/packages/carmilla-core/**
-- wordpress/carmilla-bridge/**
-- wordpress/carmilla-theme/**
-- wordpress/**/tests/**
-- tools/test-env/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- فایل‌های میزبان مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-006/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -87,12 +90,11 @@ Theme بدون Bridge degraded نباشد؛ نبود dependency ثالث فقط 
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. جدول ورودی/خروجی resolver را مطابق کاتالوگ و ADR-006 با fixture تعریف کن.
+2. کپی resolver پوسته و افزونه را پشت قرارداد مشترک قرار بده.
+3. وضعیت‌های خریداری‌نشده، کد غایب، خاموش، پیش‌نیاز ناقص و محدودیت انتشار را با علت جدا محاسبه کن.
+4. closure وابستگی‌ها و releaseReady=false را تست کن؛ معتبرسازی واقعی entitlement را در این کارت ادعا نکن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
@@ -100,16 +102,18 @@ Theme بدون Bridge degraded نباشد؛ نبود dependency ثالث فقط 
 - معیار اختصاصی: available/enabled/enforced و prerequisiteها در هر دو artifact یکسان باشند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: Theme بدون Bridge کامل باشد و فقط dependency ثالث مرتبط actionable غیرفعال شود.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: پیشخوان وضعیت قابلیت و frontend پایه در دو نصب مستقل.
+- چگونه: fixture مجوز معتبر و نامعتبر، فیچر روشن/خاموش و Woo حاضر/غایب را انتخاب کنید.
+- معیار موفقیت: علت خاموشی روشن باشد؛ فیچر فاقد کد/مجوز/پیش‌نیاز مؤثر نشود و نبود Bridge در Theme-only محدودیت ایجاد نکند.
+- نسخه محیط و ZIP، داده مصنوعی، نام آزمونگر، تاریخ و نتیجه واقعی ثبت شود؛ تغییر UI/شبکه/مهاجرت تا تأیید انسانی `AWAITING_MANUAL_QA` می‌ماند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] یک resolver canonical و تست جدول وضعیت وجود دارد.
+- [ ] انتخاب مدیر حق خرید یا کد غایب را ایجاد نمی‌کند.
+- [ ] غیرفعال‌بودن prerequisite فقط قابلیت وابسته را می‌بندد.
+- [ ] release gate مستقل از toggle و UI-only پایه محفوظ است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -133,3 +137,5 @@ Theme بدون Bridge degraded نباشد؛ نبود dependency ثالث فقط 
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

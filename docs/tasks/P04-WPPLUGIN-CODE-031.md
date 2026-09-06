@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-031 — یکپارچه‌سازی کامل Bridge standalone و any-theme
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-031 — یکپارچه‌سازی frontend و مدیریت آماده افزونه روی قالب ثالث
 
 ## Prompt اجرای همین Task
 
@@ -20,20 +22,21 @@ AGENTS.md،dependency/scope/acceptance،git status و baseline را قبل از 
 - Owner: BOTH
 - Completion authority: BOTH؛ Security و Manual QA الزامی
 - Depends on: P04-WPTHEME-CODE-030
-- Blocks: P04-WORDPRESS-CODE-032
+- Blocks: P04-WORDPRESS-DATA-042
 - Requirement source: Master row P04-WPPLUGIN-CODE-031 و Bridge any-theme contract
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
 
-Bridge ZIP روی Carmilla،Storefront و یک قالب ثالث همه داده/featureهای manifest را به Android/PWA/Web و contract مشترک clientها ارائه و مدیریت کند.
+صفحات و فرم‌های عمومی،مدیریت و API خروجی کارت‌های دامنه و renderer آماده در Plugin-only یکپارچه شوند؛ کاربر سایت بدون Carmilla Theme و بدون اپ از فیچر مجاز استفاده کند.
 
 ## خروجی مورد انتظار
 
-CRUD/sync/auth/navigation capability بدون دست‌کاری presentation قالب میزبان و بدون dependency به Carmilla Theme؛CORS/permissions fail-closed.
+روی قالب پیش‌فرض،Storefront و یک قالب ثالث آزموده‌شده،مسیر عمومی و مدیریت قابلیت‌های آماده مستقل باشد؛ اتصال Android/PWA فقط smoke قرارداد و نه Gate انتشار کلاینت باشد.
 
 ## خارج از محدوده
 
-- native build pipeline،Theme UI،provider production و iOS/Desktop release.
+- پیاده‌سازی تازه همه verticalها،بازطراحی قالب میزبان،runner واقعی و Gate تجاری Android/iOS/Desktop/LMS/Clinic خارج محدوده‌اند.
 
 ## Preconditions
 
@@ -41,11 +44,11 @@ CRUD/sync/auth/navigation capability بدون دست‌کاری presentation ق�
 
 ## Allowed files/directories
 
-- `wordpress/carmilla-bridge/**`
-- adapter/config محدود `wordpress/packages/carmilla-core/**`
-- contract tests در `composeApp/**`/`core/**` فقط در صورت نیاز همین contract
-- `wordpress/**/tests/**`،`tools/test-env/**`
-- `docs/evidence/P04-WPPLUGIN-CODE-031/**` و status همین Task
+- `wordpress/packages/carmilla-core/**`
+- فایل‌های frontend/admin/integration در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- rendererهای همین دامنه مطابق قرارداد frontend افزونه؛ بدون بازطراحی قالب میزبان
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-031/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 
@@ -53,11 +56,10 @@ CRUD/sync/auth/navigation capability بدون دست‌کاری presentation ق�
 
 ## مراحل پیاده‌سازی
 
-1. manifest-to-endpoint/client matrix و Theme dependency inventory بساز.
-2. characterization tests برای سه Theme و auth/CRUD اضافه کن.
-3. host adapterها و endpointهای ناقص را با Shared Core کامل کن.
-4. CORS allowlist،permission/ownership،pagination/validation و diagnostics redaction را اثبات کن.
-5. Android/PWA contract smoke و Theme-switch data survival را اجرا کن.
+1. ماتریس capability→renderer→فرم عمومی→مدیریت→API را با خروجی دامنه‌ها تطبیق بده.
+2. navigation و صفحه‌های آماده را به shell افزونه و effective manifest متصل کن؛ CSS محدود به اجزای افزونه باشد.
+3. بسته پایه/ترکیبی و theme switch را regression کن؛ نمایش قالب میزبان حفظ شود.
+4. قرارداد یک کلاینت تست را smoke کن؛ missing vertical یا frontend جدید را به کارت آن ارجاع بده.
 
 ## Automated tests با command و expected result
 
@@ -68,20 +70,21 @@ docker compose -f tools/test-env/docker-compose.yml config
 git diff --check
 ```
 
-- Expected: Bridge ZIP مستقل؛contract tests و compile سبز؛قالب میزبان unchanged؛CORS/permission negative tests سبز.
+- نتیجه مورد انتظار آزمون خودکار: روی قالب پیش‌فرض،Storefront و یک قالب ثالث آزموده‌شده،مسیر عمومی و مدیریت قابلیت‌های آماده مستقل باشد؛ اتصال Android/PWA فقط smoke قرارداد و نه Gate انتشار کلاینت باشد.
 
 ## Manual tests با environment/data/steps/expected
 
-- Storefront و یک Theme ثالث + Bridge؛Android/PWA با داده synthetic.
-- login،manifest،list/detail،CRUD مجاز/غیرمجاز،toggle و theme switch را اجرا کن.
-- Expected: داده و navigation صحیح،ظاهر Theme میزبان سالم،unauthorized denied؛سپس AWAITING_MANUAL_QA.
+- کجا: صفحات عمومی افزونه،نوبت‌های من/دوره‌های مجاز و پیشخوان روی قالب دیگر.
+- چگونه: فقط Plugin ZIP را نصب کنید؛ با کاربر مصنوعی مسیر عمومی موجود یک فیچر را کامل و با مدیر همان داده را مشاهده کنید؛ قالب میزبان را عوض کنید.
+- معیار موفقیت: فیچر بدون اپ و بدون Carmilla Theme قابل استفاده،CSS محدود،داده ثابت و UI/API با مجوز بسته هماهنگ باشد.
+- سه حالت Theme-only، Plugin-only با قالب پیش‌فرض/ثالث و co-install با داده مصنوعی و ZIP دارای checksum ثبت شود؛ تا تأیید انسانی `AWAITING_MANUAL_QA` بماند.
 
 ## Acceptance Criteria
 
-- [ ] runtime dependency به Carmilla Theme صفر است.
-- [ ] manifest/client parity برای همه featureهای declared ثبت شده است.
-- [ ] any-theme،CORS و ownership tests سبزند.
-- [ ] Android/PWA Manual QA تأیید شده است.
+- [ ] API-only به‌عنوان استقلال کامل افزونه پذیرفته نشده است.
+- [ ] صفحات/فرم‌های آماده و پیشخوان روی قالب‌های آزموده‌شده کار می‌کنند.
+- [ ] مجوز و وضعیت feature در UI و API یکسان‌اند.
+- [ ] regression و QA مستقل ثبت شده‌اند؛ انتشار کلاینت/دامنه‌های آینده ادعا نشده است.
 
 ## Security/Privacy/Migration checks
 
@@ -104,3 +107,5 @@ Bridge adapter/endpoint تغییرات را revert یا feature flag کن؛site 
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

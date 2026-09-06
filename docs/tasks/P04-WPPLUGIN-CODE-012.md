@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-012 — activation/deactivation/uninstall policy و opt-in cleanup
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-012 — چرخه فعال‌سازی دو میزبان و پاک‌سازی صریح داده سایت
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +58,15 @@ P04-WPPLUGIN-CODE-012
 - Depends on: P04-WPPLUGIN-CODE-011
 - Blocks: P04-WPPLUGIN-CODE-013
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-012 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-activation/deactivation/uninstall policy و opt-in cleanup
+
+activation/deactivation/theme switch و uninstall از kernel مشترک تبعیت کنند؛ حذف داده پیش‌فرض خاموش و cleanup فقط عملیات صریح مدیر باشد.
 
 ## خروجی مورد انتظار
-deactivate داده را حذف نکند؛ purge صریح
+
+خاموشی فیچر یا میزبان داده را حذف نکند؛ با میزبان سازگار و مجاز دیگر خدمات ادامه یابند،و با خاموشی آخرین میزبان اجرای خدمات متوقف اما داده محفوظ بماند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,11 @@ deactivate داده را حذف نکند؛ purge صریح
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-012/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ deactivate داده را حذف نکند؛ purge صریح
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. hookهای lifecycle و وابستگی داده به host را inventory کن.
+2. یک policy مشترک data retention و opt-in cleanup تعریف و host hookها را متصل کن.
+3. خاموشی یکی/آخرین میزبان و پاک‌سازی بدون opt-in را تست کن.
+4. جابه‌جایی/adoption کامل و انتقال مجوز را به کارت 042 بسپار و اینجا رفتار hook را ثابت کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: deactivate داده را حذف نکند؛ purge صریح
+- معیار اختصاصی: خاموشی فیچر یا میزبان داده را حذف نکند؛ با میزبان سازگار و مجاز دیگر خدمات ادامه یابند،و با خاموشی آخرین میزبان اجرای خدمات متوقف اما داده محفوظ بماند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: deactivate داده را حذف نکند؛ purge صریح
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: فهرست محصولات فعال،داده fixture و صفحه cleanup مدیر.
+- چگونه: یک میزبان از نصب هم‌زمان را خاموش کنید؛ سپس آخرین میزبان را خاموش/روشن و uninstall بدون opt-in را آزمایش کنید.
+- معیار موفقیت: داده حفظ شود؛ ادامه خدمات فقط با میزبان سازگار و مجاز دیگر رخ دهد و بدون opt-in هیچ purge انجام نشود.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] deactivate/theme switch داده را پاک نمی‌کند.
+- [ ] خاموشی آخرین میزبان توقف اجرا را صریح نشان می‌دهد.
+- [ ] cleanup capability/nonce و opt-in مستقل دارد.
+- [ ] adoption/entitlement انتقالی به کارت 042 ارجاع شده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ deactivate داده را حذف نکند؛ purge صریح
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

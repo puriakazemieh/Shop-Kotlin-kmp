@@ -54,7 +54,7 @@ P13-LMS-CODE-009
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P13-LMS-SEC-008
-- Blocks: P13-LMS-DATA-010
+- Blocks: P13-LMS-CODE-028
 - Requirement source: Master checklist row P13-LMS-CODE-009 و Source audit بخش LMS
 
 ## هدف قابل اندازه‌گیری

@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-018 — textdomain/POT، escaping و i18n کامل شود
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-018 — ترجمه و escaping مرزهای مشترک و میزبان‌های مستقل
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +56,17 @@ P04-WPPLUGIN-CODE-018
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPTHEME-CODE-025
-- Blocks: P04-WORDPRESS-CODE-026
+- Blocks: P04-WPPLUGIN-CODE-045
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-018 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-textdomain/POT، escaping و i18n کامل شود
+
+بارگذاری textdomain/POT و escaping برای رشته‌های عمومی kernel،onboarding و تنظیمات دو host تثبیت شود؛ رشته‌های جدید هر vertical همراه کارت همان vertical پوشش داده شوند.
 
 ## خروجی مورد انتظار
-WPCS/i18n scan؛ locale switch
+
+ZIP پوسته و افزونه مستقل فارسی/انگلیسی را درست بارگذاری کنند؛ co-install ترجمه تکراری/گم‌شده و output escape نشده در مرزهای این کارت نداشته باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,11 @@ WPCS/i18n scan؛ locale switch
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-018/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ WPCS/i18n scan؛ locale switch
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. مالکیت textdomain kernel و hostها را مشخص و رشته‌های مرز پایه را inventory کن.
+2. POT و load path دو ZIP را اصلاح و escaping همان مرزها را بررسی کن.
+3. locale switch را در دو محصول مستقل و هم‌زمان اجرا کن.
+4. وظیفه رشته‌های vertical آینده را در قرارداد مشارکت ثبت کن؛ ترجمه همه controllerها یکجا در scope نیست.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: WPCS/i18n scan؛ locale switch
+- معیار اختصاصی: ZIP پوسته و افزونه مستقل فارسی/انگلیسی را درست بارگذاری کنند؛ co-install ترجمه تکراری/گم‌شده و output escape نشده در مرزهای این کارت نداشته باشد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: WPCS/i18n scan؛ locale switch
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: onboarding و تنظیمات Carmilla با locale فارسی و انگلیسی.
+- چگونه: هر ZIP را تنها نصب کنید؛ زبان را تغییر و متن مصنوعی دارای نویسه HTML را در فیلد مجاز وارد کنید؛ حالت هم‌زمان را نیز ببینید.
+- معیار موفقیت: ترجمه صحیح،escaping امن و بارگذاری بدون وابستگی به textdomain محصول دیگر باشد.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] textdomain هر میزبان و kernel مسئولیت روشن دارد.
+- [ ] POT در هر ZIP مستقل موجود است.
+- [ ] locale و escaping مرز پایه آزموده‌اند.
+- [ ] پوشش رشته verticalها به کارت دامنه محدود و قابل پیگیری است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ WPCS/i18n scan؛ locale switch
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

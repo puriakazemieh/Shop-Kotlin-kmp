@@ -1,0 +1,695 @@
+{
+  "new": [
+    {
+      "id": "P03-QA-REVIEW-023",
+      "after": "P03-QA-MANUAL-020",
+      "title": "تطبیق شواهد تاریخی Manifest و ثبت مبنای QA جایگزین",
+      "goal": "ناسازگاری DONE در P03-QA-MANUAL-020 و P04-WPPLUGIN-ADR-001 با شواهد ناقص را در گزارش بازبینی ثبت کن؛ هیچ تأیید انسانی ایجاد نکن. برای هر ادعای تأییدنشده، سناریوی QA جایگزین P03-QA-MANUAL-027 و Gateهای P04 را ارجاع بده.",
+      "validation": "گزارش ادعا/شاهد/وضعیت واقعی/کارت جبرانی کامل؛ DONE گذشته بدون بازنویسی؛ عدم استفاده از آن به‌عنوان مجوز Gate جدید.",
+      "scope": "docs/tasks/P03-QA-REVIEW-023.md; docs/evidence/P03-QA-REVIEW-023/**; docs/tasks.md",
+      "deps": [
+        "P03-QA-AUTO-019"
+      ],
+      "owner": "AI",
+      "size": "S",
+      "status": "READY"
+    },
+    {
+      "id": "P03-ARCH-CODE-024",
+      "after": "P03-MANIFEST-OPS-021",
+      "title": "مدل نسخه‌دار ProductBuildSpec مستقل از برند",
+      "goal": "مدل داده و validation برای productKind،sku،tenant،branding،buildIdentity،backendProfile،platform و compiledFeatureIds تعریف کن. فقط WORDPRESS/SPRING؛ mode نصب وردپرس metadata است. schema مجوز تجاری در P04 تکمیل می‌شود و کلاینت مرجع صدور آن نیست.",
+      "validation": "serialization roundtrip؛ برند یکسان با هر دو backend؛ tenant واقعی اجباری در release؛ SKU نامعتبر/feature ناشناخته و تغییر origin از remote رد شود.",
+      "scope": "core/config/capabilities/**; core/navigation/**; composeApp/**",
+      "deps": [
+        "P03-MANIFEST-OPS-021"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-ARCH-CODE-024A",
+      "after": "P03-ARCH-CODE-024",
+      "title": "تولید deterministic تنظیمات و سقف قابلیت کلاینت",
+      "goal": "از BuildSpec معتبر، تنظیمات و منابع generated بساز؛ ثابت‌های GeneratedLocalFeatureManifest و shopOnly فقط fixture توسعه باشند. output در build/generated و بدون fork سورس مشتری تولید شود.",
+      "validation": "دو اجرای ورودی یکسان خروجی یکسان؛ دو SKU سقف متفاوت؛ secret در output صفر؛ بسته فاقد قابلیت با remote روشن نشود.",
+      "scope": "core/config/capabilities/**; core/navigation/**; composeApp/**; tools/build-config/**; androidApp/build.gradle.kts",
+      "deps": [
+        "P03-ARCH-CODE-024"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-ARCH-CODE-024B",
+      "after": "P03-ARCH-CODE-024A",
+      "title": "تزریق BuildSpec صریح در bootstrap همه targetها",
+      "goal": "initKoin و entrypointهای Android/Web/JVM/iOS پروفایل و tenant را از BuildSpec بگیرند؛ brand.id نوع backend را تعیین نکند. namespace نشست از tenant+backend+origin ساخته شود.",
+      "validation": "نام برند دلخواه روی هر دو profile درست؛ تغییر tenant logout/cache purge؛ entrypointهای فعلی و packageهای منتشرشده حفظ شوند.",
+      "scope": "core/config/capabilities/**; core/navigation/**; composeApp/**; androidApp/**; iosApp/**",
+      "deps": [
+        "P03-ARCH-CODE-024A"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-MANIFEST-CODE-025",
+      "after": "P03-ARCH-CODE-024B",
+      "title": "ذخیره وضعیت مؤثر واکنشی و خروج کنترل‌شده از shadow",
+      "goal": "EffectiveFeatureStore مشترک برای نتیجه bootstrap/local/remote/cache بساز؛ shadow فقط telemetry باشد و در مسیر فعال خروجی legacy را جای policy معتبر قرار ندهد. revocation و stale/invalid با revision کنترل شود.",
+      "validation": "تغییر remote معتبر store جاری را تغییر دهد؛ stale/invalid fail-closed؛ replay revision رد؛ هیچ افزایش بالاتر از ceiling.",
+      "scope": "core/config/capabilities/**; core/navigation/**; composeApp/**",
+      "deps": [
+        "P03-ARCH-CODE-024B"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-MANIFEST-CODE-025A",
+      "after": "P03-MANIFEST-CODE-025",
+      "title": "اتصال منو و route/deep link به وضعیت مؤثر",
+      "goal": "FeatureRouteGuard، AppNavigation و MainGraphScreen از store جاری بخوانند؛ brand.features منبع تصمیم runtime نباشد. خروج از صفحه قابلیت خاموش و پیام قابل فهم تعریف شود.",
+      "validation": "toggle منو و deep link را بدون rebuild هم‌زمان ببندد؛ restart و back stack مسیر ممنوع باز نکنند.",
+      "scope": "core/config/capabilities/**; core/navigation/**; composeApp/**; feature/main/**",
+      "deps": [
+        "P03-MANIFEST-CODE-025"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-MANIFEST-CODE-025B",
+      "after": "P03-MANIFEST-CODE-025A",
+      "title": "اعمال guard عملیاتی فروشگاه",
+      "goal": "فقط مسیرهای repository/use-case/background دامنه فروشگاه را به وضعیت جاری feature متصل کن؛ قبل از ارسال درخواست guard اجرا شود و خاموشی حین عملیات با policy لغو/اتمام امن مشخص باشد. کنترل سروری همچنان الزامی است.",
+      "validation": "با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود.",
+      "scope": "core/config/capabilities/**; core/data/** و core/network/** فقط حوزه catalog; cart; orders; wallet; feature/** فقط مصرف‌کننده همان حوزه; composeApp/** فقط wiring/test",
+      "deps": [
+        "P03-MANIFEST-CODE-025A"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-MANIFEST-CODE-025C",
+      "after": "P03-MANIFEST-CODE-025B",
+      "title": "اعمال guard عملیاتی آموزش",
+      "goal": "فقط مسیرهای repository/use-case/background دامنه آموزش را به وضعیت جاری feature متصل کن؛ قبل از ارسال درخواست guard اجرا شود و خاموشی حین عملیات با policy لغو/اتمام امن مشخص باشد. کنترل سروری همچنان الزامی است.",
+      "validation": "با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود.",
+      "scope": "core/config/capabilities/**; core/data/** و core/network/** فقط حوزه academy; feature/** فقط مصرف‌کننده همان حوزه; composeApp/** فقط wiring/test",
+      "deps": [
+        "P03-MANIFEST-CODE-025B"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-MANIFEST-CODE-025D",
+      "after": "P03-MANIFEST-CODE-025C",
+      "title": "اعمال guard عملیاتی کلینیک/نوبت",
+      "goal": "فقط مسیرهای repository/use-case/background دامنه کلینیک/نوبت را به وضعیت جاری feature متصل کن؛ قبل از ارسال درخواست guard اجرا شود و خاموشی حین عملیات با policy لغو/اتمام امن مشخص باشد. کنترل سروری همچنان الزامی است.",
+      "validation": "با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود.",
+      "scope": "core/config/capabilities/**; core/data/** و core/network/** فقط حوزه clinic; feature/** فقط مصرف‌کننده همان حوزه; composeApp/** فقط wiring/test",
+      "deps": [
+        "P03-MANIFEST-CODE-025C"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-MANIFEST-CODE-025E",
+      "after": "P03-MANIFEST-CODE-025D",
+      "title": "اعمال guard عملیاتی تست روان‌شناسی",
+      "goal": "فقط مسیرهای repository/use-case/background دامنه تست روان‌شناسی را به وضعیت جاری feature متصل کن؛ قبل از ارسال درخواست guard اجرا شود و خاموشی حین عملیات با policy لغو/اتمام امن مشخص باشد. کنترل سروری همچنان الزامی است.",
+      "validation": "با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود.",
+      "scope": "core/config/capabilities/**; core/data/** و core/network/** فقط حوزه psychtest; feature/** فقط مصرف‌کننده همان حوزه; composeApp/** فقط wiring/test",
+      "deps": [
+        "P03-MANIFEST-CODE-025D"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-QA-AUTO-026",
+      "after": "P03-MANIFEST-CODE-025E",
+      "title": "آزمون wiring واقعی Manifest و دو پروفایل",
+      "goal": "تست integration از bootstrap تا منو/guard و transport بساز؛ fixture WORDPRESS در سه provider mode و SPRING در کنار base/commerce/academy/booking/psych اجرا شود. fixture سرور را برچسب بزن و به‌جای پیاده‌سازی server معرفی نکن.",
+      "validation": "روشن/خاموش، tenant switch، manifest stale و سقف خرید شبیه‌سازی‌شده با شمار request بررسی؛ صرف lambda fake به‌عنوان تست DI پذیرفته نیست.",
+      "scope": "core/config/capabilities/**; core/navigation/**; composeApp/**; core/network/**; feature/main/**",
+      "deps": [
+        "P03-MANIFEST-CODE-025E"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P03-QA-MANUAL-027",
+      "after": "P03-QA-AUTO-026",
+      "title": "QA انسانی جایگزین Manifest پس از اتصال runtime",
+      "goal": "با build مشخص فعلی و WordPress staging، toggle، لینک مستقیم، restart و خطای manifest را واقعاً تست کن. این شاهد جای اتکا به نتیجه ناقص QA020 را می‌گیرد. Spring fixture فقط test contract است؛ QA سرور واقعی در P15 انجام می‌شود.",
+      "validation": "کجا: wp-admin تنظیم قابلیت و app staging. چگونه: روشن/خاموش، refresh بدون rebuild، لینک مستقیم و قطع درخواست manifest. موفقیت: UI/route/network/API همسو؛ tester و build و نتیجه هر گام ثبت؛ تا تأیید انسان AWAITING_MANUAL_QA.",
+      "scope": "docs/evidence/P03-QA-MANUAL-027/**; docs/tasks/P03-QA-MANUAL-027.md; docs/tasks.md; docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
+      "deps": [
+        "P03-QA-AUTO-026"
+      ],
+      "owner": "HUMAN",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-PRODUCT-ADR-038",
+      "after": "P04-WPPLUGIN-ADR-001",
+      "title": "قرارداد تفصیلی محصولات و نگاشت مالکیت جدید",
+      "goal": "ADR006 را به entity/read/write/schema/host/feature/SKU matrix قابل اجرا تبدیل کن؛ تصمیم استقلال اعلام‌شده کاربر دوباره به انتخاب UI-only برنگردد. WooCommerce مجاز و مالک داده سایت است؛ تفکیک مشاوره/رزرو/پرونده/تست و عرضه هر خروجی ثبت شود.",
+      "validation": "هیچ entity بی‌مالک یا دو مسیر canonical نماند؛ Theme-only/Plugin-only/both و App Builder دو میزبان صریح؛ مشخصات نیازمند تحقیق با owner و کارت بعدی تعیین شود.",
+      "scope": "docs/architecture/**; docs/contracts/**; docs/INDEPENDENT_PRODUCTS_SPEC_FA.md; docs/evidence/P04-PRODUCT-ADR-038/**",
+      "deps": [
+        "P03-MANIFEST-GATE-022",
+        "P04-WPPLUGIN-ADR-001"
+      ],
+      "owner": "BOTH",
+      "size": "S",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-ENTITLEMENT-DATA-039",
+      "after": "P04-WPPLUGIN-ADR-002",
+      "title": "کاتالوگ قابلیت و SKU با تفکیک حق خرید و toggle",
+      "goal": "schema نسخه‌دار کاتالوگ قابلیت، product kind، artifact inventory و entitlement claims را ثبت و fixture کن؛ پوشش همه featureها و controllerها، dependency closure و شناسه جدا برای معرفی/نوبت/خدمت مشاوره/داده خصوصی/psych و appbuilder.targetها تعیین شود.",
+      "validation": "شناسه‌های قدیمی alias معتبر؛ بسته Base بدون vertical؛ بسته Booking بدون الزام Psych؛ حق builder/platform جدا؛ offline/grace/revoke/upgrade/site transfer صریح.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**; docs/contracts/**; docs/business/**",
+      "deps": [
+        "P04-WPPLUGIN-ADR-002"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-ENTITLEMENT-CODE-040",
+      "after": "P04-WPPLUGIN-CODE-006",
+      "title": "resolver مجوز معتبر و قابلیت مؤثر در هسته",
+      "goal": "packagedCapabilities، مجوز معتبر site/product، adminEnabled، dependencies و release readiness را resolve کن؛ public manifest فقط نتیجه کمینه را نشان دهد. signature/site binding و حالت unknown/expired/revoked/network unavailable مطابق قرارداد039 اجرا شود.",
+      "validation": "unsigned/tampered/wrong-site مجوز ندهد؛ POST مستقیم feature خریدنشده رد؛ co-install بدون دو برابرشدن حق یا quota؛ نبود Woo فقط commerce وابسته را ببندد.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WPPLUGIN-CODE-006",
+        "P04-ENTITLEMENT-DATA-039"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-ENTITLEMENT-CODE-041",
+      "after": "P04-WPPLUGIN-CODE-014",
+      "title": "پنل مشترک قابلیت‌های خریداری‌شده در هر دو میزبان",
+      "goal": "یک settings service و view مشترک با adapter هر میزبان برای bought/off/active/not-packaged/missing-prerequisite بساز. تنظیمات سایت یکی باشد؛ UI پایه وجود قابلیت پولی را با مجوز اشتباه نگیرد.",
+      "validation": "Theme بدون Bridge و Plugin با قالب دیگر save/read یکسان؛ non-admin/CSRF رد؛ وابستگی نامعتبر ذخیره نشود؛ خاموشی داده را حذف نکند.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WPPLUGIN-CODE-014",
+        "P04-ENTITLEMENT-CODE-040"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-045",
+      "after": "P04-WPPLUGIN-CODE-018",
+      "title": "زیرساخت نمایش عمومی افزونه روی قالب ثالث",
+      "goal": "registry صفحه/shortcode/block، CSS scoped، template fallback و override قرارداد Carmilla Theme را برای یک صفحه نمونه محتوای عمومی بساز. پیاده‌سازی verticalها در کارت‌های انتقال جدا انجام می‌شود.",
+      "validation": "بدون Carmilla Theme صفحه نمونه از روی ZIP plugin رندر شود؛ سبک قالب ثالث خراب نشود؛ یک route/صفحه و permission درست.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WPPLUGIN-CODE-018"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-026A",
+      "after": "P04-WORDPRESS-CODE-026",
+      "title": "انتقال کاتالوگ و محصول به adapter مشترک Woo",
+      "goal": "فقط category/product/search/media mapping را از hostها به adapter مشترک WooCommerce منتقل کن؛ UI نمایش پایه هر دو میزبان از همین سرویس استفاده کند.",
+      "validation": "شناسه محصول ثابت؛ list/detail در Theme-only/Plugin-only/both همسان؛ بدون Woo پیام پیش‌نیاز و بدون fatal.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-026"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-026B",
+      "after": "P04-WORDPRESS-CODE-026A",
+      "title": "انتقال سبد و سفارش به مسیر مشترک Woo",
+      "goal": "فقط cart/order/account adapter و فراخوانی UI دو میزبان را همگرا کن؛ تغییر موتور پرداخت در این کارت نیست و integration رسمی Woo باقی بماند.",
+      "validation": "سبد و سفارش synthetic شناسه/مبلغ یکسان؛ HPOS CRUD؛ یک write/callback؛ capability خاموش مسیر جدید را ببندد.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-026A"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-027A",
+      "after": "P04-WORDPRESS-CODE-027",
+      "title": "انتقال ثبت‌نام و پیشرفت آموزش با view مشترک",
+      "goal": "Enrollment/Progress و صفحه درس/دوره‌های من موجود را از خدمات مشترک در Theme و Plugin مصرف کن؛ تکمیل product-grade paywall در P13 جدا باقی است.",
+      "validation": "سه mode یک نتیجه؛ شناسه و progress حفظ؛ نمایش plugin روی قالب ثالث؛ دسترسی private بدون enrollment مجاز باز نشود.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-027"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-027B",
+      "after": "P04-WORDPRESS-CODE-027A",
+      "title": "انتقال آزمون آموزشی و گواهی موجود",
+      "goal": "Quiz/Attempt/Certificate موجود و نمایش/مدیریت مرتبط را به slice مشترک منتقل کن؛ منطق نمره و permission در view کپی نشود.",
+      "validation": "fixture نسخه موجود قبل/بعد برابر؛ attempt تکراری کنترل؛ Theme و Plugin مسیر نمایش و مدیریت یکسان؛ توسعه engine جدید به P13.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-027A"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-028A",
+      "after": "P04-WORDPRESS-CODE-028",
+      "title": "انتقال مسیر ثبت و مشاهده نوبت موجود",
+      "goal": "appointment API و فرم‌های رزرو/نوبت‌های من/مدیریت را به Shared Core و adapterهای نمایشی هر میزبان وصل کن؛ mapping route فعلی booking.js به قرارداد واقعی را ثبت کن.",
+      "validation": "Theme-only ثبت synthetic بدون افزونه؛ Plugin-only فرم قابل استفاده؛ co-install یک نوبت؛ ID/ownership حفظ؛ readiness تولید پس از P14.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-028"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-029A",
+      "after": "P04-WORDPRESS-CODE-029",
+      "title": "انتقال پشتیبانی و تیکت با نمایش دو میزبان",
+      "goal": "ticket/thread/attachment موجود، permission و فرم‌های عمومی/مدیریتی پشتیبانی را به یک implementation مشترک منتقل کن؛ داده تست و clinical message را مخلوط نکن.",
+      "validation": "فقط مالک/نقش مجاز thread را ببیند؛ سه mode CRUD برابر؛ فایل خصوصی در قالب ثالث افشا نشود.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-029"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-029B",
+      "after": "P04-WORDPRESS-CODE-029A",
+      "title": "انتقال تعاملات محتوا و محصول",
+      "goal": "favorite/review/comment/Q&A موجود را inventory و یک adapter مشترک برای رفتار فعلی بساز؛ قابلیت‌هایی که بیش از این slice هستند با کارت مستقل ثبت شوند.",
+      "validation": "before/after fixture برابر؛ یک review/write؛ nonce/ownership و استایل scoped در دو میزبان.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-029A"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-DATA-042",
+      "after": "P04-WPPLUGIN-CODE-031",
+      "title": "پذیرش داده موجود و جابه‌جایی میزبان بدون حذف",
+      "goal": "فرآیند adoption metadata/version/option فعلی و انتقال authority میان میزبان‌ها را روی snapshot synthetic پیاده کن؛ داده domain را دوباره کپی نکن. انتقال مجوز صریح و schema compatibility را کنترل کن.",
+      "validation": "Theme→both→Plugin و برعکس بدون تغییر ID/count/checksum داده؛ توقف migration recovery؛ خاموشی آخرین میزبان داده را حفظ کند.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WPPLUGIN-CODE-031"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-033A",
+      "after": "P04-WPPLUGIN-CODE-033",
+      "title": "چرخه درخواست ساخت مشترک با runner آزمایشی",
+      "goal": "submit/status/retry/cancel و دریافت metadata/link خروجی را روی pairing موجود در Shared Core پیاده کن؛ idempotency و entitlement هدف قبل enqueue کنترل شود؛ mock وضعیت آزمایشی واضح داشته باشد.",
+      "validation": "دو پنل برای یک key فقط یک job؛ cross-site و لینک منقضی رد؛ no shell/no signing key در WP؛ mock معادل artifact واقعی اعلام نشود.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WPPLUGIN-CODE-033"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WPTHEME-CODE-046",
+      "after": "P04-WORDPRESS-CODE-033A",
+      "title": "پنل اپ‌ساز مستقل در پوسته",
+      "goal": "adapter منو و پنل Theme-only برای pairing، برند، هدف خریداری‌شده، request/status/cancel و دریافت خروجی بر خدمات033/033A بساز.",
+      "validation": "با Bridge نصب‌نشده همه مراحل fake runner از پنل پوسته طی شود؛ admin مجاز؛ هدف نخریده/آماده‌نشده build نشود.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WORDPRESS-CODE-033A"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-047",
+      "after": "P04-WPTHEME-CODE-046",
+      "title": "پنل اپ‌ساز مستقل افزونه روی قالب دیگر",
+      "goal": "همان خدمات و view مشترک اپ‌ساز را از Plugin Host به‌صورت مستقل expose کن؛ co-install یک پروژه و وضعیت مشترک نشان دهد.",
+      "validation": "قالب پیش‌فرض+Plugin بدون Carmilla Theme، request تا دریافت metadata؛ هر دو نصب بدون job/quota تکراری؛ خطا قابل اقدام.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**",
+      "deps": [
+        "P04-WPTHEME-CODE-046"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-CI-CODE-043",
+      "after": "P04-WPPLUGIN-CODE-047",
+      "title": "سازنده ZIP بر اساس SKU و فهرست قابلیت‌ها",
+      "goal": "assembler از یک سورس و SKU معتبر، دو نوع ZIP مستقل با core و module dependency closure تولید کند؛ inventory نسخه/product/sku/capability/checksum و provenance در artifact باشد.",
+      "validation": "Base و تک‌قابلیت و ترکیبی واقعاً محتوای متفاوت معتبر؛ ماژول پولی بسته‌نشده قابل load نباشد؛ install ZIP تمیز؛ دو build ورودی برابر قابل بازتولید.",
+      "scope": "wordpress/build-*.sh; wordpress/packages/**; .github/workflows/wordpress-package.yml; tools/wordpress-packaging/**; wordpress/**/tests/**",
+      "deps": [
+        "P04-WPPLUGIN-CODE-047",
+        "P04-ENTITLEMENT-DATA-039"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-ENTITLEMENT-CODE-044",
+      "after": "P04-CI-CODE-043",
+      "title": "ارتقای خرید و به‌روزرسانی سازگار هر SKU",
+      "goal": "مسیر upgrade package+entitlement و updater محصول را به SKU/site/version متصل کن؛ ZIP عمومی نباید حق خرید یا کد نسخه دیگر را ناخواسته جایگزین کند. سیاست grace/renewal/transfer مطابق039 اجرا شود.",
+      "validation": "Base→Booking داده/هویت حفظ؛ downgrade/revoke مطابق قرارداد و بدون purge؛ package غلط/مجوز سایت دیگر رد؛ update co-install به یک kernel سازگار.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**; tools/wordpress-packaging/**",
+      "deps": [
+        "P04-CI-CODE-043"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P04-QA-AUTO-048",
+      "after": "P04-CI-CODE-019",
+      "title": "آزمون منفی مجوز، بسته و تغییر میزبان از ZIP",
+      "goal": "روی artifactهای SKU و WP واقعی، اشتراک packaged/entitled/enabled و co-install entitlement provenance را با fake authority قابل کنترل تست کن؛ از فایل سورس مستقیم نصب نکن.",
+      "validation": "خریدنشده/tampered/wrong-site/خاموش بسته؛ purchased-enabled هر دو host کار کند؛ upgrade/offline grace و عدم دو job/داده آزمایش شود.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**; .github/workflows/wordpress-integration.yml",
+      "deps": [
+        "P04-CI-CODE-019"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P12-BUILDER-CODE-020",
+      "after": "P12-BUILDER-CODE-008",
+      "title": "runner واقعی Web و PWA از BuildSpec",
+      "goal": "adapter target برای ساخت Web مستقل و PWA از template تأییدشده P08 در runner ایزوله اضافه کن؛ endpoint می‌تواند WP provider مستقل یا SPRING باشد و runtime gating رعایت شود.",
+      "validation": "ZIP وب واقعی با checksum؛ سرو روی origin تازه و زیرمسیر؛ نصب/update PWA؛ feature ceiling و tenant config خروجی صحیح.",
+      "scope": "tools/app-builder/** (مسیر هدف، ابتدا قرارداد سرویس را کشف کن); .github/workflows/**; tools/build-config/**; composeApp/** فقط config/build integration",
+      "deps": [
+        "P12-BUILDER-CODE-008",
+        "P08-PWA-GATE-019"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P12-BUILDER-CODE-021",
+      "after": "P12-BUILDER-CODE-020",
+      "title": "runner واقعی Android از template انتشار",
+      "goal": "adapter ساخت APK/AAB از androidApp و BuildSpec روی runner ایزوله با vault reference بساز؛ pipeline debug یا مسیر قدیمی composeApp artifact مرجع تحویل نباشد.",
+      "validation": "خروجی امضاشده نصب/ارتقا؛ applicationId/نسخه/brand/ceiling درست؛ secret در WP/log/artifact نیست؛ failed build موفق گزارش نشود.",
+      "scope": "tools/app-builder/** (مسیر هدف، ابتدا قرارداد سرویس را کشف کن); .github/workflows/**; tools/build-config/**; androidApp/**; composeApp/** فقط build integration",
+      "deps": [
+        "P12-BUILDER-CODE-020",
+        "P11-ANDROID-GATE-021",
+        "P12-BUILDER-SEC-007"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P12-QA-MANUAL-022",
+      "after": "P12-QA-AUTO-016",
+      "title": "تحویل واقعی اپ‌ساز از هر دو محصول مستقل",
+      "goal": "روی دو سایت synthetic، Theme-only و Plugin-only با قالب ثالث، Android و Web/PWA واقعی بساز و تحویل بگیر؛ co-install یک job را از هر دو پنل مشاهده کن.",
+      "validation": "کجا: پنل App Builder هر میزبان و دستگاه Android/مرورگر. چگونه: خرید مجاز→branding→build→download→install، سپس هدف غیرمجاز/retry. موفقیت: artifact صحیح سایت و برند، منع هدف نخریده، یک job؛ شواهد و تأیید انسانی.",
+      "scope": "docs/evidence/P12-QA-MANUAL-022/**; docs/tasks/P12-QA-MANUAL-022.md; docs/tasks.md; docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
+      "deps": [
+        "P12-QA-AUTO-016",
+        "P12-BUILDER-CODE-021"
+      ],
+      "owner": "HUMAN",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P13-LMS-CODE-028",
+      "after": "P13-LMS-CODE-009",
+      "title": "پخش واقعی درس در Web/PWA",
+      "goal": "VideoPlayer.js.kt placeholder را برای درس مجاز با lifecycle مناسب وب کامل کن؛ signed URL expiry و refresh مجوز، resume و خطای شبکه را رعایت کن. موتور نمره/پرداخت تغییر نکند.",
+      "validation": "پخش/توقف/seek/resume واقعی مرورگر؛ lesson غیرمجاز/منقضی باز نشود؛ raw private media در cache عمومی نباشد.",
+      "scope": "feature/details/src/jsMain/**; feature/academy/** فقط اتصال player; composeApp/src/webMain/**; core/network/** فقط media contract",
+      "deps": [
+        "P13-LMS-CODE-009"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P14-CLINIC-CODE-033",
+      "after": "P14-CLINIC-DATA-005",
+      "title": "تفکیک قابلیت نوبت‌دهی از خدمات و اطلاعات مشاوره",
+      "goal": "شناسه‌های قرارداد039 را به registry/schema/API/UI موجود map کن؛ booking بتواند بدون Psych و پرونده بالینی ارائه شود. معرفی مشاور و جلسه/ارتباط خصوصی capability جدا داشته باشند؛ alias قدیمی مهاجرت سازگار بگیرد.",
+      "validation": "SKU booking-only رزرو دارد و هیچ psych/note/file خصوصی فعال نیست؛ consultation ترکیب وابستگی معتبر؛ Theme/Plugin/client و API همسو.",
+      "scope": "wordpress/packages/carmilla-core/**; wordpress/carmilla-theme/**; wordpress/carmilla-bridge/**; wordpress/**/tests/**; tools/test-env/**; core/config/capabilities/**; feature/clinic/**",
+      "deps": [
+        "P14-CLINIC-DATA-005",
+        "P04-ENTITLEMENT-DATA-039"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P15-BUILDER-CODE-030",
+      "after": "P15-SPRING-GATE-029",
+      "title": "پروژه ساخت مستقل کلاینت با backend Spring",
+      "goal": "در portal/CLI سرویس ساخت، پروژه با BuildSpec و SPRING بدون WordPress pairing ایجاد شود؛ origin/tenant verification و entitlement معتبر همان پروژه اعمال شود. adapterهای واقعی Android/Web از P12 بازاستفاده شوند.",
+      "validation": "بدون نصب WP/Theme/Plugin، خروجی Android/Web درست به Spring staging وصل شود؛ مجوز سایت WP به پروژه دیگر منتقل نشود؛ UI/metadata معتبر.",
+      "scope": "tools/app-builder/** (مسیر هدف، ابتدا قرارداد سرویس را کشف کن); .github/workflows/**; tools/build-config/**; D:/Android/AndroidStudioProjects/ShopServer/Shop/** فقط manifest/project contract",
+      "deps": [
+        "P15-SPRING-GATE-029",
+        "P12-BUILDER-GATE-019"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P16-BUILDER-CODE-024",
+      "after": "P16-IOS-GATE-022",
+      "title": "اتصال runner iOS به اپ‌ساز دو میزبان و portal مستقل",
+      "goal": "archive/export pipeline فعلی فاز iOS را با BuildSpec و vault reference به target adapter در runner macOS وصل کن؛ Theme-only،Plugin-only و پروژه مستقل از یک قرارداد job استفاده کنند.",
+      "validation": "archive/IPA معتبر با bundle/team/sku صحیح؛ خطای provisioning روشن؛ download مجاز؛ smoke روی دستگاه/مسیر TestFlight آزمایشی با تأیید لازم؛ no signing key در WP.",
+      "scope": "tools/app-builder/** (مسیر هدف، ابتدا قرارداد سرویس را کشف کن); .github/workflows/**; tools/build-config/**; iosApp/**; composeApp/** فقط build integration",
+      "deps": [
+        "P16-IOS-GATE-022",
+        "P12-BUILDER-GATE-019"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P17-DESKTOP-CODE-021",
+      "after": "P17-DESKTOP-CODE-008",
+      "title": "پخش واقعی محتوای آموزشی در Desktop",
+      "goal": "VideoPlayer.jvm.kt placeholder را برای سیستم‌عامل‌های scope با player مناسب و lifecycle قابل cleanup کامل کن؛ دسترسی lesson و expiry مجوز را رعایت کن.",
+      "validation": "پخش/توقف/resume واقعی؛ teardown بدون نشت player؛ media خصوصی خارج cache مجاز ذخیره نشود؛ unsupported OS پیام روشن.",
+      "scope": "feature/details/src/jvmMain/**; feature/academy/** فقط player integration; composeApp/build.gradle.kts فقط dependency ضروری player",
+      "deps": [
+        "P17-DESKTOP-CODE-008"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    },
+    {
+      "id": "P17-BUILDER-CODE-020",
+      "after": "P17-DESKTOP-GATE-019",
+      "title": "اتصال runnerهای Desktop به اپ‌ساز",
+      "goal": "installerهای سیستم‌عامل scope از BuildSpec در runner همان OS ساخته و از هر دو WP host یا portal پروژه مستقل درخواست شوند؛ signing/update قرارداد فاز Desktop حفظ شود.",
+      "validation": "هر OS ادعاشده installer واقعی نصب/upgrade شود؛ tenant/brand/ceiling و امضا درست؛ job سیستم‌عامل دیگر اشتباه تحویل نشود.",
+      "scope": "tools/app-builder/** (مسیر هدف، ابتدا قرارداد سرویس را کشف کن); .github/workflows/**; tools/build-config/**; composeApp/** فقط build/package integration",
+      "deps": [
+        "P17-DESKTOP-GATE-019",
+        "P12-BUILDER-GATE-019"
+      ],
+      "owner": "BOTH",
+      "size": "M",
+      "status": "TODO"
+    }
+  ],
+  "dependencies": {
+    "P03-MANIFEST-OPS-021": [
+      "P03-QA-REVIEW-023"
+    ],
+    "P03-MANIFEST-GATE-022": [
+      "P03-MANIFEST-OPS-021",
+      "P03-QA-MANUAL-027"
+    ],
+    "P04-WPPLUGIN-ADR-002": [
+      "P04-PRODUCT-ADR-038",
+      "P03-MANIFEST-GATE-022"
+    ],
+    "P04-WPPLUGIN-CODE-003": [
+      "P04-ENTITLEMENT-DATA-039"
+    ],
+    "P04-WPPLUGIN-CODE-007": [
+      "P04-ENTITLEMENT-CODE-040"
+    ],
+    "P04-WPPLUGIN-CODE-015": [
+      "P04-ENTITLEMENT-CODE-041"
+    ],
+    "P04-WORDPRESS-CODE-026": [
+      "P04-WPPLUGIN-CODE-045"
+    ],
+    "P04-WORDPRESS-CODE-027": [
+      "P04-WORDPRESS-CODE-026B"
+    ],
+    "P04-WORDPRESS-CODE-028": [
+      "P04-WORDPRESS-CODE-027B"
+    ],
+    "P04-WORDPRESS-CODE-029": [
+      "P04-WORDPRESS-CODE-028A"
+    ],
+    "P04-WPTHEME-CODE-030": [
+      "P04-WORDPRESS-CODE-029B"
+    ],
+    "P04-WORDPRESS-CODE-032": [
+      "P04-WORDPRESS-DATA-042"
+    ],
+    "P04-CI-CODE-019": [
+      "P04-ENTITLEMENT-CODE-044"
+    ],
+    "P04-QA-AUTO-020": [
+      "P04-QA-AUTO-048"
+    ],
+    "P09-SECURITY-SEC-007": [
+      "P09-QA-MANUAL-006B"
+    ],
+    "P11-ANDROID-DISC-001": [
+      "P03-MANIFEST-GATE-022",
+      "P05-PAYMENT-GATE-024",
+      "P08-PWA-GATE-019"
+    ],
+    "P12-BUILDER-ADR-001": [
+      "P11-ANDROID-GATE-021",
+      "P04-WORDPRESS-GATE-037"
+    ],
+    "P12-BUILDER-OPS-009": [
+      "P12-BUILDER-CODE-021"
+    ],
+    "P12-SECURITY-SEC-017": [
+      "P12-QA-MANUAL-022"
+    ],
+    "P13-LMS-DISC-001": [
+      "P04-WORDPRESS-GATE-037",
+      "P05-PAYMENT-GATE-024",
+      "P07-SEED-GATE-026"
+    ],
+    "P13-LMS-DATA-010": [
+      "P13-LMS-CODE-028"
+    ],
+    "P14-CLINIC-DISC-001": [
+      "P04-WORDPRESS-GATE-037",
+      "P05-PAYMENT-GATE-024",
+      "P06-MESSAGE-GATE-016",
+      "P07-SEED-GATE-026"
+    ],
+    "P14-CLINIC-CODE-006": [
+      "P14-CLINIC-CODE-033"
+    ],
+    "P15-SPRING-BIZ-001": [
+      "P03-MANIFEST-GATE-022"
+    ],
+    "P15-QA-AUTO-022": [
+      "P15-SPRING-OPS-021"
+    ],
+    "P16-IOS-BIZ-001": [
+      "P03-MANIFEST-GATE-022",
+      "P05-PAYMENT-GATE-024",
+      "P09-QA-GATE-018"
+    ],
+    "P16-IOS-DOC-019": [
+      "P16-IOS-OPS-018"
+    ],
+    "P16-IOS-GATE-022": [
+      "P16-IOS-SEC-023"
+    ],
+    "P17-DESKTOP-BIZ-001": [
+      "P03-MANIFEST-GATE-022",
+      "P05-PAYMENT-GATE-024",
+      "P09-QA-GATE-018"
+    ],
+    "P17-DESKTOP-OPS-009": [
+      "P17-DESKTOP-CODE-021"
+    ],
+    "P17-OBSERVABILITY-CODE-012": [
+      "P17-DESKTOP-OPS-011"
+    ]
+  },
+  "phases": {
+    "P03": "دو پروفایل داده، BuildSpec مستقل و Manifest مؤثر انتها‌به‌انتها",
+    "P04": "پوسته و افزونه مستقل، فروش قابلیت‌ها و سازگاری نصب هم‌زمان",
+    "P08": "Web و PWA مستقل با دو پروفایل داده",
+    "P11": "Android مستقل با دو پروفایل و تحویل مدیریت‌شده",
+    "P12": "اپ‌ساز قابل خرید از هر دو میزبان؛ خروجی واقعی Android و Web/PWA",
+    "P15": "سرور Spring مستقل و کلاینت‌های بدون نیاز به WordPress",
+    "P16": "iOS مستقل و اتصال اپ‌ساز",
+    "P17": "Desktop مستقل و اتصال اپ‌ساز"
+  }
+}

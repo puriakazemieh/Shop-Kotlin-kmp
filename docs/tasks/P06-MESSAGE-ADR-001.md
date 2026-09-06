@@ -1,4 +1,4 @@
-# P06-MESSAGE-ADR-001 — NotificationService/Provider/DeliveryResult contract
+# P06-MESSAGE-ADR-001 — قرارداد پیام‌رسانی در Shared Core هر دو محصول
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P06-MESSAGE-ADR-001
 - Depends on: P05-PAYMENT-GATE-024
 - Blocks: P06-MESSAGE-DATA-002
 - Requirement source: Master checklist row P06-MESSAGE-ADR-001 و Source audit بخش MESSAGE
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-NotificationService/Provider/DeliveryResult contract
+SMS، Email و Generic HTTP در هسته سمت سرور هر ZIP قرار گیرند؛ تنظیمات امن متعلق به سایت باشند و هیچ وابستگی اجباری به Bridge برای Theme وجود نداشته باشد.
 
 ## خروجی مورد انتظار
-retryable error، provider ID و health semantics
+یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,10 @@ retryable error، provider ID و health semantics
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
 - docs/**
 - اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
@@ -83,25 +88,25 @@ retryable error، provider ID و health semantics
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P06 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: SMS، Email و Generic HTTP در هسته سمت سرور هر ZIP قرار گیرند؛ تنظیمات امن متعلق به سایت باشند و هیچ وابستگی اجباری به Bridge برای Theme وجود نداشته باشد.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: retryable error، provider ID و health semantics
+- معیار اختصاصی: یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: retryable error، provider ID و health semantics
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-MANUAL-034 — UAT Bridge روی قالب ثالث و Android/PWA
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-MANUAL-034 — UAT افزونه مستقل با صفحات واقعی روی قالب ثالث
 
 ## Prompt اجرای همین Task
 
@@ -21,16 +23,16 @@ production،داده/credential واقعی و publish ممنوع.
 - Owner: HUMAN
 - Completion authority: HUMAN QA + Product Owner
 - Depends on: P04-QA-MANUAL-021
-- Blocks: P04-WORDPRESS-MANUAL-035 و P04-WPPLUGIN-GATE-024
+- Blocks: P04-WORDPRESS-MANUAL-035, P04-WPPLUGIN-GATE-024
 - Requirement source: Master row P04-WPPLUGIN-MANUAL-034
 
 ## هدف قابل اندازه‌گیری
 
-Bridge ZIP بدون Carmilla Theme روی Storefront و حداقل یک قالب ثالث واقعی به Android و PWA متصل و تمام capabilityهای declared به‌صورت دستی اعتبارسنجی شود.
+Plugin SKU را روی قالب پیش‌فرض و یک قالب ثالث با Carmilla Theme نصب‌نشده تست کن؛ کاربر سایت از صفحات/فرم‌ها استفاده کند و پنل قابلیت/اپ‌ساز مستقل باشد.
 
 ## خروجی مورد انتظار
 
-UAT matrix امضاشده برای install/onboarding/auth/content/store/academy/clinic/psych/support/feature toggle و App Builder fake control plane.
+کجا: سایت و wp-admin افزونه. چگونه: course/booking مجاز را طبق SKU از UI عمومی تا ثبت/مشاهده طی کن؛ یکی را خاموش کن و API مستقیم بزن. موفقیت: ظاهر قالب سالم،عملیات مجاز کامل،غیرمجاز بسته؛ mock build با artifact واقعی اشتباه نشود.
 
 ## خارج از محدوده
 
@@ -51,6 +53,8 @@ UAT matrix امضاشده برای install/onboarding/auth/content/store/academy
 
 ## مراحل پیاده‌سازی
 
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
+
 1. Bridge را جداگانه روی Storefront و قالب ثالث نصب و onboarding کن.
 2. Android/PWA را pair و manifest/navigation را تطبیق بده.
 3. CRUD مجاز/غیرمجاز و happy/error/empty/offline را برای verticalها اجرا کن.
@@ -64,10 +68,13 @@ UAT matrix امضاشده برای install/onboarding/auth/content/store/academy
 
 ## Manual tests با environment/data/steps/expected
 
-- Environment: WordPress/PHP/Woo/Theme/Bridge versions،Android device و browser/PWA ثبت شود.
-- Expected: Theme میزبان سالم،manifest و CRUD صحیح،unauthorized denied،data loss/fatal/P0 صفر.
+کجا: سایت و wp-admin افزونه. چگونه: course/booking مجاز را طبق SKU از UI عمومی تا ثبت/مشاهده طی کن؛ یکی را خاموش کن و API مستقیم بزن. موفقیت: ظاهر قالب سالم،عملیات مجاز کامل،غیرمجاز بسته؛ mock build با artifact واقعی اشتباه نشود.
+
+- محیط staging،داده synthetic،build fingerprint و tester/date/result؛ تا تأیید واقعی AWAITING_MANUAL_QA.
 
 ## Acceptance Criteria
+
+- [ ] کجا: سایت و wp-admin افزونه. چگونه: course/booking مجاز را طبق SKU از UI عمومی تا ثبت/مشاهده طی کن؛ یکی را خاموش کن و API مستقیم بزن. موفقیت: ظاهر قالب سالم،عملیات مجاز کامل،غیرمجاز بسته؛ mock build با artifact واقعی اشتباه نشود.
 
 - [ ] هر دو Theme میزبان و هر دو client تست شده‌اند.
 - [ ] همه capabilityهای declared نتیجه دارند.
@@ -95,3 +102,5 @@ UAT matrix امضاشده برای install/onboarding/auth/content/store/academy
 - Evidence paths:
 - Defects/blockers:
 - Final status: TODO | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

@@ -1,4 +1,4 @@
-# P09-QA-GATE-018 — Gate Beta/Marketplace Candidate
+# P09-QA-GATE-018 — Gate رگرسیون نسخه با استقلال محصولات و بدهی QA
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +54,15 @@ P09-QA-GATE-018
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P09-QA-OPS-017
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P10-BUSINESS-BIZ-001, P16-IOS-BIZ-001, P17-DESKTOP-BIZ-001
 - Requirement source: Master checklist row P09-QA-GATE-018 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Gate Beta/Marketplace Candidate
+علاوه بر بدهی منتقل‌شده P02، شواهد سه حالت WordPress، lifecycle، feature entitlement و Web/PWA مستقل را برای candidate مشخص بازبینی کن.
 
 ## خروجی مورد انتظار
-cohort criteria و RC sign-off،به‌همراه کنترل‌های منتقل‌شده از `P02-CORE-GATE-018`
+هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,33 +87,27 @@ cohort criteria و RC sign-off،به‌همراه کنترل‌های منتقل
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P09 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: علاوه بر بدهی منتقل‌شده P02، شواهد سه حالت WordPress، lifecycle، feature entitlement و Web/PWA مستقل را برای candidate مشخص بازبینی کن.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: cohort criteria و RC sign-off
+- معیار اختصاصی: هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: cohort criteria و RC sign-off
-- کنترل‌های منتقل‌شده از P02،همگی روی Release Candidate و با Evidence redacted انجام شوند:
-  - `architectureCheck`،`compileKotlinJvm`،`compileKotlinJs` و Android release build در یک محیط پایدار یا CI سبز باشند.
-  - integration واقعی WordPress/Woo شامل نصب تمیز،فعال‌سازی Theme/Bridge و smokeهای موجود سبز باشد.
-  - rollback سازگار یا forward-fix مستند برای commit معماری `b2ebfb3d` ثبت و آزموده شده باشد.
-  - dependencyهای گزارش‌شده توسط architecture check یا رفع شده،یا با owner و deadline پذیرفته شده باشند.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] کنترل‌های منتقل‌شده از `P02-CORE-GATE-018` روی Release Candidate با Evidence ثبت شده‌اند.

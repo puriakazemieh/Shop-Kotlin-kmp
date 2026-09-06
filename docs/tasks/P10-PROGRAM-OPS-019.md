@@ -54,7 +54,7 @@ P10-PROGRAM-OPS-019
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P10-BUSINESS-GATE-018
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: —
 - Requirement source: Master checklist row P10-PROGRAM-OPS-019 و Source audit بخش PROGRAM
 
 ## هدف قابل اندازه‌گیری

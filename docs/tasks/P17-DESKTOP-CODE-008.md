@@ -54,7 +54,7 @@ P17-DESKTOP-CODE-008
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P17-DESKTOP-CODE-007
-- Blocks: P17-DESKTOP-OPS-009
+- Blocks: P17-DESKTOP-CODE-021
 - Requirement source: Master checklist row P17-DESKTOP-CODE-008 و Source audit بخش DESKTOP
 
 ## هدف قابل اندازه‌گیری

@@ -1,0 +1,80 @@
+{
+  "tail_updates": [
+    {
+      "id": "P04-CI-CODE-019",
+      "title": "CI بسته‌های مستقل با ورودی مانیفست و بررسی محتوای ZIP",
+      "goal": "خروجی assembler043 را با artifactKind و مانیفست feature/builders در CI بساز و از ZIP تمیز نصب کن؛ حذف واقعی ماژول انتخاب‌نشده، وابستگی‌های مجاز، checksum و provenance را کنترل کن.",
+      "validation": "برای هر دو نوع ZIP: Base،تک‌فیچر و ترکیبی و ۱۶ ترکیب چهار بیلدر اعتبارسنجی محتوایی شوند؛ smoke نصب نماینده‌ها. WPCS/PHP/security failها بسته شوند؛ findings Theme Check درباره plugin territory طبق کانال فروش ثبت شوند، PASS جعلی برای WordPress.org ممنوع."
+    },
+    {
+      "id": "P04-QA-AUTO-020",
+      "title": "رگرسیون مستقل و هم‌زمان دو میزبان با SKU واقعی",
+      "goal": "روی ZIPهای ساخته‌شده از manifest، lifecycle/route/CPT/hook/data parity را در Theme-only،Plugin-only و both اجرا کن؛ تست مجوز048 پیش‌نیاز است.",
+      "validation": "فیچر true دارای کد/UI/API و قابل استفاده؛ false دارای هیچ module/resource/registration اختصاصی نیست. حذف یک میزبان داده را حفظ کند؛ فقط یک write/cron/build ثبت شود."
+    },
+    {
+      "id": "P04-QA-MANUAL-021",
+      "title": "UAT پوسته تنها برای قابلیت‌ها و پنل بیلدر بسته‌شده",
+      "goal": "بدون نصب Carmilla Plugin، نسخه Base و نسخه Booking با Android/PWA Builder را نصب و UI/admin/API قابلیت‌ها را استفاده کن؛ بیلدر در P04 فقط با runner آزمایشی و برچسب روشن است.",
+      "validation": "کجا: پوسته و پنل قابلیت‌ها/اپ‌ساز. چگونه: نوبت synthetic ثبت کن؛ قابلیت مجاز را خاموش/روشن؛ target نخریده را امتحان کن. موفقیت: ثبت مستقل،حفظ داده،نبود ماژول انتخاب‌نشده و رد target غیرمجاز؛ تأیید انسانی لازم."
+    },
+    {
+      "id": "P04-WPPLUGIN-MANUAL-034",
+      "title": "UAT افزونه مستقل با صفحات واقعی روی قالب ثالث",
+      "goal": "Plugin SKU را روی قالب پیش‌فرض و یک قالب ثالث با Carmilla Theme نصب‌نشده تست کن؛ کاربر سایت از صفحات/فرم‌ها استفاده کند و پنل قابلیت/اپ‌ساز مستقل باشد.",
+      "validation": "کجا: سایت و wp-admin افزونه. چگونه: course/booking مجاز را طبق SKU از UI عمومی تا ثبت/مشاهده طی کن؛ یکی را خاموش کن و API مستقیم بزن. موفقیت: ظاهر قالب سالم،عملیات مجاز کامل،غیرمجاز بسته؛ mock build با artifact واقعی اشتباه نشود."
+    },
+    {
+      "id": "P04-WORDPRESS-MANUAL-035",
+      "title": "UAT دو محصول با مانیفست‌ها و نسخه‌های متفاوت",
+      "goal": "ترتیب نصب/upgrade،دو SKU متفاوت،خاموشی یکی از میزبان‌ها و mismatch core/schema/entitlement را با snapshot synthetic بررسی کن.",
+      "validation": "کجا: پنل هر دو میزبان و داده قبل/بعد. چگونه: Theme Booking + Plugin Academy نصب؛ toggle و جابه‌جایی میزبان؛ دو درخواست build با key یکسان. موفقیت: داده/ID حفظ،یک job/write،مجوز سایت دیگر رد و mismatch قابل اقدام."
+    },
+    {
+      "id": "P04-QA-MANUAL-022",
+      "title": "بازبینی نمایش قابلیت‌های بسته‌شده و وضعیت‌های خطا",
+      "goal": "RTL،accessibility،empty/error و توضیح وضعیت موجود/خریداری‌شده/خاموش/بسته‌نشده را در Theme-only،Plugin-only و both بازبینی کن.",
+      "validation": "کجا: صفحات عمومی و تنظیمات دو محصول. چگونه: keyboard/zoom و فعال‌سازی فیچر مجاز/غیرمجاز. موفقیت: وضعیت قابل فهم،بدون دکمه اجرایی ماژول حذف‌شده،focus و پیام خطای درست؛ screenshot و تأیید انسان."
+    },
+    {
+      "id": "P04-WPPLUGIN-DOC-023",
+      "title": "مستند دو ZIP، مانیفست ساخت، تنظیمات و اتصال کلاینت",
+      "goal": "با نمونه دو manifest واقعی assembler، نشان بده feature و هر builder target چگونه هنگام ZIP حذف/اضافه می‌شوند؛ نصب مستقل،toggle پس از نصب،ارتقا و دو پروفایل کلاینت مستند شوند.",
+      "validation": "دو مثال خروجی با inventory تطبیق کنند؛ اتصال app به API از خرید builder جدا؛ چهار target مستقل؛ runner آزمایشی و Gate تجاری جدا توضیح داده شوند."
+    },
+    {
+      "id": "P04-WPTHEME-GATE-036",
+      "title": "Gate زیرساخت پوسته مستقل و بسته‌های انتخابی",
+      "goal": "RC داخلی Theme-only را برای SKUهای مشخص با feature parity،عدم نیاز به Plugin،حذف واقعی ماژول false و تنظیمات معتبر بررسی کن.",
+      "validation": "شاهد ZIP/checksum و UAT همان SKU؛ builder panel مستقل با fake runner فقط قرارداد P04 را پاس می‌کند؛ فروش هدف واقعی محتاج Gate P12/P16/P17 و فروش دامنه محتاج Gate تخصصی مربوط است."
+    },
+    {
+      "id": "P04-WPPLUGIN-GATE-024",
+      "title": "Gate زیرساخت افزونه مستقل و نمایش روی قالب ثالث",
+      "goal": "RC داخلی Plugin-only را با صفحات/فرم‌های عمومی،admin/API،manifest بسته و builder adapter مستقل ارزیابی کن؛ API-only برای PASS کافی نیست.",
+      "validation": "قالب پیش‌فرض و ثالث آزموده‌شده،هیچ Carmilla Theme لازم نیست؛ SKU و toggle معتبر؛ Gate خدمات آینده و امضای artifact موبایل در این Gate ادعا نشود."
+    },
+    {
+      "id": "P04-WORDPRESS-GATE-037",
+      "title": "Gate سازگاری دو ZIP مستقل و نصب هم‌زمان",
+      "goal": "هم‌زیستی دو محصول و قالب/افزونه مستقل با هسته و entitlement سازگار را بر همان artifactهای SKU ارزیابی کن؛ داده/route/cron/job canonical باشند.",
+      "validation": "هر سه mode،دو ترتیب نصب/upgrade و SKU متفاوت با شواهد؛ بدون duplicate/data loss؛ حفظ خدمات API مستقل از روشن‌بودن builder؛ این Gate پایان همه قابلیت‌ها و پلتفرم‌ها نیست."
+    }
+  ],
+  "clarified_cards": [
+    "P03-ARCH-CODE-024",
+    "P04-ENTITLEMENT-DATA-039",
+    "P04-ENTITLEMENT-CODE-040",
+    "P04-ENTITLEMENT-CODE-041",
+    "P04-CI-CODE-043",
+    "P04-ENTITLEMENT-CODE-044",
+    "P04-QA-AUTO-048",
+    "P04-WORDPRESS-CODE-033A",
+    "P04-WPTHEME-CODE-046",
+    "P04-WPPLUGIN-CODE-047",
+    "P16-BUILDER-CODE-024",
+    "P17-BUILDER-CODE-020",
+    "P15-BUILDER-CODE-030"
+  ],
+  "user_requested_staging": "new task artifacts only; no user-owned untracked files"
+}

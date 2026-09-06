@@ -53,12 +53,14 @@ P03-MANIFEST-GATE-022
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P03-MANIFEST-OPS-021
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Depends on: P03-MANIFEST-OPS-021, P03-QA-MANUAL-027
+- Blocks: P04-WPPLUGIN-ADR-001, P04-PRODUCT-ADR-038, P04-WPPLUGIN-ADR-002, P11-ANDROID-DISC-001, P15-SPRING-BIZ-001, P16-IOS-BIZ-001, P17-DESKTOP-BIZ-001
 - Requirement source: Master checklist row P03-MANIFEST-GATE-022 و Source audit بخش MANIFEST
 
 ## هدف قابل اندازه‌گیری
-Gate Manifest
+
+
+Gate مشترک BuildSpec/دو profile/Manifest مؤثر را با شواهد جدید P03-QA-AUTO-026 و P03-QA-MANUAL-027 بررسی کن؛ به DONE متناقض QA020 اتکا نکن. Spring در این فاز contract fixture است؛ آمادگی server production در P15 جدا اثبات می‌شود.
 
 ## خروجی مورد انتظار
 دو build profile، zero bypass و migration pass
@@ -69,7 +71,7 @@ Gate Manifest
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P03-MANIFEST-OPS-021
+- Dependencyها: P03-MANIFEST-OPS-021, P03-QA-MANUAL-027
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

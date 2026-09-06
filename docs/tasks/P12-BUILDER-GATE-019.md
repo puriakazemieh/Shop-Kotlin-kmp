@@ -1,4 +1,4 @@
-# P12-BUILDER-GATE-019 — Gate Builder private beta
+# P12-BUILDER-GATE-019 — Gate Builder اولیه با خروجی واقعی Android/Web/PWA
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +54,15 @@ P12-BUILDER-GATE-019
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P12-BUILDER-BIZ-018
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P15-BUILDER-CODE-030, P16-BUILDER-CODE-024, P17-BUILDER-CODE-020, P18-QA-AUTO-001
 - Requirement source: Master checklist row P12-BUILDER-GATE-019 و Source audit بخش BUILDER
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Gate Builder private beta
+private beta اولیه فقط با runner واقعی و Manual022 دو میزبان مستقل پذیرفته شود؛ iOS/Desktop پس از adapter و Gate تخصصی خود فعال تجاری شوند.
 
 ## خروجی مورد انتظار
-isolation/reliability/delivery/economics pass
+isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,12 @@ isolation/reliability/delivery/economics pass
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- core/**
+- composeApp/**
+- androidApp/**
+- wordpress/carmilla-bridge/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - .github/**
 - gradle/**
 - build-logic/**
@@ -86,28 +93,27 @@ isolation/reliability/delivery/economics pass
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P12 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: private beta اولیه فقط با runner واقعی و Manual022 دو میزبان مستقل پذیرفته شود؛ iOS/Desktop پس از adapter و Gate تخصصی خود فعال تجاری شوند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: isolation/reliability/delivery/economics pass
+- معیار اختصاصی: isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: isolation/reliability/delivery/economics pass
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

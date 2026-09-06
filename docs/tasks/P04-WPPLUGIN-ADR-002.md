@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-ADR-002 — مرز Shared Core، Theme Host، Bridge Host و version authority تصویب شود
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-ADR-002 — قرارداد هسته مشترک، دو میزبان و انتخاب نسخه سازگار
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +55,18 @@ P04-WPPLUGIN-ADR-002
 - Priority/Risk/Size: P0 / HIGH / S
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P04-WPPLUGIN-ADR-001
-- Blocks: P04-WPPLUGIN-CODE-003
+- Depends on: P04-PRODUCT-ADR-038, P03-MANIFEST-GATE-022
+- Blocks: P04-ENTITLEMENT-DATA-039
 - Requirement source: Master checklist row P04-WPPLUGIN-ADR-002 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-مرز namespace و packageهای Shared Core، Theme Host، Bridge Host، Connector و App Builder control plane همراه سیاست version negotiation تصویب شود.
+
+مرز بسته‌های هسته مشترک، Theme Host، Plugin Host، نمایش عمومی افزونه، API مشترک و اتصال اپ‌ساز مطابق ADR-006 تصویب شود؛ ترتیب بارگذاری WordPress و authority نسخه/schema دقیق باشد.
 
 ## خروجی مورد انتظار
-هر دو ZIP مستقل یک source مشترک را package کنند و در co-install فقط یک kernel سازگار boot شود؛ native build روی WordPress اجرا نشود.
+
+سند تصمیم و نمودار bootstrap نشان دهند هر ZIP بدون محصول دیگر کار می‌کند و نصب هم‌زمان یک هسته سازگار دارد؛ مالکیت داده سایت و مجوز خرید از انتخاب میزبان جدا باشند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,14 +74,14 @@ P04-WPPLUGIN-ADR-002
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-ADR-001
+- Dependencyها: P04-PRODUCT-ADR-038, P03-MANIFEST-GATE-022
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `docs/architecture/**`
+- `docs/contracts/**`
+- `docs/evidence/P04-WPPLUGIN-ADR-002/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,28 +89,30 @@ P04-WPPLUGIN-ADR-002
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. زمان بارگذاری افزونه، پوسته و hookهای ثبت CPT/REST را از سورس و WordPress بررسی کن.
+2. قرارداد candidate registration، انتخاب نسخه با API/schema و توقف ماژول ناسازگار را بنویس؛ first-loaded یا بیشترین نسخه به‌تنهایی کافی نیست.
+3. مرز kernel، تنظیمات ظاهری پوسته، renderer افزونه و shared build adapter را مشخص کن.
+4. سناریوی میزبان تنها، هر دو، خاموشی آخرین میزبان و انتقال به میزبان دیگر را با ADR-006 تطبیق بده.
+5. تصمیم معماری و پرسش‌های حل‌شده را با نام reviewer ثبت کن؛ اجرای دامنه‌ها و runner واقعی در این کارت نیست.
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
 - معیار اختصاصی: Shared Core/hostها/version authority و منع native build روی WordPress تصویب شده باشد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: دو ZIP مستقل یک source مشترک را package و co-install یک kernel را boot کند.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: سند ADR معماری و جدول مالکیت کنار تعریف محصولات مستقل.
+- چگونه: سناریوهای Theme-only، Plugin-only و co-install را روی نمودار دنبال و هر write path و مالک schema را بررسی کنید.
+- معیار موفقیت: هیچ وابستگی اجباری بین دو محصول، نصب companion/MU-plugin یا مالکیت اختصاصی Bridge برای داده مشترک باقی نماند؛ بازبینی مستند، تأیید محصول اجراشده محسوب نشود.
+- نسخه محیط و ZIP، داده مصنوعی، نام آزمونگر، تاریخ و نتیجه واقعی ثبت شود؛ تغییر UI/شبکه/مهاجرت تا تأیید انسانی `AWAITING_MANUAL_QA` می‌ماند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] kernel، هر دو میزبان، renderer و build adapter مرز روشن دارند.
+- [ ] زمان انتخاب نسخه و رفتار mismatch/API/schema مشخص است.
+- [ ] استقلال دو ZIP و دوام داده با خاموشی میزبان‌ها تعریف شده است.
+- [ ] بازبینی معماری ثبت شده و ADR-005 فقط مرجع تاریخی است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,3 +136,5 @@ P04-WPPLUGIN-ADR-002
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

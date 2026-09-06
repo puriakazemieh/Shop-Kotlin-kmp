@@ -35,7 +35,7 @@ Task ID: P04-WPTHEME-CODE-025
 - Owner: AI
 - Completion authority: BOTH؛ QA دستی الزامی
 - Depends on: P04-WPTHEME-CODE-017
-- Blocks: P04-WPPLUGIN-CODE-018 و P04-WPTHEME-GATE-036
+- Blocks: P04-WPPLUGIN-CODE-018
 - Requirement source: Exploratory Baseline P00-QA-MANUAL-018، Master row P04-WPTHEME-CODE-025 و `plans/003-elementor-page-layout-compatibility.md`
 
 ## هدف قابل اندازه‌گیری

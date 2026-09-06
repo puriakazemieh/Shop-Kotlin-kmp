@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-013 — Privacy Policy guide، exporter/eraser و retention hooks
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-013 — زیرساخت مشترک export،erase و retention بدون وابستگی میزبان
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +58,15 @@ P04-WPPLUGIN-CODE-013
 - Depends on: P04-WPPLUGIN-CODE-012
 - Blocks: P04-WPPLUGIN-CODE-014
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-013 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-Privacy Policy guide، exporter/eraser و retention hooks
+
+exporter/eraser و registry retention در kernel ثبت شوند و راهنمای Privacy Policy هر دو محصول وضعیت واقعی داده را توضیح دهد؛ hookهای دامنه در کارت همان دامنه تکمیل شوند.
 
 ## خروجی مورد انتظار
-داده user synthetic export/erase؛ مالی/health policy جدا
+
+یک fixture کاربر از هر میزبان export/erase مجاز شود؛ نصب هم‌زمان hook را دوباره اجرا نکند و خاموشی feature حق عملیات نگهداری مجاز را از بین نبرد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,11 @@ Privacy Policy guide، exporter/eraser و retention hooks
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-013/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ Privacy Policy guide، exporter/eraser و retention hooks
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. hookهای export/erase و retention را بر اساس مالکیت site-owned طراحی کن.
+2. registry و fixture عمومی بدون PHI را به هر دو host وصل کن.
+3. حالت co-install،کاربر غیرمالک و خاموشی feature را آزمایش کن.
+4. استثنای نگهداری مالی/سلامت را از policy مصوب ارجاع بده؛ سیاست بالینی یا قانونی تازه اختراع نکن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: داده user synthetic export/erase؛ مالی/health policy جدا
+- معیار اختصاصی: یک fixture کاربر از هر میزبان export/erase مجاز شود؛ نصب هم‌زمان hook را دوباره اجرا نکند و خاموشی feature حق عملیات نگهداری مجاز را از بین نبرد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: داده user synthetic export/erase؛ مالی/health policy جدا
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: ابزارهای حریم خصوصی WordPress و گزارش fixture مصنوعی.
+- چگونه: از هر میزبان برای همان کاربر export درخواست کنید و erase مجاز fixture را اجرا کنید؛ نصب هم‌زمان را نیز امتحان کنید.
+- معیار موفقیت: خروجی/عملیات یکسان،اجرای تکراری صفر و داده مستثنا طبق policy نگه‌داری شود.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] export/erase یک registry مشترک و fixture اجرایی دارند.
+- [ ] co-install عملیات را دو بار ثبت/اجرا نمی‌کند.
+- [ ] خاموشی feature مسیر مدیریتی مجاز را بی‌دلیل حذف نمی‌کند.
+- [ ] مالی/سلامت به policy مصوب و کارت دامنه ارجاع دارند.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ Privacy Policy guide، exporter/eraser و retention hooks
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

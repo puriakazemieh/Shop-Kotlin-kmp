@@ -54,7 +54,7 @@ P12-BUILDER-SEC-007
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P12-BUILDER-OPS-006
-- Blocks: P12-BUILDER-CODE-008
+- Blocks: P12-BUILDER-CODE-008, P12-BUILDER-CODE-021
 - Requirement source: Master checklist row P12-BUILDER-SEC-007 و Source audit بخش BUILDER
 
 ## هدف قابل اندازه‌گیری

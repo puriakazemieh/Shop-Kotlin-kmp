@@ -1,4 +1,4 @@
-# P16-IOS-CODE-004 — iOS host و دو Backend Profile با BuildIdentity
+# P16-IOS-CODE-004 — iOS مستقل با BuildSpec و دو BackendProfile
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P16-IOS-CODE-004
 - Depends on: P16-IOS-ADR-003
 - Blocks: P16-IOS-OPS-005
 - Requirement source: Master checklist row P16-IOS-CODE-004 و Source audit بخش IOS
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-iOS host و دو Backend Profile با BuildIdentity
+iOS host از BuildIdentity/BuildSpec برند، tenant، SKU و backend مستقل تولید شود؛ WORDPRESS به هر سه host mode و SPRING بدون WordPress وصل شود.
 
 ## خروجی مورد انتظار
-دو tenant بدون source fork build شوند
+دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,27 +87,27 @@ iOS host و دو Backend Profile با BuildIdentity
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P16 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: iOS host از BuildIdentity/BuildSpec برند، tenant، SKU و backend مستقل تولید شود؛ WORDPRESS به هر سه host mode و SPRING بدون WordPress وصل شود.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: دو tenant بدون source fork build شوند
+- معیار اختصاصی: دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: دو tenant بدون source fork build شوند
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: artifact iOS روی دستگاه/simulator مصوب و pipeline macOS.
+- چگونه: artifact همین target را نصب/میزبانی و سناریوی کارت را با دو tenant اجرا کن؛ WORDPRESS به سه حالت میزبان و SPRING به محیط صریح آزمون وصل شود. fixture و backend تولیدی جدا ثبت شوند.
+- معیار موفقیت: دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

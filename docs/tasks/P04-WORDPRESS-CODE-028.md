@@ -1,4 +1,6 @@
-# P04-WORDPRESS-CODE-028 — انتقال Clinic/Therapist/Appointment به Shared Core
+<div dir="rtl" align="right">
+
+# P04-WORDPRESS-CODE-028 — انتقال معرفی متخصص و زمان‌های قابل ارائه به هسته مشترک
 
 ## Prompt اجرای همین Task
 
@@ -19,21 +21,23 @@ Task ID: P04-WORDPRESS-CODE-028
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH + Security/Privacy reviewer
-- Depends on: P04-WORDPRESS-CODE-027
-- Blocks: P04-WORDPRESS-CODE-029
+- Depends on: P04-WORDPRESS-CODE-027B
+- Blocks: P04-WORDPRESS-CODE-028A
 - Requirement source: Master row P04-WORDPRESS-CODE-028 و Feature Manifest Clinic
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
 
-Therapist catalog،availability،appointment booking/cancel/status و ownership در Shared Core واحد و transaction-safe شوند.
+کاتالوگ ارائه‌دهنده خدمت و availability با منطقه زمانی و مدیریت دسترسی در kernel مشترک منتقل شود؛ رزرو/لغو نوبت در 028A جداست.
 
 ## خروجی مورد انتظار
 
-Theme-only و Bridge-only یک قرارداد booking و state machine داشته باشند؛double booking،IDOR،duplicate route/CPT و PHI leak صفر.
+صفحه معرفی متخصص و زمان‌های قابل ارائه و پنل مدیریت آن در دو محصول مستقل پاسخ یکسان بدهند؛ خرید معرفی/نوبت نیازمند خرید تست یا پرونده بالینی نباشد.
 
 ## خارج از محدوده
 
-- medical advice،video consultation vendor،payment provider و PsychTest scoring.
+- رزرو/لغو/تعارض نوبت در 028A؛ پیام/جلسه/پرونده خصوصی و آمادگی تجاری در P14.
+- توصیه پزشکی،provider و داده سلامت واقعی خارج محدوده‌اند.
 
 ## Preconditions
 
@@ -42,9 +46,10 @@ Theme-only و Bridge-only یک قرارداد booking و state machine داشت�
 ## Allowed files/directories
 
 - `wordpress/packages/carmilla-core/**`
-- فایل‌های clinic/therapist/appointment در دو artifact
-- `wordpress/**/tests/**`،`tools/test-env/**`
-- `docs/evidence/P04-WORDPRESS-CODE-028/**` و status همین Task
+- فایل‌های clinic/therapist/availability در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- rendererهای همین دامنه مطابق قرارداد frontend افزونه؛ بدون بازطراحی قالب میزبان
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WORDPRESS-CODE-028/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 
@@ -52,11 +57,10 @@ Theme-only و Bridge-only یک قرارداد booking و state machine داشت�
 
 ## مراحل پیاده‌سازی
 
-1. data/state/route/permission inventory و تست race/ownership بساز.
-2. state machine و repository/service canonical را در Shared Core تعریف کن.
-3. adapterهای Theme/Bridge را متصل و writeهای تکراری را غیرفعال کن.
-4. concurrent booking،cancel/retry،timezone و unauthorized access را تست کن.
-5. parity و lifecycle را در دو mode ثبت کن.
+1. route/meta/capability معرفی متخصص و availability را جدا از پرونده و نوبت inventory کن.
+2. repository/service کاتالوگ و زمان‌بندی را با حفظ شناسه به kernel منتقل کن.
+3. صفحه متخصص،فهرست و مدیریت availability دو میزبان را به همین خدمات متصل کن.
+4. timezone،بازه نامعتبر،دسترسی غیرمجاز و وضعیت feature بسته/روشن را تست کن.
 
 ## Automated tests با command و expected result
 
@@ -67,23 +71,25 @@ bash wordpress/build-bridge-zip.sh
 git diff --check
 ```
 
-- Expected: state/ownership/concurrency tests سبز؛یک slot بیش از یک رزرو موفق نداشته باشد؛log فاقد PHI.
+- نتیجه مورد انتظار آزمون خودکار: صفحه معرفی متخصص و زمان‌های قابل ارائه و پنل مدیریت آن در دو محصول مستقل پاسخ یکسان بدهند؛ خرید معرفی/نوبت نیازمند خرید تست یا پرونده بالینی نباشد.
 
 ## Manual tests با environment/data/steps/expected
 
-- دو user و یک therapist/slot synthetic؛رزرو هم‌زمان،مشاهده مالک/غیرمالک،لغو و retry در Theme-only و Bridge-only.
-- Expected: یک رزرو موفق،غیرمالک denied،timezone/status صحیح؛سپس AWAITING_MANUAL_QA.
+- کجا: فهرست متخصص‌ها،صفحه یک متخصص مصنوعی و فرم مدیریت زمان‌ها.
+- چگونه: متخصص با دو بازه زمانی بسازید؛ timezone و دسترسی مدیر/کاربر عادی را بررسی و بسته صرفاً معرفی/نوبت را بدون PsychTest فعال کنید.
+- معیار موفقیت: نمایش و زمان‌ها در هر دو میزبان برابر،بازه نامعتبر و ویرایش غیرمجاز رد و هیچ داده پرونده خصوصی نمایان نشود.
+- سه حالت Theme-only، Plugin-only با قالب پیش‌فرض/ثالث و co-install با داده مصنوعی و ZIP دارای checksum ثبت شود؛ تا تأیید انسانی `AWAITING_MANUAL_QA` بماند.
 
 ## Acceptance Criteria
 
-- [ ] state machine و ownership canonical است.
-- [ ] double-book/IDOR/privacy tests سبزند.
-- [ ] parity دو artifact اثبات شده است.
-- [ ] QA انسانی و privacy review ثبت شده است.
+- [ ] کاتالوگ و availability یک implementation با شناسه ثابت دارند.
+- [ ] نمایش عمومی و مدیریت روی هر دو میزبان قابل استفاده‌اند.
+- [ ] timezone و authorization منفی آزموده شده‌اند.
+- [ ] تفکیک معرفی/نوبت از خدمات خصوصی مطابق کاتالوگ حفظ شده است.
 
 ## Security/Privacy/Migration checks
 
-- least privilege،IDOR،race،retention،redacted logs و migration rollback الزامی.
+اطلاعات عمومی متخصص از پرونده خصوصی جدا باشد؛ validation زمان و کنترل capability و log بدون PHI رعایت شود.
 
 ## Evidence
 
@@ -91,7 +97,7 @@ git diff --check
 
 ## Rollback
 
-forward-fix یا adapter switch؛appointment/slot حذف یا status معکوس نشود؛backup و schema version ثبت شود.
+به adapter پیشین برگردید؛ شناسه متخصص و availability حفظ و نوبت‌های موجود دست‌کاری نشوند.
 
 ## Completion record
 
@@ -102,3 +108,5 @@ forward-fix یا adapter switch؛appointment/slot حذف یا status معکوس 
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

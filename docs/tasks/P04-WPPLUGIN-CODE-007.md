@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-007 — Bridge Host روی Theme پیش‌فرض/Storefront/Theme ثالث مستقل شود
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-007 — اتصال میزبان افزونه به هسته روی قالب‌های دیگر
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +55,18 @@ P04-WPPLUGIN-CODE-007
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P04-WPPLUGIN-CODE-006
+- Depends on: P04-ENTITLEMENT-CODE-040
 - Blocks: P04-WPPLUGIN-CODE-008
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-007 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-وابستگی‌های presentation-specific Bridge حذف/adapter شوند و activation،REST،data management و checkout روی Theme پیش‌فرض،Storefront و یک Theme ثالث smoke شوند.
+
+bootstrap و adapter پایه Plugin Host بدون توابع، asset و مسیر پوسته Carmilla اجرا شوند و نمونه API/مدیریت پایه روی قالب پیش‌فرض و Storefront آزمون شود.
 
 ## خروجی مورد انتظار
-Bridge بدون Carmilla Theme و بدون تغییر ظاهر Theme میزبان فعال شود؛ REST/CRUD/checkout سالم و خطای fatal صفر باشد.
+
+Plugin-only یک kernel سالم و API/پیشخوان پایه دارد؛ renderer عمومی در کارت 045 و مسیرهای هر vertical در کارت همان دامنه تکمیل می‌شوند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,15 +74,15 @@ Bridge بدون Carmilla Theme و بدون تغییر ظاهر Theme میزبا�
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-CODE-006
+- Dependencyها: P04-ENTITLEMENT-CODE-040
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- tools/test-env/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- فایل‌های میزبان مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-007/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -85,12 +90,11 @@ Bridge بدون Carmilla Theme و بدون تغییر ظاهر Theme میزبا�
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. وابستگی‌های افزونه به پوسته Carmilla را در bootstrap/settings inventory کن.
+2. loader و adapter را به kernel داخلی متصل کن.
+3. API/مدیریت پایه را روی قالب پیش‌فرض و Storefront characterization کن.
+4. هر ZIP را نصب و theme switch را با داده مصنوعی پایه تست کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
@@ -98,16 +102,18 @@ Bridge بدون Carmilla Theme و بدون تغییر ظاهر Theme میزبا�
 - معیار اختصاصی: Bridge روی Theme پیش‌فرض،Storefront و Theme ثالث بدون presentation coupling فعال شود.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: REST/CRUD/checkout سالم،ظاهر Theme میزبان unchanged و fatal صفر باشد.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: پیشخوان افزونه و صفحه وضعیت API روی قالب پیش‌فرض و Storefront.
+- چگونه: فقط افزونه Carmilla را نصب کنید، fixture پایه بسازید و قالب میزبان را عوض کنید.
+- معیار موفقیت: خطای تابع/asset پوسته Carmilla صفر، داده و API پایه ثابت و ظاهر میزبان سالم باشد.
+- نسخه محیط و ZIP، داده مصنوعی، نام آزمونگر، تاریخ و نتیجه واقعی ثبت شود؛ تغییر UI/شبکه/مهاجرت تا تأیید انسانی `AWAITING_MANUAL_QA` می‌ماند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] وابستگی bootstrap به Carmilla Theme صفر است.
+- [ ] API/پیشخوان پایه روی هر دو قالب آزموده شده است.
+- [ ] renderer عمومی به‌عنوان خروجی تکمیل‌شده این کارت معرفی نشده است.
+- [ ] theme switch داده پایه را حفظ می‌کند.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -131,3 +137,5 @@ Bridge بدون Carmilla Theme و بدون تغییر ظاهر Theme میزبا�
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

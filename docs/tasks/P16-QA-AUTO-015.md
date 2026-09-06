@@ -1,4 +1,4 @@
-# P16-QA-AUTO-015 — shared tests + iOS integration/UI smoke در CI
+# P16-QA-AUTO-015 — تست shared و iOS integration با artifact release
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P16-QA-AUTO-015
 - Depends on: P16-OBSERVABILITY-CODE-014
 - Blocks: P16-QA-MANUAL-016
 - Requirement source: Master checklist row P16-QA-AUTO-015 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-shared tests + iOS integration/UI smoke در CI
+shared tests و integration/UI smoke در CI macOS با simulator matrix و release configuration اجرا شود؛ SKU، backend و WordPress host mode در report مشخص باشند.
 
 ## خروجی مورد انتظار
-release configuration و simulator matrix
+backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,27 +87,27 @@ release configuration و simulator matrix
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P16 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: shared tests و integration/UI smoke در CI macOS با simulator matrix و release configuration اجرا شود؛ SKU، backend و WordPress host mode در report مشخص باشند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: release configuration و simulator matrix
+- معیار اختصاصی: backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: release configuration و simulator matrix
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: artifact iOS روی دستگاه/simulator مصوب و pipeline macOS.
+- چگونه: artifact همین target را نصب/میزبانی و سناریوی کارت را با دو tenant اجرا کن؛ WORDPRESS به سه حالت میزبان و SPRING به محیط صریح آزمون وصل شود. fixture و backend تولیدی جدا ثبت شوند.
+- معیار موفقیت: backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

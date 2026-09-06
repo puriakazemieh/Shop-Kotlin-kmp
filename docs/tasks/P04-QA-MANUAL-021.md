@@ -1,4 +1,6 @@
-# P04-QA-MANUAL-021 — UAT کامل Carmilla Theme standalone بدون Bridge
+<div dir="rtl" align="right">
+
+# P04-QA-MANUAL-021 — UAT پوسته تنها برای قابلیت‌ها و پنل بیلدر بسته‌شده
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +56,16 @@ P04-QA-MANUAL-021
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P04-QA-AUTO-020
-- Blocks: P04-WPPLUGIN-MANUAL-034 و P04-WPTHEME-GATE-036
+- Blocks: P04-WPPLUGIN-MANUAL-034, P04-WPTHEME-GATE-036
 - Requirement source: Master checklist row P04-QA-MANUAL-021 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری
-Theme ZIP روی WordPress تمیز و بدون Bridge نصب و تمام capabilityهای فعال Content/Store/Academy/Clinic/PsychTest/Support به‌صورت دستی آزمون شوند.
+
+بدون نصب Carmilla Plugin، نسخه Base و نسخه Booking با Android/PWA Builder را نصب و UI/admin/API قابلیت‌ها را استفاده کن؛ بیلدر در P04 فقط با runner آزمایشی و برچسب روشن است.
 
 ## خروجی مورد انتظار
-onboarding،CRUD/admin،frontend،feature toggle و verticalهای فعال بدون Bridge کار کنند؛ defectهای P0 صفر و evidence تصویری کامل باشد.
+
+کجا: پوسته و پنل قابلیت‌ها/اپ‌ساز. چگونه: نوبت synthetic ثبت کن؛ قابلیت مجاز را خاموش/روشن؛ target نخریده را امتحان کن. موفقیت: ثبت مستقل،حفظ داده،نبود ماژول انتخاب‌نشده و رد target غیرمجاز؛ تأیید انسانی لازم.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,6 +90,8 @@ onboarding،CRUD/admin،frontend،feature toggle و verticalهای فعال بد
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
+
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
 1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
 2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
 3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
@@ -100,13 +106,14 @@ onboarding،CRUD/admin،frontend،feature toggle و verticalهای فعال بد
 - معیار اختصاصی: تمام capabilityهای Theme standalone بدون Bridge UAT شوند.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: verticalهای enabled،admin/frontend/toggle و error states بدون P0 کار کنند.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+کجا: پوسته و پنل قابلیت‌ها/اپ‌ساز. چگونه: نوبت synthetic ثبت کن؛ قابلیت مجاز را خاموش/روشن؛ target نخریده را امتحان کن. موفقیت: ثبت مستقل،حفظ داده،نبود ماژول انتخاب‌نشده و رد target غیرمجاز؛ تأیید انسانی لازم.
+
+- محیط staging،داده synthetic،build fingerprint و tester/date/result؛ تا تأیید واقعی AWAITING_MANUAL_QA.
 
 ## Acceptance Criteria
+
+- [ ] کجا: پوسته و پنل قابلیت‌ها/اپ‌ساز. چگونه: نوبت synthetic ثبت کن؛ قابلیت مجاز را خاموش/روشن؛ target نخریده را امتحان کن. موفقیت: ثبت مستقل،حفظ داده،نبود ماژول انتخاب‌نشده و رد target غیرمجاز؛ تأیید انسانی لازم.
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
@@ -134,3 +141,5 @@ onboarding،CRUD/admin،frontend،feature toggle و verticalهای فعال بد
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

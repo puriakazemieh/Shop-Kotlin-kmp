@@ -1,4 +1,6 @@
-# P04-WORDPRESS-CODE-027 — انتقال Academy/LMS به Shared Core
+<div dir="rtl" align="right">
+
+# P04-WORDPRESS-CODE-027 — انتقال کاتالوگ دوره و محتوای درس به هسته مشترک
 
 ## Prompt اجرای همین Task
 
@@ -19,21 +21,23 @@ AGENTS.md،dependency،scope،acceptance،git status و baseline را قبل ا�
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH؛ Manual QA الزامی
-- Depends on: P04-WORDPRESS-CODE-026
-- Blocks: P04-WORDPRESS-CODE-028
+- Depends on: P04-WORDPRESS-CODE-026B
+- Blocks: P04-WORDPRESS-CODE-027A
 - Requirement source: Master row P04-WORDPRESS-CODE-027 و Feature Manifest Academy
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
 
-Course،lesson/content،enrollment،progress،request،bundle/membership و certificate/verification در یک LMS domain مشترک برای هر دو artifact قرار گیرند.
+مدیریت Course و lesson/content و مسیر فهرست/جزئیات دوره در دو میزبان از هسته واحد استفاده کنند؛ این کارت فقط کاتالوگ و محتوای درس را منتقل می‌کند.
 
 ## خروجی مورد انتظار
 
-Theme-only و Bridge-only برای نقش دانشجو/مدرس/مدیر contract و state transition یکسان داشته باشند و duplicate route/CPT/write صفر باشد.
+دوره و ساختار درس با شناسه ثابت در Theme-only و Plugin-only نمایش/مدیریت شوند؛ محتوای محافظت‌شده بدون مجوز آموزشی قبلی افشا نشود؛ ثبت‌نام/پیشرفت و آزمون جدا بمانند.
 
 ## خارج از محدوده
 
-- video DRM/streaming vendor،پرداخت provider-specific،redesign دوره و Clinic/Psych.
+- ثبت‌نام/پیشرفت در 027A و آزمون/تکلیف/گواهی در 027B؛ تکمیل تجاری LMS در P13.
+- عضویت/باندل،provider پرداخت،DRM و طراحی مجدد خارج این slice هستند.
 
 ## Preconditions
 
@@ -42,9 +46,10 @@ Theme-only و Bridge-only برای نقش دانشجو/مدرس/مدیر contrac
 ## Allowed files/directories
 
 - `wordpress/packages/carmilla-core/**`
-- فایل‌های academy/course در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
-- `wordpress/**/tests/**`،`tools/test-env/**`
-- `docs/evidence/P04-WORDPRESS-CODE-027/**` و status همین Task
+- فایل‌های academy/course/lesson در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- rendererهای همین دامنه مطابق قرارداد frontend افزونه؛ بدون بازطراحی قالب میزبان
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WORDPRESS-CODE-027/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 
@@ -52,11 +57,10 @@ Theme-only و Bridge-only برای نقش دانشجو/مدرس/مدیر contrac
 
 ## مراحل پیاده‌سازی
 
-1. route/CPT/state/role inventory و characterization بساز.
-2. model و state transition canonical را در Shared Core تعریف کن.
-3. read/writeها را منتقل و host adapterها را وصل کن.
-4. authorization دانشجو/مدرس/مدیر و certificate verification را تست کن.
-5. parity،deactivate/reactivate و feature toggle را در دو mode اجرا کن.
+1. CPT/meta/routeهای کاتالوگ و درس را با fixture دوره و دو درس inventory کن.
+2. خدمات مدیریت کاتالوگ/محتوا و adapterهای هر دو host را منتقل کن.
+3. صفحه فهرست و جزئیات دوره را در renderer افزونه و template پوسته وصل کن؛ جزئیات انتشار از کاتالوگ قابلیت خوانده شود.
+4. CRUD مدیر/مدرس مجاز،دسترسی غیرمجاز،نمایش مهمان و alias مسیر قبلی را آزمون کن.
 
 ## Automated tests با command و expected result
 
@@ -67,24 +71,25 @@ bash wordpress/build-bridge-zip.sh
 git diff --check
 ```
 
-- Expected: lifecycle و role matrix سبز؛progress idempotent؛duplicate registration/data loss صفر.
+- نتیجه مورد انتظار آزمون خودکار: دوره و ساختار درس با شناسه ثابت در Theme-only و Plugin-only نمایش/مدیریت شوند؛ محتوای محافظت‌شده بدون مجوز آموزشی قبلی افشا نشود؛ ثبت‌نام/پیشرفت و آزمون جدا بمانند.
 
 ## Manual tests با environment/data/steps/expected
 
-- داده synthetic: یک course،دو lesson،student/instructor/admin و certificate.
-- Theme-only و Bridge+Storefront: enrollment،progress،completion،certificate و permission منفی را اجرا کن.
-- Expected: state و UI/API مطابق manifest؛تا تأیید انسان AWAITING_MANUAL_QA.
+- کجا: فهرست و صفحه دوره و مدیریت درس روی پوسته تنها و افزونه با قالب دیگر.
+- چگونه: یک دوره مصنوعی با درس عمومی و محافظت‌شده بسازید؛ با مدیر و مهمان نمایش/ویرایش را امتحان و قابلیت آموزش را خاموش کنید.
+- معیار موفقیت: فهرست و جزئیات مجاز برابر باشد؛ مهمان به درس خصوصی دسترسی نداشته باشد؛ خاموشی داده را حذف نکند.
+- سه حالت Theme-only، Plugin-only با قالب پیش‌فرض/ثالث و co-install با داده مصنوعی و ZIP دارای checksum ثبت شود؛ تا تأیید انسانی `AWAITING_MANUAL_QA` بماند.
 
 ## Acceptance Criteria
 
-- [ ] LMS یک source canonical دارد.
-- [ ] role/state/negative tests سبزند.
-- [ ] Theme/Bridge parity و feature toggle اثبات شده است.
-- [ ] Manual QA Evidence تأیید شده است.
+- [ ] Course و lesson/content یک implementation دارند.
+- [ ] صفحات فهرست/جزئیات و مدیریت روی هر دو میزبان کار می‌کنند.
+- [ ] حریم محتوای محافظت‌شده و شناسه/aliasهای قبلی محفوظ‌اند.
+- [ ] این انتقال پایه با Gate فروش LMS در P13 اشتباه نشده است.
 
 ## Security/Privacy/Migration checks
 
-- enrollment ownership،least privilege،certificate enumeration resistance و migration idempotent بررسی شود.
+least privilege،محافظت محتوای خصوصی درس،validation و migration غیرمخرب شناسه‌ها بررسی شود.
 
 ## Evidence
 
@@ -92,7 +97,7 @@ git diff --check
 
 ## Rollback
 
-با adapter/feature switch به مسیر قبلی برگرد؛progress/enrollment/certificate حذف نشوند.
+adapter قبلی قابل بازگشت باشد؛ رکورد دوره،درس،ثبت‌نام و پیشرفت موجود حذف یا بازنویسی مخرب نشوند.
 
 ## Completion record
 
@@ -103,3 +108,5 @@ git diff --check
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-011 — onboarding/preflight برای HTTPS/Woo/permalink/REST/cron/version
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-011 — راه‌اندازی و preflight مستقل هر محصول طبق SKU
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +58,15 @@ P04-WPPLUGIN-CODE-011
 - Depends on: P04-WPPLUGIN-CODE-010
 - Blocks: P04-WPPLUGIN-CODE-012
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-011 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-onboarding/preflight برای HTTPS/Woo/permalink/REST/cron/version
+
+پیش‌بررسی HTTPS،Woo مورد نیاز،permalink،REST،cron و نسخه kernel از هر دو میزبان قابل اجرا شود؛ فقط نیازهای SKU انتخابی الزام شوند.
 
 ## خروجی مورد انتظار
-failure actionable؛ secret در diagnostics نباشد
+
+پوسته پایه بدون Bridge/Woo راه‌اندازی شود؛ افزونه روی قالب دیگر پیش‌بررسی خودش را داشته باشد و خطاها راه رفع مشخص و diagnostics بدون secret بدهند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,11 @@ failure actionable؛ secret در diagnostics نباشد
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-011/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ failure actionable؛ secret در diagnostics نباشد
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. نیازهای مشترک سایت و نیاز وابسته به SKU را جدا کن.
+2. probeهای موجود را در kernel و ورودی onboarding هر host یکپارچه کن.
+3. حالت Woo غایب برای Base و Commerce و REST/cron ناموفق را تست کن.
+4. diagnostics redacted و مسیر اصلاح/اجرای مجدد را ثبت کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: failure actionable؛ secret در diagnostics نباشد
+- معیار اختصاصی: پوسته پایه بدون Bridge/Woo راه‌اندازی شود؛ افزونه روی قالب دیگر پیش‌بررسی خودش را داشته باشد و خطاها راه رفع مشخص و diagnostics بدون secret بدهند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: failure actionable؛ secret در diagnostics نباشد
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: راه‌انداز Carmilla در پیشخوان پوسته تنها و افزونه تنها.
+- چگونه: Base و Commerce را با Woo حاضر/غایب و fixture خطای REST/cron بررسی و پس از رفع خطا دوباره preflight را اجرا کنید.
+- معیار موفقیت: Base به Woo یا محصول Carmilla دیگر نیاز اجباری نداشته باشد؛ blocker هر SKU دقیق و فاقد credential باشد.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] هر میزبان onboarding مستقل دارد.
+- [ ] پیش‌نیازها مطابق SKU محدودند.
+- [ ] خطا راه رفع مشخص دارد.
+- [ ] گزارش تشخیص secret یا داده مشتری نشان نمی‌دهد.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ failure actionable؛ secret در diagnostics نباشد
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

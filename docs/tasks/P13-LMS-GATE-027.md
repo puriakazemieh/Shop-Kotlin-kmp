@@ -54,7 +54,7 @@ P13-LMS-GATE-027
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P13-LMS-DOC-026
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P18-QA-AUTO-001
 - Requirement source: Master checklist row P13-LMS-GATE-027 و Source audit بخش LMS
 
 ## هدف قابل اندازه‌گیری

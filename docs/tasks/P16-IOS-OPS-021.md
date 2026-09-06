@@ -54,7 +54,7 @@ P16-IOS-OPS-021
 - Owner: HUMAN/EXTERNAL
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P16-IOS-BIZ-020
-- Blocks: P16-IOS-GATE-022
+- Blocks: P16-IOS-SEC-023
 - Requirement source: Master checklist row P16-IOS-OPS-021 و Source audit بخش IOS
 
 ## هدف قابل اندازه‌گیری

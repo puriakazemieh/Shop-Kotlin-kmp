@@ -1,12 +1,35 @@
 # چک‌لیست اجرایی مادر Carmilla
 
-> نسخه سند: ۱.۰  
+> بازنگری فعال: ۶ سپتامبر ۲۰۲۶ — [تعریف محصولات مستقل](INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md) مرجع کارهای باقی‌مانده‌اند. جدول‌های این سند با صف همگام شده‌اند؛ checkboxهای تاریخی بدون مدرک جدید تیک نخورده‌اند. فصل «صف شروع دقیق» در انتهای نسخه قدیمی تاریخی است؛ اولین READY فقط از docs/tasks.md خوانده شود.
+>
+> قرارداد سراسری پذیرش: Theme-only،Plugin-only با UI روی قالب ثالث و co-install؛ SKU موجود/خریداری‌شده/روشن؛ App Builder مستقل هر میزبان؛ کلاینت مستقل با WORDPRESS یا SPRING. WooCommerce مجاز است. Fake runner فاز چهار و fixture Spring گواهی تحویل تجاری نیستند. انتقال قابلیت موجود در P04 جای تکمیل و Gate تخصصی P13/P14 را نمی‌گیرد.
+
+> نسخه سند: ۱.۱ — بازبرنامه‌ریزی محصولات مستقل
 > تاریخ: ۲۸ ژوئیه ۲۰۲۶  
 > وضعیت: سند زنده اجرای پروژه از وضعیت فعلی تا انتشار و توسعه پلتفرم‌های بعدی  
 > سند مرجع ممیزی: [`PROJECT_AUDIT_AND_PUBLICATION_PLAN_FA.md`](./PROJECT_AUDIT_AND_PUBLICATION_PLAN_FA.md)  
 > اولویت محصول: `WordPress Theme/Plugin → PWA → Android → LMS → Clinic/Psych → Spring → iOS/Desktop`
 
 ---
+
+### دامنه مجاز و پذیرش مشترک کارهای باقی‌مانده
+
+این قرارداد برای TODO/READYهای مرتبط به P04/P05/P06/P07/P13/P14 و تست‌های آن‌ها، scope قدیمی «فقط مسیر افزونه» را در حد **همان قابلیت کارت** اصلاح می‌کند: `wordpress/packages/carmilla-core/**`، adapter همان قابلیت در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**` و تست مربوط مجازند. این مجوز refactor سایر دامنه‌ها یا گسترش اندازه کارت نیست. Secret فقط در خدمات PHP سمت سرور مدیریت می‌شود و نباید به template خروجی،مرورگر یا KMP برسد. تغییر متن قدیمی «Theme هیچ secret ندارد» به معنی حذف نیاز backend داخلی پوسته به تنظیم provider نیست.
+
+| فاز | قرارداد اضافه برای پذیرش |
+|---|---|
+| P03 | تنظیمات ساخت از برند جدا؛ runtime مؤثر به UI/route/عملیات وصل؛ WORDPRESS/SPRING فقط دو profile |
+| P04 | manifest ساخت ZIP شامل features و چهار builder target مستقل؛ ماژول false واقعاً بسته نشود؛ API اتصال از خرید builder جدا |
+| P05/P06/P07 | خدمات پرداخت/پیام/import از هسته مشترک هر دو میزبان؛ حفظ Woo و داده؛ کنترل SKU هنگام import |
+| P08/P11 | Web/PWA/Android artifact مستقل؛ WP سه mode واقعی؛ Spring fixture فقط در مرحله contract و شاهد واقعی در P15 |
+| P09/P10 | ماتریس آزمون و فروش per محصول/SKU/قابلیت/backend/target؛ هیچ فروش بیلد mock |
+| P12 | build واقعی Android/Web/PWA از Theme تنها،Plugin تنها و portal؛ حق هر target جدا |
+| P13/P14 | منطق و UI دو محصول + کلاینت؛ booking از consultation/psych/data خصوصی تفکیک؛ Gate تخصصی حفظ |
+| P15 | backend Spring مستقل،manifest/enforcement و QA واقعی Android/Web/PWA؛ سرویس build وابستگی runtime سرور نیست |
+| P16/P17 | اپ مستقل و Gate خودش؛ سپس adapter اپ‌ساز هر target از دو میزبان و portal؛ استقلال مسیر انتشار حفظ |
+| CT/CB | کاتالوگ و قیمت خانواده محصول + feature + builder target؛ update/release/support مطابق بسته واقعی |
+
+ابزار قدیمی `tools/generate_task_cards.ps1 -Overwrite` روی صف فعال اجرا نشود؛ ممکن است scope و dependency اختصاصی این بازبرنامه‌ریزی را با الگوی تاریخی جایگزین کند. تغییر generator اگر لازم شد کارت محدود جدا می‌خواهد.
 
 ## ۱. هدف و روش استفاده
 
@@ -159,7 +182,7 @@ flowchart TD
 ```
 
 مهندسی Android می‌تواند پس از تثبیت فازهای ۳ تا ۵ موازی با beta بازار شروع شود، اما GA آن مستقل است. مذاکره بازار و partner نیز از فاز صفر آغاز می‌شود؛ این نمودار dependency تحویل است، نه ممنوعیت کار موازی.
-Spring یک Backend Profile اختیاری است و پیش‌شرط iOS/Desktop نیست؛ LMS و
+انتخاب SPRING برای هر پروژه کلاینت اختیاری است،اما پشتیبانی واقعی آن جزو تحویل نهایی P18 است. شروع مهندسی iOS/Desktop به پایان Spring وابسته نیست؛ LMS و
 Clinic/Psych نیز Add-onهای مستقل‌اند و نبود یکی، دیگری را از نظر فنی مسدود نمی‌کند.
 یال فاز ۷ به PWA فقط به معنی `Seed/Import Core Gate` است؛ سرویس کامل مهاجرت مشتری
 مسیر موازی و Gate مستقل دارد.
@@ -647,7 +670,19 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-MIGRATION-DATA-018` | BOTH | P0/HIGH | mapping flavor/package/token legacy و one-time migration | هر package منتشرشده upgrade؛ ID/signing/versionCode حفظ |
 | [x] | `P03-QA-AUTO-019` | AI | P0/HIGH | matrix tests برای F0/F1/F2/F3/F4 و دو profile fixture | UI/route/network/backend expectations |
 | [ ] | `P03-QA-MANUAL-020` | HUMAN | P0/HIGH | toggle واقعی بدون rebuild در WordPress/PWA/client internal | خاموش/روشن، stale/invalid، deep link و process restart |
+| [ ] | `P03-QA-REVIEW-023` | AI | P0/HIGH | تطبیق شواهد تاریخی Manifest و ثبت مبنای QA جایگزین | گزارش ادعا/شاهد/وضعیت واقعی/کارت جبرانی کامل؛ DONE گذشته بدون بازنویسی؛ عدم استفاده از آن به‌عنوان مجوز Gate جدید. |
 | [ ] | `P03-MANIFEST-OPS-021` | BOTH | P1/MEDIUM | aliasهای legacy با deprecation/telemetry نگه داشته شوند | یک client cycle؛ حذف در Task جدا |
+| [ ] | `P03-ARCH-CODE-024` | BOTH | P0/HIGH | مدل نسخه‌دار ProductBuildSpec مستقل از برند | serialization roundtrip؛ برند یکسان با هر دو backend؛ tenant واقعی اجباری در release؛ SKU نامعتبر/feature ناشناخته و تغییر origin از remote رد شود. |
+| [ ] | `P03-ARCH-CODE-024A` | BOTH | P0/HIGH | تولید deterministic تنظیمات و سقف قابلیت کلاینت | دو اجرای ورودی یکسان خروجی یکسان؛ دو SKU سقف متفاوت؛ secret در output صفر؛ بسته فاقد قابلیت با remote روشن نشود. |
+| [ ] | `P03-ARCH-CODE-024B` | BOTH | P0/HIGH | تزریق BuildSpec صریح در bootstrap همه targetها | نام برند دلخواه روی هر دو profile درست؛ تغییر tenant logout/cache purge؛ entrypointهای فعلی و packageهای منتشرشده حفظ شوند. |
+| [ ] | `P03-MANIFEST-CODE-025` | BOTH | P0/HIGH | ذخیره وضعیت مؤثر واکنشی و خروج کنترل‌شده از shadow | تغییر remote معتبر store جاری را تغییر دهد؛ stale/invalid fail-closed؛ replay revision رد؛ هیچ افزایش بالاتر از ceiling. |
+| [ ] | `P03-MANIFEST-CODE-025A` | BOTH | P0/HIGH | اتصال منو و route/deep link به وضعیت مؤثر | toggle منو و deep link را بدون rebuild هم‌زمان ببندد؛ restart و back stack مسیر ممنوع باز نکنند. |
+| [ ] | `P03-MANIFEST-CODE-025B` | BOTH | P0/HIGH | اعمال guard عملیاتی فروشگاه | با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود. |
+| [ ] | `P03-MANIFEST-CODE-025C` | BOTH | P0/HIGH | اعمال guard عملیاتی آموزش | با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود. |
+| [ ] | `P03-MANIFEST-CODE-025D` | BOTH | P0/HIGH | اعمال guard عملیاتی کلینیک/نوبت | با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود. |
+| [ ] | `P03-MANIFEST-CODE-025E` | BOTH | P0/HIGH | اعمال guard عملیاتی تست روان‌شناسی | با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود. |
+| [ ] | `P03-QA-AUTO-026` | BOTH | P0/HIGH | آزمون wiring واقعی Manifest و دو پروفایل | روشن/خاموش، tenant switch، manifest stale و سقف خرید شبیه‌سازی‌شده با شمار request بررسی؛ صرف lambda fake به‌عنوان تست DI پذیرفته نیست. |
+| [ ] | `P03-QA-MANUAL-027` | HUMAN | P0/HIGH | QA انسانی جایگزین Manifest پس از اتصال runtime | کجا: wp-admin تنظیم قابلیت و app staging. چگونه: روشن/خاموش، refresh بدون rebuild، لینک مستقیم و قطع درخواست manifest. موفقیت: UI/route/network/API همسو؛ tester و build و نتیجه هر گام ثبت؛ تا تأیید انسان AWAITING_MANUAL_QA. |
 | [ ] | `P03-MANIFEST-GATE-022` | HUMAN | P0/HIGH | Gate Manifest | دو build profile، zero bypass و migration pass |
 
 ### Gate فاز ۳
@@ -663,15 +698,15 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 ---
 
-## ۱۱. فاز ۴ — دو محصول مستقل WordPress: Theme کامل و Bridge/App Builder
+## ۱۱. فاز ۴ — پوسته و افزونه مستقل، فروش قابلیت‌ها و سازگاری نصب هم‌زمان
 
 ### هدف
 
 دو artifact مستقل و قابل فروش ساخته شوند که یک هسته versioned مشترک را بسته‌بندی می‌کنند:
 
 ```text
-Theme ZIP  = Shared Core + Full Theme UI + Elementor/Woo integrations
-Bridge ZIP = Shared Core + Any-Theme Connector + Data Management + App Builder Control Plane
+Theme ZIP = Shared Core + SKU Modules + Full Theme UI + Optional App Builder Host + Woo integration
+Plugin ZIP = Shared Core + SKU Modules + Any-Theme Public UI/Admin/API + Optional App Builder Host
 ```
 
 Theme بدون Bridge تمام featureهای موجود پروژه را مطابق Feature Manifest ارائه می‌دهد. Bridge نیز بدون Carmilla Theme روی قالب ثالث، داده و featureهای سایت را به Android/PWA/Web/iOS/Desktop متصل می‌کند. پرداخت‌های provider-specific، پیام‌رسانی، import و hardening پلتفرم‌ها در فازهای تخصصی بعدی ادامه دارند، اما contract و extension point آن‌ها در این فاز تثبیت می‌شود.
@@ -681,42 +716,68 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [ ] | `P04-WPPLUGIN-ADR-001` | BOTH | P0/HIGH | قرارداد دو محصول مستقل، ownership داده و کانال انتشار freeze شود | Theme بدون Bridge؛ Bridge بدون Theme؛ داده site-owned |
-| [ ] | `P04-WPPLUGIN-ADR-002` | BOTH | P0/HIGH | مرز Shared Core/Theme Host/Bridge Host/App Builder و version authority تصویب شود | یک source برای domain؛ co-install فقط یک kernel |
-| [ ] | `P04-WPPLUGIN-CODE-003` | AI | P0/HIGH | schema version و migration runner resumable ایجاد شود | clean DB، upgrade و failed migration recovery |
-| [ ] | `P04-WPPLUGIN-CODE-004` | BOTH | P0/HIGH | bootstrap و package اولیه Shared Core با namespace/version guard ساخته شود | Theme-only، Bridge-only و both بدون duplicate boot |
-| [ ] | `P04-WPTHEME-CODE-005` | AI | P0/HIGH | Theme Host به kernel بسته‌بندی‌شده متصل و implementation تکراری host حذف شود | Theme بدون Bridge boot شود؛ capability حذف نشود |
-| [ ] | `P04-WPPLUGIN-CODE-006` | AI | P0/HIGH | feature capability/prerequisite/fail-closed مشترک جایگزین degraded mode شود | نبود Woo/Elementor/provider fatal نسازد؛ وضعیت روشن |
-| [ ] | `P04-WPPLUGIN-CODE-007` | BOTH | P0/HIGH | Bridge Host با Theme پیش‌فرض/Storefront/Theme ثالث مستقل شود | smoke بدون Carmilla Theme؛ REST/data management سالم |
-| [ ] | `P04-WPPLUGIN-CODE-008` | BOTH | P0/HIGH | WooCommerce منبع product/order/cart و CRUD رسمی باشد | SQL مستقیم order ممنوع؛ HPOS on/off |
-| [ ] | `P04-WPPLUGIN-CODE-009` | BOTH | P0/HIGH | REST contract v1، error envelope، pagination cap و validation | contract tests KMP/WP؛ breaking change detection |
-| [ ] | `P04-WPPLUGIN-CODE-010` | BOTH | P0/HIGH | نقش‌ها و capabilityهای Content/Shop/LMS/Clinic/Support تعریف شوند | matrix تست؛ least privilege |
-| [ ] | `P04-WPPLUGIN-CODE-011` | AI | P0/MEDIUM | onboarding/preflight برای HTTPS/Woo/permalink/REST/cron/version | failure actionable؛ secret در diagnostics نباشد |
-| [ ] | `P04-WPPLUGIN-CODE-012` | BOTH | P0/HIGH | activation/deactivation/uninstall policy و opt-in cleanup | deactivate داده را حذف نکند؛ purge صریح |
-| [ ] | `P04-WPPLUGIN-CODE-013` | BOTH | P0/HIGH | Privacy Policy guide، exporter/eraser و retention hooks | داده user synthetic export/erase؛ مالی/health policy جدا |
-| [ ] | `P04-WPPLUGIN-CODE-014` | AI | P1/MEDIUM | settings API با nonce/capability/sanitize و audit | unauthorized/CSRF/invalid option tests |
-| [ ] | `P04-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | Woo HPOS و Cart/Checkout Blocks compatibility | declaration + integration tests |
+| [ ] | `P04-PRODUCT-ADR-038` | BOTH | P0/HIGH | قرارداد تفصیلی محصولات و نگاشت مالکیت جدید | هیچ entity بی‌مالک یا دو مسیر canonical نماند؛ Theme-only/Plugin-only/both و App Builder دو میزبان صریح؛ مشخصات نیازمند تحقیق با owner و کارت بعدی تعیین شود. |
+| [ ] | `P04-WPPLUGIN-ADR-002` | BOTH | P0/HIGH | قرارداد هسته مشترک، دو میزبان و انتخاب نسخه سازگار | سند تصمیم و نمودار bootstrap نشان دهند هر ZIP بدون محصول دیگر کار می‌کند و نصب هم‌زمان یک هسته سازگار دارد؛ مالکیت داده سایت و مجوز خرید از انتخاب میزبان جدا باشند. |
+| [ ] | `P04-ENTITLEMENT-DATA-039` | BOTH | P0/HIGH | کاتالوگ قابلیت و SKU با تفکیک حق خرید و toggle | شناسه‌های قدیمی alias معتبر؛ بسته Base بدون vertical؛ بسته Booking بدون الزام Psych؛ حق builder/platform جدا؛ offline/grace/revoke/upgrade/site transfer صریح. |
+| [ ] | `P04-WPPLUGIN-CODE-003` | AI | P0/HIGH | نسخه schema و runner مهاجرت مشترک و قابل ادامه | نصب تمیز، ادامه پس از شکست مصنوعی و اجرای مجدد از هر میزبان به یک schema یکسان برسد؛ در co-install مهاجرت دوباره انجام نشود. |
+| [ ] | `P04-WPPLUGIN-CODE-004` | BOTH | P0/HIGH | bootstrap اولیه و بسته‌بندی هسته در هر دو ZIP | Theme-only و Plugin-only بدون محصول دیگر boot شوند؛ co-install نسخه یکسان collision یا duplicate boot نداشته باشد؛ هیچ companion plugin نصب نشود. |
+| [ ] | `P04-WPTHEME-CODE-005` | AI | P0/HIGH | اتصال میزبان پوسته به هسته داخلی بدون Bridge | پوسته به‌تنهایی UI پایه و خدمات منتقل‌شده kernel را اجرا کند و templateها از قرارداد host استفاده کنند؛ انتقال همه verticalها در این کارت انجام نشود. |
+| [ ] | `P04-WPPLUGIN-CODE-006` | AI | P0/HIGH | resolver مشترک قابلیت، پیش‌نیاز و آمادگی انتشار | دو میزبان از یک resolver استفاده کنند؛ نبود WooCommerce فقط فروشگاه وابسته را محدود کند و نبود میزبان Carmilla دیگر پیش‌نیاز محسوب نشود؛ UI-only پایه قابل اجرا بماند. |
+| [ ] | `P04-ENTITLEMENT-CODE-040` | BOTH | P0/HIGH | resolver مجوز معتبر و قابلیت مؤثر در هسته | unsigned/tampered/wrong-site مجوز ندهد؛ POST مستقیم feature خریدنشده رد؛ co-install بدون دو برابرشدن حق یا quota؛ نبود Woo فقط commerce وابسته را ببندد. |
+| [ ] | `P04-WPPLUGIN-CODE-007` | BOTH | P0/HIGH | اتصال میزبان افزونه به هسته روی قالب‌های دیگر | Plugin-only یک kernel سالم و API/پیشخوان پایه دارد؛ renderer عمومی در کارت 045 و مسیرهای هر vertical در کارت همان دامنه تکمیل می‌شوند. |
+| [ ] | `P04-WPPLUGIN-CODE-008` | BOTH | P0/HIGH | قرارداد و adapter رسمی WooCommerce در هسته مشترک | قرارداد CRUD/Store API و مسئولیت cart با Woo روشن باشد؛ SQL مستقیم سفارش ممنوع و fixture در HPOS روشن/خاموش روی دو میزبان نتیجه یکسان بدهد. |
+| [ ] | `P04-WPPLUGIN-CODE-009` | BOTH | P0/HIGH | مرز REST مشترک WordPress برای هر دو میزبان | کلاینت KMP با endpoint مشترک و همان DTO به هر نصب متصل شود؛ fixture موفق/خطا/مجوز و سقف pagination یکسان،namespace و aliasهای موجود محفوظ باشند. |
+| [ ] | `P04-WPPLUGIN-CODE-010` | BOTH | P0/HIGH | registry نقش‌ها و مجوز عملیات در هسته مشترک | مجوز نقش کاربر،حق خرید سایت و روشن‌بودن قابلیت سه کنترل مستقل باشند؛ خرید feature به کاربر عادی اختیار مدیریت یا مشاهده داده خصوصی ندهد. |
+| [ ] | `P04-WPPLUGIN-CODE-011` | AI | P0/MEDIUM | راه‌اندازی و preflight مستقل هر محصول طبق SKU | پوسته پایه بدون Bridge/Woo راه‌اندازی شود؛ افزونه روی قالب دیگر پیش‌بررسی خودش را داشته باشد و خطاها راه رفع مشخص و diagnostics بدون secret بدهند. |
+| [ ] | `P04-WPPLUGIN-CODE-012` | BOTH | P0/HIGH | چرخه فعال‌سازی دو میزبان و پاک‌سازی صریح داده سایت | خاموشی فیچر یا میزبان داده را حذف نکند؛ با میزبان سازگار و مجاز دیگر خدمات ادامه یابند،و با خاموشی آخرین میزبان اجرای خدمات متوقف اما داده محفوظ بماند. |
+| [ ] | `P04-WPPLUGIN-CODE-013` | BOTH | P0/HIGH | زیرساخت مشترک export،erase و retention بدون وابستگی میزبان | یک fixture کاربر از هر میزبان export/erase مجاز شود؛ نصب هم‌زمان hook را دوباره اجرا نکند و خاموشی feature حق عملیات نگهداری مجاز را از بین نبرد. |
+| [ ] | `P04-WPPLUGIN-CODE-014` | AI | P1/MEDIUM | API تنظیمات مشترک سایت با کنترل دسترسی و audit | تغییر از هر ورودی میزبان یک وضعیت سایت بدهد؛ درخواست غیرمجاز،CSRF،option ناشناخته یا نوشتن مجوز خرید از settings رد شود؛ پنل toggle در 041 است. |
+| [ ] | `P04-ENTITLEMENT-CODE-041` | BOTH | P0/HIGH | پنل مشترک قابلیت‌های خریداری‌شده در هر دو میزبان | Theme بدون Bridge و Plugin با قالب دیگر save/read یکسان؛ non-admin/CSRF رد؛ وابستگی نامعتبر ذخیره نشود؛ خاموشی داده را حذف نکند. |
+| [ ] | `P04-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | سازگاری Woo HPOS و Cart/Checkout Blocks در دو محصول | fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با Woo فعال یک نتیجه بدهد؛ co-install hook پرداخت/سفارش تکراری نداشته باشد. |
 | [ ] | `P04-WPTHEME-CODE-016` | AI | P1/MEDIUM | template hierarchy، RTL/LTR، light/dark و responsive تثبیت | 360/390/600/840/1024/1440 visual evidence |
 | [ ] | `P04-WPTHEME-CODE-017` | BOTH | P1/MEDIUM | accessibility فرم/checkout/menu/account | keyboard، focus، label، contrast، zoom 200% |
 | [ ] | `P04-WPTHEME-CODE-025` | AI | P0/MEDIUM | template hierarchy برگه و Elementor Canvas/Full Width اصلاح شود | matrix layout؛ `the_content`؛ Bridge اثری بر render ندارد |
-| [ ] | `P04-WPPLUGIN-CODE-018` | AI | P1/LOW | textdomain/POT، escaping و i18n کامل شود | WPCS/i18n scan؛ locale switch |
-| [ ] | `P04-WORDPRESS-CODE-026` | BOTH | P0/HIGH | Content/Pages/Media/Store از implementationهای تکراری به Shared Core منتقل شوند | parity Theme/Bridge و canonical Woo CRUD |
-| [ ] | `P04-WORDPRESS-CODE-027` | BOTH | P0/HIGH | Academy/LMS به Shared Core منتقل و در هر دو artifact ارائه شود | course/enrollment/progress/certificate parity |
-| [ ] | `P04-WORDPRESS-CODE-028` | BOTH | P0/HIGH | Clinic/Therapist/Appointment به Shared Core منتقل شود | availability/booking/ownership parity |
-| [ ] | `P04-WORDPRESS-CODE-029` | BOTH | P0/HIGH | PsychTest/Support/Interactions به Shared Core منتقل شود | scoring privacy،ticket ownership و parity |
-| [ ] | `P04-WPTHEME-CODE-030` | BOTH | P0/HIGH | Theme standalone تمام capabilityهای فعال را با UI/admin کامل یکپارچه کند | بدون Bridge تمام verticalهای موجود قابل استفاده |
-| [ ] | `P04-WPPLUGIN-CODE-031` | BOTH | P0/HIGH | Bridge standalone داده و featureها را روی قالب ثالث به clientها ارائه/مدیریت کند | Carmilla/Storefront/قالب ثالث contract parity |
+| [ ] | `P04-WPPLUGIN-CODE-018` | AI | P1/LOW | ترجمه و escaping مرزهای مشترک و میزبان‌های مستقل | ZIP پوسته و افزونه مستقل فارسی/انگلیسی را درست بارگذاری کنند؛ co-install ترجمه تکراری/گم‌شده و output escape نشده در مرزهای این کارت نداشته باشد. |
+| [ ] | `P04-WPPLUGIN-CODE-045` | BOTH | P0/HIGH | زیرساخت نمایش عمومی افزونه روی قالب ثالث | بدون Carmilla Theme صفحه نمونه از روی ZIP plugin رندر شود؛ سبک قالب ثالث خراب نشود؛ یک route/صفحه و permission درست. |
+| [ ] | `P04-WORDPRESS-CODE-026` | BOTH | P0/HIGH | انتقال نوشته، برگه و رسانه به هسته مشترک | fixture نوشته/برگه/رسانه از مدیریت و frontend هر میزبان و API مشترک پاسخ یکسان داشته باشد؛ permission،اعتبارسنجی رسانه و عدم ثبت تکراری اثبات شود. |
+| [ ] | `P04-WORDPRESS-CODE-026A` | BOTH | P0/HIGH | انتقال کاتالوگ و محصول به adapter مشترک Woo | شناسه محصول ثابت؛ list/detail در Theme-only/Plugin-only/both همسان؛ بدون Woo پیام پیش‌نیاز و بدون fatal. |
+| [ ] | `P04-WORDPRESS-CODE-026B` | BOTH | P0/HIGH | انتقال سبد و سفارش به مسیر مشترک Woo | سبد و سفارش synthetic شناسه/مبلغ یکسان؛ HPOS CRUD؛ یک write/callback؛ capability خاموش مسیر جدید را ببندد. |
+| [ ] | `P04-WORDPRESS-CODE-027` | BOTH | P0/HIGH | انتقال کاتالوگ دوره و محتوای درس به هسته مشترک | دوره و ساختار درس با شناسه ثابت در Theme-only و Plugin-only نمایش/مدیریت شوند؛ محتوای محافظت‌شده بدون مجوز آموزشی قبلی افشا نشود؛ ثبت‌نام/پیشرفت و آزمون جدا بمانند. |
+| [ ] | `P04-WORDPRESS-CODE-027A` | BOTH | P0/HIGH | انتقال ثبت‌نام و پیشرفت آموزش با view مشترک | سه mode یک نتیجه؛ شناسه و progress حفظ؛ نمایش plugin روی قالب ثالث؛ دسترسی private بدون enrollment مجاز باز نشود. |
+| [ ] | `P04-WORDPRESS-CODE-027B` | BOTH | P0/HIGH | انتقال آزمون آموزشی و گواهی موجود | fixture نسخه موجود قبل/بعد برابر؛ attempt تکراری کنترل؛ Theme و Plugin مسیر نمایش و مدیریت یکسان؛ توسعه engine جدید به P13. |
+| [ ] | `P04-WORDPRESS-CODE-028` | BOTH | P0/HIGH | انتقال معرفی متخصص و زمان‌های قابل ارائه به هسته مشترک | صفحه معرفی متخصص و زمان‌های قابل ارائه و پنل مدیریت آن در دو محصول مستقل پاسخ یکسان بدهند؛ خرید معرفی/نوبت نیازمند خرید تست یا پرونده بالینی نباشد. |
+| [ ] | `P04-WORDPRESS-CODE-028A` | BOTH | P0/HIGH | انتقال مسیر ثبت و مشاهده نوبت موجود | Theme-only ثبت synthetic بدون افزونه؛ Plugin-only فرم قابل استفاده؛ co-install یک نوبت؛ ID/ownership حفظ؛ readiness تولید پس از P14. |
+| [ ] | `P04-WORDPRESS-CODE-029` | BOTH | P0/HIGH | انتقال تعریف،اجرای تست و نتیجه خصوصی PsychTest | fixture امتیازدهی و مالکیت پاسخ/نتیجه در Theme-only و Plugin-only برابر باشد؛ PsychTest مستقل از بسته صرفاً نوبت و بدون تغییر تفسیر بالینی فروخته شود. |
+| [ ] | `P04-WORDPRESS-CODE-029A` | BOTH | P0/HIGH | انتقال پشتیبانی و تیکت با نمایش دو میزبان | فقط مالک/نقش مجاز thread را ببیند؛ سه mode CRUD برابر؛ فایل خصوصی در قالب ثالث افشا نشود. |
+| [ ] | `P04-WORDPRESS-CODE-029B` | BOTH | P0/HIGH | انتقال تعاملات محتوا و محصول | before/after fixture برابر؛ یک review/write؛ nonce/ownership و استایل scoped در دو میزبان. |
+| [ ] | `P04-WPTHEME-CODE-030` | BOTH | P0/HIGH | یکپارچه‌سازی UI و مدیریت آماده‌شده پوسته مستقل | capabilityهای حاضر،مجاز و آماده فاز چهار در UI و مدیریت پوسته بدون Bridge کار کنند؛ شکاف یک vertical به کارت همان دامنه ارجاع شود و Gate P13/P14 ادعا نشود. |
+| [ ] | `P04-WPPLUGIN-CODE-031` | BOTH | P0/HIGH | یکپارچه‌سازی frontend و مدیریت آماده افزونه روی قالب ثالث | روی قالب پیش‌فرض،Storefront و یک قالب ثالث آزموده‌شده،مسیر عمومی و مدیریت قابلیت‌های آماده مستقل باشد؛ اتصال Android/PWA فقط smoke قرارداد و نه Gate انتشار کلاینت باشد. |
+| [ ] | `P04-WORDPRESS-DATA-042` | BOTH | P0/HIGH | پذیرش داده موجود و جابه‌جایی میزبان بدون حذف | Theme→both→Plugin و برعکس بدون تغییر ID/count/checksum داده؛ توقف migration recovery؛ خاموشی آخرین میزبان داده را حفظ کند. |
 | [ ] | `P04-WORDPRESS-CODE-032` | BOTH | P0/HIGH | arbitration نصب هم‌زمان و compatibility matrix kernel پیاده شود | route/CPT/hook/migration تکراری صفر |
-| [ ] | `P04-WPPLUGIN-CODE-033` | BOTH | P0/HIGH | pairing،feature manifest،build request و artifact delivery به‌عنوان App Builder control plane | build native روی WP اجرا نشود؛ audit و least privilege |
-| [ ] | `P04-CI-CODE-019` | AI | P0/HIGH | دو ZIP مستقل و reproducible همراه Plugin/Theme Check،WPCS،PHP matrix و QIT در CI | install از ZIP تمیز؛ checksum/version manifest |
-| [ ] | `P04-QA-AUTO-020` | AI | P0/HIGH | ماتریس Theme-only/Bridge-only/both/upgrade/mismatch خودکار شود | lifecycle،route inventory،data checksum و parity سبز |
-| [ ] | `P04-QA-MANUAL-021` | HUMAN | P0/HIGH | UAT کامل Theme standalone برای همه featureهای فعال | بدون Bridge از onboarding تا verticalهای فعال |
-| [ ] | `P04-WPPLUGIN-MANUAL-034` | HUMAN | P0/HIGH | UAT Bridge روی Storefront و یک قالب ثالث با Android/PWA | CRUD/sync/navigation مطابق manifest |
-| [ ] | `P04-WORDPRESS-MANUAL-035` | HUMAN | P0/HIGH | UAT co-install،theme switch،upgrade و kernel mismatch | duplicate/data loss/fatal صفر؛ rollback اثبات‌شده |
-| [ ] | `P04-QA-MANUAL-022` | HUMAN | P1/MEDIUM | UI/RTL/accessibility/empty/error/offline states در سه mode | screenshot/video + defect IDs |
-| [ ] | `P04-WPPLUGIN-DOC-023` | AI | P1/MEDIUM | معماری،API،feature manifest،lifecycle،App Builder و compatibility هر دو SKU مستند شود | مستند با artifact واقعی تطبیق |
-| [ ] | `P04-WPTHEME-GATE-036` | HUMAN | P0/HIGH | Gate مستقل Carmilla Theme | ZIP مستقل،feature parity،P0 صفر و Manual QA تأیید |
-| [ ] | `P04-WPPLUGIN-GATE-024` | HUMAN | P0/HIGH | Gate مستقل Carmilla Bridge/App Builder | any-theme/client parity،security و P0 صفر |
-| [ ] | `P04-WORDPRESS-GATE-037` | HUMAN | P0/HIGH | Gate نهایی coexistence و WordPress RC | هر سه mode،upgrade/rollback و دو ZIP checksumدار |
+| [ ] | `P04-WPPLUGIN-CODE-033` | BOTH | P0/HIGH | قرارداد مشترک اتصال سایت و pairing اپ‌ساز برای دو میزبان | هر میزبان مستقل با runner مصنوعی pair شود؛ اتصال سایت دیگر،token نامعتبر/replay و تغییر origin غیرمجاز رد شوند؛ هیچ خروجی واقعی یا UI کامل اپ‌ساز ادعا نشود. |
+| [ ] | `P04-WORDPRESS-CODE-033A` | BOTH | P0/HIGH | چرخه درخواست ساخت مشترک با runner آزمایشی | دو پنل برای یک key فقط یک job؛ cross-site و لینک منقضی رد؛ no shell/no signing key در WP؛ mock معادل artifact واقعی اعلام نشود. |
+| [ ] | `P04-WPTHEME-CODE-046` | BOTH | P0/HIGH | پنل اپ‌ساز مستقل در پوسته | با Bridge نصب‌نشده همه مراحل fake runner از پنل پوسته طی شود؛ admin مجاز؛ هدف نخریده/آماده‌نشده build نشود. |
+| [ ] | `P04-WPPLUGIN-CODE-047` | BOTH | P0/HIGH | پنل اپ‌ساز مستقل افزونه روی قالب دیگر | قالب پیش‌فرض+Plugin بدون Carmilla Theme، request تا دریافت metadata؛ هر دو نصب بدون job/quota تکراری؛ خطا قابل اقدام. |
+| [ ] | `P04-CI-CODE-043` | BOTH | P0/HIGH | سازنده ZIP بر اساس SKU و فهرست قابلیت‌ها | Base و تک‌قابلیت و ترکیبی واقعاً محتوای متفاوت معتبر؛ ماژول پولی بسته‌نشده قابل load نباشد؛ install ZIP تمیز؛ دو build ورودی برابر قابل بازتولید. |
+| [ ] | `P04-ENTITLEMENT-CODE-044` | BOTH | P0/HIGH | ارتقای خرید و به‌روزرسانی سازگار هر SKU | Base→Booking داده/هویت حفظ؛ downgrade/revoke مطابق قرارداد و بدون purge؛ package غلط/مجوز سایت دیگر رد؛ update co-install به یک kernel سازگار. |
+| [ ] | `P04-CI-CODE-019` | AI | P0/HIGH | CI بسته‌های مستقل با ورودی مانیفست و بررسی محتوای ZIP | برای هر دو نوع ZIP: Base،تک‌فیچر و ترکیبی و ۱۶ ترکیب چهار بیلدر اعتبارسنجی محتوایی شوند؛ smoke نصب نماینده‌ها. WPCS/PHP/security failها بسته شوند؛ findings Theme Check درباره plugin territory طبق کانال فروش ثبت شوند، PASS جعلی برای WordPress.org ممنوع. |
+| [ ] | `P04-QA-AUTO-048` | BOTH | P0/HIGH | آزمون منفی مجوز، بسته و تغییر میزبان از ZIP | خریدنشده/tampered/wrong-site/خاموش بسته؛ purchased-enabled هر دو host کار کند؛ upgrade/offline grace و عدم دو job/داده آزمایش شود. |
+| [ ] | `P04-QA-AUTO-020` | AI | P0/HIGH | رگرسیون مستقل و هم‌زمان دو میزبان با SKU واقعی | فیچر true دارای کد/UI/API و قابل استفاده؛ false دارای هیچ module/resource/registration اختصاصی نیست. حذف یک میزبان داده را حفظ کند؛ فقط یک write/cron/build ثبت شود. |
+| [ ] | `P04-QA-MANUAL-021` | HUMAN | P0/HIGH | UAT پوسته تنها برای قابلیت‌ها و پنل بیلدر بسته‌شده | کجا: پوسته و پنل قابلیت‌ها/اپ‌ساز. چگونه: نوبت synthetic ثبت کن؛ قابلیت مجاز را خاموش/روشن؛ target نخریده را امتحان کن. موفقیت: ثبت مستقل،حفظ داده،نبود ماژول انتخاب‌نشده و رد target غیرمجاز؛ تأیید انسانی لازم. |
+| [ ] | `P04-WPPLUGIN-MANUAL-034` | HUMAN | P0/HIGH | UAT افزونه مستقل با صفحات واقعی روی قالب ثالث | کجا: سایت و wp-admin افزونه. چگونه: course/booking مجاز را طبق SKU از UI عمومی تا ثبت/مشاهده طی کن؛ یکی را خاموش کن و API مستقیم بزن. موفقیت: ظاهر قالب سالم،عملیات مجاز کامل،غیرمجاز بسته؛ mock build با artifact واقعی اشتباه نشود. |
+| [ ] | `P04-WORDPRESS-MANUAL-035` | HUMAN | P0/HIGH | UAT دو محصول با مانیفست‌ها و نسخه‌های متفاوت | کجا: پنل هر دو میزبان و داده قبل/بعد. چگونه: Theme Booking + Plugin Academy نصب؛ toggle و جابه‌جایی میزبان؛ دو درخواست build با key یکسان. موفقیت: داده/ID حفظ،یک job/write،مجوز سایت دیگر رد و mismatch قابل اقدام. |
+| [ ] | `P04-QA-MANUAL-022` | HUMAN | P1/MEDIUM | بازبینی نمایش قابلیت‌های بسته‌شده و وضعیت‌های خطا | کجا: صفحات عمومی و تنظیمات دو محصول. چگونه: keyboard/zoom و فعال‌سازی فیچر مجاز/غیرمجاز. موفقیت: وضعیت قابل فهم،بدون دکمه اجرایی ماژول حذف‌شده،focus و پیام خطای درست؛ screenshot و تأیید انسان. |
+| [ ] | `P04-WPPLUGIN-DOC-023` | AI | P1/MEDIUM | مستند دو ZIP، مانیفست ساخت، تنظیمات و اتصال کلاینت | دو مثال خروجی با inventory تطبیق کنند؛ اتصال app به API از خرید builder جدا؛ چهار target مستقل؛ runner آزمایشی و Gate تجاری جدا توضیح داده شوند. |
+| [ ] | `P04-WPTHEME-GATE-036` | HUMAN | P0/HIGH | Gate زیرساخت پوسته مستقل و بسته‌های انتخابی | شاهد ZIP/checksum و UAT همان SKU؛ builder panel مستقل با fake runner فقط قرارداد P04 را پاس می‌کند؛ فروش هدف واقعی محتاج Gate P12/P16/P17 و فروش دامنه محتاج Gate تخصصی مربوط است. |
+| [ ] | `P04-WPPLUGIN-GATE-024` | HUMAN | P0/HIGH | Gate زیرساخت افزونه مستقل و نمایش روی قالب ثالث | قالب پیش‌فرض و ثالث آزموده‌شده،هیچ Carmilla Theme لازم نیست؛ SKU و toggle معتبر؛ Gate خدمات آینده و امضای artifact موبایل در این Gate ادعا نشود. |
+| [ ] | `P04-WORDPRESS-GATE-037` | HUMAN | P0/HIGH | Gate سازگاری دو ZIP مستقل و نصب هم‌زمان | هر سه mode،دو ترتیب نصب/upgrade و SKU متفاوت با شواهد؛ بدون duplicate/data loss؛ حفظ خدمات API مستقل از روشن‌بودن builder؛ این Gate پایان همه قابلیت‌ها و پلتفرم‌ها نیست. |
+
+### قرارداد تکمیلی فاز ۴
+
+- نمایش پوسته و افزونه از یک kernel است؛ افزونه علاوه بر API، صفحه/فرم عمومی قابل استفاده روی قالب دیگر دارد.
+- دامنه‌های انتقالی در کارت‌های 026A/B،027A/B،028A،029A/B تفکیک شده‌اند؛ کارت‌های030/031 تنها integration نهایی‌اند.
+- کاتالوگ039، resolver040، تنظیمات041، migration042، بسته043 و update044 باید entitlement و داده را همسو کنند.
+- اپ‌ساز هر دو میزبان در این فاز با fake runner و برچسب آزمایشی؛ فروش ساخت واقعی تا Gate P12/P16/P17 مجاز نیست.
 
 ### Gate فاز ۴
 
@@ -745,8 +806,8 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P05-PAYMENT-ADR-001` | BOTH | P0/HIGH | contract `PaymentProvider` و capability matrix تصویب شود | create/verify/query/reverse/refund/deliver/settlement |
-| [ ] | `P05-PAYMENT-CODE-002` | BOTH | P0/HIGH | domain Money، PaymentIntent/Event/Refund/Settlement/Entitlement | IRR/IRT integer minor unit؛ state transition tests |
+| [ ] | `P05-PAYMENT-ADR-001` | BOTH | P0/HIGH | قرارداد پرداخت مشترک دو میزبان و ماتریس قابلیت provider | جدول owner و API برای هر عملیات؛ مجوز دامنه و capability provider جدا؛ merchant secret در UI و کلاینت صفر. |
+| [ ] | `P05-PAYMENT-CODE-002` | BOTH | P0/HIGH | Payment Core مشترک Theme و Plugin با مسیر نوشتن واحد | IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر. |
 | [ ] | `P05-PAYMENT-DATA-003` | BOTH | P0/HIGH | جدول‌ها، unique key و migration پرداخت | idempotency/reference unique؛ rollback/forward fix |
 | [ ] | `P05-PAYMENT-CODE-004` | BOTH | P0/HIGH | Woo gateway base با HPOS/Blocks و capability-driven UI | روش unsupported مخفی/disabled |
 | [ ] | `P05-PAYMENT-CODE-005` | BOTH | P0/HIGH | checkout session endpoint با cart recalculation | client amount trusted نباشد؛ duplicate request همان intent |
@@ -765,10 +826,10 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 | [ ] | `P05-PAYMENT-ADR-018` | HUMAN/EXTERNAL | P2/HIGH | PSP مستقیم اول و شرایط terminal مشتری انتخاب شود | SEP/PEC یا PSP دیگر بر مبنای قرارداد جاری |
 | [ ] | `P05-PAYMENT-CODE-019` | BOTH | P2/HIGH | adapter PSP منتخب | token/redirect/callback/verify/settle/refund contract tests |
 | [ ] | `P05-PAYMENT-CODE-020` | BOTH | P0/HIGH | Product/Platform Payment Policy Router | physical/live/digital/mixed basket rules |
-| [ ] | `P05-QA-AUTO-021` | AI | P0/HIGH | provider contract fake + failure/replay/concurrency suite | success/cancel/fail/timeout/wrong amount/duplicate |
-| [ ] | `P05-QA-MANUAL-022` | HUMAN | P0/HIGH | sandbox end-to-end هر provider advertised | browser/app killed/late callback/refund evidence |
+| [ ] | `P05-QA-AUTO-021` | AI | P0/HIGH | رگرسیون پرداخت در دو بسته مستقل و نصب هم‌زمان | گزارش ماتریس سه میزبان؛ duplicate callback/debit صفر؛ خاموشی فروش جدید مانع رسیدگی مجاز به سفارش قبلی نشود. |
+| [ ] | `P05-QA-MANUAL-022` | HUMAN | P0/HIGH | QA دستی checkout و بازپرداخت هر میزبان مستقل | در checkout هر میزبان سفارش synthetic بساز، موفق/ناموفق/بازگشت/تکرار را اجرا کن؛ مبلغ و state نهایی فقط با verify سرور معتبر باشند. |
 | [ ] | `P05-SECURITY-SEC-023` | BOTH | P0/HIGH | review مستقل payment threat/replay/secret/log | Sev0/Sev1 صفر؛ merchant key client-side صفر |
-| [ ] | `P05-PAYMENT-GATE-024` | HUMAN | P0/HIGH | Gate Payment Core/ZarinPal | verify/reconciliation/refund/rollback pass |
+| [ ] | `P05-PAYMENT-GATE-024` | HUMAN | P0/HIGH | Gate هسته پرداخت و زرین‌پال برای هر دو محصول | PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید. |
 | [ ] | `P05-PAYMENT-GATE-025` | HUMAN/EXTERNAL | P1/HIGH | Gate مستقل DigiPay | contract+sandbox+callback/deliver/refund/settlement/kill-switch |
 | [ ] | `P05-PAYMENT-GATE-026` | HUMAN/EXTERNAL | P1/HIGH | Gate مستقل SnappPay | merchant docs+sandbox+callback/deliver/refund/settlement/kill-switch |
 | [ ] | `P05-PAYMENT-GATE-027` | HUMAN/EXTERNAL | P2/HIGH | Gate مستقل PSP مستقیم منتخب | terminal contract+sandbox/callback/verify/refund/settlement/kill-switch |
@@ -808,14 +869,14 @@ Taskهای `P05-PAYMENT-GATE-025` تا `027` اگر provider هنوز انتخا
 
 ### هدف
 
-هر سایت API key/URL/SMTP خودش را در پنل امن تنظیم کند؛ Theme و app هیچ secretی دریافت نکنند.
+هر سایت API key/URL/SMTP را در خدمات امن Shared Core سمت سرور تنظیم کند؛ خروجی template،مرورگر و app هیچ secretی دریافت نکنند. Theme Host نیز backend داخلی دارد و مستقل از Plugin کار می‌کند.
 
 ### Tasks
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P06-MESSAGE-ADR-001` | BOTH | P0/HIGH | NotificationService/Provider/DeliveryResult contract | retryable error، provider ID و health semantics |
-| [ ] | `P06-MESSAGE-DATA-002` | BOTH | P0/HIGH | config schema، delivery audit و retention | secret و full recipient در log نباشد |
+| [ ] | `P06-MESSAGE-ADR-001` | BOTH | P0/HIGH | قرارداد پیام‌رسانی در Shared Core هر دو محصول | یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند. |
+| [ ] | `P06-MESSAGE-DATA-002` | BOTH | P0/HIGH | تنظیمات امن پیام‌رسانی با مالکیت سایت و مجوز قابلیت | دو پنل یک وضعیت داشته باشند؛ capability/nonce/sanitize و redaction؛ خاموشی یا تعویض میزبان credential و داده را حذف نکند. |
 | [ ] | `P06-MESSAGE-CODE-003` | BOTH | P0/HIGH | پنل `Carmilla → Integrations` با capability اختصاصی | SMS/Email/Templates/Health/Test tabs |
 | [ ] | `P06-MESSAGE-CODE-004` | AI | P0/MEDIUM | `wp_mail` adapter پیش‌فرض | با SMTP plugin متداول کار کند |
 | [ ] | `P06-MESSAGE-CODE-005` | BOTH | P0/HIGH | Generic SMS HTTP adapter با method/auth/header/body mapping | API key masked؛ success code/message ID configurable |
@@ -826,10 +887,10 @@ Taskهای `P05-PAYMENT-GATE-025` تا `027` اگر provider هنوز انتخا
 | [ ] | `P06-MESSAGE-CODE-010` | BOTH | P0/HIGH | OTP flow به ProviderResult واقعی متصل شود | `sent=true` فقط پس از queue/provider acceptance |
 | [ ] | `P06-MESSAGE-CODE-011` | BOTH | P1/HIGH | Action Scheduler queue، retry، dedupe و fallback | non-retryable retry نشود؛ duplicate کنترل |
 | [ ] | `P06-MESSAGE-CODE-012` | AI | P1/MEDIUM | redacted health/delivery log و test connection | فقط Admin+Nonce+Capability؛ audit |
-| [ ] | `P06-QA-AUTO-013` | AI | P0/HIGH | fake provider tests برای success/timeout/4xx/5xx/retry | secret snapshot tests |
-| [ ] | `P06-QA-MANUAL-014` | HUMAN | P0/HIGH | SMS/Email sandbox واقعی برای هر preset | recipient تست، tester/date/provider ID redacted |
+| [ ] | `P06-QA-AUTO-013` | AI | P0/HIGH | تست provider، queue و خاموشی قابلیت در سه حالت میزبان | یک ارسال برای event تکراری؛ job غیرمجاز/قابلیت خاموش رد شود؛ secret و PII در report صفر. |
+| [ ] | `P06-QA-MANUAL-014` | HUMAN | P0/HIGH | QA تنظیمات و ارسال آزمایشی از هر محصول مستقل | پیام آزمایشی فقط یک‌بار به مقصد sandbox برسد؛ خطای actionable و secret مخفی؛ non-admin نتواند تنظیمات را بخواند یا عوض کند. |
 | [ ] | `P06-MESSAGE-DOC-015` | AI | P1/LOW | راهنمای تنظیم، rotation، troubleshooting و disclosure | vendor-neutral؛ داده ارسالی روشن |
-| [ ] | `P06-MESSAGE-GATE-016` | HUMAN | P0/HIGH | Gate Integrations | generic SMS + wp_mail pass؛ secret/SSRF pass |
+| [ ] | `P06-MESSAGE-GATE-016` | HUMAN | P0/HIGH | Gate پیام‌رسانی مستقل Theme و Plugin | دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد. |
 
 ### Gate فاز ۶
 
@@ -853,8 +914,8 @@ Taskهای `P05-PAYMENT-GATE-025` تا `027` اگر provider هنوز انتخا
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P07-SEED-ADR-001` | BOTH | P0/HIGH | Seed format v1، stable key، ownership و conflict policy | JSON Schema، version/checksum/license |
-| [ ] | `P07-SEED-CODE-002` | BOTH | P0/HIGH | importer از Theme به Core Plugin منتقل شود | Theme switch importer/data را حذف نکند |
+| [ ] | `P07-SEED-ADR-001` | BOTH | P0/HIGH | قرارداد Seed Pack با Shared Core و SKU مستقل | جدول pack→feature→schema→SKU؛ absent/unlicensed feature وارد نشود؛ حالت خاموش داده قبلی را پاک نکند. |
+| [ ] | `P07-SEED-CODE-002` | BOTH | P0/HIGH | انتقال importer به Shared Core داخل هر دو ZIP | اجرای دوباره import duplicate نسازد؛ تعویض میزبان با حفظ شناسه و checksum، continuation یک عملیات را حفظ کند. |
 | [ ] | `P07-SEED-DATA-003` | BOTH | P0/HIGH | `seed_runs` و `seed_objects` registry/migration | site/pack/entity unique؛ multisite decision |
 | [ ] | `P07-SEED-CODE-004` | AI | P0/HIGH | dry-run با create/update/skip/conflict count | preview با نتیجه واقعی برابر |
 | [ ] | `P07-SEED-CODE-005` | BOTH | P0/HIGH | upsert با stable key/hash و حفظ تغییر مشتری | اجرای دوم duplicate صفر |
@@ -875,7 +936,7 @@ Taskهای `P05-PAYMENT-GATE-025` تا `027` اگر provider هنوز انتخا
 | [ ] | `P07-MIGRATION-DATA-020` | BOTH | P0/HIGH | Base Pack و Customer Overlay نسخه مستقل | core update customization را overwrite نکند |
 | [ ] | `P07-MIGRATION-SEC-021` | BOTH | P0/HIGH | AEAD encryption، signature/checksum، expiry/customer binding | key خارج bundle؛ tamper/expired/wrong customer رد |
 | [ ] | `P07-MIGRATION-SEC-022` | BOTH | P0/HIGH | denylist users/orders/payments/secrets/health data پیش‌فرض | export inspection و privacy test |
-| [ ] | `P07-QA-AUTO-023` | AI | P0/HIGH | دو suite مستقل `core-seed` و `customer-migration` برای import/retry/conflict/rollback | هر Gate فقط report suite خودش؛ data counts و hashes |
+| [ ] | `P07-QA-AUTO-023` | AI | P0/HIGH | تست Seed و Migration با ماتریس میزبان و SKU | dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان. |
 | [ ] | `P07-QA-MANUAL-024` | HUMAN | P0/HIGH | staging migration کامل + delta + rollback | UAT، backup، acceptance window |
 | [ ] | `P07-SEED-DOC-025` | AI | P1/LOW | راهنمای pack authoring، license و migration runbook | مثال معتبر و troubleshooting |
 | [ ] | `P07-SEED-GATE-026` | HUMAN | P0/HIGH | Gate A: Seed/Import Core برای base+shop و PWA | feature-aware،repeat/resume/rollback و safety pass |
@@ -910,7 +971,7 @@ Dependency دقیق این فاز:
 
 ---
 
-## ۱۵. فاز ۸ — PWA متصل به WordPress
+## ۱۵. فاز ۸ — Web و PWA مستقل با دو پروفایل داده
 
 ### هدف
 
@@ -925,9 +986,9 @@ Compose Web به PWA نصب‌پذیر و production-ready تبدیل شود؛ W
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P08-PWA-ADR-001` | BOTH | P0/MEDIUM | تصمیم same-origin `/app/` در برابر subdomain و SEO boundary | CORS/cookie/auth/cache/deploy tradeoff ثبت |
-| [ ] | `P08-PWA-CODE-002` | AI | P0/MEDIUM | source set `webMain/jsMain` و production distribution اصلاح شود | clean build، asset path root/subdirectory |
-| [ ] | `P08-PWA-CODE-003` | AI | P0/HIGH | `app-config.json` trusted و حذف `?api=` production | tenant/origin immutable؛ checksum/revision |
+| [ ] | `P08-PWA-ADR-001` | BOTH | P0/MEDIUM | معماری استقرار مستقل Web/PWA و دو backend | CORS/cookie/auth/cache/SEO boundary برای هر استقرار ثبت شود؛ آمادگی production اتصال Spring فقط با Gate P15 ادعا شود. |
+| [ ] | `P08-PWA-CODE-002` | AI | P0/MEDIUM | خروجی مستقل Web و PWA از source set و BuildSpec | clean production build در root/subdirectory؛ دو پروژه با backend متفاوت بدون source fork؛ asset و history route سالم. |
+| [ ] | `P08-PWA-CODE-003` | AI | P0/HIGH | پیکربندی trusted وب با backend، برند و SKU مستقل | دست‌کاری apiRoot/authHosts و feature خارج از ceiling رد شود؛ artifact WORDPRESS به Theme-only و Plugin-only و both وصل شود. |
 | [ ] | `P08-PWA-CODE-004` | AI | P0/MEDIUM | `manifest.webmanifest` با id/scope/start_url/name/icons | installability check؛ icon sizes |
 | [ ] | `P08-PWA-CODE-005` | BOTH | P0/HIGH | service worker با cache namespace tenant+revision | سایت A/B cache مشترک ندارند |
 | [ ] | `P08-PWA-CODE-006` | BOTH | P0/HIGH | cache policy فقط app shell/public catalog/content | auth/order/payment/message/health cache صفر |
@@ -939,11 +1000,11 @@ Compose Web به PWA نصب‌پذیر و production-ready تبدیل شود؛ W
 | [ ] | `P08-PWA-CODE-012` | AI | P1/MEDIUM | deep link/history/back/refresh/share target در scope | route داخلی refresh 404 نشود |
 | [ ] | `P08-OBSERVABILITY-CODE-013` | BOTH | P0/MEDIUM | event taxonomy مصوب و error/performance telemetry opt-in | staging event validation؛ PII redaction |
 | [ ] | `P08-PWA-PERF-014` | BOTH | P1/MEDIUM | performance budget برای startup/assets/API | شبکه کند و دستگاه ضعیف؛ regression threshold |
-| [ ] | `P08-QA-AUTO-015` | AI | P0/MEDIUM | Playwright install/update/offline/cache/deep-link tests | Chrome CI + report/artifacts |
+| [ ] | `P08-QA-AUTO-015` | AI | P0/MEDIUM | تست مستقل Web/PWA در دو profile و سه host WordPress | tenant cache isolation، logout purge و feature guard سبز؛ report دارای backend/host/SKU/fingerprint؛ fake به‌عنوان production PASS گزارش نشود. |
 | [ ] | `P08-QA-MANUAL-016` | HUMAN | P0/HIGH | Chrome Android، Edge/Chrome/Firefox و Safari iOS behavior | install/remove/update/offline/logout evidence |
 | [ ] | `P08-QA-MANUAL-017` | HUMAN | P1/MEDIUM | keyboard/screen reader/RTL/zoom 200% | golden pages و defect list |
 | [ ] | `P08-PWA-OPS-018` | BOTH | P0/HIGH | staging/production deploy، cache bust و rollback runbook | نسخه قبلی قابل بازگشت؛ smoke post-deploy |
-| [ ] | `P08-PWA-GATE-019` | HUMAN | P0/HIGH | Gate PWA RC | install/update/security/perf/accessibility pass |
+| [ ] | `P08-PWA-GATE-019` | HUMAN | P0/HIGH | Gate مستقل Web/PWA با محدوده backend تأییدشده | install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد. |
 
 ### Gate فاز ۸
 
@@ -978,7 +1039,7 @@ Internal Alpha
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P09-QA-DOC-001` | BOTH | P0/MEDIUM | traceability نهایی feature→requirement→test→evidence | هیچ P0 بدون test |
+| [ ] | `P09-QA-DOC-001` | BOTH | P0/MEDIUM | ماتریس رگرسیون محصول، SKU، میزبان و backend | هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند. |
 | [ ] | `P09-QA-AUTO-002` | AI | P0/HIGH | regression automation shop/auth/payment/toggle/import/PWA | CI report و trend؛ flaky test owner |
 | [ ] | `P09-QA-MANUAL-003` | HUMAN | P0/HIGH | clean install/upgrade/rollback روی WP/PHP/Woo matrix | minimum/current/mid + HPOS/Blocks |
 | [ ] | `P09-QA-MANUAL-004` | HUMAN | P0/HIGH | Functional suite کامل shop-only،شامل بازآزمایی smoke بنیاد P02 | ۱۰۰٪ critical؛ expected/actual/evidence؛ auth/home/product/cart/payment-return روی RC |
@@ -995,7 +1056,7 @@ Internal Alpha
 | [ ] | `P09-QA-MANUAL-015` | HUMAN | P0/HIGH | expanded beta فقط پس از Gate cohort اول | ۸–۱۲ مشتری؛ top blockerها رفع |
 | [ ] | `P09-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | unit economics با support hours/refund واقعی بازبینی | contribution margin اولیه |
 | [ ] | `P09-QA-OPS-017` | BOTH | P0/HIGH | release drill، rollback، restore و incident simulation | owner/time/evidence؛ support bundle redacted |
-| [ ] | `P09-QA-GATE-018` | HUMAN | P0/HIGH | Gate Beta/Marketplace Candidate،شامل کنترل‌های منتقل‌شده P02 | cohort criteria،RC sign-off و Evidence انتقالی P02 |
+| [ ] | `P09-QA-GATE-018` | HUMAN | P0/HIGH | Gate رگرسیون نسخه با استقلال محصولات و بدهی QA | هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند. |
 
 ### معیار رفتن از ۳–۵ به ۸–۱۲
 
@@ -1031,23 +1092,23 @@ Internal Alpha
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [ ] | `P10-BUSINESS-BIZ-001` | HUMAN | P0/MEDIUM | marketplace اول با scoring قرارداد انتخاب شود | سهم/انحصار/تسویه/refund/support/audience |
-| [ ] | `P10-BUSINESS-BIZ-002` | HUMAN | P0/MEDIUM | SKU و expectation جدا: Theme، Connector، PWA Pack | included/hosted/custom واضح |
-| [ ] | `P10-BUSINESS-BIZ-003` | HUMAN | P0/MEDIUM | قیمت launch و guardrail تخفیف/حاشیه | support/build cost داخل مدل |
+| [ ] | `P10-BUSINESS-BIZ-002` | HUMAN | P0/MEDIUM | تعریف SKU مستقل Theme، Plugin و کلاینت با قابلیت قابل خرید | برای هر SKU محتوای ZIP/artifact، feature، تعداد سایت، target، مجوز، upgrade و پیش‌نیاز Woo/runner روشن باشد. |
+| [ ] | `P10-BUSINESS-BIZ-003` | HUMAN | P0/MEDIUM | قیمت‌گذاری قابلیت، اپ‌ساز و هزینه تحویل هر SKU | margin و break-even برای base، تک‌قابلیت و bundle؛ خرید Builder مجوز خودکار دامنه یا همه platformها نسازد. |
 | [ ] | `P10-WPTHEME-DOC-004` | AI | P0/LOW | readme/changelog/license/attribution/screenshot | version و behavior یکسان |
 | [ ] | `P10-WPPLUGIN-DOC-005` | AI | P0/LOW | install/onboarding/provider/import/upgrade/troubleshooting docs | clean-room tester طبق doc موفق |
-| [ ] | `P10-BUSINESS-DOC-006` | BOTH | P0/MEDIUM | known limitations و compatibility matrix عمومی | ادعای «همه قالب/افزونه‌ها» ممنوع |
+| [ ] | `P10-BUSINESS-DOC-006` | BOTH | P0/MEDIUM | ماتریس عمومی قابلیت، مجوز و سازگاری هر محصول | قابلیت موجود/خریداری‌شده/فعال و target آماده build یا صرفاً آزمایشی تفکیک شوند؛ محصولی که Gate ندارد آماده فروش نامیده نشود. |
 | [ ] | `P10-BUSINESS-DOC-007` | HUMAN | P1/MEDIUM | ویدئوی نصب، PWA و payment setup با داده demo | secret/domain واقعی دیده نشود |
 | [ ] | `P10-BUSINESS-OPS-008` | BOTH | P0/MEDIUM | demo site و downloadable artifact بدون PII/secret | restore/reset و uptime owner |
-| [ ] | `P10-CI-OPS-009` | BOTH | P0/HIGH | reproducible RC ZIP/PWA با checksum/SBOM/signature policy | clean runner دو بار hash قابل توضیح |
+| [ ] | `P10-CI-OPS-009` | BOTH | P0/HIGH | ساخت RC متناسب SKU با هویت و provenance مستقل | دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد. |
 | [ ] | `P10-BUSINESS-OPS-010` | HUMAN | P0/MEDIUM | support runbook، macro، escalation، SLA و refund triage | support drill با ticketهای نمونه |
 | [ ] | `P10-BUSINESS-BIZ-011` | HUMAN/EXTERNAL | P0/HIGH | submission marketplace اول | preview قبل publish؛ قرارداد archive |
-| [ ] | `P10-PROGRAM-OPS-012` | BOTH | P0/HIGH | release محدود `0.9.x-rc.n` برای componentهای RC-passed | release notes، migration، rollback، checksum |
+| [ ] | `P10-PROGRAM-OPS-012` | BOTH | P0/HIGH | انتشار محدود فقط ترکیب‌های محصول و SKU تأییدشده | release manifest شامل محصول، feature، backend، target و محدودیت باشد؛ آمادگی P04 fake Builder به‌عنوان build واقعی فروخته نشود. |
 | [ ] | `P10-BUSINESS-BIZ-013` | HUMAN | P0/MEDIUM | limited launch ظرفیت‌محور | quota مشتری/هفته و stop switch |
 | [ ] | `P10-OBSERVABILITY-BIZ-014` | HUMAN | P0/MEDIUM | چهار هفته review فروش/activation/refund/ticket/margin | گزارش channel-specific |
 | [ ] | `P10-BUSINESS-EXPERIMENT-015` | HUMAN | P1/MEDIUM | یک pricing/landing experiment کنترل‌شده | یک متغیر، KPI و stop condition |
 | [ ] | `P10-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | shortlist ۳–۵ partner و یک compatibility pilot | RACI/contract draft/test kit |
 | [ ] | `P10-BUSINESS-BIZ-017` | HUMAN/EXTERNAL | P1/MEDIUM | marketplace دوم فقط بعد از شرط‌های ورود | دو صف support capacity |
-| [ ] | `P10-BUSINESS-GATE-018` | HUMAN | P0/HIGH | Gate Stable WordPress/PWA | پایداری، margin و support acceptable |
+| [ ] | `P10-BUSINESS-GATE-018` | HUMAN | P0/HIGH | Gate فروش مستقل خانواده‌های محصول با feature boundary | صفحه فروش با inventory و مجوز واقعی artifact برابر؛ استقلال هر SKU تست‌شده؛ محصول آماده منتظر target نامرتبط نماند. |
 | [ ] | `P10-PROGRAM-OPS-019` | BOTH | P0/HIGH | فقط پس از Pass شدن Task 018، نسخه مستقل `1.0.0` componentهای تأییدشده منتشر شود | stable tag/artifact/checksum/changelog/rollback و post-release smoke |
 
 ### شرط ورود به Marketplace دوم
@@ -1075,7 +1136,7 @@ Internal Alpha
 
 ---
 
-## ۱۸. فاز ۱۱ — Android WordPress و Managed Delivery
+## ۱۸. فاز ۱۱ — Android مستقل با دو پروفایل و تحویل مدیریت‌شده
 
 ### هدف
 
@@ -1092,7 +1153,7 @@ Android برای WordPress با هویت و signing مشتری، پرداخت ا
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [ ] | `P11-ANDROID-DISC-001` | HUMAN | P0/HIGH | package/signing/store inventory فاز صفر نهایی شود | هیچ ID منتشرشده reset نشود |
-| [ ] | `P11-ANDROID-CODE-002` | AI | P0/HIGH | build فقط دو backend profile و tenant config generated | دو customer config بدون source edit |
+| [ ] | `P11-ANDROID-CODE-002` | AI | P0/HIGH | Android مستقل با دو BackendProfile و config تولیدشده | دو برند × دو profile بدون fork؛ tenant cache/token جدا؛ Spring fixture و backend production در گزارش تفکیک شوند. |
 | [ ] | `P11-ANDROID-CODE-003` | BOTH | P0/HIGH | name/icon/splash/color/applicationId/version از BuildIdentity | resource validation؛ collision صفر |
 | [ ] | `P11-ANDROID-SEC-004` | BOTH | P0/HIGH | keystore/upload key policy، vault و access audit | key در repo/log/WordPress صفر |
 | [ ] | `P11-ANDROID-CODE-005` | AI | P0/MEDIUM | release build type، R8/shrink، baseline profile و mapping retention | signed AAB/APK install؛ crash symbol available |
@@ -1103,15 +1164,15 @@ Android برای WordPress با هویت و signing مشتری، پرداخت ا
 | [ ] | `P11-OBSERVABILITY-CODE-010` | BOTH | P1/MEDIUM | crash/performance/product telemetry adapter؛ Firebase Analytics/Crashlytics/Performance فقط در صورت انتخاب | provider اختیاری؛ consent/Data Safety/redaction و event validation |
 | [ ] | `P11-ANDROID-CODE-011` | BOTH | P0/HIGH | account deletion داخل app و web URL | delete/export/retention workflow |
 | [ ] | `P11-ANDROID-DOC-012` | HUMAN | P0/HIGH | Data Safety، privacy، support و store declarations | behavior واقعی با فرم‌ها برابر |
-| [ ] | `P11-ANDROID-OPS-013` | BOTH | P0/HIGH | operator build runbook و artifact fingerprint | version/checksum/template/manifest/overlay |
+| [ ] | `P11-ANDROID-OPS-013` | BOTH | P0/HIGH | runbook ساخت مستقل Android و هویت artifact مشتری | artifact با applicationId/version/tenant/backend/SKU/template/checksum و signing reference؛ secret داخل WordPress، سورس یا log صفر. |
 | [ ] | `P11-QA-AUTO-014` | AI | P0/MEDIUM | unit/UI/deep-link/payment/process-death regression | release build test، نه فقط debug |
 | [ ] | `P11-QA-MANUAL-015` | HUMAN | P0/HIGH | API 24، میانی، 36؛ small/normal/tablet/low-memory | install/upgrade/rotation/background/network |
 | [ ] | `P11-QA-MANUAL-016` | HUMAN | P0/HIGH | RTL/font 200%/TalkBack/light/dark | golden flows evidence |
-| [ ] | `P11-ANDROID-OPS-017` | HUMAN | P0/HIGH | internal test با دو برند و دو package | signing/update/app links/payment |
+| [ ] | `P11-ANDROID-OPS-017` | HUMAN | P0/HIGH | آزمون داخلی Android با دو برند و hostهای مستقل | signing/update/app links/payment و feature-off pass؛ اعتبار آزمایش backend از نسخه و محیط آن قابل تشخیص باشد. |
 | [ ] | `P11-ANDROID-BIZ-018` | HUMAN | P0/MEDIUM | beta ۳–۵ مشتری با حساب/هویت خودشان | support/build cost و UAT |
 | [ ] | `P11-ANDROID-OPS-019` | HUMAN/EXTERNAL | P0/HIGH | closed/staged rollout در store هدف | policy همان store؛ rollback/stop |
 | [ ] | `P11-OBSERVABILITY-BIZ-020` | HUMAN | P1/MEDIUM | crash-free/build success/checkout/support review | sample size همراه metric |
-| [ ] | `P11-ANDROID-GATE-021` | HUMAN | P0/HIGH | Gate Android commercial | ۱۹/۲۰ build اخیر + ۳–۵ beta موفق |
+| [ ] | `P11-ANDROID-GATE-021` | HUMAN | P0/HIGH | Gate تجاری Android مستقل برای backend و SKU مشخص | نصب/ارتقا/پرداخت/امنیت/دسترسی‌پذیری سبز؛ WordPress به هر سه host mode وصل؛ دامنه فروش و وضعیت Spring صریح. |
 
 ### Gate فاز ۱۱
 
@@ -1127,7 +1188,7 @@ Android برای WordPress با هویت و signing مشتری، پرداخت ا
 
 ---
 
-## ۱۹. فاز ۱۲ — App Builder MVP و Automation
+## ۱۹. فاز ۱۲ — اپ‌ساز قابل خرید از هر دو میزبان؛ خروجی واقعی Android و Web/PWA
 
 ### پیش‌شرط سخت
 
@@ -1143,25 +1204,28 @@ App Builder قبل از این موارد شروع نمی‌شود:
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P12-BUILDER-ADR-001` | BOTH | P0/HIGH | ADR control plane، isolation و non-goals | هیچ Gradle/Xcode روی هاست WordPress |
-| [ ] | `P12-BUILDER-DATA-002` | BOTH | P0/HIGH | Project/Tenant/BuildJob/Artifact/Template/Entitlement model | state machine/idempotency/audit |
-| [ ] | `P12-BUILDER-CODE-003` | BOTH | P0/HIGH | WordPress pairing، signed request و preflight | SSRF/tenant binding/replay tests |
-| [ ] | `P12-BUILDER-CODE-004` | AI | P0/MEDIUM | wizard branding/feature/package/domain/store metadata | validation قبل enqueue |
+| [ ] | `P12-BUILDER-ADR-001` | BOTH | P0/HIGH | قرارداد Builder دو میزبان و ورودی مستقل پروژه | trust boundary و API نسخه‌دار؛ Gradle/Xcode/signing key در WordPress صفر؛ سرویس ساخت با backend داده Spring یک مفهوم فرض نشود. |
+| [ ] | `P12-BUILDER-DATA-002` | BOTH | P0/HIGH | مدل پروژه، BuildJob و entitlement با منشأ محصول | site/project binding و provenance؛ idempotency/audit؛ نصب هم‌زمان یا ارسال JSON feature مجوز تازه ایجاد نکند. |
+| [ ] | `P12-BUILDER-CODE-003` | BOTH | P0/HIGH | pairing مستقل هر WordPress host و احراز پروژه | SSRF/tenant binding/replay/expiry tests؛ نبود Bridge مانع Theme و نبود Carmilla Theme مانع Plugin نشود. |
+| [ ] | `P12-BUILDER-CODE-004` | AI | P0/MEDIUM | wizard ساخت با target و قابلیت‌های واقعاً خریداری‌شده | preview BuildSpec و هزینه/اعتبار؛ وضعیت آزمایشی یا آماده ساخت صادقانه؛ iOS/Desktop تا runner و Gate مربوط آماده تحویل نشان داده نشوند. |
 | [ ] | `P12-BUILDER-CODE-005` | BOTH | P0/HIGH | queue/job state/retry/cancel/timeout | duplicate build idempotent؛ stuck recovery |
-| [ ] | `P12-BUILDER-OPS-006` | BOTH | P0/HIGH | ephemeral isolated runner و pinned toolchain/cache | job A به secret/artifact B دسترسی ندارد |
+| [ ] | `P12-BUILDER-OPS-006` | BOTH | P0/HIGH | runner ایزوله با قرارداد target و toolchain ثابت | job A به secret/artifact B دسترسی ندارد؛ pinned toolchain و timeout؛ worker capability با target درخواست‌شده تطبیق داده شود. |
 | [ ] | `P12-BUILDER-SEC-007` | BOTH | P0/HIGH | vault/HSM policy برای signing و credential | plaintext DB/log صفر؛ rotation/access audit |
-| [ ] | `P12-BUILDER-CODE-008` | AI | P0/HIGH | generated customer config/resources بدون source fork | deterministic manifest/resource validation |
+| [ ] | `P12-BUILDER-CODE-008` | AI | P0/HIGH | تولید config و منابع مشتری از BuildSpec بدون fork | BuildSpec یکسان artifact/config یکسان؛ درخواست feature خارج از بسته رد؛ برند backend را تغییر ندهد. |
+| [ ] | `P12-BUILDER-CODE-020` | BOTH | P0/HIGH | runner واقعی Web و PWA از BuildSpec | ZIP وب واقعی با checksum؛ سرو روی origin تازه و زیرمسیر؛ نصب/update PWA؛ feature ceiling و tenant config خروجی صحیح. |
+| [ ] | `P12-BUILDER-CODE-021` | BOTH | P0/HIGH | runner واقعی Android از template انتشار | خروجی امضاشده نصب/ارتقا؛ applicationId/نسخه/brand/ceiling درست؛ secret در WP/log/artifact نیست؛ failed build موفق گزارش نشود. |
 | [ ] | `P12-BUILDER-OPS-009` | BOTH | P0/HIGH | artifact storage، checksum، SBOM، expiry و malware policy | tamper/expired/unauthorized download رد |
 | [ ] | `P12-BUILDER-CODE-010` | AI | P0/MEDIUM | redacted live logs و standardized error categories | source/secret/PII در log صفر |
 | [ ] | `P12-BUILDER-CODE-011` | BOTH | P0/HIGH | secure customer delivery portal/one-time link | customer binding/expiry/audit |
-| [ ] | `P12-BUILDER-CODE-012` | BOTH | P0/HIGH | template/backend/plugin compatibility matrix | incompatible version قبل build fail |
+| [ ] | `P12-BUILDER-CODE-012` | BOTH | P0/HIGH | ماتریس سازگاری template، kernel، backend و target | ناسازگاری قبل از enqueue fail شود؛ ماتریس Theme-only/Plugin-only/both و SPRING جدا؛ client release ceiling رعایت شود. |
 | [ ] | `P12-BUILDER-OPS-013` | BOTH | P0/HIGH | template update/canary/rollback و rebuild policy | previous template reproducible |
-| [ ] | `P12-BUILDER-BIZ-014` | HUMAN | P1/MEDIUM | quota، build credit، setup/maintenance و grace period | data/app گروگان subscription نشود |
+| [ ] | `P12-BUILDER-BIZ-014` | HUMAN | P1/MEDIUM | حقوق استفاده، اعتبار build و تمدید هر محصول | پایان اعتبار ساخت اپ تحویل‌شده یا داده سایت را خودکار حذف نکند؛ upgrade/transfer/refund و اثر هر حالت قابل پیش‌بینی باشد. |
 | [ ] | `P12-BUILDER-OPS-015` | BOTH | P0/HIGH | metrics/alert/cost/queue SLO و incident runbook | synthetic failed job alert |
-| [ ] | `P12-QA-AUTO-016` | AI | P0/HIGH | end-to-end fake signing/build/artifact tests | retry/cancel/isolation/expiry |
+| [ ] | `P12-QA-AUTO-016` | AI | P0/HIGH | آزمون قرارداد و build واقعی Android/Web/PWA | fake success جای APK/AAB یا distribution واقعی ننشیند؛ درخواست از هر دو host مستقل همان قرارداد را پاس کند؛ log redacted. |
+| [ ] | `P12-QA-MANUAL-022` | HUMAN | P0/HIGH | تحویل واقعی اپ‌ساز از هر دو محصول مستقل | کجا: پنل App Builder هر میزبان و دستگاه Android/مرورگر. چگونه: خرید مجاز→branding→build→download→install، سپس هدف غیرمجاز/retry. موفقیت: artifact صحیح سایت و برند، منع هدف نخریده، یک job؛ شواهد و تأیید انسانی. |
 | [ ] | `P12-SECURITY-SEC-017` | BOTH | P0/HIGH | independent threat review/pentest | RCE/supply-chain/tenant escape/secrets |
 | [ ] | `P12-BUILDER-BIZ-018` | HUMAN | P0/MEDIUM | operator-assisted alpha قبل از self-service | ۳–۵ project؛ support/cost evidence |
-| [ ] | `P12-BUILDER-GATE-019` | HUMAN | P0/HIGH | Gate Builder private beta | isolation/reliability/delivery/economics pass |
+| [ ] | `P12-BUILDER-GATE-019` | HUMAN | P0/HIGH | Gate Builder اولیه با خروجی واقعی Android/Web/PWA | isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست. |
 
 ### Gate فاز ۱۲
 
@@ -1181,7 +1245,7 @@ App Builder قبل از این موارد شروع نمی‌شود:
 ### هدف
 
 قابلیت آموزش به‌صورت یک Add-on مستقل و پیش‌فرض خاموش ساخته شود؛ فعال‌کردن آن فقط با
-`features.lms = true` ممکن باشد و هیچ مسیر، API، منو، Seed یا permission آموزشی در
+وضعیت مؤثر `academy.core` طبق بسته، خرید و انتخاب مدیر ممکن باشد و هیچ مسیر، API، منو، Seed یا permission آموزشی در
 محصولی که این قابلیت را ندارد ظاهر نشود.
 
 ### پیش‌شرط ورود
@@ -1196,29 +1260,30 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [ ] | `P13-LMS-DISC-001` | HUMAN | P0/HIGH | Scope نسخه اول: course/lesson/quiz/certificate؛ ثبت non-goalها | Product brief و سناریوهای پولی/رایگان تأیید شود |
-| [ ] | `P13-LMS-ADR-002` | BOTH | P0/HIGH | ADR مالکیت داده و مدل canonical آموزش | منبع حقیقت هر entity و write path یکتا باشد |
+| [ ] | `P13-LMS-ADR-002` | BOTH | P0/HIGH | مالکیت canonical آموزش و مجوز بسته مستقل | نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد. |
 | [ ] | `P13-LMS-DATA-003` | AI | P0/HIGH | schema/migration برای Course،Section،Lesson،Enrollment،Progress | install/upgrade/rollback روی DB واقعی تست شود |
 | [ ] | `P13-LMS-DATA-004` | AI | P0/HIGH | schema/migration برای Quiz،Question،Attempt،Certificate | versioning سؤال و attempt قابل بازتولید باشد |
 | [ ] | `P13-LMS-SEC-005` | BOTH | P0/HIGH | نقش‌ها و capabilities مدرس/دانشجو/مدیر | deny-by-default و ماتریس RBAC/IDOR پاس شود |
-| [ ] | `P13-LMS-CODE-006` | AI | P0/HIGH | catalog و جزئیات دوره در Plugin/API/Theme/Client | feature خاموش = route/API/widget آموزشی صفر |
+| [ ] | `P13-LMS-CODE-006` | AI | P0/HIGH | فهرست و جزئیات دوره در دو محصول و کلاینت مستقل | Theme-only و Plugin-only بدون اپ نیز دوره را نمایش دهند؛ feature غایب/غیرمجاز/خاموش از لینک مستقیم و API باز نشود. |
 | [ ] | `P13-LMS-CODE-007` | BOTH | P0/HIGH | enrollment و entitlement رایگان/پولی/دستی | refund/expiry/revoke دسترسی را واقعاً قطع کند |
 | [ ] | `P13-LMS-SEC-008` | BOTH | P0/HIGH | محافظت محتوای خصوصی و URL امضاشده کوتاه‌عمر | URL منقضی/کاربر دیگر/دوره دیگر رد شود |
 | [ ] | `P13-LMS-CODE-009` | AI | P0/HIGH | پخش/نمایش lesson با resume و completion policy | refresh، دو دستگاه و network interruption تست شود |
+| [ ] | `P13-LMS-CODE-028` | BOTH | P0/HIGH | پخش واقعی درس در Web/PWA | پخش/توقف/seek/resume واقعی مرورگر؛ lesson غیرمجاز/منقضی باز نشود؛ raw private media در cache عمومی نباشد. |
 | [ ] | `P13-LMS-DATA-010` | BOTH | P0/HIGH | conflict policy برای progress چنددستگاهی | duplicate/out-of-order update داده را عقب نبرد |
 | [ ] | `P13-LMS-CODE-011` | AI | P0/HIGH | quiz engine: time،attempt limit،shuffle،score | boundary و deterministic scoring تست شود |
 | [ ] | `P13-LMS-SEC-012` | BOTH | P0/HIGH | پاسخ صحیح و score server-authoritative | پاسخ/کلید در payload عمومی یا source client نباشد |
 | [ ] | `P13-LMS-CODE-013` | AI | P1/MEDIUM | assignment/project و upload در صورت تأیید Scope | MIME/size/permission/virus policy تست شود |
 | [ ] | `P13-LMS-CODE-014` | BOTH | P1/MEDIUM | صدور certificate و صفحه verify عمومی حداقلی | شناسه غیرقابل حدس؛ revoke و privacy تست شود |
-| [ ] | `P13-LMS-CODE-015` | AI | P0/MEDIUM | پنل مدیریت دوره، lesson،quiz و enrollment | validation،draft/publish و bulk action تست شود |
+| [ ] | `P13-LMS-CODE-015` | AI | P0/MEDIUM | مدیریت آموزش در هر دو میزبان و UI مستقل افزونه | نقش مدیر/مدرس مجاز CRUD کند؛ دو host یک داده و وضعیت ببینند؛ upgrade یا خاموشی قابلیت داده آموزشی را حذف نکند. |
 | [ ] | `P13-LMS-CODE-016` | BOTH | P1/MEDIUM | notification رویدادهای ثبت‌نام/موعد/تکمیل | opt-out،retry و عدم افشای محتوای خصوصی |
 | [ ] | `P13-LMS-DATA-017` | AI | P0/MEDIUM | Seed Pack آموزشی فاز ۷ با schema نهایی همگام شود | dry-run/upsert/resume/rollback دو بار پاس شود |
 | [ ] | `P13-LMS-CODE-018` | BOTH | P1/MEDIUM | policy آفلاین برای metadata و محتوای محافظت‌شده | content پولی بدون مجوز دائمی cache نشود |
 | [ ] | `P13-OBSERVABILITY-CODE-019` | BOTH | P1/MEDIUM | eventهای view/enroll/start/complete/quiz/certificate | consent،redaction و funnel validation |
 | [ ] | `P13-LMS-LEGAL-020` | HUMAN/EXTERNAL | P0/HIGH | copyright،شرایط مدرس،refund و certificate disclaimer | متن حقوقی/محصولی مکتوب و versioned باشد |
-| [ ] | `P13-QA-AUTO-021` | AI | P0/HIGH | unit/integration/contract tests دامنه LMS | enrollment،refund،progress و score پوشش داده شود |
-| [ ] | `P13-QA-MANUAL-022` | HUMAN | P0/HIGH | UAT دانشجو،مدرس و مدیر روی PWA/Android/Theme | screenshot/video و defect ID برای هر سناریو |
+| [ ] | `P13-QA-AUTO-021` | AI | P0/HIGH | suite آموزش با SKU و parity میزبان‌ها | مجوز دامنه و ثبت‌نام دانشجو مستقل enforce؛ route/write/job خاموش رد؛ score فقط سرور و stateها در backendها هم‌معنا باشند. |
+| [ ] | `P13-QA-MANUAL-022` | HUMAN | P0/HIGH | UAT دانشجو و مدرس در دو ZIP و کلاینت‌های آماده | بدون نصب محصول دیگر و بدون اجبار اپ، مسیر سایت کامل باشد؛ backend/target بدون Gate به‌عنوان آماده فروش ثبت نشود؛ screenshots و defect ID. |
 | [ ] | `P13-QA-MANUAL-023` | HUMAN | P1/MEDIUM | RTL،keyboard،screen reader،فونت ۲۰۰٪ و ویدئو | WCAG checklist محصولی تکمیل شود |
-| [ ] | `P13-LMS-BIZ-024` | HUMAN | P1/MEDIUM | SKU و قیمت Add-on آموزشی + هزینه storage/support | contribution margin سه سناریو محاسبه شود |
+| [ ] | `P13-LMS-BIZ-024` | HUMAN | P1/MEDIUM | قیمت و حقوق بسته آموزش برای هر خانواده محصول | سه سناریوی margin با تعداد کاربر/فضا/پشتیبانی؛ included/excluded و prerequisiteها و کنترل روشن/خاموش مشتری شفاف. |
 | [ ] | `P13-LMS-BIZ-025` | HUMAN | P0/MEDIUM | pilot با ۲–۳ آموزشگاه/مدرس واقعی | completion،ticket،refund و willingness-to-pay ثبت شود |
 | [ ] | `P13-LMS-DOC-026` | BOTH | P0/MEDIUM | راهنمای مدیر/مدرس/دانشجو و troubleshooting | کاربر آزمایشی با راهنما golden flow را تمام کند |
 | [ ] | `P13-LMS-GATE-027` | HUMAN | P0/HIGH | Gate عرضه Add-on آموزشی | کیفیت،امنیت،حقوق،اقتصاد و pilot همگی pass |
@@ -1268,15 +1333,16 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [ ] | `P14-CLINIC-DISC-001` | HUMAN/EXTERNAL | P0/HIGH | دامنه،کشور/بازار،non-goal و ادعاهای ممنوع | legal/clinical sign-off versioned |
-| [ ] | `P14-CLINIC-ADR-002` | BOTH | P0/HIGH | ADR تفکیک داده عمومی،حساب،رزرو،سلامت و یادداشت محرمانه | owner/processor/retention/access هر کلاس روشن |
+| [ ] | `P14-CLINIC-ADR-002` | BOTH | P0/HIGH | قرارداد قابلیت‌های جداگانه نوبت، مشاوره و داده خصوصی | خرید clinic.booking خرید psych یا پرونده بالینی را لازم نکند؛ شناسه legacy حفظ و migration alias صریح؛ سیاست public/private در هر دو host برابر. |
 | [ ] | `P14-CLINIC-PRIVACY-003` | HUMAN/EXTERNAL | P0/HIGH | DPIA/ارزیابی حریم خصوصی و consent matrix | purpose،lawful basis،withdrawal و evidence تعریف شود |
 | [ ] | `P14-CLINIC-SEC-004` | BOTH | P0/HIGH | نقش/رابطه مراجع،مشاور،پذیرش،ناظر و مدیر | RBAC + relationship-based access + deny-by-default |
-| [ ] | `P14-CLINIC-DATA-005` | AI | P0/HIGH | مدل/مهاجرت practitioner،availability،appointment | migration/constraints/timezone tests |
-| [ ] | `P14-CLINIC-CODE-006` | BOTH | P0/HIGH | پروفایل و فرایند تأیید مشاور | مدارک خصوصی؛ وضعیت تأیید در audit ثبت شود |
-| [ ] | `P14-CLINIC-CODE-007` | BOTH | P0/HIGH | رزرو اتمیک slot با hold/expiry | ۱۰۰ درخواست همزمان double-booking ایجاد نکند |
+| [ ] | `P14-CLINIC-DATA-005` | AI | P0/HIGH | مدل نوبت‌دهی مشترک با حفظ هویت و تفکیک SKU | clean/upgrade و جابه‌جایی میزبان شناسه را حفظ کند؛ booking-only بدون جداول/endpointهای غیرمجاز دیگر قابل استفاده باشد. |
+| [ ] | `P14-CLINIC-CODE-033` | BOTH | P0/HIGH | تفکیک قابلیت نوبت‌دهی از خدمات و اطلاعات مشاوره | SKU booking-only رزرو دارد و هیچ psych/note/file خصوصی فعال نیست؛ consultation ترکیب وابستگی معتبر؛ Theme/Plugin/client و API همسو. |
+| [ ] | `P14-CLINIC-CODE-006` | BOTH | P0/HIGH | نمایش و مدیریت مشاور در Theme و Plugin مستقل | مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند. |
+| [ ] | `P14-CLINIC-CODE-007` | BOTH | P0/HIGH | رزرو اتمیک با hold و expiry در هر دو محصول مستقل | ۱۰۰ درخواست هم‌زمان double booking نسازند؛ co-install یک اثر؛ feature خاموش یا مجوز غایب عملیات جدید را رد کند. |
 | [ ] | `P14-CLINIC-CODE-008` | BOTH | P0/HIGH | reschedule/cancel/no-show/refund policy | transitionهای غیرمجاز و callback تکراری رد شوند |
 | [ ] | `P14-CLINIC-CODE-009` | BOTH | P0/HIGH | پرداخت و entitlement جلسه | پرداخت موفق بدون slot و slot بدون payment resolve شود |
-| [ ] | `P14-CLINIC-CODE-010` | BOTH | P0/HIGH | لینک جلسه/تماس با provider abstraction | token کوتاه‌عمر؛ recording پیش‌فرض خاموش |
+| [ ] | `P14-CLINIC-CODE-010` | BOTH | P0/HIGH | جلسه مشاوره به‌عنوان قابلیت جدا با provider abstraction | recording پیش‌فرض خاموش؛ فقط صاحب نوبت و مشاور مجاز؛ booking-only به UI یا API جلسه غیرخریداری‌شده دسترسی نگیرد. |
 | [ ] | `P14-CLINIC-SEC-011` | BOTH | P0/HIGH | پیام/فایل امن در صورت تأیید Scope | authorization،MIME،size،malware و expiry |
 | [ ] | `P14-CLINIC-DATA-012` | BOTH | P0/HIGH | جداسازی note بالینی از note قابل مشاهده مراجع | export/API/log هرگز note داخلی را leak نکند |
 | [ ] | `P14-PSYCH-DATA-013` | BOTH | P0/HIGH | registry پرسش‌نامه: owner/license/version/norm/locale | هر attempt به نسخه immutable متصل باشد |
@@ -1291,8 +1357,8 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | [ ] | `P14-CLINIC-OPS-022` | BOTH | P0/HIGH | incident playbook برای افشا/دسترسی اشتباه | tabletop drill با زمان و owner ثبت شود |
 | [ ] | `P14-CLINIC-DATA-023` | AI | P0/HIGH | Seed کلینیک/تست کاملاً synthetic و برچسب‌دار | scanner/بازبینی انسانی نبود PII/PHI واقعی را تأیید کند |
 | [ ] | `P14-QA-AUTO-024` | AI | P0/HIGH | concurrency/state/property tests رزرو و امتیازدهی | race/replay/rounding/timezone پوشش داده شود |
-| [ ] | `P14-QA-AUTO-025` | AI | P0/HIGH | authorization matrix و negative API tests | cross-client/cross-practitioner access صفر |
-| [ ] | `P14-QA-MANUAL-026` | HUMAN | P0/HIGH | UAT مراجع/مشاور/پذیرش/مدیر | consent تا حذف حساب با evidence |
+| [ ] | `P14-QA-AUTO-025` | AI | P0/HIGH | ماتریس مجوز نقش، رابطه، SKU و میزبان خدمات | cross-client/cross-practitioner و feature bypass صفر؛ خاموشی قابلیت داده را حذف نکند و API خصوصی از public profile نشت نکند. |
+| [ ] | `P14-QA-MANUAL-026` | HUMAN | P0/HIGH | UAT نوبت و مشاوره در دو بسته مستقل | booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر. |
 | [ ] | `P14-SECURITY-SEC-027` | EXTERNAL | P0/HIGH | privacy/security assessment مستقل | تمام critical/high بسته یا risk-accepted مکتوب |
 | [ ] | `P14-CLINIC-REVIEW-028` | EXTERNAL | P0/HIGH | review بالینی پرسش‌نامه و خروجی‌ها | version/signature مسئول بالینی |
 | [ ] | `P14-CLINIC-BIZ-029` | HUMAN | P0/HIGH | عرضه ابتدا enterprise/restricted pilot | DPA/قرارداد/SLA/support boundary |
@@ -1352,11 +1418,11 @@ App Builder قبل از این موارد شروع نمی‌شود:
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P15-SPRING-BIZ-001` | HUMAN | P0/HIGH | Go/No-Go اقتصادی و SKU/SLA/hosting model | تعهد خرید و contribution margin مستند |
+| [ ] | `P15-SPRING-BIZ-001` | HUMAN | P0/HIGH | مدل استقرار و اقتصاد backend مستقل Spring | تعهد و contribution margin مستند؛ مدل self-host/managed و support روشن؛ نبود WordPress یا خرید ZIP مانع پروژه Spring نباشد. |
 | [ ] | `P15-SPRING-DISC-002` | BOTH | P0/HIGH | baseline کد،dependency،endpoint،schema و gap inventory | گزارش reproducible با commit SHA |
 | [ ] | `P15-SPRING-ADR-003` | BOTH | P0/HIGH | ADR modular monolith،tenant model و bounded contextها | Auth/Catalog/Order/Payment/LMS/Clinic مرز روشن |
-| [ ] | `P15-SPRING-API-004` | BOTH | P0/HIGH | قرارداد API و error/pagination/idempotency استاندارد | contract diff با client و WordPress |
-| [ ] | `P15-SPRING-CODE-005` | AI | P0/HIGH | bootstrap/manifest endpoint همان schema فاز ۳ | schema/compatibility tests و version negotiation |
+| [ ] | `P15-SPRING-API-004` | BOTH | P0/HIGH | قرارداد مشترک API Spring و WordPress با parity واقعی | endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود. |
+| [ ] | `P15-SPRING-CODE-005` | AI | P0/HIGH | Manifest سرور مستقل با schema و entitlement مشترک | schema/compatibility و version negotiation؛ feature فراتر از بسته/مجوز رد؛ هیچ WordPress pairing برای دریافت داده لازم نباشد. |
 | [ ] | `P15-SPRING-DATA-006` | BOTH | P0/HIGH | PostgreSQL production profile و Flyway-only migration | fresh/upgrade/rollback-plan روی snapshot |
 | [ ] | `P15-SPRING-DATA-007` | BOTH | P0/HIGH | constraints/index/transaction boundary و timezone policy | query plan،race و integrity tests |
 | [ ] | `P15-SPRING-SEC-008` | BOTH | P0/HIGH | JWT access/refresh rotation،revocation و session/device policy | theft/reuse/expiry/logout-all tests |
@@ -1366,21 +1432,26 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | [ ] | `P15-SPRING-CODE-012` | BOTH | P0/HIGH | PaymentProviderهای تأییدشده فاز ۵ | reconciliation/refund/settlement parity |
 | [ ] | `P15-SPRING-CODE-013` | BOTH | P0/HIGH | NotificationProvider و credential per tenant | secret masking/rotation/SSRF/queue tests |
 | [ ] | `P15-SPRING-SEC-014` | BOTH | P0/HIGH | object storage خصوصی و signed URL | tenant/user isolation و expiry |
-| [ ] | `P15-SPRING-CODE-015` | BOTH | P0/HIGH | feature enforcement برای Shop/LMS/Clinic | feature خاموش در service/job/API نیز رد شود |
+| [ ] | `P15-SPRING-CODE-015` | BOTH | P0/HIGH | enforcement قابلیت و مجوز در service، job و API سرور | feature خاموش/غیرمجاز در service/job/API رد؛ parity با WordPress بدون کپی booleanهای غیرمعتبر؛ داده قبلی با خاموشی پاک نشود. |
 | [ ] | `P15-SPRING-OPS-016` | BOTH | P0/HIGH | externalized config،secret manager و rotation | secret در repo/image/log/env dump صفر |
 | [ ] | `P15-SPRING-OPS-017` | BOTH | P0/HIGH | health/readiness،structured log،trace و metric | trace از client تا DB/provider قابل دنبال‌کردن |
 | [ ] | `P15-SPRING-OPS-018` | BOTH | P0/HIGH | alert/SLO/runbook و capacity dashboard | synthetic failure هشدار و owner ایجاد کند |
 | [ ] | `P15-SPRING-OPS-019` | BOTH | P0/HIGH | backup رمز‌شده،PITR و retention | restore drill زمان‌دار با RPO/RTO evidence |
 | [ ] | `P15-SPRING-OPS-020` | BOTH | P0/HIGH | container non-root،pinned base،SBOM و image scan | critical CVE و mutable tag صفر |
 | [ ] | `P15-SPRING-OPS-021` | BOTH | P0/HIGH | staging/prod IaC یا runbook deterministic | محیط تازه فقط با راهنما ساخته شود |
-| [ ] | `P15-QA-AUTO-022` | AI | P0/HIGH | unit/integration/Testcontainers/contract suite | PostgreSQL و provider stub واقعی در CI |
-| [ ] | `P15-QA-AUTO-023` | AI | P0/HIGH | load/soak/race و failure-injection | SLO و ظرفیت با dataset نماینده |
+| [ ] | `P15-QA-AUTO-022` | AI | P0/HIGH | suite سرور مستقل با Testcontainers و قرارداد provider | test و bootJar موفق؛ report مربوط به سرور باشد؛ WordPress نصب‌نشده مانع تست Spring نباشد؛ feature/tenant/ownership negatives سبز. |
+| [ ] | `P15-QA-AUTO-023` | AI | P0/HIGH | load، soak، race و failure-injection سرور مستقل | دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد. |
 | [ ] | `P15-SECURITY-SEC-024` | EXTERNAL | P0/HIGH | pentest و dependency/container review مستقل | critical/high بسته یا پذیرش ریسک امضاشده |
-| [ ] | `P15-QA-MANUAL-025` | HUMAN | P0/HIGH | golden flow با Android/PWA روی staging | auth تا order/payment/refund و feature toggle |
+| [ ] | `P15-QA-MANUAL-025` | HUMAN | P0/HIGH | پذیرش backend واقعی Spring با کلاینت مستقل | ورود، محتوا/فروشگاه و featureهای declared، toggle، پرداخت sandbox و logout با artifact واقعی؛ fixture جای backend حقیقی را نگیرد. |
 | [ ] | `P15-SPRING-OPS-026` | HUMAN | P0/HIGH | deploy/rollback/restore/rotation/incident drill | evidence،مدت و اشکال‌های drill ثبت شود |
 | [ ] | `P15-SPRING-BIZ-027` | HUMAN | P0/MEDIUM | pilot پولی با ۱–۳ مشتری | uptime/support/hosting cost و renewal intent |
 | [ ] | `P15-SPRING-DOC-028` | BOTH | P0/MEDIUM | install،upgrade،API،ops و customer handoff docs | اپراتور دوم بدون کمک deploy/restore کند |
 | [ ] | `P15-SPRING-GATE-029` | HUMAN | P0/HIGH | Gate Backend Production | security،restore،SLO،pilot و economics pass |
+| [ ] | `P15-BUILDER-CODE-030` | BOTH | P0/HIGH | پروژه ساخت مستقل کلاینت با backend Spring | بدون نصب WP/Theme/Plugin، خروجی Android/Web درست به Spring staging وصل شود؛ مجوز سایت WP به پروژه دیگر منتقل نشود؛ UI/metadata معتبر. |
+
+### پوشش واقعی دو پروفایل
+
+P15 علاوه بر سرور، شاهد واقعی Android/Web/PWA متصل به Spring را تکمیل می‌کند. اگر آن خروجی‌ها قبلاً فقط برای WordPress Gate گرفته‌اند، ثبت پذیرش Spring باید به همان ماتریس تحویل اضافه شود. iOS/Desktop در Gate خودشان همین شاهد را می‌دهند. هیچ عنوان عمومی «دو backend آماده» با fixture تأیید نمی‌شود.
 
 ### Gate فاز ۱۵
 
@@ -1403,6 +1474,8 @@ App Builder قبل از این موارد شروع نمی‌شود:
 
 ### گیت ورود
 
+اصل خروجی iOS/Desktop طبق درخواست مالک جزو برنامه است؛ ارزیابی تجاری تعیین بودجه/دامنه پشتیبانی و زمان عرضه است و مجوز حذف هدف نیست. شروع مهندسی به پایان پلتفرم نامرتبط وابسته نیست.
+
 - [ ] حداقل یک مشتری پولی یا شواهد تقاضای تعریف‌شده برای iOS وجود دارد.
 - [ ] مالکیت Apple Developer account،Bundle ID،certificate و داده مشتری روشن است.
 - [ ] دسترسی پایدار به macOS/Xcode و runner مورد اعتماد وجود دارد.
@@ -1413,10 +1486,10 @@ App Builder قبل از این موارد شروع نمی‌شود:
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P16-IOS-BIZ-001` | HUMAN | P0/HIGH | Go/No-Go تقاضا،هزینه Mac/Account/Support | مشتری/درآمد هزینه سال اول را توجیه کند |
+| [ ] | `P16-IOS-BIZ-001` | HUMAN | P0/HIGH | بودجه، حساب و دامنه تحویل iOS مستقل | مالک حساب/کلید، تیم اجرا، هزینه سال اول و دامنه پشتیبانی روشن؛ blocker منابع ثبت شود و جایگزین ادعای آماده‌بودن نشود. |
 | [ ] | `P16-IOS-DISC-002` | BOTH | P0/HIGH | audit target فعلی،interop،dependency و build blockers | baseline با commit/Xcode/SDK ثبت شود |
 | [ ] | `P16-IOS-ADR-003` | BOTH | P0/HIGH | ADR lifecycle/navigation/native integration | مرز shared/native و non-goal روشن |
-| [ ] | `P16-IOS-CODE-004` | AI | P0/HIGH | iOS host و دو Backend Profile با BuildIdentity | دو tenant بدون source fork build شوند |
+| [ ] | `P16-IOS-CODE-004` | AI | P0/HIGH | iOS مستقل با BuildSpec و دو BackendProfile | دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش. |
 | [ ] | `P16-IOS-OPS-005` | BOTH | P0/HIGH | Bundle ID،team،provisioning و signing ownership | archive/sign/install و recovery runbook |
 | [ ] | `P16-IOS-SEC-006` | BOTH | P0/HIGH | Keychain token storage،backup/accessibility policy | logout/expiry/reinstall/device backup tests |
 | [ ] | `P16-IOS-CODE-007` | BOTH | P0/HIGH | Universal Links و callback opaque | cold/warm/killed + server verify |
@@ -1427,14 +1500,15 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | [ ] | `P16-IOS-CODE-012` | BOTH | P1/MEDIUM | social login policy؛ Sign in with Apple در صورت الزام | login/link/unlink/delete tests |
 | [ ] | `P16-IOS-CODE-013` | AI | P0/MEDIUM | lifecycle،background،network و memory handling | process termination و offline recovery |
 | [ ] | `P16-OBSERVABILITY-CODE-014` | BOTH | P1/MEDIUM | crash/performance/product telemetry adapter | consent،redaction و privacy labels |
-| [ ] | `P16-QA-AUTO-015` | AI | P0/HIGH | shared tests + iOS integration/UI smoke در CI | release configuration و simulator matrix |
+| [ ] | `P16-QA-AUTO-015` | AI | P0/HIGH | تست shared و iOS integration با artifact release | backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد. |
 | [ ] | `P16-QA-MANUAL-016` | HUMAN | P0/HIGH | iPhone کوچک/بزرگ،iPad در صورت Scope،دو نسخه iOS | install/upgrade/rotation/background/low network |
 | [ ] | `P16-QA-MANUAL-017` | HUMAN | P0/HIGH | RTL،Dynamic Type،VoiceOver،dark mode و keyboard | golden flow evidence |
-| [ ] | `P16-IOS-OPS-018` | BOTH | P0/HIGH | archive/export/upload/TestFlight pipeline | artifact checksum/version/symbol retention |
+| [ ] | `P16-IOS-OPS-018` | BOTH | P0/HIGH | pipeline archive و تحویل مستقل iOS قابل مصرف Builder | checksum/version/symbol retention و نصب/تحویل واقعی؛ secret در WordPress صفر؛ منبع درخواست Theme یا Plugin اجباری به دیگری نباشد. |
 | [ ] | `P16-IOS-DOC-019` | HUMAN | P0/HIGH | privacy labels،screenshots،metadata،review notes | رفتار واقعی با submission برابر |
 | [ ] | `P16-IOS-BIZ-020` | HUMAN | P0/MEDIUM | TestFlight با ۳–۵ کاربر/مشتری نماینده | crash/support/payment/UAT |
 | [ ] | `P16-IOS-OPS-021` | HUMAN/EXTERNAL | P0/HIGH | review و staged release با stop/rollback plan | review issue و release evidence |
-| [ ] | `P16-IOS-GATE-022` | HUMAN | P0/HIGH | Gate iOS Production | policy،signing،quality،support و demand pass |
+| [ ] | `P16-IOS-GATE-022` | HUMAN | P0/HIGH | Gate خروجی مستقل iOS و Builder target مربوط | Gate artifact مستقل؛ نتیجه per backend و بدون ادعای mock؛ adapter Builder پس از این Gate؛ تکمیل هر دو backend و همه مسیرها در P18. |
+| [ ] | `P16-BUILDER-CODE-024` | BOTH | P0/HIGH | اتصال runner iOS به اپ‌ساز دو میزبان و portal مستقل | archive/IPA معتبر با bundle/team/sku صحیح؛ خطای provisioning روشن؛ download مجاز؛ smoke روی دستگاه/مسیر TestFlight آزمایشی با تأیید لازم؛ no signing key در WP. |
 
 ### Gate فاز ۱۶
 
@@ -1457,6 +1531,8 @@ Desktop فقط برای use case اثبات‌شده—برای مثال پنل 
 
 ### گیت ورود
 
+اصل خروجی iOS/Desktop طبق درخواست مالک جزو برنامه است؛ ارزیابی تجاری تعیین بودجه/دامنه پشتیبانی و زمان عرضه است و مجوز حذف هدف نیست. شروع مهندسی به پایان پلتفرم نامرتبط وابسته نیست.
+
 - [ ] persona و workflowای که PWA پاسخ‌گوی آن نیست مکتوب شده است.
 - [ ] حداقل یک تعهد خرید یا صرفه‌جویی عملیاتی قابل اندازه‌گیری وجود دارد.
 - [ ] Windows/macOS/Linuxهای پشتیبانی‌شده و مدت پشتیبانی تعریف شده‌اند.
@@ -1466,25 +1542,27 @@ Desktop فقط برای use case اثبات‌شده—برای مثال پنل 
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P17-DESKTOP-BIZ-001` | HUMAN | P0/HIGH | Go/No-Go و persona/use case پولی | PWA gap و willingness-to-pay مستند |
+| [ ] | `P17-DESKTOP-BIZ-001` | HUMAN | P0/HIGH | بودجه و دامنه سیستم‌عامل‌های Desktop مستقل | دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد. |
 | [ ] | `P17-DESKTOP-DISC-002` | BOTH | P0/HIGH | target فعلی،dependency/native API و blocker inventory | baseline برای هر OS منتخب |
 | [ ] | `P17-DESKTOP-ADR-003` | BOTH | P0/HIGH | ADR OS matrix،distribution و update channel | scope و EOL روشن |
-| [ ] | `P17-DESKTOP-CODE-004` | AI | P0/HIGH | BuildIdentity و دو Backend Profile | دو tenant بدون source fork |
+| [ ] | `P17-DESKTOP-CODE-004` | AI | P0/HIGH | Desktop مستقل با BuildSpec و دو BackendProfile | دو tenant بدون source fork؛ origin معتبر و ceiling؛ token/cache بین پروژه‌ها جدا و پاک‌سازی هنگام تغییر کنترل‌شده backend. |
 | [ ] | `P17-DESKTOP-SEC-005` | BOTH | P0/HIGH | OS keychain/credential vault و session policy | token در file/log/plain preferences صفر |
 | [ ] | `P17-DESKTOP-CODE-006` | BOTH | P0/HIGH | deep link/single-instance/payment callback | malicious URI و cold/warm tests |
 | [ ] | `P17-DESKTOP-CODE-007` | BOTH | P0/HIGH | external browser payment و server verification | embedded credential/card capture صفر |
 | [ ] | `P17-DESKTOP-CODE-008` | BOTH | P1/MEDIUM | file picker/download/cache با sandbox/path policy | traversal،permission و cleanup tests |
-| [ ] | `P17-DESKTOP-OPS-009` | BOTH | P0/HIGH | installer/package برای OSهای Scope | clean install/upgrade/uninstall |
+| [ ] | `P17-DESKTOP-CODE-021` | BOTH | P0/HIGH | پخش واقعی محتوای آموزشی در Desktop | پخش/توقف/resume واقعی؛ teardown بدون نشت player؛ media خصوصی خارج cache مجاز ذخیره نشود؛ unsupported OS پیام روشن. |
+| [ ] | `P17-DESKTOP-OPS-009` | BOTH | P0/HIGH | بسته‌های مستقل Desktop و artifact contract برای Builder | clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد. |
 | [ ] | `P17-DESKTOP-OPS-010` | BOTH | P0/HIGH | code signing و notarization در صورت نیاز | signature verification و key recovery |
 | [ ] | `P17-DESKTOP-OPS-011` | BOTH | P0/HIGH | signed auto-update،channel و rollback | tampered/downgrade/failed update رد یا recover |
 | [ ] | `P17-OBSERVABILITY-CODE-012` | BOTH | P1/MEDIUM | crash log/symbol و telemetry consent | path/token/PII redaction |
-| [ ] | `P17-QA-AUTO-013` | AI | P0/HIGH | shared/integration/smoke tests روی OS matrix | release package نه فقط dev run |
+| [ ] | `P17-QA-AUTO-013` | AI | P0/HIGH | آزمون بسته release Desktop و backendهای واقعی | feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود. |
 | [ ] | `P17-QA-MANUAL-014` | HUMAN | P0/HIGH | install/upgrade/deep-link/offline/payment/update | evidence برای هر OS/version |
 | [ ] | `P17-QA-MANUAL-015` | HUMAN | P1/MEDIUM | RTL،keyboard-only،screen reader،DPIهای مختلف | accessibility checklist |
 | [ ] | `P17-DESKTOP-OPS-016` | HUMAN | P0/HIGH | download portal/checksum/release notes/support matrix | artifact authenticity قابل بررسی |
 | [ ] | `P17-DESKTOP-BIZ-017` | HUMAN | P0/MEDIUM | pilot قراردادی ۱–۳ مشتری | workflow gain،support و update success |
 | [ ] | `P17-DESKTOP-DOC-018` | BOTH | P0/MEDIUM | install/update/rollback/EOL/troubleshooting | اپراتور دوم recovery را انجام دهد |
-| [ ] | `P17-DESKTOP-GATE-019` | HUMAN | P0/HIGH | Gate Desktop Production | demand،signing،update،quality و support pass |
+| [ ] | `P17-DESKTOP-GATE-019` | HUMAN | P0/HIGH | Gate Desktop مستقل و هدف ساخت هر دو میزبان | Gate artifact مستقل؛ نتیجه per backend و بدون ادعای mock؛ adapter Builder پس از این Gate؛ تکمیل هر دو backend و همه مسیرها در P18. |
+| [ ] | `P17-BUILDER-CODE-020` | BOTH | P0/HIGH | اتصال runnerهای Desktop به اپ‌ساز | هر OS ادعاشده installer واقعی نصب/upgrade شود؛ tenant/brand/ceiling و امضا درست؛ job سیستم‌عامل دیگر اشتباه تحویل نشود. |
 
 ### Gate فاز ۱۷
 
@@ -1497,6 +1575,18 @@ Desktop فقط برای use case اثبات‌شده—برای مثال پنل 
 
 ---
 
+## ۲۴.۱. فاز ۱۸ — پذیرش نهایی سه خانواده محصول
+
+خروجی نهایی: دو ZIP مستقل با مانیفست انتخاب کد/بیلدر و کلاینت‌های مستقل با دو backend واقعی. Gateهای موقت component مجوز ادعای تکمیل این هدف نیستند.
+
+| انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
+|---|---|---|---|---|---|
+| [ ] | `P18-QA-AUTO-001` | AI | P0/HIGH | اجرای ماتریس نهایی بسته و کلاینت با آزمون‌های موجود | برای ۱۶ ترکیب builder در هر دو ZIP،inventory درست؛ برای هر چهار target حداقل یک ساخت واقعی از هر میزبان؛ boot/contract کلاینت با هر دو backend و WP سه mode؛ هیچ mock به‌عنوان artifact واقعی ثبت نشود. |
+| [ ] | `P18-QA-MANUAL-002` | HUMAN | P0/HIGH | پذیرش نهایی پوسته مستقل و چهار بیلدر انتخابی | کجا: پنل/سایت پوسته و خروجی‌های نصب‌شده. چگونه: فروشگاه/رزرو/مشاوره مجاز را طی کن؛ falseها را در ZIP و UI بررسی؛ از پنل پوسته Android/iOS/Desktop/PWA بساز و دریافت کن. موفقیت: استقلال کامل،output واقعی و صحیح،toggle مجاز،عدم نصب افزونه همراه. |
+| [ ] | `P18-QA-MANUAL-003` | HUMAN | P0/HIGH | پذیرش نهایی افزونه مستقل و چهار بیلدر انتخابی | کجا: صفحات عمومی و پنل افزونه. چگونه: مسیر خرید/نوبت/مشاوره مجاز و toggle؛ دریافت چهار خروجی واقعی؛ module false و درخواست غیرمجاز را بررسی. موفقیت: قالب میزبان سالم،نیاز به Carmilla Theme صفر،بسته و خروجی مطابق خرید. |
+| [ ] | `P18-QA-MANUAL-004` | HUMAN | P0/HIGH | پذیرش چهار کلاینت با Spring و سه حالت WordPress | کجا: هر کلاینت و backend staging. چگونه: login/list/detail/write مجاز و feature خاموش؛ تعویض تنظیم اتصال طبق policy و restart؛ builder را در سایت خاموش کن. موفقیت: داده درست سایت،no cross-tenant/cache leak،API بدون نیاز به builder کار کند؛ tester/build/result هر حالت. |
+| [ ] | `P18-PRODUCT-GATE-005` | HUMAN | P0/HIGH | پذیرش کامل سه خانواده محصول طبق درخواست مالک | تمام سطرهای مرتبط ماتریس با artifact واقعی و QA انسانی PASS؛ هیچ فیچر خواسته‌شده با mock/placeholder جایگزین نشده؛ موارد خارج SKU صریح؛ تأیید مالک ثبت شود. پیش از آن هدف کلی تکمیل‌شده اعلام نشود. |
+
 ## ۲۵. Technical Roadmap دائمی
 
 این بخش جایگزین Feature backlog نیست؛ مرجع فنی زنده‌ای است که هر Task به آن لینک
@@ -1508,13 +1598,13 @@ Desktop فقط برای use case اثبات‌شده—برای مثال پنل 
 
 | انجام | Control ID | Artifact پیشنهادی | شرط اولیه تکمیل | رویداد به‌روزرسانی |
 |---|---|---|---|---|
-| [ ] | `CT-ARCH-DOC-001` | `docs/architecture/ARCHITECTURE_HANDBOOK_FA.md` | context/container/component و data flow فعلی | تغییر module/boundary/backend |
-| [ ] | `CT-ARCH-DOC-002` | `docs/architecture/ADR_INDEX.md` + template | تمام تصمیم‌های فعال index و status دارند | هر تصمیم برگشت‌ناپذیر/پرهزینه |
-| [ ] | `CT-ARCH-DOC-003` | `docs/architecture/MODULE_MAP.md` | owner،dependency direction و public API هر module | افزودن/ادغام/حذف module |
-| [ ] | `CT-MANIFEST-DOC-004` | `docs/contracts/FEATURE_MANIFEST.md` | schema،default،dependency و compatibility | هر feature/schemaVersion |
-| [ ] | `CT-API-DOC-005` | `docs/contracts/API_CONTRACT.md` | auth/error/paging/idempotency و نمونه redacted | endpoint یا رفتار contract |
-| [ ] | `CT-DATA-DOC-006` | `docs/contracts/DATA_OWNERSHIP.md` | owner/read/write/delete/export هر entity | افزوده‌شدن entity/provider |
-| [ ] | `CT-ARCH-DOC-007` | `docs/architecture/DEPENDENCY_POLICY.md` | allowed/forbidden dependency و cycle rule | dependency/module refactor |
+| [ ] | `CT-ARCH-DOC-001` | `docs/architecture/ARCHITECTURE_HANDBOOK_FA.md` | docs/architecture/ARCHITECTURE_HANDBOOK_FA.md شامل سه محصول، Shared Core دو ZIP، providerهای داده و سرویس ساخت مستقل باشد؛ وضعیت فعلی از هدف تفکیک شود. | تغییر module/boundary/backend |
+| [ ] | `CT-ARCH-DOC-002` | `docs/architecture/ADR_INDEX.md` + template | docs/architecture/ADR_INDEX.md و template، وضعیت ADR-005 تاریخی و ADR-006 هدف فعلی و قراردادهای تفصیلی بعدی را با authority ثبت کنند. | هر تصمیم برگشت‌ناپذیر/پرهزینه |
+| [ ] | `CT-ARCH-DOC-003` | `docs/architecture/MODULE_MAP.md` | docs/architecture/MODULE_MAP.md owner/API/dependency هر module و حضور آن در Theme ZIP، Plugin ZIP و کلاینت را نشان دهد؛ Shared Core یک source داشته باشد. | افزودن/ادغام/حذف module |
+| [ ] | `CT-MANIFEST-DOC-004` | `docs/contracts/FEATURE_MANIFEST.md` | docs/contracts/FEATURE_MANIFEST.md schema/default/dependency/compatibility را با packaged/entitled/enabled/effective و compiled ceiling مستند کند. | هر feature/schemaVersion |
+| [ ] | `CT-API-DOC-005` | `docs/contracts/API_CONTRACT.md` | docs/contracts/API_CONTRACT.md auth/error/paging/idempotency و نسخه API یکسان Theme-only/Plugin-only/both و provider Spring را با نمونه redacted نگه دارد. | endpoint یا رفتار contract |
+| [ ] | `CT-DATA-DOC-006` | `docs/contracts/DATA_OWNERSHIP.md` | docs/contracts/DATA_OWNERSHIP.md owner/read/write/delete/export هر entity و kernel فعال را ثبت کند؛ داده سایت از تنظیمات نمایشی Theme تفکیک شود. | افزوده‌شدن entity/provider |
+| [ ] | `CT-ARCH-DOC-007` | `docs/architecture/DEPENDENCY_POLICY.md` | docs/architecture/DEPENDENCY_POLICY.md اجبار Theme→Plugin و Plugin→Theme و client→WordPress UI را منع کند؛ WooCommerce و runner پیش‌نیازهای اعلام‌شده باشند. | dependency/module refactor |
 
 ### Security و Privacy
 
@@ -1542,15 +1632,15 @@ Desktop فقط برای use case اثبات‌شده—برای مثال پنل 
 
 | انجام | Control ID | Artifact پیشنهادی | شرط اولیه تکمیل | رویداد به‌روزرسانی |
 |---|---|---|---|---|
-| [ ] | `CT-CI-DOC-020` | `docs/delivery/CI_CD.md` | triggers/gates/artifact/provenance/environment | workflow/toolchain change |
-| [ ] | `CT-RELEASE-DOC-021` | `docs/delivery/RELEASE_POLICY.md` | streams/channels/version/approval/rollback | channel یا SKU جدید |
+| [ ] | `CT-CI-DOC-020` | `docs/delivery/CI_CD.md` | docs/delivery/CI_CD.md triggers/gates/artifact/provenance را برای SKU هر ZIP و platformهای مستقل و runner مناسب ثبت کند. | workflow/toolchain change |
+| [ ] | `CT-RELEASE-DOC-021` | `docs/delivery/RELEASE_POLICY.md` | docs/delivery/RELEASE_POLICY.md streams/channels/version/approval/rollback و upgrade بسته/مجوز را به تفکیک محصول، feature، backend و target تعریف کند. | channel یا SKU جدید |
 | [ ] | `CT-MIGRATION-DOC-022` | `docs/delivery/MIGRATION_POLICY.md` | forward/rollback/backup/dry-run/compatibility | schema/format migration |
 | [ ] | `CT-OPS-DOC-023` | `docs/operations/OBSERVABILITY.md` | log/metric/trace/event/SLO/alert/owner | service/provider/incident |
 | [ ] | `CT-OPS-DOC-024` | `docs/operations/BACKUP_RESTORE.md` | scope/RPO/RTO/encryption/restore drill | storage/plan تغییر |
-| [ ] | `CT-SUPPORT-DOC-025` | `docs/support/COMPATIBILITY_MATRIX.md` | WP/Woo/PHP/OS/browser/device/backend versions | هر release |
-| [ ] | `CT-SUPPORT-DOC-026` | `docs/support/SUPPORT_AND_EOL.md` | channel/SLA/severity/lifetime/upgrade path | pricing/version policy |
+| [ ] | `CT-SUPPORT-DOC-025` | `docs/support/COMPATIBILITY_MATRIX.md` | docs/support/COMPATIBILITY_MATRIX.md نسخه WP/Woo/PHP/theme/kernel/API/OS/browser و SKU tested را به artifact evidence وصل کند. | هر release |
+| [ ] | `CT-SUPPORT-DOC-026` | `docs/support/SUPPORT_AND_EOL.md` | docs/support/SUPPORT_AND_EOL.md channel/SLA/severity/lifetime/upgrade را برای Theme/Plugin/client و build service مستقل تعیین کند. | pricing/version policy |
 | [ ] | `CT-SUPPLY-DOC-027` | `docs/security/SUPPLY_CHAIN.md` | lock/pin/SBOM/license/scan/provenance | dependency/build pipeline |
-| [ ] | `CT-BUILDER-DOC-028` | `docs/delivery/CUSTOMER_BUILD_IDENTITY.md` | template/overlay/tenant/signing/artifact fingerprint | هر customer build |
+| [ ] | `CT-BUILDER-DOC-028` | `docs/delivery/CUSTOMER_BUILD_IDENTITY.md` | docs/delivery/CUSTOMER_BUILD_IDENTITY.md template/overlay/tenant/backend/SKU/target/signing/artifact fingerprint و منشأ Theme/Plugin/portal را پوشش دهد. | هر customer build |
 
 ### Definition of Done برای Technical Docs
 
@@ -1771,7 +1861,7 @@ Net Revenue
 
 | انجام | Control ID | مجری | فعالیت و خروجی | معیار اعتبار |
 |---|---|---|---|---|
-| [ ] | `CB-PRICING-BIZ-028` | HUMAN | سه بسته ساده با feature/support boundary و add-on روشن | هر بسته ICP و margin مشخص دارد |
+| [ ] | `CB-PRICING-BIZ-028` | HUMAN | قیمت‌گذاری از خانواده Theme/Plugin/client، قابلیت‌های انتخابی و targetهای Builder تشکیل شود؛ تعداد بسته ثابت و فرضی به کاربر تحمیل نشود. | هر بسته ICP و margin مشخص دارد |
 | [ ] | `CB-BRAND-BIZ-029` | HUMAN | naming،positioning،proof و ادعاهای قابل اثبات | ادعای آینده/تأییدنشده صفر |
 | [ ] | `CB-DEMO-BIZ-030` | BOTH | demo shop-only سریع،resettable و synthetic | بدون داده مشتری/secret؛ CTA قابل اندازه‌گیری |
 | [ ] | `CB-CONTENT-BIZ-031` | HUMAN | تقویم landing،مستند،ویدئو،FAQ،comparison و case study | owner/date/KPI و update trigger |
@@ -2183,10 +2273,3 @@ Final status:
 
 این فایل یک سند زنده است. هر تغییر ترتیب فاز،Gate،Scope یا Risk Acceptance باید با
 تاریخ،مالک و دلیل ثبت شود؛ تیک‌ها جایگزین Evidence نیستند.
-
-
-
-
-
-
-

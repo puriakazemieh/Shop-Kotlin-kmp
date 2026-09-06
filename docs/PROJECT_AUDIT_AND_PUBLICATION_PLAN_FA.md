@@ -1,5 +1,7 @@
 # سند جامع ممیزی معماری، فیچرها و نقشه انتشار Carmilla
 
+> **مرجع آینده — ۶ سپتامبر ۲۰۲۶:** این ممیزی شامل یافته‌ها و فرض‌های تاریخی است. [تعریف جدید محصولات](INDEPENDENT_PRODUCTS_SPEC_FA.md)، ADR-006،صف tasks.md و Master اصلاح‌شده برای کارهای باقی‌مانده مقدم‌اند: هر دو ZIP با manifest شامل/فاقد کد قابلیت و هر یک از چهار builder target هستند؛ Theme-only و Plugin-only هر دو backend/UI کامل دارند؛ کلاینت‌ها WORDPRESS یا SPRING مصرف می‌کنند. قواعد قدیمی presentation-only،importer/secret فقط در Bridge و الزام Plugin برای اتصال app منسوخ‌اند. یافته امنیتی تاریخی بدون بازبینی،نقص فعلی اعلام نمی‌شود.
+
 > تاریخ ممیزی: ۲۸ ژوئیه ۲۰۲۶  
 > دامنه بررسی: کلاینت Kotlin Multiplatform، سرور Kotlin/Spring Boot، افزونه `Carmilla Bridge` و قالب `Carmilla`  
 > نسخه سند: ۲.۰ — به‌روزرسانی‌شده با تصمیم دو Backend Profile، Feature Toggle، برنامه QA دستی، درگاه‌ها و برنامه درآمد  

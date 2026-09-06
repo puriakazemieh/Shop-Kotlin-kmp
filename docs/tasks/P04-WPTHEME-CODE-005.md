@@ -1,4 +1,6 @@
-# P04-WPTHEME-CODE-005 — Theme Host به Shared Core بسته‌بندی‌شده متصل شود
+<div dir="rtl" align="right">
+
+# P04-WPTHEME-CODE-005 — اتصال میزبان پوسته به هسته داخلی بدون Bridge
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +58,15 @@ P04-WPTHEME-CODE-005
 - Depends on: P04-WPPLUGIN-CODE-004
 - Blocks: P04-WPPLUGIN-CODE-006
 - Requirement source: Master checklist row P04-WPTHEME-CODE-005 و Source audit بخش WPTHEME
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-bootstrap قالب از Shared Core بسته‌بندی‌شده استفاده کند و implementation تکراری host به‌تدریج پشت adapter قرار گیرد، بدون وابستگی runtime به Bridge.
+
+loader، دسترسی تنظیمات و adapter پایه پوسته به kernel بسته‌بندی‌شده متصل شوند؛ وابستگی به کلاس‌ها و مسیر نصب Bridge در این مرز حذف شود.
 
 ## خروجی مورد انتظار
-Theme بدون Bridge boot شود و feature یا داده موجود حذف نشود؛ template/style/Elementor در Theme Host و منطق canonical در Shared Core بماند.
+
+پوسته به‌تنهایی UI پایه و خدمات منتقل‌شده kernel را اجرا کند و templateها از قرارداد host استفاده کنند؛ انتقال همه verticalها در این کارت انجام نشود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,13 +78,12 @@ Theme بدون Bridge boot شود و feature یا داده موجود حذف ن�
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/packages/carmilla-core/**
-- wordpress/carmilla-theme/**
-- wordpress/**/tests/**
-- wordpress/build-theme-zip.sh
-- tools/test-env/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- فایل‌های میزبان مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `wordpress/build-theme-zip.sh`
+- `docs/evidence/P04-WPTHEME-CODE-005/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -87,12 +91,11 @@ Theme بدون Bridge boot شود و feature یا داده موجود حذف ن�
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. ارجاع‌های bootstrap/settings پوسته به Bridge را inventory کن.
+2. adapter پایه Theme Host را به kernel داخلی متصل کن.
+3. تنظیمات ظاهر را Theme-owned و وضعیت قابلیت را site-owned نگه دار.
+4. نصب Theme-only و نصب با Bridge را با fixture پایه مقایسه کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
@@ -100,16 +103,18 @@ Theme بدون Bridge boot شود و feature یا داده موجود حذف ن�
 - معیار اختصاصی: Theme Host از kernel بسته‌بندی‌شده استفاده و بدون Bridge boot شود.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: capability حذف نشود و implementation canonical در Shared Core بماند.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: صفحه خانه و تنظیمات پوسته روی سایت آزمایشی بدون Carmilla Bridge.
+- چگونه: پوسته ZIP را فعال، تنظیم ظاهر را ذخیره و fixture پایه را نمایش دهید؛ سپس Bridge را اضافه کنید.
+- معیار موفقیت: ظاهر و داده پایه باقی بماند؛ نبود Bridge خطا یا درخواست نصب آن نسازد.
+- نسخه محیط و ZIP، داده مصنوعی، نام آزمونگر، تاریخ و نتیجه واقعی ثبت شود؛ تغییر UI/شبکه/مهاجرت تا تأیید انسانی `AWAITING_MANUAL_QA` می‌ماند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] loader/adapter به مسیر Bridge وابسته نیست.
+- [ ] تنظیمات ظاهر با تنظیمات قابلیت مخلوط نشده است.
+- [ ] نصب مستقل و هم‌زمان fixture پایه parity دارند.
+- [ ] QA دستی مسیر پایه ثبت شده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -133,3 +138,5 @@ Theme بدون Bridge boot شود و feature یا داده موجود حذف ن�
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

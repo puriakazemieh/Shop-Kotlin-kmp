@@ -1,4 +1,6 @@
-# P04-WORDPRESS-CODE-029 — انتقال PsychTest/Support/Interactions به Shared Core
+<div dir="rtl" align="right">
+
+# P04-WORDPRESS-CODE-029 — انتقال تعریف،اجرای تست و نتیجه خصوصی PsychTest
 
 ## Prompt اجرای همین Task
 
@@ -19,21 +21,22 @@ AGENTS.md،dependency/scope/acceptance،git status و baseline را قبل از 
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH + Security/Privacy reviewer
-- Depends on: P04-WORDPRESS-CODE-028
-- Blocks: P04-WPTHEME-CODE-030
+- Depends on: P04-WORDPRESS-CODE-028A
+- Blocks: P04-WORDPRESS-CODE-029A
 - Requirement source: Master row P04-WORDPRESS-CODE-029 و Feature Manifest Psych/Support
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
 
-PsychTest definition/answer/scoring/result و Support ticket/favorite/comment/review/interactions در Shared Core واحد با policy جداگانه privacy قرار گیرند.
+تعریف آزمون،پاسخ،امتیازدهی موجود و دسترسی به نتیجه PsychTest در kernel مشترک منتقل شوند و مدیریت/نمایش عمومی مجاز در هر دو میزبان فراهم شود.
 
 ## خروجی مورد انتظار
 
-scoring deterministic،result privacy و ticket ownership در Theme/Bridge یکسان؛duplicate route/CPT/write و اطلاعات حساس در log صفر.
+fixture امتیازدهی و مالکیت پاسخ/نتیجه در Theme-only و Plugin-only برابر باشد؛ PsychTest مستقل از بسته صرفاً نوبت و بدون تغییر تفسیر بالینی فروخته شود.
 
 ## خارج از محدوده
 
-- تشخیص پزشکی،تفسیر clinical جدید،AI advice،notification provider و redesign UI.
+- Support در 029A و Interactions در 029B؛ تغییر تفسیر بالینی،تشخیص،AI advice و اعلان provider خارج محدوده است.
 
 ## Preconditions
 
@@ -42,9 +45,10 @@ scoring deterministic،result privacy و ticket ownership در Theme/Bridge یک
 ## Allowed files/directories
 
 - `wordpress/packages/carmilla-core/**`
-- فایل‌های psychtest/support/interactions دو artifact
-- `wordpress/**/tests/**`،`tools/test-env/**`
-- `docs/evidence/P04-WORDPRESS-CODE-029/**` و status همین Task
+- فایل‌های psychtest در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- rendererهای همین دامنه مطابق قرارداد frontend افزونه؛ بدون بازطراحی قالب میزبان
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WORDPRESS-CODE-029/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 
@@ -52,11 +56,10 @@ scoring deterministic،result privacy و ticket ownership در Theme/Bridge یک
 
 ## مراحل پیاده‌سازی
 
-1. inventory/scoring fixtures/permission characterization بساز.
-2. model و services canonical را با privacy boundary تعریف کن.
-3. adapterهای دو artifact را وصل و registrations تکراری را خاموش کن.
-4. scoring determinism،result/ticket ownership،rate/validation و export/erase policy را تست کن.
-5. parity،feature toggle و lifecycle را ثبت کن.
+1. تعریف/پاسخ/نتیجه و fixture الگوریتم موجود را inventory و characterization کن.
+2. service و repository موجود را با privacy boundary به kernel منتقل کن.
+3. فرم شروع/ارسال و صفحه نتیجه خصوصی را به renderer افزونه و template پوسته وصل کن.
+4. مالک/غیرمالک،امتیازدهی قطعی،خاموشی feature و حفظ داده هنگام جابه‌جایی میزبان را تست کن.
 
 ## Automated tests با command و expected result
 
@@ -67,23 +70,25 @@ bash wordpress/build-bridge-zip.sh
 git diff --check
 ```
 
-- Expected: fixture scoring ثابت؛non-owner denied؛logs/evidence redacted؛parity و duplicate inventory سبز.
+- نتیجه مورد انتظار آزمون خودکار: fixture امتیازدهی و مالکیت پاسخ/نتیجه در Theme-only و Plugin-only برابر باشد؛ PsychTest مستقل از بسته صرفاً نوبت و بدون تغییر تفسیر بالینی فروخته شود.
 
 ## Manual tests با environment/data/steps/expected
 
-- دو user synthetic؛یک test fixture و یک support ticket بساز؛submit/result/view-non-owner و ticket reply را در دو mode اجرا کن.
-- Expected: score fixture صحیح،result/ticket خصوصی،UI/API مطابق manifest؛سپس AWAITING_MANUAL_QA.
+- کجا: فهرست تست،فرم اجرای تست مصنوعی و صفحه نتیجه خصوصی.
+- چگونه: با دو کاربر مصنوعی آزمون fixture را ارسال کنید؛ کاربر دوم لینک نتیجه اول را باز کند و سپس قابلیت تست را خاموش/روشن کنید.
+- معیار موفقیت: امتیاز fixture ثابت،نتیجه غیرمالک ممنوع و داده پس از خاموش/روشن شدن محفوظ باشد.
+- سه حالت Theme-only، Plugin-only با قالب پیش‌فرض/ثالث و co-install با داده مصنوعی و ZIP دارای checksum ثبت شود؛ تا تأیید انسانی `AWAITING_MANUAL_QA` بماند.
 
 ## Acceptance Criteria
 
-- [ ] scoring fixtures و ownership tests سبزند.
-- [ ] یک source canonical و parity دو artifact وجود دارد.
-- [ ] privacy/export/erase رفتار مستند و آزموده شده است.
-- [ ] QA و privacy review تأیید شده است.
+- [ ] الگوریتم موجود و schema نتیجه در یک source canonical‌اند.
+- [ ] امتیازدهی و مالکیت نتیجه در هر دو میزبان برابر و آزموده‌اند.
+- [ ] UI مستقل افزونه و پوسته با مجوز PsychTest کار می‌کنند.
+- [ ] QA و privacy review ثبت شده؛ این کارت Gate تجاری/بالینی P14 نیست.
 
 ## Security/Privacy/Migration checks
 
-- PHI classification،IDOR،rate limit،redaction،retention و opt-in cleanup بررسی شود.
+PHI classification،IDOR،validation،redaction و hookهای export/erase مطابق policy تصویب‌شده؛ داده واقعی ممنوع.
 
 ## Evidence
 
@@ -91,7 +96,7 @@ git diff --check
 
 ## Rollback
 
-adapter switch بدون حذف answer/result/ticket؛در schema change فقط forward-fix/backup تأییدشده.
+با adapter switch بدون حذف پاسخ/نتیجه برگردید؛ تغییر schema تنها با backup و forward-fix تأییدشده.
 
 ## Completion record
 
@@ -102,3 +107,5 @@ adapter switch بدون حذف answer/result/ticket؛در schema change فقط f
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

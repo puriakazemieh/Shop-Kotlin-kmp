@@ -1,4 +1,6 @@
-# P04-WPTHEME-GATE-036 — Gate مستقل Carmilla Theme
+<div dir="rtl" align="right">
+
+# P04-WPTHEME-GATE-036 — Gate زیرساخت پوسته مستقل و بسته‌های انتخابی
 
 ## Prompt اجرای همین Task
 
@@ -18,17 +20,17 @@ AGENTS.md،dependencyها،artifact checksum و تمام Evidence را review ک
 - Priority/Risk/Size: P0 / HIGH / S
 - Owner: HUMAN
 - Completion authority: Product Owner + WordPress/QA Lead
-- Depends on: P04-WPPLUGIN-DOC-023، P04-QA-MANUAL-021
+- Depends on: P04-WPPLUGIN-DOC-023, P04-QA-MANUAL-021
 - Blocks: P04-WORDPRESS-GATE-037
 - Requirement source: Master row P04-WPTHEME-GATE-036 و Theme standalone contract
 
 ## هدف قابل اندازه‌گیری
 
-آمادگی ZIP مستقل Carmilla Theme برای RC داخلی بر اساس feature parity،Elementor/Woo compatibility،QA و P0 defects ارزیابی شود.
+RC داخلی Theme-only را برای SKUهای مشخص با feature parity،عدم نیاز به Plugin،حذف واقعی ماژول false و تنظیمات معتبر بررسی کن.
 
 ## خروجی مورد انتظار
 
-تصمیم امضاشده PASS/FAIL برای Theme SKU بدون اتکا به Bridge.
+شاهد ZIP/checksum و UAT همان SKU؛ builder panel مستقل با fake runner فقط قرارداد P04 را پاس می‌کند؛ فروش هدف واقعی محتاج Gate P12/P16/P17 و فروش دامنه محتاج Gate تخصصی مربوط است.
 
 ## خارج از محدوده
 
@@ -49,6 +51,8 @@ AGENTS.md،dependencyها،artifact checksum و تمام Evidence را review ک
 
 ## مراحل پیاده‌سازی
 
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
+
 1. dependencyها و artifact hash را تطبیق بده.
 2. feature matrix،Theme-only install،Elementor،Woo،RTL/accessibility/privacy و lifecycle reports را review کن.
 3. defect/open-riskها را severity بده.
@@ -64,6 +68,8 @@ AGENTS.md،dependencyها،artifact checksum و تمام Evidence را review ک
 - Expected: بدون Bridge همه capabilityهای enabled کار کنند و P0/fatal/data loss صفر باشد.
 
 ## Acceptance Criteria
+
+- [ ] شاهد ZIP/checksum و UAT همان SKU؛ builder panel مستقل با fake runner فقط قرارداد P04 را پاس می‌کند؛ فروش هدف واقعی محتاج Gate P12/P16/P17 و فروش دامنه محتاج Gate تخصصی مربوط است.
 
 - [ ] Theme-only feature parity و install/upgrade اثبات شده است.
 - [ ] Elementor/Woo/RTL/accessibility Evidence سبز است.
@@ -91,3 +97,5 @@ AGENTS.md،dependencyها،artifact checksum و تمام Evidence را review ک
 - Decision/reason:
 - Remaining risks/blockers:
 - Final status: TODO | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

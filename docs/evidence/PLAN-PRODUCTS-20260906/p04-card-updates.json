@@ -1,0 +1,134 @@
+[
+  {
+    "id": "P04-WPPLUGIN-ADR-002",
+    "title": "قرارداد هسته مشترک، دو میزبان و انتخاب نسخه سازگار",
+    "goal": "مرز بسته‌های هسته مشترک، Theme Host، Plugin Host، نمایش عمومی افزونه، API مشترک و اتصال اپ‌ساز مطابق ADR-006 تصویب شود؛ ترتیب بارگذاری WordPress و authority نسخه/schema دقیق باشد.",
+    "validation": "سند تصمیم و نمودار bootstrap نشان دهند هر ZIP بدون محصول دیگر کار می‌کند و نصب هم‌زمان یک هسته سازگار دارد؛ مالکیت داده سایت و مجوز خرید از انتخاب میزبان جدا باشند."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-003",
+    "title": "نسخه schema و runner مهاجرت مشترک و قابل ادامه",
+    "goal": "یک runner مهاجرت namespaced با نسخه schema، قفل و checkpoint در هسته مشترک ساخته شود؛ scope این کارت زیرساخت و یک migration مصنوعی است.",
+    "validation": "نصب تمیز، ادامه پس از شکست مصنوعی و اجرای مجدد از هر میزبان به یک schema یکسان برسد؛ در co-install مهاجرت دوباره انجام نشود."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-004",
+    "title": "bootstrap اولیه و بسته‌بندی هسته در هر دو ZIP",
+    "goal": "یک هسته versioned از سورس مشترک داخل ZIP پوسته و افزونه بسته‌بندی و از هر دو میزبان بارگذاری شود؛ فقط زیرساخت bootstrap و inventory اولیه در محدوده است.",
+    "validation": "Theme-only و Plugin-only بدون محصول دیگر boot شوند؛ co-install نسخه یکسان collision یا duplicate boot نداشته باشد؛ هیچ companion plugin نصب نشود."
+  },
+  {
+    "id": "P04-WPTHEME-CODE-005",
+    "title": "اتصال میزبان پوسته به هسته داخلی بدون Bridge",
+    "goal": "loader، دسترسی تنظیمات و adapter پایه پوسته به kernel بسته‌بندی‌شده متصل شوند؛ وابستگی به کلاس‌ها و مسیر نصب Bridge در این مرز حذف شود.",
+    "validation": "پوسته به‌تنهایی UI پایه و خدمات منتقل‌شده kernel را اجرا کند و templateها از قرارداد host استفاده کنند؛ انتقال همه verticalها در این کارت انجام نشود."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-006",
+    "title": "resolver مشترک قابلیت، پیش‌نیاز و آمادگی انتشار",
+    "goal": "resolver خالص kernel وضعیت مؤثر را از کد بسته، حق خرید معتبر، انتخاب مدیر، وابستگی‌ها و آمادگی انتشار محاسبه کند؛ adapter اعتبار مجوز در کارت 040 تکمیل می‌شود.",
+    "validation": "دو میزبان از یک resolver استفاده کنند؛ نبود WooCommerce فقط فروشگاه وابسته را محدود کند و نبود میزبان Carmilla دیگر پیش‌نیاز محسوب نشود؛ UI-only پایه قابل اجرا بماند."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-007",
+    "title": "اتصال میزبان افزونه به هسته روی قالب‌های دیگر",
+    "goal": "bootstrap و adapter پایه Plugin Host بدون توابع، asset و مسیر پوسته Carmilla اجرا شوند و نمونه API/مدیریت پایه روی قالب پیش‌فرض و Storefront آزمون شود.",
+    "validation": "Plugin-only یک kernel سالم و API/پیشخوان پایه دارد؛ renderer عمومی در کارت 045 و مسیرهای هر vertical در کارت همان دامنه تکمیل می‌شوند."
+  },
+  {
+    "id": "P04-WORDPRESS-CODE-026",
+    "title": "انتقال نوشته، برگه و رسانه به هسته مشترک",
+    "goal": "خواندن/نوشتن نوشته، برگه و رسانه از خدمات canonical هسته در هر دو میزبان انجام شود؛ شناسه‌ها و قرارداد محتوای موجود حفظ شوند.",
+    "validation": "fixture نوشته/برگه/رسانه از مدیریت و frontend هر میزبان و API مشترک پاسخ یکسان داشته باشد؛ permission،اعتبارسنجی رسانه و عدم ثبت تکراری اثبات شود."
+  },
+  {
+    "id": "P04-WORDPRESS-CODE-027",
+    "title": "انتقال کاتالوگ دوره و محتوای درس به هسته مشترک",
+    "goal": "مدیریت Course و lesson/content و مسیر فهرست/جزئیات دوره در دو میزبان از هسته واحد استفاده کنند؛ این کارت فقط کاتالوگ و محتوای درس را منتقل می‌کند.",
+    "validation": "دوره و ساختار درس با شناسه ثابت در Theme-only و Plugin-only نمایش/مدیریت شوند؛ محتوای محافظت‌شده بدون مجوز آموزشی قبلی افشا نشود؛ ثبت‌نام/پیشرفت و آزمون جدا بمانند."
+  },
+  {
+    "id": "P04-WORDPRESS-CODE-028",
+    "title": "انتقال معرفی متخصص و زمان‌های قابل ارائه به هسته مشترک",
+    "goal": "کاتالوگ ارائه‌دهنده خدمت و availability با منطقه زمانی و مدیریت دسترسی در kernel مشترک منتقل شود؛ رزرو/لغو نوبت در 028A جداست.",
+    "validation": "صفحه معرفی متخصص و زمان‌های قابل ارائه و پنل مدیریت آن در دو محصول مستقل پاسخ یکسان بدهند؛ خرید معرفی/نوبت نیازمند خرید تست یا پرونده بالینی نباشد."
+  },
+  {
+    "id": "P04-WORDPRESS-CODE-029",
+    "title": "انتقال تعریف،اجرای تست و نتیجه خصوصی PsychTest",
+    "goal": "تعریف آزمون،پاسخ،امتیازدهی موجود و دسترسی به نتیجه PsychTest در kernel مشترک منتقل شوند و مدیریت/نمایش عمومی مجاز در هر دو میزبان فراهم شود.",
+    "validation": "fixture امتیازدهی و مالکیت پاسخ/نتیجه در Theme-only و Plugin-only برابر باشد؛ PsychTest مستقل از بسته صرفاً نوبت و بدون تغییر تفسیر بالینی فروخته شود."
+  },
+  {
+    "id": "P04-WPTHEME-CODE-030",
+    "title": "یکپارچه‌سازی UI و مدیریت آماده‌شده پوسته مستقل",
+    "goal": "خروجی تکمیل‌شده کارت‌های دامنه و پنل قابلیت در Theme-only یکپارچه و regression شود؛ این کارت فقط اتصال navigation/template/adapterهای آماده و رفع خطای integration کوچک است.",
+    "validation": "capabilityهای حاضر،مجاز و آماده فاز چهار در UI و مدیریت پوسته بدون Bridge کار کنند؛ شکاف یک vertical به کارت همان دامنه ارجاع شود و Gate P13/P14 ادعا نشود."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-031",
+    "title": "یکپارچه‌سازی frontend و مدیریت آماده افزونه روی قالب ثالث",
+    "goal": "صفحات و فرم‌های عمومی،مدیریت و API خروجی کارت‌های دامنه و renderer آماده در Plugin-only یکپارچه شوند؛ کاربر سایت بدون Carmilla Theme و بدون اپ از فیچر مجاز استفاده کند.",
+    "validation": "روی قالب پیش‌فرض،Storefront و یک قالب ثالث آزموده‌شده،مسیر عمومی و مدیریت قابلیت‌های آماده مستقل باشد؛ اتصال Android/PWA فقط smoke قرارداد و نه Gate انتشار کلاینت باشد."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-033",
+    "title": "قرارداد مشترک اتصال سایت و pairing اپ‌ساز برای دو میزبان",
+    "goal": "قرارداد نسخه‌دار هویت سایت،pairing و ارتباط امن با fake runner در kernel برای Theme-only و Plugin-only ساخته شود؛ این کارت فقط identity/pairing و interface مشترک است.",
+    "validation": "هر میزبان مستقل با runner مصنوعی pair شود؛ اتصال سایت دیگر،token نامعتبر/replay و تغییر origin غیرمجاز رد شوند؛ هیچ خروجی واقعی یا UI کامل اپ‌ساز ادعا نشود."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-008",
+    "title": "قرارداد و adapter رسمی WooCommerce در هسته مشترک",
+    "goal": "WooCommerce منبع محصولات و سفارش‌ها بماند؛ قرارداد adapter مشترک محصولات/سفارش/سبد و inventory مسیرهای نوشتن تعریف و یک fixture read/write رسمی آزموده شود؛ انتقال کامل در 026A/026B است.",
+    "validation": "قرارداد CRUD/Store API و مسئولیت cart با Woo روشن باشد؛ SQL مستقیم سفارش ممنوع و fixture در HPOS روشن/خاموش روی دو میزبان نتیجه یکسان بدهد."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-009",
+    "title": "مرز REST مشترک WordPress برای هر دو میزبان",
+    "goal": "زیرساخت versioned REST،envelope خطا،pagination cap و validation در kernel یکسان شود؛ provider mode پوسته/افزونه/هر دو زیر پروفایل WORDPRESS باشد.",
+    "validation": "کلاینت KMP با endpoint مشترک و همان DTO به هر نصب متصل شود؛ fixture موفق/خطا/مجوز و سقف pagination یکسان،namespace و aliasهای موجود محفوظ باشند."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-010",
+    "title": "registry نقش‌ها و مجوز عملیات در هسته مشترک",
+    "goal": "registry capability و mapping نقش‌های محتوا/فروشگاه/آموزش/کلینیک/پشتیبانی در kernel مشترک تعریف و اعمال مرز پایه تست شود؛ جزئیات هر endpoint در کارت دامنه اجرا می‌شود.",
+    "validation": "مجوز نقش کاربر،حق خرید سایت و روشن‌بودن قابلیت سه کنترل مستقل باشند؛ خرید feature به کاربر عادی اختیار مدیریت یا مشاهده داده خصوصی ندهد."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-011",
+    "title": "راه‌اندازی و preflight مستقل هر محصول طبق SKU",
+    "goal": "پیش‌بررسی HTTPS،Woo مورد نیاز،permalink،REST،cron و نسخه kernel از هر دو میزبان قابل اجرا شود؛ فقط نیازهای SKU انتخابی الزام شوند.",
+    "validation": "پوسته پایه بدون Bridge/Woo راه‌اندازی شود؛ افزونه روی قالب دیگر پیش‌بررسی خودش را داشته باشد و خطاها راه رفع مشخص و diagnostics بدون secret بدهند."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-012",
+    "title": "چرخه فعال‌سازی دو میزبان و پاک‌سازی صریح داده سایت",
+    "goal": "activation/deactivation/theme switch و uninstall از kernel مشترک تبعیت کنند؛ حذف داده پیش‌فرض خاموش و cleanup فقط عملیات صریح مدیر باشد.",
+    "validation": "خاموشی فیچر یا میزبان داده را حذف نکند؛ با میزبان سازگار و مجاز دیگر خدمات ادامه یابند،و با خاموشی آخرین میزبان اجرای خدمات متوقف اما داده محفوظ بماند."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-013",
+    "title": "زیرساخت مشترک export،erase و retention بدون وابستگی میزبان",
+    "goal": "exporter/eraser و registry retention در kernel ثبت شوند و راهنمای Privacy Policy هر دو محصول وضعیت واقعی داده را توضیح دهد؛ hookهای دامنه در کارت همان دامنه تکمیل شوند.",
+    "validation": "یک fixture کاربر از هر میزبان export/erase مجاز شود؛ نصب هم‌زمان hook را دوباره اجرا نکند و خاموشی feature حق عملیات نگهداری مجاز را از بین نبرد."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-014",
+    "title": "API تنظیمات مشترک سایت با کنترل دسترسی و audit",
+    "goal": "API و storage تنظیمات عملیاتی kernel با nonce/capability/validation و audit بین دو host مشترک شود؛ تنظیم ظاهر پوسته جدا و entitlement فقط خواندنی از مرجع مجوز باشد.",
+    "validation": "تغییر از هر ورودی میزبان یک وضعیت سایت بدهد؛ درخواست غیرمجاز،CSRF،option ناشناخته یا نوشتن مجوز خرید از settings رد شود؛ پنل toggle در 041 است."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-015",
+    "title": "سازگاری Woo HPOS و Cart/Checkout Blocks در دو محصول",
+    "goal": "adapter و declaration سازگاری Woo برای نصب Theme-only،Plugin-only و co-install با HPOS و بلوک‌های سبد/تسویه آزموده و خطای محدود این مرز رفع شود.",
+    "validation": "fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با Woo فعال یک نتیجه بدهد؛ co-install hook پرداخت/سفارش تکراری نداشته باشد."
+  },
+  {
+    "id": "P04-WPPLUGIN-CODE-018",
+    "title": "ترجمه و escaping مرزهای مشترک و میزبان‌های مستقل",
+    "goal": "بارگذاری textdomain/POT و escaping برای رشته‌های عمومی kernel،onboarding و تنظیمات دو host تثبیت شود؛ رشته‌های جدید هر vertical همراه کارت همان vertical پوشش داده شوند.",
+    "validation": "ZIP پوسته و افزونه مستقل فارسی/انگلیسی را درست بارگذاری کنند؛ co-install ترجمه تکراری/گم‌شده و output escape نشده در مرزهای این کارت نداشته باشد."
+  }
+]

@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-003 — schema version و migration runner resumable ایجاد شود
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-003 — نسخه schema و runner مهاجرت مشترک و قابل ادامه
 
 ## Prompt اجرای همین Task
 
@@ -53,30 +55,35 @@ P04-WPPLUGIN-CODE-003
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P04-WPPLUGIN-ADR-002
+- Depends on: P04-ENTITLEMENT-DATA-039
 - Blocks: P04-WPPLUGIN-CODE-004
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-003 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-schema version و migration runner resumable ایجاد شود
+
+یک runner مهاجرت namespaced با نسخه schema، قفل و checkpoint در هسته مشترک ساخته شود؛ scope این کارت زیرساخت و یک migration مصنوعی است.
 
 ## خروجی مورد انتظار
-clean DB، upgrade و failed migration recovery
+
+نصب تمیز، ادامه پس از شکست مصنوعی و اجرای مجدد از هر میزبان به یک schema یکسان برسد؛ در co-install مهاجرت دوباره انجام نشود.
 
 ## خارج از محدوده
-- هر Feature،provider،platform یا refactor خارج از همین Task ID.
-- deploy/publish،پرداخت واقعی،تغییر Production و تغییر داده مشتری.
+
+- انتقال داده دامنه‌های واقعی و adoption میزبان در کارت‌های استخراج و lifecycle انجام می‌شود.
+- تغییر داده مشتری یا migration مخرب خارج محدوده است.
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-ADR-002
+- Dependencyها: P04-ENTITLEMENT-DATA-039
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- فایل‌های میزبان مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-003/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,12 +91,11 @@ clean DB، upgrade و failed migration recovery
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. ثبت نسخه فعلی و رفتار migration را characterization کن.
+2. runner مشترک با lock، checkpoint و ممنوعیت downgrade ناسازگار بساز.
+3. یک migration مصنوعی قابل ادامه را از هر دو host اجرا کن.
+4. شکست میانه، retry و دو درخواست هم‌زمان را تست و شمارش اجرا/داده را ثبت کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
@@ -97,16 +103,18 @@ clean DB، upgrade و failed migration recovery
 - معیار اختصاصی: clean DB، upgrade و failed migration recovery
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: clean DB، upgrade و failed migration recovery
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: پیشخوان و گزارش وضعیت schema در دو نصب آزمایشی مستقل.
+- چگونه: migration مصنوعی را اجرا، یک‌بار متوقف و سپس ادامه دهید؛ میزبان دوم را فعال کنید.
+- معیار موفقیت: نسخه نهایی یکسان، رکورد تکراری صفر و داده قبل/بعد محفوظ باشد.
+- نسخه محیط و ZIP، داده مصنوعی، نام آزمونگر، تاریخ و نتیجه واقعی ثبت شود؛ تغییر UI/شبکه/مهاجرت تا تأیید انسانی `AWAITING_MANUAL_QA` می‌ماند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] runner تنها یک implementation در kernel دارد.
+- [ ] retry و هم‌زمانی migration مصنوعی داده تکراری نمی‌سازند.
+- [ ] downgrade ناسازگار بدون write رد می‌شود.
+- [ ] گزارش نصب/بازیابی و QA انسانی موجود است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +138,5 @@ clean DB، upgrade و failed migration recovery
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

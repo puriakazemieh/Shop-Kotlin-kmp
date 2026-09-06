@@ -1,4 +1,4 @@
-# P15-QA-AUTO-023 — load/soak/race و failure-injection
+# P15-QA-AUTO-023 — load، soak، race و failure-injection سرور مستقل
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P15-QA-AUTO-023
 - Depends on: P15-QA-AUTO-022
 - Blocks: P15-SECURITY-SEC-024
 - Requirement source: Master checklist row P15-QA-AUTO-023 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-load/soak/race و failure-injection
+load/soak/race و failure-injection را در staging ایزوله Spring با tenantهای synthetic و capabilityهای SKU منتخب اجرا کن؛ خروجی artifact سرور مشخص باشد.
 
 ## خروجی مورد انتظار
-SLO و ظرفیت با dataset نماینده
+دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,12 +74,9 @@ SLO و ظرفیت با dataset نماینده
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- composeApp/**
-- core/**
-- feature/**
-- wordpress/**
+- D:/Android/AndroidStudioProjects/ShopServer/Shop/**
 - docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+- تغییر کلاینت فقط در کارت مستقل؛ قرارداد کلاینت/WordPress در این کارت خواندنی است.
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -86,27 +84,29 @@ SLO و ظرفیت با dataset نماینده
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P15 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: load/soak/race و failure-injection را در staging ایزوله Spring با tenantهای synthetic و capabilityهای SKU منتخب اجرا کن؛ خروجی artifact سرور مشخص باشد.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
-- Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
-- Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
-- Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: SLO و ظرفیت با dataset نماینده
+- CWD: D:/Android/AndroidStudioProjects/ShopServer/Shop
+- Baseline: .\gradlew.bat test
+- Artifact: .\gradlew.bat bootJar
+- محیط آزمون ایزوله/Testcontainers و داده synthetic؛ production config استفاده نشود.
+- Expected: exit code 0 و report سرور مستقل؛ smoke/load هدف همین کارت جدا با command واقعی ثبت شود.
+- معیار اختصاصی: دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: SLO و ظرفیت با dataset نماینده
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: Spring staging مستقل و کلاینت متصل به API واقعی آن.
+- چگونه: بدون نصب WordPress، سناریوی کارت را با tenant و داده synthetic اجرا کن؛ درخواست مجاز و غیرمجاز و feature خاموش را مقایسه کن و نتیجه API/DB را با قرارداد بسنج.
+- معیار موفقیت: دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

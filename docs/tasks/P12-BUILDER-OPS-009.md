@@ -53,7 +53,7 @@ P12-BUILDER-OPS-009
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P12-BUILDER-CODE-008
+- Depends on: P12-BUILDER-CODE-021
 - Blocks: P12-BUILDER-CODE-010
 - Requirement source: Master checklist row P12-BUILDER-OPS-009 و Source audit بخش BUILDER
 
@@ -69,7 +69,7 @@ tamper/expired/unauthorized download رد
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P12-BUILDER-CODE-008
+- Dependencyها: P12-BUILDER-CODE-021
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

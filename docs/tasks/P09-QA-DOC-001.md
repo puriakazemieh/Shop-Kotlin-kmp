@@ -1,4 +1,4 @@
-# P09-QA-DOC-001 — traceability نهایی feature→requirement→test→evidence
+# P09-QA-DOC-001 — ماتریس رگرسیون محصول، SKU، میزبان و backend
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P09-QA-DOC-001
 - Depends on: P08-PWA-GATE-019
 - Blocks: P09-QA-AUTO-002
 - Requirement source: Master checklist row P09-QA-DOC-001 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-traceability نهایی feature→requirement→test→evidence
+Test strategy و traceability را برای Theme، Plugin و کلاینت مستقل تعریف کن؛ axes شامل میزبان تنها/هم‌زمان، base/feature/bundle، entitlement/toggle و upgrade باشد.
 
 ## خروجی مورد انتظار
-هیچ P0 بدون test
+هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,25 +87,25 @@ traceability نهایی feature→requirement→test→evidence
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P09 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: Test strategy و traceability را برای Theme، Plugin و کلاینت مستقل تعریف کن؛ axes شامل میزبان تنها/هم‌زمان، base/feature/bundle، entitlement/toggle و upgrade باشد.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: هیچ P0 بدون test
+- معیار اختصاصی: هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: هیچ P0 بدون test
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

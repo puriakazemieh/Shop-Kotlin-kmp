@@ -1,0 +1,500 @@
+[
+  {
+    "id": "P05-PAYMENT-ADR-001",
+    "title": "قرارداد پرداخت مشترک دو میزبان و ماتریس قابلیت provider",
+    "goal": "قرارداد create/verify/query/reverse/refund/deliver/settlement در Shared Core سمت سرور تعیین شود؛ Theme-only و Plugin-only همان write path را دارند و WooCommerce مرجع سفارش است.",
+    "validation": "جدول owner و API برای هر عملیات؛ مجوز دامنه و capability provider جدا؛ merchant secret در UI و کلاینت صفر."
+  },
+  {
+    "id": "P05-PAYMENT-CODE-002",
+    "title": "Payment Core مشترک Theme و Plugin با مسیر نوشتن واحد",
+    "goal": "مدل Money، PaymentIntent/Event/Refund/Settlement/Entitlement و state transition در Shared Core هر دو ZIP پیاده شود؛ hostها adapter باشند و write path مالی یکتا بماند.",
+    "validation": "IRR/IRT با integer minor unit، تبدیل/گردکردن و transition tests؛ همان contract در سه حالت میزبان؛ duplicate اثر مالی صفر."
+  },
+  {
+    "id": "P05-QA-AUTO-021",
+    "title": "رگرسیون پرداخت در دو بسته مستقل و نصب هم‌زمان",
+    "goal": "suite موجود مبلغ، callback، replay، refund و provider را روی Theme-only، Plugin-only با قالب ثالث و co-install اجرا کن؛ هر ترکیب SKU فقط providerهای Gate-passed را باز کند.",
+    "validation": "گزارش ماتریس سه میزبان؛ duplicate callback/debit صفر؛ خاموشی فروش جدید مانع رسیدگی مجاز به سفارش قبلی نشود."
+  },
+  {
+    "id": "P05-QA-MANUAL-022",
+    "title": "QA دستی checkout و بازپرداخت هر میزبان مستقل",
+    "goal": "پرداخت sandbox از UI خود Theme و UI افزونه روی قالب ثالث و کلاینت متصل را برای SKU فروشگاهی آزمون کن؛ حالت خریداری‌نشده و خاموش نیز پوشش یابد.",
+    "validation": "در checkout هر میزبان سفارش synthetic بساز، موفق/ناموفق/بازگشت/تکرار را اجرا کن؛ مبلغ و state نهایی فقط با verify سرور معتبر باشند."
+  },
+  {
+    "id": "P05-PAYMENT-GATE-024",
+    "title": "Gate هسته پرداخت و زرین‌پال برای هر دو محصول",
+    "goal": "Gate پرداخت پایه/زرین‌پال را با Evidence دو میزبان مستقل و co-install ببند؛ providerهای دیگر Gate مستقل خود را حفظ کنند.",
+    "validation": "PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید."
+  },
+  {
+    "id": "P06-MESSAGE-ADR-001",
+    "title": "قرارداد پیام‌رسانی در Shared Core هر دو محصول",
+    "goal": "SMS، Email و Generic HTTP در هسته سمت سرور هر ZIP قرار گیرند؛ تنظیمات امن متعلق به سایت باشند و هیچ وابستگی اجباری به Bridge برای Theme وجود نداشته باشد.",
+    "validation": "یک قرارداد provider/queue/audit در سه حالت میزبان؛ گیرنده و secret در payload کلاینت، قالب HTML و log افشا نشوند."
+  },
+  {
+    "id": "P06-MESSAGE-DATA-002",
+    "title": "تنظیمات امن پیام‌رسانی با مالکیت سایت و مجوز قابلیت",
+    "goal": "schema تنظیمات provider و credential reference در storage مشترک kernel تعریف شود؛ هر host از همان پنل قابلیت و تنظیمات امن بخواند و write کند.",
+    "validation": "دو پنل یک وضعیت داشته باشند؛ capability/nonce/sanitize و redaction؛ خاموشی یا تعویض میزبان credential و داده را حذف نکند."
+  },
+  {
+    "id": "P06-QA-AUTO-013",
+    "title": "تست provider، queue و خاموشی قابلیت در سه حالت میزبان",
+    "goal": "تست‌های Generic HTTP، wp_mail، retry، SSRF و secret masking را با fake provider روی Theme-only، Plugin-only و co-install اجرا کن.",
+    "validation": "یک ارسال برای event تکراری؛ job غیرمجاز/قابلیت خاموش رد شود؛ secret و PII در report صفر."
+  },
+  {
+    "id": "P06-QA-MANUAL-014",
+    "title": "QA تنظیمات و ارسال آزمایشی از هر محصول مستقل",
+    "goal": "در Carmilla → Integrations هر ZIP به‌تنهایی با provider sandbox و داده synthetic تنظیم، test-send، خطا و تغییر قابلیت را آزمون کن.",
+    "validation": "پیام آزمایشی فقط یک‌بار به مقصد sandbox برسد؛ خطای actionable و secret مخفی؛ non-admin نتواند تنظیمات را بخواند یا عوض کند."
+  },
+  {
+    "id": "P06-MESSAGE-GATE-016",
+    "title": "Gate پیام‌رسانی مستقل Theme و Plugin",
+    "goal": "کیفیت Generic SMS و wp_mail، حفاظت credential، SSRF و یک‌بارگی queue در سه حالت میزبان بر اساس Evidence ارزیابی شود.",
+    "validation": "دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد."
+  },
+  {
+    "id": "P07-SEED-ADR-001",
+    "title": "قرارداد Seed Pack با Shared Core و SKU مستقل",
+    "goal": "schema، manifest، idempotency و مالکیت importer مشترک برای هر دو ZIP تعیین شود؛ بسته demo فقط قابلیت‌های موجود و مجاز SKU را وارد کند.",
+    "validation": "جدول pack→feature→schema→SKU؛ absent/unlicensed feature وارد نشود؛ حالت خاموش داده قبلی را پاک نکند."
+  },
+  {
+    "id": "P07-SEED-CODE-002",
+    "title": "انتقال importer به Shared Core داخل هر دو ZIP",
+    "goal": "importer از implementation اختصاصی Theme به kernel مشترک بسته‌بندی‌شده منتقل شود؛ Theme-only و Plugin-only هر دو import/export داشته باشند و نصب افزونه همراه لازم نباشد.",
+    "validation": "اجرای دوباره import duplicate نسازد؛ تعویض میزبان با حفظ شناسه و checksum، continuation یک عملیات را حفظ کند."
+  },
+  {
+    "id": "P07-QA-AUTO-023",
+    "title": "تست Seed و Migration با ماتریس میزبان و SKU",
+    "goal": "دو suite مستقل core-seed و customer-migration را برای دو ZIP و co-install با base، تک‌قابلیت و ترکیبی اجرا کن؛ Gate هر suite فقط Evidence خودش را مصرف کند.",
+    "validation": "dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان."
+  },
+  {
+    "id": "P08-PWA-ADR-001",
+    "title": "معماری استقرار مستقل Web/PWA و دو backend",
+    "goal": "Web/PWA خروجی مستقل با پیکربندی trusted باشد؛ استقرار root/subdirectory یا origin جدا و WordPress /app/ بررسی شود. WORDPRESS سه host mode دارد؛ SPRING بدون WordPress کار می‌کند.",
+    "validation": "CORS/cookie/auth/cache/SEO boundary برای هر استقرار ثبت شود؛ آمادگی production اتصال Spring فقط با Gate P15 ادعا شود."
+  },
+  {
+    "id": "P08-PWA-CODE-002",
+    "title": "خروجی مستقل Web و PWA از source set و BuildSpec",
+    "goal": "source set webMain/jsMain و production distribution را برای دو BackendProfile و config تولیدشده اصلاح کن؛ فایل‌های Web و نسخه نصب‌پذیر PWA تحویل مستقل داشته باشند.",
+    "validation": "clean production build در root/subdirectory؛ دو پروژه با backend متفاوت بدون source fork؛ asset و history route سالم."
+  },
+  {
+    "id": "P08-PWA-CODE-003",
+    "title": "پیکربندی trusted وب با backend، برند و SKU مستقل",
+    "goal": "app-config.json از BuildSpec دارای backend، originهای مجاز، tenant، branding، SKU و compiled ceiling تولید شود؛ انتخاب backend از برند و query آزاد production حذف شود.",
+    "validation": "دست‌کاری apiRoot/authHosts و feature خارج از ceiling رد شود؛ artifact WORDPRESS به Theme-only و Plugin-only و both وصل شود."
+  },
+  {
+    "id": "P08-QA-AUTO-015",
+    "title": "تست مستقل Web/PWA در دو profile و سه host WordPress",
+    "goal": "Playwright install/update/offline/cache/deep-link suite را روی production distribution اجرا کن؛ fixture قرارداد Spring از پذیرش backend واقعی جدا گزارش شود.",
+    "validation": "tenant cache isolation، logout purge و feature guard سبز؛ report دارای backend/host/SKU/fingerprint؛ fake به‌عنوان production PASS گزارش نشود."
+  },
+  {
+    "id": "P08-PWA-GATE-019",
+    "title": "Gate مستقل Web/PWA با محدوده backend تأییدشده",
+    "goal": "RC وب/PWA را برای artifact و backend مشخص ارزیابی کن؛ WordPress Theme-only، Plugin-only و co-install باید عملی باشند و Spring تولیدی تا Gate P15 باز بماند.",
+    "validation": "install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد."
+  },
+  {
+    "id": "P09-QA-DOC-001",
+    "title": "ماتریس رگرسیون محصول، SKU، میزبان و backend",
+    "goal": "Test strategy و traceability را برای Theme، Plugin و کلاینت مستقل تعریف کن؛ axes شامل میزبان تنها/هم‌زمان، base/feature/bundle، entitlement/toggle و upgrade باشد.",
+    "validation": "هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند."
+  },
+  {
+    "id": "P09-QA-GATE-018",
+    "title": "Gate رگرسیون نسخه با استقلال محصولات و بدهی QA",
+    "goal": "علاوه بر بدهی منتقل‌شده P02، شواهد سه حالت WordPress، lifecycle، feature entitlement و Web/PWA مستقل را برای candidate مشخص بازبینی کن.",
+    "validation": "هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند."
+  },
+  {
+    "id": "P10-BUSINESS-BIZ-002",
+    "title": "تعریف SKU مستقل Theme، Plugin و کلاینت با قابلیت قابل خرید",
+    "goal": "کاتالوگ فروش UI پایه، قابلیت تکی/ترکیبی و App Builder برای هر دو محصول تعیین شود؛ اپ مستقل و هزینه build/support/service جدا درج شوند.",
+    "validation": "برای هر SKU محتوای ZIP/artifact، feature، تعداد سایت، target، مجوز، upgrade و پیش‌نیاز Woo/runner روشن باشد."
+  },
+  {
+    "id": "P10-BUSINESS-BIZ-003",
+    "title": "قیمت‌گذاری قابلیت، اپ‌ساز و هزینه تحویل هر SKU",
+    "goal": "قیمت launch و حد تخفیف با هزینه پشتیبانی هر feature، ساخت هر target، signing، storage، بازار و تمدید محاسبه شود؛ قیمت بدون داده تثبیت نشود.",
+    "validation": "margin و break-even برای base، تک‌قابلیت و bundle؛ خرید Builder مجوز خودکار دامنه یا همه platformها نسازد."
+  },
+  {
+    "id": "P10-BUSINESS-DOC-006",
+    "title": "ماتریس عمومی قابلیت، مجوز و سازگاری هر محصول",
+    "goal": "known limitations و supported versions را به تفکیک Theme-only، Plugin-only، both و artifact/backend کلاینت منتشرپذیر کن؛ claim فقط از Evidence بیاید.",
+    "validation": "قابلیت موجود/خریداری‌شده/فعال و target آماده build یا صرفاً آزمایشی تفکیک شوند؛ محصولی که Gate ندارد آماده فروش نامیده نشود."
+  },
+  {
+    "id": "P10-CI-OPS-009",
+    "title": "ساخت RC متناسب SKU با هویت و provenance مستقل",
+    "goal": "RC ZIPهای مستقل و Web/PWA از BuildSpec و فهرست ماژول SKU ساخته شوند؛ checksum/SBOM/version و license manifest هر artifact ثبت شود.",
+    "validation": "دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد."
+  },
+  {
+    "id": "P10-PROGRAM-OPS-012",
+    "title": "انتشار محدود فقط ترکیب‌های محصول و SKU تأییدشده",
+    "goal": "نسخه 0.9.x-rc.n فقط برای component و SKU دارای Gate و manual evidence آماده و پس از مجوز انتشار همان کارت عرضه شود.",
+    "validation": "release manifest شامل محصول، feature، backend، target و محدودیت باشد؛ آمادگی P04 fake Builder به‌عنوان build واقعی فروخته نشود."
+  },
+  {
+    "id": "P10-BUSINESS-GATE-018",
+    "title": "Gate فروش مستقل خانواده‌های محصول با feature boundary",
+    "goal": "کیفیت، پشتیبانی و اقتصاد هر SKU عرضه‌شده Theme/Plugin/Web/PWA جدا ارزیابی شود؛ افزودنی‌های LMS/Clinic/Builder یا targetهای آینده Gate خودشان را لازم دارند.",
+    "validation": "صفحه فروش با inventory و مجوز واقعی artifact برابر؛ استقلال هر SKU تست‌شده؛ محصول آماده منتظر target نامرتبط نماند."
+  },
+  {
+    "id": "P11-ANDROID-CODE-002",
+    "title": "Android مستقل با دو BackendProfile و config تولیدشده",
+    "goal": "backend از BuildSpec trusted انتخاب شود و از brand جدا بماند؛ WORDPRESS با API هر میزبان مجاز و SPRING بدون WordPress اجرا شود.",
+    "validation": "دو برند × دو profile بدون fork؛ tenant cache/token جدا؛ Spring fixture و backend production در گزارش تفکیک شوند."
+  },
+  {
+    "id": "P11-ANDROID-OPS-013",
+    "title": "runbook ساخت مستقل Android و هویت artifact مشتری",
+    "goal": "ساخت operator از config/SKU همان پروژه بدون اجبار به WordPress pairing مستند شود؛ همان BuildSpec توسط Builder دو host قابل مصرف باشد.",
+    "validation": "artifact با applicationId/version/tenant/backend/SKU/template/checksum و signing reference؛ secret داخل WordPress، سورس یا log صفر."
+  },
+  {
+    "id": "P11-ANDROID-OPS-017",
+    "title": "آزمون داخلی Android با دو برند و hostهای مستقل",
+    "goal": "دو package مستقل نصب و ارتقا شوند؛ WORDPRESS به Theme-only، Plugin-only و both وصل شود و SPRING با endpoint واقعی یا وضعیت صریح fixture آزموده شود.",
+    "validation": "signing/update/app links/payment و feature-off pass؛ اعتبار آزمایش backend از نسخه و محیط آن قابل تشخیص باشد."
+  },
+  {
+    "id": "P11-ANDROID-GATE-021",
+    "title": "Gate تجاری Android مستقل برای backend و SKU مشخص",
+    "goal": "پذیرش Android به artifact امضاشده، هویت مشتری، featureهای مجاز و backendهای واقعاً آزموده‌شده محدود شود؛ مسیر Spring تولیدی به Gate P15 وصل بماند.",
+    "validation": "نصب/ارتقا/پرداخت/امنیت/دسترسی‌پذیری سبز؛ WordPress به هر سه host mode وصل؛ دامنه فروش و وضعیت Spring صریح."
+  },
+  {
+    "id": "P12-BUILDER-ADR-001",
+    "title": "قرارداد Builder دو میزبان و ورودی مستقل پروژه",
+    "goal": "control plane هر دو ZIP از runner بیرونی یکسان استفاده کند؛ portal/CLI ساخت کلاینت مستقل نیز اجباری به WordPress pairing ندارد. نسخه اولیه واقعی Android/Web/PWA و قرارداد توسعه iOS/Desktop تعیین شود.",
+    "validation": "trust boundary و API نسخه‌دار؛ Gradle/Xcode/signing key در WordPress صفر؛ سرویس ساخت با backend داده Spring یک مفهوم فرض نشود."
+  },
+  {
+    "id": "P12-BUILDER-DATA-002",
+    "title": "مدل پروژه، BuildJob و entitlement با منشأ محصول",
+    "goal": "Project/Tenant/BuildJob/Artifact/Template/Entitlement همراه product source، SKU، backend، target و BuildSpec version مدل شود؛ حق feature، حق build و حق target جدا بمانند.",
+    "validation": "site/project binding و provenance؛ idempotency/audit؛ نصب هم‌زمان یا ارسال JSON feature مجوز تازه ایجاد نکند."
+  },
+  {
+    "id": "P12-BUILDER-CODE-003",
+    "title": "pairing مستقل هر WordPress host و احراز پروژه",
+    "goal": "pairing signed request برای Theme-only و Plugin-only پیاده شود؛ ورودی پروژه مستقل با هویت project از WordPress pairing جدا باشد و قرارداد آن برای اتصال Spring P15 آماده شود.",
+    "validation": "SSRF/tenant binding/replay/expiry tests؛ نبود Bridge مانع Theme و نبود Carmilla Theme مانع Plugin نشود."
+  },
+  {
+    "id": "P12-BUILDER-CODE-004",
+    "title": "wizard ساخت با target و قابلیت‌های واقعاً خریداری‌شده",
+    "goal": "wizard برند/هویت/دامنه/فروشگاه از هر host مستقل و رابط پروژه ارائه شود؛ target یا feature غایب/غیرمجاز پیش از enqueue رد شود.",
+    "validation": "preview BuildSpec و هزینه/اعتبار؛ وضعیت آزمایشی یا آماده ساخت صادقانه؛ iOS/Desktop تا runner و Gate مربوط آماده تحویل نشان داده نشوند."
+  },
+  {
+    "id": "P12-BUILDER-OPS-006",
+    "title": "runner ایزوله با قرارداد target و toolchain ثابت",
+    "goal": "ephemeral runner، cache و job contract برای Android/Web/PWA واقعی فراهم شود؛ adapter آینده macOS/iOS و Desktop همان isolation را مصرف کند.",
+    "validation": "job A به secret/artifact B دسترسی ندارد؛ pinned toolchain و timeout؛ worker capability با target درخواست‌شده تطبیق داده شود."
+  },
+  {
+    "id": "P12-BUILDER-CODE-008",
+    "title": "تولید config و منابع مشتری از BuildSpec بدون fork",
+    "goal": "config/resources از backend، branding، tenant، SKU، entitlement و سقف compiled capability تولید شوند؛ خروجی در هر دو host و ورودی مستقل یکسان باشد.",
+    "validation": "BuildSpec یکسان artifact/config یکسان؛ درخواست feature خارج از بسته رد؛ برند backend را تغییر ندهد."
+  },
+  {
+    "id": "P12-BUILDER-CODE-012",
+    "title": "ماتریس سازگاری template، kernel، backend و target",
+    "goal": "پیش از build، نسخه template/API/schema/kernel، provider mode WordPress، target runner و SKU بررسی شود؛ Plugin اجباری برای Theme یا SPRING نباشد.",
+    "validation": "ناسازگاری قبل از enqueue fail شود؛ ماتریس Theme-only/Plugin-only/both و SPRING جدا؛ client release ceiling رعایت شود."
+  },
+  {
+    "id": "P12-BUILDER-BIZ-014",
+    "title": "حقوق استفاده، اعتبار build و تمدید هر محصول",
+    "goal": "هزینه setup/maintenance، quota، build credit و grace برای Theme/Plugin/پروژه مستقل و targetها تعریف شود؛ ابطال خرید از اختلال سرویس مجوز جدا باشد.",
+    "validation": "پایان اعتبار ساخت اپ تحویل‌شده یا داده سایت را خودکار حذف نکند؛ upgrade/transfer/refund و اثر هر حالت قابل پیش‌بینی باشد."
+  },
+  {
+    "id": "P12-QA-AUTO-016",
+    "title": "آزمون قرارداد و build واقعی Android/Web/PWA",
+    "goal": "suite fake برای retry/cancel/isolation/expiry حفظ شود و suite جدا خروجی runner واقعی Android و Web/PWA را با fingerprint و smoke نصب/استقرار اعتبارسنجی کند.",
+    "validation": "fake success جای APK/AAB یا distribution واقعی ننشیند؛ درخواست از هر دو host مستقل همان قرارداد را پاس کند؛ log redacted."
+  },
+  {
+    "id": "P12-BUILDER-GATE-019",
+    "title": "Gate Builder اولیه با خروجی واقعی Android/Web/PWA",
+    "goal": "private beta اولیه فقط با runner واقعی و Manual022 دو میزبان مستقل پذیرفته شود؛ iOS/Desktop پس از adapter و Gate تخصصی خود فعال تجاری شوند.",
+    "validation": "isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست."
+  },
+  {
+    "id": "P13-LMS-ADR-002",
+    "title": "مالکیت canonical آموزش و مجوز بسته مستقل",
+    "goal": "Course/Section/Lesson/Enrollment/Progress/Quiz/Certificate در Shared Core هر دو ZIP یک owner و write path داشته باشند؛ entitlement خرید نرم‌افزار از enrollment دانشجو جدا شود.",
+    "validation": "نقشه entity/API/role/SKU و frontend هر میزبان؛ قرارداد backend Spring هم‌معنا؛ UI-only بودن Theme یا اجبار Plugin در قرارداد نباشد."
+  },
+  {
+    "id": "P13-LMS-CODE-006",
+    "title": "فهرست و جزئیات دوره در دو محصول و کلاینت مستقل",
+    "goal": "فهرست/جزئیات دوره از kernel مشترک به Theme UI، نمایش پیش‌فرض Plugin روی قالب ثالث و API کلاینت وصل شود؛ feature effective در route/widget/API enforce شود.",
+    "validation": "Theme-only و Plugin-only بدون اپ نیز دوره را نمایش دهند؛ feature غایب/غیرمجاز/خاموش از لینک مستقیم و API باز نشود."
+  },
+  {
+    "id": "P13-LMS-CODE-015",
+    "title": "مدیریت آموزش در هر دو میزبان و UI مستقل افزونه",
+    "goal": "پنل دوره/درس/quiz/enrollment و validation/draft/publish/bulk action در هر میزبان از Shared Core استفاده کند؛ صفحه عمومی افزونه به template Carmilla وابسته نباشد.",
+    "validation": "نقش مدیر/مدرس مجاز CRUD کند؛ دو host یک داده و وضعیت ببینند؛ upgrade یا خاموشی قابلیت داده آموزشی را حذف نکند."
+  },
+  {
+    "id": "P13-QA-AUTO-021",
+    "title": "suite آموزش با SKU و parity میزبان‌ها",
+    "goal": "enrollment/refund/progress/score و آزمون‌های منفی مجوز را در Theme-only، Plugin-only و co-install اجرا کن؛ provider contract Spring و سقف کلاینت جدا بررسی شوند.",
+    "validation": "مجوز دامنه و ثبت‌نام دانشجو مستقل enforce؛ route/write/job خاموش رد؛ score فقط سرور و stateها در backendها هم‌معنا باشند."
+  },
+  {
+    "id": "P13-QA-MANUAL-022",
+    "title": "UAT دانشجو و مدرس در دو ZIP و کلاینت‌های آماده",
+    "goal": "دوره synthetic را در Theme-only و Plugin-only روی قالب ثالث از فهرست تا درس/ثبت‌نام/پیشرفت اجرا کن؛ PWA/Android و هر target آماده نیز همان flow را مصرف کنند.",
+    "validation": "بدون نصب محصول دیگر و بدون اجبار اپ، مسیر سایت کامل باشد؛ backend/target بدون Gate به‌عنوان آماده فروش ثبت نشود؛ screenshots و defect ID."
+  },
+  {
+    "id": "P13-LMS-BIZ-024",
+    "title": "قیمت و حقوق بسته آموزش برای هر خانواده محصول",
+    "goal": "بسته آموزش برای Theme، Plugin و کلاینت مستقل با زیرفیچرها، هزینه storage/support، حقوق محتوا و upgrade تعریف شود؛ فروش Builder مجوز LMS نسازد.",
+    "validation": "سه سناریوی margin با تعداد کاربر/فضا/پشتیبانی؛ included/excluded و prerequisiteها و کنترل روشن/خاموش مشتری شفاف."
+  },
+  {
+    "id": "P14-CLINIC-ADR-002",
+    "title": "قرارداد قابلیت‌های جداگانه نوبت، مشاوره و داده خصوصی",
+    "goal": "نوبت‌دهی، معرفی مشاور، جلسه، پرونده خصوصی و psych از نظر SKU/entitlement مستقل و از نظر dependency مشخص باشند؛ owner/processor/retention/access در Shared Core دو میزبان تعیین شود.",
+    "validation": "خرید clinic.booking خرید psych یا پرونده بالینی را لازم نکند؛ شناسه legacy حفظ و migration alias صریح؛ سیاست public/private در هر دو host برابر."
+  },
+  {
+    "id": "P14-CLINIC-DATA-005",
+    "title": "مدل نوبت‌دهی مشترک با حفظ هویت و تفکیک SKU",
+    "goal": "practitioner/availability/appointment و migration/constraints/timezone در kernel هر دو ZIP از یک schema authority ارائه شوند؛ نیازمندی note/psych بی‌دلیل به رزرو پایه وارد نشود.",
+    "validation": "clean/upgrade و جابه‌جایی میزبان شناسه را حفظ کند؛ booking-only بدون جداول/endpointهای غیرمجاز دیگر قابل استفاده باشد."
+  },
+  {
+    "id": "P14-CLINIC-CODE-006",
+    "title": "نمایش و مدیریت مشاور در Theme و Plugin مستقل",
+    "goal": "پروفایل و فرایند تأیید مشاور در admin و نمایش عمومی هر دو میزبان کامل شود؛ Plugin صفحه/بلوک/فرم خودش را با CSS محدود روی قالب ثالث ارائه کند.",
+    "validation": "مدارک خصوصی از profile عمومی جدا؛ status تأیید audit شود؛ صفحه و API هر دو host همان entitlement و permission را enforce کنند."
+  },
+  {
+    "id": "P14-CLINIC-CODE-007",
+    "title": "رزرو اتمیک با hold و expiry در هر دو محصول مستقل",
+    "goal": "slot hold/expiry و ثبت نوبت در Shared Core واحد باشد؛ فرم Theme و فرم مستقل Plugin و client API همان عملیات canonical را مصرف کنند.",
+    "validation": "۱۰۰ درخواست هم‌زمان double booking نسازند؛ co-install یک اثر؛ feature خاموش یا مجوز غایب عملیات جدید را رد کند."
+  },
+  {
+    "id": "P14-CLINIC-CODE-010",
+    "title": "جلسه مشاوره به‌عنوان قابلیت جدا با provider abstraction",
+    "goal": "لینک جلسه/تماس کوتاه‌عمر و provider abstraction در هر دو میزبان و API کلاینت عرضه شود؛ حق جلسه از رزرو پایه و psych تفکیک شود.",
+    "validation": "recording پیش‌فرض خاموش؛ فقط صاحب نوبت و مشاور مجاز؛ booking-only به UI یا API جلسه غیرخریداری‌شده دسترسی نگیرد."
+  },
+  {
+    "id": "P14-QA-AUTO-025",
+    "title": "ماتریس مجوز نقش، رابطه، SKU و میزبان خدمات",
+    "goal": "negative API suite برای role/relationship و feature entitlement در Theme-only، Plugin-only و co-install اجرا شود؛ booking-only، consultation و psych جدا آزموده شوند.",
+    "validation": "cross-client/cross-practitioner و feature bypass صفر؛ خاموشی قابلیت داده را حذف نکند و API خصوصی از public profile نشت نکند."
+  },
+  {
+    "id": "P14-QA-MANUAL-026",
+    "title": "UAT نوبت و مشاوره در دو بسته مستقل",
+    "goal": "مراجع/مشاور/پذیرش/مدیر روی Theme-only و Plugin-only با قالب ثالث از consent تا رزرو/لغو/جلسه و export/delete مجاز را با داده synthetic اجرا کنند.",
+    "validation": "booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر."
+  },
+  {
+    "id": "P15-SPRING-BIZ-001",
+    "title": "مدل استقرار و اقتصاد backend مستقل Spring",
+    "goal": "بودجه، SKU/SLA، مالکیت داده و hosting model سرور مستقل تعیین شود؛ اصل خروجی Spring-backed مورد درخواست تثبیت‌شده است و این کارت زمان/هزینه تحویل را مشخص می‌کند.",
+    "validation": "تعهد و contribution margin مستند؛ مدل self-host/managed و support روشن؛ نبود WordPress یا خرید ZIP مانع پروژه Spring نباشد."
+  },
+  {
+    "id": "P15-SPRING-API-004",
+    "title": "قرارداد مشترک API Spring و WordPress با parity واقعی",
+    "goal": "OpenAPI و contract diff برای عملیات اعلام‌شده KMP با WordPress Shared Core تهیه شود؛ Theme-only/Plugin-only/both سه mode یک provider WordPress باشند.",
+    "validation": "endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود."
+  },
+  {
+    "id": "P15-SPRING-CODE-005",
+    "title": "Manifest سرور مستقل با schema و entitlement مشترک",
+    "goal": "bootstrap/manifest endpoint همان قرارداد نسخه‌دار P03/P04 را برای tenant مستقل Spring ارائه کند؛ backend config از branding جدا و effective capability سمت سرور enforce شود.",
+    "validation": "schema/compatibility و version negotiation؛ feature فراتر از بسته/مجوز رد؛ هیچ WordPress pairing برای دریافت داده لازم نباشد."
+  },
+  {
+    "id": "P15-SPRING-CODE-015",
+    "title": "enforcement قابلیت و مجوز در service، job و API سرور",
+    "goal": "Shop/LMS/Booking/Consultation/Psych و سایر قابلیت‌های declared از evaluator مؤثر سرور مستقل استفاده کنند؛ خرید دامنه، انتخاب مدیر و permission کاربر جدا بمانند.",
+    "validation": "feature خاموش/غیرمجاز در service/job/API رد؛ parity با WordPress بدون کپی booleanهای غیرمعتبر؛ داده قبلی با خاموشی پاک نشود."
+  },
+  {
+    "id": "P15-QA-AUTO-022",
+    "title": "suite سرور مستقل با Testcontainers و قرارداد provider",
+    "goal": "unit/integration/Testcontainers/contract suite روی پروژه واقعی ShopServer/Shop اجرا شود؛ PostgreSQL ایزوله، provider stub و قرارداد WordPress/KMP پوشش یابند.",
+    "validation": "test و bootJar موفق؛ report مربوط به سرور باشد؛ WordPress نصب‌نشده مانع تست Spring نباشد؛ feature/tenant/ownership negatives سبز."
+  },
+  {
+    "id": "P15-QA-AUTO-023",
+    "title": "load، soak، race و failure-injection سرور مستقل",
+    "goal": "load/soak/race و failure-injection را در staging ایزوله Spring با tenantهای synthetic و capabilityهای SKU منتخب اجرا کن؛ خروجی artifact سرور مشخص باشد.",
+    "validation": "دوباره‌کاری مالی/رزرو و نشت tenant صفر؛ recovery/SLO مستند؛ test/bootJar baseline مربوط ShopServer/Shop باشد."
+  },
+  {
+    "id": "P15-QA-MANUAL-025",
+    "title": "پذیرش backend واقعی Spring با کلاینت مستقل",
+    "goal": "golden flow Android و Web/PWA را علیه Spring staging بدون WordPress اجرا کن؛ iOS/Desktop در Gate target خود همین backend آماده را استفاده کنند.",
+    "validation": "ورود، محتوا/فروشگاه و featureهای declared، toggle، پرداخت sandbox و logout با artifact واقعی؛ fixture جای backend حقیقی را نگیرد."
+  },
+  {
+    "id": "P16-IOS-BIZ-001",
+    "title": "بودجه، حساب و دامنه تحویل iOS مستقل",
+    "goal": "هزینه Mac/Xcode، Apple account، signing، پشتیبانی و زمان‌بندی خروجی iOS تعیین شود؛ اصل target مورد درخواست حذف یا به تقاضای نامعلوم موکول نشود.",
+    "validation": "مالک حساب/کلید، تیم اجرا، هزینه سال اول و دامنه پشتیبانی روشن؛ blocker منابع ثبت شود و جایگزین ادعای آماده‌بودن نشود."
+  },
+  {
+    "id": "P16-IOS-CODE-004",
+    "title": "iOS مستقل با BuildSpec و دو BackendProfile",
+    "goal": "iOS host از BuildIdentity/BuildSpec برند، tenant، SKU و backend مستقل تولید شود؛ WORDPRESS به هر سه host mode و SPRING بدون WordPress وصل شود.",
+    "validation": "دو tenant بدون source fork؛ fixture و اتصال واقعی جدا؛ feature ceiling و secure origin رعایت شود؛ امضای target در pipeline خودش."
+  },
+  {
+    "id": "P16-QA-AUTO-015",
+    "title": "تست shared و iOS integration با artifact release",
+    "goal": "shared tests و integration/UI smoke در CI macOS با simulator matrix و release configuration اجرا شود؛ SKU، backend و WordPress host mode در report مشخص باشند.",
+    "validation": "backend واقعی Gate-passed و fixture جدا؛ feature-off/deep-link/session tests؛ build صرفاً simulator جای IPA/تحویل مورد قرارداد را نگیرد."
+  },
+  {
+    "id": "P16-IOS-OPS-018",
+    "title": "pipeline archive و تحویل مستقل iOS قابل مصرف Builder",
+    "goal": "archive/export/upload/TestFlight طبق قرارداد در macOS runner با signing مجاز مشتری اجرا شود؛ همان artifact contract را adapter Builder مصرف کند.",
+    "validation": "checksum/version/symbol retention و نصب/تحویل واقعی؛ secret در WordPress صفر؛ منبع درخواست Theme یا Plugin اجباری به دیگری نباشد."
+  },
+  {
+    "id": "P16-IOS-GATE-022",
+    "title": "Gate خروجی مستقل iOS و Builder target مربوط",
+    "goal": "iOS واقعی با signing/policy/quality/support و هر دو backend ارزیابی شود؛ اتصال و ساخت از Theme-only و Plugin-only طبق adapter P16-BUILDER-CODE-024 شواهد جدا داشته باشد.",
+    "validation": "backend تولیدی WORDPRESS و SPRING تأیید؛ Keychain review و نصب/ارتقا؛ Gate فقط با artifact و حساب مجاز، نه mock runner."
+  },
+  {
+    "id": "P17-DESKTOP-BIZ-001",
+    "title": "بودجه و دامنه سیستم‌عامل‌های Desktop مستقل",
+    "goal": "خروجی Desktop مورد درخواست تثبیت‌شده است؛ OS matrix، هزینه signing/notarization/update/support و اولویت Windows/macOS/Linux را با use case تعیین کن.",
+    "validation": "دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد."
+  },
+  {
+    "id": "P17-DESKTOP-CODE-004",
+    "title": "Desktop مستقل با BuildSpec و دو BackendProfile",
+    "goal": "هویت و منابع هر بسته Desktop از BuildSpec و SKU تولید شود؛ برند backend را تعیین نکند و WORDPRESS با هر سه host mode و SPRING مستقیم قابل اتصال باشد.",
+    "validation": "دو tenant بدون source fork؛ origin معتبر و ceiling؛ token/cache بین پروژه‌ها جدا و پاک‌سازی هنگام تغییر کنترل‌شده backend."
+  },
+  {
+    "id": "P17-QA-AUTO-013",
+    "title": "آزمون بسته release Desktop و backendهای واقعی",
+    "goal": "shared/integration/smoke suite روی OS matrix پشتیبانی‌شده و بسته release اجرا شود؛ host mode، backend، SKU و fingerprint ثبت شوند.",
+    "validation": "feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود."
+  },
+  {
+    "id": "P17-DESKTOP-OPS-009",
+    "title": "بسته‌های مستقل Desktop و artifact contract برای Builder",
+    "goal": "installer/package برای OSهای Scope از config مشتری تولید شود؛ package metadata و adapter contract برای P17-BUILDER-CODE-020 آماده باشد.",
+    "validation": "clean install/upgrade/uninstall روی هر OS اعلام‌شده؛ checksum و identity ثابت؛ تولید artifact به runtime حضور WordPress وابسته نباشد."
+  },
+  {
+    "id": "P17-DESKTOP-GATE-019",
+    "title": "Gate Desktop مستقل و هدف ساخت هر دو میزبان",
+    "goal": "بسته‌های OS منتخب با signing/update/quality/support و دو backend واقعی پذیرفته شوند؛ ساخت از Theme-only و Plugin-only طبق adapter Desktop مستقل آزموده شود.",
+    "validation": "artifact قابل نصب و اصالت قابل بررسی؛ WORDPRESS سه mode و SPRING واقعی؛ target/OS بدون Evidence در ادعای تجاری نیاید."
+  },
+  {
+    "id": "CT-ARCH-DOC-001",
+    "title": "نگه‌داری معماری سه خانواده محصول مستقل",
+    "goal": "docs/architecture/ARCHITECTURE_HANDBOOK_FA.md شامل سه محصول، Shared Core دو ZIP، providerهای داده و سرویس ساخت مستقل باشد؛ وضعیت فعلی از هدف تفکیک شود.",
+    "validation": "context/container/component و data flow برای Theme-only، Plugin-only، both و کلاینت Spring؛ owner/cadence مشخص."
+  },
+  {
+    "id": "CT-ARCH-DOC-002",
+    "title": "فهرست ADRهای فعال و جایگزین‌شده",
+    "goal": "docs/architecture/ADR_INDEX.md و template، وضعیت ADR-005 تاریخی و ADR-006 هدف فعلی و قراردادهای تفصیلی بعدی را با authority ثبت کنند.",
+    "validation": "هیچ تصمیم presentation-only قدیمی به‌عنوان الزام فعال اجرا نشود؛ لینک، status، تاریخ و supersedes قابل پیگیری."
+  },
+  {
+    "id": "CT-ARCH-DOC-003",
+    "title": "نقشه ماژول و بسته‌بندی SKU مستقل",
+    "goal": "docs/architecture/MODULE_MAP.md owner/API/dependency هر module و حضور آن در Theme ZIP، Plugin ZIP و کلاینت را نشان دهد؛ Shared Core یک source داشته باشد.",
+    "validation": "host adapter و domain kernel تفکیک؛ packaging membership و version authority برای هر قابلیت مشخص."
+  },
+  {
+    "id": "CT-ARCH-DOC-007",
+    "title": "سیاست dependency مستقل hostها و کلاینت",
+    "goal": "docs/architecture/DEPENDENCY_POLICY.md اجبار Theme→Plugin و Plugin→Theme و client→WordPress UI را منع کند؛ WooCommerce و runner پیش‌نیازهای اعلام‌شده باشند.",
+    "validation": "allowed/forbidden dependencies و cycle rule؛ Shared Core تکرار source نشود؛ co-install بدون duplicate bootstrap."
+  },
+  {
+    "id": "CT-MANIFEST-DOC-004",
+    "title": "قرارداد feature، SKU، entitlement و انتخاب مدیر",
+    "goal": "docs/contracts/FEATURE_MANIFEST.md schema/default/dependency/compatibility را با packaged/entitled/enabled/effective و compiled ceiling مستند کند.",
+    "validation": "مثال base/feature/bundle، alias migration، offline/grace و deny؛ Manifest عمومی اثبات خرید محسوب نشود."
+  },
+  {
+    "id": "CT-API-DOC-005",
+    "title": "قرارداد API مشترک دو backend و سه host WordPress",
+    "goal": "docs/contracts/API_CONTRACT.md auth/error/paging/idempotency و نسخه API یکسان Theme-only/Plugin-only/both و provider Spring را با نمونه redacted نگه دارد.",
+    "validation": "جدول endpoint/capability/owner و provider contract tests؛ تشخیص fixture از production؛ origin trusted و denial نمونه."
+  },
+  {
+    "id": "CT-DATA-DOC-006",
+    "title": "مالکیت سایت و lifecycle داده مشترک دو ZIP",
+    "goal": "docs/contracts/DATA_OWNERSHIP.md owner/read/write/delete/export هر entity و kernel فعال را ثبت کند؛ داده سایت از تنظیمات نمایشی Theme تفکیک شود.",
+    "validation": "یک schema authority؛ خاموشی آخرین host اجرا را متوقف و داده را حفظ کند؛ انتقال host، license و cleanup صریح."
+  },
+  {
+    "id": "CT-BUILDER-DOC-028",
+    "title": "هویت ساخت و provenance محصول و entitlement",
+    "goal": "docs/delivery/CUSTOMER_BUILD_IDENTITY.md template/overlay/tenant/backend/SKU/target/signing/artifact fingerprint و منشأ Theme/Plugin/portal را پوشش دهد.",
+    "validation": "دو برند و دو backend بدون fork؛ مجوز دامنه/build/target جدا؛ credential فقط reference و خارج WordPress."
+  },
+  {
+    "id": "CT-CI-DOC-020",
+    "title": "قرارداد CI مستقل ZIP و targetهای کلاینت",
+    "goal": "docs/delivery/CI_CD.md triggers/gates/artifact/provenance را برای SKU هر ZIP و platformهای مستقل و runner مناسب ثبت کند.",
+    "validation": "quality/install/lifecycle ماتریس میزبان؛ fake suite از real-build جدا؛ artifactها version و checksum مستقل داشته باشند."
+  },
+  {
+    "id": "CT-RELEASE-DOC-021",
+    "title": "سیاست انتشار و ارتقای محصول و SKU مستقل",
+    "goal": "docs/delivery/RELEASE_POLICY.md streams/channels/version/approval/rollback و upgrade بسته/مجوز را به تفکیک محصول، feature، backend و target تعریف کند.",
+    "validation": "Gate هر ترکیب پیش از فروش؛ نسخه ناسازگار و downgrade schema مهار؛ پایان build credit داده یا اپ تحویل‌شده را حذف نکند."
+  },
+  {
+    "id": "CT-SUPPORT-DOC-025",
+    "title": "ماتریس پشتیبانی محصول، میزبان، backend و target",
+    "goal": "docs/support/COMPATIBILITY_MATRIX.md نسخه WP/Woo/PHP/theme/kernel/API/OS/browser و SKU tested را به artifact evidence وصل کند.",
+    "validation": "سه WordPress mode و دو backend؛ arbitrary theme هدف است ولی claim نسخه‌دار صرفاً برای آزموده‌ها؛ حالت unsupported روشن."
+  },
+  {
+    "id": "CT-SUPPORT-DOC-026",
+    "title": "پشتیبانی و EOL مستقل خانواده محصول و اپ‌ساز",
+    "goal": "docs/support/SUPPORT_AND_EOL.md channel/SLA/severity/lifetime/upgrade را برای Theme/Plugin/client و build service مستقل تعیین کند.",
+    "validation": "ownership مشکل hosting/provider/theme/kernel/runner و هزینه custom migration جدا؛ حقوق استفاده پس از پایان تمدید روشن."
+  },
+  {
+    "id": "CB-PRICING-BIZ-028",
+    "title": "قیمت بسته پایه، قابلیت افزوده و App Builder هر محصول",
+    "goal": "قیمت‌گذاری از خانواده Theme/Plugin/client، قابلیت‌های انتخابی و targetهای Builder تشکیل شود؛ تعداد بسته ثابت و فرضی به کاربر تحمیل نشود.",
+    "validation": "هر SKU ICP، margin، support و included/excluded روشن؛ هزینه build/signing/storage/upgrade جدا؛ فیچرهای خریداری‌شده قابل روشن/خاموش باشند."
+  }
+]

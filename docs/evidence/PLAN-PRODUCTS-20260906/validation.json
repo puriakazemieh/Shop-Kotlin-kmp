@@ -1,0 +1,41 @@
+{
+  "validation": "PASS",
+  "errors": [],
+  "phased_tasks": 481,
+  "controls": 66,
+  "total_tasks": 547,
+  "status_counts": {
+    "DONE": 101,
+    "READY": 1,
+    "TODO": 445
+  },
+  "new_tasks": 45,
+  "ready": [
+    "P03-QA-REVIEW-023"
+  ],
+  "dependency_graph": "acyclic",
+  "historical_inconsistencies_preserved": [
+    "Card status mismatch P01-SECURITY-OPS-002; card=AWAITING_MANUAL_QA; queue=DONE",
+    "Card status mismatch P01-SECURITY-CODE-003; card=AWAITING_MANUAL_QA; queue=DONE",
+    "Card status mismatch P01-SECURITY-CODE-004; card=AWAITING_MANUAL_QA; queue=DONE",
+    "Card status mismatch P01-SECURITY-CODE-005C; card=AWAITING_MANUAL_QA; queue=DONE",
+    "Card status mismatch P01-SECURITY-CODE-006; card=TODO; queue=DONE",
+    "Card status mismatch P01-PAYMENT-CODE-007; card=TODO; queue=DONE",
+    "Card status mismatch P01-PAYMENT-CODE-008; card=TODO; queue=DONE",
+    "Card status mismatch P01-PAYMENT-CODE-009; card=TODO; queue=DONE",
+    "Card status mismatch P01-WPPLUGIN-SEC-010; card=TODO; queue=DONE",
+    "Card status mismatch P01-WPPLUGIN-SEC-011; card=TODO; queue=DONE",
+    "Card status mismatch P01-WPPLUGIN-SEC-012; card=TODO; queue=DONE",
+    "Card status mismatch P01-WPPLUGIN-SEC-013; card=TODO; queue=DONE",
+    "Card dependency mismatch P02-QA-CODE-006",
+    "Card dependency mismatch P02-CORE-CODE-015A",
+    "Card status mismatch P02-CORE-CODE-015B; card=TODO; queue=DONE",
+    "Card status mismatch P02-CI-OPS-016; card=TODO; queue=DONE",
+    "Card dependency mismatch P02-CI-OPS-016",
+    "Card dependency mismatch P03-MANIFEST-CODE-012"
+  ],
+  "changed_tracked_files": 143,
+  "source_changes": false,
+  "git_diff_check_exit": 0,
+  "product_builds_and_manual_QA": "NOT RUN: documentation-only request"
+}

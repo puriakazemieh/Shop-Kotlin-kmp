@@ -54,7 +54,7 @@ P15-SPRING-GATE-029
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P15-SPRING-DOC-028
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P15-BUILDER-CODE-030, P18-QA-MANUAL-004
 - Requirement source: Master checklist row P15-SPRING-GATE-029 و Source audit بخش SPRING
 
 ## هدف قابل اندازه‌گیری

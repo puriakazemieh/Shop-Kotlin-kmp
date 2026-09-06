@@ -53,7 +53,7 @@ P14-CLINIC-DISC-001
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN/EXTERNAL
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P13-LMS-GATE-027
+- Depends on: P04-WORDPRESS-GATE-037, P05-PAYMENT-GATE-024, P06-MESSAGE-GATE-016, P07-SEED-GATE-026
 - Blocks: P14-CLINIC-ADR-002
 - Requirement source: Master checklist row P14-CLINIC-DISC-001 و Source audit بخش CLINIC
 
@@ -69,7 +69,7 @@ legal/clinical sign-off versioned
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P13-LMS-GATE-027
+- Dependencyها: P04-WORDPRESS-GATE-037, P05-PAYMENT-GATE-024, P06-MESSAGE-GATE-016, P07-SEED-GATE-026
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

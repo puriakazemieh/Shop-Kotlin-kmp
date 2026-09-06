@@ -1,4 +1,4 @@
-# P07-QA-AUTO-023 — دو suite مستقل `core-seed` و `customer-migration` برای import/retry/conflict/rollback
+# P07-QA-AUTO-023 — تست Seed و Migration با ماتریس میزبان و SKU
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P07-QA-AUTO-023
 - Depends on: P07-MIGRATION-SEC-022
 - Blocks: P07-QA-MANUAL-024
 - Requirement source: Master checklist row P07-QA-AUTO-023 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-دو suite مستقل `core-seed` و `customer-migration` برای import/retry/conflict/rollback
+دو suite مستقل core-seed و customer-migration را برای دو ZIP و co-install با base، تک‌قابلیت و ترکیبی اجرا کن؛ Gate هر suite فقط Evidence خودش را مصرف کند.
 
 ## خروجی مورد انتظار
-هر Gate فقط report suite خودش؛ data counts و hashes
+dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,11 @@ P07-QA-AUTO-023
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-bridge/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - composeApp/**
 - core/**
 - feature/**
@@ -86,27 +92,27 @@ P07-QA-AUTO-023
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P07 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: دو suite مستقل core-seed و customer-migration را برای دو ZIP و co-install با base، تک‌قابلیت و ترکیبی اجرا کن؛ Gate هر suite فقط Evidence خودش را مصرف کند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: هر Gate فقط report suite خودش؛ data counts و hashes
+- معیار اختصاصی: dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: هر Gate فقط report suite خودش؛ data counts و hashes
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: پنل Import/Export و فهرست موجودیت‌های واردشده.
+- چگونه: همان سناریوی کارت را با داده synthetic در Theme-only، Plugin-only روی قالب ثالث و co-install اجرا کن؛ SKU مجاز، خاموش و غیرخریداری‌شده را مقایسه کن.
+- معیار موفقیت: dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

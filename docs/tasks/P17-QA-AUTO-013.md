@@ -1,4 +1,4 @@
-# P17-QA-AUTO-013 — shared/integration/smoke tests روی OS matrix
+# P17-QA-AUTO-013 — آزمون بسته release Desktop و backendهای واقعی
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P17-QA-AUTO-013
 - Depends on: P17-OBSERVABILITY-CODE-012
 - Blocks: P17-QA-MANUAL-014
 - Requirement source: Master checklist row P17-QA-AUTO-013 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-shared/integration/smoke tests روی OS matrix
+shared/integration/smoke suite روی OS matrix پشتیبانی‌شده و بسته release اجرا شود؛ host mode، backend، SKU و fingerprint ثبت شوند.
 
 ## خروجی مورد انتظار
-release package نه فقط dev run
+feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,27 +87,27 @@ release package نه فقط dev run
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P17 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: shared/integration/smoke suite روی OS matrix پشتیبانی‌شده و بسته release اجرا شود؛ host mode، backend، SKU و fingerprint ثبت شوند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: release package نه فقط dev run
+- معیار اختصاصی: feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: release package نه فقط dev run
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: نصب‌کننده Desktop روی OSهای پشتیبانی‌شده و app نصب‌شده.
+- چگونه: artifact همین target را نصب/میزبانی و سناریوی کارت را با دو tenant اجرا کن؛ WORDPRESS به سه حالت میزبان و SPRING به محیط صریح آزمون وصل شود. fixture و backend تولیدی جدا ثبت شوند.
+- معیار موفقیت: feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] feature-off، deep-link، update و session tests سبز؛ نتیجه fixture از server واقعی جدا؛ dev run جای نصب package پذیرفته نشود.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

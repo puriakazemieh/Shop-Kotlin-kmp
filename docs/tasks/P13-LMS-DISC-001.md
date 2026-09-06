@@ -53,7 +53,7 @@ P13-LMS-DISC-001
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P12-BUILDER-GATE-019
+- Depends on: P04-WORDPRESS-GATE-037, P05-PAYMENT-GATE-024, P07-SEED-GATE-026
 - Blocks: P13-LMS-ADR-002
 - Requirement source: Master checklist row P13-LMS-DISC-001 و Source audit بخش LMS
 
@@ -69,7 +69,7 @@ Product brief و سناریوهای پولی/رایگان تأیید شود
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P12-BUILDER-GATE-019
+- Dependencyها: P04-WORDPRESS-GATE-037, P05-PAYMENT-GATE-024, P07-SEED-GATE-026
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

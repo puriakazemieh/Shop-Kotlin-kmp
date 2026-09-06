@@ -54,7 +54,7 @@ P05-PAYMENT-GATE-027
 - Owner: HUMAN/EXTERNAL
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P05-PAYMENT-GATE-026
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: —
 - Requirement source: Master checklist row P05-PAYMENT-GATE-027 و Source audit بخش PAYMENT
 
 ## هدف قابل اندازه‌گیری

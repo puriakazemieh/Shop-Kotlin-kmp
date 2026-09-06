@@ -1,4 +1,4 @@
-# P06-MESSAGE-GATE-016 — Gate Integrations
+# P06-MESSAGE-GATE-016 — Gate پیام‌رسانی مستقل Theme و Plugin
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +54,15 @@ P06-MESSAGE-GATE-016
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P06-MESSAGE-DOC-015
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P07-SEED-ADR-001, P14-CLINIC-DISC-001
 - Requirement source: Master checklist row P06-MESSAGE-GATE-016 و Source audit بخش MESSAGE
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Gate Integrations
+کیفیت Generic SMS و wp_mail، حفاظت credential، SSRF و یک‌بارگی queue در سه حالت میزبان بر اساس Evidence ارزیابی شود.
 
 ## خروجی مورد انتظار
-generic SMS + wp_mail pass؛ secret/SSRF pass
+دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,10 @@ generic SMS + wp_mail pass؛ secret/SSRF pass
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
 - docs/**
 - اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
@@ -83,27 +88,26 @@ generic SMS + wp_mail pass؛ secret/SSRF pass
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P06 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: کیفیت Generic SMS و wp_mail، حفاظت credential، SSRF و یک‌بارگی queue در سه حالت میزبان بر اساس Evidence ارزیابی شود.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: generic SMS + wp_mail pass؛ secret/SSRF pass
+- معیار اختصاصی: دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: generic SMS + wp_mail pass؛ secret/SSRF pass
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] دو ZIP بدون محصول Carmilla دیگر تنظیم و ارسال کنند؛ محدودیت provider و هزینه بیرونی هر SKU مستند باشد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

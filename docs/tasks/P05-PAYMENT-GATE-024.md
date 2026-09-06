@@ -1,4 +1,4 @@
-# P05-PAYMENT-GATE-024 — Gate Payment Core/ZarinPal
+# P05-PAYMENT-GATE-024 — Gate هسته پرداخت و زرین‌پال برای هر دو محصول
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +54,15 @@ P05-PAYMENT-GATE-024
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P05-SECURITY-SEC-023
-- Blocks: P05-PAYMENT-GATE-025
+- Blocks: P05-PAYMENT-GATE-025, P06-MESSAGE-ADR-001, P11-ANDROID-DISC-001, P13-LMS-DISC-001, P14-CLINIC-DISC-001, P16-IOS-BIZ-001, P17-DESKTOP-BIZ-001
 - Requirement source: Master checklist row P05-PAYMENT-GATE-024 و Source audit بخش PAYMENT
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Gate Payment Core/ZarinPal
+Gate پرداخت پایه/زرین‌پال را با Evidence دو میزبان مستقل و co-install ببند؛ providerهای دیگر Gate مستقل خود را حفظ کنند.
 
 ## خروجی مورد انتظار
-verify/reconciliation/refund/rollback pass
+PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,10 @@ verify/reconciliation/refund/rollback pass
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - wordpress/carmilla-bridge/**
 - composeApp/**
 - core/**
@@ -86,28 +91,27 @@ verify/reconciliation/refund/rollback pass
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P05 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: Gate پرداخت پایه/زرین‌پال را با Evidence دو میزبان مستقل و co-install ببند؛ providerهای دیگر Gate مستقل خود را حفظ کنند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: verify/reconciliation/refund/rollback pass
+- معیار اختصاصی: PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: verify/reconciliation/refund/rollback pass
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] PASS فقط با مبلغ، verify، reconciliation، refund و rollback سبز؛ نام provider تأییدنشده در ادعای فروش SKU نیاید.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

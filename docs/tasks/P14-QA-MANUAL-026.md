@@ -1,4 +1,4 @@
-# P14-QA-MANUAL-026 — UAT مراجع/مشاور/پذیرش/مدیر
+# P14-QA-MANUAL-026 — UAT نوبت و مشاوره در دو بسته مستقل
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P14-QA-MANUAL-026
 - Depends on: P14-QA-AUTO-025
 - Blocks: P14-SECURITY-SEC-027
 - Requirement source: Master checklist row P14-QA-MANUAL-026 و Source audit بخش QA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-UAT مراجع/مشاور/پذیرش/مدیر
+مراجع/مشاور/پذیرش/مدیر روی Theme-only و Plugin-only با قالب ثالث از consent تا رزرو/لغو/جلسه و export/delete مجاز را با داده synthetic اجرا کنند.
 
 ## خروجی مورد انتظار
-consent تا حذف حساب با evidence
+booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,6 +74,11 @@ consent تا حذف حساب با evidence
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
+- tools/test-env/**
+- wordpress/**/tests/**
+- wordpress/carmilla-bridge/**
+- wordpress/carmilla-theme/**
+- wordpress/packages/carmilla-core/**
 - composeApp/**
 - core/**
 - feature/**
@@ -86,28 +92,27 @@ consent تا حذف حساب با evidence
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P14 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: مراجع/مشاور/پذیرش/مدیر روی Theme-only و Plugin-only با قالب ثالث از consent تا رزرو/لغو/جلسه و export/delete مجاز را با داده synthetic اجرا کنند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: consent تا حذف حساب با evidence
+- معیار اختصاصی: booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: consent تا حذف حساب با evidence
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: پروفایل مشاور، فرم رزرو، نوبت‌های من و پنل پذیرش synthetic.
+- چگونه: همان سناریوی کارت را با داده synthetic در Theme-only، Plugin-only روی قالب ثالث و co-install اجرا کن؛ SKU مجاز، خاموش و غیرخریداری‌شده را مقایسه کن.
+- معیار موفقیت: booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] booking-only بدون psych کار کند؛ لینک مستقیم فیچر غایب بسته باشد؛ انتقال به host مجاز دیگر داده را حفظ کند؛ PHI واقعی در Evidence صفر.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

@@ -1,4 +1,6 @@
-# P04-WORDPRESS-CODE-026 — انتقال Content/Pages/Media/Store به Shared Core
+<div dir="rtl" align="right">
+
+# P04-WORDPRESS-CODE-026 — انتقال نوشته، برگه و رسانه به هسته مشترک
 
 ## Prompt اجرای همین Task
 
@@ -22,22 +24,23 @@ Task ID: P04-WORDPRESS-CODE-026
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH؛ Manual QA الزامی
-- Depends on: P04-WPPLUGIN-CODE-018
-- Blocks: P04-WORDPRESS-CODE-027
+- Depends on: P04-WPPLUGIN-CODE-045
+- Blocks: P04-WORDPRESS-CODE-026A
 - Requirement source: Master row P04-WORDPRESS-CODE-026 و `plans/002-shared-wordpress-feature-kernel.md`
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
 
-منطق canonical نوشته،برگه،رسانه،کاتالوگ،محصول،سبد و سفارش از پیاده‌سازی تکراری Theme/Bridge به Shared Core منتقل شود.
+خواندن/نوشتن نوشته، برگه و رسانه از خدمات canonical هسته در هر دو میزبان انجام شود؛ شناسه‌ها و قرارداد محتوای موجود حفظ شوند.
 
 ## خروجی مورد انتظار
 
-یک قرارداد versioned و parity یکسان در Theme-only و Bridge-only؛WooCommerce منبع canonical commerce و route/CPT تکراری صفر.
+fixture نوشته/برگه/رسانه از مدیریت و frontend هر میزبان و API مشترک پاسخ یکسان داشته باشد؛ permission،اعتبارسنجی رسانه و عدم ثبت تکراری اثبات شود.
 
 ## خارج از محدوده
 
-- LMS،Clinic،PsychTest،Support،provider پرداخت و redesign UI.
-- breaking API change بدون version جدید.
+- کاتالوگ/Woo در 026A و سبد/سفارش در 026B؛ آموزش/کلینیک/پرداخت provider در کارت‌های خود.
+- redesign و مهاجرت مخرب خارج محدوده است.
 
 ## Preconditions
 
@@ -47,12 +50,10 @@ Task ID: P04-WORDPRESS-CODE-026
 ## Allowed files/directories
 
 - `wordpress/packages/carmilla-core/**`
-- `wordpress/carmilla-theme/inc/**`
-- `wordpress/carmilla-bridge/includes/**`
-- `wordpress/**/tests/**`
-- `tools/test-env/**`
-- `docs/evidence/P04-WORDPRESS-CODE-026/**`
-- status همین Task در `docs/**`
+- فایل‌های content/pages/media در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- rendererهای همین دامنه مطابق قرارداد frontend افزونه؛ بدون بازطراحی قالب میزبان
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WORDPRESS-CODE-026/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 
@@ -60,12 +61,10 @@ Task ID: P04-WORDPRESS-CODE-026
 
 ## مراحل پیاده‌سازی
 
-1. inventory و characterization برای CRUD/permissions/error envelope بساز.
-2. canonical interfaces و adapters را در Shared Core تعریف کن.
-3. read paths سپس write paths را با Woo CRUD رسمی منتقل کن.
-4. Theme Host و Bridge Host را به همان interfaces متصل کن.
-5. route/CPT/hook inventory و contract parity را در سه mode بررسی کن.
-6. داده fixture را deactivate/reactivate و theme switch کرده و checksum بگیر.
+1. فقط route/CPT/meta و hookهای نوشته، برگه و رسانه را inventory و characterization کن.
+2. خدمات مشترک محتوا و adapterهای میزبان‌ها را منتقل کن.
+3. نمایش محتوا و فرم مدیریت همین دامنه را با renderer افزونه و template پوسته متصل کن.
+4. تست CRUD،دسترسی غیرمجاز،رسانه نامعتبر و حفظ شناسه را در هر سه حالت اجرا کن.
 
 ## Automated tests با command و expected result
 
@@ -76,24 +75,25 @@ bash wordpress/build-bridge-zip.sh
 git diff --check
 ```
 
-- Expected: build/lint/integration exit code 0؛CRUD و contract tests دو artifact یکسان؛duplicate registration و SQL مستقیم Woo صفر.
+- نتیجه مورد انتظار آزمون خودکار: fixture نوشته/برگه/رسانه از مدیریت و frontend هر میزبان و API مشترک پاسخ یکسان داشته باشد؛ permission،اعتبارسنجی رسانه و عدم ثبت تکراری اثبات شود.
 
 ## Manual tests با environment/data/steps/expected
 
-- Environment: Theme-only و Bridge+Storefront؛داده synthetic شامل post/page/media/product.
-- Steps: create/edit/list/delete-safe،cart/order sandbox و theme switch را اجرا کن.
-- Expected: داده و پاسخ canonical یکسان،permission درست و data loss صفر؛سپس AWAITING_MANUAL_QA تا تأیید.
+- کجا: برگه/نوشته آزمایشی و کتابخانه رسانه در پیشخوان و frontend هر نصب.
+- چگونه: یک نوشته و برگه مصنوعی بسازید، تصویر آزمایشی اضافه کنید، ویرایش و مشاهده عمومی را انجام دهید؛ عملیات کاربر فاقد مجوز را امتحان کنید.
+- معیار موفقیت: محتوا و شناسه یکسان،آپلود نامعتبر رد،دسترسی غیرمجاز بسته و تغییر میزبان بدون حذف داده باشد.
+- سه حالت Theme-only، Plugin-only با قالب پیش‌فرض/ثالث و co-install با داده مصنوعی و ZIP دارای checksum ثبت شود؛ تا تأیید انسانی `AWAITING_MANUAL_QA` بماند.
 
 ## Acceptance Criteria
 
-- [ ] characterization قبل از extraction موجود است.
-- [ ] یک implementation canonical و دو host adapter وجود دارد.
-- [ ] parity و lifecycle tests سبزند.
-- [ ] Evidence انسانی تأیید شده است.
+- [ ] دامنه این کارت فقط نوشته،برگه و رسانه است.
+- [ ] هر دو میزبان از خدمات یکسان با حفظ شناسه استفاده می‌کنند.
+- [ ] frontend و مدیریت پایه این دامنه در هر دو میزبان قابل استفاده‌اند.
+- [ ] تست قرارداد/permission و QA انسانی ثبت شده است.
 
 ## Security/Privacy/Migration checks
 
-- ownership و capability همه writeها؛media validation؛order با Woo CRUD؛migration idempotent و داده synthetic.
+مالکیت نوشته/برگه و capability مدیریت رسانه،نوع/اندازه فایل،escaping و عدم ثبت credential در خروجی بررسی شود.
 
 ## Evidence
 
@@ -101,7 +101,7 @@ git diff --check
 
 ## Rollback
 
-adapter قبلی تا عبور parity حذف نشود؛rollback با feature switch و بدون rollback destructive داده.
+adapter قبلی تا عبور parity محفوظ بماند؛ بازگشت نام‌ها/شناسه‌های محتوا و رسانه را حذف نکند.
 
 ## Completion record
 
@@ -112,3 +112,5 @@ adapter قبلی تا عبور parity حذف نشود؛rollback با feature swi
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

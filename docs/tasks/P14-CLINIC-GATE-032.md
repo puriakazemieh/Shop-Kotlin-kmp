@@ -54,7 +54,7 @@ P14-CLINIC-GATE-032
 - Owner: HUMAN/EXTERNAL
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P14-CLINIC-DOC-031
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: P18-QA-AUTO-001
 - Requirement source: Master checklist row P14-CLINIC-GATE-032 و Source audit بخش CLINIC
 
 ## هدف قابل اندازه‌گیری

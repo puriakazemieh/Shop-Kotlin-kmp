@@ -1,0 +1,81 @@
+[
+  {
+    "id": "P18-QA-AUTO-001",
+    "title": "اجرای ماتریس نهایی بسته و کلاینت با آزمون‌های موجود",
+    "goal": "suiteهای معتبر قبلی را در یک job matrix جمع کن؛ دوباره engine یا runner نساز. ستون‌ها: Theme/Plugin،فیچر منتخب/حذف‌شده،چهار builder target و کلاینت WORDPRESS یا SPRING. همه artifactها fingerprint واقعی داشته باشند.",
+    "validation": "برای ۱۶ ترکیب builder در هر دو ZIP،inventory درست؛ برای هر چهار target حداقل یک ساخت واقعی از هر میزبان؛ boot/contract کلاینت با هر دو backend و WP سه mode؛ هیچ mock به‌عنوان artifact واقعی ثبت نشود.",
+    "deps": [
+      "P04-WORDPRESS-GATE-037",
+      "P08-PWA-GATE-019",
+      "P11-ANDROID-GATE-021",
+      "P12-BUILDER-GATE-019",
+      "P13-LMS-GATE-027",
+      "P14-CLINIC-GATE-032",
+      "P15-BUILDER-CODE-030",
+      "P16-BUILDER-CODE-024",
+      "P17-BUILDER-CODE-020"
+    ],
+    "owner": "AI",
+    "size": "M",
+    "status": "TODO",
+    "scope": "docs/qa/**; docs/evidence/P18-QA-AUTO-001/**; .github/workflows/** فقط orchestration تست; tools/test-env/** فقط fixture و harness",
+    "after": "P04-WORDPRESS-GATE-037"
+  },
+  {
+    "id": "P18-QA-MANUAL-002",
+    "title": "پذیرش نهایی پوسته مستقل و چهار بیلدر انتخابی",
+    "goal": "روی WordPress staging با Plugin Carmilla نصب‌نشده،ZIP پایه و ZIP فیچردار از manifest مشخص را تحویل بگیر؛ قابلیت‌های مجاز و هر چهار builder target را با بسته‌های مناسب از خود پوسته استفاده کن.",
+    "validation": "کجا: پنل/سایت پوسته و خروجی‌های نصب‌شده. چگونه: فروشگاه/رزرو/مشاوره مجاز را طی کن؛ falseها را در ZIP و UI بررسی؛ از پنل پوسته Android/iOS/Desktop/PWA بساز و دریافت کن. موفقیت: استقلال کامل،output واقعی و صحیح،toggle مجاز،عدم نصب افزونه همراه.",
+    "deps": [
+      "P18-QA-AUTO-001"
+    ],
+    "owner": "HUMAN",
+    "size": "M",
+    "status": "TODO",
+    "scope": "docs/qa/**; docs/evidence/P18-QA-MANUAL-002/**; .github/workflows/** فقط orchestration تست; tools/test-env/** فقط fixture و harness",
+    "after": "P18-QA-AUTO-001"
+  },
+  {
+    "id": "P18-QA-MANUAL-003",
+    "title": "پذیرش نهایی افزونه مستقل و چهار بیلدر انتخابی",
+    "goal": "با قالب استاندارد دیگر و بدون Carmilla Theme،ZIPهای افزونه را از manifest نصب کن؛ UI عمومی و مدیریت و هر چهار target Builder را از همان افزونه استفاده کن.",
+    "validation": "کجا: صفحات عمومی و پنل افزونه. چگونه: مسیر خرید/نوبت/مشاوره مجاز و toggle؛ دریافت چهار خروجی واقعی؛ module false و درخواست غیرمجاز را بررسی. موفقیت: قالب میزبان سالم،نیاز به Carmilla Theme صفر،بسته و خروجی مطابق خرید.",
+    "deps": [
+      "P18-QA-MANUAL-002"
+    ],
+    "owner": "HUMAN",
+    "size": "M",
+    "status": "TODO",
+    "scope": "docs/qa/**; docs/evidence/P18-QA-MANUAL-003/**; .github/workflows/** فقط orchestration تست; tools/test-env/** فقط fixture و harness",
+    "after": "P18-QA-MANUAL-002"
+  },
+  {
+    "id": "P18-QA-MANUAL-004",
+    "title": "پذیرش چهار کلاینت با Spring و سه حالت WordPress",
+    "goal": "Android/iOS/Desktop/PWA را با تنظیمات معتبر جدا به Spring واقعی و WordPress متصل کن؛ در WordPress پوسته تنها،افزونه تنها و co-install را بسنج. وب مستقل نیز با خروجی P08 بررسی شود.",
+    "validation": "کجا: هر کلاینت و backend staging. چگونه: login/list/detail/write مجاز و feature خاموش؛ تعویض تنظیم اتصال طبق policy و restart؛ builder را در سایت خاموش کن. موفقیت: داده درست سایت،no cross-tenant/cache leak،API بدون نیاز به builder کار کند؛ tester/build/result هر حالت.",
+    "deps": [
+      "P18-QA-MANUAL-003",
+      "P15-SPRING-GATE-029"
+    ],
+    "owner": "HUMAN",
+    "size": "M",
+    "status": "TODO",
+    "scope": "docs/qa/**; docs/evidence/P18-QA-MANUAL-004/**; .github/workflows/** فقط orchestration تست; tools/test-env/** فقط fixture و harness",
+    "after": "P18-QA-MANUAL-003"
+  },
+  {
+    "id": "P18-PRODUCT-GATE-005",
+    "title": "پذیرش کامل سه خانواده محصول طبق درخواست مالک",
+    "goal": "فقط شواهد نهایی را review کن: Theme و Plugin هرکدام مستقل،manifest هنگام ZIP واقعاً ماژول/بیلدر را انتخاب می‌کند،کلاینت‌های چهارگانه دو backend واقعی دارند و هم‌زیستی بدون تکرار است. scope این Gate ارزیابی است نه پیاده‌سازی یا انتشار.",
+    "validation": "تمام سطرهای مرتبط ماتریس با artifact واقعی و QA انسانی PASS؛ هیچ فیچر خواسته‌شده با mock/placeholder جایگزین نشده؛ موارد خارج SKU صریح؛ تأیید مالک ثبت شود. پیش از آن هدف کلی تکمیل‌شده اعلام نشود.",
+    "deps": [
+      "P18-QA-MANUAL-004"
+    ],
+    "owner": "HUMAN",
+    "size": "S",
+    "status": "TODO",
+    "scope": "docs/qa/**; docs/evidence/P18-PRODUCT-GATE-005/**; .github/workflows/** فقط orchestration تست; tools/test-env/** فقط fixture و harness",
+    "after": "P18-QA-MANUAL-004"
+  }
+]

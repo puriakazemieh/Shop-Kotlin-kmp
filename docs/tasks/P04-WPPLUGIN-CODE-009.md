@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-009 — REST contract v1، error envelope، pagination cap و validation
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-009 — مرز REST مشترک WordPress برای هر دو میزبان
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +58,15 @@ P04-WPPLUGIN-CODE-009
 - Depends on: P04-WPPLUGIN-CODE-008
 - Blocks: P04-WPPLUGIN-CODE-010
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-009 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-REST contract v1، error envelope، pagination cap و validation
+
+زیرساخت versioned REST،envelope خطا،pagination cap و validation در kernel یکسان شود؛ provider mode پوسته/افزونه/هر دو زیر پروفایل WORDPRESS باشد.
 
 ## خروجی مورد انتظار
-contract tests KMP/WP؛ breaking change detection
+
+کلاینت KMP با endpoint مشترک و همان DTO به هر نصب متصل شود؛ fixture موفق/خطا/مجوز و سقف pagination یکسان،namespace و aliasهای موجود محفوظ باشند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,12 @@ contract tests KMP/WP؛ breaking change detection
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- تست قرارداد محدود در `core/**` و `composeApp/**`؛ بدون بازنویسی UI کلاینت
+- `docs/evidence/P04-WPPLUGIN-CODE-009/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +91,30 @@ contract tests KMP/WP؛ breaking change detection
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. contract و aliasهای REST فعلی را با مصرف‌کننده‌های KMP inventory کن.
+2. envelope و validation/pagination مشترک را در مرز dispatch kernel تعریف کن.
+3. برای یک مسیر خواندن و یک نوشتن fixture parity هر سه host mode بساز.
+4. breaking-change detection و metadata تشخیصی provider را بدون ایجاد backend سوم ثبت کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: contract tests KMP/WP؛ breaking change detection
+- معیار اختصاصی: کلاینت KMP با endpoint مشترک و همان DTO به هر نصب متصل شود؛ fixture موفق/خطا/مجوز و سقف pagination یکسان،namespace و aliasهای موجود محفوظ باشند.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: contract tests KMP/WP؛ breaking change detection
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: کلاینت تست و پاسخ endpoint مشترک روی Theme-only و Plugin-only.
+- چگونه: هر سایت را در پروفایل WORDPRESS تنظیم و fixture موفق،پارامتر نامعتبر و درخواست غیرمجاز را اجرا کنید.
+- معیار موفقیت: DTO/error یکسان،origin صحیح و خطا قابل اقدام باشد؛ هیچ انتخاب SPRING/WORDPRESS وابسته به برند ایجاد نشود.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] قرارداد دو میزبان و co-install واحد است.
+- [ ] pagination/validation/envelope تست دارند.
+- [ ] aliasهای موجود و DTO مصرف‌کننده محافظت شده‌اند.
+- [ ] فقط دو backend profile حفظ شده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +138,5 @@ contract tests KMP/WP؛ breaking change detection
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

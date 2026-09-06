@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-GATE-024 — Gate مستقل Carmilla Bridge/App Builder
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-GATE-024 — Gate زیرساخت افزونه مستقل و نمایش روی قالب ثالث
 
 ## Prompt اجرای همین Task
 
@@ -21,17 +23,17 @@ Task ID: P04-WPPLUGIN-GATE-024
 - Priority/Risk/Size: P0 / HIGH / S
 - Owner: HUMAN
 - Completion authority: HUMAN Product Owner + WordPress/QA Lead
-- Depends on: P04-WPPLUGIN-DOC-023، P04-WPPLUGIN-MANUAL-034
+- Depends on: P04-WPPLUGIN-DOC-023, P04-WPPLUGIN-MANUAL-034
 - Blocks: P04-WORDPRESS-GATE-037
 - Requirement source: Master row P04-WPPLUGIN-GATE-024 و dual-standalone product contract
 
 ## هدف قابل اندازه‌گیری
 
-استقلال Bridge/App Builder از Carmilla Theme و آمادگی artifact برای RC داخلی بر اساس Evidence ارزیابی شود.
+RC داخلی Plugin-only را با صفحات/فرم‌های عمومی،admin/API،manifest بسته و builder adapter مستقل ارزیابی کن؛ API-only برای PASS کافی نیست.
 
 ## خروجی مورد انتظار
 
-تصمیم `PASS` یا `FAIL` امضاشده با defect/blockerها؛ این Gate مالک bugهای presentation قالب مانند Elementor نیست.
+قالب پیش‌فرض و ثالث آزموده‌شده،هیچ Carmilla Theme لازم نیست؛ SKU و toggle معتبر؛ Gate خدمات آینده و امضای artifact موبایل در این Gate ادعا نشود.
 
 ## خارج از محدوده
 
@@ -55,6 +57,8 @@ Task ID: P04-WPPLUGIN-GATE-024
 
 ## مراحل پیاده‌سازی
 
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
+
 1. dependency/status و hash artifact را تطبیق بده.
 2. نتایج Storefront و قالب ثالث،Android/PWA،REST/CRUD،security/privacy و lifecycle را review کن.
 3. بررسی کن App Builder فقط control plane است و native build روی WordPress اجرا نمی‌شود.
@@ -71,6 +75,8 @@ Task ID: P04-WPPLUGIN-GATE-024
 - Expected: activation و CRUD/sync بدون Carmilla،navigation مطابق manifest،data loss/fatal/P0 صفر.
 
 ## Acceptance Criteria
+
+- [ ] قالب پیش‌فرض و ثالث آزموده‌شده،هیچ Carmilla Theme لازم نیست؛ SKU و toggle معتبر؛ Gate خدمات آینده و امضای artifact موبایل در این Gate ادعا نشود.
 
 - [ ] Bridge ZIP بدون Carmilla Theme نصب/فعال شده است.
 - [ ] قرارداد feature/client روی Android و PWA تأیید شده است.
@@ -98,3 +104,5 @@ Gate فقط تصمیم مستندی است؛در FAIL artifact منتشر نشو
 - Decision/reason:
 - Remaining risks/blockers:
 - Final status: TODO | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

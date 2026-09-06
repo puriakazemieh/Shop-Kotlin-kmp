@@ -1,4 +1,4 @@
-# P10-CI-OPS-009 — reproducible RC ZIP/PWA با checksum/SBOM/signature policy
+# P10-CI-OPS-009 — ساخت RC متناسب SKU با هویت و provenance مستقل
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P10-CI-OPS-009
 - Depends on: P10-BUSINESS-OPS-008
 - Blocks: P10-BUSINESS-OPS-010
 - Requirement source: Master checklist row P10-CI-OPS-009 و Source audit بخش CI
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-reproducible RC ZIP/PWA با checksum/SBOM/signature policy
+RC ZIPهای مستقل و Web/PWA از BuildSpec و فهرست ماژول SKU ساخته شوند؛ checksum/SBOM/version و license manifest هر artifact ثبت شود.
 
 ## خروجی مورد انتظار
-clean runner دو بار hash قابل توضیح
+دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,27 +87,27 @@ clean runner دو بار hash قابل توضیح
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P10 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: RC ZIPهای مستقل و Web/PWA از BuildSpec و فهرست ماژول SKU ساخته شوند؛ checksum/SBOM/version و license manifest هر artifact ثبت شود.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: clean runner دو بار hash قابل توضیح
+- معیار اختصاصی: دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: clean runner دو بار hash قابل توضیح
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: مشخصات SKU، صفحه فروش پیشنهادی و inventory artifact.
+- چگونه: سناریوی مشخص همین کارت را با داده synthetic و artifact دارای fingerprint اجرا کن؛ نتیجه هر ترکیب محصول/SKU/backend را جدا ثبت کن.
+- معیار موفقیت: دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

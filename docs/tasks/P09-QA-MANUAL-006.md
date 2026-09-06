@@ -54,7 +54,7 @@ P09-QA-MANUAL-006
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P09-QA-MANUAL-005
-- Blocks: P09-SECURITY-SEC-007
+- Blocks: P09-QA-MANUAL-006B
 - Requirement source: Master checklist row P09-QA-MANUAL-006 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری

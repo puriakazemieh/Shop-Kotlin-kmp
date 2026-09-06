@@ -54,7 +54,7 @@ P07-MIGRATION-GATE-027
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
 - Depends on: P07-SEED-GATE-026
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Blocks: —
 - Requirement source: Master checklist row P07-MIGRATION-GATE-027 و Source audit بخش MIGRATION
 
 ## هدف قابل اندازه‌گیری

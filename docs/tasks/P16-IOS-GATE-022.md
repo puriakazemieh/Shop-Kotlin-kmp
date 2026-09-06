@@ -1,4 +1,4 @@
-# P16-IOS-GATE-022 — Gate iOS Production
+# P16-IOS-GATE-022 — Gate خروجی مستقل iOS و Builder target مربوط
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +53,17 @@ P16-IOS-GATE-022
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P16-IOS-OPS-021
-- Blocks: طبق Gate و نقشه وابستگی Master checklist.
+- Depends on: P16-IOS-SEC-023
+- Blocks: P16-BUILDER-CODE-024
 - Requirement source: Master checklist row P16-IOS-GATE-022 و Source audit بخش IOS
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Gate iOS Production
+
+iOS مستقل با artifact واقعی و signing/quality/support ارزیابی شود؛ نتیجه به تفکیک backend ثبت شود. بخش WordPress با سه provider mode و بخش Spring با سرور آماده P15 آزمایش می‌شوند. adapter اختیاری Builder بعد از این Gate کارت جدا دارد و پیش‌نیاز این Gate نیست؛ تأیید هر دو backend و همه روش‌های ساخت در P18 اجباری است.
 
 ## خروجی مورد انتظار
-policy،signing،quality،support و demand pass
+نتیجه backendها جدا ثبت؛ سطر Spring بدون P15 PASS نشود و تا P18 تکمیل گردد؛ Keychain review و نصب/ارتقا؛ Gate فقط با artifact و حساب مجاز، نه mock runner.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +71,7 @@ policy،signing،quality،support و demand pass
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P16-IOS-OPS-021
+- Dependencyها: P16-IOS-SEC-023
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -86,28 +88,27 @@ policy،signing،quality،support و demand pass
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P16 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. Gate artifact مستقل را ارزیابی کن؛ adapter Builder پس از Gate اجرا و پذیرش کامل در P18 ثبت می‌شود.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: نتیجه backendها جدا ثبت؛ سطر Spring بدون P15 PASS نشود و تا P18 تکمیل گردد؛ Keychain review و نصب/ارتقا؛ Gate فقط با artifact و حساب مجاز، نه mock runner.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: policy،signing،quality،support و demand pass
+- معیار اختصاصی: نتیجه backendها جدا ثبت؛ سطر Spring بدون P15 PASS نشود و تا P18 تکمیل گردد؛ Keychain review و نصب/ارتقا؛ Gate فقط با artifact و حساب مجاز، نه mock runner.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: policy،signing،quality،support و demand pass
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: نتیجه backendها جدا ثبت؛ سطر Spring بدون P15 PASS نشود و تا P18 تکمیل گردد؛ Keychain review و نصب/ارتقا؛ Gate فقط با artifact و حساب مجاز، نه mock runner.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] نتیجه backendها جدا ثبت؛ سطر Spring بدون P15 PASS نشود و تا P18 تکمیل گردد؛ Keychain review و نصب/ارتقا؛ Gate فقط با artifact و حساب مجاز، نه mock runner.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

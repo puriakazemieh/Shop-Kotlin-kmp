@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-DOC-023 — مستند دو SKU، Shared Core، API، lifecycle و App Builder
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-DOC-023 — مستند دو ZIP، مانیفست ساخت، تنظیمات و اتصال کلاینت
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +56,16 @@ P04-WPPLUGIN-DOC-023
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-QA-MANUAL-022
-- Blocks: P04-WPTHEME-GATE-036 و P04-WPPLUGIN-GATE-024
+- Blocks: P04-WPTHEME-GATE-036, P04-WPPLUGIN-GATE-024
 - Requirement source: Master checklist row P04-WPPLUGIN-DOC-023 و Source audit بخش WPPLUGIN
 
 ## هدف قابل اندازه‌گیری
-نصب و استفاده مستقل Theme و Bridge،Feature Manifest،Shared Core،API،data ownership،App Builder control plane،upgrade/rollback و known limitations مستند شود.
+
+با نمونه دو manifest واقعی assembler، نشان بده feature و هر builder target چگونه هنگام ZIP حذف/اضافه می‌شوند؛ نصب مستقل،toggle پس از نصب،ارتقا و دو پروفایل کلاینت مستند شوند.
 
 ## خروجی مورد انتظار
-دو راهنمای SKU مستقل و compatibility matrix با artifact واقعی،نسخه‌های پشتیبانی‌شده و evidence آزمون تطبیق داشته باشند.
+
+دو مثال خروجی با inventory تطبیق کنند؛ اتصال app به API از خرید builder جدا؛ چهار target مستقل؛ runner آزمایشی و Gate تجاری جدا توضیح داده شوند.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -84,6 +88,8 @@ P04-WPPLUGIN-DOC-023
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
+
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
 1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
 2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
 3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
@@ -102,6 +108,8 @@ P04-WPPLUGIN-DOC-023
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
+
+- [ ] دو مثال خروجی با inventory تطبیق کنند؛ اتصال app به API از خرید builder جدا؛ چهار target مستقل؛ runner آزمایشی و Gate تجاری جدا توضیح داده شوند.
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
@@ -129,3 +137,5 @@ P04-WPPLUGIN-DOC-023
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

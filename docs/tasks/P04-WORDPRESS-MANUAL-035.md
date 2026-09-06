@@ -1,4 +1,6 @@
-# P04-WORDPRESS-MANUAL-035 — UAT co-install، Theme switch، upgrade و mismatch
+<div dir="rtl" align="right">
+
+# P04-WORDPRESS-MANUAL-035 — UAT دو محصول با مانیفست‌ها و نسخه‌های متفاوت
 
 ## Prompt اجرای همین Task
 
@@ -20,16 +22,16 @@ source/production/داده واقعی/migration destructive را تغییر ند
 - Owner: HUMAN
 - Completion authority: HUMAN QA + WordPress Lead
 - Depends on: P04-WPPLUGIN-MANUAL-034
-- Blocks: P04-QA-MANUAL-022 و P04-WORDPRESS-GATE-037
+- Blocks: P04-QA-MANUAL-022, P04-WORDPRESS-GATE-037
 - Requirement source: Master row P04-WORDPRESS-MANUAL-035
 
 ## هدف قابل اندازه‌گیری
 
-نصب هم‌زمان،ترتیب activation،Theme switch،upgrade از دو fixture قبلی و kernel mismatch در staging دستی آزمون شود.
+ترتیب نصب/upgrade،دو SKU متفاوت،خاموشی یکی از میزبان‌ها و mismatch core/schema/entitlement را با snapshot synthetic بررسی کن.
 
 ## خروجی مورد انتظار
 
-ماتریس امضاشده نشان دهد یک kernel boot می‌شود،داده حفظ می‌شود،mismatch ناسازگار fail-closed و rollback recoverable است.
+کجا: پنل هر دو میزبان و داده قبل/بعد. چگونه: Theme Booking + Plugin Academy نصب؛ toggle و جابه‌جایی میزبان؛ دو درخواست build با key یکسان. موفقیت: داده/ID حفظ،یک job/write،مجوز سایت دیگر رد و mismatch قابل اقدام.
 
 ## خارج از محدوده
 
@@ -50,6 +52,8 @@ source/production/داده واقعی/migration destructive را تغییر ند
 
 ## مراحل پیاده‌سازی
 
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
+
 1. Theme→Bridge و Bridge→Theme activation order را اجرا کن.
 2. route/CPT/hook/schema inventory و log را ثبت کن.
 3. Theme را به Storefront و برعکس تغییر بده و داده/client را بررسی کن.
@@ -63,9 +67,13 @@ source/production/داده واقعی/migration destructive را تغییر ند
 
 ## Manual tests با environment/data/steps/expected
 
-- Expected: duplicate/fatal/data loss صفر؛schema migration یک بار؛mismatch بدون write؛restore موفق و checksum داده ثابت.
+کجا: پنل هر دو میزبان و داده قبل/بعد. چگونه: Theme Booking + Plugin Academy نصب؛ toggle و جابه‌جایی میزبان؛ دو درخواست build با key یکسان. موفقیت: داده/ID حفظ،یک job/write،مجوز سایت دیگر رد و mismatch قابل اقدام.
+
+- محیط staging،داده synthetic،build fingerprint و tester/date/result؛ تا تأیید واقعی AWAITING_MANUAL_QA.
 
 ## Acceptance Criteria
+
+- [ ] کجا: پنل هر دو میزبان و داده قبل/بعد. چگونه: Theme Booking + Plugin Academy نصب؛ toggle و جابه‌جایی میزبان؛ دو درخواست build با key یکسان. موفقیت: داده/ID حفظ،یک job/write،مجوز سایت دیگر رد و mismatch قابل اقدام.
 
 - [ ] هر دو activation order و Theme switch پاس‌اند.
 - [ ] دو upgrade fixture و mismatch تست شده‌اند.
@@ -93,3 +101,5 @@ source/production/داده واقعی/migration destructive را تغییر ند
 - Evidence paths:
 - Defects/blockers:
 - Final status: TODO | AWAITING_MANUAL_QA | DONE | BLOCKED
+
+</div>

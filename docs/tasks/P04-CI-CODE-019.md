@@ -1,4 +1,6 @@
-# P04-CI-CODE-019 — دو ZIP مستقل و reproducible همراه WordPress quality gates در CI
+<div dir="rtl" align="right">
+
+# P04-CI-CODE-019 — CI بسته‌های مستقل با ورودی مانیفست و بررسی محتوای ZIP
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +55,17 @@ P04-CI-CODE-019
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P04-WPPLUGIN-CODE-033
-- Blocks: P04-QA-AUTO-020
+- Depends on: P04-ENTITLEMENT-CODE-044
+- Blocks: P04-QA-AUTO-048
 - Requirement source: Master checklist row P04-CI-CODE-019 و Source audit بخش CI
 
 ## هدف قابل اندازه‌گیری
-CI دو ZIP مستقل Theme و Bridge را از یک Shared Core build و روی WordPress تمیز نصب کند و Plugin Check،Theme Check،WPCS،PHP matrix و QIT را اجرا کند.
+
+خروجی assembler043 را با artifactKind و مانیفست feature/builders در CI بساز و از ZIP تمیز نصب کن؛ حذف واقعی ماژول انتخاب‌نشده، وابستگی‌های مجاز، checksum و provenance را کنترل کن.
 
 ## خروجی مورد انتظار
-build reproducible،version manifest و checksum تولید شود؛ syntax/install/quality blocker باعث failure شود.
+
+برای هر دو نوع ZIP: Base،تک‌فیچر و ترکیبی و ۱۶ ترکیب چهار بیلدر اعتبارسنجی محتوایی شوند؛ smoke نصب نماینده‌ها. WPCS/PHP/security failها بسته شوند؛ findings Theme Check درباره plugin territory طبق کانال فروش ثبت شوند، PASS جعلی برای WordPress.org ممنوع.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +73,7 @@ build reproducible،version manifest و checksum تولید شود؛ syntax/inst
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-CODE-033
+- Dependencyها: P04-ENTITLEMENT-CODE-044
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -87,6 +91,8 @@ build reproducible،version manifest و checksum تولید شود؛ syntax/inst
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
+
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
 1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
 2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
 3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
@@ -107,6 +113,8 @@ build reproducible،version manifest و checksum تولید شود؛ syntax/inst
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
+
+- [ ] برای هر دو نوع ZIP: Base،تک‌فیچر و ترکیبی و ۱۶ ترکیب چهار بیلدر اعتبارسنجی محتوایی شوند؛ smoke نصب نماینده‌ها. WPCS/PHP/security failها بسته شوند؛ findings Theme Check درباره plugin territory طبق کانال فروش ثبت شوند، PASS جعلی برای WordPress.org ممنوع.
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
@@ -134,3 +142,5 @@ build reproducible،version manifest و checksum تولید شود؛ syntax/inst
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

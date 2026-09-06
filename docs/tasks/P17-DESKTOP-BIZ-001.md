@@ -1,4 +1,4 @@
-# P17-DESKTOP-BIZ-001 — Go/No-Go و persona/use case پولی
+# P17-DESKTOP-BIZ-001 — بودجه و دامنه سیستم‌عامل‌های Desktop مستقل
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +53,16 @@ P17-DESKTOP-BIZ-001
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P16-IOS-GATE-022
+- Depends on: P03-MANIFEST-GATE-022, P05-PAYMENT-GATE-024, P09-QA-GATE-018
 - Blocks: P17-DESKTOP-DISC-002
 - Requirement source: Master checklist row P17-DESKTOP-BIZ-001 و Source audit بخش DESKTOP
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-Go/No-Go و persona/use case پولی
+خروجی Desktop مورد درخواست تثبیت‌شده است؛ OS matrix، هزینه signing/notarization/update/support و اولویت Windows/macOS/Linux را با use case تعیین کن.
 
 ## خروجی مورد انتظار
-PWA gap و willingness-to-pay مستند
+دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +70,7 @@ PWA gap و willingness-to-pay مستند
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P16-IOS-GATE-022
+- Dependencyها: P03-MANIFEST-GATE-022, P05-PAYMENT-GATE-024, P09-QA-GATE-018
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -85,26 +86,25 @@ PWA gap و willingness-to-pay مستند
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P17 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: خروجی Desktop مورد درخواست تثبیت‌شده است؛ OS matrix، هزینه signing/notarization/update/support و اولویت Windows/macOS/Linux را با use case تعیین کن.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: PWA gap و willingness-to-pay مستند
+- معیار اختصاصی: دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: PWA gap و willingness-to-pay مستند
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] دامنه OS و زمان‌بندی تحویل و EOL روشن؛ هدف Desktop با No-Go کلی حذف نشود؛ محدودیت منابع شفاف و ownerدار باشد.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

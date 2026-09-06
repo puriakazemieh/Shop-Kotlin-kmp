@@ -1,4 +1,6 @@
-# P04-QA-MANUAL-022 — UI/RTL/accessibility/empty/error/offline states
+<div dir="rtl" align="right">
+
+# P04-QA-MANUAL-022 — بازبینی نمایش قابلیت‌های بسته‌شده و وضعیت‌های خطا
 
 ## Prompt اجرای همین Task
 
@@ -58,10 +60,12 @@ P04-QA-MANUAL-022
 - Requirement source: Master checklist row P04-QA-MANUAL-022 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری
-UI/RTL/LTR/accessibility و empty/loading/error/offline states در Theme-only،Bridge-only و co-install regression شوند.
+
+RTL،accessibility،empty/error و توضیح وضعیت موجود/خریداری‌شده/خاموش/بسته‌نشده را در Theme-only،Plugin-only و both بازبینی کن.
 
 ## خروجی مورد انتظار
-screenshot/video،browser/device matrix و defect ID برای هر سه mode ثبت شود و P0 باز صفر باشد.
+
+کجا: صفحات عمومی و تنظیمات دو محصول. چگونه: keyboard/zoom و فعال‌سازی فیچر مجاز/غیرمجاز. موفقیت: وضعیت قابل فهم،بدون دکمه اجرایی ماژول حذف‌شده،focus و پیام خطای درست؛ screenshot و تأیید انسان.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -86,6 +90,8 @@ screenshot/video،browser/device matrix و defect ID برای هر سه mode ث�
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
+
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
 1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
 2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
 3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
@@ -100,13 +106,14 @@ screenshot/video،browser/device matrix و defect ID برای هر سه mode ث�
 - معیار اختصاصی: سه mode دارای matrix UI/RTL/LTR/accessibility/empty/error/offline باشند.
 
 ## Manual tests با environment/data/steps/expected
-- این Task نیازمند اقدام یا تأیید انسانی/خارجی است.
-- AI باید در پاسخ نهایی مراحل دقیق،محیط،داده و نتیجه مورد انتظار را به کاربر بگوید و Status را AWAITING_MANUAL_QA یا BLOCKED بگذارد.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: screenshot/video/device matrix و defect ID با P0 باز صفر ثبت شود.
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+کجا: صفحات عمومی و تنظیمات دو محصول. چگونه: keyboard/zoom و فعال‌سازی فیچر مجاز/غیرمجاز. موفقیت: وضعیت قابل فهم،بدون دکمه اجرایی ماژول حذف‌شده،focus و پیام خطای درست؛ screenshot و تأیید انسان.
+
+- محیط staging،داده synthetic،build fingerprint و tester/date/result؛ تا تأیید واقعی AWAITING_MANUAL_QA.
 
 ## Acceptance Criteria
+
+- [ ] کجا: صفحات عمومی و تنظیمات دو محصول. چگونه: keyboard/zoom و فعال‌سازی فیچر مجاز/غیرمجاز. موفقیت: وضعیت قابل فهم،بدون دکمه اجرایی ماژول حذف‌شده،focus و پیام خطای درست؛ screenshot و تأیید انسان.
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
@@ -134,3 +141,5 @@ screenshot/video،browser/device matrix و defect ID برای هر سه mode ث�
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

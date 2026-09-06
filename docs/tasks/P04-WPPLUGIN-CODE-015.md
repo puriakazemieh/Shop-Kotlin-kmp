@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-015 — Woo HPOS و Cart/Checkout Blocks compatibility
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-015 — سازگاری Woo HPOS و Cart/Checkout Blocks در دو محصول
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +55,18 @@ P04-WPPLUGIN-CODE-015
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P04-WPPLUGIN-CODE-014
+- Depends on: P04-ENTITLEMENT-CODE-041
 - Blocks: P04-WPTHEME-CODE-016
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-015 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-Woo HPOS و Cart/Checkout Blocks compatibility
+
+adapter و declaration سازگاری Woo برای نصب Theme-only،Plugin-only و co-install با HPOS و بلوک‌های سبد/تسویه آزموده و خطای محدود این مرز رفع شود.
 
 ## خروجی مورد انتظار
-declaration + integration tests
+
+fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با Woo فعال یک نتیجه بدهد؛ co-install hook پرداخت/سفارش تکراری نداشته باشد.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,14 +74,15 @@ declaration + integration tests
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPPLUGIN-CODE-014
+- Dependencyها: P04-ENTITLEMENT-CODE-041
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-015/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ declaration + integration tests
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. ماتریس نسخه‌های تست‌شده Woo و نوع checkout را مشخص کن.
+2. declaration لازم و adapter مشترک را با API رسمی Woo تطبیق بده.
+3. fixture سفارش sandbox و ثبت/نمایش آن را در ماتریس اجرا کن.
+4. شواهد محدودیت نسخه را ثبت کن؛ provider واقعی و بازنویسی دامنه در این کارت نیست.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: declaration + integration tests
+- معیار اختصاصی: fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با Woo فعال یک نتیجه بدهد؛ co-install hook پرداخت/سفارش تکراری نداشته باشد.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: declaration + integration tests
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: سبد،تسویه classic/blocks و سفارش آزمایشی در پیشخوان Woo.
+- چگونه: در هر دو محصول مستقل و نصب هم‌زمان با HPOS روشن/خاموش سفارش fixture ثبت و مشاهده کنید.
+- معیار موفقیت: شناسه/مبلغ/وضعیت برابر،ثبت تکراری صفر و فقط نسخه‌های آزموده‌شده سازگار اعلام شوند.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] ماتریس HPOS و checkout واقعی اجرا شده است.
+- [ ] دو محصول مستقل و نصب هم‌زمان پوشش دارند.
+- [ ] declaration مطابق evidence است.
+- [ ] پرداخت یا تأیید provider production ادعا نشده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ declaration + integration tests
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

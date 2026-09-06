@@ -19,7 +19,7 @@ Task ID: P04-WORDPRESS-CODE-032
 - Priority/Risk/Size: P0 / CRITICAL / M
 - Owner: BOTH
 - Completion authority: BOTH + Architecture/Security reviewer
-- Depends on: P04-WPPLUGIN-CODE-031
+- Depends on: P04-WORDPRESS-DATA-042
 - Blocks: P04-WPPLUGIN-CODE-033
 - Requirement source: Master row P04-WORDPRESS-CODE-032 و Shared Core version authority ADR
 

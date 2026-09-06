@@ -53,7 +53,7 @@ P09-SECURITY-SEC-007
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P09-QA-MANUAL-006
+- Depends on: P09-QA-MANUAL-006B
 - Blocks: P09-OBSERVABILITY-CODE-008
 - Requirement source: Master checklist row P09-SECURITY-SEC-007 و Source audit بخش SECURITY
 
@@ -69,7 +69,7 @@ auth/IDOR/XSS/CSRF/SSRF/payment/cache
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P09-QA-MANUAL-006
+- Dependencyها: P09-QA-MANUAL-006B
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

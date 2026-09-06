@@ -53,7 +53,7 @@ P11-ANDROID-DISC-001
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P10-PROGRAM-OPS-019
+- Depends on: P03-MANIFEST-GATE-022, P05-PAYMENT-GATE-024, P08-PWA-GATE-019
 - Blocks: P11-ANDROID-CODE-002
 - Requirement source: Master checklist row P11-ANDROID-DISC-001 و Source audit بخش ANDROID
 
@@ -69,7 +69,7 @@ package/signing/store inventory فاز صفر نهایی شود
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P10-PROGRAM-OPS-019
+- Dependencyها: P03-MANIFEST-GATE-022, P05-PAYMENT-GATE-024, P08-PWA-GATE-019
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

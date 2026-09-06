@@ -1,0 +1,3496 @@
+{
+  "commit": "6499f9b0f53b587461606a6a8387fd0b4403bb5a",
+  "rows": [
+    {
+      "id": "P00-PROGRAM-DISC-001",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": []
+    },
+    {
+      "id": "P00-PROGRAM-DISC-002",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-PROGRAM-DISC-001"
+      ]
+    },
+    {
+      "id": "P00-PROGRAM-ADR-003",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-PROGRAM-DISC-002"
+      ]
+    },
+    {
+      "id": "P00-ARCH-ADR-004",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-PROGRAM-ADR-003"
+      ]
+    },
+    {
+      "id": "P00-MANIFEST-DISC-005",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P00-ARCH-ADR-004"
+      ]
+    },
+    {
+      "id": "P00-CORE-DISC-006",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P00-MANIFEST-DISC-005"
+      ]
+    },
+    {
+      "id": "P00-QA-DISC-007",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-CORE-DISC-006"
+      ]
+    },
+    {
+      "id": "P00-QA-DATA-008",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-QA-DISC-007"
+      ]
+    },
+    {
+      "id": "P00-QA-OPS-009",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P00-QA-DATA-008"
+      ]
+    },
+    {
+      "id": "P00-QA-OPS-010",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-QA-OPS-009"
+      ]
+    },
+    {
+      "id": "P00-PROGRAM-CODE-011",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P00-QA-OPS-010"
+      ]
+    },
+    {
+      "id": "P00-PROGRAM-OPS-012",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-PROGRAM-CODE-011"
+      ]
+    },
+    {
+      "id": "P00-SECURITY-DISC-013",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-PROGRAM-OPS-012"
+      ]
+    },
+    {
+      "id": "P00-OBSERVABILITY-ADR-014",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-SECURITY-DISC-013"
+      ]
+    },
+    {
+      "id": "P00-BUSINESS-BIZ-015",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P00-OBSERVABILITY-ADR-014"
+      ]
+    },
+    {
+      "id": "P00-BUSINESS-BIZ-016",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P00-BUSINESS-BIZ-015"
+      ]
+    },
+    {
+      "id": "P00-BUSINESS-BIZ-017",
+      "status": "DONE",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P00-BUSINESS-BIZ-016"
+      ]
+    },
+    {
+      "id": "P00-QA-MANUAL-018",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-BUSINESS-BIZ-017"
+      ]
+    },
+    {
+      "id": "P00-PROGRAM-GATE-019",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P00-QA-MANUAL-018"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-DISC-001",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P00-PROGRAM-GATE-019"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-OPS-002",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P01-SECURITY-DISC-001"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-003",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-OPS-002"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-004",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SECURITY-CODE-003"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-005",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SECURITY-CODE-004"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-005A",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-CODE-004"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-005B",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-CODE-005A"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-005C",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SECURITY-CODE-005B"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-005D",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-CODE-005C"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-005E",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-CODE-005D"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-006",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-CODE-005"
+      ]
+    },
+    {
+      "id": "P01-PAYMENT-CODE-007",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SECURITY-CODE-006"
+      ]
+    },
+    {
+      "id": "P01-PAYMENT-CODE-008",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-PAYMENT-CODE-007"
+      ]
+    },
+    {
+      "id": "P01-PAYMENT-CODE-009",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-PAYMENT-CODE-008"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-SEC-010",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-PAYMENT-CODE-009"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-SEC-011",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-SEC-010"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-SEC-012",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-SEC-011"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-SEC-013",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-SEC-012"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-SEC-014",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-SEC-013"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-CODE-015",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-SEC-014"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-CODE-016",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-CODE-015"
+      ]
+    },
+    {
+      "id": "P01-PAYMENT-SEC-017",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-CODE-016"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-SEC-018",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-PAYMENT-SEC-017"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-CODE-019",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-WPPLUGIN-SEC-018"
+      ]
+    },
+    {
+      "id": "P01-QA-AUTO-020",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-CODE-019"
+      ]
+    },
+    {
+      "id": "P01-QA-MANUAL-021",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P01-QA-AUTO-020"
+      ]
+    },
+    {
+      "id": "P01-SPRING-SEC-024",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-QA-MANUAL-021"
+      ]
+    },
+    {
+      "id": "P01-SPRING-SEC-025",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SPRING-SEC-024"
+      ]
+    },
+    {
+      "id": "P01-SPRING-SEC-026",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SPRING-SEC-025"
+      ]
+    },
+    {
+      "id": "P01-SPRING-DATA-027",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SPRING-SEC-026"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-DATA-028",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-SPRING-DATA-027"
+      ]
+    },
+    {
+      "id": "P01-WPPLUGIN-ARCH-029",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-DATA-028"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-SEC-022",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P01-WPPLUGIN-ARCH-029"
+      ]
+    },
+    {
+      "id": "P01-SECURITY-GATE-023",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P01-SECURITY-SEC-022"
+      ]
+    },
+    {
+      "id": "P02-CORE-DISC-001",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P01-SECURITY-GATE-023"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-002",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-DISC-001"
+      ]
+    },
+    {
+      "id": "P02-CORE-ADR-003",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P02-CORE-CODE-002"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-004",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-ADR-003"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-005A",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-CODE-004"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-005B",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-CODE-005A"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-005C",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-CODE-005B"
+      ]
+    },
+    {
+      "id": "P02-QA-CODE-006",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-CODE-005C"
+      ]
+    },
+    {
+      "id": "P02-QA-CODE-007",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-QA-CODE-006"
+      ]
+    },
+    {
+      "id": "P02-QA-CODE-008",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-QA-CODE-007"
+      ]
+    },
+    {
+      "id": "P02-CI-CODE-009",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-QA-CODE-008"
+      ]
+    },
+    {
+      "id": "P02-CI-CODE-010",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CI-CODE-009"
+      ]
+    },
+    {
+      "id": "P02-CI-CODE-011",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CI-CODE-010"
+      ]
+    },
+    {
+      "id": "P02-ARCH-ADR-012",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P02-CI-CODE-011"
+      ]
+    },
+    {
+      "id": "P02-ARCH-CODE-013",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P02-ARCH-ADR-012"
+      ]
+    },
+    {
+      "id": "P02-ARCH-CODE-014",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-ARCH-CODE-013"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-015",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-ARCH-CODE-014"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-015A",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-CODE-015"
+      ]
+    },
+    {
+      "id": "P02-CORE-CODE-015B",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P02-CORE-CODE-015A"
+      ]
+    },
+    {
+      "id": "P02-CI-OPS-016",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P02-CORE-CODE-015B"
+      ]
+    },
+    {
+      "id": "P02-QA-MANUAL-017",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P02-CI-OPS-016"
+      ]
+    },
+    {
+      "id": "P02-CORE-GATE-018",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P02-QA-MANUAL-017"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-ADR-001",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P02-CORE-GATE-018"
+      ]
+    },
+    {
+      "id": "P03-ARCH-CODE-002",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-ADR-001"
+      ]
+    },
+    {
+      "id": "P03-ARCH-CODE-003",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-ARCH-CODE-002"
+      ]
+    },
+    {
+      "id": "P03-ARCH-CODE-004",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-ARCH-CODE-003"
+      ]
+    },
+    {
+      "id": "P03-ARCH-CODE-005",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-ARCH-CODE-004"
+      ]
+    },
+    {
+      "id": "P03-SECURITY-CODE-006",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-ARCH-CODE-005"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-007",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-SECURITY-CODE-006"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-008",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-007"
+      ]
+    },
+    {
+      "id": "P03-WPPLUGIN-CODE-009",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-MANIFEST-CODE-008"
+      ]
+    },
+    {
+      "id": "P03-WPPLUGIN-CODE-010",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-WPPLUGIN-CODE-009"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-011",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-WPPLUGIN-CODE-010"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-011A",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-WPPLUGIN-CODE-010"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-011B",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-011A"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-011C",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-011B"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-011D",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-011C"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-011E",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-011D"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-012",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-011E"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-013",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-012"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-CODE-014",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MANIFEST-CODE-013"
+      ]
+    },
+    {
+      "id": "P03-WPPLUGIN-SEC-015",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-MANIFEST-CODE-014"
+      ]
+    },
+    {
+      "id": "P03-WPTHEME-CODE-016",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-WPPLUGIN-SEC-015"
+      ]
+    },
+    {
+      "id": "P03-ANDROID-CODE-017",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-WPTHEME-CODE-016"
+      ]
+    },
+    {
+      "id": "P03-MIGRATION-DATA-018",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-ANDROID-CODE-017"
+      ]
+    },
+    {
+      "id": "P03-QA-AUTO-019",
+      "status": "DONE",
+      "owner": "AI",
+      "deps": [
+        "P03-MIGRATION-DATA-018"
+      ]
+    },
+    {
+      "id": "P03-QA-MANUAL-020",
+      "status": "DONE",
+      "owner": "HUMAN",
+      "deps": [
+        "P03-QA-AUTO-019"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-OPS-021",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P03-QA-MANUAL-020"
+      ]
+    },
+    {
+      "id": "P03-MANIFEST-GATE-022",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P03-MANIFEST-OPS-021"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-ADR-001",
+      "status": "DONE",
+      "owner": "BOTH",
+      "deps": [
+        "P03-MANIFEST-GATE-022"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-ADR-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-ADR-001"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-003",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPPLUGIN-ADR-002"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-004",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-003"
+      ]
+    },
+    {
+      "id": "P04-WPTHEME-CODE-005",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPPLUGIN-CODE-004"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-006",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPTHEME-CODE-005"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-006"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-007"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-008"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-009"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-011",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPPLUGIN-CODE-010"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-011"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-012"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-014",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPPLUGIN-CODE-013"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-015",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-014"
+      ]
+    },
+    {
+      "id": "P04-WPTHEME-CODE-016",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPPLUGIN-CODE-015"
+      ]
+    },
+    {
+      "id": "P04-WPTHEME-CODE-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPTHEME-CODE-016"
+      ]
+    },
+    {
+      "id": "P04-WPTHEME-CODE-025",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPTHEME-CODE-017"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-018",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPTHEME-CODE-025"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-026",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-018"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-027",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WORDPRESS-CODE-026"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-028",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WORDPRESS-CODE-027"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-029",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WORDPRESS-CODE-028"
+      ]
+    },
+    {
+      "id": "P04-WPTHEME-CODE-030",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WORDPRESS-CODE-029"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-031",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPTHEME-CODE-030"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-CODE-032",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WPPLUGIN-CODE-031"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-CODE-033",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WORDPRESS-CODE-032"
+      ]
+    },
+    {
+      "id": "P04-CI-CODE-019",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-WPPLUGIN-CODE-033"
+      ]
+    },
+    {
+      "id": "P04-QA-AUTO-020",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-CI-CODE-019"
+      ]
+    },
+    {
+      "id": "P04-QA-MANUAL-021",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-QA-AUTO-020"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-MANUAL-034",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-QA-MANUAL-021"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-MANUAL-035",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-WPPLUGIN-MANUAL-034"
+      ]
+    },
+    {
+      "id": "P04-QA-MANUAL-022",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-WORDPRESS-MANUAL-035"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-DOC-023",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P04-QA-MANUAL-022"
+      ]
+    },
+    {
+      "id": "P04-WPTHEME-GATE-036",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-WPPLUGIN-DOC-023",
+        "P04-QA-MANUAL-021"
+      ]
+    },
+    {
+      "id": "P04-WPPLUGIN-GATE-024",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-WPPLUGIN-DOC-023",
+        "P04-WPPLUGIN-MANUAL-034"
+      ]
+    },
+    {
+      "id": "P04-WORDPRESS-GATE-037",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P04-WPTHEME-GATE-036",
+        "P04-WPPLUGIN-GATE-024",
+        "P04-WORDPRESS-MANUAL-035"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-ADR-001",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P04-WORDPRESS-GATE-037"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-ADR-001"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-DATA-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-002"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-004",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-DATA-003"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-004"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-005"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-006"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-007"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-008"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-009"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-010"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-OPS-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-011"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-OPS-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-OPS-012"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-OPS-013"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-MANUAL-015",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P05-PAYMENT-CODE-014"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-DISC-016",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P05-PAYMENT-MANUAL-015"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-DISC-016"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-ADR-018",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P05-PAYMENT-CODE-017"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-019",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-ADR-018"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-CODE-020",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-CODE-019"
+      ]
+    },
+    {
+      "id": "P05-QA-AUTO-021",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P05-PAYMENT-CODE-020"
+      ]
+    },
+    {
+      "id": "P05-QA-MANUAL-022",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P05-QA-AUTO-021"
+      ]
+    },
+    {
+      "id": "P05-SECURITY-SEC-023",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-QA-MANUAL-022"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-GATE-024",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P05-SECURITY-SEC-023"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-GATE-025",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P05-PAYMENT-GATE-024"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-GATE-026",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P05-PAYMENT-GATE-025"
+      ]
+    },
+    {
+      "id": "P05-PAYMENT-GATE-027",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P05-PAYMENT-GATE-026"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-ADR-001",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P05-PAYMENT-GATE-024"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-DATA-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-ADR-001"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-DATA-002"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P06-MESSAGE-CODE-003"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-CODE-004"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-CODE-005"
+      ]
+    },
+    {
+      "id": "P06-SECURITY-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-CODE-006"
+      ]
+    },
+    {
+      "id": "P06-SECURITY-SEC-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-SECURITY-CODE-007"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-009",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P06-SECURITY-SEC-008"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-CODE-009"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-CODE-010"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-CODE-012",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P06-MESSAGE-CODE-011"
+      ]
+    },
+    {
+      "id": "P06-QA-AUTO-013",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P06-MESSAGE-CODE-012"
+      ]
+    },
+    {
+      "id": "P06-QA-MANUAL-014",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P06-QA-AUTO-013"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-DOC-015",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P06-QA-MANUAL-014"
+      ]
+    },
+    {
+      "id": "P06-MESSAGE-GATE-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P06-MESSAGE-DOC-015"
+      ]
+    },
+    {
+      "id": "P07-SEED-ADR-001",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P06-MESSAGE-GATE-016"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-ADR-001"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-002"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P07-SEED-DATA-003"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-004"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-005"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-006"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-007"
+      ]
+    },
+    {
+      "id": "P07-SEED-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-008"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-CODE-009"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-DATA-010"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-DATA-011"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-DATA-012"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-DATA-013"
+      ]
+    },
+    {
+      "id": "P07-SEED-DATA-015",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P07-SEED-DATA-014"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-ADR-016",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-DATA-015"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-DATA-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-MIGRATION-ADR-016"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-CODE-018",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-MIGRATION-DATA-017"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-CODE-019",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-MIGRATION-CODE-018"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-DATA-020",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-MIGRATION-CODE-019"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-SEC-021",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-MIGRATION-DATA-020"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-SEC-022",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-MIGRATION-SEC-021"
+      ]
+    },
+    {
+      "id": "P07-QA-AUTO-023",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P07-MIGRATION-SEC-022"
+      ]
+    },
+    {
+      "id": "P07-QA-MANUAL-024",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P07-QA-AUTO-023"
+      ]
+    },
+    {
+      "id": "P07-SEED-DOC-025",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P07-QA-MANUAL-024"
+      ]
+    },
+    {
+      "id": "P07-SEED-GATE-026",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P07-SEED-DOC-025"
+      ]
+    },
+    {
+      "id": "P07-MIGRATION-GATE-027",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P07-SEED-GATE-026"
+      ]
+    },
+    {
+      "id": "P08-PWA-ADR-001",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P07-SEED-GATE-026"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-002",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P08-PWA-ADR-001"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-003",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P08-PWA-CODE-002"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P08-PWA-CODE-003"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-CODE-004"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-CODE-005"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-007",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P08-PWA-CODE-006"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-CODE-007"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-CODE-008"
+      ]
+    },
+    {
+      "id": "P08-PWA-SEC-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-CODE-009"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-SEC-010"
+      ]
+    },
+    {
+      "id": "P08-PWA-CODE-012",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P08-PWA-CODE-011"
+      ]
+    },
+    {
+      "id": "P08-OBSERVABILITY-CODE-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-CODE-012"
+      ]
+    },
+    {
+      "id": "P08-PWA-PERF-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-OBSERVABILITY-CODE-013"
+      ]
+    },
+    {
+      "id": "P08-QA-AUTO-015",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P08-PWA-PERF-014"
+      ]
+    },
+    {
+      "id": "P08-QA-MANUAL-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P08-QA-AUTO-015"
+      ]
+    },
+    {
+      "id": "P08-QA-MANUAL-017",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P08-QA-MANUAL-016"
+      ]
+    },
+    {
+      "id": "P08-PWA-OPS-018",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-QA-MANUAL-017"
+      ]
+    },
+    {
+      "id": "P08-PWA-GATE-019",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P08-PWA-OPS-018"
+      ]
+    },
+    {
+      "id": "P09-QA-DOC-001",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P08-PWA-GATE-019"
+      ]
+    },
+    {
+      "id": "P09-QA-AUTO-002",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P09-QA-DOC-001"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-003",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-AUTO-002"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-004",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-MANUAL-003"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-005",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-MANUAL-004"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-006",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-MANUAL-005"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-006B",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-MANUAL-006"
+      ]
+    },
+    {
+      "id": "P09-SECURITY-SEC-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P09-QA-MANUAL-006B"
+      ]
+    },
+    {
+      "id": "P09-OBSERVABILITY-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P09-SECURITY-SEC-007"
+      ]
+    },
+    {
+      "id": "P09-OBSERVABILITY-SEC-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P09-OBSERVABILITY-CODE-008"
+      ]
+    },
+    {
+      "id": "P09-BUSINESS-BIZ-010",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-OBSERVABILITY-SEC-009"
+      ]
+    },
+    {
+      "id": "P09-BUSINESS-OPS-011",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-BUSINESS-BIZ-010"
+      ]
+    },
+    {
+      "id": "P09-BUSINESS-BIZ-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P09-BUSINESS-OPS-011"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-013",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-BUSINESS-BIZ-012"
+      ]
+    },
+    {
+      "id": "P09-OBSERVABILITY-BIZ-014",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-MANUAL-013"
+      ]
+    },
+    {
+      "id": "P09-QA-MANUAL-015",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-OBSERVABILITY-BIZ-014"
+      ]
+    },
+    {
+      "id": "P09-BUSINESS-BIZ-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-MANUAL-015"
+      ]
+    },
+    {
+      "id": "P09-QA-OPS-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P09-BUSINESS-BIZ-016"
+      ]
+    },
+    {
+      "id": "P09-QA-GATE-018",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-OPS-017"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-001",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P09-QA-GATE-018"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-002",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-BUSINESS-BIZ-001"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-003",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-BUSINESS-BIZ-002"
+      ]
+    },
+    {
+      "id": "P10-WPTHEME-DOC-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P10-BUSINESS-BIZ-003"
+      ]
+    },
+    {
+      "id": "P10-WPPLUGIN-DOC-005",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P10-WPTHEME-DOC-004"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-DOC-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P10-WPPLUGIN-DOC-005"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-DOC-007",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-BUSINESS-DOC-006"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-OPS-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P10-BUSINESS-DOC-007"
+      ]
+    },
+    {
+      "id": "P10-CI-OPS-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P10-BUSINESS-OPS-008"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-OPS-010",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-CI-OPS-009"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-011",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P10-BUSINESS-OPS-010"
+      ]
+    },
+    {
+      "id": "P10-PROGRAM-OPS-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P10-BUSINESS-BIZ-011"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-013",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-PROGRAM-OPS-012"
+      ]
+    },
+    {
+      "id": "P10-OBSERVABILITY-BIZ-014",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-BUSINESS-BIZ-013"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-EXPERIMENT-015",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-OBSERVABILITY-BIZ-014"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-BUSINESS-EXPERIMENT-015"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-BIZ-017",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P10-BUSINESS-BIZ-016"
+      ]
+    },
+    {
+      "id": "P10-BUSINESS-GATE-018",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-BUSINESS-BIZ-017"
+      ]
+    },
+    {
+      "id": "P10-PROGRAM-OPS-019",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P10-BUSINESS-GATE-018"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-DISC-001",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P10-PROGRAM-OPS-019"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-002",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P11-ANDROID-DISC-001"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-CODE-002"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-SEC-004",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-CODE-003"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-005",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P11-ANDROID-SEC-004"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-CODE-005"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-SEC-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-CODE-006"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-SEC-007"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-CODE-008"
+      ]
+    },
+    {
+      "id": "P11-OBSERVABILITY-CODE-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-CODE-009"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-OBSERVABILITY-CODE-010"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-DOC-012",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-ANDROID-CODE-011"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-OPS-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-DOC-012"
+      ]
+    },
+    {
+      "id": "P11-QA-AUTO-014",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P11-ANDROID-OPS-013"
+      ]
+    },
+    {
+      "id": "P11-QA-MANUAL-015",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-QA-AUTO-014"
+      ]
+    },
+    {
+      "id": "P11-QA-MANUAL-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-QA-MANUAL-015"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-OPS-017",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-QA-MANUAL-016"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-BIZ-018",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-ANDROID-OPS-017"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-OPS-019",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P11-ANDROID-BIZ-018"
+      ]
+    },
+    {
+      "id": "P11-OBSERVABILITY-BIZ-020",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-ANDROID-OPS-019"
+      ]
+    },
+    {
+      "id": "P11-ANDROID-GATE-021",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P11-OBSERVABILITY-BIZ-020"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-ADR-001",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P11-ANDROID-GATE-021"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-DATA-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-ADR-001"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-DATA-002"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P12-BUILDER-CODE-003"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-CODE-004"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-OPS-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-CODE-005"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-SEC-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-OPS-006"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-008",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P12-BUILDER-SEC-007"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-OPS-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-CODE-008"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-010",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P12-BUILDER-OPS-009"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-CODE-010"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-CODE-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-CODE-011"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-OPS-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-CODE-012"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-BIZ-014",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P12-BUILDER-OPS-013"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-OPS-015",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-BUILDER-BIZ-014"
+      ]
+    },
+    {
+      "id": "P12-QA-AUTO-016",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P12-BUILDER-OPS-015"
+      ]
+    },
+    {
+      "id": "P12-SECURITY-SEC-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P12-QA-AUTO-016"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-BIZ-018",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P12-SECURITY-SEC-017"
+      ]
+    },
+    {
+      "id": "P12-BUILDER-GATE-019",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P12-BUILDER-BIZ-018"
+      ]
+    },
+    {
+      "id": "P13-LMS-DISC-001",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P12-BUILDER-GATE-019"
+      ]
+    },
+    {
+      "id": "P13-LMS-ADR-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-DISC-001"
+      ]
+    },
+    {
+      "id": "P13-LMS-DATA-003",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-ADR-002"
+      ]
+    },
+    {
+      "id": "P13-LMS-DATA-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-DATA-003"
+      ]
+    },
+    {
+      "id": "P13-LMS-SEC-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-DATA-004"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-006",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-SEC-005"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-006"
+      ]
+    },
+    {
+      "id": "P13-LMS-SEC-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-007"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-009",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-SEC-008"
+      ]
+    },
+    {
+      "id": "P13-LMS-DATA-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-009"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-011",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-DATA-010"
+      ]
+    },
+    {
+      "id": "P13-LMS-SEC-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-011"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-013",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-SEC-012"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-013"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-015",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-CODE-014"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-016",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-015"
+      ]
+    },
+    {
+      "id": "P13-LMS-DATA-017",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-CODE-016"
+      ]
+    },
+    {
+      "id": "P13-LMS-CODE-018",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-DATA-017"
+      ]
+    },
+    {
+      "id": "P13-OBSERVABILITY-CODE-019",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-CODE-018"
+      ]
+    },
+    {
+      "id": "P13-LMS-LEGAL-020",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P13-OBSERVABILITY-CODE-019"
+      ]
+    },
+    {
+      "id": "P13-QA-AUTO-021",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P13-LMS-LEGAL-020"
+      ]
+    },
+    {
+      "id": "P13-QA-MANUAL-022",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P13-QA-AUTO-021"
+      ]
+    },
+    {
+      "id": "P13-QA-MANUAL-023",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P13-QA-MANUAL-022"
+      ]
+    },
+    {
+      "id": "P13-LMS-BIZ-024",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P13-QA-MANUAL-023"
+      ]
+    },
+    {
+      "id": "P13-LMS-BIZ-025",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P13-LMS-BIZ-024"
+      ]
+    },
+    {
+      "id": "P13-LMS-DOC-026",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P13-LMS-BIZ-025"
+      ]
+    },
+    {
+      "id": "P13-LMS-GATE-027",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P13-LMS-DOC-026"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-DISC-001",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P13-LMS-GATE-027"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-ADR-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-DISC-001"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-PRIVACY-003",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P14-CLINIC-ADR-002"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-SEC-004",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-PRIVACY-003"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-DATA-005",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P14-CLINIC-SEC-004"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-DATA-005"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-CODE-006"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-CODE-007"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-CODE-008"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-CODE-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-CODE-009"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-SEC-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-CODE-010"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-DATA-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-SEC-011"
+      ]
+    },
+    {
+      "id": "P14-PSYCH-DATA-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-DATA-012"
+      ]
+    },
+    {
+      "id": "P14-PSYCH-CODE-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-PSYCH-DATA-013"
+      ]
+    },
+    {
+      "id": "P14-PSYCH-CODE-015",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P14-PSYCH-CODE-014"
+      ]
+    },
+    {
+      "id": "P14-PSYCH-CODE-016",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-PSYCH-CODE-015"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-CODE-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-PSYCH-CODE-016"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-SAFETY-018",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P14-CLINIC-CODE-017"
+      ]
+    },
+    {
+      "id": "P14-MESSAGE-SEC-019",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-SAFETY-018"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-SEC-020",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-MESSAGE-SEC-019"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-PRIVACY-021",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-SEC-020"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-OPS-022",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-PRIVACY-021"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-DATA-023",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P14-CLINIC-OPS-022"
+      ]
+    },
+    {
+      "id": "P14-QA-AUTO-024",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P14-CLINIC-DATA-023"
+      ]
+    },
+    {
+      "id": "P14-QA-AUTO-025",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P14-QA-AUTO-024"
+      ]
+    },
+    {
+      "id": "P14-QA-MANUAL-026",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P14-QA-AUTO-025"
+      ]
+    },
+    {
+      "id": "P14-SECURITY-SEC-027",
+      "status": "TODO",
+      "owner": "EXTERNAL",
+      "deps": [
+        "P14-QA-MANUAL-026"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-REVIEW-028",
+      "status": "TODO",
+      "owner": "EXTERNAL",
+      "deps": [
+        "P14-SECURITY-SEC-027"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-BIZ-029",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P14-CLINIC-REVIEW-028"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-BIZ-030",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P14-CLINIC-BIZ-029"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-DOC-031",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P14-CLINIC-BIZ-030"
+      ]
+    },
+    {
+      "id": "P14-CLINIC-GATE-032",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P14-CLINIC-DOC-031"
+      ]
+    },
+    {
+      "id": "P15-SPRING-BIZ-001",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P14-CLINIC-GATE-032"
+      ]
+    },
+    {
+      "id": "P15-SPRING-DISC-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-BIZ-001"
+      ]
+    },
+    {
+      "id": "P15-SPRING-ADR-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-DISC-002"
+      ]
+    },
+    {
+      "id": "P15-SPRING-API-004",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-ADR-003"
+      ]
+    },
+    {
+      "id": "P15-SPRING-CODE-005",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P15-SPRING-API-004"
+      ]
+    },
+    {
+      "id": "P15-SPRING-DATA-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-CODE-005"
+      ]
+    },
+    {
+      "id": "P15-SPRING-DATA-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-DATA-006"
+      ]
+    },
+    {
+      "id": "P15-SPRING-SEC-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-DATA-007"
+      ]
+    },
+    {
+      "id": "P15-SPRING-SEC-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-SEC-008"
+      ]
+    },
+    {
+      "id": "P15-SPRING-SEC-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-SEC-009"
+      ]
+    },
+    {
+      "id": "P15-SPRING-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-SEC-010"
+      ]
+    },
+    {
+      "id": "P15-SPRING-CODE-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-CODE-011"
+      ]
+    },
+    {
+      "id": "P15-SPRING-CODE-013",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-CODE-012"
+      ]
+    },
+    {
+      "id": "P15-SPRING-SEC-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-CODE-013"
+      ]
+    },
+    {
+      "id": "P15-SPRING-CODE-015",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-SEC-014"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-016",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-CODE-015"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-017",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-OPS-016"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-018",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-OPS-017"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-019",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-OPS-018"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-020",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-OPS-019"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-021",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-OPS-020"
+      ]
+    },
+    {
+      "id": "P15-QA-AUTO-022",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P15-SPRING-OPS-021"
+      ]
+    },
+    {
+      "id": "P15-QA-AUTO-023",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P15-QA-AUTO-022"
+      ]
+    },
+    {
+      "id": "P15-SECURITY-SEC-024",
+      "status": "TODO",
+      "owner": "EXTERNAL",
+      "deps": [
+        "P15-QA-AUTO-023"
+      ]
+    },
+    {
+      "id": "P15-QA-MANUAL-025",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P15-SECURITY-SEC-024"
+      ]
+    },
+    {
+      "id": "P15-SPRING-OPS-026",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P15-QA-MANUAL-025"
+      ]
+    },
+    {
+      "id": "P15-SPRING-BIZ-027",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P15-SPRING-OPS-026"
+      ]
+    },
+    {
+      "id": "P15-SPRING-DOC-028",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P15-SPRING-BIZ-027"
+      ]
+    },
+    {
+      "id": "P15-SPRING-GATE-029",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P15-SPRING-DOC-028"
+      ]
+    },
+    {
+      "id": "P16-IOS-BIZ-001",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P15-SPRING-GATE-029"
+      ]
+    },
+    {
+      "id": "P16-IOS-DISC-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-BIZ-001"
+      ]
+    },
+    {
+      "id": "P16-IOS-ADR-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-DISC-002"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P16-IOS-ADR-003"
+      ]
+    },
+    {
+      "id": "P16-IOS-OPS-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-CODE-004"
+      ]
+    },
+    {
+      "id": "P16-IOS-SEC-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-OPS-005"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-SEC-006"
+      ]
+    },
+    {
+      "id": "P16-IOS-LEGAL-008",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P16-IOS-CODE-007"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-LEGAL-008"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-CODE-009"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-CODE-010"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-CODE-011"
+      ]
+    },
+    {
+      "id": "P16-IOS-CODE-013",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P16-IOS-CODE-012"
+      ]
+    },
+    {
+      "id": "P16-OBSERVABILITY-CODE-014",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-IOS-CODE-013"
+      ]
+    },
+    {
+      "id": "P16-QA-AUTO-015",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P16-OBSERVABILITY-CODE-014"
+      ]
+    },
+    {
+      "id": "P16-QA-MANUAL-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-QA-AUTO-015"
+      ]
+    },
+    {
+      "id": "P16-QA-MANUAL-017",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-QA-MANUAL-016"
+      ]
+    },
+    {
+      "id": "P16-IOS-OPS-018",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P16-QA-MANUAL-017"
+      ]
+    },
+    {
+      "id": "P16-IOS-DOC-019",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-IOS-OPS-018"
+      ]
+    },
+    {
+      "id": "P16-IOS-BIZ-020",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-IOS-DOC-019"
+      ]
+    },
+    {
+      "id": "P16-IOS-OPS-021",
+      "status": "TODO",
+      "owner": "HUMAN/EXTERNAL",
+      "deps": [
+        "P16-IOS-BIZ-020"
+      ]
+    },
+    {
+      "id": "P16-IOS-SEC-023",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-IOS-OPS-021"
+      ]
+    },
+    {
+      "id": "P16-IOS-GATE-022",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-IOS-OPS-021",
+        "P16-IOS-SEC-023"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-BIZ-001",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P16-IOS-GATE-022"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-DISC-002",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-BIZ-001"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-ADR-003",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-DISC-002"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-CODE-004",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P17-DESKTOP-ADR-003"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-SEC-005",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-CODE-004"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-CODE-006",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-SEC-005"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-CODE-007",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-CODE-006"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-CODE-008",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-CODE-007"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-OPS-009",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-CODE-008"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-OPS-010",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-OPS-009"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-OPS-011",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-OPS-010"
+      ]
+    },
+    {
+      "id": "P17-OBSERVABILITY-CODE-012",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-OPS-011"
+      ]
+    },
+    {
+      "id": "P17-QA-AUTO-013",
+      "status": "TODO",
+      "owner": "AI",
+      "deps": [
+        "P17-OBSERVABILITY-CODE-012"
+      ]
+    },
+    {
+      "id": "P17-QA-MANUAL-014",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P17-QA-AUTO-013"
+      ]
+    },
+    {
+      "id": "P17-QA-MANUAL-015",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P17-QA-MANUAL-014"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-OPS-016",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P17-QA-MANUAL-015"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-BIZ-017",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P17-DESKTOP-OPS-016"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-DOC-018",
+      "status": "TODO",
+      "owner": "BOTH",
+      "deps": [
+        "P17-DESKTOP-BIZ-017"
+      ]
+    },
+    {
+      "id": "P17-DESKTOP-GATE-019",
+      "status": "TODO",
+      "owner": "HUMAN",
+      "deps": [
+        "P17-DESKTOP-DOC-018"
+      ]
+    }
+  ]
+}

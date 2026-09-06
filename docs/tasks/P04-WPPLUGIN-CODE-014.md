@@ -1,4 +1,6 @@
-# P04-WPPLUGIN-CODE-014 — settings API با nonce/capability/sanitize و audit
+<div dir="rtl" align="right">
+
+# P04-WPPLUGIN-CODE-014 — API تنظیمات مشترک سایت با کنترل دسترسی و audit
 
 ## Prompt اجرای همین Task
 
@@ -54,14 +56,17 @@ P04-WPPLUGIN-CODE-014
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-013
-- Blocks: P04-WPPLUGIN-CODE-015
+- Blocks: P04-ENTITLEMENT-CODE-041
 - Requirement source: Master checklist row P04-WPPLUGIN-CODE-014 و Source audit بخش WPPLUGIN
+- مبنای بازبرنامه‌ریزی: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md).
 
 ## هدف قابل اندازه‌گیری
-settings API با nonce/capability/sanitize و audit
+
+API و storage تنظیمات عملیاتی kernel با nonce/capability/validation و audit بین دو host مشترک شود؛ تنظیم ظاهر پوسته جدا و entitlement فقط خواندنی از مرجع مجوز باشد.
 
 ## خروجی مورد انتظار
-unauthorized/CSRF/invalid option tests
+
+تغییر از هر ورودی میزبان یک وضعیت سایت بدهد؛ درخواست غیرمجاز،CSRF،option ناشناخته یا نوشتن مجوز خرید از settings رد شود؛ پنل toggle در 041 است.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,10 +78,11 @@ unauthorized/CSRF/invalid option tests
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- wordpress/carmilla-bridge/**
-- wordpress/**/tests/**
-- docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+
+- `wordpress/packages/carmilla-core/**`
+- adapterهای مرتبط در `wordpress/carmilla-theme/**` و `wordpress/carmilla-bridge/**`
+- `wordpress/**/tests/**` و `tools/test-env/**`
+- `docs/evidence/P04-WPPLUGIN-CODE-014/**` و وضعیت همین کارت در `docs/**`
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -84,29 +90,30 @@ unauthorized/CSRF/invalid option tests
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+
+1. کلیدهای operational و presentation و مجوز خرید را طبقه‌بندی کن.
+2. schema/settings service مشترک و adapter هر دو host را بساز.
+3. nonce/capability/validation و audit تغییرات مجاز را اعمال کن.
+4. تست CSRF،نقش غیرمجاز،کلید ناشناخته و consistency دو ورودی را اجرا کن.
 
 ## Automated tests با command و expected result
 - Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
 - Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: unauthorized/CSRF/invalid option tests
+- معیار اختصاصی: تغییر از هر ورودی میزبان یک وضعیت سایت بدهد؛ درخواست غیرمجاز،CSRF،option ناشناخته یا نوشتن مجوز خرید از settings رد شود؛ پنل toggle در 041 است.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: unauthorized/CSRF/invalid option tests
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+
+- کجا: پیشخوان تنظیمات عملیاتی هر دو میزبان روی سایت آزمایشی.
+- چگونه: یک مقدار مجاز را از هر ورودی ذخیره و نتیجه ورودی دیگر را بررسی کنید؛ سپس کاربر غیرمجاز و کلید entitlement را امتحان کنید.
+- معیار موفقیت: فقط تنظیم عملیاتی مجاز تغییر کند؛ دو ورودی وضعیت یکسان و audit یک تغییر بدهند.
+- نسخه artifact/محیط،نام آزمونگر،تاریخ و شواهد داده مصنوعی ثبت شوند؛ موارد UI/شبکه/مهاجرت تا تأیید انسان `AWAITING_MANUAL_QA` هستند.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+
+- [ ] settings عملیاتی یک storage canonical دارد.
+- [ ] entitlement با API تنظیمات قابل جعل نیست.
+- [ ] CSRF/unauthorized/invalid option رد می‌شوند.
+- [ ] تنظیمات ظاهر پوسته جدا و audit redacted است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,3 +137,5 @@ unauthorized/CSRF/invalid option tests
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

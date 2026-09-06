@@ -1,4 +1,4 @@
-# P15-SPRING-API-004 — قرارداد API و error/pagination/idempotency استاندارد
+# P15-SPRING-API-004 — قرارداد مشترک API Spring و WordPress با parity واقعی
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ P15-SPRING-API-004
 - Depends on: P15-SPRING-ADR-003
 - Blocks: P15-SPRING-CODE-005
 - Requirement source: Master checklist row P15-SPRING-API-004 و Source audit بخش SPRING
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-قرارداد API و error/pagination/idempotency استاندارد
+OpenAPI و contract diff برای عملیات اعلام‌شده KMP با WordPress Shared Core تهیه شود؛ Theme-only/Plugin-only/both سه mode یک provider WordPress باشند.
 
 ## خروجی مورد انتظار
-contract diff با client و WordPress
+endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -73,9 +74,9 @@ contract diff با client و WordPress
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
-- D:\Android\AndroidStudioProjects\ShopServer\Shop\**
+- D:/Android/AndroidStudioProjects/ShopServer/Shop/**
 - docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+- تغییر کلاینت فقط در کارت مستقل؛ قرارداد کلاینت/WordPress در این کارت خواندنی است.
 
 ## Forbidden actions
 - حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
@@ -83,26 +84,26 @@ contract diff با client و WordPress
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش P15 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. تغییر محدود این کارت را در مسیرهای مجاز پیاده یا آزمون کن: OpenAPI و contract diff برای عملیات اعلام‌شده KMP با WordPress Shared Core تهیه شود؛ Theme-only/Plugin-only/both سه mode یک provider WordPress باشند.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - Command: در D:\Android\AndroidStudioProjects\ShopServer\Shop، taskهای Gradle را کشف و test محدود به Scope را اجرا کن.
 - Expected: test profile مستقل از PostgreSQL محلی و exit code 0.
-- معیار اختصاصی: contract diff با client و WordPress
+- معیار اختصاصی: endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: contract diff با client و WordPress
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: Spring staging مستقل و کلاینت متصل به API واقعی آن.
+- چگونه: بدون نصب WordPress، سناریوی کارت را با tenant و داده synthetic اجرا کن؛ درخواست مجاز و غیرمجاز و feature خاموش را مقایسه کن و نتیجه API/DB را با قرارداد بسنج.
+- معیار موفقیت: endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود.
+- tester، تاریخ، environment، fingerprint و نتیجه هر مرحله همراه screenshot/report داده‌زدایی‌شده ثبت شود.
+- تا تأیید انسانی برای تغییر UI/network/migration وضعیت AWAITING_MANUAL_QA بماند؛ QA اجرا‌نشده PASS نشود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

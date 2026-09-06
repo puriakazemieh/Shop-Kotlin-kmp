@@ -50,18 +50,22 @@ P03-MANIFEST-OPS-021
 
 - Status: TODO
 - Phase/Area/Type: P03 / MANIFEST / OPS
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P03-QA-MANUAL-020
-- Blocks: P03-MANIFEST-GATE-022
+- Depends on: P03-QA-REVIEW-023
+- Blocks: P03-ARCH-CODE-024, P03-MANIFEST-GATE-022
 - Requirement source: Master checklist row P03-MANIFEST-OPS-021 و Source audit بخش MANIFEST
 
 ## هدف قابل اندازه‌گیری
-aliasهای legacy با deprecation/telemetry نگه داشته شوند
+
+
+فقط aliasهای legacy موجود را inventory و برای یک چرخه کلاینت با deprecation/telemetry کمینه حفظ کن؛ مسیر قدیمی هیچ قابلیت بالاتر از policy فعلی باز نکند. حذف alias و گسترش manifest در این کارت نیست.
 
 ## خروجی مورد انتظار
-یک client cycle؛ حذف در Task جدا
+
+
+جدول alias→canonical→consumer→زمان خروج، regression سازگاری و عدم bypass؛ مبنای QA جدید P03-QA-MANUAL-027 است و DONE تاریخی QA020 مجوز پذیرش نیست.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +73,7 @@ aliasهای legacy با deprecation/telemetry نگه داشته شوند
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P03-QA-MANUAL-020
+- Dependencyها: P03-QA-REVIEW-023
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

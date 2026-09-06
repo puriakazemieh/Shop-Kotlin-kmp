@@ -1,4 +1,4 @@
-# CT-DATA-DOC-006 — ایجاد و نگه‌داری artifact: `docs/contracts/DATA_OWNERSHIP.md`
+# CT-DATA-DOC-006 — مالکیت سایت و lifecycle داده مشترک دو ZIP
 
 ## Prompt اجرای همین Task
 
@@ -56,12 +56,13 @@ CT-DATA-DOC-006
 - Depends on: ندارد؛ اولین Task صف یا Control مستقل است.
 - Blocks: طبق Gate و نقشه وابستگی Master checklist.
 - Requirement source: Master checklist row CT-DATA-DOC-006 و Source audit بخش DATA
+- مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-ایجاد و نگه‌داری artifact: `docs/contracts/DATA_OWNERSHIP.md`
+docs/contracts/DATA_OWNERSHIP.md owner/read/write/delete/export هر entity و kernel فعال را ثبت کند؛ داده سایت از تنظیمات نمایشی Theme تفکیک شود.
 
 ## خروجی مورد انتظار
-owner/read/write/delete/export هر entity
+یک schema authority؛ خاموشی آخرین host اجرا را متوقف و داده را حفظ کند؛ انتقال host، license و cleanup صریح.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -82,25 +83,25 @@ owner/read/write/delete/export هر entity
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
-1. بخش CONTROL در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+1. مرجع محصولات مستقل، ADR-006 و ردیف Master مربوط را همراه dependencyهای همین کارت بخوان.
+2. baseline و مسیر فعلی همین قابلیت را ثبت کن؛ موضوع خارج از Scope یا بزرگ‌تر از M را قبل از اجرا به child Task محدود تقسیم کن.
+3. قرارداد/مستند این کارت را با موارد زیر تطبیق و تصمیم‌های باز را ownerدار ثبت کن: docs/contracts/DATA_OWNERSHIP.md owner/read/write/delete/export هر entity و kernel فعال را ثبت کند؛ داده سایت از تنظیمات نمایشی Theme تفکیک شود.
+4. معیار اختصاصی را با Evidence قابل بازتولید بررسی کن: یک schema authority؛ خاموشی آخرین host اجرا را متوقف و داده را حفظ کند؛ انتقال host، license و cleanup صریح.
+5. گزارش را با artifact/SKU/backend/host مرتبط ثبت کن؛ کار UI/network/migration تا تأیید انسانی AWAITING_MANUAL_QA بماند؛ به کارت بعدی نرو.
 
 ## Automated tests با command و expected result
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
-- معیار اختصاصی: owner/read/write/delete/export هر entity
+- معیار اختصاصی: یک schema authority؛ خاموشی آخرین host اجرا را متوقف و داده را حفظ کند؛ انتقال host، license و cleanup صریح.
 
 ## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: owner/read/write/delete/export هر entity
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+- کجا: خروجی مستند/ماتریس/گزارش همین کارت در docs و Evidence مربوط به artifact مشخص.
+- چگونه: reviewer مسئول، سطرهای هدف این کارت را با SKU، قرارداد و شواهد واقعی تطبیق دهد؛ مورد تأییدنشده را همراه owner/blocker ثبت کند.
+- معیار موفقیت: یک schema authority؛ خاموشی آخرین host اجرا را متوقف و داده را حفظ کند؛ انتقال host، license و cleanup صریح.
+- بازبینی سند به معنی تست دستی محصول یا مجوز انتشار نیست؛ authority همین کارت و Gateهای لازم حفظ شوند.
+- reviewer، تاریخ، نسخه سند/artifact و نتیجه PASS/FAIL/BLOCKED ثبت شود.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
+- [ ] یک schema authority؛ خاموشی آخرین host اجرا را متوقف و داده را حفظ کند؛ انتقال host، license و cleanup صریح.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
 - [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.

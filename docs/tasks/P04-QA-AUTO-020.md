@@ -1,4 +1,6 @@
-# P04-QA-AUTO-020 — ماتریس خودکار Theme-only، Bridge-only، co-install و upgrade
+<div dir="rtl" align="right">
+
+# P04-QA-AUTO-020 — رگرسیون مستقل و هم‌زمان دو میزبان با SKU واقعی
 
 ## Prompt اجرای همین Task
 
@@ -53,15 +55,17 @@ P04-QA-AUTO-020
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P04-CI-CODE-019
+- Depends on: P04-QA-AUTO-048
 - Blocks: P04-QA-MANUAL-021
 - Requirement source: Master checklist row P04-QA-AUTO-020 و Source audit بخش QA
 
 ## هدف قابل اندازه‌گیری
-clean install،upgrade،deactivate/reactivate،uninstall،theme switch و kernel mismatch در سه mode با fixtureهای feature manifest اجرا شود.
+
+روی ZIPهای ساخته‌شده از manifest، lifecycle/route/CPT/hook/data parity را در Theme-only،Plugin-only و both اجرا کن؛ تست مجوز048 پیش‌نیاز است.
 
 ## خروجی مورد انتظار
-دو نسخه قبلی fixture،route/CPT/hook inventory،count/data checksum و parity contract سبز باشند؛ duplicate registration و data loss صفر.
+
+فیچر true دارای کد/UI/API و قابل استفاده؛ false دارای هیچ module/resource/registration اختصاصی نیست. حذف یک میزبان داده را حفظ کند؛ فقط یک write/cron/build ثبت شود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
@@ -69,7 +73,7 @@ clean install،upgrade،deactivate/reactivate،uninstall،theme switch و kernel
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-CI-CODE-019
+- Dependencyها: P04-QA-AUTO-048
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
@@ -86,6 +90,8 @@ clean install،upgrade،deactivate/reactivate،uninstall،theme switch و kernel
 - عملیات Production یا migration تخریبی.
 
 ## مراحل پیاده‌سازی
+
+1. قرارداد `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` و مانیفست بسته را با inventory ZIP همین SKU تطبیق بده؛ نتیجه این کنترل را همراه مراحل زیر ثبت کن.
 1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
 2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
 3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
@@ -106,6 +112,8 @@ clean install،upgrade،deactivate/reactivate،uninstall،theme switch و kernel
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
+
+- [ ] فیچر true دارای کد/UI/API و قابل استفاده؛ false دارای هیچ module/resource/registration اختصاصی نیست. حذف یک میزبان داده را حفظ کند؛ فقط یک write/cron/build ثبت شود.
 - [ ] خروجی با هدف و validation این کارت منطبق است.
 - [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
 - [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
@@ -133,3 +141,5 @@ clean install،upgrade،deactivate/reactivate،uninstall،theme switch و kernel
 - Evidence paths:
 - Remaining risks/blockers:
 - Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+
+</div>

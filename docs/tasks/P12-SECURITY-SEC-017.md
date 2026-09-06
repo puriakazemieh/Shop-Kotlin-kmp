@@ -53,7 +53,7 @@ P12-SECURITY-SEC-017
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P12-QA-AUTO-016
+- Depends on: P12-QA-MANUAL-022
 - Blocks: P12-BUILDER-BIZ-018
 - Requirement source: Master checklist row P12-SECURITY-SEC-017 و Source audit بخش SECURITY
 
@@ -69,7 +69,7 @@ RCE/supply-chain/tenant escape/secrets
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P12-QA-AUTO-016
+- Dependencyها: P12-QA-MANUAL-022
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
