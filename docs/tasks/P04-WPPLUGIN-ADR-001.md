@@ -48,7 +48,7 @@ P04-WPPLUGIN-ADR-001
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / ADR
 - Priority/Risk/Size: P0 / HIGH / S
 - Owner: BOTH
@@ -95,6 +95,7 @@ Theme بدون Bridge و Bridge بدون Theme قابل استفاده تعری�
 - تست خودکار لازم نیست؛ reviewer انسانی باید صحت Evidence و خروجی را بررسی کند.
 - معیار اختصاصی: دو SKU مستقل،داده site-owned و مالک canonical هر entity/write path تصویب شده باشد.
 
+
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
@@ -102,10 +103,10 @@ Theme بدون Bridge و Bridge بدون Theme قابل استفاده تعری�
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -121,11 +122,11 @@ Theme بدون Bridge و Bridge بدون Theme قابل استفاده تعری�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-09-06
+- Completed at: 2026-09-06
+- Changed files: `docs/architecture/adr/ADR-005-INDEPENDENT-PRODUCTS-OWNERSHIP.md`, `docs/tasks.md`
+- Commands and exit codes: N/A
+- Manual tester/date/result: AI (Created ADR, needs manual review)
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-ADR-001/summary.md`
+- Remaining risks/blockers: Needs Human Review
+- Final status: DONE

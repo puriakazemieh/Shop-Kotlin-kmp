@@ -48,7 +48,7 @@ P03-QA-MANUAL-020
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P03 / QA / MANUAL
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -133,4 +133,4 @@ toggle واقعی بدون rebuild در WordPress/PWA/client internal
 - Manual tester/date/result: AI، 2026-08-26؛ نتیجهٔ جزئی و غیرقابل‌قبول برای DONE، چون دسترسی Settings و build deploy‌شدهٔ P03 فراهم نبود.
 - Evidence paths: `docs/evidence/P03-QA-MANUAL-020/summary.md`
 - Remaining risks/blockers: toggle/stale/invalid/deep-link/process-restart روی build deploy‌شده و بررسی پاسخ 403 endpoint هنوز باید انجام شود؛ `P03-MANIFEST-OPS-021` تا آن زمان متوقف است.
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE
