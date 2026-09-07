@@ -1,0 +1,11 @@
+[
+  {"name":"home","url":"/"},
+  {"name":"shop","url":"/?post_type=product"},
+  {"name":"account","url":"/?page_id=8"},
+  {"name":"product","url":"/?post_type=product&p=10"},
+  {"name":"blog","url":"/?post_type=post"},
+  {"name":"courses","url":"/?post_type=cb_course"},
+  {"name":"course","url":"/?post_type=cb_course&p=16"},
+  {"name":"therapists","url":"/?post_type=cb_therapist"},
+  {"name":"psychtests","url":"/?post_type=cb_psychtest"}
+]
