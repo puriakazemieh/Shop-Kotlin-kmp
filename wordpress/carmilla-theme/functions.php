@@ -10,6 +10,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'CARMILLA_THEME_VERSION', '0.8.0' );
 
+// 1. Load Shared Core if not already loaded by the Plugin
+if ( ! class_exists( 'Carmilla_Kernel' ) ) {
+     = get_template_directory() . '/packages/carmilla-core/Carmilla_Kernel.php';
+    if ( file_exists(  ) ) {
+        require_once ;
+    }
+}
+
+// 2. Initialize Theme-specific functionality with Kernel
+add_action('after_setup_theme', 'carmilla_theme_boot_kernel', 5);
+function carmilla_theme_boot_kernel() {
+    if ( class_exists( 'Carmilla_Kernel' ) ) {
+        \Carmilla_Kernel::boot('theme', CARMILLA_THEME_VERSION);
+    }
+}
+
+
 /**
  * Helper to include files safely.
  */
