@@ -79,13 +79,13 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+- Started at: 2026-09-06T18:32
+- Completed at: 2026-09-06T18:42
+- Changed files: `App.kt`, `ShopApplication.kt`, `main.kt` (Web/JVM), `MainViewController.kt` (iOS), various capabilities Tests.
+- Commands and exit codes: JVM/JS Compile (0), JVM Tests (0), assembleDebug (0)
+- Manual tester/date/build/result: User / 2026-09-07 / Local Debug / Success
+- Evidence paths: `docs/evidence/P03-ARCH-CODE-024B/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

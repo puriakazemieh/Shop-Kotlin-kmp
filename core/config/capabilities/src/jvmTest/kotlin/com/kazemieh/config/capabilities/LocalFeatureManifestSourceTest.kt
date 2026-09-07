@@ -15,7 +15,7 @@ class LocalFeatureManifestSourceTest {
                 commerceCore = true,
                 commercePhysical = true,
                 commerceDigital = false
-            )
+            , ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
         ).resolveFor(BackendKind.WORDPRESS)
 
         assertTrue(resolved.isEnabled("content.blog"))
@@ -35,7 +35,7 @@ class LocalFeatureManifestSourceTest {
                 commerceCore = true,
                 commercePhysical = true,
                 commerceDigital = true
-            )
+            , ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet")))
         )
 
         assertFalse(invalid.resolveFor(BackendKind.WORDPRESS).isEnabled("commerce.core"))

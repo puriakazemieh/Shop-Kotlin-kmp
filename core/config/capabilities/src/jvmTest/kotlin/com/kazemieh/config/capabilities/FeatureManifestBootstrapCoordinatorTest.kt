@@ -24,7 +24,7 @@ class FeatureManifestBootstrapCoordinatorTest {
     fun `remote failure keeps safe local fallback and retry only calls remote`() = runBlocking {
         var calls = 0
         val client = client(RemoteManifestTransport { calls++; RemoteManifestResponse(503, "", null) })
-        val coordinator = FeatureManifestBootstrapCoordinator(local, client, InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet", ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))))), namespace, { 100L })
+        val coordinator = FeatureManifestBootstrapCoordinator(local, client, InMemoryLastKnownGoodManifestCache(ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))), namespace, { 100L })
         val first = coordinator.load()
         coordinator.retry()
         assertTrue(first is ManifestBootstrapState.Error)
