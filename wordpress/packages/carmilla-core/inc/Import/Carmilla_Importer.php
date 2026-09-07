@@ -169,6 +169,66 @@ class Carmilla_Importer {
         return true;
     }
 
+    public function rollback_import() {
+        if (empty($this->manifest) || !isset($this->manifest['chunks'])) {
+            return new \WP_Error('invalid_manifest', 'Manifest is missing or invalid.');
+        }
+
+        global $wpdb;
+        $results = ['deleted' => 0, 'skipped_modified' => 0];
+
+        foreach ($this->manifest['chunks'] as $chunk) {
+            $pack_id = $chunk['pack_id'] ?? 'default_pack';
+            $feature = $chunk['feature'] ?? 'core';
+            $schema = $chunk['schema'] ?? '';
+            $data = $chunk['data'] ?? [];
+
+            switch ($schema) {
+                case 'wp_options':
+                    foreach ($data as $key => $original_value) {
+                        $current_value = get_option($key);
+                        if ($current_value == $original_value) {
+                            delete_option($key);
+                            $wpdb->delete("{$wpdb->prefix}carmilla_seed_objects", ['pack_id' => $pack_id, 'feature' => $feature, 'seed_entity_id' => $key]);
+                            $results['deleted']++;
+                        } else {
+                            $results['skipped_modified']++;
+                        }
+                    }
+                    break;
+                case 'wp_posts':
+                    foreach ($data as $post_data) {
+                        $seed_id = $post_data['seed_id'];
+                        $wp_entity_id = $wpdb->get_var($wpdb->prepare(
+                            "SELECT wp_entity_id FROM {$wpdb->prefix}carmilla_seed_objects WHERE seed_entity_id = %s AND wp_entity_type = 'post'",
+                            $seed_id
+                        ));
+
+                        if ($wp_entity_id) {
+                            $post = get_post($wp_entity_id);
+                            if ($post && $post->post_date === $post->post_modified) {
+                                wp_delete_post($wp_entity_id, true);
+                                $wpdb->delete("{$wpdb->prefix}carmilla_seed_objects", ['wp_entity_id' => $wp_entity_id]);
+                                $results['deleted']++;
+                            } else {
+                                $results['skipped_modified']++;
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    do_action('carmilla_rollback_chunk_' . $schema, $data, $pack_id, $feature);
+                    break;
+            }
+        }
+        
+        // Reset state
+        delete_option($this->state_key);
+        delete_option($this->cursor_key);
+
+        return $results;
+    }
+
     private function log_seed_object($pack_id, $feature, $wp_entity_type, $wp_entity_id, $seed_entity_id) {
         global $wpdb;
         $wpdb->insert(
