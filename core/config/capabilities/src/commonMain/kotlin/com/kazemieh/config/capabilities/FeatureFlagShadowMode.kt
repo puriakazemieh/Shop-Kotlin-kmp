@@ -39,6 +39,6 @@ class FeatureFlagShadowMode(private val reporter: FeatureFlagShadowReporter) {
                 manifestOnlyCount = manifestOnly
             )
         )
-        return legacy
+        return manifest
     }
 }

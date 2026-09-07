@@ -62,6 +62,8 @@ import com.kazemieh.config.capabilities.ProfileAssetUrlResolver
 import com.kazemieh.config.capabilities.ProfileEndpointResolver
 import com.kazemieh.config.capabilities.privateSessionNamespace
 import com.kazemieh.config.capabilities.LocalFeatureManifestSource
+import com.kazemieh.config.capabilities.EffectiveFeatureStore
+import com.kazemieh.config.capabilities.DefaultEffectiveFeatureStore
 import com.kazemieh.config.capabilities.CompiledFeatureCeiling
 import com.kazemieh.config.capabilities.ProductBuildSpec
 import com.kazemieh.details.di.detailsModule
@@ -94,12 +96,15 @@ fun App() {
 
     val brand = koinInject<BrandConfig>()
     val bootstrapCoordinator = koinInject<FeatureManifestBootstrapCoordinator>()
+    val featureStore = koinInject<EffectiveFeatureStore>()
     val routeGuard = koinInject<FeatureRouteGuard>()
     var bootstrapState by remember { mutableStateOf<ManifestBootstrapState>(bootstrapCoordinator.state) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(bootstrapCoordinator) {
-        bootstrapState = bootstrapCoordinator.load()
+        val state = bootstrapCoordinator.load()
+        featureStore.update(state)
+        bootstrapState = state
     }
 
     AppTheme(
@@ -119,7 +124,11 @@ fun App() {
                         AppNavHost(routeGuard = routeGuard)
                         Column(Modifier.align(Alignment.TopCenter).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("پیکربندی راه‌دور در دسترس نیست؛ حالت امن فعال است.", color = MaterialTheme.colorScheme.error)
-                            Button(onClick = { scope.launch { bootstrapState = bootstrapCoordinator.retry() } }) {
+                            Button(onClick = { scope.launch { 
+                                val state = bootstrapCoordinator.retry()
+                                featureStore.update(state)
+                                bootstrapState = state 
+                            } }) {
                                 Text("تلاش دوباره")
                             }
                         }
@@ -170,8 +179,9 @@ fun initKoin(sku: String, apiBaseUrlOverride: String? = null, config: KoinAppDec
                     val source = LocalFeatureManifestSource(localConfig, ceiling = get())
                     source.resolveFor(get<ProductBuildSpec>().backendProfile.kind)
                 }
-                single { FeatureUseCaseGuard(get()) }
-                single { FeatureRouteGuard(get()) }
+                single<EffectiveFeatureStore> { DefaultEffectiveFeatureStore(get()) }
+                single { FeatureUseCaseGuard(get<EffectiveFeatureStore>()) }
+                single { FeatureRouteGuard(get<EffectiveFeatureStore>()) }
                 single {
                     FeatureManifestBootstrapCoordinator(
                         localFeatures = get(),

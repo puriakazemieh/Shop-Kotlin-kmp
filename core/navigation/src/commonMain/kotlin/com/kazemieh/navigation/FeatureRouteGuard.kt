@@ -8,10 +8,13 @@ sealed interface RouteGuardDecision {
 }
 
 /** نگاشت مرکزی route به capability؛ ورودی مستقیم خاموش به home امن برمی‌گردد. */
-class FeatureRouteGuard(private val features: ResolvedFeatures) {
+class FeatureRouteGuard(private val store: com.kazemieh.config.capabilities.EffectiveFeatureStore) {
+    @Deprecated("Use EffectiveFeatureStore", ReplaceWith("FeatureRouteGuard(com.kazemieh.config.capabilities.DefaultEffectiveFeatureStore(features))"))
+    constructor(features: com.kazemieh.config.capabilities.ResolvedFeatures) : this(com.kazemieh.config.capabilities.DefaultEffectiveFeatureStore(features))
+
     fun checkRoute(route: String): RouteGuardDecision {
         val featureId = featureIdFor(route) ?: return RouteGuardDecision.Allowed
-        return if (features.isEnabled(featureId)) RouteGuardDecision.Allowed
+        return if (store.features.value.isEnabled(featureId)) RouteGuardDecision.Allowed
         else RouteGuardDecision.Blocked(route, featureId)
     }
 

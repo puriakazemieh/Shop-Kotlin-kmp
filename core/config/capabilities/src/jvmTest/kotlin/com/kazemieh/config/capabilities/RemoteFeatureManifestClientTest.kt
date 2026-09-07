@@ -42,7 +42,7 @@ class RemoteFeatureManifestClientTest {
         val result = RemoteFeatureManifestClient(
             profile = profile,
             expectedTenantId = "tenant-1",
-            transport = RemoteManifestTransport { RemoteManifestResponse(304, "", null, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))) },
+            transport = RemoteManifestTransport { RemoteManifestResponse(304, "", null) },
             ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))
         ).fetch("\"cached\"")
 
@@ -61,7 +61,7 @@ class RemoteFeatureManifestClientTest {
             val result = RemoteFeatureManifestClient(
                 profile = profile,
                 expectedTenantId = "tenant-1",
-                transport = RemoteManifestTransport { RemoteManifestResponse(200, body, null, ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))) },
+                transport = RemoteManifestTransport { RemoteManifestResponse(200, body, null) },
                 ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))
             ).fetch()
             assertTrue(result is RemoteManifestFetchResult.Failure)
@@ -70,7 +70,7 @@ class RemoteFeatureManifestClientTest {
         val timeout = RemoteFeatureManifestClient(
             profile = profile,
             expectedTenantId = "tenant-1",
-            transport = RemoteManifestTransport { error("timeout", ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))) },
+            transport = RemoteManifestTransport { error("timeout") },
             ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))
         ).fetch()
         assertTrue(timeout is RemoteManifestFetchResult.Failure)

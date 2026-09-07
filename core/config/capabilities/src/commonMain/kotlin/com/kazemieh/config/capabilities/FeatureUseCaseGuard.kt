@@ -9,10 +9,13 @@ sealed interface FeatureCallResult<out T> {
  * guard مشترک برای use-case، repository و worker. در حالت خاموش، block اصلاً
  * اجرا نمی‌شود؛ بنابراین هیچ request شبکه یا side effect پس از آن رخ نمی‌دهد.
  */
-class FeatureUseCaseGuard(private val features: ResolvedFeatures) {
+class FeatureUseCaseGuard(private val store: EffectiveFeatureStore) {
+    @Deprecated("Use EffectiveFeatureStore", ReplaceWith("FeatureUseCaseGuard(DefaultEffectiveFeatureStore(features))"))
+    constructor(features: ResolvedFeatures) : this(DefaultEffectiveFeatureStore(features))
+
     suspend fun <T> execute(featureId: String, block: suspend () -> T): FeatureCallResult<T> =
-        if (features.isEnabled(featureId)) FeatureCallResult.Executed(block())
+        if (store.features.value.isEnabled(featureId)) FeatureCallResult.Executed(block())
         else FeatureCallResult.Disabled
 
-    fun isEnabled(featureId: String): Boolean = features.isEnabled(featureId)
+    fun isEnabled(featureId: String): Boolean = store.features.value.isEnabled(featureId)
 }
