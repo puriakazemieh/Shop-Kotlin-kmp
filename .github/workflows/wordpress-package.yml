@@ -18,6 +18,7 @@ on:
     paths:
       - 'wordpress/carmilla-theme/**'
       - 'wordpress/carmilla-bridge/**'
+      - 'wordpress/packages/carmilla-core/**'
       - '.github/workflows/wordpress-package.yml'
 
 permissions:
