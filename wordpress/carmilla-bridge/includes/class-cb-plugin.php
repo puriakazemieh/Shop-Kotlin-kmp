@@ -28,6 +28,7 @@ class CB_Plugin {
 		$integrations_controller = new CB_Integrations_Controller();
 		$integrations_controller->init();
 		CB_Mail_Adapter::init();
+		CB_Message_Queue::init();
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		// Apply the manifest policy before any controller callback executes.
 		add_filter( 'rest_pre_dispatch', array( 'CB_Manifest_Controller', 'guard_rest_request' ), 10, 3 );
