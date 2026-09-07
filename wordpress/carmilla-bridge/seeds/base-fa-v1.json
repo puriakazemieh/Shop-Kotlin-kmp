@@ -1,0 +1,88 @@
+﻿{
+  "version": "1.0",
+  "pack_id": "base-fa-v1",
+  "chunks": [
+    {
+      "schema": "wp_posts",
+      "feature": "core",
+      "dependencies": [],
+      "data": [
+        {
+          "seed_id": "page-home",
+          "title": "خانه",
+          "content": "<!-- wp:paragraph --><p>به فروشگاه ما خوش آمدید.</p><!-- /wp:paragraph -->",
+          "type": "page"
+        },
+        {
+          "seed_id": "page-about",
+          "title": "درباره ما",
+          "content": "<!-- wp:paragraph --><p>توضیحات درباره ما در اینجا قرار می‌گیرد.</p><!-- /wp:paragraph -->",
+          "type": "page"
+        },
+        {
+          "seed_id": "page-contact",
+          "title": "تماس با ما",
+          "content": "<!-- wp:paragraph --><p>اطلاعات تماس در اینجا قرار می‌گیرد.</p><!-- /wp:paragraph -->",
+          "type": "page"
+        },
+        {
+          "seed_id": "page-privacy",
+          "title": "حریم خصوصی",
+          "content": "<!-- wp:paragraph --><p>سیاست حفظ حریم خصوصی</p><!-- /wp:paragraph -->",
+          "type": "page"
+        },
+        {
+          "seed_id": "page-terms",
+          "title": "شرایط و قوانین",
+          "content": "<!-- wp:paragraph --><p>شرایط استفاده از خدمات فروشگاه.</p><!-- /wp:paragraph -->",
+          "type": "page"
+        },
+        {
+          "seed_id": "post-1",
+          "title": "معرفی فروشگاه",
+          "content": "اولین نوشته بلاگ.",
+          "type": "post"
+        },
+        {
+          "seed_id": "post-2",
+          "title": "راهنمای خرید",
+          "content": "نحوه ثبت سفارش.",
+          "type": "post"
+        },
+        {
+          "seed_id": "post-3",
+          "title": "نحوه ارسال",
+          "content": "اطلاعات مربوط به روش‌های ارسال کالا.",
+          "type": "post"
+        },
+        {
+          "seed_id": "post-4",
+          "title": "شرایط بازگشت کالا",
+          "content": "چگونه کالای خود را مرجوع کنیم.",
+          "type": "post"
+        },
+        {
+          "seed_id": "post-5",
+          "title": "سوالات متداول",
+          "content": "پاسخ به سوالات رایج شما.",
+          "type": "post"
+        },
+        {
+          "seed_id": "post-6",
+          "title": "جشنواره فروش ویژه",
+          "content": "تخفیف‌های ویژه برای مشتریان عزیز.",
+          "type": "post"
+        }
+      ]
+    },
+    {
+      "schema": "wp_options",
+      "feature": "core",
+      "dependencies": [],
+      "data": {
+        "blogname": "فروشگاه کارمیلا",
+        "blogdescription": "نمونه آزمایشی کارمیلا"
+      }
+    }
+  ]
+}
