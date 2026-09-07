@@ -19,8 +19,8 @@ class CB_SMS_HTTP_Adapter {
         $api_key = \Carmilla\Core\Settings\MessageSettings::decrypt_secret($encrypted_key);
         $method  = $settings['sms_method'] ?? 'POST';
 
-        if (empty($api_url)) {
-            return new WP_Error('missing_config', 'SMS provider URL is not configured.');
+        if (empty($api_url) || strpos($api_url, 'https://') !== 0) {
+            return new WP_Error('invalid_config', 'SMS provider URL must be configured and use HTTPS.');
         }
 
         // Masking the API key in any logged context
@@ -40,10 +40,12 @@ class CB_SMS_HTTP_Adapter {
             'method'  => $method,
             'headers' => $headers,
             'body'    => json_encode($body),
-            'timeout' => 15
+            'timeout' => 15,
+            'redirection' => 0 // Prevent unsafe redirects
         ];
 
-        $response = wp_remote_request($api_url, $args);
+        // Use wp_safe_remote_request for SSRF defense (rejects loopback, private IPs)
+        $response = wp_safe_remote_request($api_url, $args);
 
         if (is_wp_error($response)) {
             return $response;
