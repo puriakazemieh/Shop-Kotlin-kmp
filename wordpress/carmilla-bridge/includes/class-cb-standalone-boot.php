@@ -141,6 +141,7 @@ class CB_Standalone_Boot {
 			'class-cb-admin-clinic-controller.php',
 			'class-cb-admin-b2b-controller.php',
 			'class-cb-admin-bundle-controller.php',
+			'class-cb-integrations-controller.php',
 			'class-cb-plugin.php',
 		);
 

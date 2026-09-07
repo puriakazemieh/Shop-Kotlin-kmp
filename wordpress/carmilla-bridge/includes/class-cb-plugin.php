@@ -25,6 +25,8 @@ class CB_Plugin {
 	private function __construct() {
 		CB_CPT::boot();
 		$manifest_controller = new CB_Manifest_Controller();
+		$integrations_controller = new CB_Integrations_Controller();
+		$integrations_controller->init();
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		// Apply the manifest policy before any controller callback executes.
 		add_filter( 'rest_pre_dispatch', array( 'CB_Manifest_Controller', 'guard_rest_request' ), 10, 3 );
