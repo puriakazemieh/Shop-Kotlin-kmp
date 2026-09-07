@@ -145,6 +145,7 @@ class CB_Standalone_Boot {
 			'class-cb-mail-adapter.php',
 			'class-cb-sms-http-adapter.php',
 			'class-cb-template-engine.php',
+			'class-cb-message-queue.php',
 			'class-cb-plugin.php',
 		);
 
