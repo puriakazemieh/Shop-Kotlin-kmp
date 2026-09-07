@@ -10,6 +10,11 @@ require_once __DIR__ . '/inc/Catalog/EntitlementSchema.php';
 require_once __DIR__ . '/inc/Catalog/EntitlementClaims.php';
 require_once __DIR__ . '/inc/Catalog/DependencyResolver.php';
 require_once __DIR__ . '/inc/Migration/SchemaRunner.php';
+require_once __DIR__ . '/inc/Entitlement/EntitlementResolver.php';
+require_once __DIR__ . '/inc/Adapter/WooCommerceAdapter.php';
+require_once __DIR__ . '/inc/Rest/RestInfrastructure.php';
+require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
+require_once __DIR__ . '/inc/Health/HealthChecker.php';
 
 /**
  * Carmilla Shared Kernel
@@ -17,6 +22,7 @@ require_once __DIR__ . '/inc/Migration/SchemaRunner.php';
  * the base schema, capabilities, and migrations without duplicating boots.
  */
 class Carmilla_Kernel {
+    public const VERSION = '1.0.0';
     private static $booted_by = [];
     private static $version = '1.0.0';
 
@@ -38,6 +44,9 @@ class Carmilla_Kernel {
         // Run core migrations
         \Carmilla\Core\Migration\SchemaRunner::run_migrations();
         
+        // Register custom capabilities to administrator role
+        \Carmilla\Core\Capabilities\CapabilityRegistry::register_capabilities();
+
         // Initialize Entitlements and Claims
         add_action('init', [self::class, 'resolve_features']);
     }
@@ -45,7 +54,7 @@ class Carmilla_Kernel {
     public static function resolve_features() {
         // Retrieve fixtures or actual claims here
         $claims = \Carmilla\Core\Catalog\EntitlementClaims::get_fully_unlocked_fixture();
-        $active_features = \Carmilla\Core\Catalog\EntitlementClaims::resolve_effective_features($claims);
+        $active_features = \Carmilla\Core\Entitlement\EntitlementResolver::resolve($claims);
 
         // Store active features in memory or global for this request
         global $carmilla_active_features;
