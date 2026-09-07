@@ -12,9 +12,9 @@ define( 'CARMILLA_THEME_VERSION', '0.8.0' );
 
 // 1. Load Shared Core if not already loaded by the Plugin
 if ( ! class_exists( 'Carmilla_Kernel' ) ) {
-     = get_template_directory() . '/packages/carmilla-core/Carmilla_Kernel.php';
-    if ( file_exists(  ) ) {
-        require_once ;
+    \ = get_template_directory() . '/packages/carmilla-core/Carmilla_Kernel.php';
+    if ( file_exists( \ ) ) {
+        require_once \;
     }
 }
 
@@ -264,3 +264,24 @@ function carmilla_html_dir( $output ) {
 	return $output;
 }
 add_filter( 'language_attributes', 'carmilla_html_dir' );
+
+/**
+ * P04-WPTHEME-CODE-016: Theme Setup
+ */
+add_action( 'after_setup_theme', 'carmilla_theme_setup' );
+function carmilla_theme_setup() {
+    add_theme_support( 'title-tag' );
+    add_theme_support( 'post-thumbnails' );
+    add_theme_support( 'html5', [ 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ] );
+    add_theme_support( 'woocommerce' );
+}
+
+add_action( 'wp_enqueue_scripts', 'carmilla_theme_scripts' );
+function carmilla_theme_scripts() {
+    wp_enqueue_style( 'carmilla-style', get_stylesheet_uri(), [], CARMILLA_THEME_VERSION );
+    
+    // Add RTL support dynamically
+    if ( is_rtl() ) {
+        wp_enqueue_style( 'carmilla-rtl', get_template_directory_uri() . '/rtl.css', ['carmilla-style'], CARMILLA_THEME_VERSION );
+    }
+}

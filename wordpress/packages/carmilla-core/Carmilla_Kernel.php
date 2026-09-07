@@ -49,6 +49,14 @@ class Carmilla_Kernel {
 
         // Initialize Entitlements and Claims
         add_action('init', [self::class, 'resolve_features']);
+        // WooCommerce Compatibility
+        require_once __DIR__ . '/inc/Adapter/WooCompat.php';
+        \Carmilla\Core\Adapter\WooCompat::init();
+
+        // Register admin page
+        require_once __DIR__ . '/inc/Settings/AdminSettingsPage.php';
+        \Carmilla\Core\Settings\AdminSettingsPage::init();
+
     }
 
     public static function resolve_features() {
