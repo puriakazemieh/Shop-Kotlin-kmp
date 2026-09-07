@@ -220,4 +220,7 @@ sealed class Screen {
     @Serializable
     data object Comparison : Screen()
 
+    @Serializable
+    data class FeatureUnavailable(val featureId: String) : Screen()
+
 }

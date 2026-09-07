@@ -31,6 +31,7 @@ kotlin {
 
                 implementation(libs.coil.compose)
                 implementation(project(":core:designSystem"))
+                implementation(project(":core:config:capabilities"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
                 implementation(project(":feature:cart"))

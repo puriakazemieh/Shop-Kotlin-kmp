@@ -74,6 +74,17 @@ import com.kazemieh.clinic.homework.HomeworkScreen
 import com.kazemieh.clinic.journal.JournalScreen
 import com.kazemieh.clinic.match.TherapistMatchScreen
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import org.koin.compose.koinInject
+import com.kazemieh.config.capabilities.EffectiveFeatureStore
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.ui.Alignment
 
 @Composable
 fun AppNavHost(
@@ -82,14 +93,31 @@ fun AppNavHost(
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
+    val store = koinInject<EffectiveFeatureStore>()
+    val features by store.features.collectAsState()
+    val currentEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentEntry?.destination?.route
 
     BindBrowserHistory(navController)
+
+    LaunchedEffect(features, currentRoute) {
+        if (currentRoute != null) {
+            val decision = routeGuard?.checkRoute(currentRoute)
+            if (decision is RouteGuardDecision.Blocked) {
+                navController.navigate(Screen.FeatureUnavailable(decision.featureId)) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
 
     DisposableEffect(navController, routeGuard) {
         val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
             val route = destination.route ?: return@OnDestinationChangedListener
-            if (routeGuard?.checkRoute(route) is RouteGuardDecision.Blocked) {
-                controller.navigate(Screen.HomeGraph()) {
+            val decision = routeGuard?.checkRoute(route)
+            if (decision is RouteGuardDecision.Blocked) {
+                controller.navigate(Screen.FeatureUnavailable(decision.featureId)) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
                 }
@@ -337,4 +365,20 @@ inline fun <reified VM : ViewModel, reified T : Any> sharedViewModel(
         navController.getBackStackEntry(navGraph)
     }
     return koinViewModel(viewModelStoreOwner = parentEntry)
+}
+
+
+@Composable
+fun FeatureUnavailableScreen(featureId: String, onGoHome: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("قابلیت '${featureId}' در حال حاضر غیرفعال است.")
+            Button(onClick = onGoHome) {
+                Text("بازگشت به خانه")
+            }
+        }
+    }
 }

@@ -45,6 +45,9 @@ import com.kazemieh.main.component.HomeTopBar
 import com.kazemieh.main.component.SideNavRail
 import com.kazemieh.main.component.TitleTopBar
 import com.kazemieh.designsystem.brand.BrandConfig
+import com.kazemieh.config.capabilities.EffectiveFeatureStore
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.kazemieh.designsystem.windowSizeClass
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
@@ -93,6 +96,8 @@ fun MainGraphScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val brand = koinInject<BrandConfig>()
+    val store = koinInject<EffectiveFeatureStore>()
+    val features by store.features.collectAsState()
     val navController = rememberNavController()
 
     // Switch to cart if needed when screen is loaded
@@ -192,12 +197,12 @@ fun MainGraphScreen(
                     isAdmin = state.isAdmin,
                     userName = state.userName,
                     userPhone = state.userPhone,
-                    showAcademy = brand.features.academy,
-                    showClinic = brand.features.clinic,
-                    showPsychTests = brand.features.psychTests,
-                    showComparison = brand.features.productComparison,
-                    showFreeCourses = brand.features.academyFreeCoursesTab,
-                    showBundles = brand.features.productBundles,
+                    showAcademy = features.isEnabled("academy.core"),
+                    showClinic = features.isEnabled("clinic.booking"),
+                    showPsychTests = features.isEnabled("psych.tests"),
+                    showComparison = features.isEnabled("commerce.physical"),
+                    showFreeCourses = features.isEnabled("academy.core"),
+                    showBundles = features.isEnabled("commerce.core"),
                     onLoginClick = navigateToAuth,
                     onEditProfileClick = navigateToProfile,
                     onCustomerClubClick = navigateToCustomerClub,
