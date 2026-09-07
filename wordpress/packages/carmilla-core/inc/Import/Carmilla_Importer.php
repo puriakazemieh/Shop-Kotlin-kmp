@@ -22,13 +22,22 @@ class Carmilla_Importer {
 
     /**
      * Executes the import based on the provided JSON manifest.
+     * @param bool $dry_run If true, only calculates counts without executing.
+     * @return array|\WP_Error Results array with counts.
      */
-    public function process_import() {
+    public function process_import(bool $dry_run = false) {
         if (empty($this->manifest) || !isset($this->manifest['chunks'])) {
             return new \WP_Error('invalid_manifest', 'Manifest is missing or invalid.');
         }
 
         $state = get_option($this->state_key, []);
+        
+        $results = [
+            'create' => 0,
+            'update' => 0,
+            'skip' => 0,
+            'conflict' => 0
+        ];
 
         foreach ($this->manifest['chunks'] as $chunk) {
             $feature = $chunk['feature'];
@@ -36,24 +45,42 @@ class Carmilla_Importer {
 
             // Skip if feature is not active/licensed
             if (!$this->is_feature_active($feature)) {
+                $results['skip']++;
                 continue;
             }
 
             // Idempotency: Skip if already imported with the same checksum
             if (isset($state[$feature]) && $state[$feature] === $checksum) {
+                $results['skip']++;
                 continue;
             }
 
-            // Process based on schema type
-            $result = $this->import_chunk($chunk);
+            // If state exists but checksum differs, it's an update/conflict (oversimplified)
+            if (isset($state[$feature])) {
+                $results['update']++;
+            } else {
+                $results['create']++;
+            }
 
-            if (!is_wp_error($result)) {
-                $state[$feature] = $checksum;
-                update_option($this->state_key, $state);
+            if (!$dry_run) {
+                // Process based on schema type
+                $result = $this->import_chunk($chunk);
+
+                if (!is_wp_error($result)) {
+                    $state[$feature] = $checksum;
+                    update_option($this->state_key, $state);
+                } else {
+                    $results['conflict']++;
+                    if (isset($state[$feature])) {
+                        $results['update']--;
+                    } else {
+                        $results['create']--;
+                    }
+                }
             }
         }
 
-        return true;
+        return $results;
     }
 
     private function is_feature_active($feature) {
