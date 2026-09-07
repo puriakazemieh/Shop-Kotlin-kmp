@@ -14,6 +14,9 @@ class Carmilla_Importer {
     private $manifest;
     private $state_key = 'carmilla_import_state';
 
+    private $cursor_key = 'carmilla_import_cursor';
+    private $lock_key = 'carmilla_import_lock';
+
     public function __construct($manifest_path = null) {
         if ($manifest_path && file_exists($manifest_path)) {
             $this->manifest = json_decode(file_get_contents($manifest_path), true);
@@ -30,7 +33,17 @@ class Carmilla_Importer {
             return new \WP_Error('invalid_manifest', 'Manifest is missing or invalid.');
         }
 
+        if (!$dry_run) {
+            // Check lock to prevent parallel imports
+            $lock = get_transient($this->lock_key);
+            if ($lock) {
+                return new \WP_Error('import_locked', 'Another import is currently running.');
+            }
+            set_transient($this->lock_key, time(), 300); // 5 min lock
+        }
+
         $state = get_option($this->state_key, []);
+        $cursor = $dry_run ? 0 : (int) get_option($this->cursor_key, 0);
         
         $results = [
             'create' => 0,
@@ -39,23 +52,29 @@ class Carmilla_Importer {
             'conflict' => 0
         ];
 
-        foreach ($this->manifest['chunks'] as $chunk) {
+        $chunks = $this->manifest['chunks'];
+        $total_chunks = count($chunks);
+
+        for ($i = $cursor; $i < $total_chunks; $i++) {
+            $chunk = $chunks[$i];
             $feature = $chunk['feature'];
             $checksum = $chunk['checksum'] ?? md5(json_encode($chunk));
 
             // Skip if feature is not active/licensed
             if (!$this->is_feature_active($feature)) {
                 $results['skip']++;
+                if (!$dry_run) update_option($this->cursor_key, $i + 1);
                 continue;
             }
 
             // Idempotency: Skip if already imported with the same checksum
             if (isset($state[$feature]) && $state[$feature] === $checksum) {
                 $results['skip']++;
+                if (!$dry_run) update_option($this->cursor_key, $i + 1);
                 continue;
             }
 
-            // If state exists but checksum differs, it's an update/conflict (oversimplified)
+            // If state exists but checksum differs, it's an update/conflict
             if (isset($state[$feature])) {
                 $results['update']++;
             } else {
@@ -69,6 +88,7 @@ class Carmilla_Importer {
                 if (!is_wp_error($result)) {
                     $state[$feature] = $checksum;
                     update_option($this->state_key, $state);
+                    update_option($this->cursor_key, $i + 1);
                 } else {
                     $results['conflict']++;
                     if (isset($state[$feature])) {
@@ -76,7 +96,16 @@ class Carmilla_Importer {
                     } else {
                         $results['create']--;
                     }
+                    // Break on conflict to allow manual resolution or retry
+                    break;
                 }
+            }
+        }
+
+        if (!$dry_run) {
+            delete_transient($this->lock_key);
+            if ((int) get_option($this->cursor_key, 0) >= $total_chunks) {
+                delete_option($this->cursor_key); // Finished successfully
             }
         }
 
