@@ -51,3 +51,24 @@ App Builder از هر دو میزبان تجربه مستقل درخواست ت�
 - جزئیات schema مجوز، کلیدهای جدید و سیاست bootstrap هنوز خروجی کارت‌های اجرایی‌اند؛ این ADR مجوز deploy، فروش، migration واقعی یا تأیید دستی نیست.
 
 </div>
+
+## Entity Read/Write Matrix (ADR-038 Addition)
+
+این ماتریکس وظیفه تفکیک مالکیت (Ownership) و مسیرهای خواندن/نوشتن (Read/Write Paths) را بر اساس تفکیک موجودیت‌های کاننیکال (Canonical) و سایت‌-محور (Site-owned) مشخص می‌کند.
+
+| Entity (موجودیت) | Canonical Owner | Theme-only | Plugin-only (Bridge) | App Builder Role | Read Path (مسیر خواندن) | Write Path (مسیر نوشتن) |
+|---|---|---|---|---|---|---|
+| **محصولات (Products/SKU)** | Bridge/Woo | ❌ | ✅ (با Woo) | API Consumer | Bridge API / Woo API | wp-admin (Woo) / Bridge API |
+| **تنظیمات پوسته (Theme Options)** | Theme | ✅ | ❌ | N/A | Theme Config API | Theme Customizer / wp-admin |
+| **تنظیمات اپ (App Settings)** | Bridge | ❌ | ✅ | Configurator | Bridge API | App Builder Panel |
+| **محتوای آکادمی (Courses/Lessons)** | Bridge | ❌ | ✅ | API Consumer | Bridge API | wp-admin (Bridge CPT) |
+| **رزروها (Bookings/Appointments)** | Bridge | ❌ | ✅ | API Consumer | Bridge API | Bridge API / wp-admin |
+| **نوشته‌ها و برگه‌ها (Posts/Pages)** | WordPress Core | ✅ (UI) | ✅ (API) | API Consumer | WP REST / Bridge API | wp-admin |
+| **قالب‌های نمایشی (Templates)** | Theme | ✅ | ❌ | N/A | WP Core | Theme Editor |
+
+### قواعد مرزبندی (Boundary Rules):
+1. **کانونیکال بودن (Canonicality)**: افزونه (Bridge) صاحب (Owner) تمام دیتای بیزینسی (CPTهای آکادمی، کلینیک، سفارشات) است. پوسته (Theme) صرفاً صاحب دیتای نمایشی (UI/Templates) است.
+2. **سناریوی Theme-only**: فقط امکان رندر مقالات و صفحات وبسایت عادی وجود دارد.
+3. **سناریوی Plugin-only**: تمام APIها برای App و App Builder باز است، اما وب‌سایت خاموش است (Headless).
+4. **سناریوی Both (Co-install)**: افزونه API می‌دهد، پوسته وب‌سایت را رندر می‌کند بدون تداخل در CPTهای یکدیگر.
+5. **App Builder**: صرفاً تنظیمات خودش را روی Bridge (افزونه) می‌نویسد و از آن می‌خواند. پوسته هیچ اتصالی به App Builder ندارد.
