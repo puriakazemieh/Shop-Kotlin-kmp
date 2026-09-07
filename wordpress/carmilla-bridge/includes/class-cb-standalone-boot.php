@@ -143,6 +143,7 @@ class CB_Standalone_Boot {
 			'class-cb-admin-bundle-controller.php',
 			'class-cb-integrations-controller.php',
 			'class-cb-mail-adapter.php',
+			'class-cb-sms-http-adapter.php',
 			'class-cb-plugin.php',
 		);
 
