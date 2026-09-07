@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -7,62 +7,63 @@ class CB_SMS_HTTP_Adapter {
     /**
      * Sends an SMS via a generic HTTP provider.
      *
-     * @param string \ Phone number
-     * @param string \ Message body
+     * @param string $to Phone number
+     * @param string $message Message body
      * @return array|WP_Error Response or Error
      */
-    public static function send(\, \) {
-        \ = get_option('carmilla_message_settings', []);
+    public static function send($to, $message) {
+        $settings = get_option('carmilla_message_settings', []);
         
-        \ = \['sms_api_url'] ?? '';
-        \ = \['sms_api_key'] ?? '';
-        \  = \['sms_method'] ?? 'POST';
+        $api_url = $settings['sms_api_url'] ?? '';
+        $encrypted_key = $settings['sms_api_key'] ?? '';
+        $api_key = \Carmilla\Core\Settings\MessageSettings::decrypt_secret($encrypted_key);
+        $method  = $settings['sms_method'] ?? 'POST';
 
-        if (empty(\)) {
+        if (empty($api_url)) {
             return new WP_Error('missing_config', 'SMS provider URL is not configured.');
         }
 
         // Masking the API key in any logged context
-        \ = !empty(\) ? substr(\, 0, 4) . '***' : '';
+        $masked_key = !empty($api_key) ? substr($api_key, 0, 4) . '***' : '';
 
-        \ = [
+        $headers = [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . \
+            'Authorization' => 'Bearer ' . $api_key
         ];
 
-        \ = [
-            'recipient' => \,
-            'text'      => \
+        $body = [
+            'recipient' => $to,
+            'text'      => $message
         ];
 
-        \ = [
-            'method'  => \,
-            'headers' => \,
-            'body'    => json_encode(\),
+        $args = [
+            'method'  => $method,
+            'headers' => $headers,
+            'body'    => json_encode($body),
             'timeout' => 15
         ];
 
-        \ = wp_remote_request(\, \);
+        $response = wp_remote_request($api_url, $args);
 
-        if (is_wp_error(\)) {
-            return \;
+        if (is_wp_error($response)) {
+            return $response;
         }
 
-        \ = wp_remote_retrieve_response_code(\);
+        $status_code = wp_remote_retrieve_response_code($response);
         // configurable success code, default 200
-        \ = intval(\['sms_success_code'] ?? 200);
+        $success_code = intval($settings['sms_success_code'] ?? 200);
 
-        if (\ !== \) {
-            return new WP_Error('sms_failed', 'SMS failed to send. Status: ' . \);
+        if ($status_code !== $success_code) {
+            return new WP_Error('sms_failed', 'SMS failed to send. Status: ' . $status_code);
         }
 
-        \ = json_decode(wp_remote_retrieve_body(\), true);
-        \ = \['message_id'] ?? 'unknown';
+        $body_response = json_decode(wp_remote_retrieve_body($response), true);
+        $message_id = $body_response['message_id'] ?? 'unknown';
 
         return [
             'success' => true,
-            'message_id' => \,
-            'masked_key_used' => \
+            'message_id' => $message_id,
+            'masked_key_used' => $masked_key
         ];
     }
 }

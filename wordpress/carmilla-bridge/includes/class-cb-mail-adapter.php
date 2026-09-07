@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -9,31 +9,34 @@ class CB_Mail_Adapter {
         add_action( 'phpmailer_init', [__CLASS__, 'configure_smtp'] );
     }
 
-    public static function configure_smtp( \ ) {
-        \ = get_option('carmilla_message_settings', []);
+    public static function configure_smtp( $phpmailer ) {
+        $settings = get_option('carmilla_message_settings', []);
         
-        \ = \['smtp_host'] ?? '';
-        if ( empty(\) ) {
+        $smtp_host = $settings['smtp_host'] ?? '';
+        if ( empty($smtp_host) ) {
             return; // Not configured
         }
 
-        \->isSMTP();
-        \->Host       = \;
-        \->SMTPAuth   = !empty(\['smtp_user']);
-        \->Port       = intval(\['smtp_port'] ?? 587);
-        \->Username   = \['smtp_user'] ?? '';
-        \->Password   = \['smtp_pass'] ?? '';
-        \->SMTPSecure = \['smtp_secure'] ?? 'tls';
+        $encrypted_pass = $settings['smtp_pass'] ?? '';
+        $smtp_pass = \Carmilla\Core\Settings\MessageSettings::decrypt_secret($encrypted_pass);
+
+        $phpmailer->isSMTP();
+        $phpmailer->Host       = $smtp_host;
+        $phpmailer->SMTPAuth   = !empty($settings['smtp_user']);
+        $phpmailer->Port       = intval($settings['smtp_port'] ?? 587);
+        $phpmailer->Username   = $settings['smtp_user'] ?? '';
+        $phpmailer->Password   = $smtp_pass;
+        $phpmailer->SMTPSecure = $settings['smtp_secure'] ?? 'tls';
         
-        \ = \['email_from'] ?? '';
-        if ( !empty(\) ) {
-            \->From = \;
-            \->FromName = \['email_from_name'] ?? get_bloginfo('name');
+        $from_email = $settings['email_from'] ?? '';
+        if ( !empty($from_email) ) {
+            $phpmailer->From = $from_email;
+            $phpmailer->FromName = $settings['email_from_name'] ?? get_bloginfo('name');
         }
     }
 
-    public static function send(\, \, \, \ = '', \ = array()) {
+    public static function send($to, $subject, $message, $headers = '', $attachments = array()) {
         // Fallback to default wp_mail so standard SMTP plugins work.
-        return wp_mail(\, \, \, \, \);
+        return wp_mail($to, $subject, $message, $headers, $attachments);
     }
 }
