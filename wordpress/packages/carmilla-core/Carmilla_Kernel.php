@@ -15,6 +15,8 @@ require_once __DIR__ . '/inc/Adapter/WooCommerceAdapter.php';
 require_once __DIR__ . '/inc/Rest/RestInfrastructure.php';
 require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
 require_once __DIR__ . '/inc/Health/HealthChecker.php';
+require_once __DIR__ . '/inc/Settings/MessageSettings.php';
+require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**
  * Carmilla Shared Kernel
