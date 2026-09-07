@@ -60,8 +60,8 @@ class Carmilla_Importer {
             $feature = $chunk['feature'];
             $checksum = $chunk['checksum'] ?? md5(json_encode($chunk));
 
-            // Skip if feature is not active/licensed
-            if (!$this->is_feature_active($feature)) {
+            // Skip if feature is not active/licensed, or dependencies are missing
+            if (!$this->is_feature_active($feature, $chunk)) {
                 $results['skip']++;
                 if (!$dry_run) update_option($this->cursor_key, $i + 1);
                 continue;
@@ -112,10 +112,25 @@ class Carmilla_Importer {
         return $results;
     }
 
-    private function is_feature_active($feature) {
+    private function is_feature_active($feature, $chunk = null) {
         // Abstract check for SKU/Feature
         $active_features = apply_filters('carmilla_active_features', ['core', 'messaging', 'payment']);
-        return in_array($feature, $active_features, true);
+        $is_active = in_array($feature, $active_features, true);
+
+        if (!$is_active) {
+            return false;
+        }
+
+        // Check chunk dependencies
+        if ($chunk && !empty($chunk['dependencies'])) {
+            foreach ((array) $chunk['dependencies'] as $dep) {
+                if (!in_array($dep, $active_features, true)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private function import_chunk($chunk) {
