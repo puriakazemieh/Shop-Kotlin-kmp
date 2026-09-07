@@ -1,0 +1,335 @@
+{
+  "version": "1.0",
+  "pack_id": "academy-fa-v1",
+  "chunks": [
+    {
+      "schema": "academy_courses",
+      "feature": "academy.core",
+      "dependencies": ["academy.core"],
+      "data": [
+        {
+          "seed_id": "course-free-1",
+          "title": "آموزش مقدماتی برنامه‌نویسی",
+          "description": "دوره رایگان برای شروع برنامه‌نویسی",
+          "price": 0,
+          "is_free": true,
+          "instructor": "استاد احمدی",
+          "duration_hours": 10,
+          "level": "beginner"
+        },
+        {
+          "seed_id": "course-free-2",
+          "title": "اصول طراحی UI/UX",
+          "description": "دوره رایگان طراحی رابط کاربری",
+          "price": 0,
+          "is_free": true,
+          "instructor": "استاد رضایی",
+          "duration_hours": 8,
+          "level": "beginner"
+        },
+        {
+          "seed_id": "course-paid-1",
+          "title": "توسعه اپلیکیشن Android پیشرفته",
+          "description": "دوره پولی برنامه‌نویسی اندروید حرفه‌ای",
+          "price": "5000000",
+          "is_free": false,
+          "instructor": "استاد کریمی",
+          "duration_hours": 50,
+          "level": "advanced",
+          "has_certificate": true
+        },
+        {
+          "seed_id": "course-paid-2",
+          "title": "معماری نرم‌افزار و Clean Architecture",
+          "description": "دوره پولی معماری نرم‌افزار برای توسعه‌دهندگان",
+          "price": "8000000",
+          "is_free": false,
+          "instructor": "استاد محمدی",
+          "duration_hours": 40,
+          "level": "intermediate",
+          "has_certificate": true
+        }
+      ]
+    },
+    {
+      "schema": "academy_sections",
+      "feature": "academy.core",
+      "dependencies": ["academy.core"],
+      "data": [
+        {
+          "seed_id": "section-1-1",
+          "course_id": "course-free-1",
+          "title": "مقدمه",
+          "order": 1
+        },
+        {
+          "seed_id": "section-1-2",
+          "course_id": "course-free-1",
+          "title": "مفاهیم پایه",
+          "order": 2
+        },
+        {
+          "seed_id": "section-1-3",
+          "course_id": "course-free-1",
+          "title": "پروژه عملی",
+          "order": 3
+        },
+        {
+          "seed_id": "section-2-1",
+          "course_id": "course-free-2",
+          "title": "اصول طراحی",
+          "order": 1
+        },
+        {
+          "seed_id": "section-2-2",
+          "course_id": "course-free-2",
+          "title": "ابزارهای طراحی",
+          "order": 2
+        },
+        {
+          "seed_id": "section-3-1",
+          "course_id": "course-paid-1",
+          "title": "معرفی اندروید",
+          "order": 1
+        },
+        {
+          "seed_id": "section-3-2",
+          "course_id": "course-paid-1",
+          "title": "Jetpack Compose",
+          "order": 2
+        },
+        {
+          "seed_id": "section-3-3",
+          "course_id": "course-paid-1",
+          "title": "معماری MVVM",
+          "order": 3
+        },
+        {
+          "seed_id": "section-4-1",
+          "course_id": "course-paid-2",
+          "title": "اصول SOLID",
+          "order": 1
+        },
+        {
+          "seed_id": "section-4-2",
+          "course_id": "course-paid-2",
+          "title": "Clean Architecture",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "schema": "academy_lessons",
+      "feature": "academy.core",
+      "dependencies": ["academy.core"],
+      "data": [
+        {
+          "seed_id": "lesson-1-1-1",
+          "section_id": "section-1-1",
+          "title": "معرفی دوره",
+          "content": "در این درس با محتوای دوره آشنا می‌شویم.",
+          "video_url": null,
+          "duration_minutes": 15,
+          "order": 1,
+          "is_preview": true
+        },
+        {
+          "seed_id": "lesson-1-1-2",
+          "section_id": "section-1-1",
+          "title": "نصب ابزارها",
+          "content": "نحوه نصب و راه‌اندازی محیط توسعه.",
+          "video_url": null,
+          "duration_minutes": 30,
+          "order": 2,
+          "is_preview": false
+        },
+        {
+          "seed_id": "lesson-1-2-1",
+          "section_id": "section-1-2",
+          "title": "متغیرها و انواع داده",
+          "content": "آموزش متغیرها و انواع داده در برنامه‌نویسی.",
+          "video_url": null,
+          "duration_minutes": 45,
+          "order": 1,
+          "is_preview": false
+        },
+        {
+          "seed_id": "lesson-1-2-2",
+          "section_id": "section-1-2",
+          "title": "حلقه‌ها و شرط‌ها",
+          "content": "آموزش ساختارهای کنترلی.",
+          "video_url": null,
+          "duration_minutes": 40,
+          "order": 2,
+          "is_preview": false
+        },
+        {
+          "seed_id": "lesson-2-1-1",
+          "section_id": "section-2-1",
+          "title": "اصول رنگ",
+          "content": "آموزش نظریه رنگ و کاربردهای آن.",
+          "video_url": null,
+          "duration_minutes": 35,
+          "order": 1,
+          "is_preview": true
+        },
+        {
+          "seed_id": "lesson-2-1-2",
+          "section_id": "section-2-1",
+          "title": "تایپوگرافی",
+          "content": "آموزش انتخاب و استفاده از فونت‌ها.",
+          "video_url": null,
+          "duration_minutes": 30,
+          "order": 2,
+          "is_preview": false
+        },
+        {
+          "seed_id": "lesson-3-1-1",
+          "section_id": "section-3-1",
+          "title": "معرفی اندروید استودیو",
+          "content": "آموزش کار با Android Studio.",
+          "video_url": null,
+          "duration_minutes": 50,
+          "order": 1,
+          "is_preview": true,
+          "requires_enrollment": true
+        },
+        {
+          "seed_id": "lesson-3-2-1",
+          "section_id": "section-3-2",
+          "title": "مقدمه Compose",
+          "content": "آشنایی با Jetpack Compose.",
+          "video_url": null,
+          "duration_minutes": 60,
+          "order": 1,
+          "is_preview": false,
+          "requires_enrollment": true
+        },
+        {
+          "seed_id": "lesson-4-1-1",
+          "section_id": "section-4-1",
+          "title": "Single Responsibility",
+          "content": "اصل تک مسئولیتی در طراحی.",
+          "video_url": null,
+          "duration_minutes": 45,
+          "order": 1,
+          "is_preview": true,
+          "requires_enrollment": true
+        },
+        {
+          "seed_id": "lesson-4-2-1",
+          "section_id": "section-4-2",
+          "title": "لایه‌های Clean Architecture",
+          "content": "معرفی لایه‌های مختلف معماری تمیز.",
+          "video_url": null,
+          "duration_minutes": 55,
+          "order": 1,
+          "is_preview": false,
+          "requires_enrollment": true
+        }
+      ]
+    },
+    {
+      "schema": "academy_quizzes",
+      "feature": "academy.core",
+      "dependencies": ["academy.core"],
+      "data": [
+        {
+          "seed_id": "quiz-1-2",
+          "section_id": "section-1-2",
+          "title": "آزمون مفاهیم پایه",
+          "description": "ارزیابی درک مفاهیم پایه برنامه‌نویسی",
+          "passing_score": 70,
+          "time_limit_minutes": 20,
+          "questions_count": 10
+        },
+        {
+          "seed_id": "quiz-1-3",
+          "section_id": "section-1-3",
+          "title": "آزمون پایانی",
+          "description": "ارزیابی جامع دوره مقدماتی",
+          "passing_score": 75,
+          "time_limit_minutes": 30,
+          "questions_count": 15
+        },
+        {
+          "seed_id": "quiz-2-2",
+          "section_id": "section-2-2",
+          "title": "آزمون طراحی UI",
+          "description": "ارزیابی مهارت‌های طراحی رابط کاربری",
+          "passing_score": 70,
+          "time_limit_minutes": 25,
+          "questions_count": 12
+        },
+        {
+          "seed_id": "quiz-3-3",
+          "section_id": "section-3-3",
+          "title": "آزمون MVVM",
+          "description": "ارزیابی درک معماری MVVM",
+          "passing_score": 80,
+          "time_limit_minutes": 40,
+          "questions_count": 20,
+          "requires_enrollment": true
+        },
+        {
+          "seed_id": "quiz-4-2",
+          "section_id": "section-4-2",
+          "title": "آزمون Clean Architecture",
+          "description": "ارزیابی نهایی معماری نرم‌افزار",
+          "passing_score": 85,
+          "time_limit_minutes": 45,
+          "questions_count": 25,
+          "requires_enrollment": true
+        }
+      ]
+    },
+    {
+      "schema": "academy_certificates",
+      "feature": "academy.core",
+      "dependencies": ["academy.core"],
+      "data": [
+        {
+          "seed_id": "cert-template-1",
+          "course_id": "course-paid-1",
+          "template_name": "گواهینامه Android پیشرفته",
+          "description": "گواهی تکمیل دوره Android پیشرفته",
+          "requires_quiz_pass": true,
+          "min_completion_percent": 90
+        },
+        {
+          "seed_id": "cert-template-2",
+          "course_id": "course-paid-2",
+          "template_name": "گواهینامه معماری نرم‌افزار",
+          "description": "گواهی تکمیل دوره معماری نرم‌افزار",
+          "requires_quiz_pass": true,
+          "min_completion_percent": 85
+        }
+      ]
+    },
+    {
+      "schema": "academy_entitlements",
+      "feature": "academy.core",
+      "dependencies": ["academy.core"],
+      "data": [
+        {
+          "seed_id": "entitlement-fixture-1",
+          "user_email": "test@carmilla.local",
+          "course_id": "course-paid-1",
+          "granted_at": "2026-09-01",
+          "expires_at": "2027-09-01",
+          "access_type": "full",
+          "note": "Test entitlement for paid course"
+        },
+        {
+          "seed_id": "entitlement-fixture-2",
+          "user_email": "demo@carmilla.local",
+          "course_id": "course-paid-2",
+          "granted_at": "2026-09-01",
+          "expires_at": "2027-09-01",
+          "access_type": "full",
+          "note": "Demo entitlement for architecture course"
+        }
+      ]
+    }
+  ]
+}

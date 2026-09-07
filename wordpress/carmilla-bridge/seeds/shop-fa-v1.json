@@ -1,0 +1,45 @@
+﻿{
+  "version": "1.0",
+  "pack_id": "shop-fa-v1",
+  "chunks": [
+    {
+      "schema": "wc_categories",
+      "feature": "woo",
+      "dependencies": ["woo"],
+      "data": [
+        { "seed_id": "cat-mobile", "name": "موبایل", "slug": "mobile" },
+        { "seed_id": "cat-laptop", "name": "لپ‌تاپ", "slug": "laptop" },
+        { "seed_id": "cat-accessories", "name": "لوازم جانبی", "slug": "accessories" },
+        { "seed_id": "cat-software", "name": "نرم‌افزار", "slug": "software" }
+      ]
+    },
+    {
+      "schema": "wc_products",
+      "feature": "woo",
+      "dependencies": ["woo"],
+      "data": [
+        { "seed_id": "prod-1", "type": "simple", "name": "گوشی موبایل X", "price": "10000000", "sale_price": "9000000", "stock": 10, "categories": ["cat-mobile"] },
+        { "seed_id": "prod-2", "type": "simple", "name": "گوشی موبایل Y", "price": "15000000", "stock": 5, "categories": ["cat-mobile"] },
+        { "seed_id": "prod-3", "type": "simple", "name": "گوشی موبایل Z", "price": "20000000", "stock": 0, "status": "outofstock", "categories": ["cat-mobile"] },
+        { "seed_id": "prod-4", "type": "variable", "name": "لپ‌تاپ گیمینگ A", "price": "50000000", "stock": 2, "categories": ["cat-laptop"] },
+        { "seed_id": "prod-5", "type": "variable", "name": "لپ‌تاپ گیمینگ B", "price": "60000000", "sale_price": "58000000", "stock": 4, "categories": ["cat-laptop"] },
+        { "seed_id": "prod-6", "type": "simple", "name": "لپ‌تاپ اداری C", "price": "25000000", "stock": 0, "status": "outofstock", "categories": ["cat-laptop"] },
+        { "seed_id": "prod-7", "type": "simple", "name": "هدفون بلوتوثی", "price": "2000000", "stock": 50, "categories": ["cat-accessories"] },
+        { "seed_id": "prod-8", "type": "simple", "name": "قاب گوشی", "price": "200000", "stock": 100, "categories": ["cat-accessories"] },
+        { "seed_id": "prod-9", "type": "simple", "name": "شارژر اصلی", "price": "500000", "stock": 0, "status": "outofstock", "categories": ["cat-accessories"] },
+        { "seed_id": "prod-10", "type": "digital", "name": "لایسنس ویندوز", "price": "1000000", "stock": null, "categories": ["cat-software"] },
+        { "seed_id": "prod-11", "type": "digital", "name": "آنتی ویروس ۱ ساله", "price": "500000", "sale_price": "400000", "stock": null, "categories": ["cat-software"] },
+        { "seed_id": "prod-12", "type": "digital", "name": "اکانت یک ماهه سرویس", "price": "100000", "stock": null, "categories": ["cat-software"] }
+      ]
+    },
+    {
+      "schema": "wc_coupons",
+      "feature": "woo",
+      "dependencies": ["woo"],
+      "data": [
+        { "seed_id": "coupon-yda", "code": "yaldacarmilla", "amount": "10", "discount_type": "percent" },
+        { "seed_id": "coupon-new", "code": "newyear2027", "amount": "100000", "discount_type": "fixed_cart" }
+      ]
+    }
+  ]
+}
