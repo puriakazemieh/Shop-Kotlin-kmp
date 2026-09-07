@@ -86,7 +86,27 @@ class CB_Auth_Controller {
 		set_transient( 'cb_otp_cooldown_' . $hash_key, '1', MINUTE_IN_SECONDS );
 		delete_transient( 'cb_otp_attempts_' . $hash_key );
 
-		do_action( 'cb_send_otp', $mobile, $code, $purpose );
+		// Allow override via filter
+		$override = apply_filters( 'cb_send_otp_override', null, $mobile, $code, $purpose );
+		if ( $override !== null ) {
+			if ( is_wp_error( $override ) ) {
+				throw new Exception( $override->get_error_message() );
+			}
+		} else {
+			// Build message using template engine if available
+			$template = get_option('carmilla_message_settings', [])['sms_otp_template'] ?? 'کد تایید شما: {{code}}';
+			$message = class_exists('CB_Template_Engine') ? CB_Template_Engine::render($template, ['code' => $code]) : "کد تایید شما: $code";
+			
+			$result = CB_SMS_HTTP_Adapter::send($mobile, $message);
+			if ( is_wp_error( $result ) ) {
+				// Don't set cooldown if sending failed so they can retry immediately
+				delete_transient( 'cb_otp_cooldown_' . $hash_key );
+				delete_transient( 'cb_otp_' . $hash_key );
+				throw new Exception( 'خطا در ارسال پیامک: ' . $result->get_error_message() );
+			}
+		}
+
+		do_action( 'cb_send_otp', $mobile, $code, $purpose ); // legacy hook
 		return $code;
 	}
 
