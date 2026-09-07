@@ -176,6 +176,36 @@ class Carmilla_Importer {
                     }
                 }
                 break;
+            case 'wp_media':
+                require_once(ABSPATH . 'wp-admin/includes/media.php');
+                require_once(ABSPATH . 'wp-admin/includes/file.php');
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+                foreach ($data as $media_data) {
+                    $seed_id = $media_data['seed_id'];
+                    $url = $media_data['url'];
+                    
+                    // Strict Allowlist and Security checks
+                    $allowed_domains = apply_filters('carmilla_seed_allowed_domains', ['carmilla.local', 'assets.carmilla.com']);
+                    $parsed = parse_url($url);
+                    if (empty($parsed['host']) || !in_array($parsed['host'], $allowed_domains, true)) {
+                        continue; // Prevent SSRF and hotlinking from unknown sources
+                    }
+                    
+                    $existing_registry = $wpdb->get_var($wpdb->prepare(
+                        "SELECT wp_entity_id FROM {$wpdb->prefix}carmilla_seed_objects WHERE seed_entity_id = %s AND wp_entity_type = 'attachment'",
+                        $seed_id
+                    ));
+
+                    if (empty($existing_registry)) {
+                        $attachment_id = media_sideload_image($url, 0, $media_data['title'] ?? '', 'id');
+                        if (!is_wp_error($attachment_id)) {
+                            update_post_meta($attachment_id, '_carmilla_seed_id', $seed_id);
+                            $this->log_seed_object($pack_id, $feature, 'attachment', $attachment_id, $seed_id);
+                        }
+                    }
+                }
+                break;
             default:
                 do_action('carmilla_import_chunk_' . $schema, $data, $pack_id, $feature);
                 break;
