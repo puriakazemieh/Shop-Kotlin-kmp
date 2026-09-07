@@ -7,6 +7,9 @@ import com.kazemieh.common.isDebugLoggingEnabled
 import com.kazemieh.common.redactedForLog
 import com.kazemieh.network.auth.dto.request.RefreshTokenRequest
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.api.createClientPlugin
+import com.kazemieh.config.capabilities.EffectiveFeatureStore
+
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
@@ -28,7 +31,7 @@ import kotlinx.serialization.json.Json
 
 object HttpClientFactory {
 
-    fun create(tokenProvider: TokenProvider): HttpClient {
+    fun create(tokenProvider: TokenProvider, featureStore: EffectiveFeatureStore? = null): HttpClient {
         return createPlatformHttpClient {
 
             install(ContentNegotiation) {
@@ -111,6 +114,12 @@ object HttpClientFactory {
                     }
                 }
             }
+            
+            if (featureStore != null) {
+                install(FeatureGuardPlugin) {
+                    store = featureStore
+                }
+            }
             install(DefaultRequest) {
                 url(ApiConfig.baseUrl)
                 contentType(ContentType.Application.Json)
@@ -119,6 +128,30 @@ object HttpClientFactory {
 //                }
             }
 
+        }
+    }
+}
+
+class FeatureGuardConfig {
+    var store: EffectiveFeatureStore? = null
+}
+
+val FeatureGuardPlugin = createClientPlugin("FeatureGuardPlugin", ::FeatureGuardConfig) {
+    val store = pluginConfig.store ?: return@createClientPlugin
+    onRequest { request, _ ->
+        val path = request.url.build().encodedPath
+        val featureId = when {
+            path.contains("/api/admin") -> "admin.mobile"
+            path.contains("/api/academy") || path.contains("/api/courses") -> "academy.core"
+            path.contains("/api/clinic") || path.contains("/api/appointments") || path.contains("/api/therapist") -> "clinic.booking"
+            path.contains("/api/psychtest") -> "psych.tests"
+            path.contains("/api/cart") || path.contains("/api/order") || path.contains("/api/products") || path.contains("/api/bundle") || path.contains("/api/catalog") -> "commerce.core"
+            path.contains("/api/blog") -> "content.blog"
+            path.contains("/api/wallet") -> "wallet"
+            else -> null
+        }
+        if (featureId != null && !store.features.value.isEnabled(featureId)) {
+            throw Exception("Feature " + featureId + " is disabled by FeatureGuardPlugin")
         }
     }
 }

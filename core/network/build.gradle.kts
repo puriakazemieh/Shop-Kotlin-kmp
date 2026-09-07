@@ -21,7 +21,9 @@ kotlin {
                 implementation(libs.ktor.client.auth)
 
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
                 implementation(project(":core:common"))
+                implementation(project(":core:config:capabilities"))
                 implementation(libs.compose.components.resources)
             }
         }
