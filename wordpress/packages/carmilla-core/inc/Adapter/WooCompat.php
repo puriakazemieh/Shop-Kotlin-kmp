@@ -10,7 +10,21 @@ class WooCompat {
     public static function init() {
         add_action('before_woocommerce_init', [self::class, 'declare_hpos_compatibility']);
         add_action('wp_enqueue_scripts', [self::class, 'dequeue_woo_blocks_styles'], 100);
+        add_filter('woocommerce_payment_gateways', [self::class, 'register_gateways']);
+    
+    /**
+     * Register Custom Payment Gateways
+     */
+    public static function register_gateways(\) {
+        if (file_exists(__DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php')) {
+            require_once __DIR__ . '/../Payment/WalletService.php';
+            require_once __DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php';
+            \[] = '\Carmilla\Core\Payment\WC_Gateway_Carmilla_Wallet';
+        }
+        return \;
     }
+
+}
 
     /**
      * Declare High-Performance Order Storage (HPOS) compatibility.
@@ -19,8 +33,34 @@ class WooCompat {
         if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
             \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
             \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+        
+    /**
+     * Register Custom Payment Gateways
+     */
+    public static function register_gateways(\) {
+        if (file_exists(__DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php')) {
+            require_once __DIR__ . '/../Payment/WalletService.php';
+            require_once __DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php';
+            \[] = '\Carmilla\Core\Payment\WC_Gateway_Carmilla_Wallet';
         }
+        return \;
     }
+
+}
+    
+    /**
+     * Register Custom Payment Gateways
+     */
+    public static function register_gateways(\) {
+        if (file_exists(__DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php')) {
+            require_once __DIR__ . '/../Payment/WalletService.php';
+            require_once __DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php';
+            \[] = '\Carmilla\Core\Payment\WC_Gateway_Carmilla_Wallet';
+        }
+        return \;
+    }
+
+}
 
     /**
      * Prevent WooCommerce block styles from disrupting the custom React/Native views
@@ -30,6 +70,45 @@ class WooCompat {
         if (is_cart() || is_checkout()) {
             wp_dequeue_style('wc-blocks-style');
             wp_dequeue_style('wc-blocks-integration');
+        
+    /**
+     * Register Custom Payment Gateways
+     */
+    public static function register_gateways(\) {
+        if (file_exists(__DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php')) {
+            require_once __DIR__ . '/../Payment/WalletService.php';
+            require_once __DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php';
+            \[] = '\Carmilla\Core\Payment\WC_Gateway_Carmilla_Wallet';
         }
+        return \;
     }
+
+}
+    
+    /**
+     * Register Custom Payment Gateways
+     */
+    public static function register_gateways(\) {
+        if (file_exists(__DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php')) {
+            require_once __DIR__ . '/../Payment/WalletService.php';
+            require_once __DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php';
+            \[] = '\Carmilla\Core\Payment\WC_Gateway_Carmilla_Wallet';
+        }
+        return \;
+    }
+
+}
+
+    /**
+     * Register Custom Payment Gateways
+     */
+    public static function register_gateways(\) {
+        if (file_exists(__DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php')) {
+            require_once __DIR__ . '/../Payment/WalletService.php';
+            require_once __DIR__ . '/../Payment/WC_Gateway_Carmilla_Wallet.php';
+            \[] = '\Carmilla\Core\Payment\WC_Gateway_Carmilla_Wallet';
+        }
+        return \;
+    }
+
 }
