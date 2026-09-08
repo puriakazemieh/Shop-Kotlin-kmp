@@ -5,10 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Exports a Customer Overlay (Base Pack + independent customer modifications).
- * This ensures core updates do not overwrite customer customizations.
- */
 class Export_Overlay_Command {
 
     public static function execute( \, \ ) {
@@ -24,24 +20,27 @@ class Export_Overlay_Command {
 
         \WP_CLI::log('Exporting customer overlay (modifications and new data)...');
         
-        // Find posts that are EITHER:
-        // 1. Not in carmilla_seed_objects at all (purely user created)
-        // 2. In carmilla_seed_objects but modified later than their seed creation time
+        \ = "'" . implode("','", Migration_Config::get_denied_post_types()) . "'";
         
         \ = "
             SELECT p.ID, p.post_title, p.post_content, p.post_type, p.post_status, p.post_modified, s.created_at as seed_created
             FROM {\->posts} p
             LEFT JOIN {\->prefix}carmilla_seed_objects s ON p.ID = s.wp_entity_id AND s.wp_entity_type = 'post'
-            WHERE p.post_type NOT IN ('attachment', 'revision')
+            WHERE p.post_type NOT IN (\)
             AND (s.id IS NULL OR p.post_modified > s.created_at)
         ";
 
         \ = \->get_results(\);
         \ = 0;
+        \ = Migration_Config::get_denied_meta_keys();
+
         foreach (\ as \) {
             \ = \->get_results(\->prepare("SELECT meta_key, meta_value FROM {\->postmeta} WHERE post_id = %d", \->ID));
             \ = [];
             foreach (\ as \) {
+                if (in_array(\->meta_key, \) || stripos(\->meta_key, 'token') !== false || stripos(\->meta_key, 'password') !== false) {
+                    continue;
+                }
                 \[\->meta_key] = \->meta_value;
             }
             

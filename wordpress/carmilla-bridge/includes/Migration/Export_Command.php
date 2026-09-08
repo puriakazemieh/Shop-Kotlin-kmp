@@ -5,10 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * WP-CLI Command to export legacy data securely to NDJSON.
- * Prevents the use of insecure PHP serialized objects.
- */
 class Export_Command {
 
     public static function execute( \, \ ) {
@@ -21,7 +17,7 @@ class Export_Command {
         
         \ = \['customer_uuid'] ?? 'default-legacy-site';
         \ = \['encryption_key'] ?? '';
-        \ = \['expiry'] ?? (time() + 86400); // Default 24h expiry
+        \ = \['expiry'] ?? (time() + 86400);
 
         \ = \ . '/posts.ndjson';
         \ = \ . '/media.ndjson';
@@ -29,14 +25,21 @@ class Export_Command {
         \ = fopen(\, 'w');
         \ = fopen(\, 'w');
 
-        \WP_CLI::log('Exporting posts (excluding media)...');
-        \ = \->get_results("SELECT ID, post_title, post_content, post_type, post_status FROM {\->posts} WHERE post_type NOT IN ('attachment', 'revision')");
+        \WP_CLI::log('Exporting posts (excluding media and PII/PHI)...');
+        
+        \ = "'" . implode("','", Migration_Config::get_denied_post_types()) . "'";
+        \ = \->get_results("SELECT ID, post_title, post_content, post_type, post_status FROM {\->posts} WHERE post_type NOT IN (\)");
+        
+        \ = Migration_Config::get_denied_meta_keys();
         
         \ = '';
         foreach (\ as \) {
             \ = \->get_results(\->prepare("SELECT meta_key, meta_value FROM {\->postmeta} WHERE post_id = %d", \->ID));
             \ = [];
             foreach (\ as \) {
+                if (in_array(\->meta_key, \) || stripos(\->meta_key, 'token') !== false || stripos(\->meta_key, 'password') !== false) {
+                    continue; // Skip sensitive meta
+                }
                 \[\->meta_key] = \->meta_value;
             }
             
@@ -83,7 +86,6 @@ class Export_Command {
             file_put_contents(\ . '/posts.enc', \);
             file_put_contents(\ . '/media.enc', \);
             
-            // Delete raw ndjson to secure PII
             unlink(\);
             unlink(\);
             \WP_CLI::success("Export completed SECURELY (Encrypted) to: \");
