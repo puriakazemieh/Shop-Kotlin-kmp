@@ -19,8 +19,32 @@ class Carmilla_Importer {
 
     public function __construct($manifest_path = null) {
         if ($manifest_path && file_exists($manifest_path)) {
+            $loaded = [];
             $this->manifest = json_decode(file_get_contents($manifest_path), true);
+            $this->manifest['chunks'] = $this->load_manifest_chunks($manifest_path, $loaded);
         }
+    }
+
+    private function load_manifest_chunks($path, &$loaded) {
+        $real_path = realpath($path);
+        if (!$real_path || isset($loaded[$real_path])) {
+            return [];
+        }
+        $loaded[$real_path] = true;
+
+        $manifest = json_decode(file_get_contents($real_path), true);
+        $chunks = $manifest['chunks'] ?? [];
+
+        if (!empty($manifest['includes'])) {
+            $dir = dirname($real_path);
+            foreach ((array)$manifest['includes'] as $inc) {
+                $inc_path = $dir . '/' . $inc;
+                if (file_exists($inc_path)) {
+                    $chunks = array_merge($chunks, $this->load_manifest_chunks($inc_path, $loaded));
+                }
+            }
+        }
+        return $chunks;
     }
 
     /**

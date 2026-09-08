@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0",
+  "pack_id": "all-fa-v1",
+  "includes": [
+    "base-fa-v1.json",
+    "shop-fa-v1.json",
+    "academy-fa-v1.json",
+    "clinic-public-fa-v1.json",
+    "psych-synthetic-fa-v1.json"
+  ],
+  "chunks": []
+}
