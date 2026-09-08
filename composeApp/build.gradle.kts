@@ -220,18 +220,39 @@ val generatePwaFiles by tasks.registering {
         val wpSw = File(outDir, "sw-wp.js")
         wpSw.writeText("""
 const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v1';
+const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health', '/wp-json/cb/v1/auth'];
+
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(['/']);
+      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png']);
     })
   );
 });
 
 self.addEventListener('fetch', function(event) {
+  const requestUrl = new URL(event.request.url);
+  const isSensitive = SENSITIVE_PATHS.some(path => requestUrl.pathname.includes(path));
+  
+  if (isSensitive || event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
+      if (response) {
+        return response;
+      }
+      return fetch(event.request).then(function(networkResponse) {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      });
     })
   );
 });
@@ -293,18 +314,39 @@ self.addEventListener('activate', function(event) {
         val springSw = File(outDir, "sw-spring.js")
         springSw.writeText("""
 const CACHE_NAME = 'carmilla-cache-${springTenantId}-v1';
+const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health'];
+
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(['/']);
+      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png']);
     })
   );
 });
 
 self.addEventListener('fetch', function(event) {
+  const requestUrl = new URL(event.request.url);
+  const isSensitive = SENSITIVE_PATHS.some(path => requestUrl.pathname.includes(path));
+  
+  if (isSensitive || event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
+      if (response) {
+        return response;
+      }
+      return fetch(event.request).then(function(networkResponse) {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      });
     })
   );
 });
