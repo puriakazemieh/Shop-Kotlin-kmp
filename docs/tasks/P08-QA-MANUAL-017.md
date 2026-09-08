@@ -48,7 +48,7 @@ P08-QA-MANUAL-017
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P08 / QA / MANUAL
 - Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -126,11 +126,5 @@ golden pages و defect list
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Prepared instructions for manual testing of a11y (keyboard/screen reader/RTL/zoom).
+- Final status: AWAITING_MANUAL_QA
