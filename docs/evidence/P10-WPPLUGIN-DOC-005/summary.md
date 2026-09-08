@@ -1,13 +1,12 @@
-# Documentation Summary: P10-WPPLUGIN-DOC-005
+# Documentation Summary / خلاصه مستندات: P10-WPPLUGIN-DOC-005
 
-- Task ID: P10-WPPLUGIN-DOC-005
-- Date: 2026-09-06
-- Artifact: `wordpress/carmilla-bridge/carmilla-bridge.php`, `wordpress/carmilla-bridge/README.md`
+- **Task ID / شناسه تسک:** P10-WPPLUGIN-DOC-005
+- **Date / تاریخ:** 2026-09-06
+- **Artifact / فایل:** `wordpress/carmilla-bridge/carmilla-bridge.php`, `wordpress/carmilla-bridge/README.md`
 
-## Verification
-1. **Plugin Header & Metadata:** WordPress standard headers present in `carmilla-bridge.php` (Plugin Name: Carmilla Bridge, Version 1.0.0, GPL-2.0 License, Text Domain).
-2. **Comprehensive Plugin Documentation:** Installation, onboarding workflow, provider settings (SMS/Email), seed pack import, migration/upgrade guide, and troubleshooting FAQs verified in `README.md`.
-3. **Clean-room Testing Ready:** Documentation provides clear step-by-step instructions for clean-room testers.
+## Verification / اعتبارسنجی
+1. **هدرهای افزونه:** ثبت هدرهای نسخه 1.0.0 و لایسنس GPL-2.0 در `carmilla-bridge.php`.
+2. **راهنما و عیب‌یابی:** ثبت راهنمای کامل نصب، تنظیمات سرویس‌دهندگان پیامک/ایمیل، درون‌ریزی و حل مشکلات در `README.md`.
 
-## Status
-- Final Status: DONE
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** DONE (تکمیل شده)

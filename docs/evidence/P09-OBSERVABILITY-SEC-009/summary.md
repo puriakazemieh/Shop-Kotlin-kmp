@@ -1,25 +1,15 @@
-# Security & Privacy Summary: P09-OBSERVABILITY-SEC-009
+# Security & Privacy Summary / خلاصه امنیت و حریم داده: P09-OBSERVABILITY-SEC-009
 
-- Task ID: P09-OBSERVABILITY-SEC-009
-- Date: 2026-09-06
-- Title: Telemetry Consent, Data Minimization, and Payload Sanitization Audit
+- **Task ID / شناسه تسک:** P09-OBSERVABILITY-SEC-009
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** رضایت‌نامه پایش، کمینه‌سازی داده‌ها و ضدعفونی‌سازی پاری‌بارها
 
-## Security & Privacy Rules Verified
+## Security & Privacy Rules Verified / قواعد تاییدشده
+1. **عدم ثبت کلیدهای امنیتی:** توکن‌های دسترسی و کلیدهای API فیلتر می‌شوند.
+2. **عدم ثبت اطلاعات بانکی:** شماره کارت و کد OTP حذف می‌گردند.
+3. **عدم ثبت داده‌های پزشکی:** پاسخ‌های تست روان‌شناسی و یادداشت‌های مشاوره مسدود می‌شوند.
+4. **عدم ثبت متن آزاد کاربر:** متن جستجو و کامنت‌ها حذف می‌گردند.
+5. **مدیریت رضایت:** بررسی شرط `carmilla_telemetry_consent == true`.
 
-### 1. Zero Secrets & Tokens
-- **Scrubbing Rule:** All headers (`Authorization`, `X-WP-Nonce`), token fields, and gateway API keys are automatically stripped by `TelemetrySanitizer`.
-
-### 2. Zero Payment Details & Financial PII
-- **Scrubbing Rule:** Card numbers, bank IBANs, CVV, OTP codes excluded. Only gateway transaction reference ID, currency code, and order total integer are recorded.
-
-### 3. Zero Health Data (PHI / Patient Data)
-- **Scrubbing Rule:** Psychological test responses, consultation notes, and booking private notes are hard-blocked from telemetry dispatchers.
-
-### 4. Zero Free-Form User Text
-- **Scrubbing Rule:** Raw search text strings, product review comments, and support message bodies are omitted from analytics events to prevent accidental PII leakage.
-
-### 5. Consent Management
-- **Rule:** Telemetry payload dispatch checks `carmilla_telemetry_consent == true`. If user opts out, telemetry dispatcher returns immediately without sending network events.
-
-## Status
-- Final Status: DONE
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** DONE (تکمیل شده)

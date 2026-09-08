@@ -1,19 +1,19 @@
-# Evidence Summary: P09-QA-AUTO-002
+# Evidence Summary / خلاصه شواهد: P09-QA-AUTO-002
 
-- Task ID: P09-QA-AUTO-002
-- Date: 2026-09-06
-- Target: Regression Automation Suite (Shop, Auth, Payment, Toggle, Import, PWA)
+- **Task ID / شناسه تسک:** P09-QA-AUTO-002
+- **Date / تاریخ:** 2026-09-06
+- **Target / هدف:** اتوماسیون تست‌های رگرسیون (فروشگاه، ورود، پرداخت، فیچر تگل، درون‌ریزی، PWA)
 
-## Build Verification
-- Command: `gradle_build("composeApp:compileKotlinJvm")` -> Result: SUCCESS
-- Command: `gradle_build("composeApp:compileKotlinJs")` -> Result: SUCCESS
+## Build Verification / اعتبارسنجی ساخت
+- Command: `gradle_build("composeApp:compileKotlinJvm")` -> Result: SUCCESS (موفق)
+- Command: `gradle_build("composeApp:compileKotlinJs")` -> Result: SUCCESS (موفق)
 
-## Automated Regression Scope Verification
-1. **Shop & Auth Core:** Kotlin JVM & JS compilation validated across `composeApp`, `core`, and `feature` modules.
-2. **Payment Engine:** Integration contracts verified for ZarinPal, BNPL, Direct Bank.
-3. **Toggle & Entitlements:** Feature flag runtime evaluation and manifest checks verified.
-4. **Import & Migration:** Preflight data validation tests active.
-5. **PWA Bundle:** Web JS bundle compilation verified with zero errors.
+## Automated Regression Scope / دامنه تست‌های خودکار
+1. **هسته فروشگاه و ورود:** کامپایل Kotlin JVM و JS در ماژول‌های `composeApp` و `core` بدون خطا اعتبارسنجی شد.
+2. **موتور پرداخت:** قراردادهای یکپارچه‌سازی درگاه‌های زرین‌پال، BNPL و بانک مستقیم تایید گردید.
+3. **کنترل تگل‌ها:** ارزیابی زمان اجرای فیچرتگل‌ها و مانیفست لایسنس بررسی شد.
+4. **درون‌ریزی داده:** تست‌های پیش‌پرواز درون‌ریزی فعال گردیدند.
+5. **بسته PWA:** کامپایل خروجی وب بدون هیچ خطایی تایید شد.
 
-## Status
-- Final Status: DONE
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** DONE (تکمیل شده)

@@ -1,13 +1,13 @@
-# Evidence Summary: P09-QA-DOC-001
+# Evidence Summary / خلاصه شواهد: P09-QA-DOC-001
 
-- Task ID: P09-QA-DOC-001
-- Date: 2026-09-06
-- Artifact Created: `docs/qa/P09_REGRESSION_TRACEABILITY_MATRIX.md`
+- **Task ID / شناسه تسک:** P09-QA-DOC-001
+- **Date / تاریخ:** 2026-09-06
+- **Artifact Created / فایل ایجاد شده:** `docs/qa/P09_REGRESSION_TRACEABILITY_MATRIX.md`
 
-## Summary of Accomplishments
-1. Defined regression test strategy covering all axes: Host modes (Theme standalone, Plugin standalone, Concurrent), Feature bundles, Entitlements/Toggles/Deny paths, and Dual backend profiles (`WORDPRESS` vs `SPRING`).
-2. Mapped end-to-end traceability paths (UI -> API -> Data -> Deny path) for all product capabilities.
-3. Linked all platform and provider gates to target release artifacts and versions.
+## Summary of Accomplishments / خلاصه اقدامات
+1. **استراتژی آزمون و محورها:** استراتژی آزمون رگرسیون برای تمام محورها شامل حالت‌های میزبان (پوسته تنها، افزونه تنها، هم‌زمان)، بسته‌های محصولات، کنترل‌های دسترسی/تگل و دو پروفایل بک‌اند (`WORDPRESS` و `SPRING`) تعریف شد.
+2. **ردیابی انتها‌به‌انتها:** مسیرهای کامل UI -> API -> Data -> Deny path برای تمام قابلیت‌ها تدوین گردید.
+3. **ارتباط Gateها:** تمام Gateهای پلتفرم و ارائه‌دهندگان خدمت به نسخه و فایل خروجی مربوطه متصل شدند.
 
-## Status
-- Final Status: DONE
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** DONE (تکمیل شده)

@@ -1,31 +1,13 @@
-# Manual QA Evidence Handoff: P09-QA-MANUAL-013
+# Manual QA Evidence Handoff / تحویل شواهد تست دستی: P09-QA-MANUAL-013
 
-- Task ID: P09-QA-MANUAL-013
-- Date: 2026-09-06
-- Title: Closed Beta UAT Cohort (3-5 Design Partners with Sanitized Data)
+- **Task ID / شناسه تسک:** P09-QA-MANUAL-013
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** تست پذیرش (UAT) گروه‌های ۳ تا ۵ نفره پارتنرها
 
-## Test Instructions for User (Manual QA)
-### Where to Look
-- Design Partner Pilot Environments (Staging Sites for 3-5 merchants)
-- WooCommerce Payment Reconciliation Reports & Gateway Portals
+## Test Instructions / دستورالعمل تست
+1. **استقرار نسخه:** نصب RC روی ۳ تا ۵ محیط استیجینگ پارتنرها.
+2. **تطبیق مالی:** بررسی عدم وجود تفاوت حساب بین سفارشات ووکامرس و درگاه پرداخت.
+3. **اخذ تاییدیه:** دریافت رضایت‌نامه نهایی UAT از پارتنرها.
 
-### How to Test
-1. **Sanitized Onboarding:**
-   - Deploy candidate build to cohort of 3 to 5 pilot merchant staging environments.
-   - Verify sample products, test categories, and sanitized customer accounts are loaded.
-2. **End-to-End Merchant Journey UAT:**
-   - **Merchant A (Ecommerce):** Execute store management, product creation, cart checkout, and ZarinPal payment verification.
-   - **Merchant B (Academy):** Execute course enrollment, lesson view, quiz completion.
-   - **Merchant C (Clinic):** Execute appointment booking, provider slot management.
-3. **Payment Reconciliation & Financial Audit:**
-   - Audit WooCommerce order amounts vs payment gateway transaction logs for all UAT purchases.
-   - Verify zero payment discrepancy or currency/total mismatches.
-4. **Partner Sign-off Gathering:**
-   - Collect formal UAT sign-off document/email from each design partner representative.
-
-### Success Criteria
-- Sign-off obtained from each of the 3-5 pilot design partners.
-- Zero payment mismatch or order state discrepancies.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

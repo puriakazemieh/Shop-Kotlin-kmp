@@ -1,20 +1,13 @@
-# Business Agreement Evidence Handoff: P09-BUSINESS-BIZ-010
+# Business Agreement Evidence Handoff / تحویل توافق‌نامه تجاری: P09-BUSINESS-BIZ-010
 
-- Task ID: P09-BUSINESS-BIZ-010
-- Date: 2026-09-06
-- Title: Design Partner Agreement, Closed Beta Scope, Feedback Terms, and Data Privacy Safeguards
+- **Task ID / شناسه تسک:** P09-BUSINESS-BIZ-010
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** توافق‌نامه پارتنرهای اولیه، دامنه Closed Beta و حریم داده‌ها
 
-## Closed Beta Terms & Agreement Highlights
-### 1. Design Partner Criteria
-- Target cohort: 3 to 5 pilot merchants/stores (e.g. 2 Ecommerce Stores, 1 Educational Academy, 1 Service Provider/Clinic).
-- Goal: Validate real-world setup, theme/plugin compatibility, order flows, and client app usage.
+## Closed Beta Terms / شرایط بتا
+1. **معیار پارتنرها:** انتخاب ۳ تا ۵ فروشگاه پایلوت.
+2. **ممنوعیت داده‌های سلامت:** عدم ثبت داده‌های پزشکی و تست‌های روان‌شناسی در لاگ‌ها.
+3. **کانال‌های بازخورد:** فرآیند ثبت هفتگی باگ‌ها و پیشنهادها.
 
-### 2. Scope & Data Privacy Safeguards
-- **Health / Medical / PHI Data Ban:** Health records, medical files, patient notes, or sensitive psychological test results are strictly **prohibited** from closed beta analytics/support logs.
-- **Sanitized Test Data:** Partner stores use synthetic or sanitized test customer data during pilot onboarding.
-
-### 3. Feedback Channels
-- Structured weekly feedback logs covering Product, Bug, Compatibility, and Documentation issues.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

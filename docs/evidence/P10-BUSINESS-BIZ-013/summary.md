@@ -1,20 +1,12 @@
-# Business Summary: P10-BUSINESS-BIZ-013
+# Business Summary / خلاصه تجاری: P10-BUSINESS-BIZ-013
 
-- Task ID: P10-BUSINESS-BIZ-013
-- Date: 2026-09-06
-- Title: Capacity-Based Limited Launch Policy and Emergency Stop Switch
+- **Task ID / شناسه تسک:** P10-BUSINESS-BIZ-013
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** انتشار محدود ظرفیت‌محور و کلید توقف اضطراری (Kill Switch)
 
-## Capacity & Emergency Stop Switch Governance
+## Launch Quota & Kill Switch / سقف فروش و توقف اضطراری
+1. **سقف فروش هفتگی:** حداکثر ۱۰ لایسنس جدید در هفته.
+2. **کلید توقف (Kill Switch):** مسدودسازی موقت سفارشات ساخت اپلیکیشن در صورت وقوع مشکل بدون قطعی سایت‌های فعال.
 
-### 1. Weekly Sales Quota
-- **Maximum Weekly Sales Quota:** 10 new merchant licenses / week during initial launch month to match support team capacity.
-- **Quota Control Mechanism:** Marketplace listing setting updated automatically when weekly quota limit reached ("Sold Out for This Week").
-
-### 2. Emergency Stop Switch (Kill Switch)
-- **Kill Switch Endpoint / Option:** `update_option('carmilla_kill_switch_active', true)`
-- **Behavior When Active:**
-  - Blocks new builder job execution gracefully with `503 Service Temporarily Paused for Maintenance`.
-  - Preserves existing active sites and builds without disrupting live store operations.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

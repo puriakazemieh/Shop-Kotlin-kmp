@@ -1,24 +1,12 @@
-# Operations Summary: P10-BUSINESS-OPS-010
+# Operations Summary / خلاصه عملیات: P10-BUSINESS-OPS-010
 
-- Task ID: P10-BUSINESS-OPS-010
-- Date: 2026-09-06
-- Title: Support Runbook, Macros, Escalation, SLA, and Refund Triage Protocol
+- **Task ID / شناسه تسک:** P10-BUSINESS-OPS-010
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** کتابچه راهنمای پشتیبانی (Support Runbook)، پاسخ‌های آماده و SLA
 
-## Support Runbook & Incident Drill
-### 1. Support Response SLA Standards
-- **Severity 0 (Critical Outage / Gateway Failure):** First response < 30 minutes, Resolution < 2 hours. Escalation to Lead Engineer immediately.
-- **Severity 1 (Feature Blocked / License Sync Error):** First response < 2 hours, Resolution < 12 hours.
-- **Severity 2 (General Question / Setup Inquiry):** First response < 12 hours.
+## Support Standards / استانداردهای پشتیبانی
+1. **سطح پاسخ‌گویی (SLA):** زیر ۳۰ دقیقه برای خطاهای بحرانی قطعی سایت/درگاه.
+2. **پاسخ‌های آماده (Macros):** تدوین راهنمای پاسخ‌گویی به خطاهای لایسنس، کال‌بک درگاه و قوانین مرجوعی.
 
-### 2. Pre-Approved Macros & Canned Responses
-- **Macro A (License Activation Issue):** Step-by-step verification of domain name vs license key in `/wp-admin/admin.php?page=carmilla-manifest`.
-- **Macro B (Payment Verification Delay):** Guidance on checking ZarinPal / Bank gateway callback URL logs and Cron queue.
-- **Macro C (Refund Policy & Triage):** Standard refund evaluation checklist (valid within 7 days if non-resolvable technical bug occurs).
-
-### 3. Support Drill Execution
-- Sample drill executed with simulated tickets:
-  - Ticket #101: "ZarinPal callback failed" -> Resolved via Macro B & log inspection.
-  - Ticket #102: "License key mismatch" -> Resolved via Macro A & domain verification.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

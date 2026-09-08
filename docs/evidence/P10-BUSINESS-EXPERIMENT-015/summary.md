@@ -1,23 +1,13 @@
-# Business Summary: P10-BUSINESS-EXPERIMENT-015
+# Business Summary / خلاصه تجاری: P10-BUSINESS-EXPERIMENT-015
 
-- Task ID: P10-BUSINESS-EXPERIMENT-015
-- Date: 2026-09-06
-- Title: Single-Variable Controlled Pricing and Landing Experiment Protocol
+- **Task ID / شناسه تسک:** P10-BUSINESS-EXPERIMENT-015
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** آزمایش کنترل‌شده تک‌متغیره قیمت‌گذاری و صفحه لندینگ
 
-## Controlled Experiment Specification
+## Experiment Protocol / پروتکل آزمایش
+1. **متغیر:** فروش جداگانه اپ‌ساز در برابر ارائه پکیج ترکیبی.
+2. **شاخص (KPI):** نرخ تبدیل بازدیدکننده به خریدار.
+3. **شرط توقف:** افزایش نرخ مرجوعی به بیش از ۵٪.
 
-### 1. Single Variable Under Test
-- **Variable:** Presentation of "App Builder" Add-on on Marketplace Landing Page.
-  - Variant A (Control): App Builder sold as separate add-on checkout SKU.
-  - Variant B (Treatment): App Builder bundled directly into Commerce Theme SKU at combined discounted price.
-
-### 2. Key Performance Indicators (KPIs)
-- Primary Metric: Total Conversion Rate % (Visitors -> License Purchases).
-- Secondary Metric: Average Order Value (AOV in IRR).
-
-### 3. Stop Conditions & Safety Rules
-- **Stop Condition 1:** Refund rate on Treatment variant exceeds 5%.
-- **Stop Condition 2:** Support ticket volume per purchase on Treatment exceeds 2x Control.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

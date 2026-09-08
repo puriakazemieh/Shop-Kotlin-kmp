@@ -1,24 +1,12 @@
-# Operations Summary: P09-BUSINESS-OPS-011
+# Operations Summary / خلاصه عملیات: P09-BUSINESS-OPS-011
 
-- Task ID: P09-BUSINESS-OPS-011
-- Date: 2026-09-06
-- Title: Closed Beta Calendar Onboarding, Pilot SLA, and Support Operations
+- **Task ID / شناسه تسک:** P09-BUSINESS-OPS-011
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** تقویم آنبوردینگ، SLA و کانال‌های پشتیبانی پایلوت
 
-## Pilot Onboarding & Operations Design
+## Operations Design / طراحی عملیاتی
+1. **ظرفیت آنبوردینگ:** حداکثر ۲ فروشگاه جدید در هفته.
+2. **سطح خدمات پشتیبانی (SLA):** پاسخ‌گویی به خطاهای بحرانی زیر ۱ ساعت و رفع زیر ۴ ساعت.
 
-### 1. Weekly Onboarding Capacity & Calendar
-- **Cap:** Maximum 2 new partner onboardings per week to ensure dedicated technical oversight.
-- **Calendar Schedule:**
-  - Week 1: Onboarding Merchants 1 & 2 (Ecommerce Focus).
-  - Week 2: Onboarding Merchant 3 (Academy / LMS Focus).
-  - Week 3: Onboarding Merchant 4 (Clinic / Booking Focus).
-
-### 2. Dedicated Support Channel & Escalation
-- Dedicated communication channel (e.g. private Telegram/Slack support group per merchant).
-- **Pilot SLA:**
-  - Severity 1 (Store Down / Payment Failure): Response < 1 hour, Resolution < 4 hours.
-  - Severity 2 (Feature Glitch / Non-blocking UI): Response < 4 hours, Resolution < 24 hours.
-  - Severity 3 (Minor Feedback / Feature Request): Weekly review triage.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

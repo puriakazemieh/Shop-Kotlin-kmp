@@ -1,31 +1,21 @@
-# Manual QA Evidence Handoff: P09-QA-MANUAL-004
+# Manual QA Evidence Handoff / تحویل شواهد تست دستی: P09-QA-MANUAL-004
 
-- Task ID: P09-QA-MANUAL-004
-- Date: 2026-09-06
-- Title: Complete Shop-only Functional Test Suite on Release Candidate
+- **Task ID / شناسه تسک:** P09-QA-MANUAL-004
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** مجموعه تست‌های کامل کارکردی (Functional Suite) فروشگاه
 
-## Test Instructions for User (Manual QA)
-### Where to Look
-- KMP Client Application (Android / Web / PWA)
-- Storefront UI & Checkout Flow
-- WordPress Admin Orders Page (`/wp-admin/edit.php?post_type=shop_order` or WooCommerce Orders)
+## Test Instructions for User / دستورالعمل تست برای کاربر
+### کجا نگاه کنید
+- اپلیکیشن کلاینت (اندروید / وب / PWA)
+- جریان خرید و تسویه‌حساب فروشگاه
+- پیشخوان وردپرس بخش سفارشات ووکامرس
 
-### How to Test
-1. **Authentication Flow:**
-   - Test Login via OTP / Password. Verify token persistence.
-2. **Catalog & Search:**
-   - Browse Home screen, Categories, and Product Detail pages. Verify images and prices.
-3. **Cart Operations:**
-   - Add items to cart, modify quantities, remove item. Verify cart total computation.
-4. **Checkout & Payment Return:**
-   - Initiate checkout with ZarinPal / Direct Bank gateway.
-   - Test successful payment return & verify order status is set to `Processing`/`Completed`.
-   - Test canceled or failed payment: Verify cart items are **NOT** cleared upon failed or canceled payment attempt.
+### مراحل تست
+1. **ورود و احراز هویت:** ورود با رمز عبور و پیامک OTP را تست کنید.
+2. **کاتالوگ و جستجو:** صفحه اصلی، دسته‌بندی‌ها و جزییات کالا را بررسی کنید.
+3. **سبد خرید:** افزودن، تغییر تعداد و حذف کالا را تست کنید.
+4. **تسویه‌حساب و پرداخت:** خرید موفق را تا ثبت نهایی سفارش در ووکامرس تست کنید.
+5. **انصراف از پرداخت:** درگاه را باز کرده و انصراف دهید؛ تایید کنید سبد خرید **پاک نمیشود**.
 
-### Success Criteria
-- 100% Critical functional test cases pass.
-- Payment return state is authoritative from server.
-- Failed payment does not clear cart items.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

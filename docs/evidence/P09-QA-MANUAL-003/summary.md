@@ -1,33 +1,20 @@
-# Manual QA Evidence Handoff: P09-QA-MANUAL-003
+# Manual QA Evidence Handoff / تحویل شواهد تست دستی: P09-QA-MANUAL-003
 
-- Task ID: P09-QA-MANUAL-003
-- Date: 2026-09-06
-- Title: Clean install, upgrade, and rollback on WP/PHP/Woo matrix
+- **Task ID / شناسه تسک:** P09-QA-MANUAL-003
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** نصب تمیز، ارتقا و بازگشت (Rollback) روی ماتریس WP/PHP/Woo
 
-## Test Instructions for User (Manual QA)
-### Where to Look
-- WordPress Admin Panel (`/wp-admin/plugins.php` or `/wp-admin/themes.php`)
-- WooCommerce Settings -> Advanced -> Features (HPOS - High-Performance Order Storage status)
-- PHP / WordPress Logs (`wp-content/debug.log`)
+## Test Instructions for User / دستورالعمل تست برای کاربر
+### کجا نگاه کنید
+- پیشخوان وردپرس بخش افزونه‌ها (`/wp-admin/plugins.php`) یا پوسته‌ها (`/wp-admin/themes.php`)
+- تنظیمات ووکامرس بخش Advanced -> Features (وضعیت HPOS)
+- لاگ‌های وردپرس (`wp-content/debug.log`)
 
-### How to Test
-1. **Clean Installation Matrix:**
-   - Install `carmilla-bridge.zip` (Plugin) on clean WP 6.4/6.5/6.6 with PHP 8.1/8.2/8.3.
-   - Install `carmilla-theme.zip` (Theme) on clean WP.
-   - Verify active status without PHP errors or warnings.
-2. **Upgrade Test:**
-   - Install previous release version, populate sample products/orders.
-   - Upgrade to current candidate version. Verify DB migrations run automatically and cleanly.
-3. **Rollback Test:**
-   - Rollback plugin/theme version. Verify site stability and zero data corruption.
-4. **HPOS & WooCommerce Blocks Compatibility:**
-   - Enable HPOS (High-Performance Order Storage) in WooCommerce.
-   - Test Cart & Checkout Gutenberg Blocks.
+### مراحل تست
+1. **ماتریس نصب تمیز:** فایل ZIP افزونه/پوسته را روی وردپرس خام (نسخه‌های ۶.۴ تا ۶.۶) با PHP 8.1 تا 8.3 نصب و فعال کنید.
+2. **تست ارتقا:** نسخه قبلی را نصب کرده، چند سفارش بسازید، سپس نسخه جدید را آپلود کرده و صحت اجرای migrationها را تایید کنید.
+3. **تست بازگشت:** نسخه را دانگرید کنید و عدم تخریب پایگاه داده را تایید نمایید.
+4. **سازگاری HPOS و بلوک‌ها:** حالت HPOS و بلوک‌های تسویه‌حساب گوتنبرگ را روشن کرده و تست کنید.
 
-### Success Criteria
-- Zero fatal PHP errors during install, upgrade, or rollback.
-- Orders and settings preserved after upgrade/rollback.
-- Full HPOS and WooCommerce Checkout Blocks compatibility verified.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

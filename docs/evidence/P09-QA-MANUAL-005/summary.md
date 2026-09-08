@@ -1,31 +1,19 @@
-# Manual QA Evidence Handoff: P09-QA-MANUAL-005
+# Manual QA Evidence Handoff / تحویل شواهد تست دستی: P09-QA-MANUAL-005
 
-- Task ID: P09-QA-MANUAL-005
-- Date: 2026-09-06
-- Title: UI / Visual / RTL / LTR / Accessibility / Browser Test Suite
+- **Task ID / شناسه تسک:** P09-QA-MANUAL-005
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** تست‌های بصری، راست‌چین/چپ‌چین (RTL/LTR)، دسترسی‌پذیری و مرورگرها
 
-## Test Instructions for User (Manual QA)
-### Where to Look
-- Web/PWA Application on Chrome, Firefox, Safari, Edge
-- Android Mobile App on various screen sizes (small phone, tablet)
-- Language/Direction switchers (Persian RTL vs English LTR)
+## Test Instructions for User / دستورالعمل تست برای کاربر
+### کجا نگاه کنید
+- اپلیکیشن وب/PWA روی مرورگرهای Chrome, Firefox, Safari, Edge
+- اپلیکیشن اندروید روی ابعاد مختلف موبایل و تبلت
 
-### How to Test
-1. **RTL / LTR Layout Checks:**
-   - Switch language between Persian (RTL) and English (LTR).
-   - Check alignment of navigation bars, cards, icons, margins, paddings, text directions.
-2. **Visual & Responsive Testing:**
-   - Resize browser window from 320px up to 1920px.
-   - Verify no text clipping, overlapping elements, horizontal scrollbar glitches, or broken layouts.
-3. **Accessibility (a11y):**
-   - Test keyboard navigation (Tab key focus states on forms, buttons, links).
-   - Check color contrast ratios and screen reader accessibility labels.
-4. **Cross-Browser Verification:**
-   - Verify rendering on Chrome, Edge, Safari, and Firefox.
+### مراحل تست
+1. **چیدمان RTL / LTR:** زبان را بین فارسی و انگلیسی جابه‌جا کرده و صحت چیدمان راست‌چین و چپ‌چین را بررسی کنید.
+2. **پاسخ‌گویی بصری:** پنجره مرورگر را از ۳۲۰ پیکسل تا ۱۹۲۰ پیکسل تغییر اندازه دهید و عدم بهم‌ریختگی ظاهری را تایید کنید.
+3. **دسترسی‌پذیری:** پیمایش با کلید `Tab` کیبورد روی فرم‌ها و دکمه‌ها را تست کنید.
+4. **مرورگرها:** رندر شدن بدون باگ در مرورگرهای اصلی را بررسی نمایید.
 
-### Success Criteria
-- Zero Severity 0/1 UI, RTL/LTR or accessibility bugs.
-- Consistent visual presentation across browsers and screen sizes.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

@@ -1,32 +1,19 @@
-# Manual QA Evidence Handoff: P09-QA-MANUAL-006
+# Manual QA Evidence Handoff / تحویل شواهد تست دستی: P09-QA-MANUAL-006
 
-- Task ID: P09-QA-MANUAL-006
-- Date: 2026-09-06
-- Title: Resilience & Network Edge Cases (Offline, Timeout, Retry, Duplicate, Process Death)
+- **Task ID / شناسه تسک:** P09-QA-MANUAL-006
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** پایداری شبکه و سناریوهای لبه (آفلاین، تایم‌آوت، تلاش مجدد، درخواست تکراری)
 
-## Test Instructions for User (Manual QA)
-### Where to Look
-- KMP Client Application (Android / Web)
-- Network Simulator / Airplane Mode Toggle
-- Device App Task Switcher & Force Close
+## Test Instructions for User / دستورالعمل تست برای کاربر
+### کجا نگاه کنید
+- اپلیکیشن کلاینت (اندروید / وب)
+- تنظیمات شبکه / حالت هواپیما
+- بخش بستن ناگهانی برنامه (Force Stop)
 
-### How to Test
-1. **Offline State Handling:**
-   - Turn on Airplane mode while navigating app or placing order.
-   - Verify clear offline banner and retry action without app crash.
-2. **Network Timeout & Retry:**
-   - Simulate high latency / 3G network timeout during checkout or cart operations.
-   - Verify idempotent retry mechanism prevents double order creation.
-3. **Duplicate Request Defense:**
-   - Double-tap "Submit Payment" or "Place Order" button rapidly.
-   - Verify server deduplication handles idempotent requests correctly without double charges or duplicate database records.
-4. **Process Death / App Backgrounding:**
-   - Put app in background during checkout flow and kill process (Android Developer Options -> Don't keep activities or Force Stop).
-   - Reopen app and verify state is restored cleanly without corrupted data loss.
+### مراحل تست
+1. **حالت آفلاین:** هنگام کار با برنامه، حالت هواپیما را روشن کنید و نمایش پیام عدم اتصال را بررسی نمایید.
+2. **درخواست تکراری:** روی دکمه ثبت سفارش چند بار سریع کلیک کنید؛ تایید کنید سفارش تکراری ثبت نمیشود.
+3. **بستن ناگهانی:** برنامه را در حین خرید Force Stop کرده و مجدداً باز کنید؛ بازیابی امن سبد را بررسی نمایید.
 
-### Success Criteria
-- Zero duplicate writes or duplicate order records in DB.
-- Zero data loss or state corruption after process death.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)

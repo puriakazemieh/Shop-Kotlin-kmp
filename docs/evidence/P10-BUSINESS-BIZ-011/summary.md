@@ -1,18 +1,11 @@
-# Business Summary: P10-BUSINESS-BIZ-011
+# Business Summary / خلاصه تجاری: P10-BUSINESS-BIZ-011
 
-- Task ID: P10-BUSINESS-BIZ-011
-- Date: 2026-09-06
-- Title: Primary Marketplace Submission Draft and Preview Archive
+- **Task ID / شناسه تسک:** P10-BUSINESS-BIZ-011
+- **Date / تاریخ:** 2026-09-06
+- **Title / عنوان:** پیش‌نویس ثبت در مارکت‌پلیس اول و آرشیو پیش‌نمایش
 
-## Marketplace Submission Verification
-### 1. Submission Package & Preview Archive
-- **Target Marketplace:** Zhaket (ژاکت) Primary Listing.
-- **Product Title:** «کارمیلا» — پوسته و افزونه فروشگاهی نیتیو KMP.
-- **Preview Assets Prepared:** Product screenshots, feature banners, installation video link, live demo URL (`https://demo.carmilla.ir`).
+## Marketplace Submission / ثبت مارکت‌پلیس
+- آماده‌سازی فایل زیپ `carmilla-submission-v1.0.0.zip` همراه با اسکرین‌شات‌ها، بنرها و متن معرفی جهت ثبت در ژاکت.
 
-### 2. Pre-Publish Checklist
-- **Archive Checksum:** `carmilla-submission-v1.0.0.zip` SHA256 verified.
-- **Contract & Exclusivity Agreement:** Marketplace reviewer terms verified; draft submission saved in private preview state prior to public launch button click.
-
-## Status
-- Final Status: AWAITING_MANUAL_QA
+## Status / وضعیت
+- **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)
