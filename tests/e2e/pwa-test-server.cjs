@@ -3,6 +3,7 @@ const http = require('node:http');
 const path = require('node:path');
 
 const indexPath = path.resolve(__dirname, '../../composeApp/src/webMain/resources/index.html');
+const generatedPwaDir = path.resolve(__dirname, '../../composeApp/build/generated/pwa');
 
 function policyFromIndex(index, expression) {
   return index.match(expression)?.[1] || '';
@@ -10,6 +11,10 @@ function policyFromIndex(index, expression) {
 
 function startPwaTestServer() {
   const index = fs.readFileSync(indexPath, 'utf8');
+  const manifests = new Map([
+    ['/manifest-wp.json', fs.readFileSync(path.join(generatedPwaDir, 'manifest-wp.json'), 'utf8')],
+    ['/manifest-spring.json', fs.readFileSync(path.join(generatedPwaDir, 'manifest-spring.json'), 'utf8')],
+  ]);
   const csp = policyFromIndex(index, /http-equiv="Content-Security-Policy" content="([^"]+)"/);
   const referrerPolicy = policyFromIndex(index, /<meta name="referrer" content="([^"]+)"/);
 
@@ -22,7 +27,12 @@ function startPwaTestServer() {
       response.end(index);
       return;
     }
-    if (pathname === '/app-config-wp.json') {
+    if (manifests.has(pathname)) {
+      response.writeHead(200, { 'Content-Type': 'application/manifest+json' });
+      response.end(manifests.get(pathname));
+      return;
+    }
+    if (pathname === '/app-config-wp.json' || pathname === '/app-config-spring.json') {
       response.writeHead(200, { 'Content-Type': 'application/json' });
       response.end('{}');
       return;
