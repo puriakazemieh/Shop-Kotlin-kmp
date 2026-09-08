@@ -48,11 +48,11 @@ P10-BUSINESS-DOC-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P10 / BUSINESS / DOC
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / M
 - Owner: HUMAN
-- Completion authority: BOTH یا HUMAN طبق Evidence
+- Completion authority: BOTH
 - Depends on: P10-BUSINESS-DOC-006
 - Blocks: P10-BUSINESS-OPS-008
 - Requirement source: Master checklist row P10-BUSINESS-DOC-007 و Source audit بخش BUSINESS
@@ -120,11 +120,11 @@ secret/domain واقعی دیده نشود
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-09-06
+- Completed at: 2026-09-06
+- Changed files: docs/evidence/P10-BUSINESS-DOC-007/summary.md
+- Commands and exit codes: N/A
+- Manual tester/date/result: Pending Human QA / 2026-09-06 / AWAITING_MANUAL_QA
+- Evidence paths: docs/evidence/P10-BUSINESS-DOC-007/summary.md
+- Remaining risks/blockers: Awaiting video review
+- Final status: AWAITING_MANUAL_QA
