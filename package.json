@@ -1,0 +1,14 @@
+{
+  "name": "carmilla-e2e",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Carmilla PWA end-to-end test harness",
+  "scripts": {
+    "test:e2e": "playwright test --config=playwright.config.cjs",
+    "test:e2e:fake": "playwright test --config=playwright.config.cjs --project=fake-desktop --project=fake-mobile",
+    "test:e2e:list": "playwright test --config=playwright.config.cjs --list"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.48.0"
+  }
+}

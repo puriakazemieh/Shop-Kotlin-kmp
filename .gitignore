@@ -17,6 +17,8 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+test-results/
+playwright-report/
 kotlin-js-store
 .artifacts
 /.artifacts
