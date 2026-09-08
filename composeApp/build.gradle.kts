@@ -274,6 +274,31 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
+self.addEventListener('push', function(event) {
+  let data = { title: 'پیام جدید', body: 'شما یک پیام جدید دارید', url: '/' };
+  if (event.data) {
+    try {
+      const payload = event.data.json();
+      data.title = payload.title || data.title;
+      data.body = payload.body || data.body;
+      data.url = payload.url || data.url;
+    } catch(e) {}
+  }
+  const options = {
+    body: data.body,
+    icon: '/icon-192.png',
+    data: { url: data.url }
+  };
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  if (event.notification.data && event.notification.data.url) {
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  }
+});
+
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
@@ -383,6 +408,31 @@ self.addEventListener('fetch', function(event) {
       });
     })
   );
+});
+
+self.addEventListener('push', function(event) {
+  let data = { title: 'پیام جدید', body: 'شما یک پیام جدید دارید', url: '/' };
+  if (event.data) {
+    try {
+      const payload = event.data.json();
+      data.title = payload.title || data.title;
+      data.body = payload.body || data.body;
+      data.url = payload.url || data.url;
+    } catch(e) {}
+  }
+  const options = {
+    body: data.body,
+    icon: '/icon-192.png',
+    data: { url: data.url }
+  };
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  if (event.notification.data && event.notification.data.url) {
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  }
 });
 
 self.addEventListener('activate', function(event) {

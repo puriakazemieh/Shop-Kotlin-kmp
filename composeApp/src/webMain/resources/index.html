@@ -41,12 +41,32 @@
         .then(config => {
             window.appConfig = config;
             console.log("Loaded App Config:", config);
-            // Load Compose App after config is ready
             var script = document.createElement('script');
             script.src = '/composeApp.js';
             document.body.appendChild(script);
         })
         .catch(err => console.error("Failed to load config", err));
+
+    window.requestPushPermission = function() {
+        return new Promise((resolve, reject) => {
+            if (!('Notification' in window)) {
+                reject('Push notifications not supported');
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    navigator.serviceWorker.ready.then(reg => {
+                        reg.pushManager.subscribe({
+                            userVisibleOnly: true,
+                            applicationServerKey: 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuB240409Y_Z6s0Z0eX1lqZ1gY' // Dummy VAPID public key
+                        }).then(sub => resolve(sub)).catch(e => reject(e));
+                    });
+                } else {
+                    reject('Permission denied');
+                }
+            });
+        });
+    };
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
