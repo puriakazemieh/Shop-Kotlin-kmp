@@ -1,4 +1,4 @@
-package com.kazemieh.shop
+﻿package com.kazemieh.shop
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
@@ -18,16 +18,21 @@ fun main() {
 }
 
 private fun resolveSkuAndApi(): Pair<String, String?> {
-    val params = URLSearchParams(window.location.search)
-    val isLocalhost = window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1"
-    val api = if (isLocalhost) params.get("api")?.takeIf { it.isNotBlank() } else null
-    val brandId = params.get("brand")?.takeIf { it.isNotBlank() }
+    // In production, app-config.json sets window.appConfig
+    val appConfig = window.asDynamic().appConfig
     
-    val sku = when {
-        brandId != null -> brandId
-        api != null -> "wp"
-        else -> "carmila"
+    val sku = if (appConfig != null) {
+        appConfig.sku as String
+    } else {
+        "carmila"
     }
+
+    val api = if (appConfig != null) {
+        appConfig.backend.apiRoot as String
+    } else {
+        null
+    }
+    
     return Pair(sku, api)
 }
 

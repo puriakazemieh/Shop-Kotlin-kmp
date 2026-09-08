@@ -6,6 +6,7 @@
     <title>kmp-shop</title>
     <base href="/">
     <link type="text/css" rel="stylesheet" href="/styles.css">
+    <link rel="manifest" id="pwa-manifest" href="/manifest-wp.json">
 </head>
 <body style="text-align: center; align-content: center">
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 50 50" role="presentation">
@@ -16,12 +17,42 @@
                           repeatCount="indefinite"/>
     </circle>
 </svg>
-<script type="application/javascript" src="/composeApp.js"></script>
 <script>
     console.log("HTML loaded");
     window.addEventListener('error', (e) => {
         console.error('Global error:', e.error);
     });
+    
+    // Select correct config based on URL
+    let configUrl = '/app-config-wp.json';
+    if (window.location.search.includes('api=')) {
+        document.getElementById('pwa-manifest').href = '/manifest-spring.json';
+        configUrl = '/app-config-spring.json';
+    } else {
+        document.getElementById('pwa-manifest').href = '/manifest-wp.json';
+    }
+
+    fetch(configUrl)
+        .then(response => response.json())
+        .then(config => {
+            window.appConfig = config;
+            console.log("Loaded App Config:", config);
+            // Load Compose App after config is ready
+            var script = document.createElement('script');
+            script.src = '/composeApp.js';
+            document.body.appendChild(script);
+        })
+        .catch(err => console.error("Failed to load config", err));
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }, function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
 </script>
 </body>
 </html>

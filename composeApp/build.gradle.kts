@@ -163,3 +163,87 @@ compose.desktop {
     }
 }
 
+
+val generatePwaFiles by tasks.registering {
+    val inputFile = rootProject.file("tools/build-config/products.json")
+    val outputDir = layout.buildDirectory.dir("generated/pwa")
+    inputs.file(inputFile)
+    outputs.dir(outputDir)
+
+    doLast {
+        val outDir = outputDir.get().asFile
+        outDir.mkdirs()
+        
+        val jsonText = inputFile.readText()
+        val parsedJson = groovy.json.JsonSlurper().parseText(jsonText) as Map<*, *>
+        
+        // Generate for WP profile (using carmila)
+        val carmilaSpec = parsedJson["carmila"] as Map<*, *>
+        val wpBackend = carmilaSpec["backendProfile"] as Map<*, *>
+        val wpManifest = File(outDir, "manifest-wp.json")
+        wpManifest.writeText("""{
+  "name": "Carmilla WordPress App",
+  "short_name": "CarmillaWP",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}""")
+
+        val wpConfig = File(outDir, "app-config-wp.json")
+        wpConfig.writeText("""{
+  "sku": "carmila",
+  "backend": {
+    "kind": "WORDPRESS",
+    "apiRoot": "${wpBackend["apiRoot"]}",
+    "allowedAuthHosts": ["localhost", "127.0.0.1"]
+  },
+  "features": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"]
+}""")
+
+        // Generate for Spring profile (using atris or fake)
+        val springManifest = File(outDir, "manifest-spring.json")
+        springManifest.writeText("""{
+  "name": "Carmilla Spring App",
+  "short_name": "CarmillaSpring",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}""")
+
+        val springConfig = File(outDir, "app-config-spring.json")
+        springConfig.writeText("""{
+  "sku": "atris",
+  "backend": {
+    "kind": "SPRING",
+    "apiRoot": "http://localhost:8081",
+    "allowedAuthHosts": ["localhost", "127.0.0.1"]
+  },
+  "features": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"]
+}""")
+
+        val sw = File(outDir, "sw.js")
+        sw.writeText("""
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open('carmilla-cache').then(function(cache) {
+      return cache.addAll(['/']);
+    })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request).then(function(response) {
+      return response || fetch(event.request);
+    })
+  );
+});
+""")
+    }
+}
+
+kotlin.sourceSets.getByName("jsMain") {
+    resources.srcDir(generatePwaFiles.map { it.outputs.files.singleFile })
+}
