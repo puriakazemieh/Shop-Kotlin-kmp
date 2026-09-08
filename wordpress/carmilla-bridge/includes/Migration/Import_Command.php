@@ -15,6 +15,8 @@ class Import_Command {
 
         \ = \['input'] ?? wp_upload_dir()['basedir'] . '/carmilla-export/posts.ndjson';
         \ = \['site_uuid'] ?? 'default-legacy-site';
+        \ = \['legacy_domain'] ?? '';
+        \ = \['new_domain'] ?? '';
 
         if (!file_exists(\)) {
             \WP_CLI::error("Input file not found: \");
@@ -32,7 +34,8 @@ class Import_Command {
         fclose(\);
 
         \WP_CLI::log("Pass 1: Importing " . count(\) . " records...");
-        \->process_pass_one(\, \);
+        \ = \->process_pass_one(\, \, \, \);
+        \WP_CLI::log(sprintf("Pass 1 Complete: %d inserted, %d updated, %d skipped (delta).", \['inserted'], \['updated'], \['skipped']));
 
         \WP_CLI::log("Pass 2: Resolving relations...");
         \->process_pass_two(\, \);
