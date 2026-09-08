@@ -182,12 +182,26 @@ val generatePwaFiles by tasks.registering {
         val wpBackend = carmilaSpec["backendProfile"] as Map<*, *>
         val wpManifest = File(outDir, "manifest-wp.json")
         wpManifest.writeText("""{
+  "id": "com.kazemieh.shop.wp",
   "name": "Carmilla WordPress App",
   "short_name": "CarmillaWP",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000"
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }""")
 
         val wpConfig = File(outDir, "app-config-wp.json")
@@ -204,12 +218,26 @@ val generatePwaFiles by tasks.registering {
         // Generate for Spring profile (using atris or fake)
         val springManifest = File(outDir, "manifest-spring.json")
         springManifest.writeText("""{
+  "id": "com.kazemieh.shop.spring",
   "name": "Carmilla Spring App",
   "short_name": "CarmillaSpring",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000"
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }""")
 
         val springConfig = File(outDir, "app-config-spring.json")
