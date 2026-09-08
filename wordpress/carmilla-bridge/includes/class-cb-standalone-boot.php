@@ -147,6 +147,7 @@ class CB_Standalone_Boot {
 			'class-cb-template-engine.php',
 			'class-cb-message-queue.php',
 			'Migration/Export_Command.php',
+			'Migration/Export_Overlay_Command.php',
 			'Migration/Migrator.php',
 			'Migration/Import_Command.php',
 			'class-cb-plugin.php',
