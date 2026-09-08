@@ -1,0 +1,87 @@
+﻿{
+  "version": "1.0",
+  "pack_id": "psych-synthetic-fa-v1",
+  "chunks": [
+    {
+      "schema": "wp_posts",
+      "feature": "psych.assessment",
+      "dependencies": ["psych.assessment"],
+      "data": [
+        {
+          "seed_id": "psych-disclaimer",
+          "title": "سلب مسئولیت پزشکی (Disclaimer)",
+          "content": "<!-- wp:paragraph --><strong>هشدار مهم:</strong> این سامانه و پرسشنامه‌های موجود در آن جنبه آزمایشی و سرگرمی دارند و به هیچ وجه جایگزین تشخیص، مشاوره یا درمان پزشکی و روان‌شناختی توسط متخصصین ذی‌صلاح نیستند. در صورت داشتن مشکلات جدی، حتماً به روان‌شناس یا روان‌پزشک مراجعه کنید.<!-- /wp:paragraph -->",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "schema": "psych_assessments",
+      "feature": "psych.assessment",
+      "dependencies": ["psych.assessment"],
+      "data": [
+        {
+          "seed_id": "assessment-mood-demo",
+          "title": "پرسشنامه خلق و خوی روزانه (نمونه آزمایشی)",
+          "description": "یک پرسشنامه کاملاً خیالی برای تست عملکرد سیستم.",
+          "disclaimer": "این پرسشنامه فاقد اعتبار علمی است و کاربرد تشخیصی ندارد.",
+          "questions": [
+            {
+              "id": "q1",
+              "text": "امروز چقدر احساس انرژی می‌کنید؟",
+              "type": "scale",
+              "options": [
+                {"value": 1, "label": "خیلی کم"},
+                {"value": 2, "label": "کم"},
+                {"value": 3, "label": "متوسط"},
+                {"value": 4, "label": "زیاد"},
+                {"value": 5, "label": "خیلی زیاد"}
+              ]
+            },
+            {
+              "id": "q2",
+              "text": "کیفیت خواب شما در شب گذشته چگونه بود؟",
+              "type": "scale",
+              "options": [
+                {"value": 1, "label": "بسیار بد"},
+                {"value": 2, "label": "بد"},
+                {"value": 3, "label": "متوسط"},
+                {"value": 4, "label": "خوب"},
+                {"value": 5, "label": "بسیار خوب"}
+              ]
+            }
+          ],
+          "scoring_rules": [
+            {"min": 2, "max": 5, "result": "خلق و خوی پایین (آزمایشی)"},
+            {"min": 6, "max": 8, "result": "خلق و خوی متوسط (آزمایشی)"},
+            {"min": 9, "max": 10, "result": "خلق و خوی بالا (آزمایشی)"}
+          ]
+        },
+        {
+          "seed_id": "assessment-personality-demo",
+          "title": "تست تیپ شخصیتی رنگ‌ها (تخیلی)",
+          "description": "این تست فقط برای تست فرم‌ساز ساخته شده و پایه علمی ندارد.",
+          "disclaimer": "هیچ ارزش تشخیصی ندارد.",
+          "questions": [
+            {
+              "id": "q1",
+              "text": "کدام رنگ را ترجیح می‌دهید؟",
+              "type": "multiple_choice",
+              "options": [
+                {"value": "A", "label": "آبی - آرامش"},
+                {"value": "B", "label": "قرمز - هیجان"},
+                {"value": "C", "label": "سبز - طبیعت"},
+                {"value": "D", "label": "زرد - شادی"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Zero real patient responses included.",
+    "No copyrighted instruments (like MMPI, BDI, etc.) are used.",
+    "Strict medical disclaimer page is included and injected into the data."
+  ]
+}
