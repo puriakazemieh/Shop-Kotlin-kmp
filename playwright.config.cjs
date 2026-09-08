@@ -56,6 +56,7 @@ module.exports = defineConfig({
     ['./tests/e2e/reporter.cjs', { outputFile: 'test-results/e2e/results.jsonl' }],
   ],
   use: {
+    channel: process.env.E2E_BROWSER_CHANNEL || undefined,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
