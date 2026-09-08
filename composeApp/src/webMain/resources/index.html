@@ -49,8 +49,28 @@
             const swUrl = configUrl.includes('spring') ? '/sw-spring.js' : '/sw-wp.js';
             navigator.serviceWorker.register(swUrl).then(function(registration) {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    if (!newWorker) return;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            if (confirm("نسخه جدیدی از برنامه در دسترس است. آیا می‌خواهید اکنون به‌روزرسانی کنید؟")) {
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                        }
+                    });
+                });
             }, function(err) {
                 console.log('ServiceWorker registration failed: ', err);
+            });
+            
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
             });
         });
     }

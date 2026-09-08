@@ -222,6 +222,12 @@ val generatePwaFiles by tasks.registering {
 const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v1';
 const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health', '/wp-json/cb/v1/auth'];
 
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
@@ -237,7 +243,6 @@ self.addEventListener('fetch', function(event) {
   if (isSensitive || event.request.method !== 'GET') {
     event.respondWith(
       fetch(event.request).catch(function() {
-        // Do not promise offline writes/checkouts. Fail gracefully.
         return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
           headers: { 'Content-Type': 'application/json' },
           status: 503
@@ -327,6 +332,12 @@ self.addEventListener('activate', function(event) {
         springSw.writeText("""
 const CACHE_NAME = 'carmilla-cache-${springTenantId}-v1';
 const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health'];
+
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
