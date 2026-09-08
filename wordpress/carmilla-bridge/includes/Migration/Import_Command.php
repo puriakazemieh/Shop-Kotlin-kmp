@@ -17,22 +17,39 @@ class Import_Command {
         \ = \['site_uuid'] ?? 'default-legacy-site';
         \ = \['legacy_domain'] ?? '';
         \ = \['new_domain'] ?? '';
+        \ = \['encryption_key'] ?? '';
 
         if (!file_exists(\)) {
             \WP_CLI::error("Input file not found: \");
             return;
         }
 
-        \ = new Migrator();
         \ = [];
         
-        \ = fopen(\, 'r');
-        while ((\ = fgets(\)) !== false) {
-            \ = json_decode(trim(\), true);
-            if (\) \[] = \;
+        if (!empty(\)) {
+            \WP_CLI::log('Decrypting payload...');
+            \ = file_get_contents(\);
+            try {
+                \ = Migration_Crypto::decrypt_payload(\, \, \);
+                \ = explode("\n", trim(\));
+                foreach (\ as \) {
+                    \ = json_decode(trim(\), true);
+                    if (\) \[] = \;
+                }
+            } catch (\Exception \) {
+                \WP_CLI::error("Decryption failed: " . \->getMessage());
+                return;
+            }
+        } else {
+            \ = fopen(\, 'r');
+            while ((\ = fgets(\)) !== false) {
+                \ = json_decode(trim(\), true);
+                if (\) \[] = \;
+            }
+            fclose(\);
         }
-        fclose(\);
 
+        \ = new Migrator();
         \WP_CLI::log("Pass 1: Importing " . count(\) . " records...");
         \ = \->process_pass_one(\, \, \, \);
         \WP_CLI::log(sprintf("Pass 1 Complete: %d inserted, %d updated, %d skipped (delta).", \['inserted'], \['updated'], \['skipped']));

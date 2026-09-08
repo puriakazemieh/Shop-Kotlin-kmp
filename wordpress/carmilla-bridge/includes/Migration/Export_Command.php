@@ -11,17 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Export_Command {
 
-    /**
-     * Executes the export.
-     * 
-     * ## OPTIONS
-     * 
-     * [--output=<path>]
-     * : Path to the output directory. Default is wp-content/uploads/carmilla-export.
-     * 
-     * @param array \
-     * @param array \
-     */
     public static function execute( \, \ ) {
         global \;
         
@@ -29,6 +18,10 @@ class Export_Command {
         if (!file_exists(\)) {
             mkdir(\, 0755, true);
         }
+        
+        \ = \['customer_uuid'] ?? 'default-legacy-site';
+        \ = \['encryption_key'] ?? '';
+        \ = \['expiry'] ?? (time() + 86400); // Default 24h expiry
 
         \ = \ . '/posts.ndjson';
         \ = \ . '/media.ndjson';
@@ -38,13 +31,12 @@ class Export_Command {
 
         \WP_CLI::log('Exporting posts (excluding media)...');
         \ = \->get_results("SELECT ID, post_title, post_content, post_type, post_status FROM {\->posts} WHERE post_type NOT IN ('attachment', 'revision')");
+        
+        \ = '';
         foreach (\ as \) {
-            // Fetch meta securely, decode serialized if needed safely, or just export raw strings
             \ = \->get_results(\->prepare("SELECT meta_key, meta_value FROM {\->postmeta} WHERE post_id = %d", \->ID));
             \ = [];
             foreach (\ as \) {
-                // We do NOT unserialize here to prevent object injection on the other side.
-                // The migrator on Carmilla side will handle mapping.
                 \[\->meta_key] = \->meta_value;
             }
             
@@ -57,11 +49,16 @@ class Export_Command {
                 'meta' => \
             ];
             
-            fwrite(\, json_encode(\) . "\n");
+            \ = json_encode(\) . "\n";
+            \ .= \;
+            fwrite(\, \);
         }
+        fclose(\);
 
         \WP_CLI::log('Exporting media manifest with checksums...');
         \ = \->get_results("SELECT ID, post_title, guid FROM {\->posts} WHERE post_type = 'attachment'");
+        
+        \ = '';
         foreach (\ as \) {
             \ = get_attached_file(\->ID);
             \ = file_exists(\) ? md5_file(\) : null;
@@ -72,13 +69,27 @@ class Export_Command {
                 'url' => \->guid,
                 'checksum' => \
             ];
-            fwrite(\, json_encode(\) . "\n");
+            \ = json_encode(\) . "\n";
+            \ .= \;
+            fwrite(\, \);
         }
-
         fclose(\);
-        fclose(\);
-
-        \WP_CLI::success("Export completed securely (NDJSON) to: \");
+        
+        if (!empty(\)) {
+            \WP_CLI::log('Encrypting payloads...');
+            \ = Migration_Crypto::encrypt_payload(\, \, \, (int)\);
+            \ = Migration_Crypto::encrypt_payload(\, \, \, (int)\);
+            
+            file_put_contents(\ . '/posts.enc', \);
+            file_put_contents(\ . '/media.enc', \);
+            
+            // Delete raw ndjson to secure PII
+            unlink(\);
+            unlink(\);
+            \WP_CLI::success("Export completed SECURELY (Encrypted) to: \");
+        } else {
+            \WP_CLI::success("Export completed securely (NDJSON) to: \. Warning: PII is unencrypted.");
+        }
     }
 }
 
