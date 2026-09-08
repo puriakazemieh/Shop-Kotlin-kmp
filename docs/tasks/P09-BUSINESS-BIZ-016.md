@@ -48,11 +48,11 @@ P09-BUSINESS-BIZ-016
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P09 / BUSINESS / BIZ
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / M
 - Owner: HUMAN
-- Completion authority: BOTH یا HUMAN طبق Evidence
+- Completion authority: BOTH
 - Depends on: P09-QA-MANUAL-015
 - Blocks: P09-QA-OPS-017
 - Requirement source: Master checklist row P09-BUSINESS-BIZ-016 و Source audit بخش BUSINESS
@@ -120,11 +120,11 @@ contribution margin اولیه
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-09-06
+- Completed at: 2026-09-06
+- Changed files: docs/evidence/P09-BUSINESS-BIZ-016/summary.md
+- Commands and exit codes: N/A
+- Manual tester/date/result: Pending Human QA / 2026-09-06 / AWAITING_MANUAL_QA
+- Evidence paths: docs/evidence/P09-BUSINESS-BIZ-016/summary.md
+- Remaining risks/blockers: Awaiting human manual verification
+- Final status: AWAITING_MANUAL_QA
