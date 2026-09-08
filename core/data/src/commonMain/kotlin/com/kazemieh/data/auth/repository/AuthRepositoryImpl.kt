@@ -107,6 +107,7 @@ class AuthRepositoryImpl(
         return try {
             tokenManager.clearTokens()
             _authState.value = AuthState.Unauthenticated
+            TokenExpiredEventBus.publish(event = AuthState.Unauthenticated)
             AppResult.Success(Unit)
         } catch (e: Exception) {
             AppResult.Error(e.message ?: "Unknown error")
