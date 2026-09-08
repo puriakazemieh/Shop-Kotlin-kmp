@@ -180,6 +180,8 @@ val generatePwaFiles by tasks.registering {
         // Generate for WP profile (using carmila)
         val carmilaSpec = parsedJson["carmila"] as Map<*, *>
         val wpBackend = carmilaSpec["backendProfile"] as Map<*, *>
+        val wpTenant = carmilaSpec["tenant"] as Map<*, *>
+        val wpTenantId = wpTenant["id"] as String
         val wpManifest = File(outDir, "manifest-wp.json")
         wpManifest.writeText("""{
   "id": "com.kazemieh.shop.wp",
@@ -215,7 +217,44 @@ val generatePwaFiles by tasks.registering {
   "features": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"]
 }""")
 
-        // Generate for Spring profile (using atris or fake)
+        val wpSw = File(outDir, "sw-wp.js")
+        wpSw.writeText("""
+const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v1';
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(['/']);
+    })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request).then(function(response) {
+      return response || fetch(event.request);
+    })
+  );
+});
+
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName.startsWith('carmilla-cache-') && cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+""")
+
+        // Generate for Spring profile (using atris)
+        val springSpec = parsedJson["atris"] as Map<*, *>
+        val springTenant = springSpec["tenant"] as Map<*, *>
+        val springTenantId = springTenant["id"] as String
         val springManifest = File(outDir, "manifest-spring.json")
         springManifest.writeText("""{
   "id": "com.kazemieh.shop.spring",
@@ -251,11 +290,12 @@ val generatePwaFiles by tasks.registering {
   "features": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"]
 }""")
 
-        val sw = File(outDir, "sw.js")
-        sw.writeText("""
+        val springSw = File(outDir, "sw-spring.js")
+        springSw.writeText("""
+const CACHE_NAME = 'carmilla-cache-${springTenantId}-v1';
 self.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open('carmilla-cache').then(function(cache) {
+    caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(['/']);
     })
   );
@@ -265,6 +305,20 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
       return response || fetch(event.request);
+    })
+  );
+});
+
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName.startsWith('carmilla-cache-') && cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
     })
   );
 });
