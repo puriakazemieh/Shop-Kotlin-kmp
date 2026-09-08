@@ -252,6 +252,17 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match('/index.html').then(function(response) {
+        return response || fetch(event.request);
+      }).catch(function() {
+        return caches.match('/offline.html');
+      })
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (response) {
@@ -265,10 +276,6 @@ self.addEventListener('fetch', function(event) {
           });
         }
         return networkResponse;
-      }).catch(function() {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/offline.html');
-        }
       });
     })
   );
@@ -388,6 +395,17 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match('/index.html').then(function(response) {
+        return response || fetch(event.request);
+      }).catch(function() {
+        return caches.match('/offline.html');
+      })
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (response) {
@@ -401,10 +419,6 @@ self.addEventListener('fetch', function(event) {
           });
         }
         return networkResponse;
-      }).catch(function() {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/offline.html');
-        }
       });
     })
   );
