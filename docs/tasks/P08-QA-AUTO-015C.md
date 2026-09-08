@@ -1,4 +1,4 @@
-﻿# P08-QA-AUTO-015C — Implement Offline & Update Lifecycle Tests
+﻿# P08-QA-AUTO-015C — PWA Manifest & Push Notification Prompt Tests
 
 - Status: TODO
 - Phase/Area/Type: P08 / QA / AUTO
@@ -9,7 +9,7 @@
 - Blocks: P08-QA-AUTO-015D
 
 ## هدف قابل اندازه‌گیری
-Write E2E suites for offline mode and PWA updates.
+Write E2E tests to validate manifest parser (standalone) and Push permission grant/deny flows.
 
 ## خروجی مورد انتظار
-Automated tests validating offline fallback pages and the Service Worker update mechanism (SKIP_WAITING).
+Playwright suite verifying Web Push prompt handling without crashing and valid manifest.json.

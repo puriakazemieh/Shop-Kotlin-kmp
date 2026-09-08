@@ -1,4 +1,4 @@
-﻿# P08-QA-AUTO-015D — Implement Deep-link & Feature Guard Tests
+﻿# P08-QA-AUTO-015D — Tenant Cache Isolation & Logout Purge Tests
 
 - Status: TODO
 - Phase/Area/Type: P08 / QA / AUTO
@@ -6,10 +6,10 @@
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P08-QA-AUTO-015C
-- Blocks: P08-QA-MANUAL-016
+- Blocks: P08-QA-AUTO-015E
 
 ## هدف قابل اندازه‌گیری
-Write E2E suites for deep linking and feature routing guards.
+Write E2E suites for multi-tenant cache separation and logout cache deletion (window.caches).
 
 ## خروجی مورد انتظار
-Automated tests validating direct navigation to internal routes (SPA routing) and access control (Feature Guards) blocking unauthorized views.
+Automated tests validating isolated multi-tenant data and clean state post-logout.

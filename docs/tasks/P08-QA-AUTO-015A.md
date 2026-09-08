@@ -1,4 +1,4 @@
-﻿# P08-QA-AUTO-015A — Setup Playwright Infrastructure & Reporting
+﻿# P08-QA-AUTO-015A — Playwright Infrastructure, Matrix (2 Profiles, 3 Hosts) & Reporting
 
 - Status: TODO
 - Phase/Area/Type: P08 / QA / AUTO
@@ -9,7 +9,7 @@
 - Blocks: P08-QA-AUTO-015B
 
 ## هدف قابل اندازه‌گیری
-Initialize Playwright testing infrastructure and configure reporters.
+Initialize Playwright, setup matrix testing (Desktop/Mobile, Fake/Staging/Prod), and custom reporter logging SKU/Fingerprint.
 
 ## خروجی مورد انتظار
-npm init, playwright installation, custom reporter logging backend/host/SKU/fingerprint; strict separation of fake fixtures from real backend (fake must not report as production PASS).
+npm init, playwright installation, strict separation of fake fixtures from real backend (fake must not report as production PASS).
