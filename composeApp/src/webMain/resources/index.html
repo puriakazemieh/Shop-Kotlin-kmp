@@ -47,6 +47,24 @@
         })
         .catch(err => console.error("Failed to load config", err));
 
+    // Performance budget monitor
+    if ('PerformanceObserver' in window) {
+        let budgetExceeded = false;
+        const observer = new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (entry.name === 'first-contentful-paint' || entry.entryType === 'largest-contentful-paint') {
+                    if (entry.startTime > 3000) { // 3s budget
+                        console.warn('Performance Budget Exceeded:', entry.name, entry.startTime);
+                        budgetExceeded = true;
+                    }
+                }
+            }
+        });
+        observer.observe({ type: 'paint', buffered: true });
+        // LCP is supported in Chrome
+        try { observer.observe({ type: 'largest-contentful-paint', buffered: true }); } catch(e) {}
+    }
+
     window.requestPushPermission = function() {
         return new Promise((resolve, reject) => {
             if (!('Notification' in window)) {
