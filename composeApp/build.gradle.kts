@@ -225,7 +225,7 @@ const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health', '
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png']);
+      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']);
     })
   );
 });
@@ -235,7 +235,15 @@ self.addEventListener('fetch', function(event) {
   const isSensitive = SENSITIVE_PATHS.some(path => requestUrl.pathname.includes(path));
   
   if (isSensitive || event.request.method !== 'GET') {
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      fetch(event.request).catch(function() {
+        // Do not promise offline writes/checkouts. Fail gracefully.
+        return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
+          headers: { 'Content-Type': 'application/json' },
+          status: 503
+        });
+      })
+    );
     return;
   }
 
@@ -252,6 +260,10 @@ self.addEventListener('fetch', function(event) {
           });
         }
         return networkResponse;
+      }).catch(function() {
+        if (event.request.mode === 'navigate') {
+          return caches.match('/offline.html');
+        }
       });
     })
   );
@@ -319,7 +331,7 @@ const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health'];
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png']);
+      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']);
     })
   );
 });
@@ -329,7 +341,14 @@ self.addEventListener('fetch', function(event) {
   const isSensitive = SENSITIVE_PATHS.some(path => requestUrl.pathname.includes(path));
   
   if (isSensitive || event.request.method !== 'GET') {
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      fetch(event.request).catch(function() {
+        return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
+          headers: { 'Content-Type': 'application/json' },
+          status: 503
+        });
+      })
+    );
     return;
   }
 
@@ -346,6 +365,10 @@ self.addEventListener('fetch', function(event) {
           });
         }
         return networkResponse;
+      }).catch(function() {
+        if (event.request.mode === 'navigate') {
+          return caches.match('/offline.html');
+        }
       });
     })
   );
