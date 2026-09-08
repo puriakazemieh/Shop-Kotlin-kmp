@@ -146,6 +146,7 @@ class CB_Standalone_Boot {
 			'class-cb-sms-http-adapter.php',
 			'class-cb-template-engine.php',
 			'class-cb-message-queue.php',
+			'Migration/Export_Command.php',
 			'class-cb-plugin.php',
 		);
 
