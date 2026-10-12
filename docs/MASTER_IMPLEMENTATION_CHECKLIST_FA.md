@@ -556,18 +556,18 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | انجام | Task ID                 | مجری  | اولویت/ریسک | کار و خروجی                                                                                                                                                       | اعتبارسنجی                                                                                |
 |-------|-------------------------|-------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
 | [x]   | `P01-SECURITY-DISC-001` | BOTH  | P0/HIGH     | تمام یافته‌های P0 سند ممیزی به ticketهای اتمیک خصوصی تبدیل شوند                                                                                                   | هر ticket owner، exploit surface، test و rollback دارد                                    |
-| [x]   | `P01-SECURITY-OPS-002`  | HUMAN | P0/HIGH     | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود                                                                                             | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود                               |
-| [x]   | `P01-SECURITY-CODE-003` | AI    | P0/HIGH     | request/response/token logging کلاینت redacted و debug-only شود                                                                                                   | تست عدم ثبت Authorization، OTP، payment و health fields                                   |
-| [x]   | `P01-SECURITY-CODE-004` | BOTH  | P0/HIGH     | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود                                                                                                       | HTTPS production pass؛ MITM/invalid cert fail                                             |
+| [ ] | `P01-SECURITY-OPS-002`  | HUMAN | P0/HIGH     | اگر Spring فعلی public است، تا hardening allowlist/خاموش یا محدود شود                                                                                             | scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رود                               |
+| [ ] | `P01-SECURITY-CODE-003` | AI    | P0/HIGH     | request/response/token logging کلاینت redacted و debug-only شود                                                                                                   | تست عدم ثبت Authorization، OTP، payment و health fields                                   |
+| [ ] | `P01-SECURITY-CODE-004` | BOTH  | P0/HIGH     | cleartext و trust-all TLS حذف؛ debug exception صریح و محدود                                                                                                       | HTTPS production pass؛ MITM/invalid cert fail                                             |
 | [x]   | `P01-SECURITY-CODE-005` | BOTH  | P0/HIGH     | token storage پلتفرم‌ها امن‌تر و Bearer فقط به host مجاز ارسال شود                                                                                                | foreign host test فاقد header؛ logout/expiry/rotation test                                |
-| [x]   | `P01-SECURITY-CODE-006` | AI    | P0/HIGH     | `?api=` و override origin آزاد از production حذف یا allowlist شود                                                                                                 | localhost/private/foreign URL در release رد شود                                           |
-| [x]   | `P01-PAYMENT-CODE-007`  | BOTH  | P0/HIGH     | نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد                                                                                               | success جعلی سفارش/cart را تغییر ندهد                                                     |
-| [x]   | `P01-PAYMENT-CODE-008`  | BOTH  | P0/HIGH     | پاک‌شدن cart فقط بعد از verify authoritative موفق انجام شود                                                                                                       | fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد                               |
-| [x]   | `P01-PAYMENT-CODE-009`  | BOTH  | P0/HIGH     | قرارداد callback و نام پارامتر Android/PWA/WP یکسان و opaque شود                                                                                                  | cold/warm start، app killed و browser fallback دستی تست                                   |
-| [x]   | `P01-WPPLUGIN-SEC-010`  | BOTH  | P0/HIGH     | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود                                                                                          | tamper/expired/wrong audience/revoked token رد شوند                                       |
-| [x]   | `P01-WPPLUGIN-SEC-011`  | BOTH  | P0/HIGH     | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off                                                                                                  | brute force/rate/account enumeration tests                                                |
-| [x]   | `P01-WPPLUGIN-SEC-012`  | BOTH  | P0/HIGH     | CORS default بسته و origin دقیق tenant allowlist شود                                                                                                              | unapproved origin رد؛ credential policy روشن                                              |
-| [x]   | `P01-WPPLUGIN-SEC-013`  | BOTH  | P0/HIGH     | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد                                                                                                 | تست نقش‌ها روی همه endpointهای حساس                                                       |
+| [ ] | `P01-SECURITY-CODE-006` | AI    | P0/HIGH     | `?api=` و override origin آزاد از production حذف یا allowlist شود                                                                                                 | localhost/private/foreign URL در release رد شود                                           |
+| [ ] | `P01-PAYMENT-CODE-007`  | BOTH  | P0/HIGH     | نتیجه deep link فقط trigger query باشد؛ status کلاینت trusted نباشد                                                                                               | success جعلی سفارش/cart را تغییر ندهد                                                     |
+| [ ] | `P01-PAYMENT-CODE-008`  | BOTH  | P0/HIGH     | پاک‌شدن cart فقط بعد از verify authoritative موفق انجام شود                                                                                                       | fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد                               |
+| [ ] | `P01-PAYMENT-CODE-009`  | BOTH  | P0/HIGH     | قرارداد callback و نام پارامتر Android/PWA/WP یکسان و opaque شود                                                                                                  | cold/warm start، app killed و browser fallback دستی تست                                   |
+| [ ] | `P01-WPPLUGIN-SEC-010`  | BOTH  | P0/HIGH     | JWT secret/default، issuer/audience/expiry/rotation/revocation اصلاح شود                                                                                          | tamper/expired/wrong audience/revoked token رد شوند                                       |
+| [ ] | `P01-WPPLUGIN-SEC-011`  | BOTH  | P0/HIGH     | OTP hash، purpose، expiry، attempts، resend cooldown و debug-off                                                                                                  | brute force/rate/account enumeration tests                                                |
+| [ ] | `P01-WPPLUGIN-SEC-012`  | BOTH  | P0/HIGH     | CORS default بسته و origin دقیق tenant allowlist شود                                                                                                              | unapproved origin رد؛ credential policy روشن                                              |
+| [ ] | `P01-WPPLUGIN-SEC-013`  | BOTH  | P0/HIGH     | role/capability matrix granular؛ `shop_manager` ادمین سلامت نباشد                                                                                                 | تست نقش‌ها روی همه endpointهای حساس                                                       |
 | [x]   | `P01-WPPLUGIN-SEC-014`  | BOTH  | P0/HIGH     | ownership/IDOR و post type validation برای read/write/delete                                                                                                      | user A به resource user B دسترسی ندارد                                                    |
 | [x]   | `P01-WPPLUGIN-CODE-015` | BOTH  | P0/HIGH     | Wallet/session-credit خارج Scope shop-only از route/job/API production غیرفعال و fail-closed شود؛ فقط اگر legacy فعال/فروخته شده است ledger/transaction اتمیک شود | feature خاموش دسترسی صفر؛ در حالت legacy concurrency test و موجودی منفی/credit تکراری صفر |
 | [x]   | `P01-WPPLUGIN-CODE-016` | BOTH  | P0/HIGH     | Booking خارج Scope نسخه اول deregister/fail-closed شود؛ hardening کامل فقط اگر surface فعلی قابل دسترس است                                                        | feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌زمان فقط یک winner                 |
@@ -629,8 +629,8 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x]   | `P02-ARCH-CODE-014`  | AI    | P2/MEDIUM   | Navigation تدریجی به graphهای feature تقسیم شود؛ full split پیش‌شرط Manifest نیست          | navigation characterization/deep-link tests قبل و بعد یکسان           |
 | [x]   | `P02-CORE-CODE-015`  | AI    | P1/MEDIUM   | dependency inversionهای navigation/profile/admin به‌صورت Taskهای کوچک                      | architecture test مانع import معکوس جدید شود                          |
 | [x]   | `P02-CORE-CODE-015A` | AI    | P1/MEDIUM   | ایجاد اسکریپت تست معماری در گریدل برای جلوگیری از وابستگی مستقیم فیچرها                    | fail شدن بیلد در صورت وجود وابستگی غیرمجاز                            |
-| [x]   | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
-| [x]   | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
+| [ ] | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
+| [ ] | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
 | [x]   | `P02-QA-MANUAL-017`  | HUMAN | P0/MEDIUM   | smoke کامل رفتار قبل/بعد Foundation                                                        | auth/home/product/cart/payment-return روی fixture                     |
 | [x]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | کنترل‌های باقی‌مانده به P09-QA-GATE-018 منتقل شده‌اند                |
 
@@ -669,7 +669,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-ANDROID-CODE-017` | BOTH | P0/HIGH | dimension backend فقط `wordpress/spring`؛ tenant config جدا | دو profile build؛ شش brand flavor حذف مرحله‌ای |
 | [x] | `P03-MIGRATION-DATA-018` | BOTH | P0/HIGH | mapping flavor/package/token legacy و one-time migration | هر package منتشرشده upgrade؛ ID/signing/versionCode حفظ |
 | [x] | `P03-QA-AUTO-019` | AI | P0/HIGH | matrix tests برای F0/F1/F2/F3/F4 و دو profile fixture | UI/route/network/backend expectations |
-| [ ] | `P03-QA-MANUAL-020` | HUMAN | P0/HIGH | toggle واقعی بدون rebuild در WordPress/PWA/client internal | خاموش/روشن، stale/invalid، deep link و process restart |
+| [x] | `P03-QA-MANUAL-020` | HUMAN | P0/HIGH | toggle واقعی بدون rebuild در WordPress/PWA/client internal | خاموش/روشن، stale/invalid، deep link و process restart |
 | [x] | `P03-QA-REVIEW-023` | AI | P0/HIGH | تطبیق شواهد تاریخی Manifest و ثبت مبنای QA جایگزین | گزارش ادعا/شاهد/وضعیت واقعی/کارت جبرانی کامل؛ DONE گذشته بدون بازنویسی؛ عدم استفاده از آن به‌عنوان مجوز Gate جدید. |
 | [ ] | `P03-MANIFEST-OPS-021` | BOTH | P1/MEDIUM | aliasهای legacy با deprecation/telemetry نگه داشته شوند | یک client cycle؛ حذف در Task جدا |
 | [ ] | `P03-ARCH-CODE-024` | BOTH | P0/HIGH | مدل نسخه‌دار ProductBuildSpec مستقل از برند | serialization roundtrip؛ برند یکسان با هر دو backend؛ tenant واقعی اجباری در release؛ SKU نامعتبر/feature ناشناخته و تغییر origin از remote رد شود. |
@@ -715,7 +715,7 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P04-WPPLUGIN-ADR-001` | BOTH | P0/HIGH | قرارداد دو محصول مستقل، ownership داده و کانال انتشار freeze شود | Theme بدون Bridge؛ Bridge بدون Theme؛ داده site-owned |
+| [x] | `P04-WPPLUGIN-ADR-001` | BOTH | P0/HIGH | قرارداد دو محصول مستقل، ownership داده و کانال انتشار freeze شود | Theme بدون Bridge؛ Bridge بدون Theme؛ داده site-owned |
 | [ ] | `P04-PRODUCT-ADR-038` | BOTH | P0/HIGH | قرارداد تفصیلی محصولات و نگاشت مالکیت جدید | هیچ entity بی‌مالک یا دو مسیر canonical نماند؛ Theme-only/Plugin-only/both و App Builder دو میزبان صریح؛ مشخصات نیازمند تحقیق با owner و کارت بعدی تعیین شود. |
 | [ ] | `P04-WPPLUGIN-ADR-002` | BOTH | P0/HIGH | قرارداد هسته مشترک، دو میزبان و انتخاب نسخه سازگار | سند تصمیم و نمودار bootstrap نشان دهند هر ZIP بدون محصول دیگر کار می‌کند و نصب هم‌زمان یک هسته سازگار دارد؛ مالکیت داده سایت و مجوز خرید از انتخاب میزبان جدا باشند. |
 | [ ] | `P04-ENTITLEMENT-DATA-039` | BOTH | P0/HIGH | کاتالوگ قابلیت و SKU با تفکیک حق خرید و toggle | شناسه‌های قدیمی alias معتبر؛ بسته Base بدون vertical؛ بسته Booking بدون الزام Psych؛ حق builder/platform جدا؛ offline/grace/revoke/upgrade/site transfer صریح. |
@@ -936,9 +936,9 @@ Taskهای `P05-PAYMENT-GATE-025` تا `027` اگر provider هنوز انتخا
 | [ ] | `P07-MIGRATION-DATA-020` | BOTH | P0/HIGH | Base Pack و Customer Overlay نسخه مستقل | core update customization را overwrite نکند |
 | [ ] | `P07-MIGRATION-SEC-021` | BOTH | P0/HIGH | AEAD encryption، signature/checksum، expiry/customer binding | key خارج bundle؛ tamper/expired/wrong customer رد |
 | [ ] | `P07-MIGRATION-SEC-022` | BOTH | P0/HIGH | denylist users/orders/payments/secrets/health data پیش‌فرض | export inspection و privacy test |
-| [ ] | `P07-QA-AUTO-023` | AI | P0/HIGH | تست Seed و Migration با ماتریس میزبان و SKU | dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان. |
+| [x] | `P07-QA-AUTO-023` | AI | P0/HIGH | تست Seed و Migration با ماتریس میزبان و SKU | dry-run/upsert/resume/rollback و data counts/hash؛ عدم ورود قابلیت غیرمجاز و عدم حذف داده در خاموشی یا تغییر میزبان. |
 | [x] | `P07-QA-MANUAL-024` | HUMAN | P0/HIGH | staging migration کامل + delta + rollback | UAT، backup، acceptance window |
-| [ ] | `P07-SEED-DOC-025` | AI | P1/LOW | راهنمای pack authoring، license و migration runbook | مثال معتبر و troubleshooting |
+| [x] | `P07-SEED-DOC-025` | AI | P1/LOW | راهنمای pack authoring، license و migration runbook | مثال معتبر و troubleshooting |
 | [ ] | `P07-SEED-GATE-026` | HUMAN | P0/HIGH | Gate A: Seed/Import Core برای base+shop و PWA | feature-aware،repeat/resume/rollback و safety pass |
 | [ ] | `P07-MIGRATION-GATE-027` | HUMAN | P0/HIGH | Gate B: Customer Migration Service | consent/export/delta/encryption/UAT و economics pass |
 
@@ -986,24 +986,24 @@ Compose Web به PWA نصب‌پذیر و production-ready تبدیل شود؛ W
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P08-PWA-ADR-001` | BOTH | P0/MEDIUM | معماری استقرار مستقل Web/PWA و دو backend | CORS/cookie/auth/cache/SEO boundary برای هر استقرار ثبت شود؛ آمادگی production اتصال Spring فقط با Gate P15 ادعا شود. |
-| [ ] | `P08-PWA-CODE-002` | AI | P0/MEDIUM | خروجی مستقل Web و PWA از source set و BuildSpec | clean production build در root/subdirectory؛ دو پروژه با backend متفاوت بدون source fork؛ asset و history route سالم. |
-| [ ] | `P08-PWA-CODE-003` | AI | P0/HIGH | پیکربندی trusted وب با backend، برند و SKU مستقل | دست‌کاری apiRoot/authHosts و feature خارج از ceiling رد شود؛ artifact WORDPRESS به Theme-only و Plugin-only و both وصل شود. |
-| [ ] | `P08-PWA-CODE-004` | AI | P0/MEDIUM | `manifest.webmanifest` با id/scope/start_url/name/icons | installability check؛ icon sizes |
-| [ ] | `P08-PWA-CODE-005` | BOTH | P0/HIGH | service worker با cache namespace tenant+revision | سایت A/B cache مشترک ندارند |
+| [x] | `P08-PWA-ADR-001` | BOTH | P0/MEDIUM | معماری استقرار مستقل Web/PWA و دو backend | CORS/cookie/auth/cache/SEO boundary برای هر استقرار ثبت شود؛ آمادگی production اتصال Spring فقط با Gate P15 ادعا شود. |
+| [x] | `P08-PWA-CODE-002` | AI | P0/MEDIUM | خروجی مستقل Web و PWA از source set و BuildSpec | clean production build در root/subdirectory؛ دو پروژه با backend متفاوت بدون source fork؛ asset و history route سالم. |
+| [x] | `P08-PWA-CODE-003` | AI | P0/HIGH | پیکربندی trusted وب با backend، برند و SKU مستقل | دست‌کاری apiRoot/authHosts و feature خارج از ceiling رد شود؛ artifact WORDPRESS به Theme-only و Plugin-only و both وصل شود. |
+| [x] | `P08-PWA-CODE-004` | AI | P0/MEDIUM | `manifest.webmanifest` با id/scope/start_url/name/icons | installability check؛ icon sizes |
+| [x] | `P08-PWA-CODE-005` | BOTH | P0/HIGH | service worker با cache namespace tenant+revision | سایت A/B cache مشترک ندارند |
 | [ ] | `P08-PWA-CODE-006` | BOTH | P0/HIGH | cache policy فقط app shell/public catalog/content | auth/order/payment/message/health cache صفر |
-| [ ] | `P08-PWA-CODE-007` | AI | P0/MEDIUM | offline fallback و network error UX | checkout/offline write وعده داده نشود |
-| [ ] | `P08-PWA-CODE-008` | BOTH | P0/HIGH | logout/private cache purge و session expiry | logout سپس offline داده خصوصی نشان ندهد |
-| [ ] | `P08-PWA-CODE-009` | BOTH | P0/HIGH | update lifecycle، prompt، skip-waiting policy و rollback | old/new contract mismatch loop صفر |
-| [ ] | `P08-PWA-SEC-010` | BOTH | P0/HIGH | CSP/HSTS/Referrer/Permissions Policy و origin binding | header scan؛ inline/eval policy روشن |
-| [ ] | `P08-PWA-CODE-011` | BOTH | P1/MEDIUM | Web Push/VAPID tenant-owned با consent | deny/revoke/deep link؛ payload حساس صفر |
-| [ ] | `P08-PWA-CODE-012` | AI | P1/MEDIUM | deep link/history/back/refresh/share target در scope | route داخلی refresh 404 نشود |
-| [ ] | `P08-OBSERVABILITY-CODE-013` | BOTH | P0/MEDIUM | event taxonomy مصوب و error/performance telemetry opt-in | staging event validation؛ PII redaction |
-| [ ] | `P08-PWA-PERF-014` | BOTH | P1/MEDIUM | performance budget برای startup/assets/API | شبکه کند و دستگاه ضعیف؛ regression threshold |
+| [x] | `P08-PWA-CODE-007` | AI | P0/MEDIUM | offline fallback و network error UX | checkout/offline write وعده داده نشود |
+| [x] | `P08-PWA-CODE-008` | BOTH | P0/HIGH | logout/private cache purge و session expiry | logout سپس offline داده خصوصی نشان ندهد |
+| [x] | `P08-PWA-CODE-009` | BOTH | P0/HIGH | update lifecycle، prompt، skip-waiting policy و rollback | old/new contract mismatch loop صفر |
+| [x] | `P08-PWA-SEC-010` | BOTH | P0/HIGH | CSP/HSTS/Referrer/Permissions Policy و origin binding | header scan؛ inline/eval policy روشن |
+| [x] | `P08-PWA-CODE-011` | BOTH | P1/MEDIUM | Web Push/VAPID tenant-owned با consent | deny/revoke/deep link؛ payload حساس صفر |
+| [x] | `P08-PWA-CODE-012` | AI | P1/MEDIUM | deep link/history/back/refresh/share target در scope | route داخلی refresh 404 نشود |
+| [x] | `P08-OBSERVABILITY-CODE-013` | BOTH | P0/MEDIUM | event taxonomy مصوب و error/performance telemetry opt-in | staging event validation؛ PII redaction |
+| [x] | `P08-PWA-PERF-014` | BOTH | P1/MEDIUM | performance budget برای startup/assets/API | شبکه کند و دستگاه ضعیف؛ regression threshold |
 | [ ] | `P08-QA-AUTO-015` | AI | P0/MEDIUM | تست مستقل Web/PWA در دو profile و سه host WordPress | tenant cache isolation، logout purge و feature guard سبز؛ report دارای backend/host/SKU/fingerprint؛ fake به‌عنوان production PASS گزارش نشود. |
 | [ ] | `P08-QA-MANUAL-016` | HUMAN | P0/HIGH | Chrome Android، Edge/Chrome/Firefox و Safari iOS behavior | install/remove/update/offline/logout evidence |
 | [ ] | `P08-QA-MANUAL-017` | HUMAN | P1/MEDIUM | keyboard/screen reader/RTL/zoom 200% | golden pages و defect list |
-| [ ] | `P08-PWA-OPS-018` | BOTH | P0/HIGH | staging/production deploy، cache bust و rollback runbook | نسخه قبلی قابل بازگشت؛ smoke post-deploy |
+| [x] | `P08-PWA-OPS-018` | BOTH | P0/HIGH | staging/production deploy، cache bust و rollback runbook | نسخه قبلی قابل بازگشت؛ smoke post-deploy |
 | [ ] | `P08-PWA-GATE-019` | HUMAN | P0/HIGH | Gate مستقل Web/PWA با محدوده backend تأییدشده | install/update/security/performance/accessibility سبز؛ خروجی مستقل قابل میزبانی؛ وضعیت هر backend در release matrix شفاف باشد. |
 
 ### Gate فاز ۸
@@ -1039,23 +1039,23 @@ Internal Alpha
 
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
-| [ ] | `P09-QA-DOC-001` | BOTH | P0/MEDIUM | ماتریس رگرسیون محصول، SKU، میزبان و backend | هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند. |
-| [ ] | `P09-QA-AUTO-002` | AI | P0/HIGH | regression automation shop/auth/payment/toggle/import/PWA | CI report و trend؛ flaky test owner |
+| [x] | `P09-QA-DOC-001` | BOTH | P0/MEDIUM | ماتریس رگرسیون محصول، SKU، میزبان و backend | هر قابلیت ادعاشده یک مسیر UI→API→data و حالت deny داشته باشد؛ Gateهای platform و provider به artifact/version مشخص متصل باشند. |
+| [x] | `P09-QA-AUTO-002` | AI | P0/HIGH | regression automation shop/auth/payment/toggle/import/PWA | CI report و trend؛ flaky test owner |
 | [ ] | `P09-QA-MANUAL-003` | HUMAN | P0/HIGH | clean install/upgrade/rollback روی WP/PHP/Woo matrix | minimum/current/mid + HPOS/Blocks |
 | [ ] | `P09-QA-MANUAL-004` | HUMAN | P0/HIGH | Functional suite کامل shop-only،شامل بازآزمایی smoke بنیاد P02 | ۱۰۰٪ critical؛ expected/actual/evidence؛ auth/home/product/cart/payment-return روی RC |
 | [ ] | `P09-QA-MANUAL-005` | HUMAN | P0/HIGH | UI/Visual/RTL/LTR/accessibility/browser suite | baseline approval؛ Sev0/1 صفر |
 | [ ] | `P09-QA-MANUAL-006` | HUMAN | P0/HIGH | resilience: offline/timeout/retry/duplicate/process death | write تکراری/data loss صفر |
-| [ ] | `P09-SECURITY-SEC-007` | BOTH | P0/HIGH | security review/pentest محدود surface public | auth/IDOR/XSS/CSRF/SSRF/payment/cache |
-| [ ] | `P09-OBSERVABILITY-CODE-008` | BOTH | P0/MEDIUM | dashboard activation/import/PWA/checkout/error/support | denominator و event definitions روشن |
-| [ ] | `P09-OBSERVABILITY-SEC-009` | BOTH | P0/HIGH | consent/data minimization و audit analytics payload | secret/payment/health/user text صفر |
+| [x] | `P09-SECURITY-SEC-007` | BOTH | P0/HIGH | security review/pentest محدود surface public | auth/IDOR/XSS/CSRF/SSRF/payment/cache |
+| [x] | `P09-OBSERVABILITY-CODE-008` | BOTH | P0/MEDIUM | dashboard activation/import/PWA/checkout/error/support | denominator و event definitions روشن |
+| [x] | `P09-OBSERVABILITY-SEC-009` | BOTH | P0/HIGH | consent/data minimization و audit analytics payload | secret/payment/health/user text صفر |
 | [ ] | `P09-BUSINESS-BIZ-010` | HUMAN | P0/MEDIUM | design partner agreement، scope، feedback و data terms | ۳–۵ partner؛ health data ممنوع |
 | [ ] | `P09-BUSINESS-OPS-011` | HUMAN | P0/MEDIUM | onboarding تقویم‌دار، support channel و SLA pilot | هر هفته حداکثر ظرفیت مشخص |
-| [ ] | `P09-BUSINESS-BIZ-012` | BOTH | P0/MEDIUM | feedback taxonomy و triage Product/Bug/Compatibility/Docs | ticket به task قابل ردیابی تبدیل شود |
+| [x] | `P09-BUSINESS-BIZ-012` | BOTH | P0/MEDIUM | feedback taxonomy و triage Product/Bug/Compatibility/Docs | ticket به task قابل ردیابی تبدیل شود |
 | [ ] | `P09-QA-MANUAL-013` | HUMAN | P0/HIGH | UAT cohort ۳–۵ نفره با داده sanitised | sign-off هر partner؛ payment mismatch صفر |
 | [ ] | `P09-OBSERVABILITY-BIZ-014` | HUMAN | P1/MEDIUM | دو چرخه review هفتگی KPI/support/UX | decision log و backlog reprioritised |
 | [ ] | `P09-QA-MANUAL-015` | HUMAN | P0/HIGH | expanded beta فقط پس از Gate cohort اول | ۸–۱۲ مشتری؛ top blockerها رفع |
 | [ ] | `P09-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | unit economics با support hours/refund واقعی بازبینی | contribution margin اولیه |
-| [ ] | `P09-QA-OPS-017` | BOTH | P0/HIGH | release drill، rollback، restore و incident simulation | owner/time/evidence؛ support bundle redacted |
+| [x] | `P09-QA-OPS-017` | BOTH | P0/HIGH | release drill، rollback، restore و incident simulation | owner/time/evidence؛ support bundle redacted |
 | [ ] | `P09-QA-GATE-018` | HUMAN | P0/HIGH | Gate رگرسیون نسخه با استقلال محصولات و بدهی QA | هیچ DONE تاریخی جای Evidence جدید را نگیرد؛ فقط ترکیب‌های تست‌شده مجاز به P10 باشند؛ P0 و شرط باز بدون تصمیم معتبر PASS نشوند. |
 
 ### معیار رفتن از ۳–۵ به ۸–۱۲
@@ -1094,22 +1094,22 @@ Internal Alpha
 | [ ] | `P10-BUSINESS-BIZ-001` | HUMAN | P0/MEDIUM | marketplace اول با scoring قرارداد انتخاب شود | سهم/انحصار/تسویه/refund/support/audience |
 | [ ] | `P10-BUSINESS-BIZ-002` | HUMAN | P0/MEDIUM | تعریف SKU مستقل Theme، Plugin و کلاینت با قابلیت قابل خرید | برای هر SKU محتوای ZIP/artifact، feature، تعداد سایت، target، مجوز، upgrade و پیش‌نیاز Woo/runner روشن باشد. |
 | [ ] | `P10-BUSINESS-BIZ-003` | HUMAN | P0/MEDIUM | قیمت‌گذاری قابلیت، اپ‌ساز و هزینه تحویل هر SKU | margin و break-even برای base، تک‌قابلیت و bundle؛ خرید Builder مجوز خودکار دامنه یا همه platformها نسازد. |
-| [ ] | `P10-WPTHEME-DOC-004` | AI | P0/LOW | readme/changelog/license/attribution/screenshot | version و behavior یکسان |
-| [ ] | `P10-WPPLUGIN-DOC-005` | AI | P0/LOW | install/onboarding/provider/import/upgrade/troubleshooting docs | clean-room tester طبق doc موفق |
-| [ ] | `P10-BUSINESS-DOC-006` | BOTH | P0/MEDIUM | ماتریس عمومی قابلیت، مجوز و سازگاری هر محصول | قابلیت موجود/خریداری‌شده/فعال و target آماده build یا صرفاً آزمایشی تفکیک شوند؛ محصولی که Gate ندارد آماده فروش نامیده نشود. |
+| [x] | `P10-WPTHEME-DOC-004` | AI | P0/LOW | readme/changelog/license/attribution/screenshot | version و behavior یکسان |
+| [x] | `P10-WPPLUGIN-DOC-005` | AI | P0/LOW | install/onboarding/provider/import/upgrade/troubleshooting docs | clean-room tester طبق doc موفق |
+| [x] | `P10-BUSINESS-DOC-006` | BOTH | P0/MEDIUM | ماتریس عمومی قابلیت، مجوز و سازگاری هر محصول | قابلیت موجود/خریداری‌شده/فعال و target آماده build یا صرفاً آزمایشی تفکیک شوند؛ محصولی که Gate ندارد آماده فروش نامیده نشود. |
 | [ ] | `P10-BUSINESS-DOC-007` | HUMAN | P1/MEDIUM | ویدئوی نصب، PWA و payment setup با داده demo | secret/domain واقعی دیده نشود |
-| [ ] | `P10-BUSINESS-OPS-008` | BOTH | P0/MEDIUM | demo site و downloadable artifact بدون PII/secret | restore/reset و uptime owner |
-| [ ] | `P10-CI-OPS-009` | BOTH | P0/HIGH | ساخت RC متناسب SKU با هویت و provenance مستقل | دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد. |
+| [x] | `P10-BUSINESS-OPS-008` | BOTH | P0/MEDIUM | demo site و downloadable artifact بدون PII/secret | restore/reset و uptime owner |
+| [x] | `P10-CI-OPS-009` | BOTH | P0/HIGH | ساخت RC متناسب SKU با هویت و provenance مستقل | دو build همسان reproducible؛ artifact پایه کد قابلیت خارج از SKU نداشته باشد؛ update همان product/site را هدف بگیرد. |
 | [ ] | `P10-BUSINESS-OPS-010` | HUMAN | P0/MEDIUM | support runbook، macro، escalation، SLA و refund triage | support drill با ticketهای نمونه |
 | [ ] | `P10-BUSINESS-BIZ-011` | HUMAN/EXTERNAL | P0/HIGH | submission marketplace اول | preview قبل publish؛ قرارداد archive |
-| [ ] | `P10-PROGRAM-OPS-012` | BOTH | P0/HIGH | انتشار محدود فقط ترکیب‌های محصول و SKU تأییدشده | release manifest شامل محصول، feature، backend، target و محدودیت باشد؛ آمادگی P04 fake Builder به‌عنوان build واقعی فروخته نشود. |
+| [x] | `P10-PROGRAM-OPS-012` | BOTH | P0/HIGH | انتشار محدود فقط ترکیب‌های محصول و SKU تأییدشده | release manifest شامل محصول، feature، backend، target و محدودیت باشد؛ آمادگی P04 fake Builder به‌عنوان build واقعی فروخته نشود. |
 | [ ] | `P10-BUSINESS-BIZ-013` | HUMAN | P0/MEDIUM | limited launch ظرفیت‌محور | quota مشتری/هفته و stop switch |
 | [ ] | `P10-OBSERVABILITY-BIZ-014` | HUMAN | P0/MEDIUM | چهار هفته review فروش/activation/refund/ticket/margin | گزارش channel-specific |
 | [ ] | `P10-BUSINESS-EXPERIMENT-015` | HUMAN | P1/MEDIUM | یک pricing/landing experiment کنترل‌شده | یک متغیر، KPI و stop condition |
 | [ ] | `P10-BUSINESS-BIZ-016` | HUMAN | P1/MEDIUM | shortlist ۳–۵ partner و یک compatibility pilot | RACI/contract draft/test kit |
 | [ ] | `P10-BUSINESS-BIZ-017` | HUMAN/EXTERNAL | P1/MEDIUM | marketplace دوم فقط بعد از شرط‌های ورود | دو صف support capacity |
 | [ ] | `P10-BUSINESS-GATE-018` | HUMAN | P0/HIGH | Gate فروش مستقل خانواده‌های محصول با feature boundary | صفحه فروش با inventory و مجوز واقعی artifact برابر؛ استقلال هر SKU تست‌شده؛ محصول آماده منتظر target نامرتبط نماند. |
-| [ ] | `P10-PROGRAM-OPS-019` | BOTH | P0/HIGH | فقط پس از Pass شدن Task 018، نسخه مستقل `1.0.0` componentهای تأییدشده منتشر شود | stable tag/artifact/checksum/changelog/rollback و post-release smoke |
+| [x] | `P10-PROGRAM-OPS-019` | BOTH | P0/HIGH | فقط پس از Pass شدن Task 018، نسخه مستقل `1.0.0` componentهای تأییدشده منتشر شود | stable tag/artifact/checksum/changelog/rollback و post-release smoke |
 
 ### شرط ورود به Marketplace دوم
 
