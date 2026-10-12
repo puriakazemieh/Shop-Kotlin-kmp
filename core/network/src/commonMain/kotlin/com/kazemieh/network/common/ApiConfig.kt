@@ -15,4 +15,11 @@ object ApiConfig {
     fun isApprovedApiHost(host: String): Boolean = runCatching {
         Url(baseUrl).host.equals(host, ignoreCase = true)
     }.getOrDefault(false)
+
+    /** Keeps internal API calls under a WordPress installation subdirectory. */
+    fun resolveInternalApiPath(path: String): String {
+        if (!path.startsWith("/api/")) return path
+        val basePath = Url(baseUrl).encodedPath.trimEnd('/')
+        return if (basePath.isEmpty()) path else "$basePath$path"
+    }
 }

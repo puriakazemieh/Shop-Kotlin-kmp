@@ -127,7 +127,20 @@ object HttpClientFactory {
 //                    header(HttpHeaders.Authorization, "Bearer $token")
 //                }
             }
+            install(BackendPathPlugin)
 
+        }
+    }
+}
+
+val BackendPathPlugin = createClientPlugin("BackendPathPlugin") {
+    onRequest { request, _ ->
+        val baseUrl = io.ktor.http.Url(ApiConfig.baseUrl)
+        if (request.url.host.equals(baseUrl.host, ignoreCase = true) && request.url.port == baseUrl.port) {
+            request.url.pathSegments = ApiConfig.resolveInternalApiPath(request.url.build().encodedPath)
+                .trim('/')
+                .split('/')
+                .filter { it.isNotEmpty() }
         }
     }
 }
