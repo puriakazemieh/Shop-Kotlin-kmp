@@ -86,6 +86,11 @@ class MessageSettings {
                 $sanitized[$field] = sanitize_text_field($input[$field]);
             }
         }
+        foreach (['sms_template', 'email_template'] as $field) {
+            if (isset($input[$field])) {
+                $sanitized[$field] = sanitize_textarea_field($input[$field]);
+            }
+        }
         
         return $sanitized;
     }
