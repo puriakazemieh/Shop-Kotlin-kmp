@@ -59,6 +59,7 @@ carmilla_require_inc( 'elementor.php' );
 
 if ( is_admin() ) {
 	carmilla_require_inc( 'admin-page.php' );
+	carmilla_require_inc( 'messaging-admin.php' );
 	carmilla_require_inc( 'demo-import.php' );
 }
 

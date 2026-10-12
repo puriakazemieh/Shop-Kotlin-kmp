@@ -11,6 +11,7 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
     require_once __DIR__ . '/inc/Health/HealthChecker.php';
     require_once __DIR__ . '/inc/Settings/MessageSettings.php';
+    require_once __DIR__ . '/inc/Messaging/MessageSender.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**
@@ -48,6 +49,7 @@ class Carmilla_Kernel {
         // schema during the canonical Kernel boot so either host can save the
         // same site-owned option.
         ( new \Carmilla\Core\Settings\MessageSettings() )->init();
+        \Carmilla\Core\Messaging\MessageSender::init();
 
         // Initialize Entitlements and Claims
         add_action('init', [self::class, 'resolve_features']);

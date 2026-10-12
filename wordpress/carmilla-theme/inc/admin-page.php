@@ -20,7 +20,7 @@ add_action( 'admin_menu', function () {
 		'carmilla-dashboard',
 		'carmilla_render_admin_dashboard'
 	);
-} );
+}, 20 );
 
 function carmilla_admin_count( $post_type ) {
 	if ( ! post_type_exists( $post_type ) ) {
