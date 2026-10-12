@@ -36,6 +36,10 @@ class WooCompat {
     }
 
     public static function dequeue_woo_blocks_styles(): void {
+        if ( ! function_exists( 'is_cart' ) || ! function_exists( 'is_checkout' ) ) {
+            return;
+        }
+
         if ( is_cart() || is_checkout() ) {
             wp_dequeue_style( 'wc-blocks-style' );
             wp_dequeue_style( 'wc-blocks-integration' );

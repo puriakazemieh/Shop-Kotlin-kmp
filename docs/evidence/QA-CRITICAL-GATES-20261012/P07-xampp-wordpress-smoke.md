@@ -28,3 +28,9 @@ The WordPress-backed migration smoke test passed with all checks:
 7. A repeated unchanged import was skipped.
 
 Additionally, `php -l` passed for all 78 PHP files in Carmilla Bridge and Shared Core, and the Bridge plugin reported `Active` in the isolated WordPress installation.
+
+## Browser verification
+
+The installation is available through the local XAMPP web server at `http://localhost/carmilla-p07-qa/`. The homepage, login page, and administration route each returned HTTP 200.
+
+During this verification, `WooCompat` was updated to avoid invoking WooCommerce-only functions when WooCommerce is not installed. This prevents a fatal error when Carmilla Bridge runs on a standard WordPress installation.
