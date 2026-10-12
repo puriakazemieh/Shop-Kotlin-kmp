@@ -4,16 +4,16 @@ Date: 2026-10-12
 
 ## Build
 
-The checked-in Bash package scripts could not run in this Windows environment because the available Bash runtime does not provide the `zip` executable. The scripts created no ZIP and their temporary `packages` directories were moved outside the repository to `D:\Carmilla-QA\failed-zip-staging-20261012`.
+The checked-in Bash package scripts initially could not run in this Windows environment because the WSL runtime did not provide the `zip` executable. Their temporary `packages` directories were moved outside the repository to `D:\Carmilla-QA\failed-zip-staging-20261012`.
 
-Both artifacts were then rebuilt from the current repository source with the native Windows ZIP runtime. For each artifact, the build staging copy received the current `wordpress/packages/carmilla-core` directory at `packages/carmilla-core`; the repository source directories themselves remained unchanged.
+On 2026-10-12, `zip` and `unzip` were installed in the existing Ubuntu WSL environment. Both artifacts were then rebuilt successfully by the checked-in `wordpress/build-theme-zip.sh` and `wordpress/build-bridge-zip.sh` scripts.
 
 ## Verification
 
 | Artifact | Entries | Shared Core files | SHA-256 |
 | --- | ---: | ---: | --- |
-| `wordpress/carmilla-theme.zip` | 107 | 20/20, exact source hash match | `54AA4807FAC2C919680DB515F39BD606713C6A4813B8D612320F2788BB9B7ADC` |
-| `wordpress/carmilla-bridge.zip` | 85 | 20/20, exact source hash match | `37EB6D5946BC3C0C2904FF6A2F245C8401433B6E24F4C30FEF14E1C1ADD87D0C` |
+| `wordpress/carmilla-theme.zip` | 137 | 20/20, exact source hash match | `8AD7DE8EAEA85A15492549F9B3BCB7A456056D238F18D9F47EAB030500669127` |
+| `wordpress/carmilla-bridge.zip` | 106 | 20/20, exact source hash match | `2F1BBD2108BF6BCCBE48F2F7642286D7C0F2AD258B06A6AEBD4DD6E6C91F310E` |
 
 The validator confirmed that both archives contain `packages/carmilla-core/Carmilla_Kernel.php`, no Shared Core file is missing, changed, or unexpected, and no `.git`, `.env`, log, `node_modules`, or `vendor` entry is present.
 
