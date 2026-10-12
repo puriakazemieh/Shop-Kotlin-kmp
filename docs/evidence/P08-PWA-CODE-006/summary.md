@@ -30,11 +30,17 @@ was absent; the installed system Chrome was then used as the real browser.
 | `E2E_BROWSER_CHANNEL=chrome npx playwright test tests/e2e/tenant-cache.spec.cjs --config=playwright.config.cjs --project=fake-desktop --project=fake-mobile` | pass — 4 tests, real system Chrome |
 | `E2E_BROWSER_CHANNEL=chrome npm run test:e2e:fake` | pass — 28 fixture tests, real system Chrome |
 | `./gradlew.bat :composeApp:compileKotlinJs` | pass |
+| `./gradlew.bat :composeApp:jsBrowserDistribution` | pass — production artifact contains `pwa-bootstrap.js`, `sw-wp.js` and `sw-spring.js`; its legacy `sw.js` is network-only |
 
 The cache tests fetch public catalog/content and all protected route families,
 then inspect actual Cache Storage. They also cut the fixture server connection
 and assert that an offline payment write returns `503` rather than being cached
 or queued.
+
+The production distribution was inspected after the build. Its `index.html`
+loads the bootstrap rather than registering a cache-all worker directly; the
+bootstrap selects the WordPress or Spring worker. The artifact CSP has no
+`unsafe-eval` or wildcard source.
 
 ## Evidence classification and remaining work
 

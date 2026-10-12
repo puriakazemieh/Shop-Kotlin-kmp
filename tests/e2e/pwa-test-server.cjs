@@ -2,7 +2,8 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 
-const indexPath = path.resolve(__dirname, '../../composeApp/src/webMain/resources/index.html');
+const resourceDir = path.resolve(__dirname, '../../composeApp/src/jsMain/resources');
+const indexPath = path.join(resourceDir, 'index.html');
 const generatedPwaDir = path.resolve(__dirname, '../../composeApp/build/generated/pwa');
 
 function policyFromIndex(index, expression) {
@@ -54,6 +55,11 @@ function startPwaTestServer() {
     if (pathname === '/composeApp.js') {
       response.writeHead(200, { 'Content-Type': 'text/javascript' });
       response.end('window.__carmillaE2EFakeAppLoaded = true;');
+      return;
+    }
+    if (pathname === '/pwa-bootstrap.js') {
+      response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' });
+      response.end(fs.readFileSync(path.join(resourceDir, 'pwa-bootstrap.js'), 'utf8'));
       return;
     }
     if (pathname === '/catalog/products' || pathname === '/content/articles') {
