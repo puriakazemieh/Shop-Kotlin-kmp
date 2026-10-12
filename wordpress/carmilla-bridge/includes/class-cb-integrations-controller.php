@@ -6,12 +6,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CB_Integrations_Controller {
 
     public function init() {
-        add_action('admin_menu', [$this, 'register_admin_page']);
+        // The Shared Core creates the parent Carmilla menu at the default
+        // priority. Register after it so WordPress assigns the submenu the
+        // correct plugin-page hook for direct admin.php?page= requests.
+        add_action('admin_menu', [$this, 'register_admin_page'], 20);
         add_action('admin_post_carmilla_test_message', [$this, 'handle_test_message']);
     }
 
     public function handle_test_message() {
-        if (!current_user_can('manage_carmilla_integrations')) {
+        if (!$this->can_manage_integrations()) {
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
 
@@ -52,7 +55,9 @@ class CB_Integrations_Controller {
 
     public function register_admin_page() {
         // Capability
-        $capability = 'manage_carmilla_integrations';
+        // Administrators always retain access via the built-in capability. The
+        // dedicated capability remains available for a deliberately delegated role.
+        $capability = 'manage_options';
 
         // The Shared Core owns the single Carmilla top-level menu
         // (`carmilla-settings`). Bridge contributes only its Integration page.
@@ -67,7 +72,7 @@ class CB_Integrations_Controller {
     }
 
     public function render_admin_page() {
-        if ( ! current_user_can('manage_carmilla_integrations') ) {
+        if ( ! $this->can_manage_integrations() ) {
             return;
         }
         $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'sms';
@@ -172,5 +177,9 @@ class CB_Integrations_Controller {
             echo '<tr><td>' . esc_html($label) . '</td><td>' . ($ok ? 'Ready' : 'Needs configuration') . '</td></tr>';
         }
         echo '</tbody></table>';
+    }
+
+    private function can_manage_integrations() {
+        return current_user_can('manage_options') || current_user_can('manage_carmilla_integrations');
     }
 }

@@ -7,6 +7,7 @@ Date: 2026-10-12
 - Shared Core is the sole owner of the top-level `Carmilla` menu (`admin.php?page=carmilla-settings`).
 - Bridge registers Integrations only as its submenu (`admin.php?page=carmilla-integrations`).
 - The Theme dashboard is also a Core submenu, preventing a second top-level Carmilla item when both products are installed.
+- Bridge registers its submenu after the Core parent menu. This ensures WordPress creates the expected `carmilla_page_carmilla-integrations` hook and permits direct `admin.php?page=carmilla-integrations` access.
 
 ## Verification
 
@@ -15,4 +16,10 @@ Date: 2026-10-12
 
 ```text
 top-level-carmilla=1 integrations-submenu=1
+```
+
+The actual page-hook verification then passed for `qa_admin`:
+
+```text
+administrator-access=1 page-registered=1 hook=carmilla_page_carmilla-integrations
 ```
