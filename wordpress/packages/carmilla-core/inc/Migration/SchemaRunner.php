@@ -11,6 +11,7 @@ class SchemaRunner {
     private const SCHEMA_VERSION_KEY = 'carmilla_schema_version';
     private const SCHEMA_LOCK_KEY = 'carmilla_schema_lock';
     private const CURRENT_SCHEMA_VERSION = '1.0.1';
+    private static $checkpoints = array();
 
     /**
      * Run the schema migrations if necessary.
@@ -91,14 +92,11 @@ class SchemaRunner {
      * Prevents duplication across multiple boots.
      */
     public static function register_checkpoint(string $checkpoint_name): bool {
-        $checkpoints = get_option('carmilla_boot_checkpoints', []);
-        
-        if (in_array($checkpoint_name, $checkpoints, true)) {
+        if (in_array($checkpoint_name, self::$checkpoints, true)) {
             return false; // Already registered in this cycle
         }
-        
-        $checkpoints[] = $checkpoint_name;
-        update_option('carmilla_boot_checkpoints', $checkpoints);
+
+        self::$checkpoints[] = $checkpoint_name;
         return true;
     }
 
@@ -106,6 +104,6 @@ class SchemaRunner {
      * Resets checkpoints (usually hooked to shutdown or init start).
      */
     public static function reset_checkpoints() {
-        delete_option('carmilla_boot_checkpoints');
+        self::$checkpoints = array();
     }
 }

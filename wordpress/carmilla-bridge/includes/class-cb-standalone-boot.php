@@ -100,7 +100,7 @@ class CB_Standalone_Boot {
 	 * @return void
 	 */
 	private static function load_dependencies(): void {
-		$plugin_dir = defined( 'CB_PLUGIN_DIR' ) ? CB_PLUGIN_DIR : plugin_dir_path( dirname( __FILE__ ) );
+		$plugin_dir = defined( 'CB_PLUGIN_DIR' ) ? CB_PLUGIN_DIR : dirname( __DIR__ ) . '/';
 
 		// Ensure constant definitions.
 		if ( ! defined( 'CB_REST_NAMESPACE' ) ) {

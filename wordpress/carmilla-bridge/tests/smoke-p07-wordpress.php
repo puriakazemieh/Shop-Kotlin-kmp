@@ -5,6 +5,10 @@
 
 use Carmilla\Bridge\Migration\Migrator;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    require dirname( __DIR__, 4 ) . '/wp-load.php';
+}
+
 $failures = 0;
 $source_site = 'p07-smoke-site';
 $created_ids = array();

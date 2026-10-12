@@ -1,22 +1,17 @@
 <?php
 
-// Prevent duplicate loading
-if (class_exists('Carmilla_Kernel')) {
-    return;
-}
-
-// Load core files
-require_once __DIR__ . '/inc/Catalog/EntitlementSchema.php';
-require_once __DIR__ . '/inc/Catalog/EntitlementClaims.php';
-require_once __DIR__ . '/inc/Catalog/DependencyResolver.php';
-require_once __DIR__ . '/inc/Migration/SchemaRunner.php';
-require_once __DIR__ . '/inc/Entitlement/EntitlementResolver.php';
-require_once __DIR__ . '/inc/Adapter/WooCommerceAdapter.php';
-require_once __DIR__ . '/inc/Rest/RestInfrastructure.php';
-require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
-require_once __DIR__ . '/inc/Health/HealthChecker.php';
-require_once __DIR__ . '/inc/Settings/MessageSettings.php';
-require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
+if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
+    require_once __DIR__ . '/inc/Catalog/EntitlementSchema.php';
+    require_once __DIR__ . '/inc/Catalog/EntitlementClaims.php';
+    require_once __DIR__ . '/inc/Catalog/DependencyResolver.php';
+    require_once __DIR__ . '/inc/Migration/SchemaRunner.php';
+    require_once __DIR__ . '/inc/Entitlement/EntitlementResolver.php';
+    require_once __DIR__ . '/inc/Adapter/WooCommerceAdapter.php';
+    require_once __DIR__ . '/inc/Rest/RestInfrastructure.php';
+    require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
+    require_once __DIR__ . '/inc/Health/HealthChecker.php';
+    require_once __DIR__ . '/inc/Settings/MessageSettings.php';
+    require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**
  * Carmilla Shared Kernel
@@ -74,4 +69,5 @@ class Carmilla_Kernel {
     public static function get_boot_contexts() {
         return self::$booted_by;
     }
+}
 }
