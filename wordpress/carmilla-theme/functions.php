@@ -12,9 +12,9 @@ define( 'CARMILLA_THEME_VERSION', '0.8.0' );
 
 // 1. Load Shared Core if not already loaded by the Plugin
 if ( ! class_exists( 'Carmilla_Kernel' ) ) {
-    \ = get_template_directory() . '/packages/carmilla-core/Carmilla_Kernel.php';
-    if ( file_exists( \ ) ) {
-        require_once \;
+    $carmilla_core = get_template_directory() . '/packages/carmilla-core/Carmilla_Kernel.php';
+    if ( file_exists( $carmilla_core ) ) {
+        require_once $carmilla_core;
     }
 }
 

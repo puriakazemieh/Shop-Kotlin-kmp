@@ -7,7 +7,7 @@
 - سه خانواده محصول: Theme مستقل، Plugin مستقل با UI عمومی روی قالب دیگر، کلاینت‌های Android/iOS/Desktop/Web/PWA مستقل. WooCommerce طبق پاسخ مالک محصول مجاز است.
 - حق خرید، محتوای بسته و toggle جدا هستند؛ App Builder از هر دو میزبان مستقل عرضه و هدف‌های آن جداگانه مجاز می‌شوند.
 - DONEهای قبلی تاریخچه‌اند؛ انطباق جدید باید در کارت‌های جبرانی ثابت شود. به‌ویژه QA020 و ADR001 فاز چهار، شواهد ناقص/متناقض دارند و مجوز Gate جدید نیستند.
-- **تنها READY: P03-QA-REVIEW-023**؛ فقط تطبیق شواهد و مبنای QA جایگزین، نه اجرای خودکار چند کارت. QA واقعی تازه P03-QA-MANUAL-027 پیش‌نیاز Gate است.
+- **وضعیت فعلی صف:** هیچ Task دارای `READY` معتبر نیست. `P03-QA-REVIEW-023` در ۶ سپتامبر ۲۰۲۶ با Evidence تکمیل شده است؛ QA واقعی `P03-QA-MANUAL-027` همچنان پیش‌نیاز Gate است. `P11-ANDROID-DISC-001` تا PASS شدن Gateهای P03، P05 و P08 در `TODO` می‌ماند.
 - ترتیب فازها اولویت اجراست؛ dependencyهای شروع iOS/Desktop/LMS/Clinic به محصول نامرتبط وابسته نیستند. فروش هر ترکیب محصول/فیچر/backend/پلتفرم فقط پس از Gate همان ترکیب؛ fixture یا mock خروجی قابل فروش نیست.
 - P04 فقط kernel/میزبان/SKU و قرارداد آزمایشی Builder را آماده می‌کند. build واقعی Android/Web/PWA در P12 و تکمیل iOS/Desktop در P16/P17 است. Gate پایه P04 به آینده وابسته نمی‌شود.
 
@@ -422,7 +422,7 @@
 
 | Status | Task ID | Owner | Depends on | کارت |
 |---|---|---|---|---|
-| READY | P11-ANDROID-DISC-001 | HUMAN | P03-MANIFEST-GATE-022, P05-PAYMENT-GATE-024, P08-PWA-GATE-019 | [P11-ANDROID-DISC-001](tasks/P11-ANDROID-DISC-001.md) |
+| TODO | P11-ANDROID-DISC-001 | HUMAN | P03-MANIFEST-GATE-022, P05-PAYMENT-GATE-024, P08-PWA-GATE-019 | [P11-ANDROID-DISC-001](tasks/P11-ANDROID-DISC-001.md) |
 | TODO | P11-ANDROID-CODE-002 | AI | P11-ANDROID-DISC-001 | [P11-ANDROID-CODE-002](tasks/P11-ANDROID-CODE-002.md) |
 | TODO | P11-ANDROID-CODE-003 | BOTH | P11-ANDROID-CODE-002 | [P11-ANDROID-CODE-003](tasks/P11-ANDROID-CODE-003.md) |
 | TODO | P11-ANDROID-SEC-004 | BOTH | P11-ANDROID-CODE-003 | [P11-ANDROID-SEC-004](tasks/P11-ANDROID-SEC-004.md) |
