@@ -130,7 +130,7 @@ UAT، backup، acceptance window
 - Completed at: 2026-09-08T10:50:27
 - Changed files: None (Handoff to Human)
 - Commands and exit codes: N/A
-- Manual tester/date/result: AWAITING_MANUAL_QA
+- Manual tester/date/result: 2026-10-12 product-owner local browser smoke passed (login, synthetic post create/delete, Bridge active); staging migration, delta, backup/restore, rollback and acceptance-window validation remain AWAITING_MANUAL_QA.
 - Evidence paths: docs/evidence/P07-QA-MANUAL-024/summary.md
 - Remaining risks/blockers: Human validation required
 - Final status: AWAITING_MANUAL_QA
