@@ -10,7 +10,7 @@ class SchemaRunner {
     
     private const SCHEMA_VERSION_KEY = 'carmilla_schema_version';
     private const SCHEMA_LOCK_KEY = 'carmilla_schema_lock';
-    private const CURRENT_SCHEMA_VERSION = '1.0.1';
+    private const CURRENT_SCHEMA_VERSION = '1.0.2';
     private static $checkpoints = array();
 
     /**
@@ -51,6 +51,9 @@ class SchemaRunner {
         if (version_compare($from_version, '1.0.1', '<')) {
             self::migrate_to_1_0_1();
         }
+        if (version_compare($from_version, '1.0.2', '<')) {
+            self::migrate_to_1_0_2();
+        }
     }
 
     private static function migrate_to_1_0_0() {
@@ -85,6 +88,29 @@ class SchemaRunner {
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+    }
+
+    private static function migrate_to_1_0_2() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $table = $wpdb->prefix . 'carmilla_seed_objects';
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta(
+            "CREATE TABLE {$table} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                pack_id varchar(100) NOT NULL,
+                feature varchar(100) NOT NULL,
+                wp_entity_type varchar(50) NOT NULL,
+                wp_entity_id bigint(20) unsigned NOT NULL,
+                seed_entity_id varchar(100) NOT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                PRIMARY KEY  (id),
+                KEY pack_feature (pack_id, feature),
+                KEY seed_entity (seed_entity_id),
+                KEY wp_entity_id (wp_entity_id)
+            ) $charset_collate;"
+        );
     }
 
     /**

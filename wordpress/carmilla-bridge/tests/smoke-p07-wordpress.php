@@ -22,6 +22,15 @@ function p07_wordpress_check( bool $condition, string $message ): void {
 }
 
 try {
+    global $wpdb;
+    $seed_created_at = $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW COLUMNS FROM {$wpdb->prefix}carmilla_seed_objects LIKE %s",
+            'created_at'
+        )
+    );
+    p07_wordpress_check( 'created_at' === $seed_created_at, 'overlay schema records a seed creation timestamp' );
+
     $records = array(
         array(
             'id'      => 'parent-001',

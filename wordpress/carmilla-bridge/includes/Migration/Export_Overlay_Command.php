@@ -33,6 +33,10 @@ class Export_Overlay_Command {
               AND (s.id IS NULL OR p.post_modified_gmt > s.created_at)
         ";
         $records = $wpdb->get_results( $sql );
+        if ( null === $records ) {
+            \WP_CLI::error( 'Could not select records for overlay export: ' . $wpdb->last_error );
+            return;
+        }
 
         $payload = '';
         foreach ( $records as $post ) {
