@@ -44,6 +44,11 @@ class Carmilla_Kernel {
         // Register custom capabilities to administrator role
         \Carmilla\Core\Capabilities\CapabilityRegistry::register_capabilities();
 
+        // Messaging settings are shared by the Theme and Bridge.  Register the
+        // schema during the canonical Kernel boot so either host can save the
+        // same site-owned option.
+        ( new \Carmilla\Core\Settings\MessageSettings() )->init();
+
         // Initialize Entitlements and Claims
         add_action('init', [self::class, 'resolve_features']);
         // WooCommerce Compatibility

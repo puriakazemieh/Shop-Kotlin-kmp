@@ -20,6 +20,9 @@ namespace Carmilla\Core\Capabilities;
  */
 class CapabilityRegistry {
 
+    /** Capability required to configure messaging providers and send test messages. */
+    public const MANAGE_INTEGRATIONS = 'manage_carmilla_integrations';
+
     /**
      * Mapping of domains to WordPress capabilities.
      *
@@ -92,6 +95,8 @@ class CapabilityRegistry {
                 $admin_role->add_cap($cap_name);
             }
         }
+
+        $admin_role->add_cap(self::MANAGE_INTEGRATIONS);
     }
 
     /**
@@ -170,6 +175,7 @@ class CapabilityRegistry {
                 $all_caps[] = $cap;
             }
         }
+        $all_caps[] = self::MANAGE_INTEGRATIONS;
         return array_values(array_unique($all_caps));
     }
 }

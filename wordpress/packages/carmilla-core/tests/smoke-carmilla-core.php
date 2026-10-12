@@ -11,6 +11,9 @@
  */
 
 // Define mock WP / WC functions if running outside WordPress
+if (!defined('ABSPATH')) {
+    define('ABSPATH', __DIR__ . '/');
+}
 if (!function_exists('get_site_url')) {
     function get_site_url() {
         return 'https://example.com';
@@ -37,6 +40,22 @@ if (!function_exists('rest_url')) {
 if (!function_exists('wp_verify_nonce')) {
     function wp_verify_nonce($nonce, $action = -1) {
         return $nonce === 'valid-test-nonce';
+    }
+}
+if (!function_exists('add_action')) {
+    $GLOBALS['carmilla_test_actions'] = [];
+    function add_action($hook, $callback, $priority = 10, $accepted_args = 1) {
+        $GLOBALS['carmilla_test_actions'][] = [$hook, $callback, $priority, $accepted_args];
+    }
+}
+if (!function_exists('get_role')) {
+    class Carmilla_Test_Role {
+        public $caps = [];
+        public function add_cap($cap) { $this->caps[$cap] = true; }
+    }
+    $GLOBALS['carmilla_test_admin_role'] = new Carmilla_Test_Role();
+    function get_role($role) {
+        return $role === 'administrator' ? $GLOBALS['carmilla_test_admin_role'] : null;
     }
 }
 
@@ -170,6 +189,16 @@ check(isset(CapabilityRegistry::DOMAIN_CAPS['education']), 'Domain education cap
 check(isset(CapabilityRegistry::DOMAIN_CAPS['clinic']), 'Domain clinic caps registered');
 check(isset(CapabilityRegistry::DOMAIN_CAPS['support']), 'Domain support caps registered');
 check(isset(CapabilityRegistry::DOMAIN_CAPS['admin']), 'Domain admin caps registered');
+
+CapabilityRegistry::register_capabilities();
+check(
+    isset($GLOBALS['carmilla_test_admin_role']->caps[CapabilityRegistry::MANAGE_INTEGRATIONS]),
+    'Administrator receives the integrations management capability'
+);
+check(
+    in_array(CapabilityRegistry::MANAGE_INTEGRATIONS, CapabilityRegistry::get_all_capabilities(), true),
+    'Integrations capability is included in the canonical capability list'
+);
 
 check(
     CapabilityRegistry::resolve_domain_cap('shop', 'read') === 'carmilla_view_orders',

@@ -2,6 +2,10 @@
 // smoke-messaging.php - Standalone tests for P06-MESSAGE capabilities
 echo "Running Messaging Smoke Tests...\n";
 
+if (!defined('ABSPATH')) {
+    define('ABSPATH', __DIR__ . '/');
+}
+
 // 1. Mock dependencies
 $GLOBALS['wp_options'] = [
     'carmilla_message_settings' => [
@@ -20,6 +24,15 @@ function sanitize_text_field($str) { return trim(strip_tags($str)); }
 function wp_kses_post($str) { return strip_tags($str, '<b><i><strong><em><a>'); }
 
 $GLOBALS['remote_requests'] = [];
+if (!class_exists('WP_Error')) {
+    class WP_Error {
+        private $code;
+        private $message;
+        public function __construct($code = '', $message = '') { $this->code = $code; $this->message = $message; }
+        public function get_error_code() { return $this->code; }
+        public function get_error_message() { return $this->message; }
+    }
+}
 function wp_safe_remote_request($url, $args) {
     // SSRF check
     if (strpos($url, '127.0.0.1') !== false || strpos($url, 'localhost') !== false) {
@@ -36,7 +49,7 @@ function wp_safe_remote_request($url, $args) {
     return ['response' => ['code' => 200], 'body' => '{"message_id": "test_123"}'];
 }
 
-function is_wp_error($obj) { return isset($obj['error']); }
+function is_wp_error($obj) { return $obj instanceof WP_Error; }
 function wp_remote_retrieve_response_code($response) { return $response['response']['code']; }
 function wp_remote_retrieve_body($response) { return $response['body']; }
 
@@ -46,11 +59,14 @@ require_once __DIR__ . '/../includes/class-cb-sms-http-adapter.php';
 require_once __DIR__ . '/../includes/class-cb-template-engine.php';
 require_once __DIR__ . '/../includes/class-cb-message-queue.php';
 
+$GLOBALS['wp_options']['carmilla_message_settings']['sms_api_key'] =
+    \Carmilla\Core\Settings\MessageSettings::encrypt_secret('fake_key');
+
 // Test 1: SSRF Defense
 echo "Test 1: SSRF Defense (Localhost)...\n";
 $GLOBALS['wp_options']['carmilla_message_settings']['sms_api_url'] = 'http://127.0.0.1/admin';
 $result = CB_SMS_HTTP_Adapter::send('09123456789', 'test');
-if (is_wp_error($result) && strpos($result['error'], 'HTTPS') !== false) {
+if (is_wp_error($result) && strpos($result->get_error_message(), 'HTTPS') !== false) {
     echo "PASS: Non-HTTPS rejected.\n";
 } else {
     echo "FAIL: SSRF Check failed.\n";
