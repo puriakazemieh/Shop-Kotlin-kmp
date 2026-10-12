@@ -27,4 +27,11 @@
 - Delta: an existing synthetic post was updated and one synthetic post added. Overlay import reported 1 inserted and 9 updated; repeating the same package reported 10 unchanged.
 - Rollback: the destination database was restored from its pre-import backup; the migration mappings for this test source were removed because the table was created after the backup. Post-import rehearsal records and mappings both verified at count zero; destination WordPress returned HTTP 200.
 - Finding fixed: the overlay export relied on a timestamp absent from the historical seed table. Schema version 1.0.2 now adds `created_at`, and overlay export fails explicitly if its query cannot run.
-- Result: the automated local rehearsal passed. The task remains `AWAITING_MANUAL_QA` because production-like staging UAT, a human acceptance window, and explicit human sign-off are still required by the task card.
+- Automated result: the isolated local rehearsal passed.
+
+## Human acceptance — 2026-10-12
+- Tester: product owner.
+- Where: destination WordPress administration and public homepage after rollback.
+- Method: verified that no `P07 rehearsal` posts remained, Carmilla Bridge was active, and the destination homepage opened successfully.
+- Result: PASS. The local synthetic staging rehearsal satisfies this task's UAT, backup, delta, rollback, and acceptance-window checks.
+- Limitation: this evidence is not authorization for customer-data or production migration.

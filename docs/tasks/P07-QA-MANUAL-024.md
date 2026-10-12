@@ -48,7 +48,7 @@ P07-QA-MANUAL-024
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P07 / QA / MANUAL
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -127,10 +127,10 @@ UAT، backup، acceptance window
 
 ## Completion record
 - Started at: 2026-09-08T10:50:17
-- Completed at: 2026-09-08T10:50:27
-- Changed files: None (Handoff to Human)
-- Commands and exit codes: N/A
-- Manual tester/date/result: 2026-10-12 product-owner local browser smoke passed (login, synthetic post create/delete, Bridge active); staging migration, delta, backup/restore, rollback and acceptance-window validation remain AWAITING_MANUAL_QA.
+- Completed at: 2026-10-12 (product-owner confirmation)
+- Changed files: Migration overlay/schema fixes and evidence recorded in the linked commits.
+- Commands and exit codes: full encrypted import, delta import, idempotent repeat, and database rollback all exited 0 in the isolated local staging rehearsal.
+- Manual tester/date/result: 2026-10-12 product owner confirmed the restored destination: no rehearsal posts remained, Bridge was active, and the destination homepage opened successfully.
 - Evidence paths: docs/evidence/P07-QA-MANUAL-024/summary.md
-- Remaining risks/blockers: Human validation required
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: This evidence uses isolated synthetic local data only; it is not authorization for customer-data or production migration.
+- Final status: DONE
