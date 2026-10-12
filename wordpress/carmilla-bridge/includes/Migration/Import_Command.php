@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 namespace Carmilla\Bridge\Migration;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -7,60 +7,66 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Import_Command {
 
-    public static function execute( \, \ ) {
-        if (empty(\['consent']) || \['consent'] !== 'yes') {
-            \WP_CLI::error("Migration handles LIVE CUSTOMER DATA. You must explicitly pass --consent=yes and ensure you have a database backup.");
+    public static function execute( $args, $assoc_args ): void {
+        if ( 'yes' !== ( $assoc_args['consent'] ?? '' ) ) {
+            \WP_CLI::error( 'Migration handles customer data. Pass --consent=yes only after a database and wp-content backup.' );
             return;
         }
 
-        \ = \['input'] ?? wp_upload_dir()['basedir'] . '/carmilla-export/posts.ndjson';
-        \ = \['site_uuid'] ?? 'default-legacy-site';
-        \ = \['legacy_domain'] ?? '';
-        \ = \['new_domain'] ?? '';
-        \ = \['encryption_key'] ?? '';
-
-        if (!file_exists(\)) {
-            \WP_CLI::error("Input file not found: \");
+        $input_file     = $assoc_args['input'] ?? wp_upload_dir()['basedir'] . '/carmilla-export/posts.enc';
+        $site_uuid      = $assoc_args['site_uuid'] ?? '';
+        $encryption_key = $assoc_args['encryption_key'] ?? '';
+        $legacy_domain  = $assoc_args['legacy_domain'] ?? '';
+        $new_domain     = $assoc_args['new_domain'] ?? '';
+        if ( '' === $site_uuid || '' === $encryption_key ) {
+            \WP_CLI::error( 'A site UUID and a 32-byte encryption key are required for import.' );
+            return;
+        }
+        if ( ! is_readable( $input_file ) ) {
+            \WP_CLI::error( "Input file is not readable: {$input_file}" );
             return;
         }
 
-        \ = [];
-        
-        if (!empty(\)) {
-            \WP_CLI::log('Decrypting payload...');
-            \ = file_get_contents(\);
-            try {
-                \ = Migration_Crypto::decrypt_payload(\, \, \);
-                \ = explode("\n", trim(\));
-                foreach (\ as \) {
-                    \ = json_decode(trim(\), true);
-                    if (\) \[] = \;
-                }
-            } catch (\Exception \) {
-                \WP_CLI::error("Decryption failed: " . \->getMessage());
-                return;
-            }
-        } else {
-            \ = fopen(\, 'r');
-            while ((\ = fgets(\)) !== false) {
-                \ = json_decode(trim(\), true);
-                if (\) \[] = \;
-            }
-            fclose(\);
+        try {
+            $payload = Migration_Crypto::decrypt_payload( (string) file_get_contents( $input_file ), $encryption_key, $site_uuid );
+            $records = self::decode_ndjson( $payload );
+        } catch ( \Throwable $exception ) {
+            \WP_CLI::error( 'Migration package verification failed: ' . $exception->getMessage() );
+            return;
         }
 
-        \ = new Migrator();
-        \WP_CLI::log("Pass 1: Importing " . count(\) . " records...");
-        \ = \->process_pass_one(\, \, \, \);
-        \WP_CLI::log(sprintf("Pass 1 Complete: %d inserted, %d updated, %d skipped (delta).", \['inserted'], \['updated'], \['skipped']));
+        $migrator = new Migrator();
+        $results = $migrator->process_pass_one( $records, $site_uuid, $legacy_domain, $new_domain );
+        $migrator->process_pass_two( $records, $site_uuid );
+        \WP_CLI::success(
+            sprintf(
+                'Migration completed for %s: %d inserted, %d updated, %d unchanged, %d rejected.',
+                $site_uuid,
+                $results['inserted'],
+                $results['updated'],
+                $results['skipped'],
+                $results['rejected']
+            )
+        );
+    }
 
-        \WP_CLI::log("Pass 2: Resolving relations...");
-        \->process_pass_two(\, \);
+    private static function decode_ndjson( string $payload ): array {
+        $records = array();
+        foreach ( preg_split( '/\r\n|\r|\n/', trim( $payload ) ) as $line_number => $line ) {
+            if ( '' === trim( $line ) ) {
+                continue;
+            }
+            $record = json_decode( $line, true );
+            if ( ! is_array( $record ) ) {
+                throw new \RuntimeException( 'Invalid JSON record at line ' . ( $line_number + 1 ) . '.' );
+            }
+            $records[] = $record;
+        }
 
-        \WP_CLI::success("Migration completed successfully for site: \");
+        return $records;
     }
 }
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-    \WP_CLI::add_command( 'carmilla import-legacy', [ 'Carmilla\Bridge\Migration\Import_Command', 'execute' ] );
+    \WP_CLI::add_command( 'carmilla import-legacy', array( Import_Command::class, 'execute' ) );
 }

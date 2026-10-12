@@ -1,21 +1,16 @@
-﻿<?php
+<?php
 namespace Carmilla\Bridge\Migration;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Common configuration and utilities for Migration.
- */
+/** Common security configuration for Migration. */
 class Migration_Config {
-    
-    /**
-     * Strictly blocked Post Types that must NEVER be exported.
-     * Prevents leakage of PII, PHI, Orders, and Payments.
-     */
+
+    /** Post types that must never leave the source site. */
     public static function get_denied_post_types(): array {
-        return [
+        return array(
             'shop_order',
             'shop_order_refund',
             'shop_coupon',
@@ -23,17 +18,14 @@ class Migration_Config {
             'cb_psych_result',
             'cb_payment',
             'cb_user_secret',
-            'attachment', // Handled separately
-            'revision'
-        ];
+            'attachment',
+            'revision',
+        );
     }
 
-    /**
-     * Strictly blocked Meta Keys that must NEVER be exported.
-     * Prevents leakage of passwords, tokens, or PII.
-     */
+    /** Meta keys that may contain personal, payment, or authentication data. */
     public static function get_denied_meta_keys(): array {
-        return [
+        return array(
             '_customer_user',
             '_billing_first_name',
             '_billing_last_name',
@@ -61,7 +53,24 @@ class Migration_Config {
             '_order_key',
             'password',
             'secret',
-            'token'
-        ];
+            'token',
+        );
+    }
+
+    public static function is_denied_post_type( string $post_type ): bool {
+        return in_array( $post_type, self::get_denied_post_types(), true );
+    }
+
+    public static function is_denied_meta_key( string $meta_key ): bool {
+        $normalized_key = strtolower( $meta_key );
+
+        if ( in_array( $normalized_key, self::get_denied_meta_keys(), true ) ) {
+            return true;
+        }
+
+        return str_contains( $normalized_key, 'token' )
+            || str_contains( $normalized_key, 'password' )
+            || str_contains( $normalized_key, 'secret' )
+            || str_contains( $normalized_key, 'api_key' );
     }
 }

@@ -1,89 +1,113 @@
-﻿<?php
+<?php
 namespace Carmilla\Bridge\Migration;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Handles AEAD Encryption, Signature, and Customer Binding for Migration Packs.
- */
+/** Encrypts migration packages with AES-256-GCM and binds them to one site. */
 class Migration_Crypto {
 
-    /**
-     * Encrypts and binds a migration payload to a customer.
-     * 
-     * @param string \ The raw JSON string (e.g., ndjson data).
-     * @param string \ A 256-bit encryption key (32 bytes). Must be provided out-of-band.
-     * @param string \ The target customer/site UUID.
-     * @param int \ Unix timestamp when this payload expires.
-     * @return string Base64 encoded encrypted package.
-     */
-    public static function encrypt_payload(string \, string \, string \, int \): string {
-        \ = openssl_cipher_iv_length('aes-256-gcm');
-        \ = openssl_random_pseudo_bytes(\);
-        
-        // Additional Authenticated Data (AAD) binds the payload to the customer and expiry.
-        \ = json_encode(['customer_uuid' => \, 'expiry' => \]);
-        
-        \ = '';
-        \ = openssl_encrypt(\, 'aes-256-gcm', \, OPENSSL_RAW_DATA, \, \, \, 16);
-        
-        if (\ === false) {
-            throw new \Exception('Encryption failed.');
+    public static function encrypt_payload( string $payload, string $encryption_key, string $customer_uuid, int $expiry ): string {
+        self::validate_inputs( $encryption_key, $customer_uuid, $expiry );
+
+        $iv_length = openssl_cipher_iv_length( 'aes-256-gcm' );
+        if ( false === $iv_length ) {
+            throw new \RuntimeException( 'AES-256-GCM is unavailable in this PHP runtime.' );
         }
-        
-        \ = [
-            'iv' => base64_encode(\),
-            'ciphertext' => base64_encode(\),
-            'tag' => base64_encode(\),
-            'aad' => base64_encode(\)
-        ];
-        
-        return base64_encode(json_encode(\));
+
+        $iv  = random_bytes( $iv_length );
+        $aad = wp_json_encode(
+            array( 'customer_uuid' => $customer_uuid, 'expiry' => $expiry ),
+            JSON_THROW_ON_ERROR
+        );
+        $tag = '';
+        $ciphertext = openssl_encrypt(
+            $payload,
+            'aes-256-gcm',
+            $encryption_key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag,
+            $aad,
+            16
+        );
+        if ( false === $ciphertext ) {
+            throw new \RuntimeException( 'Migration package encryption failed.' );
+        }
+
+        return base64_encode(
+            wp_json_encode(
+                array(
+                    'version'    => 1,
+                    'iv'         => base64_encode( $iv ),
+                    'ciphertext' => base64_encode( $ciphertext ),
+                    'tag'        => base64_encode( $tag ),
+                    'aad'        => base64_encode( $aad ),
+                ),
+                JSON_THROW_ON_ERROR
+            )
+        );
     }
 
-    /**
-     * Decrypts and verifies a migration payload.
-     * 
-     * @param string \ The base64 encoded package.
-     * @param string \ The 32-byte encryption key.
-     * @param string \ The UUID of the current site receiving the import.
-     * @return string The decrypted raw payload.
-     * @throws \Exception If tampered, expired, or wrong customer.
-     */
-    public static function decrypt_payload(string \, string \, string \): string {
-        \ = base64_decode(\);
-        \ = json_decode(\, true);
-        
-        if (!\ || empty(\['iv']) || empty(\['ciphertext']) || empty(\['tag']) || empty(\['aad'])) {
-            throw new \Exception('Invalid encrypted package format. Potential tampering.');
+    public static function decrypt_payload( string $package, string $encryption_key, string $customer_uuid ): string {
+        if ( '' === $customer_uuid ) {
+            throw new \InvalidArgumentException( 'A customer UUID is required to decrypt a migration package.' );
         }
-        
-        \ = base64_decode(\['iv']);
-        \ = base64_decode(\['ciphertext']);
-        \ = base64_decode(\['tag']);
-        \ = base64_decode(\['aad']);
-        
-        \ = json_decode(\, true);
-        if (!\ || empty(\['customer_uuid']) || empty(\['expiry'])) {
-            throw new \Exception('Invalid AAD data. Potential tampering.');
+        if ( 32 !== strlen( $encryption_key ) ) {
+            throw new \InvalidArgumentException( 'Migration encryption keys must be exactly 32 bytes.' );
         }
-        
-        if (\['customer_uuid'] !== \) {
-            throw new \Exception('Wrong customer binding: This package was not encrypted for this site.');
+
+        $decoded_package = base64_decode( $package, true );
+        $data = false === $decoded_package ? null : json_decode( $decoded_package, true );
+        if ( ! is_array( $data ) || ! isset( $data['iv'], $data['ciphertext'], $data['tag'], $data['aad'] ) ) {
+            throw new \RuntimeException( 'Invalid encrypted migration package.' );
         }
-        
-        if (time() > \['expiry']) {
-            throw new \Exception('Migration package has expired.');
+
+        $iv         = base64_decode( $data['iv'], true );
+        $ciphertext = base64_decode( $data['ciphertext'], true );
+        $tag        = base64_decode( $data['tag'], true );
+        $aad        = base64_decode( $data['aad'], true );
+        if ( false === $iv || false === $ciphertext || false === $tag || false === $aad ) {
+            throw new \RuntimeException( 'Invalid migration package encoding.' );
         }
-        
-        \ = openssl_decrypt(\, 'aes-256-gcm', \, OPENSSL_RAW_DATA, \, \, \);
-        
-        if (\ === false) {
-            throw new \Exception('Decryption or Authentication failed. Payload was tampered with or incorrect key.');
+
+        $binding = json_decode( $aad, true );
+        if ( ! is_array( $binding ) || ! isset( $binding['customer_uuid'], $binding['expiry'] ) ) {
+            throw new \RuntimeException( 'Invalid migration package binding.' );
         }
-        
-        return \;
+        if ( ! hash_equals( (string) $binding['customer_uuid'], $customer_uuid ) ) {
+            throw new \RuntimeException( 'This migration package belongs to another site.' );
+        }
+        if ( time() > (int) $binding['expiry'] ) {
+            throw new \RuntimeException( 'This migration package has expired.' );
+        }
+
+        $payload = openssl_decrypt(
+            $ciphertext,
+            'aes-256-gcm',
+            $encryption_key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag,
+            $aad
+        );
+        if ( false === $payload ) {
+            throw new \RuntimeException( 'Migration package authentication failed.' );
+        }
+
+        return $payload;
+    }
+
+    private static function validate_inputs( string $encryption_key, string $customer_uuid, int $expiry ): void {
+        if ( 32 !== strlen( $encryption_key ) ) {
+            throw new \InvalidArgumentException( 'Migration encryption keys must be exactly 32 bytes.' );
+        }
+        if ( '' === $customer_uuid ) {
+            throw new \InvalidArgumentException( 'A customer UUID is required for migration encryption.' );
+        }
+        if ( $expiry <= time() ) {
+            throw new \InvalidArgumentException( 'Migration package expiry must be in the future.' );
+        }
     }
 }

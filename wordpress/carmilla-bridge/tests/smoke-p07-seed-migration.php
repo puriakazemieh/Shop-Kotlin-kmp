@@ -1,75 +1,59 @@
-﻿<?php
-/**
- * Smoke test for Phase 07 Seed & Migration logic.
- * Tests Crypto, Config Denylists, URL Rewrite, and Delta Hash generation.
- */
+<?php
+/** Smoke test for the self-contained Phase 07 migration safety primitives. */
 
 define( 'ABSPATH', __DIR__ . '/' );
 
-require dirname(__DIR__) . '/includes/Migration/Migration_Config.php';
-require dirname(__DIR__) . '/includes/Migration/Migration_Crypto.php';
-
-\ = 0;
-function check( \, \ ) {
-    global \;
-    echo ( \ ? 'PASS' : 'FAIL' ) . "  \\n";
-    if ( ! \ ) { \++; }
+if ( ! function_exists( 'wp_json_encode' ) ) {
+    function wp_json_encode( $value, $flags = 0 ) {
+        return json_encode( $value, $flags );
+    }
 }
 
-// 1. Test Migration_Config Denylist
-\ = \Carmilla\Bridge\Migration\Migration_Config::get_denied_post_types();
-check( in_array('shop_order', \), 'shop_order is blocked from export' );
-check( in_array('cb_health_record', \), 'cb_health_record is blocked from export' );
+require dirname( __DIR__ ) . '/includes/Migration/Migration_Config.php';
+require dirname( __DIR__ ) . '/includes/Migration/Migration_Crypto.php';
 
-\ = \Carmilla\Bridge\Migration\Migration_Config::get_denied_meta_keys();
-check( in_array('_billing_email', \), '_billing_email is blocked' );
-check( in_array('password', \), 'password meta is blocked' );
+$failures = 0;
+function migration_check( bool $condition, string $message ): void {
+    global $failures;
+    echo ( $condition ? 'PASS' : 'FAIL' ) . "  {$message}\n";
+    if ( ! $condition ) {
+        ++$failures;
+    }
+}
 
-// 2. Test Migration_Crypto AEAD
-\ = str_repeat('k', 32); // 32-byte key
-\ = 'test-site-uuid';
-\ = time() + 3600;
-\ = '{"test": "data"}';
+$post_types = \Carmilla\Bridge\Migration\Migration_Config::get_denied_post_types();
+migration_check( in_array( 'shop_order', $post_types, true ), 'orders are blocked from export' );
+migration_check( in_array( 'cb_health_record', $post_types, true ), 'health records are blocked from export' );
+migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( '_billing_email' ), 'billing email is blocked' );
+migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'provider_api_key' ), 'provider API keys are blocked' );
+migration_check( ! \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'public_display_name' ), 'public metadata remains eligible' );
 
-\ = \Carmilla\Bridge\Migration\Migration_Crypto::encrypt_payload(\, \, \, \);
-check( !empty(\) && \ !== \, 'Payload is encrypted and base64 encoded' );
+$key     = str_repeat( 'k', 32 );
+$site_id = 'test-site-uuid';
+$payload = '{"test":"data"}';
+$package = \Carmilla\Bridge\Migration\Migration_Crypto::encrypt_payload( $payload, $key, $site_id, time() + 3600 );
+migration_check( $package !== $payload, 'payload is encrypted' );
+migration_check( $payload === \Carmilla\Bridge\Migration\Migration_Crypto::decrypt_payload( $package, $key, $site_id ), 'payload decrypts for its site' );
 
-\ = \Carmilla\Bridge\Migration\Migration_Crypto::decrypt_payload(\, \, \);
-check( \ === \, 'Decrypted payload matches original' );
+foreach (
+    array(
+        array( str_repeat( 'j', 32 ), $site_id, 'a wrong key is rejected' ),
+        array( $key, 'another-site', 'a wrong site is rejected' ),
+    ) as $case
+) {
+    try {
+        \Carmilla\Bridge\Migration\Migration_Crypto::decrypt_payload( $package, $case[0], $case[1] );
+        migration_check( false, $case[2] );
+    } catch ( \RuntimeException $exception ) {
+        migration_check( true, $case[2] );
+    }
+}
 
-// Tamper test - wrong key
 try {
-    \Carmilla\Bridge\Migration\Migration_Crypto::decrypt_payload(\, str_repeat('j', 32), \);
-    check( false, 'Should have failed with wrong key' );
-} catch (\Exception \) {
-    check( true, 'Wrong key fails decryption properly' );
+    \Carmilla\Bridge\Migration\Migration_Crypto::encrypt_payload( $payload, $key, $site_id, time() - 1 );
+    migration_check( false, 'expired package is rejected' );
+} catch ( \InvalidArgumentException $exception ) {
+    migration_check( true, 'expired package is rejected' );
 }
 
-// Tamper test - wrong customer UUID (binding)
-try {
-    \Carmilla\Bridge\Migration\Migration_Crypto::decrypt_payload(\, \, 'wrong-uuid');
-    check( false, 'Should have failed with wrong customer UUID' );
-} catch (\Exception \) {
-    check( true, 'Customer UUID binding enforced properly' );
-}
-
-// Tamper test - expired
-\ = \Carmilla\Bridge\Migration\Migration_Crypto::encrypt_payload(\, \, \, time() - 100);
-try {
-    \Carmilla\Bridge\Migration\Migration_Crypto::decrypt_payload(\, \, \);
-    check( false, 'Should have failed expiry' );
-} catch (\Exception \) {
-    check( true, 'Expiry enforced properly' );
-}
-
-// 3. Test URL Rewriting logic (simulating Migrator method)
-function rewrite_urls(\, \, \) {
-    if (empty(\) || empty(\) || empty(\)) return \;
-    return str_replace(\, \, \);
-}
-\ = 'Welcome to https://old-domain.com/shop!';
-\ = rewrite_urls(\, 'https://old-domain.com', 'https://new-domain.com');
-check( \ === 'Welcome to https://new-domain.com/shop!', 'URL rewrite works successfully' );
-
-echo "\n" . ( \ === 0 ? 'ALL PASSED' : "\ FAILED" ) . "\n";
-exit( \ === 0 ? 0 : 1 );
+exit( 0 === $failures ? 0 : 1 );
