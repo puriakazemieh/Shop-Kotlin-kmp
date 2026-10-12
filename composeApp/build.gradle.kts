@@ -220,7 +220,29 @@ val generatePwaFiles by tasks.registering {
         val wpSw = File(outDir, "sw-wp.js")
         wpSw.writeText("""
 const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v1';
-const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health', '/wp-json/cb/v1/auth'];
+const SENSITIVE_PATHS = ['/auth', '/account', '/profile', '/address', '/favorite', '/support', '/order', '/payment', '/message', '/health', '/clinic', '/psych', '/wp-json/cb/v1/auth'];
+const APP_SHELL_PATHS = new Set(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']);
+const PUBLIC_CONTENT_PATHS = ['/catalog', '/content', '/wp-json/cb/v1/catalog', '/wp-json/cb/v1/content'];
+
+function isSensitiveRequest(request, url) {
+  const path = url.pathname.toLowerCase();
+  return SENSITIVE_PATHS.some(prefix => path.includes(prefix))
+    || request.headers.has('authorization')
+    || url.searchParams.has('token')
+    || url.searchParams.has('access_token');
+}
+
+function isCacheablePublicRequest(request, url) {
+  if (request.method !== 'GET' || url.origin !== self.location.origin || isSensitiveRequest(request, url)) return false;
+  return APP_SHELL_PATHS.has(url.pathname)
+    || PUBLIC_CONTENT_PATHS.some(prefix => url.pathname.startsWith(prefix));
+}
+
+function offlineResponse() {
+  return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
+    headers: { 'Content-Type': 'application/json' }, status: 503
+  });
+}
 
 self.addEventListener('message', function(event) {
   if (event.data && event.data.type === 'SKIP_WAITING') {
@@ -238,17 +260,15 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
   const requestUrl = new URL(event.request.url);
-  const isSensitive = SENSITIVE_PATHS.some(path => requestUrl.pathname.includes(path));
+  const isSensitive = isSensitiveRequest(event.request, requestUrl);
   
   if (isSensitive || event.request.method !== 'GET') {
-    event.respondWith(
-      fetch(event.request).catch(function() {
-        return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
-          headers: { 'Content-Type': 'application/json' },
-          status: 503
-        });
-      })
-    );
+    event.respondWith(fetch(event.request).catch(offlineResponse));
+    return;
+  }
+
+  if (!isCacheablePublicRequest(event.request, requestUrl)) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
@@ -363,7 +383,29 @@ self.addEventListener('activate', function(event) {
         val springSw = File(outDir, "sw-spring.js")
         springSw.writeText("""
 const CACHE_NAME = 'carmilla-cache-${springTenantId}-v1';
-const SENSITIVE_PATHS = ['/auth', '/order', '/payment', '/message', '/health'];
+const SENSITIVE_PATHS = ['/auth', '/account', '/profile', '/address', '/favorite', '/support', '/order', '/payment', '/message', '/health', '/clinic', '/psych'];
+const APP_SHELL_PATHS = new Set(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']);
+const PUBLIC_CONTENT_PATHS = ['/catalog', '/content'];
+
+function isSensitiveRequest(request, url) {
+  const path = url.pathname.toLowerCase();
+  return SENSITIVE_PATHS.some(prefix => path.includes(prefix))
+    || request.headers.has('authorization')
+    || url.searchParams.has('token')
+    || url.searchParams.has('access_token');
+}
+
+function isCacheablePublicRequest(request, url) {
+  if (request.method !== 'GET' || url.origin !== self.location.origin || isSensitiveRequest(request, url)) return false;
+  return APP_SHELL_PATHS.has(url.pathname)
+    || PUBLIC_CONTENT_PATHS.some(prefix => url.pathname.startsWith(prefix));
+}
+
+function offlineResponse() {
+  return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
+    headers: { 'Content-Type': 'application/json' }, status: 503
+  });
+}
 
 self.addEventListener('message', function(event) {
   if (event.data && event.data.type === 'SKIP_WAITING') {
@@ -381,17 +423,15 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
   const requestUrl = new URL(event.request.url);
-  const isSensitive = SENSITIVE_PATHS.some(path => requestUrl.pathname.includes(path));
+  const isSensitive = isSensitiveRequest(event.request, requestUrl);
   
   if (isSensitive || event.request.method !== 'GET') {
-    event.respondWith(
-      fetch(event.request).catch(function() {
-        return new Response(JSON.stringify({ error: 'offline', message: 'عملیات در حالت آفلاین امکان‌پذیر نیست.' }), {
-          headers: { 'Content-Type': 'application/json' },
-          status: 503
-        });
-      })
-    );
+    event.respondWith(fetch(event.request).catch(offlineResponse));
+    return;
+  }
+
+  if (!isCacheablePublicRequest(event.request, requestUrl)) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
