@@ -37,10 +37,15 @@ to `admin.php?page=carmilla-settings`, and its Integrations submenu points to
 
 ## Human QA still required
 
-The UI and a mock delivery path have been exercised. A human must send an Email
-and an SMS only to approved sandbox recipients, then confirm the delivered
-content and provider message identifier. No real recipient, secret, or provider
-credential was used in this evidence.
+Manual QA confirmation received from the product owner on 2026-10-12: the
+Theme-only configuration and test-send flow completed successfully in the
+preserved destination WordPress installation. No recipient, secret, or provider
+credential is recorded in this repository evidence.
+
+This confirmation closes only the P06 critical stop for the messaging settings,
+capability, operational panel and Theme-only send path. The separate P06 work
+for AEAD/key rotation, queue privacy/idempotency and provider mapping remains
+open and is not represented as complete here.
 
 ## Rollback
 
