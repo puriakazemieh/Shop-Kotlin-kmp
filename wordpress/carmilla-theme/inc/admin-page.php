@@ -10,14 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 add_action( 'admin_menu', function () {
-	add_menu_page(
+	// Shared Core owns the only Carmilla top-level menu. Keep the Theme dashboard
+	// as a submenu so co-install does not produce duplicate Carmilla entries.
+	add_submenu_page(
+		'carmilla-settings',
 		__( 'مدیریت کارمیلا', 'carmilla' ),
 		__( 'کارمیلا', 'carmilla' ),
 		'edit_posts',
 		'carmilla-dashboard',
-		'carmilla_render_admin_dashboard',
-		'dashicons-store',
-		2
+		'carmilla_render_admin_dashboard'
 	);
 } );
 

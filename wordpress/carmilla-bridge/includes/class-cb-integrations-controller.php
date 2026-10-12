@@ -54,20 +54,10 @@ class CB_Integrations_Controller {
         // Capability
         $capability = 'manage_carmilla_integrations';
 
-        // Add top-level menu if it doesn't exist
-        add_menu_page(
-            __('Carmilla', 'carmilla-bridge'),
-            __('Carmilla', 'carmilla-bridge'),
-            $capability,
-            'carmilla',
-            '',
-            'dashicons-store',
-            58
-        );
-
-        // Add Integrations submenu
+        // The Shared Core owns the single Carmilla top-level menu
+        // (`carmilla-settings`). Bridge contributes only its Integration page.
         add_submenu_page(
-            'carmilla',
+            'carmilla-settings',
             __('Integrations', 'carmilla-bridge'),
             __('Integrations', 'carmilla-bridge'),
             $capability,
