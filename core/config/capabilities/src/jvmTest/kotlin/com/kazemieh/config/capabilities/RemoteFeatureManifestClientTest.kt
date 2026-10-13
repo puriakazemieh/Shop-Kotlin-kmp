@@ -8,7 +8,7 @@ import kotlin.test.assertTrue
 class RemoteFeatureManifestClientTest {
     private val profile = BackendProfile(
         kind = BackendKind.WORDPRESS,
-        apiRoot = "https://tenant.example.test/",
+        apiRoot = "https://tenant.example.test/wp-json/carmilla/v1/",
         assetRoot = "https://tenant.example.test/",
         allowedAuthHosts = setOf("tenant.example.test"),
         contractVersion = 1,

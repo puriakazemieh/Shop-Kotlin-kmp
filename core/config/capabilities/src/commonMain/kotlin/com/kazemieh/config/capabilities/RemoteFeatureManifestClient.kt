@@ -96,7 +96,7 @@ class RemoteFeatureManifestClient(
     suspend fun fetch(ifNoneMatch: String? = null): RemoteManifestFetchResult = runCatching {
         val response = transport.execute(
             RemoteManifestRequest(
-                url = ProfileEndpointResolver(profile).resolve(profile.manifestPath),
+                url = profile.resolveManifestUrl(),
                 timeoutMillis = timeoutMillis,
                 ifNoneMatch = ifNoneMatch
             )

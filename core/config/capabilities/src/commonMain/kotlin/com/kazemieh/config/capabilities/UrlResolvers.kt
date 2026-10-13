@@ -14,6 +14,15 @@ class ProfileEndpointResolver(private val profile: BackendProfile) : EndpointRes
     override fun resolve(path: String): String = profile.apiRoot.joinTrustedPath(path)
 }
 
+/** مسیر manifest وردپرس از ریشهٔ نصب WordPress ساخته می‌شود، نه از namespace API. */
+internal fun BackendProfile.resolveManifestUrl(): String {
+    val trustedBase = when (kind) {
+        BackendKind.WORDPRESS -> apiRoot.substringBefore("/wp-json/").ensureTrailingSlash()
+        BackendKind.SPRING -> apiRoot.origin()
+    }
+    return trustedBase.joinTrustedPath(manifestPath)
+}
+
 class ProfileAssetUrlResolver(private val profile: BackendProfile) : AssetUrlResolver {
     override fun resolve(path: String): String =
         if (path.isAbsoluteUrl()) path else profile.assetRoot.joinTrustedPath(path)

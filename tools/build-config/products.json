@@ -17,7 +17,7 @@
       "assetRoot": "http://10.0.2.2:8080",
       "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
       "contractVersion": 1,
-      "manifestPath": "/wp-json/cb/v1/manifest"
+      "manifestPath": "/wp-json/carmilla/v1/client-manifest"
     },
     "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"],
     "localFeatures": {
@@ -45,7 +45,7 @@
       "assetRoot": "http://10.0.2.2:8080",
       "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
       "contractVersion": 1,
-      "manifestPath": "/wp-json/cb/v1/manifest"
+      "manifestPath": "/wp-json/carmilla/v1/client-manifest"
     },
     "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical", "wallet"],
     "localFeatures": {
@@ -73,7 +73,7 @@
       "assetRoot": "http://10.0.2.2:8080",
       "allowedAuthHosts": ["10.0.2.2", "localhost", "127.0.0.1"],
       "contractVersion": 1,
-      "manifestPath": "/wp-json/cb/v1/manifest"
+      "manifestPath": "/wp-json/carmilla/v1/client-manifest"
     },
     "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical"],
     "localFeatures": {
@@ -157,7 +157,7 @@
       "assetRoot": "http://localhost:8080",
       "allowedAuthHosts": ["localhost", "127.0.0.1"],
       "contractVersion": 1,
-      "manifestPath": "/wp-json/cb/v1/manifest"
+      "manifestPath": "/wp-json/carmilla/v1/client-manifest"
     },
     "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"],
     "localFeatures": {

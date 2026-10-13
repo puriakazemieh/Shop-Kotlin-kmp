@@ -69,3 +69,9 @@ the task `DONE`.
 Deploy the previous PWA service worker revision and reload the application.
 The new worker retains the existing cache-name revision; activation removes only
 older Carmilla worker caches as before.
+
+## WordPress runtime revalidation — 2026-10-13
+
+- Production artifact rebuilt with `:composeApp:jsBrowserDistribution` and served at the persistent QA URL `http://localhost/carmilla-pwa-qa/`.
+- A real Chrome/Playwright run registered `http://localhost/carmilla-pwa-qa/sw-wp.js`, rendered one Compose canvas, and received HTTP 200 from the WordPress manifest and public catalog endpoints.
+- `E2E_BROWSER_CHANNEL=chrome npx playwright test tests/e2e/tenant-cache.spec.cjs --config=playwright.config.cjs --project=fake-desktop --project=fake-mobile` passed again: 4/4.

@@ -17,7 +17,15 @@ class UrlResolversTest {
     @Test
     fun resolvesOnlyRelativePathsAgainstTrustedOrigins() {
         assertEquals("https://shop.example.test/wp-json/carmilla/v1/products", ProfileEndpointResolver(profile).resolve("products"))
+        assertEquals("https://shop.example.test/wp-json/carmilla/v1/client-manifest", profile.resolveManifestUrl())
         assertEquals("https://shop.example.test/media/hero.jpg", ProfileAssetUrlResolver(profile).resolve("/media/hero.jpg"))
+    }
+
+    @Test
+    fun resolvesWordPressManifestFromSubdirectoryInstall() {
+        val nested = profile.copy(apiRoot = "https://shop.example.test/carmilla-qa/wp-json/carmilla/v1/")
+
+        assertEquals("https://shop.example.test/carmilla-qa/wp-json/carmilla/v1/client-manifest", nested.resolveManifestUrl())
     }
 
     @Test

@@ -13,3 +13,10 @@
 ## Reviewer
 - Reviewer: AI Agent
 - Result: PASS
+
+## Runtime revalidation — 2026-10-13
+
+- A production distribution was served from the persistent subdirectory QA deployment at `http://localhost/carmilla-pwa-qa/`.
+- Its bootstrap and service worker were verified under the subdirectory; WordPress runtime requests used `http://localhost/carmilla-p07-qa/wp-json/carmilla/v1/`.
+- The real browser check observed one Compose canvas and the WordPress service worker at `/carmilla-pwa-qa/sw-wp.js`.
+- Human visual confirmation remains required; the task was returned to `AWAITING_MANUAL_QA` rather than retaining an AI-only manual PASS.

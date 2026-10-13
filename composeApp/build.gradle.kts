@@ -182,6 +182,7 @@ val generatePwaFiles by tasks.registering {
         val wpBackend = carmilaSpec["backendProfile"] as Map<*, *>
         val wpTenant = carmilaSpec["tenant"] as Map<*, *>
         val wpTenantId = wpTenant["id"] as String
+        val wpApiRoot = (wpBackend["apiRoot"] as String).trimEnd('/') + "/wp-json/carmilla/v1/"
         val wpManifest = File(outDir, "manifest-wp.json")
         wpManifest.writeText("""{
   "id": "com.kazemieh.shop.wp",
@@ -211,7 +212,7 @@ val generatePwaFiles by tasks.registering {
   "sku": "carmila",
   "backend": {
     "kind": "WORDPRESS",
-    "apiRoot": "${wpBackend["apiRoot"]}",
+    "apiRoot": "$wpApiRoot",
     "allowedAuthHosts": ["localhost", "127.0.0.1"]
   },
   "features": ["content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"]
