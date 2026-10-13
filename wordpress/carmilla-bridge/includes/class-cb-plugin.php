@@ -25,6 +25,7 @@ class CB_Plugin {
 	private function __construct() {
 		CB_CPT::boot();
 		$manifest_controller = new CB_Manifest_Controller();
+		$telemetry_controller = new CB_Telemetry_Controller();
 		$integrations_controller = new CB_Integrations_Controller();
 		$integrations_controller->init();
 		CB_Mail_Adapter::init();
@@ -33,6 +34,7 @@ class CB_Plugin {
 		// Apply the manifest policy before any controller callback executes.
 		add_filter( 'rest_pre_dispatch', array( 'CB_Manifest_Controller', 'guard_rest_request' ), 10, 3 );
 		add_action( 'admin_menu', array( $manifest_controller, 'register_admin_page' ) );
+		add_action( 'admin_menu', array( $telemetry_controller, 'register_admin_page' ) );
 		add_action( 'admin_post_cb_save_manifest_settings', array( $manifest_controller, 'save_admin_settings' ) );
 		// Let a valid Bearer token authenticate normal WP REST requests too.
 		add_filter( 'determine_current_user', array( $this, 'authenticate_bearer' ), 20 );
@@ -145,6 +147,7 @@ class CB_Plugin {
 
 	public function register_routes(): void {
 		( new CB_Manifest_Controller() )->register_routes();
+		( new CB_Telemetry_Controller() )->register_routes();
 		( new CB_Auth_Controller() )->register_routes();
 		( new CB_Catalog_Controller() )->register_routes();
 		( new CB_Blog_Controller() )->register_routes();

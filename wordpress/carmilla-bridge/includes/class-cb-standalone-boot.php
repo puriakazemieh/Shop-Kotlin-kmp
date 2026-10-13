@@ -114,6 +114,7 @@ class CB_Standalone_Boot {
 			'helpers.php',
 			'class-cb-jwt.php',
 			'class-cb-manifest-controller.php',
+			'class-cb-telemetry-controller.php',
 			'class-cb-legacy-migration.php',
 			'class-cb-blocks.php',
 			'class-cb-cpt.php',
