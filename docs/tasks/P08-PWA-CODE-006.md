@@ -48,7 +48,7 @@ P08-PWA-CODE-006
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P08 / PWA / CODE
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
@@ -125,10 +125,10 @@ auth/order/payment/message/health cache صفر
 
 ## Completion record
 - Started at: 2026-10-12
-- Completed at: Code and automated verification complete 2026-10-12; human QA pending.
+- Completed at: 2026-10-13
 - Changed files: composeApp/build.gradle.kts, composeApp/src/jsMain/resources/index.html, composeApp/src/jsMain/resources/pwa-bootstrap.js, composeApp/src/jsMain/resources/sw.js, tests/e2e/pwa-test-server.cjs, tests/e2e/tenant-cache.spec.cjs, docs/tasks.md, this card, docs/evidence/P08-PWA-CODE-006/summary.md
 - Commands and exit codes: `:composeApp:compileKotlinJvm` (0), `:composeApp:generatePwaFiles` (0), `:composeApp:compileKotlinJs` (0), `:composeApp:jsBrowserDistribution` (0; artifact inspected), `npm run test:e2e:fake` with system Chrome (0; 28 fixture tests passed)
-- Manual tester/date/result: Awaiting manual cache verification in a browser.
+- Manual tester/date/result: User / 2026-10-13 / PASS — refreshed persistent WordPress PWA after worker cache upgrade; application loaded without the remote-configuration safe-mode banner.
 - Evidence paths: docs/evidence/P08-PWA-CODE-006/summary.md
-- Remaining risks/blockers: Fixture success is not production evidence; CSP, VAPID and real staging backend controls are separate P08 work and remain open.
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: Fixture and local QA are not production evidence; CSP, VAPID and real staging backend controls are separate P08 work.
+- Final status: DONE

@@ -48,7 +48,7 @@ P08-PWA-CODE-003
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P08 / PWA / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -132,7 +132,7 @@ app-config.json از BuildSpec دارای backend، originهای مجاز، tena
 - Completed at: 2026-10-13T06:18:00
 - Changed files: composeApp/build.gradle.kts, composeApp/src/webMain/resources/index.html, composeApp/src/webMain/kotlin/com/kazemieh/shop/main.kt
 - Commands and exit codes: PowerShell Out-File (0)
-- Manual tester/date/result: Awaiting human confirmation / 2026-10-13 / runtime contract revalidation is automated; manual UI review remains
+- Manual tester/date/result: User / 2026-10-13 / PASS — WordPress data and remote configuration reviewed after service-worker refresh.
 - Evidence paths: docs/evidence/P08-PWA-CODE-003/summary.md
-- Remaining risks/blockers: human QA of the persistent WordPress PWA deployment is required before DONE.
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: None for this task; separate production/staging release controls remain out of scope.
+- Final status: DONE

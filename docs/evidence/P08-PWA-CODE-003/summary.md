@@ -19,3 +19,7 @@
 - Real Chrome/Playwright runtime responses: `client-manifest` 200, `api/categories` 200, `api/campaigns/active` 200, `api/banners` 200, and `api/products?page=0&size=50` 200.
 - A read-only unauthenticated `api/cart` response is 401 as expected; no token, customer data, or write operation was used.
 - Human visual confirmation remains required; the task was returned to `AWAITING_MANUAL_QA` rather than retaining an AI-only manual PASS.
+
+## Human QA completion — 2026-10-13
+
+- The user confirmed that WordPress data and remote configuration loaded correctly after the service-worker refresh. Result: PASS.

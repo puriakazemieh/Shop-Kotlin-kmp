@@ -48,7 +48,7 @@ P08-PWA-CODE-002
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P08 / PWA / CODE
 - Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -132,7 +132,7 @@ clean production build در root/subdirectory؛ دو پروژه با backend م�
 - Completed at: 2026-10-13T06:18:00
 - Changed files: composeApp/build.gradle.kts, composeApp/src/webMain/resources/index.html
 - Commands and exit codes: PowerShell Out-File (0), ./gradlew.bat :composeApp:compileKotlinJs (0)
-- Manual tester/date/result: Awaiting human confirmation / 2026-10-13 / runtime revalidation is automated; manual root/subdirectory review remains
+- Manual tester/date/result: User / 2026-10-13 / PASS — persistent subdirectory PWA reviewed after service-worker refresh.
 - Evidence paths: docs/evidence/P08-PWA-CODE-002/summary.md
-- Remaining risks/blockers: human QA of the persistent subdirectory deployment is required before DONE.
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: None for this task; separate production/staging release controls remain out of scope.
+- Final status: DONE

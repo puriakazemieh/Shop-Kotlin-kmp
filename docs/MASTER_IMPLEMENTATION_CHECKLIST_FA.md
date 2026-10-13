@@ -987,11 +987,11 @@ Compose Web به PWA نصب‌پذیر و production-ready تبدیل شود؛ W
 | انجام | Task ID | مجری | اولویت/ریسک | کار و خروجی | اعتبارسنجی |
 |---|---|---|---|---|---|
 | [x] | `P08-PWA-ADR-001` | BOTH | P0/MEDIUM | معماری استقرار مستقل Web/PWA و دو backend | CORS/cookie/auth/cache/SEO boundary برای هر استقرار ثبت شود؛ آمادگی production اتصال Spring فقط با Gate P15 ادعا شود. |
-| [ ] | `P08-PWA-CODE-002` | BOTH | P0/MEDIUM | خروجی مستقل Web و PWA از source set و BuildSpec | clean production build در root/subdirectory؛ دو پروژه با backend متفاوت بدون source fork؛ asset و history route سالم. |
-| [ ] | `P08-PWA-CODE-003` | BOTH | P0/HIGH | پیکربندی trusted وب با backend، برند و SKU مستقل | دست‌کاری apiRoot/authHosts و feature خارج از ceiling رد شود؛ artifact WORDPRESS به Theme-only و Plugin-only و both وصل شود. |
+| [x] | `P08-PWA-CODE-002` | BOTH | P0/MEDIUM | خروجی مستقل Web و PWA از source set و BuildSpec | clean production build در root/subdirectory؛ دو پروژه با backend متفاوت بدون source fork؛ asset و history route سالم. |
+| [x] | `P08-PWA-CODE-003` | BOTH | P0/HIGH | پیکربندی trusted وب با backend، برند و SKU مستقل | دست‌کاری apiRoot/authHosts و feature خارج از ceiling رد شود؛ artifact WORDPRESS به Theme-only و Plugin-only و both وصل شود. |
 | [x] | `P08-PWA-CODE-004` | AI | P0/MEDIUM | `manifest.webmanifest` با id/scope/start_url/name/icons | installability check؛ icon sizes |
 | [x] | `P08-PWA-CODE-005` | BOTH | P0/HIGH | service worker با cache namespace tenant+revision | سایت A/B cache مشترک ندارند |
-| [ ] | `P08-PWA-CODE-006` | BOTH | P0/HIGH | cache policy فقط app shell/public catalog/content | auth/order/payment/message/health cache صفر |
+| [x] | `P08-PWA-CODE-006` | BOTH | P0/HIGH | cache policy فقط app shell/public catalog/content | auth/order/payment/message/health cache صفر |
 | [x] | `P08-PWA-CODE-007` | AI | P0/MEDIUM | offline fallback و network error UX | checkout/offline write وعده داده نشود |
 | [x] | `P08-PWA-CODE-008` | BOTH | P0/HIGH | logout/private cache purge و session expiry | logout سپس offline داده خصوصی نشان ندهد |
 | [x] | `P08-PWA-CODE-009` | BOTH | P0/HIGH | update lifecycle، prompt، skip-waiting policy و rollback | old/new contract mismatch loop صفر |

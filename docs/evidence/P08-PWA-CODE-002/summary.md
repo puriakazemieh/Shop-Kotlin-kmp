@@ -20,3 +20,7 @@
 - Its bootstrap and service worker were verified under the subdirectory; WordPress runtime requests used `http://localhost/carmilla-p07-qa/wp-json/carmilla/v1/`.
 - The real browser check observed one Compose canvas and the WordPress service worker at `/carmilla-pwa-qa/sw-wp.js`.
 - Human visual confirmation remains required; the task was returned to `AWAITING_MANUAL_QA` rather than retaining an AI-only manual PASS.
+
+## Human QA completion — 2026-10-13
+
+- The user confirmed the persistent QA deployment worked after the service-worker refresh. Result: PASS.
