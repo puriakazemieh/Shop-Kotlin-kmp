@@ -19,8 +19,15 @@
     .catch(error => console.error('Failed to load app config', error));
 
   if ('serviceWorker' in navigator) {
+    let reloadingForWorker = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!reloadingForWorker) {
+        reloadingForWorker = true;
+        window.location.reload();
+      }
+    });
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register(workerUrl).catch(error => {
+      navigator.serviceWorker.register(workerUrl).then(registration => registration.update()).catch(error => {
         console.error('Service worker registration failed', error);
       });
     });

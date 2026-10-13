@@ -75,3 +75,4 @@ older Carmilla worker caches as before.
 - Production artifact rebuilt with `:composeApp:jsBrowserDistribution` and served at the persistent QA URL `http://localhost/carmilla-pwa-qa/`.
 - A real Chrome/Playwright run registered `http://localhost/carmilla-pwa-qa/sw-wp.js`, rendered one Compose canvas, and received HTTP 200 from the WordPress manifest and public catalog endpoints.
 - `E2E_BROWSER_CHANNEL=chrome npx playwright test tests/e2e/tenant-cache.spec.cjs --config=playwright.config.cjs --project=fake-desktop --project=fake-mobile` passed again: 4/4.
+- Worker revision is now `v3`; installation calls `skipWaiting`, activation claims open clients, and the bootstrap reloads once on controller change so a deployment cannot keep serving a stale cached application shell.
