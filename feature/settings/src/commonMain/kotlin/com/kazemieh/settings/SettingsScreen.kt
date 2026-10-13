@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
+import com.kazemieh.common.Telemetry
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
@@ -50,6 +52,7 @@ fun SettingsScreen(
     navigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val telemetryEnabled by Telemetry.isOptedIn.collectAsState()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Scaffold(
@@ -117,6 +120,38 @@ fun SettingsScreen(
                             )
                         }
                     }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "آمار ناشناس",
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = AppFont(),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(Radius.md)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "ارسال آمار ناشناس و تجمیعی",
+                        modifier = Modifier.weight(1f),
+                        fontFamily = AppFont(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Switch(
+                        checked = telemetryEnabled,
+                        onCheckedChange = Telemetry::setOptIn
+                    )
                 }
             }
 

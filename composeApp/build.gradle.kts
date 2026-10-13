@@ -101,6 +101,7 @@ kotlin {
 
             implementation(libs.kotlinx.serialization)
             implementation(libs.ktor.client.core)
+            implementation(libs.multiplatform.settings)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
 

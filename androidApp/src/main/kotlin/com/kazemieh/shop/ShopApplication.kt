@@ -12,7 +12,8 @@ class ShopApplication : Application() {
 
         initKoin(
             sku = BuildConfig.BRAND,
-            apiBaseUrlOverride = BuildConfig.API_BASE_OVERRIDE.takeIf { it.isNotBlank() }
+            apiBaseUrlOverride = BuildConfig.API_BASE_OVERRIDE.takeIf { it.isNotBlank() },
+            telemetryClient = "android"
         ) {
             androidContext(this@ShopApplication)
         }

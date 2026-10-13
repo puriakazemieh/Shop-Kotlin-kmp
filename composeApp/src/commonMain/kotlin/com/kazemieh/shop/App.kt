@@ -35,6 +35,7 @@ import com.kazemieh.cart.cartModule
 import com.kazemieh.catalog.catalogModule
 import com.kazemieh.common.AppLanguage
 import com.kazemieh.common.AppThemeMode
+import com.kazemieh.common.Telemetry
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
@@ -82,6 +83,9 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.core.KoinApplication
+import com.russhwolf.settings.Settings
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
@@ -139,7 +143,12 @@ fun App() {
     }
 }
 
-fun initKoin(sku: String, apiBaseUrlOverride: String? = null, config: KoinAppDeclaration? = null) {
+fun initKoin(
+    sku: String,
+    apiBaseUrlOverride: String? = null,
+    telemetryClient: String = "web",
+    config: KoinAppDeclaration? = null
+) {
     val spec = GeneratedProductSpecs.specs[sku] ?: throw IllegalStateException("Unknown SKU: $sku")
     
     val brand = com.kazemieh.designsystem.brand.BrandRegistry.byId(spec.branding.id)
@@ -147,7 +156,7 @@ fun initKoin(sku: String, apiBaseUrlOverride: String? = null, config: KoinAppDec
     val tenantConfig = spec.tenant
     val backendProfile = spec.backendProfile.copy(apiRoot = ApiConfig.baseUrl)
 
-    startKoin {
+    val application: KoinApplication = startKoin {
         printLogger()
         config?.invoke(this)
         modules(
@@ -159,6 +168,7 @@ fun initKoin(sku: String, apiBaseUrlOverride: String? = null, config: KoinAppDec
                 single { get<BackendProfile>().privateSessionNamespace(get<TenantConfig>().id) }
                 single<EndpointResolver> { ProfileEndpointResolver(get()) }
                 single<AssetUrlResolver> { ProfileAssetUrlResolver(get()) }
+                single { TelemetryTransport(get<HttpClient>(), get<EndpointResolver>()) }
                 single<RemoteManifestTransport> { KtorRemoteManifestTransport(get()) }
                 single { InMemoryLastKnownGoodManifestCache(ceiling = get()) }
                 single {
@@ -220,4 +230,16 @@ fun initKoin(sku: String, apiBaseUrlOverride: String? = null, config: KoinAppDec
             clinicModule
         )
     }
+
+    val settings = application.koin.get<Settings>()
+    Telemetry.configure(
+        optedIn = settings.getBoolean(TELEMETRY_CONSENT_KEY, false),
+        client = telemetryClient,
+        tenantId = tenantConfig.id,
+        persistConsent = { settings.putBoolean(TELEMETRY_CONSENT_KEY, it) },
+        dispatch = { application.koin.get<TelemetryTransport>().send(it) }
+    )
+    Telemetry.logEvent(com.kazemieh.common.AnalyticsEvent("app_activated"))
 }
+
+private const val TELEMETRY_CONSENT_KEY = "telemetry_consent_v1"

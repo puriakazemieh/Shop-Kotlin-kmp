@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val (sku, apiOverride) = resolveSkuAndApi()
-    initKoin(sku = sku, apiBaseUrlOverride = apiOverride)
+    initKoin(sku = sku, apiBaseUrlOverride = apiOverride, telemetryClient = "pwa")
     handleWebDeepLink()
     handleWebLogoutPurge()
     ComposeViewport {
