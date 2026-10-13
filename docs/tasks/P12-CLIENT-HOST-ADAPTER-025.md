@@ -1,17 +1,17 @@
-# P12-CLIENT-HOST-ADAPTER-025 — اتصال کلاینت Kotlin به Theme/Plugin WordPress یا Spring
+# P12-CLIENT-HOST-ADAPTER-025 — پذیرش کلاینت build‌شده روی میزبان‌های WordPress یا Spring
 
 - Status: TODO
 - Phase/Area/Type: P12 / CLIENT-CONTRACT / CODE
 - Priority/Risk/Size: P0/HIGH / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
-- Depends on: P12-FEATURE-LIFECYCLE-024, P12-BUILDER-CODE-012
+- Depends on: P12-FEATURE-LIFECYCLE-024, P04-WORDPRESS-CODE-051, P12-BUILDER-CODE-012
 - Blocks: P12-SECURITY-SEC-017
 - Requirement source: درخواست مالک محصول 2026-10-13؛ تکمیل P03 BackendProfile،P12 compatibility matrix و P15 Spring Gate.
 
 ## هدف قابل اندازه‌گیری
 
-یک artifact Kotlin (PWA/Android و سپس iOS/Desktop در Gateهای خود) فقط با BuildSpec trusted به یکی از این provider modeها متصل شود: `WORDPRESS_THEME_ONLY`،`WORDPRESS_PLUGIN_ONLY`،`WORDPRESS_CO_INSTALL` یا `SPRING`. Theme و Plugin باید همان قرارداد canonical REST/manifest را مستقل عرضه کنند؛ Spring قرارداد هم‌معنا را پس از P15 اثبات می‌کند.
+این کارت adapter پایه یا قرارداد provider را پیاده‌سازی نمی‌کند؛ آن‌ها در `P03-ARCH-ADR-026` و `P04-WORDPRESS-CODE-051` ساخته می‌شوند. artifact Kotlin واقعی (PWA/Android و سپس iOS/Desktop در Gateهای خود) فقط با BuildSpec trusted به WordPress mode مناسب یا Spring متصل شود.
 
 ## خروجی و معیار پذیرش
 
@@ -22,8 +22,8 @@
 
 ## محدوده و منع‌ها
 
-- مجاز: `core/**`،`composeApp/**`،`androidApp/**`،`wordpress/carmilla-theme/**`،`wordpress/carmilla-bridge/**`،`wordpress/packages/carmilla-core/**`،`D:/Android/AndroidStudioProjects/ShopServer/Shop/**` فقط برای contract،`tools/**` و `docs/**`.
-- ممنوع: backend سوم، sync دوطرفه بدون ADR/ownership، secret در client/artifact، یا تغییر داده مشتری/Production.
+- مجاز: artifact،integration harness،Evidence و مستندات پذیرش؛ اصلاح blocker محدود فقط با کارت مجزای P03/P04/P15.
+- ممنوع: backend سوم، ساخت adapter جدید در P12،sync دوطرفه بدون ADR/ownership، secret در client/artifact، یا تغییر داده مشتری/Production.
 
 ## Verification
 

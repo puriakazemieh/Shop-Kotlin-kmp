@@ -675,6 +675,7 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [ ] | `P03-ARCH-CODE-024` | BOTH | P0/HIGH | مدل نسخه‌دار ProductBuildSpec مستقل از برند | serialization roundtrip؛ برند یکسان با هر دو backend؛ tenant واقعی اجباری در release؛ SKU نامعتبر/feature ناشناخته و تغییر origin از remote رد شود. |
 | [ ] | `P03-ARCH-CODE-024A` | BOTH | P0/HIGH | تولید deterministic تنظیمات و سقف قابلیت کلاینت | دو اجرای ورودی یکسان خروجی یکسان؛ دو SKU سقف متفاوت؛ secret در output صفر؛ بسته فاقد قابلیت با remote روشن نشود. |
 | [ ] | `P03-ARCH-CODE-024B` | BOTH | P0/HIGH | تزریق BuildSpec صریح در bootstrap همه targetها | نام برند دلخواه روی هر دو profile درست؛ تغییر tenant logout/cache purge؛ entrypointهای فعلی و packageهای منتشرشده حفظ شوند. |
+| [ ] | `P03-ARCH-ADR-026` | BOTH | P0/HIGH | قرارداد trusted برای BackendProfile و WordPress host mode | `WORDPRESS/SPRING` از `Theme-only/Plugin-only/co-install` جداست؛ query/branding/remote origin یا mode را عوض نمی‌کند؛ manifest/endpoint canonical و isolation tenant مشخص است. |
 | [ ] | `P03-MANIFEST-CODE-025` | BOTH | P0/HIGH | ذخیره وضعیت مؤثر واکنشی و خروج کنترل‌شده از shadow | تغییر remote معتبر store جاری را تغییر دهد؛ stale/invalid fail-closed؛ replay revision رد؛ هیچ افزایش بالاتر از ceiling. |
 | [ ] | `P03-MANIFEST-CODE-025A` | BOTH | P0/HIGH | اتصال منو و route/deep link به وضعیت مؤثر | toggle منو و deep link را بدون rebuild هم‌زمان ببندد؛ restart و back stack مسیر ممنوع باز نکنند. |
 | [ ] | `P03-MANIFEST-CODE-025B` | BOTH | P0/HIGH | اعمال guard عملیاتی فروشگاه | با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود. |
@@ -758,6 +759,9 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 | [ ] | `P04-WORDPRESS-CODE-033A` | BOTH | P0/HIGH | چرخه درخواست ساخت مشترک با runner آزمایشی | دو پنل برای یک key فقط یک job؛ cross-site و لینک منقضی رد؛ no shell/no signing key در WP؛ mock معادل artifact واقعی اعلام نشود. |
 | [ ] | `P04-WPTHEME-CODE-046` | BOTH | P0/HIGH | پنل اپ‌ساز مستقل در پوسته | با Bridge نصب‌نشده همه مراحل fake runner از پنل پوسته طی شود؛ admin مجاز؛ هدف نخریده/آماده‌نشده build نشود. |
 | [ ] | `P04-WPPLUGIN-CODE-047` | BOTH | P0/HIGH | پنل اپ‌ساز مستقل افزونه روی قالب دیگر | قالب پیش‌فرض+Plugin بدون Carmilla Theme، request تا دریافت metadata؛ هر دو نصب بدون job/quota تکراری؛ خطا قابل اقدام. |
+| [ ] | `P04-STOREFRONT-CODE-049` | BOTH | P0/HIGH | پیاده‌سازی قرارداد طراحی فروشگاه در Theme مستقل | catalog/detail/cart و loading/empty/error/feature-off در RTL/mobile/desktop از token و layout مشترک استفاده کنند؛ KMP در WordPress embed نشود. |
+| [ ] | `P04-FEATURE-CODE-050` | BOTH | P0/HIGH | چرخه دو لایه feature در Theme و Plugin | ceiling immutable هنگام ساخت + toggle مدیر همان host؛ registry مشترک route/API/admin/job را هم‌زمان enforce کند؛ Theme و Plugin وابسته به هم نباشند. |
+| [ ] | `P04-WORDPRESS-CODE-051` | BOTH | P0/HIGH | adapter و قرارداد canonical WordPress برای کلاینت Kotlin | Theme-only/Plugin-only/co-install manifest و REST هم‌معنا بدهند؛ sync/write یکتا،origin trusted و namespace cache/token tenant-isolated باشد. |
 | [ ] | `P04-CI-CODE-043` | BOTH | P0/HIGH | سازنده ZIP بر اساس SKU و فهرست قابلیت‌ها | Base و تک‌قابلیت و ترکیبی واقعاً محتوای متفاوت معتبر؛ ماژول پولی بسته‌نشده قابل load نباشد؛ install ZIP تمیز؛ دو build ورودی برابر قابل بازتولید. |
 | [ ] | `P04-ENTITLEMENT-CODE-044` | BOTH | P0/HIGH | ارتقای خرید و به‌روزرسانی سازگار هر SKU | Base→Booking داده/هویت حفظ؛ downgrade/revoke مطابق قرارداد و بدون purge؛ package غلط/مجوز سایت دیگر رد؛ update co-install به یک kernel سازگار. |
 | [ ] | `P04-CI-CODE-019` | AI | P0/HIGH | CI بسته‌های مستقل با ورودی مانیفست و بررسی محتوای ZIP | برای هر دو نوع ZIP: Base،تک‌فیچر و ترکیبی و ۱۶ ترکیب چهار بیلدر اعتبارسنجی محتوایی شوند؛ smoke نصب نماینده‌ها. WPCS/PHP/security failها بسته شوند؛ findings Theme Check درباره plugin territory طبق کانال فروش ثبت شوند، PASS جعلی برای WordPress.org ممنوع. |
@@ -792,6 +796,7 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 - [ ] privacy/export/erase/uninstall policy تست شده است.
 - [ ] Theme-only،Bridge-only و co-install خودکار و دستی سبزند.
 - [ ] ZIPهای مستقل RC versioned،reproducible و checksumدارند.
+- [ ] قرارداد طراحی فروشگاه، چرخهٔ دو لایهٔ قابلیت و API canonical در سه mode پیش از Gate اثبات شده‌اند؛ P12 فقط artifact واقعی ساخته‌شده را دوباره می‌پذیرد.
 - Gate decision: `NOT_EVALUATED`
 
 ---
@@ -1223,9 +1228,9 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | [ ] | `P12-BUILDER-OPS-015` | BOTH | P0/HIGH | metrics/alert/cost/queue SLO و incident runbook | synthetic failed job alert |
 | [ ] | `P12-QA-AUTO-016` | AI | P0/HIGH | آزمون قرارداد و build واقعی Android/Web/PWA | fake success جای APK/AAB یا distribution واقعی ننشیند؛ درخواست از هر دو host مستقل همان قرارداد را پاس کند؛ log redacted. |
 | [ ] | `P12-QA-MANUAL-022` | HUMAN | P0/HIGH | تحویل واقعی اپ‌ساز از هر دو محصول مستقل | کجا: پنل App Builder هر میزبان و دستگاه Android/مرورگر. چگونه: خرید مجاز→branding→build→download→install، سپس هدف غیرمجاز/retry. موفقیت: artifact صحیح سایت و برند، منع هدف نخریده، یک job؛ شواهد و تأیید انسانی. |
-| [ ] | `P12-STOREFRONT-DESIGN-023` | BOTH | P0/HIGH | قرارداد برابری طراحی فروشگاه Theme و کلاینت Kotlin | token،layout،RTL،stateهای loading/empty/error و golden screenshot برای WordPress،PWA و Android؛ Woo/REST داده مشترک را نشان دهند. |
-| [ ] | `P12-FEATURE-LIFECYCLE-024` | BOTH | P0/HIGH | چرخه feature مستقل برای Theme و Plugin | feature فقط اگر در artifact build مجاز باشد و سپس مدیر همان host آن را روشن کند فعال شود؛ خرید/entitlement/وابستگی/route/API/admin هم‌زمان enforce شوند؛ Theme هرگز نیازمند Plugin و Plugin هرگز نیازمند Theme نباشد. |
-| [ ] | `P12-CLIENT-HOST-ADAPTER-025` | BOTH | P0/HIGH | اتصال کلاینت Kotlin به Spring یا میزبان مستقل WordPress | BuildSpec و adapter، WORDPRESS Theme-only/Plugin-only/co-install و SPRING را صریح انتخاب کنند؛ contract/sync یکسان، origin trusted و cache/token tenant-isolated؛ iOS/Desktop در Gate خود همان matrix را تکمیل کنند. |
+| [ ] | `P12-STOREFRONT-DESIGN-023` | BOTH | P0/HIGH | پذیرش artifact واقعی برای برابری طراحی فروشگاه | پیاده‌سازی P04 را در Theme/PWA/Android build‌شده با golden screenshot و داده مشترک Woo/REST می‌پذیرد؛ contract جدید در P12 ساخته نمی‌شود. |
+| [ ] | `P12-FEATURE-LIFECYCLE-024` | BOTH | P0/HIGH | پذیرش build واقعی چرخه feature مستقل | matrix artifact/SKU و toggle مدیر را روی پیاده‌سازی P04 می‌سنجد؛ registry یا host dependency تازه در P12 ساخته نمی‌شود. |
+| [ ] | `P12-CLIENT-HOST-ADAPTER-025` | BOTH | P0/HIGH | پذیرش client build واقعی برای میزبان‌های WordPress یا Spring | PWA/Android ساخته‌شده را روی Theme-only/Plugin-only/co-install می‌سنجد؛ Spring فقط بعد P15؛ adapter پایه در P03/P04 است. |
 | [ ] | `P12-SECURITY-SEC-017` | BOTH | P0/HIGH | independent threat review/pentest | RCE/supply-chain/tenant escape/secrets |
 | [ ] | `P12-BUILDER-BIZ-018` | HUMAN | P0/MEDIUM | operator-assisted alpha قبل از self-service | ۳–۵ project؛ support/cost evidence |
 | [ ] | `P12-BUILDER-GATE-019` | HUMAN | P0/HIGH | Gate Builder اولیه با خروجی واقعی Android/Web/PWA | isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست. |
