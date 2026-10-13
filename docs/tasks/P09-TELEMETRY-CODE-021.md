@@ -1,6 +1,6 @@
 # P09-TELEMETRY-CODE-021 — اتصال Kotlin و رضایت
 
-**Status:** AWAITING_MANUAL_QA
+**Status:** DONE
 
 مرحله ۳: transport مشترک PWA/Android، persistence رضایت و call-siteهای whitelist‌شده را پیاده می‌کند؛ opt-out باید ارسال را قطع کند.
 
@@ -12,4 +12,9 @@
 4. کلید را خاموش کنید، صفحه را دوباره reload کنید و مطمئن شوید شمارنده افزایش پیدا نمی‌کند.
 
 **Success criteria:** رضایت پس از reload حفظ می‌شود؛ فقط زمان روشن بودن رضایت، یک رویداد aggregate جدید ثبت می‌شود؛ هیچ نام، ایمیل، توکن، متن یا شناسهٔ کاربر در جدول نمایش داده نمی‌شود.
+
+## Completion record
+
+- 2026-10-13 — تأیید دستی مالک محصول: PASS. opt-in، ذخیرهٔ رضایت، ارسال `app_activated` و توقف ارسال پس از opt-out در PWA QA تأیید شد.
+- Evidence: `docs/evidence/P09-TELEMETRY-CODE-021/summary.md`
 

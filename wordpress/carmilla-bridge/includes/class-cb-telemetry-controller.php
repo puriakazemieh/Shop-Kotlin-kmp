@@ -22,10 +22,19 @@ class CB_Telemetry_Controller {
 		if ( ! in_array( $client, array( 'pwa', 'android', 'web' ), true ) || $tenant === '' ) {
 			return new WP_Error( 'cb_telemetry_rejected', 'Telemetry context rejected.', array( 'status' => 400 ) );
 		}
-		$aggregate = get_option( self::OPTION, array() ); $key = gmdate( 'Y-m-d' ) . '|' . $tenant . '|' . $client . '|' . $body['name'];
+		$aggregate = $this->prune_expired_buckets( get_option( self::OPTION, array() ) ); $key = gmdate( 'Y-m-d' ) . '|' . $tenant . '|' . $client . '|' . $body['name'];
 		$aggregate[ $key ] = isset( $aggregate[ $key ] ) ? (int) $aggregate[ $key ] + 1 : 1;
 		update_option( self::OPTION, $aggregate, false );
 		return new WP_REST_Response( array( 'accepted' => true ), 202 );
+	}
+	private function prune_expired_buckets( $aggregate ): array {
+		if ( ! is_array( $aggregate ) ) { return array(); }
+		$cutoff = gmdate( 'Y-m-d', strtotime( '-90 days' ) );
+		foreach ( array_keys( $aggregate ) as $key ) {
+			$date = substr( (string) $key, 0, 10 );
+			if ( $date < $cutoff ) { unset( $aggregate[ $key ] ); }
+		}
+		return $aggregate;
 	}
 	public function register_admin_page(): void {
 		add_submenu_page( 'carmilla-settings', 'Carmilla Telemetry', 'Telemetry', 'manage_options', 'carmilla-telemetry', array( $this, 'render_admin_page' ) );
