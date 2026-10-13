@@ -1223,6 +1223,9 @@ App Builder قبل از این موارد شروع نمی‌شود:
 | [ ] | `P12-BUILDER-OPS-015` | BOTH | P0/HIGH | metrics/alert/cost/queue SLO و incident runbook | synthetic failed job alert |
 | [ ] | `P12-QA-AUTO-016` | AI | P0/HIGH | آزمون قرارداد و build واقعی Android/Web/PWA | fake success جای APK/AAB یا distribution واقعی ننشیند؛ درخواست از هر دو host مستقل همان قرارداد را پاس کند؛ log redacted. |
 | [ ] | `P12-QA-MANUAL-022` | HUMAN | P0/HIGH | تحویل واقعی اپ‌ساز از هر دو محصول مستقل | کجا: پنل App Builder هر میزبان و دستگاه Android/مرورگر. چگونه: خرید مجاز→branding→build→download→install، سپس هدف غیرمجاز/retry. موفقیت: artifact صحیح سایت و برند، منع هدف نخریده، یک job؛ شواهد و تأیید انسانی. |
+| [ ] | `P12-STOREFRONT-DESIGN-023` | BOTH | P0/HIGH | قرارداد برابری طراحی فروشگاه Theme و کلاینت Kotlin | token،layout،RTL،stateهای loading/empty/error و golden screenshot برای WordPress،PWA و Android؛ Woo/REST داده مشترک را نشان دهند. |
+| [ ] | `P12-FEATURE-LIFECYCLE-024` | BOTH | P0/HIGH | چرخه feature مستقل برای Theme و Plugin | feature فقط اگر در artifact build مجاز باشد و سپس مدیر همان host آن را روشن کند فعال شود؛ خرید/entitlement/وابستگی/route/API/admin هم‌زمان enforce شوند؛ Theme هرگز نیازمند Plugin و Plugin هرگز نیازمند Theme نباشد. |
+| [ ] | `P12-CLIENT-HOST-ADAPTER-025` | BOTH | P0/HIGH | اتصال کلاینت Kotlin به Spring یا میزبان مستقل WordPress | BuildSpec و adapter، WORDPRESS Theme-only/Plugin-only/co-install و SPRING را صریح انتخاب کنند؛ contract/sync یکسان، origin trusted و cache/token tenant-isolated؛ iOS/Desktop در Gate خود همان matrix را تکمیل کنند. |
 | [ ] | `P12-SECURITY-SEC-017` | BOTH | P0/HIGH | independent threat review/pentest | RCE/supply-chain/tenant escape/secrets |
 | [ ] | `P12-BUILDER-BIZ-018` | HUMAN | P0/MEDIUM | operator-assisted alpha قبل از self-service | ۳–۵ project؛ support/cost evidence |
 | [ ] | `P12-BUILDER-GATE-019` | HUMAN | P0/HIGH | Gate Builder اولیه با خروجی واقعی Android/Web/PWA | isolation/reliability/delivery/economics و artifact واقعی قابل استفاده؛ target آماده‌نشده unavailable؛ fake runner دلیل PASS نیست. |
@@ -1236,6 +1239,9 @@ App Builder قبل از این موارد شروع نمی‌شود:
 - [ ] retry/cancel/recovery و rollback تست شده‌اند.
 - [ ] operator-assisted alpha موفق است.
 - [ ] self-service فقط بعد از security gate فعال می‌شود.
+- [ ] storefront Theme و کلاینت Kotlin طبق design contract مشترک و golden stateهای فروشگاه پاس شده‌اند.
+- [ ] هر capability فقط با ceiling build، entitlement و toggle مدیر همان Theme یا Plugin فعال است؛ host دیگر prerequisite نیست.
+- [ ] PWA/Android به Theme-only،Plugin-only و co-install متصل‌اند؛ Spring فقط پس از P15 با contract واقعی PASS می‌شود.
 - Gate decision: `NOT_EVALUATED`
 
 ---
