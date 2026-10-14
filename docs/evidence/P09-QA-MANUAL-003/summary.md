@@ -57,3 +57,34 @@ HPOS/Blocks` را پوشش نمی‌دهد. در نصب اصلی QA، WooCommerc
 
 این نتیجه فقط baseline سازگاریِ syntax در minimum PHP است و جایگزین clean
 install/upgrade/rollback واقعی WordPress/WooCommerce یا تأیید انسانی نیست.
+
+## ماتریس clean-install پایدار Docker — 2026-10-14
+
+محیط‌های جداگانه و persistent خارج از سورس در
+`D:\Carmilla-QA\p09-wordpress-matrix` ایجاد شدند؛ volumeهای Docker و
+containerها برای بازآزمایی‌های بعدی نگه داشته می‌شوند.
+
+| ردیف | URL | WordPress | PHP | نصب ZIP Theme/Bridge | نتیجه |
+|---|---|---:|---:|---|---|
+| minimum | `http://localhost:8081/` | 6.4.3 | 8.1.27 | هر دو فعال | PASS |
+| mid | `http://localhost:8082/` | 6.6.2 | 8.2.25 | هر دو فعال | PASS |
+| current | `http://localhost:8083/` | 7.1.3 | 8.3.35 | هر دو فعال | PASS |
+
+همهٔ ردیف‌ها clean install هستند و `GET /wp-json/` پاسخ `200` داده است. دادهٔ
+مدیر هر محیط synthetic و فقط محلی است.
+
+### current: WooCommerce / HPOS / Blocks
+
+- WooCommerce `11.2.1` نصب و فعال شد.
+- گزینه‌های `woocommerce_custom_orders_table_enabled` و
+  `woocommerce_custom_orders_table_data_sync_enabled` به `yes` تنظیم شدند.
+- Store API بلوک‌ها (`GET /wp-json/wc/store/v1/cart`) پاسخ `200` داد.
+- route واقعی Bridge با `wp eval` در REST server حاضر بود
+  (`CARMILLA_ROUTE_PRESENT`).
+
+### موارد باز
+
+این evidence، clean-install سه‌ردیفی و HPOS/Blocks current را می‌بندد، اما
+برای تکمیل کامل کارت هنوز migration از **artifact نسخهٔ قبلی** به artifact
+فعلی، rollback نسخه‌ای و تأیید انسانی UI/admin لازم است. تا آن زمان وضعیت
+`AWAITING_MANUAL_QA` بدون تغییر می‌ماند.
