@@ -130,9 +130,9 @@ Functional suite کامل shop-only
 ## Completion record
 - Started at: 2026-09-06
 - Completed at: 2026-09-06
-- Changed files: docs/evidence/P09-QA-MANUAL-004/summary.md
-- Commands and exit codes: N/A
+- Changed files: wordpress/carmilla-theme/functions.php، wordpress/carmilla-theme.zip، docs/evidence/P09-QA-MANUAL-004/summary.md
+- Commands and exit codes: `:composeApp:compileKotlinJvm :composeApp:compileKotlinJs`، PHP lint، build-theme-zip و آزمون واقعی matrix postcode همگی exit code 0.
 - Manual tester/date/result: Pending Human QA / 2026-09-06 / AWAITING_MANUAL_QA
 - Evidence paths: docs/evidence/P09-QA-MANUAL-004/summary.md
-- Remaining risks/blockers: Awaiting human manual verification
+- Remaining risks/blockers: تأیید انسانیِ کامل auth/home/product/cart/checkout/payment-return با fixture مصنوعی هنوز لازم است؛ پرداخت واقعی خارج از scope است.
 - Final status: AWAITING_MANUAL_QA

@@ -271,6 +271,33 @@ function carmilla_html_dir( $output ) {
 add_filter( 'language_attributes', 'carmilla_html_dir' );
 
 /**
+ * WooCommerce does not provide a postcode rule for Iran. Limit this override
+ * to IR so every other country keeps WooCommerce's built-in validation.
+ *
+ * Iranian postcodes are ten digits. Spaces and a visual separator are
+ * normalized before applying that rule.
+ */
+function carmilla_validate_iran_postcode( $valid, $postcode, $country ) {
+	if ( 'IR' !== strtoupper( (string) $country ) ) {
+		return $valid;
+	}
+
+	$normalized = strtr(
+		(string) $postcode,
+		array(
+			'۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4',
+			'۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9',
+			'٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4',
+			'٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9',
+		)
+	);
+	$normalized = preg_replace( '/[\s-]+/u', '', $normalized );
+
+	return 1 === preg_match( '/^\d{10}$/', $normalized );
+}
+add_filter( 'woocommerce_validate_postcode', 'carmilla_validate_iran_postcode', 20, 3 );
+
+/**
  * P04-WPTHEME-CODE-016: Theme Setup
  */
 add_action( 'after_setup_theme', 'carmilla_theme_setup' );
