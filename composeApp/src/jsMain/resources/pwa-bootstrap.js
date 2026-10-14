@@ -15,7 +15,7 @@
       window.appConfig = config;
       const script = document.createElement('script');
       // Keep a deployed bundle from being confused with an older service-worker cache.
-      script.src = './composeApp.js?v=5';
+      script.src = './composeApp.js?v=6';
       document.body.appendChild(script);
     })
     .catch(error => console.error('Failed to load app config', error));

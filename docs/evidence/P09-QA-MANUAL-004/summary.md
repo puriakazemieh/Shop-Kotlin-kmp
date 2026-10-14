@@ -41,3 +41,21 @@
 critical cart/checkout/payment-return قابل قبول نیست. هیچ سفارش یا پرداختی در
 این اجرا ساخته نشد و PWA در پایان به صفحهٔ Home بازگردانده شد. کارت همچنان
 `AWAITING_MANUAL_QA` است.
+
+## اصلاح مسیر ورود — 2026-10-14
+
+- علت route اولیه مشخص شد: `Login` مقصد داخلیِ `AuthGraph` است و نباید مستقیماً
+  start destination یک `NavHost` باشد. نگاشت browser hash برای `/login` به
+  `Screen.AuthGraph` تغییر کرد تا graph والد، مقصد `Login` را بسازد.
+- cache/version bundle از `v5` به `v6` افزایش یافت و artifact جدید در
+  `C:\xampp\htdocs\carmilla-pwa-qa` مستقر شد؛ `app-config-wp.json` دست‌نخورده
+  و همچنان متصل به WordPress QA است.
+- `:composeApp:compileKotlinJs` و
+  `:composeApp:jsBrowserDevelopmentExecutableDistribution` با exit code 0 پاس
+  شدند.
+
+### نتیجهٔ بازآزمایی
+
+تأیید بصری بعد از reload هنوز باید توسط انسان انجام شود؛ ابزار مرورگر هنگام
+diagnostic متوقف شد، بنابراین این اصلاح به‌تنهایی PASS اعلام نمی‌شود. کارت
+همچنان `AWAITING_MANUAL_QA` است.

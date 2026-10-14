@@ -61,7 +61,10 @@ actual fun getInitialDestination(): Any? {
     val params = URLSearchParams(queryPart)
 
     return when {
-        pathPart == "/login" -> Screen.Login
+        // Login is a destination inside AuthGraph. Starting the NavHost directly at
+        // Screen.Login omits its parent graph and Navigation rejects the graph's
+        // start destination after a browser reload.
+        pathPart == "/login" -> Screen.AuthGraph
         pathPart == "/register" -> Screen.Register
         pathPart == "/forgot-password" -> Screen.ForgotPassword
         pathPart == "/reset-password" -> {
