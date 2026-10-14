@@ -88,3 +88,25 @@ containerها برای بازآزمایی‌های بعدی نگه داشته م
 برای تکمیل کامل کارت هنوز migration از **artifact نسخهٔ قبلی** به artifact
 فعلی، rollback نسخه‌ای و تأیید انسانی UI/admin لازم است. تا آن زمان وضعیت
 `AWAITING_MANUAL_QA` بدون تغییر می‌ماند.
+
+## upgrade / rollback Bridge و compatibility Woo — 2026-10-14
+
+- در ردیف mid، artifact قبلی موجود (`carmilla-bridge-wordpress.zip`، نسخهٔ
+  `0.7.3`) نصب شد، سپس به artifact فعلی (`carmilla-bridge.zip`، نسخهٔ `1.0.0`)
+  ارتقا یافت، به `0.7.3` rollback شد و در پایان با forward-fix دوباره به
+  `1.0.0` بازگشت. هر چهار نصب/activation از طریق WP-CLI موفق بودند.
+- WooCommerce `11.2.1` در current با WP `7.1.3` فعال و HPOS/Blocks آن آزموده
+  شد، اما این نسخه روی WP `6.4.3` و `6.6.2` فعال نمی‌شود زیرا حداقل WordPress
+  موردنیاز آن `7.0` است. این یک compatibility blocker برای ادعای «یک نسخهٔ Woo
+  روی همهٔ ردیف‌ها» است، نه failure کد Bridge/Theme.
+- تلاش برای دریافت WooCommerce `8.3.1` (نسخهٔ سازگار برای ردیف‌های قدیمی‌تر)
+  در Docker timeout شد؛ فرآیند بدون حذف volume/container متوقف شد. ردیف‌های
+  minimum/mid همچنان Theme/Bridge `1.0.0` فعال دارند؛ Woo `11.2.1` فقط نصب و
+  غیرفعال است.
+
+### تصمیم لازم پیش از PASS کارت
+
+برای بستن کامل ماتریس، باید artifact تأییدشدهٔ WooCommerce سازگار با WP 6.4 و
+6.6 در دسترس باشد یا حداقل پشتیبانی رسمی Bridge از این دو ترکیب بازتعریف شود.
+پس از تأمین artifact، فعال‌سازی Woo، Store API/Blocks و HPOS همان دو ردیف باید
+دوباره اجرا شود. این blocker، Gate P09 را باز نگه می‌دارد.
