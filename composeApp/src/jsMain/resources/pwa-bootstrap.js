@@ -1,9 +1,10 @@
 (() => {
   const isSpring = window.location.search.includes('api=');
-  const configUrl = isSpring ? '/app-config-spring.json' : '/app-config-wp.json';
-  const workerUrl = isSpring ? '/sw-spring.js' : '/sw-wp.js';
+  // Keep each generated PWA self-contained when it is hosted in a subdirectory.
+  const configUrl = isSpring ? './app-config-spring.json' : './app-config-wp.json';
+  const workerUrl = isSpring ? './sw-spring.js' : './sw-wp.js';
 
-  document.getElementById('pwa-manifest').href = isSpring ? '/manifest-spring.json' : '/manifest-wp.json';
+  document.getElementById('pwa-manifest').href = isSpring ? './manifest-spring.json' : './manifest-wp.json';
 
   fetch(configUrl)
     .then(response => {
@@ -13,7 +14,8 @@
     .then(config => {
       window.appConfig = config;
       const script = document.createElement('script');
-      script.src = '/composeApp.js';
+      // Keep a deployed bundle from being confused with an older service-worker cache.
+      script.src = './composeApp.js?v=5';
       document.body.appendChild(script);
     })
     .catch(error => console.error('Failed to load app config', error));

@@ -189,19 +189,19 @@ val generatePwaFiles by tasks.registering {
   "id": "com.kazemieh.shop.wp",
   "name": "Carmilla WordPress App",
   "short_name": "CarmillaWP",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -221,9 +221,13 @@ val generatePwaFiles by tasks.registering {
 
         val wpSw = File(outDir, "sw-wp.js")
         wpSw.writeText("""
-const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v4';
+const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v5';
 const SENSITIVE_PATHS = ['/auth', '/account', '/profile', '/address', '/favorite', '/support', '/order', '/payment', '/message', '/health', '/clinic', '/psych', '/wp-json/cb/v1/auth'];
-const APP_SHELL_PATHS = new Set(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']);
+const APP_SHELL_URLS = ['./', './index.html', './composeApp.js', './styles.css', './icon-192.png', './icon-512.png', './offline.html']
+  .map(path => new URL(path, self.registration.scope).toString());
+const APP_SHELL_PATHS = new Set(APP_SHELL_URLS.map(url => new URL(url).pathname));
+const INDEX_URL = new URL('./index.html', self.registration.scope).toString();
+const OFFLINE_URL = new URL('./offline.html', self.registration.scope).toString();
 const PUBLIC_CONTENT_PATHS = ['/catalog', '/content', '/wp-json/cb/v1/catalog', '/wp-json/cb/v1/content'];
 
 function isSensitiveRequest(request, url) {
@@ -255,7 +259,7 @@ self.addEventListener('message', function(event) {
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']).then(function() {
+      return cache.addAll(APP_SHELL_URLS).then(function() {
         return self.skipWaiting();
       });
     })
@@ -278,10 +282,10 @@ self.addEventListener('fetch', function(event) {
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      caches.match('/index.html').then(function(response) {
+      caches.match(INDEX_URL).then(function(response) {
         return response || fetch(event.request);
       }).catch(function() {
-        return caches.match('/offline.html');
+        return caches.match(OFFLINE_URL);
       })
     );
     return;
@@ -306,7 +310,7 @@ self.addEventListener('fetch', function(event) {
 });
 
 self.addEventListener('push', function(event) {
-  let data = { title: 'پیام جدید', body: 'شما یک پیام جدید دارید', url: '/' };
+  let data = { title: 'پیام جدید', body: 'شما یک پیام جدید دارید', url: './' };
   if (event.data) {
     try {
       const payload = event.data.json();
@@ -317,7 +321,7 @@ self.addEventListener('push', function(event) {
   }
   const options = {
     body: data.body,
-    icon: '/icon-192.png',
+    icon: new URL('./icon-192.png', self.registration.scope).toString(),
     data: { url: data.url }
   };
   event.waitUntil(self.registration.showNotification(data.title, options));
@@ -356,19 +360,19 @@ self.addEventListener('activate', function(event) {
   "id": "com.kazemieh.shop.spring",
   "name": "Carmilla Spring App",
   "short_name": "CarmillaSpring",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -388,9 +392,13 @@ self.addEventListener('activate', function(event) {
 
         val springSw = File(outDir, "sw-spring.js")
         springSw.writeText("""
-const CACHE_NAME = 'carmilla-cache-${springTenantId}-v4';
+const CACHE_NAME = 'carmilla-cache-${springTenantId}-v5';
 const SENSITIVE_PATHS = ['/auth', '/account', '/profile', '/address', '/favorite', '/support', '/order', '/payment', '/message', '/health', '/clinic', '/psych'];
-const APP_SHELL_PATHS = new Set(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']);
+const APP_SHELL_URLS = ['./', './index.html', './composeApp.js', './styles.css', './icon-192.png', './icon-512.png', './offline.html']
+  .map(path => new URL(path, self.registration.scope).toString());
+const APP_SHELL_PATHS = new Set(APP_SHELL_URLS.map(url => new URL(url).pathname));
+const INDEX_URL = new URL('./index.html', self.registration.scope).toString();
+const OFFLINE_URL = new URL('./offline.html', self.registration.scope).toString();
 const PUBLIC_CONTENT_PATHS = ['/catalog', '/content'];
 
 function isSensitiveRequest(request, url) {
@@ -422,7 +430,7 @@ self.addEventListener('message', function(event) {
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(['/', '/index.html', '/composeApp.js', '/styles.css', '/icon-192.png', '/icon-512.png', '/offline.html']).then(function() {
+      return cache.addAll(APP_SHELL_URLS).then(function() {
         return self.skipWaiting();
       });
     })
@@ -445,10 +453,10 @@ self.addEventListener('fetch', function(event) {
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      caches.match('/index.html').then(function(response) {
+      caches.match(INDEX_URL).then(function(response) {
         return response || fetch(event.request);
       }).catch(function() {
-        return caches.match('/offline.html');
+        return caches.match(OFFLINE_URL);
       })
     );
     return;
@@ -473,7 +481,7 @@ self.addEventListener('fetch', function(event) {
 });
 
 self.addEventListener('push', function(event) {
-  let data = { title: 'پیام جدید', body: 'شما یک پیام جدید دارید', url: '/' };
+  let data = { title: 'پیام جدید', body: 'شما یک پیام جدید دارید', url: './' };
   if (event.data) {
     try {
       const payload = event.data.json();
@@ -484,7 +492,7 @@ self.addEventListener('push', function(event) {
   }
   const options = {
     body: data.body,
-    icon: '/icon-192.png',
+    icon: new URL('./icon-192.png', self.registration.scope).toString(),
     data: { url: data.url }
   };
   event.waitUntil(self.registration.showNotification(data.title, options));

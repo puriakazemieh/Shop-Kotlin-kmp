@@ -20,3 +20,13 @@ Date: 2026-10-13
 ## Remaining human confirmation
 
 Open the WordPress dashboard after the PWA test and confirm that only date/tenant/client/event/count are displayed and that the counter does not change after opt-out. This is intentionally still an `AWAITING_MANUAL_QA` task.
+
+## QA PWA launch repair — 2026-10-14
+
+- The generated PWA now resolves bootstrap, manifest, worker and bundle assets relative
+  to its installation directory, so the QA copy can run at `/carmilla-pwa-qa/`.
+- The WordPress QA endpoint configuration was preserved during deployment.
+- Service-worker cache names were advanced to `v5`; the app bundle URL is versioned to
+  avoid execution of the previous cached bundle.
+- A browser DOM check confirmed the Settings UI and its anonymous-telemetry control
+  render. Manual consent/dashboard confirmation remains required.

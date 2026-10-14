@@ -18,3 +18,30 @@
 
 ## Status / وضعیت
 - **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)
+
+## اجرای قابل‌بازگشت در محیط QA — 2026-10-14
+
+### محیط
+
+- نصب مقصد پایدار: `D:\Carmilla-QA\p07-wordpress-destination`
+- WordPress `7.1.3`، PHP `8.2.12`
+- حالت اولیه و نهایی: قالب Carmilla فعال و افزونهٔ Carmilla Bridge غیرفعال
+
+### نتیجهٔ اجراشده
+
+- ZIPهای `carmilla-bridge.zip` و `carmilla-theme.zip` با شمارش 109 و 141 فایل
+  به‌ترتیب، خوانده شدند و ساختار ZIP معتبر بود.
+- lint فایل bootstrap افزونه و `functions.php` قالب در نصب مقصد موفق بود.
+- افزونه از وضعیت غیرفعال فعال شد؛ در یک boot تازه، namespace `carmilla/v1`
+  ثبت و 118 route آن قابل مشاهده بود.
+- smoke واقعی migration فاز 07 با دادهٔ synthetic پاس شد: درج، mapping، restore
+  parent، rewrite URL، حذف metadata حساس و idempotent re-run همگی PASS بودند.
+- در پایان افزونه دوباره غیرفعال شد؛ دادهٔ واقعی یا پرداخت ایجاد نشد.
+
+### محدودیت باقی‌مانده
+
+این فقط یک اجرای بازگشت‌پذیر روی یک ترکیب است و معیار `minimum/current/mid +
+HPOS/Blocks` را پوشش نمی‌دهد. در نصب اصلی QA، WooCommerce `11.2.1` با HPOS
+روشن و بستهٔ Blocks در دسترس است؛ ولی اجرای clean-install/upgrade/rollback روی
+چند نسخهٔ پشتیبانی‌شدهٔ WordPress/PHP/WooCommerce همچنان تأیید انسانی/محیط جدا
+می‌خواهد. وضعیت کارت عمداً `AWAITING_MANUAL_QA` باقی می‌ماند.
