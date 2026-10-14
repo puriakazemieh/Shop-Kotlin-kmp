@@ -19,3 +19,25 @@
 
 ## Status / وضعیت
 - **Final Status / وضعیت نهایی:** AWAITING_MANUAL_QA (در انتظار تست دستی)
+
+## اجرای محدود QA PWA — 2026-10-14
+
+### محیط
+
+- Release candidate محلی: `http://localhost/carmilla-pwa-qa/`
+- backend: WordPress QA با fixture کاملاً synthetic `Carmilla QA Product`
+
+### نتایج
+
+| مسیر | نتیجه | Evidence |
+|---|---|---|
+| Home و catalog | PASS | دسته، محصول، قیمت `100,000 تومان` و موجودی نمایش داده شدند. |
+| Product detail | PASS | صفحهٔ `/product/carmilla-qa-product` با موجودی `999` و قیمت صحیح رندر شد. |
+| Add to cart برای مهمان | **FAIL / blocker** | URL به `/login` تغییر کرد، اما پس از reload خطای `Cannot find startDestination Screen.Login from NavGraph` رخ داد و UI روی loading ماند. |
+
+### اثر و اقدام لازم
+
+تا وقتی route `Screen.Login` در navigation graph اصلاح و بازآزمایی نشود، مسیر
+critical cart/checkout/payment-return قابل قبول نیست. هیچ سفارش یا پرداختی در
+این اجرا ساخته نشد و PWA در پایان به صفحهٔ Home بازگردانده شد. کارت همچنان
+`AWAITING_MANUAL_QA` است.
