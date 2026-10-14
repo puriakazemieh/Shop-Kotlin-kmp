@@ -149,6 +149,10 @@ function carmilla_enqueue_assets() {
 		// Wishlist hearts on product cards / single product (site-wide under Woo).
 		wp_enqueue_script( 'carmilla-wishlist', $dir . '/assets/js/wishlist.js', array(), $ver, true );
 		wp_localize_script( 'carmilla-wishlist', 'CarmillaData', $carmilla_common );
+
+		if ( is_cart() || is_checkout() ) {
+			wp_enqueue_script( 'carmilla-woocommerce-rtl', $dir . '/assets/js/woocommerce-rtl.js', array(), $ver, true );
+		}
 	}
 
 	// Account extras: returns, recurring orders, settings theme toggle.

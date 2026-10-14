@@ -175,3 +175,15 @@ UI/admin (فعال‌سازی و مشاهدهٔ HPOS/Blocks از پیشخوان)
   `/cart/` → `/checkout/` با HTTP `200` آزموده شد.
 - اگر Checkout با session خالی باز شود، WooCommerce عمداً آن را به Cart هدایت
   می‌کند؛ این رفتار استاندارد است و failure محسوب نمی‌شود.
+
+## بومی‌سازی رقم‌های React Blocks — 2026-10-14
+
+- چون WooCommerce Blocks رقم‌های قیمت/جمع را با JavaScript و جدا از formatter
+  PHP تولید می‌کند، یک اسکریپت محدود به Cart/Checkout اضافه شد تا text nodeهای
+  نمایشی را به ارقام فارسی و جداکننده‌های فارسی تبدیل کند.
+- مقدار واقعی `input[type=number]` عمداً لاتین باقی می‌ماند؛ browser و
+  WooCommerce برای quantity به مقدار عددی استاندارد نیاز دارند. متن، قیمت، جمع
+  و badgeهای نمایش‌داده‌شده فارسی می‌شوند و عملیات سبد محفوظ می‌ماند.
+- syntax اسکریپت با `node --check` و bootstrap با `php -l` PASS شد. ZIP قالب
+  بازسازی و روی هر سه environment نصب شد؛ حضور asset در HTML `/cart/` هر سه
+  ردیف تأیید شده است.
