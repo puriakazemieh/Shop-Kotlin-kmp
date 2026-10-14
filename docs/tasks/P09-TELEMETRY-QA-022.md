@@ -1,6 +1,6 @@
 # P09-TELEMETRY-QA-022 — Evidence واقعی telemetry
 
-**Status:** AWAITING_MANUAL_QA
+**Status:** DONE
 
 مرحله ۴: eventهای synthetic، dashboard، consent/opt-out و payload redaction را در محیط QA اثبات و برای تأیید انسانی تحویل می‌دهد.
 
@@ -18,3 +18,8 @@
 2. در **Carmilla → Telemetry** فقط ستون‌های bucket و count را بررسی کنید؛ هیچ email، token یا متن آزاد نباید دیده شود.
 3. رضایت را خاموش کنید، reload کنید و افزایش‌نیافتن شمارنده را تأیید کنید.
 4. نتیجه را با `PASS` یا شرح failure اعلام کنید.
+
+## Manual QA result — 2026-10-14
+
+کاربر در محیط WordPress QA تأیید کرد که dashboard فقط bucket/count تجمیعی را
+نمایش می‌دهد و opt-out افزایش شمارنده ایجاد نمی‌کند: **PASS**.

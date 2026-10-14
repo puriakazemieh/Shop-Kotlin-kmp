@@ -17,9 +17,11 @@ Date: 2026-10-13
 - The bucket-pruning rule removes aggregate keys older than 90 UTC days before each accepted write.
 - Client-side consent/persistence/opt-out was accepted manually in `P09-TELEMETRY-CODE-021`.
 
-## Remaining human confirmation
+## Human confirmation — PASS, 2026-10-14
 
-Open the WordPress dashboard after the PWA test and confirm that only date/tenant/client/event/count are displayed and that the counter does not change after opt-out. This is intentionally still an `AWAITING_MANUAL_QA` task.
+The tester confirmed in the local WordPress QA dashboard that only aggregate
+date/tenant/client/event/count data are displayed and the counter does not
+increase after opt-out.
 
 ## QA PWA launch repair — 2026-10-14
 
@@ -29,4 +31,4 @@ Open the WordPress dashboard after the PWA test and confirm that only date/tenan
 - Service-worker cache names were advanced to `v5`; the app bundle URL is versioned to
   avoid execution of the previous cached bundle.
 - A browser DOM check confirmed the Settings UI and its anonymous-telemetry control
-  render. Manual consent/dashboard confirmation remains required.
+  render. The dashboard/opt-out confirmation above completes the manual step.
