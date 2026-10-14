@@ -59,3 +59,14 @@ critical cart/checkout/payment-return قابل قبول نیست. هیچ سفا�
 تأیید بصری بعد از reload هنوز باید توسط انسان انجام شود؛ ابزار مرورگر هنگام
 diagnostic متوقف شد، بنابراین این اصلاح به‌تنهایی PASS اعلام نمی‌شود. کارت
 همچنان `AWAITING_MANUAL_QA` است.
+
+## تأیید انسانی بلاکر ورود — PASS، 2026-10-14
+
+تستر تصویر صفحهٔ `/login` را پس از reload ارائه کرد. فرم ایمیل/رمز، گزینهٔ OTP،
+بازیابی رمز و ساخت حساب همگی رندر شده‌اند و خطای
+`Cannot find startDestination Screen.Login from NavGraph` یا spinner دیده نشد.
+بنابراین بلاکر guest add-to-cart → login **رفع شد**.
+
+توجه: این PASS فقط مسیر احراز هویت را می‌بندد؛ کارت P09-QA-MANUAL-004 تا
+اجرای انسانیِ cart، checkout، پرداخت synthetic و payment-return همچنان
+`AWAITING_MANUAL_QA` باقی می‌ماند.
