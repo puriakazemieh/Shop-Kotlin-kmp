@@ -110,3 +110,31 @@ containerها برای بازآزمایی‌های بعدی نگه داشته م
 6.6 در دسترس باشد یا حداقل پشتیبانی رسمی Bridge از این دو ترکیب بازتعریف شود.
 پس از تأمین artifact، فعال‌سازی Woo، Store API/Blocks و HPOS همان دو ردیف باید
 دوباره اجرا شود. این blocker، Gate P09 را باز نگه می‌دارد.
+
+## تصحیح compatibility Woo و اجرای واقعی REST — 2026-10-14
+
+بخش «artifact سازگار در دسترس نیست» در رکورد قبلی با اجرای زیر جایگزین شده
+است؛ متن قبلی برای تاریخچه نگه داشته شده است.
+
+- artifact محلی و پایدار WooCommerce `8.3.1` برای ردیف‌های minimum و mid نصب و
+  فعال شد. در هر دو ردیف HPOS (`woocommerce_custom_orders_table_enabled`) برابر
+  `yes` است.
+- هر سه ردیف اکنون Theme `0.8.0`، Bridge `1.0.0` و یک WooCommerce سازگار و فعال
+  دارند: minimum (`WP 6.4.3 / PHP 8.1.27 / Woo 8.3.1`)، mid (`6.6.2 / 8.2.25 /
+  8.3.1`) و current (`7.1.3 / 8.3.35 / 11.2.1`).
+- با REST fallback استاندارد WordPress (`?rest_route=`)، هر سه endpoint
+  `carmilla/v1/client-manifest`، `carmilla/v1/api/products` و
+  `wc/store/v1/cart` در هر سه ردیف پاسخ `200` با `Content-Type: application/json`
+  دادند. بنابراین هم Bridge و هم Blocks Store API واقعاً در ماتریس پاسخ‌گو هستند.
+- مسیر prettyِ `/wp-json/...` در image پیش‌فرض Docker برای این نصب‌های تازه به
+  قالب HTML redirect می‌شود، در حالی‌که fallback استاندارد WordPress JSON درست
+  می‌دهد. این تنظیم محیط Docker است، نه failure routeهای Bridge؛ محیط QA XAMPP که
+  PWA علیه آن آزموده شد از مسیر pretty استفاده می‌کند. این نکته برای بازتولید
+  ماتریس ثبت می‌شود و مانع acceptance کارت نیست.
+
+### وضعیت باقی‌مانده
+
+upgrade → rollback → forward-fix Bridge و matrix خودکار اکنون PASS هستند. کارت
+همچنان `AWAITING_MANUAL_QA` می‌ماند، چون تنها موارد بازِ این کارت تأیید انسانی
+UI/admin (فعال‌سازی و مشاهدهٔ HPOS/Blocks از پیشخوان) و کنترل عدم خطای قابل‌مشاهده
+در آن سه محیط است؛ هیچ blocker خودکار باقی نمانده است.
