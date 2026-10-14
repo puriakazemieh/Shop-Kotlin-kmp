@@ -138,3 +138,17 @@ upgrade → rollback → forward-fix Bridge و matrix خودکار اکنون PA
 همچنان `AWAITING_MANUAL_QA` می‌ماند، چون تنها موارد بازِ این کارت تأیید انسانی
 UI/admin (فعال‌سازی و مشاهدهٔ HPOS/Blocks از پیشخوان) و کنترل عدم خطای قابل‌مشاهده
 در آن سه محیط است؛ هیچ blocker خودکار باقی نمانده است.
+
+## اصلاح template صفحهٔ Cart در ماتریس — 2026-10-14
+
+- بازبینی UI روی ردیف minimum نشان داد Cart badge مقدار `1` را دارد، ولی صفحهٔ
+  Cart فقط عنوان صفحه را به شکل card بلاگ نشان می‌دهد. علت: قالب `page.php` نداشت
+  و WordPress به `index.php` fallback می‌کرد؛ در نتیجه محتوای Cart Block اجرا
+  نمی‌شد.
+- `wordpress/carmilla-theme/page.php` اضافه شد تا محتوای صفحه‌های ثابت، از جمله
+  Cart/Checkout/My Account، با `the_content()` رندر شود.
+- lint فایل با PHP محلی PASS شد؛ `carmilla-theme.zip` دوباره ساخته و با
+  `wp theme install --force --activate` روی هر سه ردیف matrix نصب شد.
+- درخواست `?page_id=6` پس از نصب، markup مربوط به `wp-block-woocommerce-cart`
+  را در هر سه محیط برگرداند؛ بنابراین fallback بلاگ حذف شده است. نمایش و تعامل
+  نهایی Cart Block همچنان یک تأیید انسانی مرورگر می‌خواهد.
