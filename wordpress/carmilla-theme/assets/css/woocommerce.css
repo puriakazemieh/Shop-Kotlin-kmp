@@ -30,6 +30,21 @@
 .woocommerce a.button:hover,
 .woocommerce button.button:hover { filter: brightness( 1.06 ); }
 
+/* WooCommerce Cart/Checkout Blocks are React-rendered and bring their own
+   typography rules. Keep them inside the same Persian/RTL system as the
+   server-rendered theme and the KMP storefront. */
+.wp-block-woocommerce-cart,
+.wp-block-woocommerce-checkout,
+.wp-block-woocommerce-cart *,
+.wp-block-woocommerce-checkout * {
+  font-family: var(--font-fa) !important;
+}
+.wp-block-woocommerce-cart,
+.wp-block-woocommerce-checkout {
+  direction: rtl;
+  text-align: right;
+}
+
 /* ---- prices ---- */
 .woocommerce .price,
 .woocommerce span.price,
