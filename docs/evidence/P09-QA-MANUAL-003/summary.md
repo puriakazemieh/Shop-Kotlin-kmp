@@ -45,3 +45,15 @@ HPOS/Blocks` را پوشش نمی‌دهد. در نصب اصلی QA، WooCommerc
 روشن و بستهٔ Blocks در دسترس است؛ ولی اجرای clean-install/upgrade/rollback روی
 چند نسخهٔ پشتیبانی‌شدهٔ WordPress/PHP/WooCommerce همچنان تأیید انسانی/محیط جدا
 می‌خواهد. وضعیت کارت عمداً `AWAITING_MANUAL_QA` باقی می‌ماند.
+
+## حداقل PHP با Docker — 2026-10-14
+
+- Docker Engine `29.2.1` در دسترس بود.
+- `docker compose -f tools/test-env/docker-compose.yml run --rm php-test php -v`
+  روی PHP `8.1.34` با exit code `0` اجرا شد.
+- تمام فایل‌های PHP در `wordpress/carmilla-bridge` و
+  `wordpress/carmilla-theme` با همان image و `php -l` بررسی شدند:
+  `PHP_LINT_PASS`، exit code `0`.
+
+این نتیجه فقط baseline سازگاریِ syntax در minimum PHP است و جایگزین clean
+install/upgrade/rollback واقعی WordPress/WooCommerce یا تأیید انسانی نیست.
