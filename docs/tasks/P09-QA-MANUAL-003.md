@@ -48,7 +48,7 @@ P09-QA-MANUAL-003
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P09 / QA / MANUAL
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: HUMAN
@@ -107,10 +107,10 @@ minimum/current/mid + HPOS/Blocks
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] Evidence انسانی ثبت و تأیید شده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -127,10 +127,10 @@ minimum/current/mid + HPOS/Blocks
 
 ## Completion record
 - Started at: 2026-09-06
-- Completed at: 2026-09-06
-- Changed files: docs/evidence/P09-QA-MANUAL-003/summary.md
-- Commands and exit codes: N/A
-- Manual tester/date/result: Pending Human QA / 2026-09-06 / AWAITING_MANUAL_QA
+- Completed at: 2026-10-14
+- Changed files: wordpress/carmilla-theme/page.php، wordpress/carmilla-theme/functions.php، wordpress/carmilla-theme/assets/css/woocommerce.css، wordpress/carmilla-theme/assets/js/woocommerce-rtl.js، wordpress/carmilla-theme.zip، docs/evidence/P09-QA-MANUAL-003/summary.md
+- Commands and exit codes: PHP lint، Node syntax check، build-theme-zip، نصب/فعال‌سازی ZIP و HTTP/REST matrix همگی exit code 0 (جزئیات در Evidence).
+- Manual tester/date/result: User / 2026-10-14 / PASS — تأیید صریح «همه چی درست هست» پس از آزمون Cart، Checkout، مسیرهای خوانا و بومی‌سازی.
 - Evidence paths: docs/evidence/P09-QA-MANUAL-003/summary.md
-- Remaining risks/blockers: Awaiting human manual verification
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: درگاه پرداخت عمداً در محیط QA پیکربندی نشده و خارج از scope این کارت است؛ داده و credential واقعی استفاده نشده‌اند.
+- Final status: DONE
