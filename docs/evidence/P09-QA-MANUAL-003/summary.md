@@ -165,3 +165,13 @@ UI/admin (فعال‌سازی و مشاهدهٔ HPOS/Blocks از پیشخوان)
   بازسازی و روی هر سه ردیف matrix نصب شد.
 - نبود payment method در Checkout یک failure نیست: هیچ درگاه پرداخت واقعی یا
   آزمایشی در محیط QA پیکربندی نشده و این کارت مجاز به پیکربندی پرداخت نیست.
+
+## URLهای خوانا و session-aware Checkout در ماتریس — 2026-10-14
+
+- permalink structure هر سه سایت به `/%postname%/` تنظیم شد؛ URLهای قابل استفاده
+  اکنون `/shop/`، `/cart/`، `/checkout/` و `/my-account/` هستند و دیگر برای کاربر
+  به `?page_id=` وابسته نیستند.
+- در هر سه ردیف، یک session synthetic دارای محصول ساخته و مسیر واقعی
+  `/cart/` → `/checkout/` با HTTP `200` آزموده شد.
+- اگر Checkout با session خالی باز شود، WooCommerce عمداً آن را به Cart هدایت
+  می‌کند؛ این رفتار استاندارد است و failure محسوب نمی‌شود.
