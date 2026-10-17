@@ -49,6 +49,11 @@ final class CB_Web_Session_Store {
 		$this->assert_schema();
 	}
 
+	/** Trusted identity used to prevent a token service/store mismatch. */
+	public function site_id(): string {
+		return $this->site;
+	}
+
 	/** Return DDL for an explicit migration; this method does not modify a database. */
 	public static function schema_sql( string $prefix ): array {
 		if ( ! preg_match( '/\A[a-zA-Z0-9_]{1,35}\z/', $prefix ) ) {
