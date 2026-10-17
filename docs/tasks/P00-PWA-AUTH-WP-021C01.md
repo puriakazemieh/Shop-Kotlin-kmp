@@ -1,0 +1,7 @@
+# P00-PWA-AUTH-WP-021C01 — WordPress session-store adapter
+
+- Status: READY; Size: M; Owner: AI; Risk: HIGH
+- Depends on: `P00-PWA-AUTH-WP-021B`.
+- Implement and test the smallest isolated WordPress-facing adapter for the reviewed store: trusted installation/blog identity, server-only key, a dedicated non-persistent mysqli connection that never auto-reconnects during a transaction, and a fresh stored-password-hash provider that bypasses stale WordPress cache and transaction snapshots. Support a host configuration only when safe connection, TLS/socket, database and multisite semantics can be verified; fail closed otherwise. Never log database credentials, password hashes or session values.
+- Follow the contracts and known limits in `docs/evidence/P00-PWA-AUTH-WP-021A/security-contract.md` and `docs/evidence/P00-PWA-AUTH-WP-021B/verification.md`. Verify positive and negative cases with synthetic data and a disposable isolated database; preserve the user's WordPress installations and unrelated changes. Do not perform a WordPress migration, register hooks/routes, create cookies, bootstrap the adapter into the plugin, or deploy it. If larger than M or a design choice cannot be made safely, stop and propose a further split.
+- Evidence: `docs/evidence/P00-PWA-AUTH-WP-021C01/`. Document supported and untested WordPress/PHP/database and TLS configurations, and run existing Bridge smoke tests. No live UI/network/migration behavior changes in this isolated card; actual integration and owner QA are required by `021C06` and `021C07`.
