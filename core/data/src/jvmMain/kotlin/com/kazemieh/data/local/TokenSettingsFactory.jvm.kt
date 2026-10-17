@@ -30,4 +30,4 @@ private class InMemoryTokenSettings : Settings {
     override fun getBooleanOrNull(key: String): Boolean? = values[key] as? Boolean
 }
 
-actual fun createTokenSettings(): Settings = InMemoryTokenSettings()
+actual fun createTokenSettings(platformSettings: Settings): Settings = platformSettings

@@ -221,7 +221,7 @@ val generatePwaFiles by tasks.registering {
 
         val wpSw = File(outDir, "sw-wp.js")
         wpSw.writeText("""
-const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v6';
+const CACHE_NAME = 'carmilla-cache-${wpTenantId}-v7';
 const SENSITIVE_PATHS = ['/auth', '/account', '/profile', '/address', '/favorite', '/support', '/order', '/payment', '/message', '/health', '/clinic', '/psych', '/wp-json/cb/v1/auth'];
 const APP_SHELL_URLS = ['./', './index.html', './composeApp.js', './styles.css', './icon-192.png', './icon-512.png', './offline.html']
   .map(path => new URL(path, self.registration.scope).toString());
