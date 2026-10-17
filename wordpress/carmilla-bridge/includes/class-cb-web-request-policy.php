@@ -10,6 +10,7 @@ final class CB_Web_Request_Policy {
 	private $origins;
 	private $local_qa;
 	private $proxy_ips;
+	private $site_id;
 
 	/** All arguments are trusted server configuration, never request data. */
 	public function __construct( string $site_url, int $blog_id, array $origins, string $environment, bool $enable_local_qa = false, array $proxy_ips = array(), bool $proxy_strips_headers = false ) {
@@ -17,7 +18,8 @@ final class CB_Web_Request_Policy {
 			if ( ! preg_match( '#\Ahttps?://[a-zA-Z0-9.-]+(?::[0-9]{1,5})?(?:/[a-zA-Z0-9._~/-]*)?\z#i', $site_url ) ) { throw new RuntimeException(); }
 			$this->site_url = CB_Web_Session_WP_Adapter::canonical_site_url( $site_url );
 			$this->site_origin = self::origin_from_site( $this->site_url );
-			$this->cookie_name = '__Host-carmilla_wp_' . substr( CB_Web_Session_WP_Adapter::site_id( $this->site_url, $blog_id ), 0, 32 );
+			$this->site_id = CB_Web_Session_WP_Adapter::site_id( $this->site_url, $blog_id );
+			$this->cookie_name = '__Host-carmilla_wp_' . substr( $this->site_id, 0, 32 );
 			$this->local_qa = $enable_local_qa && $environment === 'local';
 			$site = parse_url( $this->site_origin );
 			if ( $site['scheme'] === 'http' && ( ! $this->local_qa || $site['host'] !== 'localhost' || $proxy_ips ) ) { throw new RuntimeException(); }
@@ -43,6 +45,9 @@ final class CB_Web_Request_Policy {
 			throw new InvalidArgumentException( 'Invalid browser session policy configuration.' );
 		}
 	}
+
+	/** Trusted installation identity, for checking service configuration. */
+	public function site_id(): string { return $this->site_id; }
 
 	/** Cookie options only; the caller must issue after the session transaction. */
 	public function cookie( int $absolute_deadline, int $now ): array {

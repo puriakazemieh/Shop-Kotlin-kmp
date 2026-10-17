@@ -68,13 +68,18 @@ final class CB_Web_Session_Store {
 	}
 
 	/** @return array{credential:string,family_id:string,absolute_expiry:int}|null */
-	public function create( int $user_id ): ?array {
+	public function create( int $user_id, ?string $authenticated_password_hash = null ): ?array {
 		if ( $user_id < 1 ) {
 			return null;
 		}
 		$now = $this->now();
 		$fingerprint = $this->password_fingerprint( $user_id );
 		if ( $fingerprint === null ) {
+			return null;
+		}
+		// A password may change after wp_authenticate but before session creation.
+		// Compare against the freshly read state, without storing the WP hash.
+		if ( $authenticated_password_hash !== null && ( $authenticated_password_hash === '' || ! hash_equals( $fingerprint, $this->fingerprint_for_hash( $user_id, $authenticated_password_hash ) ) ) ) {
 			return null;
 		}
 		$family = bin2hex( $this->bytes( 16 ) );
@@ -201,6 +206,10 @@ final class CB_Web_Session_Store {
 		if ( ! is_string( $password_hash ) || $password_hash === '' ) {
 			throw new CB_Web_Session_Storage_Exception( 'Password state unavailable.' );
 		}
+		return $this->fingerprint_for_hash( $user_id, $password_hash );
+	}
+
+	private function fingerprint_for_hash( int $user_id, string $password_hash ): string {
 		return hash_hmac( 'sha256', "carmilla-web-password-v1\0" . $this->site . "\0" . $user_id . "\0" . $password_hash, $this->secret );
 	}
 
