@@ -7,7 +7,7 @@
 - سه خانواده محصول: Theme مستقل، Plugin مستقل با UI عمومی روی قالب دیگر، کلاینت‌های Android/iOS/Desktop/Web/PWA مستقل. WooCommerce طبق پاسخ مالک محصول مجاز است.
 - حق خرید، محتوای بسته و toggle جدا هستند؛ App Builder از هر دو میزبان مستقل عرضه و هدف‌های آن جداگانه مجاز می‌شوند.
 - DONEهای قبلی تاریخچه‌اند؛ انطباق جدید باید در کارت‌های جبرانی ثابت شود. به‌ویژه QA020 و ADR001 فاز چهار، شواهد ناقص/متناقض دارند و مجوز Gate جدید نیستند.
-- **وضعیت فعلی صف:** کارت جبرانی `P00-PWA-AUTH-WP-021` تا انجام زیرکارت‌هایش `BLOCKED` است؛ قرارداد امنیتی `P00-PWA-AUTH-WP-021A` مستند شده و زیرکارت زیرساخت `P00-PWA-AUTH-WP-021B` آماده است. `P03-QA-REVIEW-023` در ۶ سپتامبر ۲۰۲۶ با Evidence تکمیل شده است؛ QA واقعی `P03-QA-MANUAL-027` همچنان پیش‌نیاز Gate است. `P11-ANDROID-DISC-001` تا PASS شدن Gateهای P03، P05 و P08 در `TODO` می‌ماند.
+- **وضعیت فعلی صف:** کارت جبرانی `P00-PWA-AUTH-WP-021` تا انجام زیرکارت‌هایش `BLOCKED` است؛ قرارداد امنیتی `P00-PWA-AUTH-WP-021A` و زیرساخت مجزای `P00-PWA-AUTH-WP-021B` تکمیل شده‌اند و زیرکارت مسیرهای وردپرس `P00-PWA-AUTH-WP-021C` آماده است. `P03-QA-REVIEW-023` در ۶ سپتامبر ۲۰۲۶ با Evidence تکمیل شده است؛ QA واقعی `P03-QA-MANUAL-027` همچنان پیش‌نیاز Gate است. `P11-ANDROID-DISC-001` تا PASS شدن Gateهای P03، P05 و P08 در `TODO` می‌ماند.
 - ترتیب فازها اولویت اجراست؛ dependencyهای شروع iOS/Desktop/LMS/Clinic به محصول نامرتبط وابسته نیستند. فروش هر ترکیب محصول/فیچر/backend/پلتفرم فقط پس از Gate همان ترکیب؛ fixture یا mock خروجی قابل فروش نیست.
 - P04 فقط kernel/میزبان/SKU و قرارداد آزمایشی Builder را آماده می‌کند. build واقعی Android/Web/PWA در P12 و تکمیل iOS/Desktop در P16/P17 است. Gate پایه P04 به آینده وابسته نمی‌شود.
 
@@ -62,8 +62,8 @@
 |---|---|---|---|---|
 | DONE | P00-PWA-AUTH-CODE-020 | AI | P00-QA-MANUAL-018 | [P00-PWA-AUTH-CODE-020](tasks/P00-PWA-AUTH-CODE-020.md) |
 | DONE | P00-PWA-AUTH-WP-021A | AI | P00-PWA-AUTH-CODE-020 | [P00-PWA-AUTH-WP-021A](tasks/P00-PWA-AUTH-WP-021A.md) |
-| READY | P00-PWA-AUTH-WP-021B | AI | P00-PWA-AUTH-WP-021A | [P00-PWA-AUTH-WP-021B](tasks/P00-PWA-AUTH-WP-021B.md) |
-| TODO | P00-PWA-AUTH-WP-021C | BOTH | P00-PWA-AUTH-WP-021B | [P00-PWA-AUTH-WP-021C](tasks/P00-PWA-AUTH-WP-021C.md) |
+| DONE | P00-PWA-AUTH-WP-021B | AI | P00-PWA-AUTH-WP-021A | [P00-PWA-AUTH-WP-021B](tasks/P00-PWA-AUTH-WP-021B.md) |
+| READY | P00-PWA-AUTH-WP-021C | BOTH | P00-PWA-AUTH-WP-021B | [P00-PWA-AUTH-WP-021C](tasks/P00-PWA-AUTH-WP-021C.md) |
 | BLOCKED | P00-PWA-AUTH-WP-021 | AI | P00-PWA-AUTH-WP-021C | [P00-PWA-AUTH-WP-021](tasks/P00-PWA-AUTH-WP-021.md) |
 | TODO | P00-PWA-AUTH-WEB-022 | AI | P00-PWA-AUTH-WP-021 | [P00-PWA-AUTH-WEB-022](tasks/P00-PWA-AUTH-WEB-022.md) |
 | TODO | P00-PWA-AUTH-QA-023 | BOTH | P00-PWA-AUTH-WEB-022 | [P00-PWA-AUTH-QA-023](tasks/P00-PWA-AUTH-QA-023.md) |
