@@ -65,6 +65,13 @@ try {
 	$second = wp_create_user( 'other_qa', 'synthetic-other-password', 'other@example.test' ); update_user_meta( $second, 'cb_mobile', '09120000001' );
 	$before = $count(); $r = $login->login( 'POST', $headers, $server, array( 'username' => '09120000001', 'password' => $input['password'] ) );
 	$check( $r->status() === 401 && $count() === $before, 'duplicate mobile identifiers fail closed without creating a session' );
+	$wpdb->update( $wpdb->users, array( 'user_email' => 'synthetic@example.test' ), array( 'ID' => $second ) ); clean_user_cache( $second );
+	$before = $count(); $r = $login->login( 'POST', $headers, $server, $input );
+	$check( $r->status() === 401 && $count() === $before, 'duplicate email identifiers fail closed without selecting an arbitrary user' );
+	$wpdb->update( $wpdb->users, array( 'user_email' => 'other@example.test', 'user_login' => 'synthetic@example.test' ), array( 'ID' => $second ) ); clean_user_cache( $second );
+	$r = $login->login( 'POST', $headers, $server, $input );
+	$check( $r->status() === 401 && $count() === $before, 'email and another account login collision fail closed' );
+	$wpdb->update( $wpdb->users, array( 'user_login' => 'other_qa' ), array( 'ID' => $second ) ); clean_user_cache( $second );
 	$badclock = static function () { throw new RuntimeException(); };
 	$failing_tokens = new CB_Web_Access_Token( $store, $site, hex2bin( CB_WEB_SESSION_SECRET_HEX ), $badclock );
 	$failing_login = new CB_Web_Password_Login( $policy, new CB_Web_Auth_Session_Issuer( $policy, $store, $failing_tokens ) );

@@ -89,14 +89,17 @@ final class CB_Web_Password_Login {
 		if ( ! is_string( $username ) || ! is_string( $password ) || trim( $username ) === '' || $password === '' || strlen( $username ) > 255 || strlen( $password ) > 4096 ) { return new CB_Web_Auth_Result( 400, array( 'error' => 'invalid_input' ) ); }
 		try {
 			$identifier = trim( $username );
-			if ( ! is_email( $identifier ) ) {
-				$matches = get_users( array( 'meta_key' => 'cb_mobile', 'meta_value' => $identifier, 'number' => 2, 'fields' => 'all' ) );
-				$by_login = get_user_by( 'login', $identifier );
-				if ( count( $matches ) > 1 || ( $matches && $by_login && (int) $matches[0]->ID !== (int) $by_login->ID ) ) { return new CB_Web_Auth_Result( 401, array( 'error' => 'invalid_credentials' ) ); }
-				if ( $matches ) { $identifier = $matches[0]->user_login; }
-			}
-			$user = wp_authenticate( $identifier, $password );
-			if ( is_wp_error( $user ) || ! $user instanceof WP_User || ! $user->exists() ) { return new CB_Web_Auth_Result( 401, array( 'error' => 'invalid_credentials' ) ); }
+			global $wpdb;
+			// WP's login, email and usermeta indexes are not unique. Check all
+			// three namespaces together using the database's own collation.
+			$sql = $wpdb->prepare( "SELECT DISTINCT u.ID FROM {$wpdb->users} u LEFT JOIN {$wpdb->usermeta} m ON m.user_id=u.ID AND m.meta_key='cb_mobile' WHERE u.user_login=%s OR u.user_email=%s OR m.meta_value=%s LIMIT 2", $identifier, $identifier, $identifier );
+			$matches = $wpdb->get_col( $sql );
+			if ( $wpdb->last_error !== '' ) { throw new RuntimeException(); }
+			if ( count( $matches ) !== 1 ) { return new CB_Web_Auth_Result( 401, array( 'error' => 'invalid_credentials' ) ); }
+			$matched = get_user_by( 'id', (int) $matches[0] );
+			if ( ! $matched instanceof WP_User || ! $matched->exists() ) { return new CB_Web_Auth_Result( 401, array( 'error' => 'invalid_credentials' ) ); }
+			$user = wp_authenticate( $matched->user_login, $password );
+			if ( is_wp_error( $user ) || ! $user instanceof WP_User || ! $user->exists() || (int) $user->ID !== (int) $matched->ID ) { return new CB_Web_Auth_Result( 401, array( 'error' => 'invalid_credentials' ) ); }
 			return $this->issuer->issue_for( $user );
 		} catch ( Throwable $e ) {
 			return new CB_Web_Auth_Result( 503, array( 'error' => 'authentication_unavailable' ) );

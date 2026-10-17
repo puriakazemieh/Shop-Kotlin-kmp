@@ -9,6 +9,7 @@
 ## Completion record — 2026-10-17
 
 - Added isolated, guarded password login and a reusable session/token issuer with a one-time non-serializable cookie handoff; no route, live hook, preserved site or mobile endpoint was changed.
-- Actual synthetic WordPress/MariaDB: 19/19 checks each on WordPress 6.4.3/PHP 8.1, 6.6.2/PHP 8.2 and 7.1.3/PHP 8.3. The previous real WordPress token suite also passed 8/8 on each; request-policy regression passed 93/93.
+- Actual synthetic WordPress/MariaDB: 21/21 checks each on WordPress 6.4.3/PHP 8.1, 6.6.2/PHP 8.2 and 7.1.3/PHP 8.3. The previous real WordPress token suite also passed 8/8 on each; request-policy regression passed 93/93.
 - The authenticated password hash is checked against fresh database state before creating a family. Later token verification still checks that state. On cleanup failure, the service returns an error without claiming revocation succeeded.
 - Evidence and remaining limitations: `docs/evidence/P00-PWA-AUTH-WP-021C04A/verification.md`. Browser integration, network QA, and all other authentication operations remain separate tasks.
+- Follow-up during registration review: login now rejects ambiguous email, username and mobile identities across namespaces, and only accepts the matched local WordPress user from authentication filters. SSO filters that authenticate a non-local identifier are not supported by this isolated service.
