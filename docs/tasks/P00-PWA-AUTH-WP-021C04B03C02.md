@@ -38,3 +38,7 @@
 ## Synthetic correlation result — 2026-10-18
 
 - The subsequently executed `021C04B03C02F` is now DONE for its limited synthetic account correlation and guarded access experiment; see [evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02F/incident-access.md). The earlier READY note above is historical. No production warning, durable fallback, privacy/retention policy or real recovery was implemented; this parent remains BLOCKED.
+
+## Inactive incident storage — 2026-10-18
+
+- `021C04B03C02G` implemented and tested a separate inactive storage primitive ([evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02G/verification.md)). It has no observer, route, migration, alert or recovery and does not guarantee persistence during a database outage. Privacy/retention, production authorization and all original acceptance remain open; this parent stays BLOCKED.
