@@ -2,6 +2,8 @@
 
 Date: 2026-10-17. Status: design completed; **not implemented or security-tested**. Applies to the Bridge in this P00 repair, not a claim that Theme-only support is complete. Future work must preserve the independent-product architecture and reuse an appropriate shared implementation when that work is in scope.
 
+Later status, 2026-10-18: this is the historical baseline and contract, not the current status of every client component. The separate [WEB-022A](../P00-PWA-AUTH-WEB-022A/verification.md) added partial bearer/redirect hardening and automated tests; full browser integration and compatibility remain unconfirmed. The legacy OTP race was reproduced in [C04C01](../P00-PWA-AUTH-WP-021C04C01/otp-concurrency.md) and remains unfixed.
+
 ## 1. Baseline and compatibility
 
 - `CB_Auth_Controller` has mobile login/register/OTP/refresh, but no `/api/auth/web/*` routes. Its mobile authentication response contains `refreshToken` in JSON. `CB_JWT` currently provides a 15-minute access JWT, a 30-day refresh JWT, and user-wide timestamp revocation; it has no per-browser token rotation or replay record.
