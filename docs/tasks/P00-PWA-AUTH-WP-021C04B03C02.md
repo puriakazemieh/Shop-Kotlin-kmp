@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021C04B03C02 — synthetic mobile identity concurrency and failure
 
-- Status: BLOCKED; Size: M; Owner: AI; Risk: HIGH
+- Status: READY; Size: M; Owner: AI; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04B03C01`, `P00-PWA-AUTH-WP-021C04B03C02A`.
 - Exercise the shared-reference prototype with real synthetic WordPress and independent SQL: conflicting owners across login/email/mobile, metadata value and user reassignment, duplicate meta rows, missing or invalid users, unsupported values, rollback, simultaneous add/update/delete and safe user deletion. Verify that a claim is not released while any source remains, transferred to the wrong owner or left inconsistent after failure. Capture both successful and rejected/deadlocked outcomes and resulting ownership.
 - Account explicitly for WP return values, callbacks and side effects without claiming database rollback reverses external actions. Test only synthetic exact-binary values; do not treat `billing_phone` as a login, claim OTP replay protection, activate a route or migrate a real site.
@@ -11,3 +11,7 @@
 - ماتریس محدود WordPress واقعی و SQL مستقل، شامل تعارض‌ها، انتقال metadata، شکست، timeout و deadlock اجرا شد؛ [شاهد و محدودیت‌ها](../evidence/P00-PWA-AUTH-WP-021C04B03C02/concurrency-and-failure.md).
 - با failure injection محدود روی حذف metadata، `wp_delete_user` در سه نسخه `true` برگرداند و callbackهای حذف را اجرا کرد، درحالی‌که کاربر و موبایلش باقی ماندند و بخشی از metadata قبلاً حذف شده بود. claim در این سناریو حفظ شد، ولی حذف امن و گزارش نتیجه تأیید نشد.
 - پیش از بازآزمایی این کارت، طراحی جداگانه lifecycle/خطا و بررسی اثر callbackها لازم است؛ نه والد C و نه ورود/ثبت‌نام واقعی تکمیل محسوب نمی‌شوند. تغییری در سایت یا schema واقعی داده نشد.
+
+## Reassessment queued — 2026-10-18
+
+- `021C04B03C02A` has completed a [strictly synthetic controlled-path experiment](../evidence/P00-PWA-AUTH-WP-021C04B03C02A/managed-deletion.md). Native deletion still reports the injected failure incorrectly. This card is READY **only for a fresh assessment and its full acceptance rerun**, not DONE; the controlled path is not a production fix or a replacement for WordPress deletion.
