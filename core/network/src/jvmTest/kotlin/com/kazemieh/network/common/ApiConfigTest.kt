@@ -4,8 +4,26 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import io.ktor.http.Url
 
 class ApiConfigTest {
+    @Test
+    fun `bearer scope includes scheme port and path boundaries`() {
+        ApiConfig.baseUrlOverride = "https://api.example.test:8443/wp-json/carmilla/v1/"
+        try {
+            assertTrue(ApiConfig.isApprovedApiUrl(Url("https://api.example.test:8443/wp-json/carmilla/v1/api/products")))
+            assertTrue(ApiConfig.isApprovedApiUrl(Url("https://API.example.test:8443/wp-json/carmilla/v1")))
+            assertFalse(ApiConfig.isApprovedApiUrl(Url("http://api.example.test:8443/wp-json/carmilla/v1/api/products")))
+            assertFalse(ApiConfig.isApprovedApiUrl(Url("https://api.example.test/wp-json/carmilla/v1/api/products")))
+            assertFalse(ApiConfig.isApprovedApiUrl(Url("https://other.example.test:8443/wp-json/carmilla/v1/api/products")))
+            assertFalse(ApiConfig.isApprovedApiUrl(Url("https://api.example.test:8443/wp-json/carmilla/v10/api/products")))
+            assertFalse(ApiConfig.isApprovedApiUrl(Url("https://api.example.test:8443/wp-json/carmilla/v1/%2e%2e/outside")))
+            assertFalse(ApiConfig.isApprovedApiUrl(Url("https://api.example.test:8443/wp-json/carmilla/v1/%252e%252e/outside")))
+        } finally {
+            ApiConfig.baseUrlOverride = null
+        }
+    }
+
     @Test
     fun `foreign host is not approved for bearer authentication`() {
         ApiConfig.baseUrlOverride = "https://api.example.test/"

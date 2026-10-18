@@ -16,6 +16,25 @@ object ApiConfig {
         Url(baseUrl).host.equals(host, ignoreCase = true)
     }.getOrDefault(false)
 
+    /** Credentials may only reach the configured origin and its API path subtree. */
+    fun isApprovedApiUrl(url: Url): Boolean = runCatching {
+        val base = Url(baseUrl)
+        val path = url.encodedPath
+        val basePath = base.encodedPath.trimEnd('/')
+        val ambiguousPath = Regex("(?i)%2e|%2f|%5c|%25|\\\\|(?:^|/)\\.{1,2}(?:/|$)")
+        base.protocol.name in setOf("http", "https") &&
+            url.protocol == base.protocol && url.host.equals(base.host, ignoreCase = true) &&
+            url.port == base.port && !ambiguousPath.containsMatchIn(path) &&
+            !ambiguousPath.containsMatchIn(base.encodedPath) &&
+            (basePath.isEmpty() || path == basePath || path.startsWith("$basePath/"))
+    }.getOrDefault(false)
+
+    fun isApprovedApiOrigin(url: Url): Boolean = runCatching {
+        val base = Url(baseUrl)
+        base.protocol.name in setOf("http", "https") && url.protocol == base.protocol &&
+            url.host.equals(base.host, ignoreCase = true) && url.port == base.port
+    }.getOrDefault(false)
+
     /** Keeps internal API calls under a WordPress installation subdirectory. */
     fun resolveInternalApiPath(path: String): String {
         if (!path.startsWith("/api/")) return path

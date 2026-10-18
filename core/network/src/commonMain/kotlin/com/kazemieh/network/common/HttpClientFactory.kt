@@ -8,6 +8,7 @@ import com.kazemieh.common.redactedForLog
 import com.kazemieh.network.auth.dto.request.RefreshTokenRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.plugins.api.SendingRequest
 import com.kazemieh.config.capabilities.EffectiveFeatureStore
 
 import io.ktor.client.call.body
@@ -25,6 +26,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -61,6 +63,9 @@ object HttpClientFactory {
             expectSuccess = false
 
             install(Auth) {
+                reAuthorizeOnResponse { response ->
+                    response.status == HttpStatusCode.Unauthorized && ApiConfig.isApprovedApiUrl(response.call.request.url)
+                }
                 bearer {
                     loadTokens {
                         val accessToken = tokenProvider.getAccessToken()
@@ -75,7 +80,7 @@ object HttpClientFactory {
                     }
 
                     sendWithoutRequest { request ->
-                        ApiConfig.isApprovedApiHost(request.url.host)
+                        ApiConfig.isApprovedApiOrigin(request.url.build())
                     }
 
                     refreshTokens {
@@ -128,6 +133,7 @@ object HttpClientFactory {
 //                }
             }
             install(BackendPathPlugin)
+            install(BearerScopePlugin)
 
         }
     }
@@ -135,12 +141,20 @@ object HttpClientFactory {
 
 val BackendPathPlugin = createClientPlugin("BackendPathPlugin") {
     onRequest { request, _ ->
-        val baseUrl = io.ktor.http.Url(ApiConfig.baseUrl)
-        if (request.url.host.equals(baseUrl.host, ignoreCase = true) && request.url.port == baseUrl.port) {
+        if (ApiConfig.isApprovedApiOrigin(request.url.build())) {
             request.url.pathSegments = ApiConfig.resolveInternalApiPath(request.url.build().encodedPath)
                 .trim('/')
                 .split('/')
                 .filter { it.isNotEmpty() }
+        }
+    }
+}
+
+/** Runs on every Ktor send, including authentication retries and redirects. */
+val BearerScopePlugin = createClientPlugin("BearerScopePlugin") {
+    on(SendingRequest) { request, _ ->
+        if (!ApiConfig.isApprovedApiUrl(request.url.build())) {
+            request.headers.remove(HttpHeaders.Authorization)
         }
     }
 }

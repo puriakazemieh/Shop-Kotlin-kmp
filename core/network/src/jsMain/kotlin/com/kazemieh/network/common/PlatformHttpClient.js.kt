@@ -11,6 +11,9 @@ actual fun createPlatformHttpClient(
     engine {
         configureRequest {
             credentials = "include"
+            // Fetch otherwise follows redirects internally, beyond Ktor's per-send guard.
+            // Fail closed; backend API URLs must not require redirects in a browser.
+            asDynamic().redirect = "error"
         }
     }
     block(this)
