@@ -9,7 +9,7 @@
 | `021C03` | DONE | [verification](../P00-PWA-AUTH-WP-021C03/verification.md): isolated access-token binding. | Live bearer integration not established. |
 | `021C04` | BLOCKED | [scope review](../P00-PWA-AUTH-WP-021C04/scope-review.md), plus child evidence. | Registration/OTP identity lifecycle including native partial-deletion handling is not proven safe; no route deployed. |
 | `021C05` | TODO | Child `021C05A` evidence exists for inactive refresh/logout and [B01](../P00-PWA-AUTH-WP-021C05B01/verification.md) characterizes a legacy reset defect; no parent verification directory. | Secure reset handlers and parent acceptance remain unfulfilled. |
-| `021C06` | TODO | No parent evidence directory. | Session migration and its backup/recovery evidence and owner migration QA are missing. |
+| `021C06` | AWAITING_MANUAL_QA after this audit | A later inactive synthetic initial migration, backup and restore were documented in [verification](../P00-PWA-AUTH-WP-021C06/verification.md). | Parent prerequisite `021C05`, owner migration QA, integration and real deployment remain open. |
 | `021C07` | TODO | No parent evidence directory. | Secure route integration, actual browser/network tests and owner network QA are missing. |
 | `021C08` | BLOCKED | This partial map only. | Repeat final audit after all required preceding work and explicit owner confirmations. |
 
