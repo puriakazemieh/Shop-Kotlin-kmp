@@ -9,3 +9,5 @@
 ## Preparatory work — 2026-10-18
 
 The owner authorized continuing work not yet READY. The independently testable, inactive refresh/logout part is split into `021C05A`, based only on completed session/store and password-login primitives. It cannot enable routes, bypass `021C04`, change the parent status, or constitute reset/end-to-end acceptance. This parent remains TODO until its stated dependency and all its own acceptance criteria are met.
+
+The isolated `021C05B01` characterization found that the existing legacy email-reset endpoint rejects the WP email-selected key and accepts a first key already invalidated by WP core. See [redacted evidence](../evidence/P00-PWA-AUTH-WP-021C05B01/verification.md). This is an unresolved defect, not a fix or proof of atomic reset safety; no mobile endpoint behavior was changed.
