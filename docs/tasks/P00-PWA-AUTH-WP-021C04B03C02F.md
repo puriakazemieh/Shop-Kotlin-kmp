@@ -1,7 +1,12 @@
 # P00-PWA-AUTH-WP-021C04B03C02F — synthetic incident correlation and access
 
-- Status: READY; Size: M; Owner: AI; Risk: HIGH
+- Status: DONE; Size: M; Owner: AI; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04B03C02D`, `P00-PWA-AUTH-WP-021C04B03C02E`. Starting evidence: the [bounded recovery](../evidence/P00-PWA-AUTH-WP-021C04B03C02D/synthetic-recovery.md) and [redacted incident](../evidence/P00-PWA-AUTH-WP-021C04B03C02E/synthetic-incident.md) experiments. Retain native WordPress deletion and do not treat its return value or external effects as fixed.
 - In a disposable real WordPress/MariaDB fixture with synthetic identities only, prototype an incident-to-surviving-account reference with minimum necessary data and a guarded, server-side read. Test that a synthetic administrator granted the chosen fixture capability can retrieve the appropriate incident and account reference; a lower-privilege user and logged-out caller cannot. Test a missing or deleted referenced user and query/write failures as explicit unresolved states, never a successful recovery or clean deletion. No identity merge, metadata overwrite, real secrets or PII may appear in logs or evidence.
 - Include narrowly scoped tests for duplicate incident access and a synthetic expiry/retention boundary, without deleting real users or asserting a production retention policy. Explicitly record what is stored, how a synthetic account can be identified, what is excluded, and the limitations of the chosen capability and data minimization. Use a synthetic-only table and do not expose an HTTP route, admin UI, real alert, backup, production schema or recovery operation.
 - Evidence: `docs/evidence/P00-PWA-AUTH-WP-021C04B03C02F/`. This fixture cannot establish durable fallback when DB writes fail, process/crash durability, production authorization/privacy, delivery of warnings, plugin compatibility or safe real-site recovery. `021C04B03C02` and its parents stay BLOCKED until all acceptance criteria and the complete matrix are met. If this scoped fixture cannot be safely demonstrated, document the blocker instead of marking success.
+
+## Result — 2026-10-18
+
+- Three disposable real WordPress/PHP combinations passed the synthetic account-reference, administrator/editor/logged-out access, missing user, expiry and database failure checks. [Evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02F/incident-access.md) explains the exact stored fields, linkability and limitations; PHP lint and the disposable guard passed.
+- No UI, route, actual warning, production authorization, privacy/retention policy, durable fallback or recovery was implemented. No manual browser QA applies. The parent and registration remain BLOCKED.
