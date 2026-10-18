@@ -1,6 +1,6 @@
 # P00-QA-COMPAT-027 — isolated browser checkout
 
-2026-10-18. Automated result: PASS within the scope below. Human acceptance: **AWAITING_MANUAL_QA**. No P00 Gate or T07 approval is implied.
+2026-10-18. Automated result: PASS within the scope below. Human acceptance: **PASS for this bounded synthetic flow**, reported by the owner in the conversation with an order-confirmation screenshot. The screenshot visibly shows the synthetic product, total and offline method; the owner's completion report covers the requested manual flow. The screenshot and its order-key URL are not copied into this repository. No P00 Gate or T07 approval is implied.
 
 ## Environment and results
 

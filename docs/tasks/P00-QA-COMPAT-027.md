@@ -1,6 +1,6 @@
 # P00-QA-COMPAT-027 — disposable packaged WooCommerce browser checkout probe
 
-- Status: AWAITING_MANUAL_QA; Size: M; Owner: BOTH; Risk: HIGH
+- Status: DONE; Size: M; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-QA-COMPAT-026`; the owner authorized independent Phase 00 work even when the main authentication chain is blocked.
 - On a new synthetic, disposable WordPress/WooCommerce installation, install the staged Theme and Bridge ZIPs and exercise product, cart and a browser checkout using only a synthetic offline payment method. Capture redacted evidence and exact versions. Block all real mail and external payment. Never use or alter the preserved sites, their databases or existing artifacts.
 - Include failure guards, test actual browser interactions and inspect the synthetic order; do not equate this with PWA login, full version matrix, real payment, release approval or complete Phase 00.
@@ -8,4 +8,4 @@
 
 ## Automated execution — 2026-10-18
 
-The bounded real-browser cart and synthetic offline checkout passed; the order was independently verified in the disposable database. The owner has not yet confirmed the manual step. Exact scope, retained temporary URL, warnings and limitations: [verification](../evidence/P00-QA-COMPAT-027/verification.md). This does not close T07 or a Gate.
+The bounded real-browser cart and synthetic offline checkout passed; the order was independently verified in the disposable database. The owner subsequently reported completing the requested manual flow and provided an order-confirmation screenshot. Exact scope, warnings and limitations: [verification](../evidence/P00-QA-COMPAT-027/verification.md). This does not close T07 or a Gate.
