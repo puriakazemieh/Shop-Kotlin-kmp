@@ -1,7 +1,12 @@
 # P00-PWA-AUTH-WP-021C04B03C02D — conflict-aware synthetic deletion recovery
 
-- Status: READY; Size: M; Owner: AI; Risk: HIGH
+- Status: DONE; Size: M; Owner: AI; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04B03C02C`. Preserve native WordPress deletion and the owner's selected compatibility direction; do not represent WP's own false-success message or external hook effects as fixed.
 - On disposable real WordPress/MariaDB with synthetic users and isolated research claims only, investigate and test one narrowly bounded recovery of a surviving user after injected metadata deletion failure. Use a synthetic pre-deletion snapshot and explicitly verify restored test data and identity references. Define and test safe refusal for missing/incomplete snapshot and concurrent or changed state; do not overwrite concurrent user data or merge identities. Include repeat/retry behavior and record exact limitations of the recovery mechanism and any data it cannot restore.
 - Never store real customer metadata, credentials or PII in evidence; synthetic-only snapshot is not authority to persist production snapshots. No real site, core patch, route, schema migration, or deployment. Do not assert recovery reverses hooks, messages, external side effects, deleted posts or unknown plugin data. If a safe narrow recovery cannot be demonstrated, record the blocker rather than a false success.
 - Evidence: `docs/evidence/P00-PWA-AUTH-WP-021C04B03C02D/`. Persistent incident handling, authorization/privacy, full compatibility and real-site recovery are separate tasks. C02 and parent tasks stay blocked until their entire scope and full matrix have actually passed.
+
+## Result — 2026-10-18
+
+- A narrowly supported synthetic partial-deletion state was restored on three real WordPress/PHP combinations with MariaDB. Missing/incomplete snapshots, changed state and a metadata ID collision were refused without overwriting; one controlled independent-writer lock interleaving and retry passed. See [evidence and explicit limitations](../evidence/P00-PWA-AUTH-WP-021C04B03C02D/synthetic-recovery.md).
+- This is not durable or authorized real-site recovery, a fix for WP's return value, or reversal of callbacks or external actions. No browser-facing change was made, so manual UI QA is not applicable to this experiment. The parent remains BLOCKED; durable redacted incident research is queued separately as `021C04B03C02E`.
