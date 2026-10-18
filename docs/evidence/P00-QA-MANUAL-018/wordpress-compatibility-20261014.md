@@ -39,3 +39,13 @@ contract and the tested reference matrix must be distinguished and reconciled
 by an explicit decision and real compatibility tests. This correction does not
 change any supported version or attest to a new test. The WooCommerce 8.3.1
 versus documented 8.5 matrix mismatch remains unresolved.
+
+## Additional isolated reference probe — 2026-10-18
+
+WordPress 6.4.3/PHP 8.1.27/MariaDB 10.6.28 and official WooCommerce 8.5.2
+were tested in a new disposable installation with current Carmilla source and
+its shared core. Seven activation, synthetic product/cart and REST checks
+passed; see [the exact source hash, commands and limitations](../P00-QA-COMPAT-024/verification.md).
+The previously retained minimum matrix still uses Woo 8.3.1 and was not changed.
+This does not establish a commercial minimum, ZIP compatibility, checkout,
+upgrade/rollback, a full matrix or owner approval. P00-T07 remains open.
