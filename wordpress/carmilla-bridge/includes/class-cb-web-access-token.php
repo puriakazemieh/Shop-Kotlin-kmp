@@ -22,6 +22,9 @@ final class CB_Web_Access_Token {
 		$this->clock = $clock ?: static function () { return time(); };
 	}
 
+	/** Trusted wiring check: the issuer and verifier must use the same store. */
+	public function uses_store( CB_Web_Session_Store $store ): bool { return $this->store === $store; }
+
 	/** Never issues for an absent, expired, revoked or password-changed family. */
 	public function issue( int $user_id, string $family_id ): string {
 		try {

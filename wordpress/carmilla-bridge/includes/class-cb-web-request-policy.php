@@ -55,6 +55,13 @@ final class CB_Web_Request_Policy {
 		return array( 'name' => $this->cookie_name, 'expires' => $absolute_deadline, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict' );
 	}
 
+	/** Same scoped attributes with a past expiry; caller emits only after guard. */
+	public function expired_cookie(): array {
+		$options = $this->cookie( 2, 1 );
+		$options['expires'] = 1;
+		return $options;
+	}
+
 	/** Input headers must preserve all occurrences, including duplicate names. */
 	public function allows_post( string $method, array $headers, array $server ): bool {
 		$h = self::headers( $headers );

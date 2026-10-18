@@ -94,7 +94,9 @@ final class CB_Web_Session_Store {
 		return array( 'credential' => $credential, 'family_id' => $family, 'absolute_expiry' => $absolute );
 	}
 
-	/** Atomically rotate once; replay invalidates the entire known family. */
+	/** Atomically rotate once; replay invalidates the entire known family.
+	 * The returned user_id is for trusted server-side use, never client input.
+	 */
 	public function rotate( string $credential ): ?array {
 		$digest = $this->digest( $credential );
 		if ( $digest === null ) {
@@ -130,7 +132,7 @@ final class CB_Web_Session_Store {
 			$this->write( "INSERT INTO `{$this->tokens}` (token_hash,family_id,spent) VALUES (?,?,0)", 'ss', array( $new_digest, $family['family_id'] ) );
 			$idle = min( (int) $family['absolute_expiry'], $now + self::IDLE_TTL );
 			$this->write( "UPDATE `{$this->families}` SET idle_expiry=?,last_used=? WHERE family_id=?", 'iis', array( $idle, $now, $family['family_id'] ) );
-			return array( 'credential' => $new_credential, 'family_id' => $family['family_id'], 'absolute_expiry' => (int) $family['absolute_expiry'] );
+			return array( 'credential' => $new_credential, 'family_id' => $family['family_id'], 'absolute_expiry' => (int) $family['absolute_expiry'], 'user_id' => (int) $family['user_id'] );
 		} );
 	}
 

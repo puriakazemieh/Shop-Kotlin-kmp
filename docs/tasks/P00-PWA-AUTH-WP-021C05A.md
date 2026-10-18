@@ -1,0 +1,15 @@
+# P00-PWA-AUTH-WP-021C05A — isolated web refresh and logout
+
+- Status: DONE; Size: M; Owner: AI; Risk: HIGH
+- Depends on: `P00-PWA-AUTH-WP-021C02`, `P00-PWA-AUTH-WP-021C03`, `P00-PWA-AUTH-WP-021C04A`; completed primitives only. This isolated preparation is permitted by the owner's explicit request to proceed without waiting for the parent. `021C04` and `021C05` remain unresolved.
+- Implement inactive refresh and logout services using the reviewed request policy, session store and access token; no route, hook, header emission, migration, deployment, production operation or change to retained QA sites. Keep mobile and Spring behavior unchanged. No automatic account deletion or identity mutation.
+- Refresh must enforce request policy before reading/mutating a session, atomically rotate through the existing store, distinguish invalid/replay from storage failure, return only an access token and compatible user in the body, and pass the new opaque credential solely via the one-shot redacted cookie handoff after transaction commit. Failure after rotation must not expose a credential or falsely assert cleanup succeeded. Verify installation identity and resolve user server-side; never take user identity from the request.
+- Logout must enforce policy before mutation, revoke a known family, remain idempotent for absent/invalid credentials, provide an expired cookie handoff when policy permits, and report storage errors rather than claiming revocation succeeded. Cookie data must not appear in body or diagnostics.
+- Add failure-first and real WordPress/MariaDB synthetic tests for guard rejection, successful rotation, replay family invalidation, unknown/expired credentials, separate families, password change, signer/store failure, logout success/idempotency/storage failure, cookie attributes and redaction. Run PHP lint; use disposable isolated databases with random prefixes, never existing installations. Record exact versions and limitations in `docs/evidence/P00-PWA-AUTH-WP-021C05A/`.
+- No UI, route, migration or real network change; no manual QA applies to this inactive component. Do not mark `021C05`, `021C04`, P00-T05 or any Gate DONE. Integration/browser owner QA remains `021C07` and `P00-PWA-AUTH-QA-023`.
+
+## Completion — 2026-10-18
+
+- Implemented inactive refresh/logout service and the necessary store return, wiring check and expired-cookie policy. No route/hook is registered, no retained site or production data was changed. The parent and deletion blocker remain open.
+- Real isolated WordPress/PHP matrix: 17 checks per combination on 6.4.3/8.1.27, 6.6.2/8.2.25 and 7.1.3/8.3.35, all passed. Existing login regression: 21 checks passed. Session-store concurrency/rollback suite: 36 checks passed against disposable MariaDB 10.6.28. PHP lint and disposable guard passed.
+- Evidence and reproduction: [verification.md](../evidence/P00-PWA-AUTH-WP-021C05A/verification.md). No owner QA is asserted or requested for this isolated service; integration and real-browser QA remain separate.
