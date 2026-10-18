@@ -32,10 +32,15 @@ final class CB_Deletion_Incident_Store {
 
 	/** Internal observer use only. TTL is explicit; this does not establish a retention policy. */
 	public function record_partial_survivor( int $account_id, int $ttl ): string {
-		if ( $account_id < 1 || $ttl < 1 || $ttl > 604800 ) { throw new CB_Deletion_Incident_Storage_Exception( 'Incident storage unavailable.' ); }
+		return $this->record_survivor( $account_id, 'PARTIAL_USER_SURVIVES', $ttl );
+	}
+
+	/** Internal observer use only; no inference beyond the observed account state. */
+	public function record_survivor( int $account_id, string $code, int $ttl ): string {
+		if ( $account_id < 1 || ! in_array( $code, array( 'PARTIAL_USER_SURVIVES', 'USER_SURVIVES' ), true ) || $ttl < 1 || $ttl > 604800 ) { throw new CB_Deletion_Incident_Storage_Exception( 'Incident storage unavailable.' ); }
 		$now = $this->now();
 		try { $id = bin2hex( random_bytes( 16 ) ); } catch ( Throwable $e ) { throw new CB_Deletion_Incident_Storage_Exception( 'Incident storage unavailable.' ); }
-		$stmt = $this->execute( "INSERT INTO `{$this->table}` (incident_id,site_id,account_id,incident_code,recorded_at,expires_at) VALUES (?,?,?,'PARTIAL_USER_SURVIVES',?,?)", 'ssiii', array( $id, $this->site, $account_id, $now, $now + $ttl ) );
+		$stmt = $this->execute( "INSERT INTO `{$this->table}` (incident_id,site_id,account_id,incident_code,recorded_at,expires_at) VALUES (?,?,?,?,?,?)", 'ssisii', array( $id, $this->site, $account_id, $code, $now, $now + $ttl ) );
 		try { if ( $stmt->affected_rows !== 1 ) { throw new CB_Deletion_Incident_Storage_Exception( 'Incident storage unavailable.' ); } } finally { $stmt->close(); }
 		return $id;
 	}
@@ -49,7 +54,7 @@ final class CB_Deletion_Incident_Store {
 			$stmt = $this->execute( "SELECT account_id,incident_code,recorded_at,expires_at FROM `{$this->table}` WHERE incident_id=? AND site_id=?", 'ss', array( $id, $this->site ) );
 			try { $result = $stmt->get_result(); if ( $result === false ) { throw new CB_Deletion_Incident_Storage_Exception(); } $row = $result->fetch_assoc(); } finally { $stmt->close(); }
 			if ( $row === null ) { return array( 'status' => 'MISSING' ); }
-			if ( $row['incident_code'] !== 'PARTIAL_USER_SURVIVES' || (int) $row['account_id'] < 1 || (int) $row['recorded_at'] < 1 || (int) $row['expires_at'] <= (int) $row['recorded_at'] || $now < (int) $row['recorded_at'] ) { return array( 'status' => 'UNVERIFIED' ); }
+			if ( ! in_array( $row['incident_code'], array( 'PARTIAL_USER_SURVIVES', 'USER_SURVIVES' ), true ) || (int) $row['account_id'] < 1 || (int) $row['recorded_at'] < 1 || (int) $row['expires_at'] <= (int) $row['recorded_at'] || $now < (int) $row['recorded_at'] ) { return array( 'status' => 'UNVERIFIED' ); }
 			if ( $now >= (int) $row['expires_at'] ) { return array( 'status' => 'EXPIRED' ); }
 			return array( 'status' => 'AVAILABLE', 'account_id' => (int) $row['account_id'], 'code' => $row['incident_code'] );
 		} catch ( Throwable $e ) { return array( 'status' => 'UNVERIFIED' ); }

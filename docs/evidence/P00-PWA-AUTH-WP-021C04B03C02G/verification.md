@@ -4,6 +4,8 @@
 
 ## Implemented scope
 
+Historical note: `021C04B03C02H` subsequently added the fixed `USER_SURVIVES` category and reran the 21-check storage regression. The observations below describe G at its completion; H's additional scope and limitations are documented [here](../P00-PWA-AUTH-WP-021C04B03C02H/verification.md).
+
 `CB_Deletion_Incident_Store` defines, but does not create, an InnoDB schema; it registers no hooks, routes, UI or migrations. Records contain a random incident ID, installation digest, numeric account reference, fixed category and timestamps. A numeric account reference is linkable personal data; the code does not establish a production privacy or retention policy. The caller must explicitly choose a TTL of 1 second through 7 days; the bound is a technical limit, not an approved retention period. Cleanup is bounded, site-scoped, explicitly invoked and capability-guarded, not scheduled. Authorized reads use `manage_options` and happen only after a capability check; production capability and multisite behavior require review.
 
 The store verifies the expected InnoDB table, exact columns, types, nullability, ASCII collations and primary key. It rejects malformed installation IDs and schema; errors are generic. `AVAILABLE` only returns a stored reference; it does **not** assert that the account currently exists or that a deletion was repaired. The dedicated mysqli connection must be configured without automatic reconnect and used only by trusted integration code. A write failure throws; a failed read returns `UNVERIFIED`, never `MISSING` or a claimed recovery.

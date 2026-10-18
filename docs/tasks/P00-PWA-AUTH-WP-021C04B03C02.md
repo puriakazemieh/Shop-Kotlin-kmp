@@ -42,3 +42,4 @@
 ## Inactive incident storage — 2026-10-18
 
 - `021C04B03C02G` implemented and tested a separate inactive storage primitive ([evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02G/verification.md)). It has no observer, route, migration, alert or recovery and does not guarantee persistence during a database outage. Privacy/retention, production authorization and all original acceptance remain open; this parent stays BLOCKED.
+- `021C04B03C02H` added an inactive observer, tested only by attaching fixture hooks ([evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02H/verification.md)). Native false success, incomplete detection, durable fallback, warning, recovery and the full acceptance remain unresolved.
