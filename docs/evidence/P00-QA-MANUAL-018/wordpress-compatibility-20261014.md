@@ -49,3 +49,8 @@ passed; see [the exact source hash, commands and limitations](../P00-QA-COMPAT-0
 The previously retained minimum matrix still uses Woo 8.3.1 and was not changed.
 This does not establish a commercial minimum, ZIP compatibility, checkout,
 upgrade/rollback, a full matrix or owner approval. P00-T07 remains open.
+
+An additional isolated patch-level probe on WordPress 6.3.5 and PHP 7.4.33
+with WooCommerce 8.5.2 also passed the same seven limited source-copy checks;
+see [verification](../P00-QA-COMPAT-025/verification.md). It does not turn
+those metadata declarations into a commercial compatibility guarantee.
