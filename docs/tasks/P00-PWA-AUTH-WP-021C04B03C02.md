@@ -34,3 +34,7 @@
 ## Synthetic incident follow-up — 2026-10-18
 
 - `021C04B03C02E` demonstrated process-level readback of a redacted synthetic record but no account correlation, durable fallback or administrator warning; see [evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02E/synthetic-incident.md). `021C04B03C02F` is READY to test narrowly scoped synthetic account correlation and authorized access. A real alert, recovery, privacy/retention policy and the full parent acceptance remain outstanding.
+
+## Synthetic correlation result — 2026-10-18
+
+- The subsequently executed `021C04B03C02F` is now DONE for its limited synthetic account correlation and guarded access experiment; see [evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02F/incident-access.md). The earlier READY note above is historical. No production warning, durable fallback, privacy/retention policy or real recovery was implemented; this parent remains BLOCKED.

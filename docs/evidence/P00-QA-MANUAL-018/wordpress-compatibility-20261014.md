@@ -27,3 +27,15 @@ minimum contract. Before a release gate, the product owner must either:
    activation, cart, and checkout smoke.
 
 No production endpoint or customer data was used.
+
+## Correction recorded 2026-10-18
+
+The PHP statement under “Declared support floor” above was imprecise: the
+reference environment says PHP **8.1 is the reference version** and explicitly
+lists **7.4 as minimum**; it does not declare 8.1 as the minimum. Both current
+Theme and Bridge headers declare PHP 7.4 and WordPress 6.3 as minimum, whereas
+the reference QA document specifies WordPress 6.4 or newer. The product support
+contract and the tested reference matrix must be distinguished and reconciled
+by an explicit decision and real compatibility tests. This correction does not
+change any supported version or attest to a new test. The WooCommerce 8.3.1
+versus documented 8.5 matrix mismatch remains unresolved.
