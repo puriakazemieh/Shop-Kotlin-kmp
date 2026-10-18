@@ -60,6 +60,26 @@ final class CB_Deletion_Incident_Store {
 		} catch ( Throwable $e ) { return array( 'status' => 'UNVERIFIED' ); }
 	}
 
+	/** Server-side discovery only; it does not assert that accounts still exist. */
+	public function list_unexpired( int $limit ): array {
+		if ( ! current_user_can( 'manage_options' ) ) { return array( 'status' => 'FORBIDDEN' ); }
+		if ( $limit < 1 || $limit > 100 ) { return array( 'status' => 'UNVERIFIED' ); }
+		try {
+			$now = $this->now();
+			$stmt = $this->execute( "SELECT incident_id,account_id,incident_code,recorded_at,expires_at FROM `{$this->table}` WHERE site_id=? AND expires_at>? ORDER BY recorded_at DESC,incident_id DESC LIMIT ?", 'sii', array( $this->site, $now, $limit ) );
+			try {
+				$result = $stmt->get_result();
+				if ( ! $result ) { throw new CB_Deletion_Incident_Storage_Exception(); }
+				$incidents = array();
+				while ( $row = $result->fetch_assoc() ) {
+					if ( ! preg_match( '/\A[0-9a-f]{32}\z/', $row['incident_id'] ) || (int) $row['account_id'] < 1 || ! in_array( $row['incident_code'], array( 'PARTIAL_USER_SURVIVES', 'USER_SURVIVES' ), true ) || (int) $row['recorded_at'] < 1 || $now < (int) $row['recorded_at'] || (int) $row['expires_at'] <= (int) $row['recorded_at'] ) { throw new CB_Deletion_Incident_Storage_Exception(); }
+					$incidents[] = array( 'incident_id' => $row['incident_id'], 'account_id' => (int) $row['account_id'], 'code' => $row['incident_code'] );
+				}
+			} finally { $stmt->close(); }
+			return array( 'status' => 'AVAILABLE', 'incidents' => $incidents );
+		} catch ( Throwable $e ) { return array( 'status' => 'UNVERIFIED' ); }
+	}
+
 	/** Explicit capability-guarded bounded cleanup; not scheduled automatically. */
 	public function prune_expired( int $limit ): int {
 		if ( ! current_user_can( 'manage_options' ) || $limit < 1 || $limit > 100 ) { throw new CB_Deletion_Incident_Storage_Exception( 'Incident cleanup unavailable.' ); }

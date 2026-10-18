@@ -31,6 +31,23 @@ try {
 	$check( $b->read( $id ) === array( 'status' => 'MISSING' ), 'other installation cannot read incident' );
 	$check( $a->read( str_repeat( '0', 32 ) ) === array( 'status' => 'MISSING' ), 'unknown reference is missing' );
 	$check( $a->read( 'bad' ) === array( 'status' => 'UNVERIFIED' ), 'malformed reference fails closed' );
+	$list_time = 1800000000; $list_clock = static function () use ( &$list_time ) { return $list_time; };
+	$c = new CB_Deletion_Incident_Store( $db, $prefix, hash( 'sha256', 'synthetic-site-c' ), $list_clock );
+	$first = $c->record_partial_survivor( (int) $admin->ID, 3 ); ++$list_time;
+	$second = $c->record_survivor( (int) $editor, 'USER_SURVIVES', 10 );
+	$list = $c->list_unexpired( 1 );
+	$check( $list === array( 'status' => 'AVAILABLE', 'incidents' => array( array( 'incident_id' => $second, 'account_id' => (int) $editor, 'code' => 'USER_SURVIVES' ) ) ), 'authorized listing is bounded and newest first' );
+	$check( count( $c->list_unexpired( 100 )['incidents'] ) === 2 && count( $a->list_unexpired( 100 )['incidents'] ) === 1, 'listing is scoped to current installation' );
+	$check( $c->list_unexpired( 0 ) === array( 'status' => 'UNVERIFIED' ) && $c->list_unexpired( 101 ) === array( 'status' => 'UNVERIFIED' ), 'listing rejects invalid bounds' );
+	$list_table = $prefix . 'carmilla_deletion_incidents';
+	$db->query( "UPDATE `$list_table` SET account_id=0 WHERE incident_id='$second'" );
+	$check( $c->list_unexpired( 100 ) === array( 'status' => 'UNVERIFIED' ), 'malformed record fails whole listing closed' );
+	$db->query( "UPDATE `$list_table` SET account_id=" . (int) $editor . " WHERE incident_id='$second'" );
+	wp_set_current_user( (int) $editor ); $check( $c->list_unexpired( 1 ) === array( 'status' => 'FORBIDDEN' ), 'editor cannot discover incidents' );
+	wp_set_current_user( 0 ); $check( $c->list_unexpired( 1 ) === array( 'status' => 'FORBIDDEN' ), 'logged-out caller cannot discover incidents' );
+	wp_set_current_user( (int) $admin->ID ); $list_time += 2;
+	$check( count( $c->list_unexpired( 100 )['incidents'] ) === 1, 'listing excludes expired incidents at boundary' );
+	$list_time += 8; $check( $c->list_unexpired( 100 ) === array( 'status' => 'AVAILABLE', 'incidents' => array() ) && $c->prune_expired( 100 ) === 2, 'empty listing and bounded expiry cleanup' );
 	$table = $prefix . 'carmilla_deletion_incidents'; $result = $db->query( "SELECT * FROM `$table`" ); $rows = $result->fetch_all( MYSQLI_ASSOC );
 	$check( array_keys( $rows[0] ) === array( 'incident_id', 'site_id', 'account_id', 'incident_code', 'recorded_at', 'expires_at' ) && strpos( var_export( $rows, true ), 'example.test' ) === false && strpos( var_export( $rows, true ), 'synthetic-only-password' ) === false, 'stored fields exclude synthetic contact details and password' );
 	$time += 10; $check( $a->read( $id ) === array( 'status' => 'EXPIRED' ), 'expiry boundary withholds account reference' );
@@ -45,6 +62,7 @@ try {
 	$check( $write_fault && (int) $row['count'] === 0, 'injected insert failure is sanitized and leaves no incident row' );
 	$temporary_table = $table . '_unavailable'; $db->query( "RENAME TABLE `$table` TO `$temporary_table`" );
 	$check( $a->read( str_repeat( '0', 32 ) ) === array( 'status' => 'UNVERIFIED' ), 'actual failed table query is not reported as missing' );
+	$check( $a->list_unexpired( 1 ) === array( 'status' => 'UNVERIFIED' ), 'failed listing is not reported as empty' );
 	$db->query( "RENAME TABLE `$temporary_table` TO `$table`" );
 	$invalid_ttl = false; try { $a->record_partial_survivor( (int) $admin->ID, 604801 ); } catch ( CB_Deletion_Incident_Storage_Exception $e ) { $invalid_ttl = true; }
 	$check( $invalid_ttl, 'out-of-bound retention rejected' );
@@ -55,8 +73,11 @@ try {
 	$check( $bad_schema, 'unexpected extra data column makes schema unavailable' );
 	$bad_clock = new CB_Deletion_Incident_Store( $db, $prefix, $site_a, static function () { return 'invalid'; } );
 	$check( $bad_clock->read( str_repeat( '0', 32 ) ) === array( 'status' => 'UNVERIFIED' ), 'invalid clock fails closed' );
+	$check( $bad_clock->list_unexpired( 1 ) === array( 'status' => 'UNVERIFIED' ), 'invalid clock fails listing closed' );
 	$db->close(); wp_set_current_user( (int) $editor ); $check( $a->read( str_repeat( '0', 32 ) ) === array( 'status' => 'FORBIDDEN' ), 'authorization precedes storage access' );
+	$check( $a->list_unexpired( 1 ) === array( 'status' => 'FORBIDDEN' ), 'listing authorization precedes storage access' );
 	wp_set_current_user( (int) $admin->ID ); $check( $a->read( str_repeat( '0', 32 ) ) === array( 'status' => 'UNVERIFIED' ), 'closed database read is not reported as missing or recovered' );
+	$check( $a->list_unexpired( 1 ) === array( 'status' => 'UNVERIFIED' ), 'closed database listing fails closed' );
 	$write_failed = false; try { $a->record_partial_survivor( (int) $admin->ID, 10 ); } catch ( CB_Deletion_Incident_Storage_Exception $e ) { $write_failed = $e->getMessage() === 'Incident storage unavailable.'; }
 	$check( $write_failed, 'closed database write fails without logging account or raw error' );
 	global $wp_version; echo "Checks: {$checks}; failures: {$failures}.\n";
