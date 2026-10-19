@@ -14,6 +14,9 @@ import com.kazemieh.network.profile.dto.response.UserResponse
 
 interface AuthApi {
 
+    /** Browser cookie logout; failure does not imply server-side revocation. */
+    suspend fun logoutWeb()
+
     suspend fun login(request: LoginRequest): AuthResponse
 
     suspend fun register(request: RegisterRequest): AuthResponse

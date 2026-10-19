@@ -14,8 +14,10 @@ import com.kazemieh.network.auth.dto.request.ResetPasswordWithOtpRequest
 import com.kazemieh.network.auth.dto.response.AuthResponse
 import com.kazemieh.network.common.PlatformConfig
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.AuthCircuitBreaker
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.isSuccess
 
 class AuthApiImpl(
     private val client: HttpClient
@@ -23,6 +25,15 @@ class AuthApiImpl(
 
     private fun endpoint(name: String): String =
         if (PlatformConfig.usesWebSessionCookie) "api/auth/web/$name" else "api/auth/$name"
+
+    override suspend fun logoutWeb() {
+        check(PlatformConfig.usesWebSessionCookie) { "browser_logout_unavailable" }
+        val response = client.post(endpoint("logout")) {
+            // A rejected logout must not silently refresh and restore a session.
+            attributes.put(AuthCircuitBreaker, Unit)
+        }
+        check(response.status.isSuccess()) { "browser_logout_failed" }
+    }
 
     //puriakazemieh@gmail.com
     override suspend fun login(

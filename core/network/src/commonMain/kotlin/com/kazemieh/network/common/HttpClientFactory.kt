@@ -15,6 +15,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.AuthCircuitBreaker
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -172,6 +173,9 @@ val WebAuthRequestPlugin = createClientPlugin("WebAuthRequestPlugin") {
             }.getOrDefault(false)
             request.headers.remove("X-Carmilla-Web-Request")
             if (allowed) request.headers.append("X-Carmilla-Web-Request", "1")
+            if (allowed && url.encodedPath.endsWith("/api/auth/web/logout") && request.attributes.contains(AuthCircuitBreaker)) {
+                request.headers.remove(HttpHeaders.Authorization)
+            }
         }
     }
 }

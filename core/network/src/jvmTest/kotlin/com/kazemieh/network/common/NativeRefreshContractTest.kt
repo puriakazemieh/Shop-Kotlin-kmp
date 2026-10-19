@@ -1,12 +1,14 @@
 package com.kazemieh.network.common
 
 import com.sun.net.httpserver.HttpServer
+import com.kazemieh.network.auth.AuthApiImpl
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
 import java.net.InetSocketAddress
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class NativeRefreshContractTest {
@@ -63,6 +65,7 @@ class NativeRefreshContractTest {
             assertEquals("synthetic-new-refresh", tokens.refresh)
             assertEquals(0, tokens.expired)
             assertFalse(PlatformConfig.usesWebSessionCookie)
+            assertFailsWith<IllegalStateException> { AuthApiImpl(client).logoutWeb() }
             omitRotatedRefresh = true
             val malformed = SyntheticTokens("synthetic-refresh")
             val malformedClient = HttpClientFactory.create(malformed)
