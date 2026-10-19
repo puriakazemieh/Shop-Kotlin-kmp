@@ -2,6 +2,8 @@
 
 2026-10-18. Automated initial-install and recovery probes passed in synthetic databases; **AWAITING_MANUAL_QA**. The prerequisite `021C05` remains incomplete. Neither this result nor a future limited fixture confirmation authorizes route activation, real-site migration, PWA acceptance or a Phase 00 Gate.
 
+2026-10-19: the agent restarted the same isolated persistent fixture and reran the two owner-check commands below. The new-prefix migration again produced `Checks: 16; failures: 0` and its PASS marker; the existing separately restored synthetic copy bootstrapped and produced its PASS marker with an active synthetic session. This is a fresh automated recheck, not owner confirmation. The session expires; a later recheck may need a new fixture.
+
 ## Scope and limitations
 
 `CB_Web_Session_Migration` is not bootstrapped by the plugin and runs only when explicitly invoked by trusted code. It creates an initial version-1 namespace only when all three table names are absent, serializes cooperating migrators through a database advisory lock, checks the required storage structure and marker, and reports `CURRENT` without altering a verified installation. It refuses partial/incompatible schemas, unknown versions and lock/storage errors with a sanitized exception. It never automatically deletes, repairs or downgrades tables. DDL commits independently in MariaDB: a failure after the first table can leave a partial schema and must not be represented as rolled back. [Recovery procedure](recovery.md).
