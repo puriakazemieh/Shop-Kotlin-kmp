@@ -54,7 +54,7 @@
 
 ### همگام‌سازی وضعیت P00 — ۱۸ اکتبر ۲۰۲۶
 
-- ۱۹ کارت اصلی و PASS تاریخی Gate در جای خود حفظ شده‌اند؛ این به معنی تکمیل بازبینی جاری، اصلاح ورود PWA یا PASS جدید نیست. در ثبت ۱۹ اکتبر، ردیف‌های P00 شامل ۴۹ `DONE`، ۹ `TODO`، ۹ `BLOCKED` و ۶ `AWAITING_MANUAL_QA` هستند؛ والدها و زیرکارت‌ها جدا شمرده شده‌اند و این اعداد درصد پیشرفت نیستند. dependency حل‌نشده به‌معنی مجوز فعال‌سازی نیست.
+- ۱۹ کارت اصلی و PASS تاریخی Gate در جای خود حفظ شده‌اند؛ این به معنی تکمیل بازبینی جاری، اصلاح ورود PWA یا PASS جدید نیست. در ثبت ۱۹ اکتبر، ردیف‌های P00 شامل ۵۰ `DONE`، ۹ `TODO`، ۹ `BLOCKED` و ۶ `AWAITING_MANUAL_QA` هستند؛ والدها و زیرکارت‌ها جدا شمرده شده‌اند و این اعداد درصد پیشرفت نیستند. dependency حل‌نشده به‌معنی مجوز فعال‌سازی نیست.
 - بازبینی جاری در [راهنمای تست دستی، بخش فاز صفر](راهنمای%20جامع%20تست%20دستی%20فازهای%20۰۰%20تا%20۱۰.md) شامل smoke و تأیید انسانی Web/PWA (`P00-T05`)، روشن‌شدن قرارداد و تست سازگاری (`P00-T07`) و تأییدهای انسانی/خارجی کسب‌وکار (`P00-T08`) باز است. Android، Desktop و iOS خارج از چرخه مورد تأیید فعلی‌اند، نه PASS آن.
 - زنجیره `P00-PWA-AUTH-WP-021`، یکپارچه‌سازی نشست وب `P00-PWA-AUTH-WEB-022` و QA انسانی انتهابه‌انتها `P00-PWA-AUTH-QA-023` تکمیل نشده‌اند. مانع فعلی حذف وردپرس در `P00-PWA-AUTH-WP-021C04B03C02` است؛ آزمایش ساختگی جای اصلاح و QA واقعی را نمی‌گیرد.
 - مسیر Evidence تاریخی Gate که در Master آمده در این بازبینی موجود نبود؛ ثبت PASS قبلی حفظ می‌شود ولی جزئیات آن مستقلاً قابل بازیابی نبود. گزارش تطبیق، مغایرت نسخه‌ها و مسیر مدارک را در [گزارش همگام‌سازی](evidence/P00-STATUS-SYNC-20261018/summary.md) ببینید. وردپرس‌ها و پایگاه‌داده‌های نگهداری‌شده نباید برای این بازبینی حذف یا بازنشانی شوند.
@@ -93,6 +93,7 @@
 | BLOCKED | P00-PWA-AUTH-WP-021C04B03C | AI | P00-PWA-AUTH-WP-021C04B03C02 | [P00-PWA-AUTH-WP-021C04B03C](tasks/P00-PWA-AUTH-WP-021C04B03C.md) |
 | BLOCKED | P00-PWA-AUTH-WP-021C04B03D | AI | P00-PWA-AUTH-WP-021C04B03C | [P00-PWA-AUTH-WP-021C04B03D](tasks/P00-PWA-AUTH-WP-021C04B03D.md) |
 | BLOCKED | P00-PWA-AUTH-WP-021C04B03 | AI | P00-PWA-AUTH-WP-021C04B03D | [P00-PWA-AUTH-WP-021C04B03](tasks/P00-PWA-AUTH-WP-021C04B03.md) |
+| DONE | P00-PWA-AUTH-WP-021C04B04A | AI | P00-PWA-AUTH-WP-021C04B02 | [P00-PWA-AUTH-WP-021C04B04A](tasks/P00-PWA-AUTH-WP-021C04B04A.md) |
 | TODO | P00-PWA-AUTH-WP-021C04B04 | BOTH | P00-PWA-AUTH-WP-021C04B03 | [P00-PWA-AUTH-WP-021C04B04](tasks/P00-PWA-AUTH-WP-021C04B04.md) |
 | TODO | P00-PWA-AUTH-WP-021C04B05 | AI | P00-PWA-AUTH-WP-021C04B04 | [P00-PWA-AUTH-WP-021C04B05](tasks/P00-PWA-AUTH-WP-021C04B05.md) |
 | TODO | P00-PWA-AUTH-WP-021C04B06 | AI | P00-PWA-AUTH-WP-021C04B05 | [P00-PWA-AUTH-WP-021C04B06](tasks/P00-PWA-AUTH-WP-021C04B06.md) |
