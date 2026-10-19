@@ -34,6 +34,7 @@ class BrowserCookieRefreshTest {
         val urls = mutableListOf<String>()
         var refreshCredentials: String? = null
         var refreshBody: String? = null
+        var refreshHeader: String? = null
         global.fetch = { input: dynamic, init: dynamic ->
             val url = input.toString() as String
             urls.add(url)
@@ -41,6 +42,8 @@ class BrowserCookieRefreshTest {
                 url.contains("/api/auth/web/refresh") -> {
                     refreshCredentials = init.credentials as String?
                     refreshBody = init.body as String?
+                    val headers = js("new Headers(init.headers)")
+                    refreshHeader = headers.get("X-Carmilla-Web-Request") as String?
                     resolvedResponse(url, js("new Response('{\"accessToken\":\"synthetic-new-access\"}', {status: 200, headers: {'Content-Type':'application/json'}})"))
                 }
                 urls.count { it.contains("/protected") } == 1 ->
@@ -57,6 +60,7 @@ class BrowserCookieRefreshTest {
             assertEquals(200, status, "synthetic request URLs: ${urls.joinToString()}")
             assertEquals(1, urls.count { it.contains("/api/auth/web/refresh") })
             assertEquals("include", refreshCredentials)
+            assertEquals("1", refreshHeader)
             assertEquals(null, refreshBody)
             assertEquals("synthetic-new-access", tokens.access)
             assertEquals("", tokens.storedRefresh)

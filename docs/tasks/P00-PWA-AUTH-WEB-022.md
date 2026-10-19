@@ -8,3 +8,5 @@
 The independently scoped bearer/redirect hardening child `P00-PWA-AUTH-WEB-022A` has automated evidence but awaits manual integration and compatibility QA. It does not implement session lifecycle or complete this parent.
 
 `WEB-022B` implements only 401-triggered cookie refresh, and corrects the browser-incompatible URL-security regex; it awaits integrated manual QA. [Evidence](../evidence/P00-PWA-AUTH-WEB-022B/verification.md). Startup restore, cross-tab coordination, logout and WP guard integration remain open.
+
+`WEB-022C` supplies the scoped client-side web request header, awaiting real backend and owner QA. [Evidence](../evidence/P00-PWA-AUTH-WEB-022C/verification.md). Server-side request policy and route integration are not implied.

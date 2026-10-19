@@ -1,6 +1,7 @@
 package com.kazemieh.network.common
 
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.http.Url
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.promise
@@ -11,6 +12,39 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class BrowserFetchSecurityTest {
+    @Test
+    fun `web auth header is restricted to approved browser POST paths`(): Promise<Unit> = MainScope().promise {
+        val global = js("globalThis")
+        val original = global.fetch
+        val seen = mutableListOf<Pair<String, String?>>()
+        global.fetch = { input: dynamic, init: dynamic ->
+            val headers = js("new Headers(init.headers)")
+            seen.add(input.toString() to (headers.get("X-Carmilla-Web-Request") as String?))
+            js("Promise.resolve(new Response('', {status: 200}))")
+        }
+        ApiConfig.baseUrlOverride = "https://api.example.test/base/"
+        val tokenProvider = object : TokenProvider {
+            override fun saveTokens(accessToken: String, refreshToken: String) = Unit
+            override fun getAccessToken(): String? = null
+            override fun getRefreshToken(): String? = null
+            override fun clearTokens() = Unit
+            override fun setOnTokenExpiredListener(listener: () -> Unit) = Unit
+            override fun notifyTokenExpired() = Unit
+        }
+        val client = HttpClientFactory.create(tokenProvider)
+        try {
+            client.post("/api/auth/web/login")
+            client.post("https://api.example.test/base/api/auth/web/refresh")
+            client.get("https://api.example.test/base/api/auth/web/login")
+            client.post("https://api.example.test/base/api/auth/login")
+            client.post("https://api.example.test/base/api/auth/webish/login")
+            client.post("https://other.example.test/base/api/auth/web/login")
+            client.post("https://api.example.test/base/api/auth/web/%2Flogin")
+            assertEquals(listOf("1", "1", null, null, null, null, null), seen.map { it.second })
+            assertEquals("https://api.example.test/base/api/auth/web/login", seen.first().first)
+        } finally { client.close(); ApiConfig.baseUrlOverride = null; global.fetch = original }
+    }
+
     @Test
     fun `wordpress subdirectory paths survive browser request construction`(): Promise<Unit> = MainScope().promise {
         val global = js("globalThis")

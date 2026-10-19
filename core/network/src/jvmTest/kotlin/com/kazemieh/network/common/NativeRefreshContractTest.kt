@@ -26,9 +26,11 @@ class NativeRefreshContractTest {
         val server = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
         var refreshRequests = 0
         var sentSyntheticRefresh = false
+        var nativeWebHeader: String? = null
         var omitRotatedRefresh = false
         server.createContext("/api/auth/refresh") { exchange ->
             refreshRequests++
+            nativeWebHeader = exchange.requestHeaders.getFirst("X-Carmilla-Web-Request")
             sentSyntheticRefresh = exchange.requestBody.bufferedReader().readText().contains("synthetic-refresh")
             val body = (if (omitRotatedRefresh) """{"accessToken":"synthetic-new-access"}""" else """{"accessToken":"synthetic-new-access","refreshToken":"synthetic-new-refresh"}""").toByteArray()
             exchange.responseHeaders.add("Content-Type", "application/json")
@@ -56,6 +58,7 @@ class NativeRefreshContractTest {
             assertEquals(200, client.get("/protected").status.value)
             assertEquals(1, refreshRequests)
             assertTrue(sentSyntheticRefresh)
+            assertEquals(null, nativeWebHeader)
             assertEquals("synthetic-new-access", tokens.access)
             assertEquals("synthetic-new-refresh", tokens.refresh)
             assertEquals(0, tokens.expired)

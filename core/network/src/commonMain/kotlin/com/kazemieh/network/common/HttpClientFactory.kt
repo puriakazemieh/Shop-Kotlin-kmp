@@ -26,7 +26,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.http.isSuccess
@@ -140,6 +142,7 @@ object HttpClientFactory {
 //                }
             }
             install(BackendPathPlugin)
+            install(WebAuthRequestPlugin)
             install(BearerScopePlugin)
 
         }
@@ -152,6 +155,23 @@ val BackendPathPlugin = createClientPlugin("BackendPathPlugin") {
             val path = request.url.build().encodedPath
             val resolved = ApiConfig.resolveInternalApiPath(path)
             if (resolved != path) request.url.encodedPath = resolved
+        }
+    }
+}
+
+/** Browser auth POSTs require the server's custom-header CSRF precondition. */
+val WebAuthRequestPlugin = createClientPlugin("WebAuthRequestPlugin") {
+    on(SendingRequest) { request, _ ->
+        if (PlatformConfig.usesWebSessionCookie) {
+            val url = request.url.build()
+            val allowed = runCatching {
+                val basePath = Url(ApiConfig.baseUrl).encodedPath.trimEnd('/')
+                val prefix = "$basePath/api/auth/web/"
+                request.method == HttpMethod.Post && ApiConfig.isApprovedApiUrl(url) &&
+                    url.encodedPath.startsWith(prefix) && url.encodedPath.length > prefix.length
+            }.getOrDefault(false)
+            request.headers.remove("X-Carmilla-Web-Request")
+            if (allowed) request.headers.append("X-Carmilla-Web-Request", "1")
         }
     }
 }
