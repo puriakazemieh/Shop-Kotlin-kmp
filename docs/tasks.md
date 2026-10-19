@@ -54,7 +54,7 @@
 
 ### همگام‌سازی وضعیت P00 — ۱۸ اکتبر ۲۰۲۶
 
-- ۱۹ کارت اصلی و PASS تاریخی Gate در جای خود حفظ شده‌اند؛ این به معنی تکمیل بازبینی جاری، اصلاح ورود PWA یا PASS جدید نیست. پس از بازآزمایی ترکیبی هویت و بررسی race کد یک‌بارمصرف، در کل ردیف‌های P00 تعداد ۴۷ `DONE`، ۹ `TODO`، ۹ `BLOCKED` و ۲ `AWAITING_MANUAL_QA` است؛ والدها و زیرکارت‌ها جدا شمرده شده‌اند و این اعداد درصد پیشرفت نیستند. در کل صف در زمان این ثبت هیچ ردیف `READY` وجود ندارد؛ dependency حل‌نشده به‌معنی مجوز فعال‌سازی نیست.
+- ۱۹ کارت اصلی و PASS تاریخی Gate در جای خود حفظ شده‌اند؛ این به معنی تکمیل بازبینی جاری، اصلاح ورود PWA یا PASS جدید نیست. در ثبت ۱۹ اکتبر، ردیف‌های P00 شامل ۴۹ `DONE`، ۹ `TODO`، ۹ `BLOCKED` و ۶ `AWAITING_MANUAL_QA` هستند؛ والدها و زیرکارت‌ها جدا شمرده شده‌اند و این اعداد درصد پیشرفت نیستند. dependency حل‌نشده به‌معنی مجوز فعال‌سازی نیست.
 - بازبینی جاری در [راهنمای تست دستی، بخش فاز صفر](راهنمای%20جامع%20تست%20دستی%20فازهای%20۰۰%20تا%20۱۰.md) شامل smoke و تأیید انسانی Web/PWA (`P00-T05`)، روشن‌شدن قرارداد و تست سازگاری (`P00-T07`) و تأییدهای انسانی/خارجی کسب‌وکار (`P00-T08`) باز است. Android، Desktop و iOS خارج از چرخه مورد تأیید فعلی‌اند، نه PASS آن.
 - زنجیره `P00-PWA-AUTH-WP-021`، یکپارچه‌سازی نشست وب `P00-PWA-AUTH-WEB-022` و QA انسانی انتهابه‌انتها `P00-PWA-AUTH-QA-023` تکمیل نشده‌اند. مانع فعلی حذف وردپرس در `P00-PWA-AUTH-WP-021C04B03C02` است؛ آزمایش ساختگی جای اصلاح و QA واقعی را نمی‌گیرد.
 - مسیر Evidence تاریخی Gate که در Master آمده در این بازبینی موجود نبود؛ ثبت PASS قبلی حفظ می‌شود ولی جزئیات آن مستقلاً قابل بازیابی نبود. گزارش تطبیق، مغایرت نسخه‌ها و مسیر مدارک را در [گزارش همگام‌سازی](evidence/P00-STATUS-SYNC-20261018/summary.md) ببینید. وردپرس‌ها و پایگاه‌داده‌های نگهداری‌شده نباید برای این بازبینی حذف یا بازنشانی شوند.
@@ -114,6 +114,7 @@
 | AWAITING_MANUAL_QA | P00-PWA-AUTH-WEB-022B | BOTH | P00-PWA-AUTH-WEB-022A | [P00-PWA-AUTH-WEB-022B](tasks/P00-PWA-AUTH-WEB-022B.md) |
 | AWAITING_MANUAL_QA | P00-PWA-AUTH-WEB-022C | BOTH | P00-PWA-AUTH-WEB-022B | [P00-PWA-AUTH-WEB-022C](tasks/P00-PWA-AUTH-WEB-022C.md) |
 | AWAITING_MANUAL_QA | P00-PWA-AUTH-WEB-022D | BOTH | P00-PWA-AUTH-WEB-022C | [P00-PWA-AUTH-WEB-022D](tasks/P00-PWA-AUTH-WEB-022D.md) |
+| DONE | P00-PWA-AUTH-WEB-022E | AI | P00-PWA-AUTH-WEB-022D | [P00-PWA-AUTH-WEB-022E](tasks/P00-PWA-AUTH-WEB-022E.md) |
 | TODO | P00-PWA-AUTH-WEB-022 | AI | P00-PWA-AUTH-WP-021 | [P00-PWA-AUTH-WEB-022](tasks/P00-PWA-AUTH-WEB-022.md) |
 | TODO | P00-PWA-AUTH-QA-023 | BOTH | P00-PWA-AUTH-WEB-022 | [P00-PWA-AUTH-QA-023](tasks/P00-PWA-AUTH-QA-023.md) |
 | DONE | P00-QA-COMPAT-024 | AI | P00-QA-MANUAL-018 | [P00-QA-COMPAT-024](tasks/P00-QA-COMPAT-024.md) |
