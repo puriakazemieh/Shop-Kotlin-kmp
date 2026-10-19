@@ -28,7 +28,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.http.encodedPath
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
 object HttpClientFactory {
@@ -86,19 +89,22 @@ object HttpClientFactory {
                     refreshTokens {
                         val refreshToken = tokenProvider.getRefreshToken()
 
-                        if (refreshToken == null) {
+                        val webCookie = PlatformConfig.usesWebSessionCookie
+                        if (!webCookie && refreshToken.isNullOrBlank()) {
                             return@refreshTokens null
                         }
 
                         try {
-                            // درخواست refresh token
-                            val response: RefreshTokenResponse =
-                                client.post("${ApiConfig.baseUrl}${if (PlatformConfig.usesWebSessionCookie) "api/auth/web/refresh" else "api/auth/refresh"}") {
-                                    markAsRefreshTokenRequest()
-                                    if (!PlatformConfig.usesWebSessionCookie) {
-                                        setBody(RefreshTokenRequest(refreshToken))
-                                    }
-                                }.body()
+                            val httpResponse = client.post("${ApiConfig.baseUrl}${if (webCookie) "api/auth/web/refresh" else "api/auth/refresh"}") {
+                                markAsRefreshTokenRequest()
+                                if (!webCookie) {
+                                    setBody(RefreshTokenRequest(requireNotNull(refreshToken)))
+                                }
+                            }
+                            check(httpResponse.status.isSuccess())
+                            val response: RefreshTokenResponse = httpResponse.body()
+                            check(response.accessToken.isNotBlank())
+                            check(if (webCookie) response.refreshToken.isEmpty() else response.refreshToken.isNotBlank())
 
                             // ذخیره توکن‌های جدید
                             tokenProvider.saveTokens(
@@ -110,8 +116,9 @@ object HttpClientFactory {
                                 accessToken = response.accessToken,
                                 refreshToken = response.refreshToken
                             )
+                        } catch (e: CancellationException) {
+                            throw e
                         } catch (e: Exception) {
-                            e.ld("token Exception")
                             tokenProvider.notifyTokenExpired()
                             tokenProvider.clearTokens()
                             null
@@ -142,10 +149,9 @@ object HttpClientFactory {
 val BackendPathPlugin = createClientPlugin("BackendPathPlugin") {
     onRequest { request, _ ->
         if (ApiConfig.isApprovedApiOrigin(request.url.build())) {
-            request.url.pathSegments = ApiConfig.resolveInternalApiPath(request.url.build().encodedPath)
-                .trim('/')
-                .split('/')
-                .filter { it.isNotEmpty() }
+            val path = request.url.build().encodedPath
+            val resolved = ApiConfig.resolveInternalApiPath(path)
+            if (resolved != path) request.url.encodedPath = resolved
         }
     }
 }

@@ -21,7 +21,7 @@ object ApiConfig {
         val base = Url(baseUrl)
         val path = url.encodedPath
         val basePath = base.encodedPath.trimEnd('/')
-        val ambiguousPath = Regex("(?i)%2e|%2f|%5c|%25|\\\\|(?:^|/)\\.{1,2}(?:/|$)")
+        val ambiguousPath = Regex("%2e|%2f|%5c|%25|\\\\|(?:^|/)\\.{1,2}(?:/|$)", RegexOption.IGNORE_CASE)
         base.protocol.name in setOf("http", "https") &&
             url.protocol == base.protocol && url.host.equals(base.host, ignoreCase = true) &&
             url.port == base.port && !ambiguousPath.containsMatchIn(path) &&

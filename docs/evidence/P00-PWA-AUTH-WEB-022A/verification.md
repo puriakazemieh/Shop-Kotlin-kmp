@@ -2,6 +2,8 @@
 
 2026-10-18. Status: **AWAITING_MANUAL_QA**, not a complete browser-session implementation or a passed P00 gate. No existing WordPress installation or account was changed. Synthetic tokens were used in tests and their values were not logged here.
 
+2026-10-19 follow-up: `WEB-022B` found that the Java-style inline regex flag in this implementation made the JS URL check reject even approved URLs. It was corrected and the browser bearer/negative tests were expanded. See [follow-up evidence](../P00-PWA-AUTH-WEB-022B/verification.md). The original JS Fetch-setting test alone did not establish successful bearer injection; manual integration remains pending.
+
 ## Changes and evidence
 
 - The original JVM HTTP test failed before the fix because a second local server on the same hostname received an Authorization header. The test used disposable in-process servers and a synthetic token, not an external endpoint.
