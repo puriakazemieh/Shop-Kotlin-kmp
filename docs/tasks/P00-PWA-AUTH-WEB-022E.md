@@ -7,4 +7,4 @@
 
 ## Result — 2026-10-19
 
-One mocked-repository JVM test reproduced the sequential stale-token logout defect. It is a characterization test, not a concurrent real-database, cookie, browser or integration test. The server defect remains open; this child does not change parent status. See [evidence](../evidence/P00-PWA-AUTH-WEB-022E/verification.md).
+The defect was reproduced first with a mocked repository, and then using transactional Spring services with an isolated PostgreSQL test container. These are sequential characterizations, not concurrent HTTP, cookie or browser tests. The server defect remains open; this child does not change parent status. See [evidence](../evidence/P00-PWA-AUTH-WEB-022E/verification.md).
