@@ -7,3 +7,5 @@
 - No public routes, live network change, migration or modification of preserved WordPress sites. Evidence: `docs/evidence/P00-PWA-AUTH-WP-021C04C/`. Human network QA remains `021C07`.
 
 Independent characterization `021C04C01` reproduced two successful legacy mobile logins using one OTP under a controlled race on three real synthetic WordPress versions. [Evidence](../evidence/P00-PWA-AUTH-WP-021C04C01/otp-concurrency.md). It does not fix the verifier, prove a cache configuration safe, or complete this card.
+
+`021C04C02` adds an [inactive atomic consumer](../evidence/P00-PWA-AUTH-WP-021C04C02/verification.md), tested only with database-backed synthetic transients. Existing endpoints, issuance, attempt limits and identity resolution remain unchanged and unsafe; this parent remains TODO.
