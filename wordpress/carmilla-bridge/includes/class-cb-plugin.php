@@ -68,6 +68,8 @@ class CB_Plugin {
 				$origin_clean = untrailingslashit( $origin );
 				$allowed_origins = apply_filters( 'cb_allowed_origins', array(
 					untrailingslashit( get_site_url() ),
+					// Local PWA deployments served by XAMPP normally use port 80.
+					'http://localhost',
 					'http://localhost:8080',
 					'http://localhost:8081',
 				) );
@@ -88,7 +90,8 @@ class CB_Plugin {
 			}
 			
 			header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
-			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce' );
+			// PWA manifest revalidation uses If-None-Match after its first successful fetch.
+			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, If-None-Match' );
 			header( 'Vary: Origin', false );
 			// Preflight: answer OPTIONS immediately with the headers above.
 			if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) ) {

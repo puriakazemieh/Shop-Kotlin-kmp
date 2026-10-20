@@ -166,6 +166,7 @@
     <string name="newPasswordHint">رمز عبور جدید</string>
     <string name="confirmPasswordHint">تکرار رمز عبور جدید</string>
     <string name="sendResetLink">ارسال لینک بازیابی</string>
+	<string name="sendOtp">ارسال کد تأیید</string>
     <string name="resetPasswordEmailSent">ایمیل بازنشانی رمز عبور برای شما ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید.</string>
     <string name="passwordResetSuccess">رمز عبور شما با موفقیت تغییر کرد</string>
     <string name="invalidResetToken">این لینک بازنشانی نامعتبر است یا منقضی شده. لطفاً دوباره تلاش کنید.</string>

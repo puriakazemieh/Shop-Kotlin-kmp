@@ -177,6 +177,7 @@
     <string name="newPasswordHint">New Password</string>
     <string name="confirmPasswordHint">Confirm New Password</string>
     <string name="sendResetLink">Send Reset Link</string>
+	<string name="sendOtp">Send verification code</string>
     <string name="resetPasswordEmailSent">A reset password email has been sent. Please check your inbox.</string>
     <string name="passwordResetSuccess">Your password has been changed successfully.</string>
     <string name="invalidResetToken">The reset link is invalid or has expired. Please try again.</string>

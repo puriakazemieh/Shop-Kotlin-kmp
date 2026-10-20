@@ -293,6 +293,7 @@ object Resources {
         val NewPasswordHint = CommonRes.string.newPasswordHint
         val ConfirmPasswordHint = CommonRes.string.confirmPasswordHint
         val SendResetLink = CommonRes.string.sendResetLink
+		val SendOtp = CommonRes.string.sendOtp
         val PasswordResetEmailSent = CommonRes.string.resetPasswordEmailSent
         val PasswordResetSuccess = CommonRes.string.passwordResetSuccess
         val InvalidResetToken = CommonRes.string.invalidResetToken

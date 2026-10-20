@@ -179,7 +179,7 @@ fun LoginScreen(
             Spacer(Modifier.height(24.dp))
 
             AuthButton(
-                if (state.isOtpMode && !state.otpSent) stringResource(Resources.String.SendResetLink)
+                if (state.isOtpMode && !state.otpSent) stringResource(Resources.String.SendOtp)
                 else stringResource(Resources.String.Login)
             ) {
                 viewModel.handleIntent(AuthIntent.SubmitLogin)
