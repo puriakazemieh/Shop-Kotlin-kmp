@@ -121,6 +121,7 @@ class CB_Standalone_Boot {
 			'meta-boxes.php',
 			'class-cb-identity-supported-writer.php',
 			'class-cb-deletion-incident-runtime.php',
+			'class-cb-managed-user-deletion.php',
 			'class-cb-auth-controller.php',
 			'class-cb-catalog-controller.php',
 			'class-cb-blog-controller.php',
@@ -171,6 +172,9 @@ class CB_Standalone_Boot {
 		}
 		if ( class_exists( 'CB_Deletion_Incident_Runtime' ) ) {
 			CB_Deletion_Incident_Runtime::boot();
+		}
+		if ( class_exists( 'CB_Managed_User_Deletion' ) ) {
+			CB_Managed_User_Deletion::boot();
 		}
 	}
 

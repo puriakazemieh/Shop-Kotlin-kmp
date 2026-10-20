@@ -47,6 +47,10 @@ final class CB_Identity_Supported_Writer {
 				$this->mark_recovery( $user_id );
 				return new WP_Error( 'cb_identity_recovery_required', 'Account creation requires recovery.' );
 			}
+			if ( ! update_user_meta( $user_id, 'cb_identity_managed', '1' ) ) {
+				$this->mark_recovery( $user_id );
+				return new WP_Error( 'cb_identity_recovery_required', 'Account creation requires recovery.' );
+			}
 			if ( ! $this->matches_source( $user_id, $login, $email, $mobile ) || $this->owners( $login, $email, $mobile ) !== array( $user_id ) ) {
 				// Callbacks may have had irreversible effects.  Do not delete the
 				// account or claim rollback; retain a minimal local recovery marker.
