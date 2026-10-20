@@ -24,10 +24,8 @@ web font.
 - A browser inspection confirmed that the rebuilt registration form renders
   the account, OTP-mode, and existing-account actions.
 
-## Remaining owner QA
+## Owner QA result
 
-This card remains `AWAITING_MANUAL_QA`. The owner must submit the browser
-registration flow once with a new synthetic identity, then verify that a
-second registration using the same identity is rejected and that the compact
-page can scroll to every action. No retained site or personal data is in
-scope.
+On 2026-10-20 the owner confirmed that the supplied disposable-PWA registration
+flow and the compact form behavior passed. No identity value, credential,
+code or token was retained in this evidence.

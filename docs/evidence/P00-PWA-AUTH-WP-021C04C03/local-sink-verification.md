@@ -14,3 +14,11 @@ account listing.
 
 Human PWA UI testing, the three-invalid-attempt case and persistent-object-cache
 rejection remain owner QA.
+
+## Owner QA progress — 2026-10-20
+
+The owner confirmed the PWA's successful first use and rejected reuse of a
+local-only synthetic OTP. This preserves the card's `AWAITING_MANUAL_QA`
+status: the separate three-invalid-attempt lockout scenario has not yet been
+explicitly confirmed. Persistent-object-cache rejection is not applicable to
+this disposable site because it has no persistent object cache.
