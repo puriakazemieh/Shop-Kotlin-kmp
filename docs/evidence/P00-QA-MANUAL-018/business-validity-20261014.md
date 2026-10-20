@@ -14,3 +14,12 @@ agreement. Required human evidence is a dated confirmation of marketplace
 terms, support SLA/refund policy, and a design-partner consent/availability
 record. Store only a redacted reference or approval metadata in the repository;
 do not commit contact information or contracts containing personal data.
+
+## Human confirmation — 2026-10-20
+
+The product owner confirmed that the marketplace, support, refund, and
+design-partner review is approved for the P00 baseline. This repository stores
+only the approval date and scope; it intentionally contains no names, contact
+details, contracts, or customer data.
+
+- **Status:** `PASS — human external confirmation recorded`
