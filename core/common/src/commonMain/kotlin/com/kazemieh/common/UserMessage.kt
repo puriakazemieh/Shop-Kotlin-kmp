@@ -13,6 +13,7 @@ fun String.toUserMessage(): StringResource {
         "INVALID_CURRENT_PASSWORD" -> Res.string.invalidCurrentPassword
         "SAME_AS_OLD_PASSWORD" -> Res.string.sameAsOldPassword
         "INVALID_RESET_TOKEN" -> Res.string.invalidResetToken
+        "BAD_OTP" -> Res.string.invalidOtp
 
         // Category
         "CATEGORY_NOT_FOUND" -> Res.string.categoryNotFound
