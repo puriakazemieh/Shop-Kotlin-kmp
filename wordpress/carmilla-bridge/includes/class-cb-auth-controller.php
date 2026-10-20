@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 require_once __DIR__ . '/class-cb-identity-supported-writer.php';
+require_once __DIR__ . '/class-cb-otp-atomic-consumer.php';
 
 class CB_Auth_Controller {
 
@@ -70,6 +71,12 @@ class CB_Auth_Controller {
 	 * Generate + "send" a 6-digit OTP for a mobile with purpose, cooldown, and hash.
 	 */
 	private function issue_otp( string $mobile, string $purpose ): string {
+		// Atomic consumption relies on database-backed transients.  An external
+		// object cache has different delete/read semantics, so never send a code
+		// that the verification path would be unable to consume safely.
+		if ( wp_using_ext_object_cache() ) {
+			throw new RuntimeException( 'ورود با کد تأیید موقتاً در دسترس نیست.' );
+		}
 		$hash_key = md5( $mobile . '_' . $purpose );
 
 		if ( get_transient( 'cb_otp_cooldown_' . $hash_key ) ) {
@@ -109,8 +116,7 @@ class CB_Auth_Controller {
 
 	private function verify_otp( string $mobile, string $code, string $purpose ): bool {
 		$hash_key = md5( $mobile . '_' . $purpose );
-		$stored = get_transient( 'cb_otp_' . $hash_key );
-		if ( ! $stored ) {
+		if ( wp_using_ext_object_cache() || ! preg_match( '/\A[0-9]{6}\z/', trim( $code ) ) ) {
 			return false;
 		}
 
@@ -121,13 +127,19 @@ class CB_Auth_Controller {
 			return false;
 		}
 
-		if ( wp_check_password( trim( $code ), $stored ) ) {
-			delete_transient( 'cb_otp_' . $hash_key );
+		if ( ( new CB_OTP_Atomic_Consumer() )->consume( $mobile, $purpose, $code ) ) {
 			delete_transient( 'cb_otp_attempts_' . $hash_key );
 			return true;
 		}
 
-		set_transient( 'cb_otp_attempts_' . $hash_key, $attempts + 1, 3 * MINUTE_IN_SECONDS );
+		// Attempt counting is advisory only.  It is deliberately not used to
+		// authorize the code: authorization always goes through the atomic
+		// database delete above.  Do not create an attempt record for expiry,
+		// database failure, or a concurrent winning request.
+		$stored = get_transient( 'cb_otp_' . $hash_key );
+		if ( is_string( $stored ) && $stored !== '' && ! wp_check_password( trim( $code ), $stored ) ) {
+			set_transient( 'cb_otp_attempts_' . $hash_key, $attempts + 1, 3 * MINUTE_IN_SECONDS );
+		}
 		return false;
 	}
 
@@ -136,8 +148,13 @@ class CB_Auth_Controller {
 		if ( $mobile === '' ) {
 			return cb_error( 'شماره موبایل الزامی است.', 400, 'VALIDATION' );
 		}
+		if ( wp_using_ext_object_cache() ) {
+			return cb_error( 'ورود با کد تأیید موقتاً در دسترس نیست.', 503, 'OTP_UNAVAILABLE' );
+		}
 		try {
 			$this->issue_otp( $mobile, 'login' );
+		} catch ( RuntimeException $e ) {
+			return cb_error( $e->getMessage(), 503, 'OTP_UNAVAILABLE' );
 		} catch ( Exception $e ) {
 			return cb_error( $e->getMessage(), 429, 'RATE_LIMIT' );
 		}
@@ -176,6 +193,9 @@ class CB_Auth_Controller {
 				}
 			}
 		} elseif ( $mobile !== '' ) {
+			if ( wp_using_ext_object_cache() ) {
+				return cb_error( 'بازیابی با کد تأیید موقتاً در دسترس نیست.', 503, 'OTP_UNAVAILABLE' );
+			}
 			try {
 				$this->issue_otp( $mobile, 'reset' ); // reuse OTP channel for mobile reset
 			} catch ( Exception $e ) {

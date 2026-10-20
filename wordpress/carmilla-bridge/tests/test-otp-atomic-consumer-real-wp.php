@@ -14,7 +14,7 @@ if ( ( $argv[1] ?? '' ) === 'worker' ) {
 	$_SERVER['HTTP_HOST'] = 'qa.example.test'; $_SERVER['SERVER_NAME'] = 'qa.example.test'; $_SERVER['SERVER_PORT'] = '443'; $_SERVER['HTTPS'] = 'on';
 	try {
 		require ABSPATH . 'wp-settings.php'; wp_installing( false );
-		require_once '/bridge/includes/class-cb-otp-atomic-consumer.php';
+		require_once '/work/includes/class-cb-otp-atomic-consumer.php';
 		$code = trim( (string) fgets( STDIN ) );
 		add_filter( 'check_password', static function ( $valid ) {
 			if ( ! $valid ) { echo "BAD_CHECK\n"; flush(); exit( 3 ); }
@@ -30,7 +30,7 @@ if ( ( $argv[1] ?? '' ) === 'worker' ) {
 $workers = array(); $stage = 'setup';
 try {
 	require __DIR__ . '/experiment-identity-shared-references.php'; wp_installing( false );
-	require_once '/bridge/includes/class-cb-otp-atomic-consumer.php';
+	require_once '/work/includes/class-cb-otp-atomic-consumer.php';
 	global $wpdb, $wp_version;
 	$consumer = new CB_OTP_Atomic_Consumer(); $key = 'cb_otp_' . md5( $task_mobile . '_login' );
 	$code = (string) wp_rand( 100000, 999999 );

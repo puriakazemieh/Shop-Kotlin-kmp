@@ -21,6 +21,9 @@ try {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	add_filter( 'pre_wp_mail', static function () { return true; } );
 	wp_install( 'Synthetic writer QA', 'qa_admin', 'synthetic@example.test', false, '', 'synthetic-only-password' );
+	// Exercise ordinary runtime transient storage, rather than the installer-only
+	// in-memory transient shortcut.
+	wp_installing( false );
 	require_once '/work/includes/helpers.php'; require_once '/work/includes/class-cb-jwt.php';
 	require_once '/work/includes/class-cb-identity-supported-writer.php'; require_once '/work/includes/class-cb-auth-controller.php';
 	global $wpdb; $wpdb->hide_errors();
@@ -56,6 +59,30 @@ try {
 	$ambiguous_request = new WP_REST_Request( 'POST' ); $ambiguous_request->set_param( 'username', '09120000002' ); $ambiguous_request->set_param( 'password', 'synthetic-only-password' );
 	$ambiguous_response = $controller->login( $ambiguous_request ); $ambiguous_data = $ambiguous_response->get_data();
 	$check( $ambiguous_response->get_status() === 401 && is_array( $ambiguous_data ) && ! isset( $ambiguous_data['accessToken'], $ambiguous_data['refreshToken'] ), 'login endpoint fails closed for ambiguous identity' );
+	$issued_codes = array();
+	$otp_override = static function ( $override, $mobile, $code ) use ( &$issued_codes ) {
+		$issued_codes[ $mobile ] = $code;
+		return true;
+	};
+	add_filter( 'cb_send_otp_override', $otp_override, 10, 3 );
+	$otp_mobile = '09120000004';
+	$send_otp = new WP_REST_Request( 'POST' ); $send_otp->set_param( 'mobile', $otp_mobile );
+	$send_response = $controller->send_login_otp( $send_otp );
+	$otp_login = new WP_REST_Request( 'POST' ); $otp_login->set_param( 'mobile', $otp_mobile ); $otp_login->set_param( 'otpCode', $issued_codes[ $otp_mobile ] ?? '' );
+	$otp_response = $controller->login_with_otp( $otp_login ); $otp_data = $otp_response->get_data();
+	$check( $send_response->get_status() === 200 && $otp_response->get_status() === 200 && is_array( $otp_data ) && isset( $otp_data['accessToken'], $otp_data['refreshToken'] ), 'OTP login creates or authenticates only after atomic consumption' );
+	$otp_reuse = $controller->login_with_otp( $otp_login ); $otp_reuse_data = $otp_reuse->get_data();
+	$check( $otp_reuse->get_status() === 401 && is_array( $otp_reuse_data ) && ! isset( $otp_reuse_data['accessToken'], $otp_reuse_data['refreshToken'] ), 'OTP login endpoint rejects sequential code reuse without credentials' );
+	$lock_mobile = '09120000005'; $lock_send = new WP_REST_Request( 'POST' ); $lock_send->set_param( 'mobile', $lock_mobile ); $controller->send_login_otp( $lock_send );
+	$wrong_otp = new WP_REST_Request( 'POST' ); $wrong_otp->set_param( 'mobile', $lock_mobile ); $wrong_otp->set_param( 'otpCode', '111111' );
+	$controller->login_with_otp( $wrong_otp ); $controller->login_with_otp( $wrong_otp ); $controller->login_with_otp( $wrong_otp );
+	$locked_valid = new WP_REST_Request( 'POST' ); $locked_valid->set_param( 'mobile', $lock_mobile ); $locked_valid->set_param( 'otpCode', $issued_codes[ $lock_mobile ] ?? '' );
+	$check( $controller->login_with_otp( $locked_valid )->get_status() === 401, 'three invalid OTP attempts lock the database-backed code' );
+	wp_using_ext_object_cache( true );
+	$cache_request = new WP_REST_Request( 'POST' ); $cache_request->set_param( 'mobile', '09120000006' );
+	$cache_response = $controller->send_login_otp( $cache_request ); wp_using_ext_object_cache( false );
+	$check( $cache_response->get_status() === 503 && ! isset( $issued_codes['09120000006'] ), 'OTP issuance fails closed when a persistent object cache is active' );
+	remove_filter( 'cb_send_otp_override', $otp_override, 10 );
 	global $wp_version; echo "Checks: {$checks}; failures: {$failures}.\n";
 	if ( ! $failures ) { echo 'PASS supported identity writer WP ' . $wp_version . ' PHP ' . PHP_VERSION . "\n"; }
 	exit( $failures ? 1 : 0 );
