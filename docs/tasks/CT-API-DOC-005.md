@@ -62,7 +62,9 @@ CT-API-DOC-005
 docs/contracts/API_CONTRACT.md auth/error/paging/idempotency و نسخه API یکسان Theme-only/Plugin-only/both و provider Spring را با نمونه redacted نگه دارد.
 
 ## خروجی مورد انتظار
-جدول endpoint/capability/owner و provider contract tests؛ تشخیص fixture از production؛ origin trusted و denial نمونه.
+جدول endpoint/capability/owner و provider contract tests؛ تشخیص fixture از production؛ origin trusted و denial نمونه. قرارداد باید envelope خطای نسخه‌دار را نیز صریح کند: `code` و `status` هر دو عدد HTTP، `errorCode` ثابت و ثبت‌شده، `message` فقط متن امن برای نمایش یا لاگ کنترل‌شده، و عدم ارسال exception/provider/SQL detail. کلاینت در دوران migration باید status قدیمیِ متنی و status عددی را بدون از دست‌دادن `errorCode` بخواند؛ پس از migration، هر دو provider فقط شکل canonical را تولید کنند.
+
+برای هر endpoint سه حالت ثبت می‌شود: route و method مورد انتظار، schema پاسخ موفق، و schema پاسخ خطا. جدول باید صریحاً نشان دهد کدام رفتار امروز فقط در WordPress است، کدام فقط در Spring است، و کدام در Theme-only/Plugin-only/co-install هنوز قابل ادعا نیست. این کارت صرفاً قرارداد و evidence است؛ اصلاح کد و parity کامل در کارت‌های اجرایی P00/P15 انجام می‌شود.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.

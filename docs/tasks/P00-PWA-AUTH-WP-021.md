@@ -19,3 +19,16 @@ Proposed child tasks, in dependency order:
 The proposals are recorded as child cards `P00-PWA-AUTH-WP-021A` through `021C`, with only the first ready. Then complete the existing PWA lifecycle card `P00-PWA-AUTH-WEB-022` and integrated owner QA `P00-PWA-AUTH-QA-023`. Creating the cards does not complete the work or constitute security approval.
 
 Evidence: `docs/evidence/P00-PWA-AUTH-WP-021/scope-review.md`.
+
+## تکمیل دامنه بر اساس مشاهدهٔ واقعی PWA — ۲۰ اکتبر ۲۰۲۶
+
+این کارت همان راه‌حل درستِ «ورود موفق ولی پروفایل مهمان» است؛ راه‌حل آن ذخیره‌کردن access/refresh token در `localStorage` نیست. در PWA، نگه‌داری token عمداً فقط در حافظه است تا secret قابل‌خواندن از JavaScript پایدار نشود. بنابراین هر reload یا ساخت دوبارهٔ برنامه، ورود مستقیمِ JWT را از بین می‌برد. در عین حال پیکربندی مرورگر، cookie-backed session را انتظار دارد ولی مسیرهای زیر در REST index فعلی WordPress ثبت نشده‌اند:
+
+- `POST /api/auth/web/login`
+- `POST /api/auth/web/register`
+- `POST /api/auth/web/refresh`
+- `POST /api/auth/web/logout`
+
+برای پوشش کامل تجربهٔ کاربر، یک مسیر cookie-backed برای ورود با OTP نیز باید طراحی و پیاده شود؛ endpoint مستقیم موبایل نباید برای مرورگر token پایدار برگرداند. پیاده‌سازی نهایی باید برای ورود با رمز، ثبت‌نام، ورود با OTP، refresh، logout و `GET /api/users/me` این رفتارها را اثبات کند: cookie فقط `HttpOnly`/`Secure` در production، origin و CSRF معتبر، rotation و revoke هر نشست، عدم افشای refresh token، persistence بعد از reload، و fail-closed در HTTP محلی خارج از harness تعیین‌شده.
+
+مانع identity/deletion این کارت پابرجاست: تا زمانی که deletion native WordPress بتواند نتیجهٔ مبهم یا recovery‌نشده داشته باشد، routeهای web نباید صرفاً برای رفع UI فعال شوند. بعد از رفع dependency، کار integration باید همچنان در `P00-PWA-AUTH-WEB-022` و QA واقعی در `P00-PWA-AUTH-QA-023` بماند.

@@ -59,10 +59,10 @@ P15-SPRING-API-004
 - مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
 
 ## هدف قابل اندازه‌گیری
-OpenAPI و contract diff برای عملیات اعلام‌شده KMP با WordPress Shared Core تهیه شود؛ Theme-only/Plugin-only/both سه mode یک provider WordPress باشند.
+OpenAPI و contract diff برای عملیات اعلام‌شده KMP با WordPress Shared Core تهیه شود؛ Theme-only/Plugin-only/both سه mode یک provider WordPress باشند. این diff باید route/method، schema موفق و خطا، status HTTP عددی، `errorCode` ثابت، paging، idempotency، authentication و capability denial را مقایسه کند. mismatch نباید با fallback UI یا fixture سبز پنهان شود.
 
 ## خروجی مورد انتظار
-endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود.
+endpoint/schema/auth/error/paging/idempotency و capability version یکسان؛ stub یا endpoint غایب به‌عنوان parity تولیدی پذیرفته نشود. برای هر اختلاف، خروجی باید owner و کارت اصلاح داشته باشد. نمونهٔ الزامیِ این بازبینی: WordPress عدد `status` و Spring مقدار enum/متنی برای status نفرستند؛ parser KMP در هر دو حالت transition `errorCode` را حفظ کند و تنها پس از migration، canonical numeric contract را enforce نماید.
 
 ## خارج از محدوده
 - هر Feature،provider،platform یا refactor خارج از همین Task ID.
