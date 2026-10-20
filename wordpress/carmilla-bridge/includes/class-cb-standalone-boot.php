@@ -120,6 +120,8 @@ class CB_Standalone_Boot {
 			'class-cb-cpt.php',
 			'meta-boxes.php',
 			'class-cb-identity-supported-writer.php',
+			'class-cb-identity-exact-audit.php',
+			'class-cb-identity-synthetic-migration.php',
 			'class-cb-deletion-incident-runtime.php',
 			'class-cb-managed-user-deletion.php',
 			'class-cb-auth-controller.php',
