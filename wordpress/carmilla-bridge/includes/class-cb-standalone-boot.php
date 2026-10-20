@@ -122,6 +122,7 @@ class CB_Standalone_Boot {
 			'class-cb-identity-supported-writer.php',
 			'class-cb-identity-exact-audit.php',
 			'class-cb-identity-synthetic-migration.php',
+			'class-cb-local-qa-otp-sink.php',
 			'class-cb-deletion-incident-runtime.php',
 			'class-cb-managed-user-deletion.php',
 			'class-cb-auth-controller.php',
@@ -177,6 +178,9 @@ class CB_Standalone_Boot {
 		}
 		if ( class_exists( 'CB_Managed_User_Deletion' ) ) {
 			CB_Managed_User_Deletion::boot();
+		}
+		if ( class_exists( 'CB_Local_QA_OTP_Sink' ) ) {
+			CB_Local_QA_OTP_Sink::boot();
 		}
 	}
 
