@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021C04C — isolated guarded OTP login
 
-- Status: AWAITING_MANUAL_QA; Size: M; Owner: AI; Risk: HIGH
+- Status: DONE; Size: M; Owner: AI; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04B`.
 - Review and implement/test safe one-time OTP verification, unique mobile-to-user resolution and guarded login with WP authentication filters. Include invalid, expired, reused and concurrently submitted OTP, duplicate mobile identities, first-use account creation and failure/redaction. No acceptance of an unverified or ambiguously owned mobile number.
 - The existing private transient verifier is a non-atomic read/check/delete. A mock verifier is not proof of actual integration; account for object caches and concurrent legacy mobile requests or fail closed for unsupported configurations. Preserve mobile contract; any security-sensitive shared change requires focused regression and real WP/database evidence. If larger than M, split before implementation.
@@ -16,3 +16,11 @@ The guarded-registration dependency is complete. The source implementation and
 disposable route-level checks are complete, but this card includes an active OTP
 route and therefore awaits the owner test in `021C04C03`. No later browser-session
 route may be activated or marked complete before that confirmation.
+
+## Completion — 2026-10-20
+
+The owner completed `021C04C03` on the disposable PWA, including the one-use,
+reuse rejection, attempt lockout and localized rejection-message checks. The
+route-level evidence and the required human QA are complete. This does not
+remove the separate native deletion/identity blocker that keeps `021C04D` and
+later session work blocked.

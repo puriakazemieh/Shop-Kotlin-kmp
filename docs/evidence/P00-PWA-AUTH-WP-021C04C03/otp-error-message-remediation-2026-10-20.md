@@ -28,5 +28,5 @@ consumed, expired or locked.
   was advanced so the browser fetches the new bundle.
 
 No mobile number, OTP value, token, credential or user identifier is recorded.
-The card remains `AWAITING_MANUAL_QA` until the owner sees the corrected
-localized message in the PWA.
+The owner confirmed the corrected localized message in the disposable PWA;
+the card is `DONE`.

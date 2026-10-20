@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021C04C03 — atomic OTP route manual QA
 
-- Status: AWAITING_MANUAL_QA; Size: S; Owner: BOTH; Risk: HIGH
+- Status: DONE; Size: S; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04C` (owner-authorized limited integration only).
 - Verify only against a disposable WordPress build configured **without** a persistent object cache. Do not use a retained site, personal mobile number, or real SMS provider.
 
@@ -16,6 +16,14 @@
 6. Record only pass/fail and HTTP status. Do not store codes, tokens, credentials, or personal mobile numbers.
 
 Success means a code works exactly once, three invalid attempts lock it, and unsupported persistent-cache mode fails closed. This QA does not complete the blocked identity/deletion parent or prove compatibility with a production cache topology.
+
+## Owner confirmation — 2026-10-20
+
+The owner confirmed the first-use/reuse behavior, the three-invalid-attempt
+lockout and the corrected Persian rejection message in the disposable PWA.
+The current disposable WordPress site has no persistent object cache, so the
+conditional cache step is not applicable. No synthetic identity value, OTP,
+credential or token is retained here.
 
 ## Local sink verification — 2026-10-20
 
