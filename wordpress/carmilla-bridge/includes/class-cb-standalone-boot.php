@@ -120,6 +120,7 @@ class CB_Standalone_Boot {
 			'class-cb-cpt.php',
 			'meta-boxes.php',
 			'class-cb-identity-supported-writer.php',
+			'class-cb-deletion-incident-runtime.php',
 			'class-cb-auth-controller.php',
 			'class-cb-catalog-controller.php',
 			'class-cb-blog-controller.php',
@@ -167,6 +168,9 @@ class CB_Standalone_Boot {
 		// Boot primary bridge instance.
 		if ( class_exists( 'CB_Plugin' ) ) {
 			CB_Plugin::instance();
+		}
+		if ( class_exists( 'CB_Deletion_Incident_Runtime' ) ) {
+			CB_Deletion_Incident_Runtime::boot();
 		}
 	}
 

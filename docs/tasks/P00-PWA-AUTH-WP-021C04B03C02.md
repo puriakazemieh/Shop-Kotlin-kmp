@@ -45,3 +45,7 @@
 - `021C04B03C02H` added an inactive observer, tested only by attaching fixture hooks ([evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02H/verification.md)). Native false success, incomplete detection, durable fallback, warning, recovery and the full acceptance remain unresolved.
 - `021C04B03C02I` added bounded, capability-guarded discovery of unexpired incidents ([evidence](../evidence/P00-PWA-AUTH-WP-021C04B03C02I/verification.md)); it is not an operational warning or recovery, has no pagination, and does not unblock this parent.
 - `021C04B03C02J` added an [inactive admin notice](../evidence/P00-PWA-AUTH-WP-021C04B03C02J/verification.md), awaiting integration and owner QA. It does not guarantee incident recording, recovery or native deletion correctness; this parent remains BLOCKED.
+
+## Operational detection update — 2026-10-20
+
+- `021C04B03C02J` is now wired into the Bridge runtime with its fixed InnoDB schema migration, native lifecycle hooks and a capability-guarded administrator warning. The three-version disposable matrix passed. This removes the earlier inactive-integration gap, but does not change the observed WordPress false-success return, restore data automatically, reverse external callbacks, or make a database outage observable. The parent therefore remains BLOCKED pending bounded owner QA and a supported recovery decision.

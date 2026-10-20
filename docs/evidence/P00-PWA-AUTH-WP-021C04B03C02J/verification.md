@@ -1,6 +1,6 @@
-# Inactive deletion-incident notice — synthetic verification
+# Operational deletion-incident notice — synthetic verification
 
-2026-10-19. The notice is **not registered or active on any site**. It does not restore data, prove deletion succeeded, catch every failure, or unblock identity migration.
+2026-10-19. The notice is now registered by the Bridge runtime after its narrowly scoped incident table is created with `CREATE TABLE IF NOT EXISTS`. It does not restore data, prove deletion succeeded, catch every failure, or by itself unblock identity migration.
 
 The callable notice checks `manage_options` before accessing the existing site-scoped store, shows at most 100 validated observations with numeric account references and fixed escaped labels, and explicitly says recovery has not been performed. An unavailable store produces an explicit sanitized error instead of an empty/success result. No incident yields no displayed notice; this is **not** evidence that all deletions are healthy. Account references can be personal data and the retention policy is not established.
 
@@ -18,8 +18,14 @@ foreach ($taskImage in @('wordpress:6.4-php8.1-apache','wordpress:6.6-php8.2-apa
 }
 ```
 
+## Operational runtime — 2026-10-20
+
+`CB_Deletion_Incident_Runtime` now wires the existing observer to WordPress's `delete_user` and `deleted_user` hooks, creates only its fixed InnoDB incident table, and registers the existing `manage_options`-guarded administrator warning. The dedicated connection is intentionally non-reconnecting. If it cannot be created, the observer remains unavailable rather than treating deletion as healthy.
+
+On isolated WordPress 6.4.3/PHP 8.1.27, 6.6.2/PHP 8.2.25 and 7.1.3/PHP 8.3.35 with MariaDB 10.6.28, the runtime migration and a native partial-delete fault were exercised. Each run verified that the native false return remains observable, a `PARTIAL_USER_SURVIVES` record is created, and the administrator warning says no automatic recovery occurred. No retained WordPress site was changed.
+
 ## Remaining work and owner QA
 
-The observer, store and notice are all inactive: they have no deployed hooks, migration, out-of-database durable alert, complete concurrency/crash detection, pagination, privacy/retention approval or recovery workflow. Some failures can prevent an incident from being recorded at all. External callback effects cannot be undone. The native WordPress false-success and identity writer blockers remain; parent C02/B03 are still BLOCKED.
+The runtime has no out-of-database durable alert, complete concurrency/crash detection, pagination, privacy/retention approval or recovery workflow. Some failures can prevent an incident from being recorded at all. External callback effects cannot be undone. The native WordPress false-success and identity writer blockers remain; parent C02/B03 are still BLOCKED.
 
 After a separate synthetic admin fixture is safely integrated, the owner should sign in as its synthetic administrator, trigger the fixture's deliberately failed synthetic deletion, and verify that the warning says the account may remain and no automatic recovery was performed. Sign in as the fixture's editor and confirm the warning is not shown. Finally use the fixture's storage-failure control and verify an explicit unavailable warning, not a clean bill of health. The fixture and precise addresses must be supplied by the integration task; these checks cannot be performed on the existing sites yet. Do not share account identifiers or screenshots containing personal data. No owner QA is claimed.
