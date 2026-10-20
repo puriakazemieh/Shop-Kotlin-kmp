@@ -119,6 +119,7 @@ class CB_Standalone_Boot {
 			'class-cb-blocks.php',
 			'class-cb-cpt.php',
 			'meta-boxes.php',
+			'class-cb-identity-supported-writer.php',
 			'class-cb-auth-controller.php',
 			'class-cb-catalog-controller.php',
 			'class-cb-blog-controller.php',

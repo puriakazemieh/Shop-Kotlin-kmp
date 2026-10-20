@@ -11,3 +11,12 @@ The owner authorized independent Phase 00 work before its dependency is ready. T
 ## Reassessment — 2026-10-18
 
 The shared-schema WP writer experiment reproduced misleading insert/update results and callbacks on three WP/PHP versions; the independent concurrency/fault matrix also reproduced the partial-delete blocker. The full combined acceptance and a supported-writer/recovery solution are not established. [Evidence and reproduction](../evidence/P00-PWA-AUTH-WP-021C04B03D/composite-reassessment.md). Parent remains blocked; no live route or real migration was enabled.
+
+## Supported-writer preparation — 2026-10-20
+
+An inactive normal-WordPress writer has been prepared for the next synthetic
+matrix. It holds only short per-identifier locks, checks the committed source
+rows after callbacks, and returns recovery-required rather than a success
+result on a post-callback conflict. It has no route, migration, trigger or
+automatic integration. Runtime smoke remains pending because the isolated
+Docker engine was unavailable; see [preparation evidence](../evidence/P00-PWA-AUTH-WP-021C04B03D/supported-writer-preparation.md). This does not unblock the parent.
