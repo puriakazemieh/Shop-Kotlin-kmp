@@ -65,7 +65,9 @@ class AuthApiImpl(
     }
 
     override suspend fun loginWithOtp(request: LoginWithOtpRequest): AuthResponse = safeApiCallRaw {
-        client.post(endpoint("login-with-otp")) { setBody(request) }
+        // The WordPress bridge exposes the guarded OTP exchange on the direct
+        // route. A browser-session variant has not been activated yet.
+        client.post("api/auth/login-with-otp") { setBody(request) }
     }
 
     override suspend fun resetPasswordWithOtp(request: ResetPasswordWithOtpRequest) = safeApiCallRaw<Unit> {
