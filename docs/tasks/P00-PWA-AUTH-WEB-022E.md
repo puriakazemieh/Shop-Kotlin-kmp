@@ -7,4 +7,4 @@
 
 ## Result — 2026-10-19
 
-The defect was reproduced first with a mocked repository, and then using transactional Spring services with an isolated PostgreSQL test container. These are sequential characterizations, not concurrent HTTP, cookie or browser tests. The server defect remains open; this child does not change parent status. See [evidence](../evidence/P00-PWA-AUTH-WEB-022E/verification.md).
+The defect was reproduced first with a mocked repository, and then using transactional Spring services with an isolated PostgreSQL test container. ShopServer commit `bdab55f` then added a refresh-token family migration and revokes the full family when a predecessor is logged out; both focused and transactional PostgreSQL tests now pass. These are still not concurrent HTTP, cookie or browser tests. The WordPress parent dependency and owner QA keep the parent blocked. See [evidence](../evidence/P00-PWA-AUTH-WEB-022E/verification.md).
