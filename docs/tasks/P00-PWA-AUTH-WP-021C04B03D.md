@@ -14,9 +14,9 @@ The shared-schema WP writer experiment reproduced misleading insert/update resul
 
 ## Supported-writer preparation — 2026-10-20
 
-An inactive normal-WordPress writer has been prepared for the next synthetic
-matrix. It holds only short per-identifier locks, checks the committed source
-rows after callbacks, and returns recovery-required rather than a success
-result on a post-callback conflict. It has no route, migration, trigger or
-automatic integration. Runtime smoke remains pending because the isolated
-Docker engine was unavailable; see [preparation evidence](../evidence/P00-PWA-AUTH-WP-021C04B03D/supported-writer-preparation.md). This does not unblock the parent.
+An inactive normal-WordPress writer has been prepared and smoke-tested on three
+synthetic WordPress/PHP versions. It holds only short per-identifier locks,
+checks the committed source rows after callbacks, and returns
+recovery-required rather than a success result on a post-callback conflict. It
+has no route, migration, trigger or automatic integration; see the
+[preparation evidence](../evidence/P00-PWA-AUTH-WP-021C04B03D/supported-writer-preparation.md). This does not unblock the parent.

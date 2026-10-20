@@ -26,11 +26,23 @@ The local XAMPP PHP 8.2 linter accepted all of these files:
 
 `git diff --check` also passed.
 
-## Runtime status
+## Runtime verification
 
-The real-WordPress smoke fixture is committed but has **not** passed yet.
-Docker Desktop's engine did not answer during this run. The XAMPP CLI attempt
-stopped before the fixture could create its random-prefix tables because that
-CLI process could not connect to the local database; it did not modify either
-retained WordPress installation. The parent remains `BLOCKED`; no route,
-migration, registration flow or user-facing claim is enabled by this change.
+On 2026-10-20 the smoke fixture ran against a retained, isolated MariaDB
+container with a new random table prefix for every invocation. It passed on:
+
+- WordPress 6.4.3 / PHP 8.1.27
+- WordPress 6.6.2 / PHP 8.2.25
+- WordPress 7.1.3 / PHP 8.3.35
+
+Each run verified five conditions: a normal successful write after the normal
+`user_register` callback; a duplicate rejected before any new user/callback;
+a conflict introduced by a callback returning recovery-required instead of a
+success; unsupported bytes rejected before a WordPress write; and exact login,
+email and mobile lookup resolving only when there is one owner.
+
+The fixture used only randomly prefixed tables in the synthetic database. It
+did not modify either retained WordPress installation. The parent remains
+`BLOCKED`: this is evidence for a limited supported writer, not proof that raw
+SQL, arbitrary third-party writers, migration, deletion recovery or the public
+registration route are globally safe.
