@@ -61,10 +61,19 @@ final class CB_Identity_Supported_Writer {
 
 	/** Returns exactly one owner for a supported identifier, otherwise null. */
 	public function unique_owner( string $identifier ) {
+		$result = $this->lookup( $identifier );
+		return $result['status'] === 'UNIQUE' ? $result['user_id'] : null;
+	}
+
+	/** Aggregate lookup state; callers must not treat a conflict as no account. */
+	public function lookup( string $identifier ): array {
 		$claims = $this->claims( $identifier, $identifier, $identifier );
-		if ( is_wp_error( $claims ) ) { return null; }
+		if ( is_wp_error( $claims ) ) { return array( 'status' => 'UNSUPPORTED' ); }
 		$owners = $this->owners( $identifier, $identifier, $identifier );
-		return count( $owners ) === 1 ? $owners[0] : null;
+		if ( $owners === array( -1 ) ) { return array( 'status' => 'UNAVAILABLE' ); }
+		if ( count( $owners ) === 0 ) { return array( 'status' => 'NONE' ); }
+		if ( count( $owners ) === 1 ) { return array( 'status' => 'UNIQUE', 'user_id' => $owners[0] ); }
+		return array( 'status' => 'CONFLICT' );
 	}
 
 	private function claims( string $login, string $email, string $mobile ) {

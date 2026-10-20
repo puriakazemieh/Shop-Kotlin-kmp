@@ -10,6 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+require_once __DIR__ . '/class-cb-identity-supported-writer.php';
 
 class CB_Auth_Controller {
 
@@ -61,12 +62,8 @@ class CB_Auth_Controller {
 		if ( $mobile === '' ) {
 			return null;
 		}
-		$users = get_users( array( 'meta_key' => 'cb_mobile', 'meta_value' => $mobile, 'number' => 1 ) );
-		if ( ! empty( $users ) ) {
-			return $users[0];
-		}
-		$u = get_user_by( 'login', $mobile );
-		return $u ?: null;
+		$identity = ( new CB_Identity_Supported_Writer() )->lookup( $mobile );
+		return $identity['status'] === 'UNIQUE' ? get_user_by( 'id', $identity['user_id'] ) : null;
 	}
 
 	/**
@@ -156,11 +153,10 @@ class CB_Auth_Controller {
 		$user = self::user_by_mobile( $mobile );
 		if ( ! $user ) {
 			// First OTP login registers the mobile-only account.
-			$uid = wp_insert_user( array( 'user_login' => $mobile, 'user_pass' => wp_generate_password( 20 ), 'role' => 'customer' ) );
+			$uid = ( new CB_Identity_Supported_Writer() )->create_customer( $mobile, '', $mobile, wp_generate_password( 20 ) );
 			if ( is_wp_error( $uid ) ) {
-				return cb_error( 'ساخت حساب ناموفق بود.', 400, 'REGISTER_FAILED' );
+				return cb_error( 'ساخت حساب ناموفق بود.', $this->identity_status( $uid ), 'REGISTER_FAILED' );
 			}
-			update_user_meta( $uid, 'cb_mobile', $mobile );
 			$user = get_user_by( 'id', $uid );
 		}
 		return cb_response( self::auth_response( $user ), 200 );
@@ -242,6 +238,9 @@ class CB_Auth_Controller {
 
 		// Allow login by email, username, or mobile (billing phone / cb_mobile meta).
 		$login = self::resolve_login( $username );
+		if ( is_wp_error( $login ) ) {
+			return cb_error( 'نام کاربری یا رمز عبور نادرست است.', 401, 'BAD_CREDENTIALS' );
+		}
 
 		$user = wp_authenticate( $login, $password );
 		if ( is_wp_error( $user ) ) {
@@ -261,21 +260,9 @@ class CB_Auth_Controller {
 		}
 
 		$login = $email !== '' ? $email : $mobile;
-		if ( username_exists( $login ) || ( $email && email_exists( $email ) ) ) {
-			return cb_error( 'این کاربر قبلاً ثبت شده است.', 409, 'USER_EXISTS' );
-		}
-
-		$user_id = wp_insert_user( array(
-			'user_login' => $login,
-			'user_email' => $email ?: '',
-			'user_pass'  => $password,
-			'role'       => 'customer',
-		) );
+		$user_id = ( new CB_Identity_Supported_Writer() )->create_customer( $login, $email ?: '', $mobile, $password );
 		if ( is_wp_error( $user_id ) ) {
-			return cb_error( $user_id->get_error_message(), 400, 'REGISTER_FAILED' );
-		}
-		if ( $mobile !== '' ) {
-			update_user_meta( $user_id, 'cb_mobile', $mobile );
+			return cb_error( 'ساخت حساب ناموفق بود.', $this->identity_status( $user_id ), 'REGISTER_FAILED' );
 		}
 
 		return cb_response( self::auth_response( get_user_by( 'id', $user_id ) ), 201 );
@@ -309,22 +296,20 @@ class CB_Auth_Controller {
 
 	// ---- helpers ------------------------------------------------------------
 
-	private static function resolve_login( string $identifier ): string {
-		if ( is_email( $identifier ) ) {
-			$u = get_user_by( 'email', $identifier );
-			return $u ? $u->user_login : $identifier;
+	private static function resolve_login( string $identifier ) {
+		$identity = ( new CB_Identity_Supported_Writer() )->lookup( $identifier );
+		if ( $identity['status'] === 'CONFLICT' || $identity['status'] === 'UNAVAILABLE' ) {
+			return new WP_Error( 'cb_identity_ambiguous', 'Authentication is unavailable.' );
 		}
-		// Look up by stored mobile meta.
-		$users = get_users( array(
-			'meta_key'   => 'cb_mobile',
-			'meta_value' => $identifier,
-			'number'     => 1,
-			'fields'     => array( 'user_login' ),
-		) );
-		if ( ! empty( $users ) ) {
-			return $users[0]->user_login;
+		if ( $identity['status'] === 'UNIQUE' ) {
+			$user = get_user_by( 'id', $identity['user_id'] );
+			return $user ? $user->user_login : new WP_Error( 'cb_identity_unavailable', 'Authentication is unavailable.' );
 		}
 		return $identifier;
+	}
+
+	private function identity_status( WP_Error $error ): int {
+		return $error->get_error_code() === 'cb_identity_exists' ? 409 : ( $error->get_error_code() === 'cb_identity_invalid' ? 400 : 503 );
 	}
 
 	public static function auth_response( WP_User $user ): array {

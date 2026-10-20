@@ -14,9 +14,11 @@ The shared-schema WP writer experiment reproduced misleading insert/update resul
 
 ## Supported-writer preparation — 2026-10-20
 
-An inactive normal-WordPress writer has been prepared and smoke-tested on three
-synthetic WordPress/PHP versions. It holds only short per-identifier locks,
-checks the committed source rows after callbacks, and returns
-recovery-required rather than a success result on a post-callback conflict. It
-has no route, migration, trigger or automatic integration; see the
-[preparation evidence](../evidence/P00-PWA-AUTH-WP-021C04B03D/supported-writer-preparation.md). This does not unblock the parent.
+The owner-authorized limited integration now uses the normal-WordPress writer
+in the existing password and first-OTP registration paths. It holds only short
+per-identifier locks, checks the committed source rows after callbacks, and
+returns recovery-required rather than a success result on a post-callback
+conflict. It has no migration or trigger; see the [preparation
+evidence](../evidence/P00-PWA-AUTH-WP-021C04B03D/supported-writer-preparation.md)
+and the required [manual API QA](P00-PWA-AUTH-WP-021C04B03D01.md). This does
+not unblock the parent.

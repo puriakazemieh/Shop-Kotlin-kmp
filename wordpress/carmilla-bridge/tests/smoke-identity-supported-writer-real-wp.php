@@ -21,7 +21,8 @@ try {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	add_filter( 'pre_wp_mail', static function () { return true; } );
 	wp_install( 'Synthetic writer QA', 'qa_admin', 'synthetic@example.test', false, '', 'synthetic-only-password' );
-	require_once '/work/includes/class-cb-identity-supported-writer.php';
+	require_once '/work/includes/helpers.php'; require_once '/work/includes/class-cb-jwt.php';
+	require_once '/work/includes/class-cb-identity-supported-writer.php'; require_once '/work/includes/class-cb-auth-controller.php';
 	global $wpdb; $wpdb->hide_errors();
 	$checks = 0; $failures = 0;
 	$check = static function ( bool $ok, string $label ) use ( &$checks, &$failures ) { ++$checks; if ( ! $ok ) { ++$failures; } echo ( $ok ? 'PASS ' : 'FAIL ' ) . $label . "\n"; };
@@ -45,6 +46,16 @@ try {
 	$unsupported = $writer->create_customer( 'writer_bad', 'writer.bad@example.test', 'شماره', 'synthetic-only-password' );
 	$check( is_wp_error( $unsupported ) && $unsupported->get_error_code() === 'cb_identity_invalid', 'unsupported exact bytes fail before a WordPress write' );
 	$check( $writer->unique_owner( '09120000001' ) === $first && $writer->unique_owner( 'writer.one@example.test' ) === $first && $writer->unique_owner( 'writer_one' ) === $first, 'login email and mobile resolve only when one owner exists' );
+	$controller = new CB_Auth_Controller(); $request = new WP_REST_Request( 'POST' );
+	$request->set_param( 'email', 'controller@example.test' ); $request->set_param( 'mobile', '09120000003' ); $request->set_param( 'password', 'synthetic-only-password' );
+	$response = $controller->register( $request ); $data = $response->get_data();
+	$check( $response->get_status() === 201 && is_array( $data ) && isset( $data['accessToken'], $data['refreshToken'], $data['user'] ), 'registration endpoint issues credentials only after supported writer success' );
+	$duplicate_request = new WP_REST_Request( 'POST' ); $duplicate_request->set_param( 'email', 'second@example.test' ); $duplicate_request->set_param( 'mobile', '09120000003' ); $duplicate_request->set_param( 'password', 'synthetic-only-password' );
+	$duplicate_response = $controller->register( $duplicate_request ); $duplicate_data = $duplicate_response->get_data();
+	$check( $duplicate_response->get_status() === 409 && is_array( $duplicate_data ) && ! isset( $duplicate_data['accessToken'], $duplicate_data['refreshToken'] ), 'registration endpoint rejects duplicate without credentials' );
+	$ambiguous_request = new WP_REST_Request( 'POST' ); $ambiguous_request->set_param( 'username', '09120000002' ); $ambiguous_request->set_param( 'password', 'synthetic-only-password' );
+	$ambiguous_response = $controller->login( $ambiguous_request ); $ambiguous_data = $ambiguous_response->get_data();
+	$check( $ambiguous_response->get_status() === 401 && is_array( $ambiguous_data ) && ! isset( $ambiguous_data['accessToken'], $ambiguous_data['refreshToken'] ), 'login endpoint fails closed for ambiguous identity' );
 	global $wp_version; echo "Checks: {$checks}; failures: {$failures}.\n";
 	if ( ! $failures ) { echo 'PASS supported identity writer WP ' . $wp_version . ' PHP ' . PHP_VERSION . "\n"; }
 	exit( $failures ? 1 : 0 );
