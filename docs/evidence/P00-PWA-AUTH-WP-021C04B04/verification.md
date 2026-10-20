@@ -17,3 +17,9 @@ MariaDB 10.6 installation. The Bridge plugin was activated only in that fixture.
 The primitive is inactive. It has no route, scheduled hook, normalization,
 collision repair, unique index or production-site execution. Its owner QA remains
 required before guarded browser registration may start.
+
+The fixture now removes only prior accounts with its own `migrate_a_`,
+`migrate_b_` and `migrate_c_` synthetic prefixes before it starts. The full
+six-check suite was rerun twice consecutively on the same disposable installation;
+both runs passed. This makes a repeated owner command deterministic without touching
+any non-fixture account.

@@ -9,6 +9,11 @@ require_once $bridge . '/includes/class-cb-identity-synthetic-migration.php';
 global $wpdb;
 $checks = 0; $failures = 0;
 $check = static function ( bool $ok, string $label ) use ( &$checks, &$failures ) { ++$checks; if ( ! $ok ) { ++$failures; } echo ( $ok ? 'PASS ' : 'FAIL ' ) . $label . "\n"; };
+// This test intentionally creates a collision. Remove only its own previous
+// synthetic accounts so a second run measures the same fixture, never an old run.
+$previous_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->users} WHERE user_login LIKE 'migrate_a_%' OR user_login LIKE 'migrate_b_%' OR user_login LIKE 'migrate_c_%'" );
+if ( ! is_array( $previous_ids ) || $wpdb->last_error !== '' ) { fwrite( STDERR, "Synthetic cleanup lookup failed.\n" ); exit( 2 ); }
+foreach ( $previous_ids as $previous_id ) { require_once ABSPATH . 'wp-admin/includes/user.php'; if ( ! wp_delete_user( (int) $previous_id ) ) { fwrite( STDERR, "Synthetic cleanup failed.\n" ); exit( 2 ); } }
 $suffix = substr( hash( 'sha256', microtime( true ) . random_int( 1, PHP_INT_MAX ) ), 0, 12 );
 $a = wp_insert_user( array( 'user_login' => 'migrate_a_' . $suffix, 'user_email' => 'migrate_a_' . $suffix . '@example.test', 'user_pass' => 'synthetic-only-password' ) );
 $b = wp_insert_user( array( 'user_login' => 'migrate_b_' . $suffix, 'user_email' => 'migrate_b_' . $suffix . '@example.test', 'user_pass' => 'synthetic-only-password' ) );
