@@ -8,12 +8,20 @@ fun String.toUserMessage(): StringResource {
         "USER_NOT_FOUND" -> Res.string.userNotFound
         "EMAIL_ALREADY_EXISTS" -> Res.string.emailAlreadyExists
         "USER_INACTIVE" -> Res.string.userInactive
-        "INVALID_CREDENTIALS" -> Res.string.invalidCredentials
+        "INVALID_CREDENTIALS", "BAD_CREDENTIALS" -> Res.string.invalidCredentials
         "ACCESS_DENIED" -> Res.string.accessDenied
         "INVALID_CURRENT_PASSWORD" -> Res.string.invalidCurrentPassword
         "SAME_AS_OLD_PASSWORD" -> Res.string.sameAsOldPassword
         "INVALID_RESET_TOKEN" -> Res.string.invalidResetToken
         "BAD_OTP" -> Res.string.invalidOtp
+        "VALIDATION" -> Res.string.validationError
+        "WEAK_PASSWORD" -> Res.string.passwordTooShort
+        "INVALID_TOKEN", "INVALID_REFRESH_TOKEN" -> Res.string.sessionExpired
+        "OTP_UNAVAILABLE" -> Res.string.otpTemporarilyUnavailable
+        "RATE_LIMIT" -> Res.string.tryAgainLater
+        "REGISTER_FAILED" -> Res.string.registrationFailed
+        "UNAUTHORIZED" -> Res.string.authRequired
+        "UNAVAILABLE" -> Res.string.authServiceUnavailable
 
         // Category
         "CATEGORY_NOT_FOUND" -> Res.string.categoryNotFound

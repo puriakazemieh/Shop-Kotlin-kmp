@@ -255,6 +255,12 @@
     <string name="emailAlreadyExists">این ایمیل قبلاً ثبت شده است</string>
     <string name="userInactive">حساب کاربری غیرفعال است</string>
     <string name="invalidCredentials">ایمیل یا رمز عبور اشتباه است</string>
+    <string name="sessionExpired">نشست شما نامعتبر یا منقضی شده است. دوباره وارد شوید.</string>
+    <string name="otpTemporarilyUnavailable">ورود با کد تأیید موقتاً در دسترس نیست.</string>
+    <string name="tryAgainLater">لطفاً کمی بعد دوباره تلاش کنید.</string>
+    <string name="registrationFailed">ایجاد حساب ناموفق بود. دوباره تلاش کنید.</string>
+    <string name="authRequired">برای ادامه، وارد حساب کاربری شوید.</string>
+    <string name="authServiceUnavailable">سرویس ورود موقتاً در دسترس نیست. دوباره تلاش کنید.</string>
     <string name="accessDenied">دسترسی غیرمجاز</string>
     <string name="invalidCurrentPassword">رمز عبور فعلی اشتباه است</string>
     <string name="sameAsOldPassword">رمز عبور جدید باید متفاوت باشد</string>

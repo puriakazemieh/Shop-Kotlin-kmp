@@ -266,6 +266,12 @@
     <string name="emailAlreadyExists">Email already exists</string>
     <string name="userInactive">User is inactive</string>
     <string name="invalidCredentials">Invalid email or password</string>
+    <string name="sessionExpired">Your session is invalid or expired. Please sign in again.</string>
+    <string name="otpTemporarilyUnavailable">Verification-code sign-in is temporarily unavailable.</string>
+    <string name="tryAgainLater">Please try again shortly.</string>
+    <string name="registrationFailed">Account creation failed. Please try again.</string>
+    <string name="authRequired">Please sign in to continue.</string>
+    <string name="authServiceUnavailable">The sign-in service is temporarily unavailable. Please try again.</string>
     <string name="accessDenied">Access denied</string>
     <string name="invalidCurrentPassword">Invalid current password</string>
     <string name="sameAsOldPassword">New password must be different</string>
