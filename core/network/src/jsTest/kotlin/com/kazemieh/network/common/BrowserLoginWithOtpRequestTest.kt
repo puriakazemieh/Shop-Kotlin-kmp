@@ -1,6 +1,8 @@
 package com.kazemieh.network.common
 
 import com.kazemieh.network.auth.AuthApiImpl
+import com.kazemieh.network.auth.dto.request.LoginRequest
+import com.kazemieh.network.auth.dto.request.RegisterRequest
 import com.kazemieh.network.auth.dto.request.LoginWithOtpRequest
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.MainScope
@@ -11,7 +13,7 @@ import kotlin.test.assertEquals
 
 class BrowserLoginWithOtpRequestTest {
     @Test
-    fun `OTP login uses the WordPress guarded route`(): Promise<Unit> = MainScope().promise {
+    fun `browser password and OTP authentication use WordPress guarded routes`(): Promise<Unit> = MainScope().promise {
         val global = js("globalThis")
         val original = global.fetch
         val urls = mutableListOf<String>()
@@ -31,9 +33,16 @@ class BrowserLoginWithOtpRequestTest {
             override fun notifyTokenExpired() = Unit
         })
         try {
-            AuthApiImpl(client).loginWithOtp(LoginWithOtpRequest("09000000000", "123456"))
+            val api = AuthApiImpl(client)
+            api.login(LoginRequest("synthetic@example.test", "safe-password"))
+            api.register(RegisterRequest(email = "synthetic@example.test", password = "safe-password"))
+            api.loginWithOtp(LoginWithOtpRequest("09000000000", "123456"))
             assertEquals(
-                listOf("https://api.example.test/base/api/auth/login-with-otp"),
+                listOf(
+                    "https://api.example.test/base/api/auth/login",
+                    "https://api.example.test/base/api/auth/register",
+                    "https://api.example.test/base/api/auth/login-with-otp"
+                ),
                 urls
             )
         } finally {

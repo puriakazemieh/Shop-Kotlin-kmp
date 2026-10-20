@@ -24,7 +24,7 @@ fun AuthTextField(
         onValueChange = onValueChange,
         label = { Text(hint) },
         singleLine = true,
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        visualTransformation = if (isPassword) PasswordVisualTransformation(mask = '*') else VisualTransformation.None,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colors.primary,
             unfocusedBorderColor = colors.outline,

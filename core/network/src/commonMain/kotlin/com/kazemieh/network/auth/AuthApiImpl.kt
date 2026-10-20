@@ -39,13 +39,13 @@ class AuthApiImpl(
     override suspend fun login(
         request: LoginRequest
     ): AuthResponse = safeApiCallRaw {
-        client.post(endpoint("login")) { setBody(request) }
+        client.post("api/auth/login") { setBody(request) }
     }
 
     override suspend fun register(
         request: RegisterRequest
     ): AuthResponse = safeApiCallRaw {
-        client.post(endpoint("register")) { setBody(request) }
+        client.post("api/auth/register") { setBody(request) }
     }
 
     override suspend fun forgotPassword(
