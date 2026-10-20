@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021C04B03C02 — synthetic mobile identity concurrency and failure
 
-- Status: AWAITING_MANUAL_QA; Size: M; Owner: BOTH; Risk: HIGH
+- Status: DONE; Size: M; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04B03C01`, `P00-PWA-AUTH-WP-021C04B03C02A`, `P00-PWA-AUTH-WP-021C04B03C02B`, `P00-PWA-AUTH-WP-021C04B03C02C`, `P00-PWA-AUTH-WP-021C04B03C02D`, `P00-PWA-AUTH-WP-021C04B03C02E`, `P00-PWA-AUTH-WP-021C04B03C02F`.
 - Exercise the shared-reference prototype with real synthetic WordPress and independent SQL: conflicting owners across login/email/mobile, metadata value and user reassignment, duplicate meta rows, missing or invalid users, unsupported values, rollback, simultaneous add/update/delete and safe user deletion. Verify that a claim is not released while any source remains, transferred to the wrong owner or left inconsistent after failure. Capture both successful and rejected/deadlocked outcomes and resulting ownership.
 - Account explicitly for WP return values, callbacks and side effects without claiming database rollback reverses external actions. Test only synthetic exact-binary values; do not treat `billing_phone` as a login, claim OTP replay protection, activate a route or migrate a real site.
@@ -53,3 +53,7 @@
 ## Managed deletion update — 2026-10-20
 
 - Owner selected fail-closed deletion for Carmilla-managed accounts. The supported admin path now executes a bounded transactional delete and refuses accounts with dependent posts/comments; ordinary WordPress accounts are unaffected. The three-version disposable matrix passed. See [evidence and manual QA](../evidence/P00-PWA-AUTH-WP-021C04B03C02/managed-deletion.md). This card awaits owner QA; it no longer blocks on native false-success behavior.
+
+## Owner QA — 2026-10-20
+
+- Owner completed the fresh WordPress manual flow: managed-account deletion succeeded and dependent-account deletion was refused. The acceptance for this bounded deletion path is complete.

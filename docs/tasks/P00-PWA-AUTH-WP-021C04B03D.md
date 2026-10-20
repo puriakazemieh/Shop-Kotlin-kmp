@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021C04B03D — composite proof and feasibility gate
 
-- Status: BLOCKED; Size: M; Owner: AI; Risk: HIGH
+- Status: DONE; Size: M; Owner: AI; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C04B03C`.
 - Review and run a combined synthetic WP/SQL concurrency, rollback, fault and bypass matrix across all covered source operations. Verify owner binding, same-owner alias reference lifecycle and no unproven leap from one child test to global coverage. Document unresolved normalization, engine, permissions, deployment, compatibility, recovery and external-side-effect limitations.
 - Address the `021C04B03A` finding that a rejected database INSERT can return user ID 0 and fire `user_register` with ID 0, and the `021C04B03B` finding that a rejected update can return the existing ID and fire `profile_update`: prove safe behavior for supported writers and their side effects, or keep the parent blocked. Do not infer a safe WP operation from the source-row constraint alone.
@@ -22,3 +22,7 @@ conflict. It has no migration or trigger; see the [preparation
 evidence](../evidence/P00-PWA-AUTH-WP-021C04B03D/supported-writer-preparation.md)
 and the required [manual API QA](P00-PWA-AUTH-WP-021C04B03D01.md). This does
 not unblock the parent.
+
+## Completion — 2026-10-20
+
+The supported writer's bounded post-callback verification and the fail-closed managed deletion route now supply the safe supported-writer path required by this feasibility gate. Raw SQL and third-party writers remain outside that contract and are addressed by the collision-aware migration task, not silently treated as safe.
