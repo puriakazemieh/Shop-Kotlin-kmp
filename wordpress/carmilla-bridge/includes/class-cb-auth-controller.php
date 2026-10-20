@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 require_once __DIR__ . '/class-cb-identity-supported-writer.php';
 require_once __DIR__ . '/class-cb-otp-atomic-consumer.php';
+require_once __DIR__ . '/class-cb-reset-atomic-consumer.php';
 
 class CB_Auth_Controller {
 
@@ -184,13 +185,15 @@ class CB_Auth_Controller {
 		$mobile = trim( (string) $request->get_param( 'mobile' ) );
 		if ( $email !== '' ) {
 			$user = get_user_by( 'email', $email );
-			if ( $user ) {
-				// Issue a reset token and email a WP reset link.
-				$key = get_password_reset_key( $user );
-				if ( ! is_wp_error( $key ) ) {
-					set_transient( 'cb_reset_' . $key, $user->ID, HOUR_IN_SECONDS );
-					retrieve_password( $user->user_login );
-				}
+			if ( $user && ! wp_using_ext_object_cache() ) {
+				// retrieve_password issues the key that WordPress places in its email.
+				// Store only a keyed hash of that actual key, never a separate stale key.
+				$observer = static function ( $login, $key ) {
+					set_transient( 'cb_reset_' . hash( 'sha256', $key ), $login, HOUR_IN_SECONDS );
+				};
+				add_action( 'retrieve_password_key', $observer, 10, 2 );
+				retrieve_password( $user->user_login );
+				remove_action( 'retrieve_password_key', $observer, 10 );
 			}
 		} elseif ( $mobile !== '' ) {
 			if ( wp_using_ext_object_cache() ) {
@@ -215,18 +218,18 @@ class CB_Auth_Controller {
 		if ( strlen( $password ) < 6 ) {
 			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
 		}
-		$uid = get_transient( 'cb_reset_' . $token );
-		if ( ! $uid ) {
+		$key = 'cb_reset_' . hash( 'sha256', $token );
+		$login = get_transient( $key );
+		if ( ! is_string( $login ) || $login === '' ) {
 			return cb_error( 'توکن نامعتبر یا منقضی است.', 400, 'INVALID_TOKEN' );
 		}
-		$user = get_user_by( 'id', (int) $uid );
-		if ( ! $user ) {
-			return cb_error( 'کاربر یافت نشد.', 404, 'USER_NOT_FOUND' );
+		$user = check_password_reset_key( $token, $login );
+		if ( is_wp_error( $user ) || ! $user instanceof WP_User || ! ( new CB_Reset_Atomic_Consumer() )->consume( $key, $login ) ) {
+			return cb_error( 'توکن نامعتبر یا منقضی است.', 400, 'INVALID_TOKEN' );
 		}
 		reset_password( $user, $password );
 		CB_JWT::revoke_for_user( $user->ID );
-		delete_transient( 'cb_reset_' . $token );
-		return cb_response( self::auth_response( get_user_by( 'id', $user->ID ) ), 200 );
+		return cb_response( array( 'reset' => true ), 200 );
 	}
 
 	public function reset_password_with_otp( WP_REST_Request $request ) {
@@ -245,7 +248,7 @@ class CB_Auth_Controller {
 		}
 		reset_password( $user, $password );
 		CB_JWT::revoke_for_user( $user->ID );
-		return cb_response( self::auth_response( get_user_by( 'id', $user->ID ) ), 200 );
+		return cb_response( array( 'reset' => true ), 200 );
 	}
 
 	public function login( WP_REST_Request $request ) {
