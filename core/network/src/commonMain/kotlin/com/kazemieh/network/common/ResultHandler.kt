@@ -79,7 +79,7 @@ suspend inline fun <reified T> safeApiCallRaw(
 
             throw ApiException(
                 messageText = apiError.errorCode.toUserMessage(),
-                code = apiError.code
+                code = apiError.code ?: response.status.value
             )
         }
     } catch (e: ApiException) {
