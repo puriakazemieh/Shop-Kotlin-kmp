@@ -6,6 +6,7 @@ import com.kazemieh.network.common.ApiError
 import com.kazemieh.network.common.ApiException
 import io.ktor.client.statement.*
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import com.kazemieh.common.*
@@ -21,6 +22,8 @@ suspend fun <T> safeApiCall(
 ): AppResult<T> {
     return try {
         AppResult.Success(apiCall())
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: ApiException) {
         AppResult.Error(
             message = e.messageText,
@@ -82,6 +85,8 @@ suspend inline fun <reified T> safeApiCallRaw(
                 code = apiError.code ?: response.status.value
             )
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: ApiException) {
         throw e
     } catch (_: Exception) {
