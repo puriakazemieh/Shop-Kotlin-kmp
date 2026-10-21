@@ -274,7 +274,8 @@ class CB_Auth_Controller {
 	}
 
 	public function register( WP_REST_Request $request ) {
-		$email    = sanitize_email( (string) $request->get_param( 'email' ) );
+		$raw_email = trim( (string) $request->get_param( 'email' ) );
+		$email    = sanitize_email( $raw_email );
 		$mobile   = trim( (string) $request->get_param( 'mobile' ) );
 		$password = (string) $request->get_param( 'password' );
 
@@ -285,7 +286,7 @@ class CB_Auth_Controller {
 		if ( strlen( $password ) < 6 ) {
 			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
 		}
-		if ( $email !== '' && ! is_email( $email ) ) {
+		if ( $raw_email !== '' && ( ! is_email( $raw_email ) || $email !== $raw_email ) ) {
 			return cb_error( 'ایمیل نامعتبر است.', 400, 'INVALID_INPUT' );
 		}
 
