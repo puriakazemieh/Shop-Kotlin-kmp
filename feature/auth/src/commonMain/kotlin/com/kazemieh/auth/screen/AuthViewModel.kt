@@ -15,6 +15,7 @@ import com.kazemieh.domain.auth.ValidateUsername
 import com.kazemieh.domain.auth.SendLoginOtpUseCase
 import com.kazemieh.domain.auth.LoginWithOtpUseCase
 import com.kazemieh.domain.auth.ResetPasswordWithOtpUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -45,6 +46,25 @@ class AuthViewModel(
     val effect = _effect.receiveAsFlow()
 
     private var timerJob: Job? = null
+    private var requestInFlight = false
+
+    private fun launchAuthRequest(block: suspend () -> Unit) {
+        if (requestInFlight) return
+        requestInFlight = true
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            try {
+                block()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                _effect.send(AuthEffect.ShowError("ارتباط با سرویس برقرار نشد؛ دوباره تلاش کنید."))
+            } finally {
+                requestInFlight = false
+                _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 
     fun handleIntent(event: AuthIntent) {
         when (event) {
@@ -131,8 +151,7 @@ class AuthViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+        launchAuthRequest {
 
             val result = sendLoginOtpUseCase(s.mobile)
 
@@ -154,8 +173,7 @@ class AuthViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+        launchAuthRequest {
 
             val result = loginWithOtpUseCase(s.mobile, s.otp)
 
@@ -184,8 +202,7 @@ class AuthViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+        launchAuthRequest {
 
             val result = loginUseCase(s.email, s.password)
 
@@ -219,8 +236,7 @@ class AuthViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+        launchAuthRequest {
 
             val result = registerUseCase(
                 email = if (s.isOtpMode) null else s.email,
@@ -253,8 +269,7 @@ class AuthViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+        launchAuthRequest {
 
             val result = forgotPasswordUseCase(
                 email = if (s.isOtpMode) null else s.email,
@@ -292,8 +307,7 @@ class AuthViewModel(
             return
         }
 
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+        launchAuthRequest {
 
             val result = if (s.isOtpMode) {
                 resetPasswordWithOtpUseCase(s.mobile, s.otp, s.newPassword)
