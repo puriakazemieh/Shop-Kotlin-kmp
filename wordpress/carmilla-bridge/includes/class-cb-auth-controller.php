@@ -173,7 +173,7 @@ class CB_Auth_Controller {
 			// First OTP login registers the mobile-only account.
 			$uid = ( new CB_Identity_Supported_Writer() )->create_customer( $mobile, '', $mobile, wp_generate_password( 20 ) );
 			if ( is_wp_error( $uid ) ) {
-				return cb_error( 'ساخت حساب ناموفق بود.', $this->identity_status( $uid ), 'REGISTER_FAILED' );
+				return $this->registration_error( $uid );
 			}
 			$user = get_user_by( 'id', $uid );
 		}
@@ -282,10 +282,17 @@ class CB_Auth_Controller {
 			return cb_error( 'ایمیل یا موبایل به‌همراه رمز عبور الزامی است.', 400, 'VALIDATION' );
 		}
 
+		if ( strlen( $password ) < 6 ) {
+			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
+		}
+		if ( $email !== '' && ! is_email( $email ) ) {
+			return cb_error( 'ایمیل نامعتبر است.', 400, 'INVALID_INPUT' );
+		}
+
 		$login = $email !== '' ? $email : $mobile;
 		$user_id = ( new CB_Identity_Supported_Writer() )->create_customer( $login, $email ?: '', $mobile, $password );
 		if ( is_wp_error( $user_id ) ) {
-			return cb_error( 'ساخت حساب ناموفق بود.', $this->identity_status( $user_id ), 'REGISTER_FAILED' );
+			return $this->registration_error( $user_id );
 		}
 
 		return cb_response( self::auth_response( get_user_by( 'id', $user_id ) ), 201 );
@@ -329,6 +336,17 @@ class CB_Auth_Controller {
 			return $user ? $user->user_login : new WP_Error( 'cb_identity_unavailable', 'Authentication is unavailable.' );
 		}
 		return $identifier;
+	}
+
+	private function registration_error( WP_Error $error ) {
+		$code = $error->get_error_code();
+		if ( $code === 'cb_identity_exists' ) {
+			return cb_error( 'این حساب قبلاً ثبت شده است.', 409, 'EMAIL_ALREADY_EXISTS' );
+		}
+		if ( $code === 'cb_identity_invalid' ) {
+			return cb_error( 'اطلاعات ثبت‌نام نامعتبر است.', 400, 'INVALID_INPUT' );
+		}
+		return cb_error( 'سرویس ثبت‌نام موقتاً در دسترس نیست.', 503, 'UNAVAILABLE' );
 	}
 
 	private function identity_status( WP_Error $error ): int {
