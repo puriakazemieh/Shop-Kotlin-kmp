@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021C06 — recoverable WordPress session migration
 
-- Status: AWAITING_MANUAL_QA; Size: M; Owner: BOTH; Risk: HIGH
+- Status: DONE; Size: M; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WP-021C05`.
 - Implement and test a versioned, idempotent and fail-closed session-table migration with explicit recovery and compatibility handling. Test installation, repeated upgrade, incompatible/partial schema, and preservation of pre-existing synthetic WordPress data on an isolated WordPress/MariaDB fixture. No automatic data deletion, blind downgrade, production deployment or modifications to either preserved local WordPress site. Do not activate public web routes in this card.
 - Document a concrete backup and recovery procedure before any future modification of the preserved QA sites. Record redacted, reproducible evidence in `docs/evidence/P00-PWA-AUTH-WP-021C06/`. If larger than M, split before implementation.
@@ -13,3 +13,7 @@ The owner explicitly authorized independently executable Phase 00 work before RE
 ## Bounded automated result — 2026-10-18
 
 An inactive, explicit version-1 installer was tested on four synthetic WordPress/PHP combinations, including real partial DDL failure and backup/restore to a separate synthetic database. [Evidence and limitations](../evidence/P00-PWA-AUTH-WP-021C06/verification.md); [recovery procedure](../evidence/P00-PWA-AUTH-WP-021C06/recovery.md). The persistent synthetic fixture and backup are separate named Docker volumes; owner manual QA and the `021C05` dependency remain outstanding. This is not deployment, an upgrade from a previous schema, or permission to touch a retained site.
+
+## Completion — 2026-10-25
+
+The owner reran the isolated migration fixture and reported `Checks: 16; failures: 0` with the final inactive-migration PASS marker. C05 is now complete, so the dependency and owner confirmation are both satisfied. No preserved WordPress site was modified.
