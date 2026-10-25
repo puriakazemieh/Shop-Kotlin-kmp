@@ -1,6 +1,6 @@
 # P00-API-ERROR-CONTRACT-028 — قرارداد خطای قابل‌فهم PWA و WordPress
 
-- Status: AWAITING_MANUAL_QA; Size: M; Owner: BOTH; Risk: HIGH
+- Status: DONE; Size: M; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-CODE-020`.
 - Blocks: QA معتبرِ ورود/ثبت‌نام PWA و هر ادعای «پیام خطای قابل‌فهم» در فاز صفر.
 - دلیل ایجاد: در اجرای واقعی ۲۰ اکتبر، WordPress `status` را عددی ارسال می‌کند ولی مدل PWA آن را متنی می‌خواند؛ decode کل envelope خطا شکست می‌خورد و حتی `BAD_CREDENTIALS` به پیام عمومی تبدیل می‌شود. افزون بر آن، بسیاری از `errorCode`های فعال WordPress در mapper کلاینت ثبت نشده‌اند.
@@ -55,4 +55,4 @@
 
 - decoder عددی/متنی، fallback امن بدون پیام «خطای نامشخص»، تفکیک خطاهای ثبت‌نام WordPress و smoke test disposable اجرا شدند.
 - evidence و دو fixture ایزوله در [verification](../evidence/P00-API-ERROR-CONTRACT-028/verification.md) ثبت شده‌اند.
-- به‌علت تغییر UI/network، تسک تا تأیید دستی مالک `AWAITING_MANUAL_QA` باقی می‌ماند.
+- مالک در ۲۵ اکتبر ۲۰۲۶ همهٔ سناریوهای دستی خطا را تأیید کرد: رمز اشتباه، ایمیل تکراری، رمز کوتاه، کد OTP اشتباه و OTP در دسترس‌نبودن. در همهٔ موارد loading پایان یافت، پیام فارسیِ دقیق دیده شد و پیام عمومی یا جزئیات حساس نمایش داده نشد؛ بنابراین کارت `DONE` است.

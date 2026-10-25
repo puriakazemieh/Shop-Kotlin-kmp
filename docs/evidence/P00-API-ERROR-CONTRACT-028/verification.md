@@ -52,5 +52,11 @@ the UI must not show server details or the generic unknown-error text.
 
 The owner confirmed that the freshly deployed local PWA rendered the expected
 WordPress-backed content. Automated verification on the same deployment also
-confirmed the `BAD_CREDENTIALS` response contract. The four remaining manual
-error scenarios above are still required before this task can be marked DONE.
+confirmed the `BAD_CREDENTIALS` response contract.
+
+### Final confirmation — 2026-10-25
+
+The owner completed the remaining manual scenarios: duplicate email, short
+password, incorrect OTP and unavailable OTP. Every case ended loading and
+displayed its matching Persian explanation without a generic unknown-error
+message or server details. This task is therefore DONE.
