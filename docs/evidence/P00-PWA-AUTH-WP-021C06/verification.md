@@ -39,3 +39,12 @@ docker run --rm --network container:carmilla-p00-session-migration-fixture-20261
 ```
 
 Report both outputs without screenshots containing passwords, URLs with secret keys or personal information. Manual confirmation here covers only the synthetic migration fixture; it cannot approve production migration or satisfy the incomplete login dependency.
+
+## Owner synthetic-fixture confirmation — 2026-10-25
+
+The owner reran the isolated migration command against
+`carmilla-p00-session-migration-fixture-20261025`. It completed all 16 checks
+with zero failures and the final inactive-migration PASS marker. This confirms
+the bounded synthetic migration flow only. The card remains
+`AWAITING_MANUAL_QA` until its blocked `021C05` dependency is completed; no
+preserved WordPress site was modified.
