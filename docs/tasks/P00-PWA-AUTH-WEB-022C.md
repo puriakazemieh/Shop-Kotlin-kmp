@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WEB-022C — scoped browser web-auth request header
 
-- Status: AWAITING_MANUAL_QA; Size: S; Owner: BOTH; Risk: HIGH
+- Status: BLOCKED; Size: S; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WEB-022B` automated client work; owner authorized independent work while backend integration remains blocked.
 - For browser POST requests to the configured API's exact `/api/auth/web/` subtree, send the WP contract header `X-Carmilla-Web-Request: 1`. Do not add it to other origins, API paths, methods or native clients. Preserve existing origin/path bearer protections and avoid deriving backend trust from an untrusted request.
 - Exercise real compiled browser engine with synthetic Fetch for positive and negative scopes; run JVM regression and app JS/JVM compilation. This is only a client prerequisite: it is not server-side CSRF protection or proof of live WP/Spring compatibility.
