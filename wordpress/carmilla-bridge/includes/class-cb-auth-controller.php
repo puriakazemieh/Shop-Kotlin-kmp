@@ -279,15 +279,15 @@ class CB_Auth_Controller {
 		$mobile   = trim( (string) $request->get_param( 'mobile' ) );
 		$password = (string) $request->get_param( 'password' );
 
+		if ( $raw_email !== '' && ( ! is_email( $raw_email ) || $email !== $raw_email ) ) {
+			return cb_error( 'ایمیل نامعتبر است.', 400, 'INVALID_INPUT' );
+		}
 		if ( $password === '' || ( $email === '' && $mobile === '' ) ) {
 			return cb_error( 'ایمیل یا موبایل به‌همراه رمز عبور الزامی است.', 400, 'VALIDATION' );
 		}
 
 		if ( strlen( $password ) < 6 ) {
 			return cb_error( 'رمز عبور حداقل ۶ نویسه باشد.', 400, 'WEAK_PASSWORD' );
-		}
-		if ( $raw_email !== '' && ( ! is_email( $raw_email ) || $email !== $raw_email ) ) {
-			return cb_error( 'ایمیل نامعتبر است.', 400, 'INVALID_INPUT' );
 		}
 
 		$login = $email !== '' ? $email : $mobile;

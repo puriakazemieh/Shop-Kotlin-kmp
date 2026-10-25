@@ -31,7 +31,7 @@ suspend fun <T> safeApiCall(
         )
     } catch (e: Exception) {
         AppResult.Error(
-            message = Res.string.unknownError,
+            message = Res.string.authServiceUnavailable,
             code = 0
         )
     }
@@ -74,7 +74,7 @@ suspend inline fun <reified T> safeApiCallRaw(
                     message = "Server error",
                     status = response.status.value.toString(),
                     code = response.status.value,
-                    errorCode = "UNKNOWN_ERROR",
+                    errorCode = "INVALID_SERVER_RESPONSE",
                     path = null,
                     timestamp = null
                 )
@@ -91,7 +91,7 @@ suspend inline fun <reified T> safeApiCallRaw(
         throw e
     } catch (_: Exception) {
         throw ApiException(
-            messageText = Res.string.unknownError,
+            messageText = Res.string.authServiceUnavailable,
             code = 0
         )
     }

@@ -21,7 +21,21 @@ fun String.toUserMessage(): StringResource {
         "RATE_LIMIT" -> Res.string.tryAgainLater
         "REGISTER_FAILED" -> Res.string.registrationFailed
         "UNAUTHORIZED" -> Res.string.authRequired
-        "UNAVAILABLE" -> Res.string.authServiceUnavailable
+        "UNAVAILABLE", "GATEWAY_REJECTED", "ORDER_FAILED" -> Res.string.authServiceUnavailable
+
+        // Carmilla Bridge's active generic route errors. Keep this explicit so
+        // a newly introduced server code cannot silently become an unknown UI
+        // error in the PWA.
+        "NOT_FOUND" -> Res.string.userNotFound
+        "EMPTY", "EMPTY_CODE", "INVALID_URL", "INVALID_WINDOW", "INVALID_TIME",
+        "INVALID_SLOT", "INVALID_STATUS", "INVALID_IMAGE", "INVALID_VIDEO",
+        "VARIANT_REQUIRED" -> Res.string.validationError
+        "NO_FILE", "UPLOAD_FAILED", "CREATE_FAILED", "UPDATE_FAILED", "CATEGORY_FAILED" -> Res.string.internalError
+        "NO_QUIZ", "NO_FREE_SEAT", "WALLET_DISABLED", "FEATURE_DISABLED" -> Res.string.accessDenied
+        "WOO_INACTIVE", "WOOCOMMERCE_INACTIVE", "GATEWAY_NOT_CONFIGURED" -> Res.string.authServiceUnavailable
+        "EMPTY_CART" -> Res.string.cartIsEmptyError
+        "INVALID_COUPON" -> Res.string.invalidDiscountCode
+        "SLOT_TAKEN", "STALE_VERSION", "NOT_CANCELLABLE", "ALREADY_PAID" -> Res.string.tryAgainLater
 
         // Category
         "CATEGORY_NOT_FOUND" -> Res.string.categoryNotFound
@@ -112,11 +126,11 @@ fun String.toUserMessage(): StringResource {
         "BLOG_NOT_FOUND" -> Res.string.blogNotFound
         "BLOG_SLUG_EXISTS" -> Res.string.blogSlugExists
 
-        "UNKNOWN_ERROR" -> Res.string.unknownError
+        "UNKNOWN_ERROR" -> Res.string.invalidServerResponse
 
         // Wallet
         "INSUFFICIENT_WALLET_BALANCE" -> Res.string.insufficientWalletBalance
 
-        else -> Res.string.unknownError
+        else -> Res.string.invalidServerResponse
     }
 }

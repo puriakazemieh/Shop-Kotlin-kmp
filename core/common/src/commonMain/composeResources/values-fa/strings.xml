@@ -329,6 +329,7 @@
     <string name="optionTypeInUse">این نوع گزینه دارای مقادیر است و قابل حذف نیست.</string>
     <string name="unknownError">خطای نامشخص رخ داد</string>
     <string name="errorParsingData">خطا در پردازش اطلاعات دریافتی</string>
+    <string name="invalidServerResponse">پاسخ نامعتبر از سرور دریافت شد. دوباره تلاش کنید.</string>
     <string name="somethingWentWrong">مشکلی پیش آمده است</string>
     <string name="loading">در حال بارگذاری</string>
     <string name="profileNotFound">پروفایل یافت نشد</string>
