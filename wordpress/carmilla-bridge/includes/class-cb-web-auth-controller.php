@@ -36,7 +36,7 @@ final class CB_Web_Auth_Controller {
 	/** Register only after configuration and the read-only migration-marker check succeed. */
 	public function register_routes(): void {
 		$ns = CB_REST_NAMESPACE;
-		foreach ( array( 'login', 'register', 'refresh', 'logout' ) as $route ) {
+		foreach ( array( 'login', 'register', 'refresh', 'logout', 'forgot-password', 'reset-password', 'reset-password-with-otp' ) as $route ) {
 			register_rest_route( $ns, '/api/auth/web/' . $route, array( 'methods' => 'POST', 'callback' => array( $this, $route ), 'permission_callback' => '__return_true' ) );
 		}
 	}
@@ -45,6 +45,22 @@ final class CB_Web_Auth_Controller {
 	public function register( WP_REST_Request $request ) { return $this->respond( $this->registration->register( 'POST', $this->headers( $request ), $this->server(), $this->json( $request ) ) ); }
 	public function refresh( WP_REST_Request $request ) { return $this->respond( $this->session->refresh( 'POST', $this->headers( $request ), $this->server(), $this->credential() ) ); }
 	public function logout( WP_REST_Request $request ) { return $this->respond( $this->session->logout( 'POST', $this->headers( $request ), $this->server(), $this->credential() ) ); }
+	public function forgot_password( WP_REST_Request $request ) { return $this->recovery( $request, 'forgot_password' ); }
+	public function reset_password( WP_REST_Request $request ) { return $this->recovery( $request, 'reset_password' ); }
+	public function reset_password_with_otp( WP_REST_Request $request ) { return $this->recovery( $request, 'reset_password_with_otp' ); }
+
+	/** Recovery reuses the already-reviewed WordPress handler; it never issues a browser session. */
+	private function recovery( WP_REST_Request $request, string $method ) {
+		if ( ! $this->policy->allows_post( 'POST', $this->headers( $request ), $this->server() ) ) { return $this->respond( new CB_Web_Auth_Result( 403, array( 'error' => 'request_denied' ) ) ); }
+		try {
+			$response = call_user_func( array( new CB_Auth_Controller(), $method ), $request );
+			if ( ! $response instanceof WP_REST_Response ) { throw new RuntimeException(); }
+			$response->header( 'Cache-Control', 'no-store' );
+			$cors = $this->policy->cors_for_post( 'POST', $this->headers( $request ), $this->server() );
+			if ( is_array( $cors ) ) { foreach ( $cors as $name => $value ) { $response->header( $name, $value ); } }
+			return $response;
+		} catch ( Throwable $ignored ) { return $this->respond( new CB_Web_Auth_Result( 503, array( 'error' => 'authentication_unavailable' ) ) ); }
+	}
 
 	private function json( WP_REST_Request $request ): array { $data = $request->get_json_params(); return is_array( $data ) ? $data : array(); }
 	private function server(): array { return array( 'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'] ?? '', 'SERVER_ADDR' => $_SERVER['SERVER_ADDR'] ?? '', 'HTTPS' => $_SERVER['HTTPS'] ?? '' ); }
