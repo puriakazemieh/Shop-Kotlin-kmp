@@ -126,6 +126,7 @@ class CB_Standalone_Boot {
 			'class-cb-deletion-incident-runtime.php',
 			'class-cb-managed-user-deletion.php',
 			'class-cb-auth-controller.php',
+			'class-cb-web-auth-controller.php',
 			'class-cb-catalog-controller.php',
 			'class-cb-blog-controller.php',
 			'class-cb-media-controller.php',
@@ -384,6 +385,10 @@ class CB_Standalone_Boot {
 	public static function register_core_routes(): void {
 		if ( class_exists( 'CB_Plugin' ) ) {
 			CB_Plugin::instance()->register_routes();
+		}
+		if ( class_exists( 'CB_Web_Auth_Controller' ) ) {
+			$web_auth = CB_Web_Auth_Controller::from_runtime();
+			if ( $web_auth !== null ) { $web_auth->register_routes(); }
 		}
 	}
 }
