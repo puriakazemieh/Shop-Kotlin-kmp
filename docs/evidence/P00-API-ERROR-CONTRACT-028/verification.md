@@ -47,3 +47,10 @@ Use only the PWA QA build connected to the disposable WordPress fixture. Check
 one wrong password, duplicate email, short password, wrong OTP and unavailable
 OTP. Each attempt must stop loading and show the matching Persian explanation;
 the UI must not show server details or the generic unknown-error text.
+
+### Partial confirmation — 2026-10-25
+
+The owner confirmed that the freshly deployed local PWA rendered the expected
+WordPress-backed content. Automated verification on the same deployment also
+confirmed the `BAD_CREDENTIALS` response contract. The four remaining manual
+error scenarios above are still required before this task can be marked DONE.
