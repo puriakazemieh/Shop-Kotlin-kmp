@@ -21,3 +21,4 @@
 - The initial standalone PWA URL selected the Android-emulator WordPress address (`10.0.2.2`) and therefore could not fetch the remote manifest from a desktop browser.
 - `pwa-bootstrap.js` now accepts an explicit WordPress-only `wpApi` query parameter without changing the selected SKU or turning on the Spring bundle.
 - The rebuilt development PWA is deployed beneath the isolated WordPress QA fixture. Its PWA document and `/wp-json/carmilla/v1/client-manifest` both returned HTTP 200 on 2026-10-26.
+- The fixture initially emitted tenant `1`, while the generated `carmila` product specification expects `local-default`. The isolated fixture option was corrected to `local-default`; the verified manifest now returns that exact tenant id. This preserves the PWA's tenant fail-closed rule.
