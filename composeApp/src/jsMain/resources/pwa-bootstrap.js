@@ -1,5 +1,7 @@
 (() => {
-  const isSpring = window.location.search.includes('api=');
+  const parameters = new URLSearchParams(window.location.search);
+  const isSpring = parameters.has('api');
+  const wordpressApiOverride = parameters.get('wpApi');
   // Keep each generated PWA self-contained when it is hosted in a subdirectory.
   const configUrl = isSpring ? './app-config-spring.json' : './app-config-wp.json';
   const workerUrl = isSpring ? './sw-spring.js' : './sw-wp.js';
@@ -12,6 +14,12 @@
       return response.json();
     })
     .then(config => {
+      // A WordPress bundle may be hosted on the same local QA site as its
+      // REST API. The explicit override avoids shipping an Android-emulator
+      // address to a desktop browser while keeping the selected SKU intact.
+      if (!isSpring && wordpressApiOverride) {
+        config.backend.apiRoot = wordpressApiOverride;
+      }
       window.appConfig = config;
       const script = document.createElement('script');
       // Keep a deployed bundle from being confused with an older service-worker cache.

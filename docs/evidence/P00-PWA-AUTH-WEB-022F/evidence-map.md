@@ -15,3 +15,9 @@
 1. Open the PWA against the WordPress QA fixture.
 2. Use password login with the synthetic test account, then reload once and open Profile.
 3. Expected for this focused card: login itself must complete and the request must not produce a generic error. Reload/session restoration is covered by the next card, so it is not an acceptance criterion here.
+
+## Local browser fixture repair
+
+- The initial standalone PWA URL selected the Android-emulator WordPress address (`10.0.2.2`) and therefore could not fetch the remote manifest from a desktop browser.
+- `pwa-bootstrap.js` now accepts an explicit WordPress-only `wpApi` query parameter without changing the selected SKU or turning on the Spring bundle.
+- The rebuilt development PWA is deployed beneath the isolated WordPress QA fixture. Its PWA document and `/wp-json/carmilla/v1/client-manifest` both returned HTTP 200 on 2026-10-26.
