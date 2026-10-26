@@ -35,29 +35,28 @@ class AuthApiImpl(
         check(response.status.isSuccess()) { "browser_logout_failed" }
     }
 
-    //puriakazemieh@gmail.com
     override suspend fun login(
         request: LoginRequest
     ): AuthResponse = safeApiCallRaw {
-        client.post("api/auth/login") { setBody(request) }
+        client.post(endpoint("login")) { setBody(request) }
     }
 
     override suspend fun register(
         request: RegisterRequest
     ): AuthResponse = safeApiCallRaw {
-        client.post("api/auth/register") { setBody(request) }
+        client.post(endpoint("register")) { setBody(request) }
     }
 
     override suspend fun forgotPassword(
         request: ForgotPasswordRequest
     ) = safeApiCallRaw<Unit> {
-        client.post("api/auth/forgot-password") { setBody(request) }
+        client.post(endpoint("forgot-password")) { setBody(request) }
     }
 
     override suspend fun resetPassword(
         request: ResetPasswordRequest
     ) = safeApiCallRaw<Unit> {
-        client.post("api/auth/reset-password") { setBody(request) }
+        client.post(endpoint("reset-password")) { setBody(request) }
     }
 
     override suspend fun sendLoginOtp(request: SendLoginOtpRequest) = safeApiCallRaw<Unit> {
@@ -71,6 +70,6 @@ class AuthApiImpl(
     }
 
     override suspend fun resetPasswordWithOtp(request: ResetPasswordWithOtpRequest) = safeApiCallRaw<Unit> {
-        client.post("api/auth/reset-password-with-otp") { setBody(request) }
+        client.post(endpoint("reset-password-with-otp")) { setBody(request) }
     }
 }

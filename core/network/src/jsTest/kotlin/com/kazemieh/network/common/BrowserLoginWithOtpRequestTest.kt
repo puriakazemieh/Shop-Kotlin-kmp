@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 class BrowserLoginWithOtpRequestTest {
     @Test
-    fun `browser password and OTP authentication use WordPress guarded routes`(): Promise<Unit> = MainScope().promise {
+    fun `browser password routes use guarded endpoints while OTP remains mobile-only`(): Promise<Unit> = MainScope().promise {
         val global = js("globalThis")
         val original = global.fetch
         val urls = mutableListOf<String>()
@@ -39,8 +39,8 @@ class BrowserLoginWithOtpRequestTest {
             api.loginWithOtp(LoginWithOtpRequest("09000000000", "123456"))
             assertEquals(
                 listOf(
-                    "https://api.example.test/base/api/auth/login",
-                    "https://api.example.test/base/api/auth/register",
+                    "https://api.example.test/base/api/auth/web/login",
+                    "https://api.example.test/base/api/auth/web/register",
                     "https://api.example.test/base/api/auth/login-with-otp"
                 ),
                 urls
