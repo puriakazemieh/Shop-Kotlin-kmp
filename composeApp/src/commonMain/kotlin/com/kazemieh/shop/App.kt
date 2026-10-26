@@ -70,6 +70,7 @@ import com.kazemieh.config.capabilities.ProductBuildSpec
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.settings.ObserveThemeModeUseCase
+import com.kazemieh.domain.auth.AuthRepository
 import com.kazemieh.main.mainModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
@@ -99,16 +100,25 @@ fun App() {
     val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.LIGHT)
 
     val brand = koinInject<BrandConfig>()
+    val authRepository = koinInject<AuthRepository>()
     val bootstrapCoordinator = koinInject<FeatureManifestBootstrapCoordinator>()
     val featureStore = koinInject<EffectiveFeatureStore>()
     val routeGuard = koinInject<FeatureRouteGuard>()
     var bootstrapState by remember { mutableStateOf<ManifestBootstrapState>(bootstrapCoordinator.state) }
+    var sessionRestoreComplete by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(bootstrapCoordinator) {
         val state = bootstrapCoordinator.load()
         featureStore.update(state)
         bootstrapState = state
+    }
+
+    LaunchedEffect(authRepository) {
+        // JS credentials are deliberately in-memory. A new PWA instance must
+        // prove its server-owned HttpOnly cookie before exposing prior state.
+        authRepository.restoreSession()
+        sessionRestoreComplete = true
     }
 
     AppTheme(
@@ -122,18 +132,30 @@ fun App() {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
-                is ManifestBootstrapState.Ready -> AppNavHost(routeGuard = routeGuard)
+                is ManifestBootstrapState.Ready -> {
+                    if (!sessionRestoreComplete) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    } else AppNavHost(routeGuard = routeGuard)
+                }
                 is ManifestBootstrapState.Error -> {
-                    Box(Modifier.fillMaxSize()) {
-                        AppNavHost(routeGuard = routeGuard)
-                        Column(Modifier.align(Alignment.TopCenter).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("پیکربندی راه‌دور در دسترس نیست؛ حالت امن فعال است.", color = MaterialTheme.colorScheme.error)
-                            Button(onClick = { scope.launch { 
-                                val state = bootstrapCoordinator.retry()
-                                featureStore.update(state)
-                                bootstrapState = state 
-                            } }) {
-                                Text("تلاش دوباره")
+                    if (!sessionRestoreComplete) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        Box(Modifier.fillMaxSize()) {
+                            AppNavHost(routeGuard = routeGuard)
+                            Column(Modifier.align(Alignment.TopCenter).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("پیکربندی راه‌دور در دسترس نیست؛ حالت امن فعال است.", color = MaterialTheme.colorScheme.error)
+                                Button(onClick = { scope.launch {
+                                    val state = bootstrapCoordinator.retry()
+                                    featureStore.update(state)
+                                    bootstrapState = state
+                                } }) {
+                                    Text("تلاش دوباره")
+                                }
                             }
                         }
                     }

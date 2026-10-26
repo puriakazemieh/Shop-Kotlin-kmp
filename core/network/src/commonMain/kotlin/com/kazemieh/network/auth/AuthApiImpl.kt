@@ -12,6 +12,7 @@ import com.kazemieh.network.auth.dto.request.LoginWithOtpRequest
 import com.kazemieh.network.auth.dto.request.ForgotPasswordRequest
 import com.kazemieh.network.auth.dto.request.ResetPasswordWithOtpRequest
 import com.kazemieh.network.auth.dto.response.AuthResponse
+import com.kazemieh.network.auth.dto.response.RefreshTokenResponse
 import com.kazemieh.network.common.PlatformConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.AuthCircuitBreaker
@@ -33,6 +34,17 @@ class AuthApiImpl(
             attributes.put(AuthCircuitBreaker, Unit)
         }
         check(response.status.isSuccess()) { "browser_logout_failed" }
+    }
+
+    override suspend fun refreshBrowserSession(): RefreshTokenResponse {
+        check(PlatformConfig.usesWebSessionCookie) { "browser_refresh_unavailable" }
+        return safeApiCallRaw {
+            client.post(endpoint("refresh")) {
+                // Refresh is the terminal cookie exchange; never recurse on a
+                // missing or malformed cookie.
+                attributes.put(AuthCircuitBreaker, Unit)
+            }
+        }
     }
 
     override suspend fun login(

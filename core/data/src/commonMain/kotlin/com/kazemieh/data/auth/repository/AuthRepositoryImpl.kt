@@ -37,6 +37,22 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun restoreSession(): AppResult<Unit> {
+        if (!PlatformConfig.usesWebSessionCookie) return AppResult.Success(Unit)
+        _authState.value = AuthState.Loading
+        return authDataSource.refreshBrowserSession()
+            .doOnSuccess { accessToken ->
+                tokenManager.saveTokens(accessToken = accessToken, refreshToken = "")
+                _authState.value = AuthState.Authenticated
+            }
+            .doOnError {
+                tokenManager.clearTokens()
+                profileLocalDataSource.clearProfile()
+                _authState.value = AuthState.Unauthenticated
+            }
+            .map { }
+    }
+
     override suspend fun login(
         email: String,
         password: String

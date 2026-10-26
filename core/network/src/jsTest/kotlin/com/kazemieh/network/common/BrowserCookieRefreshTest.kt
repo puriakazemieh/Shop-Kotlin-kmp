@@ -1,5 +1,6 @@
 package com.kazemieh.network.common
 
+import com.kazemieh.network.auth.AuthApiImpl
 import io.ktor.client.request.get
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.promise
@@ -25,6 +26,36 @@ class BrowserCookieRefreshTest {
         override fun clearTokens() { access = null; storedRefresh = null }
         override fun setOnTokenExpiredListener(listener: () -> Unit) = Unit
         override fun notifyTokenExpired() { expired++ }
+    }
+
+    @Test
+    fun `startup restoration uses the guarded cookie refresh endpoint`(): Promise<Unit> = MainScope().promise {
+        val global = js("globalThis")
+        val original = global.fetch
+        var credentials: String? = null
+        var requestHeader: String? = null
+        var requestBody: String? = null
+        global.fetch = { input: dynamic, init: dynamic ->
+            val url = input.toString() as String
+            assertEquals("https://api.example.test/base/api/auth/web/refresh", url)
+            credentials = init.credentials as String?
+            val headers = js("new Headers(init.headers)")
+            requestHeader = headers.get("X-Carmilla-Web-Request") as String?
+            requestBody = init.body as String?
+            resolvedResponse(url, js("new Response('{\"accessToken\":\"startup-access\"}', {status: 200, headers: {'Content-Type':'application/json'}})"))
+        }
+        ApiConfig.baseUrlOverride = "https://api.example.test/base/"
+        val client = HttpClientFactory.create(SyntheticTokens())
+        try {
+            val response = AuthApiImpl(client).refreshBrowserSession()
+            assertEquals("startup-access", response.accessToken)
+            assertEquals("", response.refreshToken)
+            assertEquals("include", credentials)
+            assertEquals("1", requestHeader)
+            assertEquals(null, requestBody)
+        } finally {
+            client.close(); ApiConfig.baseUrlOverride = null; global.fetch = original
+        }
     }
 
     @Test

@@ -10,12 +10,16 @@ import com.kazemieh.network.auth.dto.request.LoginWithOtpRequest
 import com.kazemieh.network.auth.dto.request.ForgotPasswordRequest
 import com.kazemieh.network.auth.dto.request.ResetPasswordWithOtpRequest
 import com.kazemieh.network.auth.dto.response.AuthResponse
+import com.kazemieh.network.auth.dto.response.RefreshTokenResponse
 import com.kazemieh.network.profile.dto.response.UserResponse
 
 interface AuthApi {
 
     /** Browser cookie logout; failure does not imply server-side revocation. */
     suspend fun logoutWeb()
+
+    /** Exchanges only the browser's HttpOnly session cookie for an in-memory access token. */
+    suspend fun refreshBrowserSession(): RefreshTokenResponse
 
     suspend fun login(request: LoginRequest): AuthResponse
 

@@ -84,7 +84,19 @@ class ProfileLocalDataSource(
     }
 
     suspend fun clearProfile() {
-        settings.clear()
+        // A failed browser-cookie restoration must not erase unrelated user
+        // preferences (theme, language, feature choices). Clear only the
+        // profile namespace that can otherwise make an anonymous session look
+        // authenticated.
+        settings.remove(KEY_ID)
+        settings.remove(KEY_EMAIL)
+        settings.remove(KEY_FIRST_NAME)
+        settings.remove(KEY_LAST_NAME)
+        settings.remove(KEY_PHONE)
+        settings.remove(KEY_CITY)
+        settings.remove(KEY_ROLE)
+        settings.remove(KEY_POSTAL_CODE)
+        settings.remove(KEY_ADDRESS)
         _profileFlow.update { null }
     }
 }

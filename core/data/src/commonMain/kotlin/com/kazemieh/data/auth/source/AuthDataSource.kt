@@ -9,6 +9,7 @@ import com.kazemieh.common.*
 
 
 interface AuthDataSource {
+    suspend fun refreshBrowserSession(): AppResult<String>
     suspend fun login(email: String, password: String): AppResult<Auth>
     suspend fun register(email: String? = null, mobile: String? = null, password: String): AppResult<Auth>
     suspend fun forgotPassword(email: String? = null, mobile: String? = null): AppResult<Unit>

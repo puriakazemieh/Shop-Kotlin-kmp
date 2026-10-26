@@ -14,6 +14,14 @@ class AuthDataSourceImpl(
     private val authApi: AuthApi
 ) : AuthDataSource {
 
+    override suspend fun refreshBrowserSession(): AppResult<String> = safeApiCall {
+        authApi.refreshBrowserSession().let { response ->
+            require(response.accessToken.isNotBlank())
+            require(response.refreshToken.isEmpty())
+            response.accessToken
+        }
+    }
+
     override suspend fun login(email: String, password: String): AppResult<Auth> = safeApiCall {
         authApi.login(LoginRequest(username = email, password = password)).toDomain()
     }
