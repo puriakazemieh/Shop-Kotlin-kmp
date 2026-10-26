@@ -106,7 +106,10 @@ final class CB_Web_Request_Policy {
 		$forwarded = $headers['x-forwarded-proto'] ?? null;
 		$direct_tls = $https === 'on' || $https === '1';
 		if ( $site['scheme'] === 'http' ) {
-			return $this->local_qa && ! $direct_tls && $https === '' && $forwarded === null && in_array( $remote, array( '127.0.0.1', '::1' ), true ) && in_array( $local, array( '127.0.0.1', '::1' ), true );
+			// Apache on Windows commonly reports plain HTTP as "off", while
+			// other SAPIs omit HTTPS. Both are non-TLS only in the strict
+			// localhost exception; any other value remains denied.
+			return $this->local_qa && ! $direct_tls && ( $https === '' || strtolower( $https ) === 'off' ) && $forwarded === null && in_array( $remote, array( '127.0.0.1', '::1' ), true ) && in_array( $local, array( '127.0.0.1', '::1' ), true );
 		}
 		if ( $this->proxy_ips ) {
 			// A proxy deployment must not silently fall back to accepting a
