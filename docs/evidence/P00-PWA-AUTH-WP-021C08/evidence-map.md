@@ -16,3 +16,17 @@
 The deletion incident store and observer (`021C04B03C02G/H`) are inactive synthetic components, not proof of an operational alert, full recovery, or safe registration. The legacy email reset finding remains unfixed; it does not establish that the ordinary WP reset link is broken. Evidence links are not substituted for missing integration or human authority.
 
 Consequently `021C` and `021` remain BLOCKED, `WEB-022` remains TODO and `P00-PWA-AUTH-QA-023` cannot be run as a valid end-to-end acceptance yet. The subsequent [WEB-022A](../P00-PWA-AUTH-WEB-022A/verification.md) scope hardening is a separate partial client change awaiting integration QA. This audit involved no site modification, migration, route activation, secrets or human sign-off.
+
+## Final reconciliation — 2026-10-26
+
+| Required backend area | Final evidence | Outcome |
+| --- | --- | --- |
+| C01 database adapter | `P00-PWA-AUTH-WP-021C01/verification.md` | DONE |
+| C02 origin/cookie policy | `P00-PWA-AUTH-WP-021C02/verification.md` and 93-policy-check rerun | DONE |
+| C03 access-token binding | `P00-PWA-AUTH-WP-021C03/verification.md` | DONE |
+| C04 identity safety | C04 completion record and child evidence | DONE for session route scope |
+| C05 reset/refresh/logout | `P00-PWA-AUTH-WP-021C05/verification.md` | DONE |
+| C06 migration | 16-check synthetic owner confirmation | DONE |
+| C07 network integration | C07/C07C evidence and owner route-network confirmation | DONE |
+
+`021C` and `021` are therefore DONE as backend work, and `WEB-022` is READY. The unresolved separate C04B03C02J administrator-incident fixture is not evidence of a failed session-route contract; it remains BLOCKED under its own card. PWA lifecycle and final owner end-to-end acceptance remain open.

@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WP-021 — WordPress web-session backend
 
-- Status: BLOCKED; Size: >M after review; Owner: AI; Risk: HIGH
+- Status: DONE; Size: >M after review; Owner: AI; Risk: HIGH
 - Depends on: P00-PWA-AUTH-CODE-020.
 - Implement and test the browser-session contract for the local WordPress bridge: login/register and secure cookie-backed session issuance, without exposing refresh tokens to JavaScript. Design scoped rotation, revocation, CSRF and origin enforcement before implementation. Fail closed when secure deployment assumptions are unmet; local HTTP must never be silently treated as production HTTPS.
 - Preserve mobile endpoints, WordPress sites, databases and user changes. Add negative authentication/security tests and evidence. If the work exceeds M, split it further before starting.
@@ -32,3 +32,7 @@ Evidence: `docs/evidence/P00-PWA-AUTH-WP-021/scope-review.md`.
 برای پوشش کامل تجربهٔ کاربر، یک مسیر cookie-backed برای ورود با OTP نیز باید طراحی و پیاده شود؛ endpoint مستقیم موبایل نباید برای مرورگر token پایدار برگرداند. پیاده‌سازی نهایی باید برای ورود با رمز، ثبت‌نام، ورود با OTP، refresh، logout و `GET /api/users/me` این رفتارها را اثبات کند: cookie فقط `HttpOnly`/`Secure` در production، origin و CSRF معتبر، rotation و revoke هر نشست، عدم افشای refresh token، persistence بعد از reload، و fail-closed در HTTP محلی خارج از harness تعیین‌شده.
 
 مانع identity/deletion این کارت پابرجاست: تا زمانی که deletion native WordPress بتواند نتیجهٔ مبهم یا recovery‌نشده داشته باشد، routeهای web نباید صرفاً برای رفع UI فعال شوند. بعد از رفع dependency، کار integration باید همچنان در `P00-PWA-AUTH-WEB-022` و QA واقعی در `P00-PWA-AUTH-QA-023` بماند.
+
+## Completion — 2026-10-26
+
+زنجیرهٔ backend WordPress در C01–C08 با fixtureهای synthetic و دو تأیید دستی لازم تکمیل و reconcile شد. blocker مستقل اعلان incident حذف حساب در C04B03C02J به‌دلیل عدم fixture مدیریت جدا، شرط این مسیر session نیست و همچنان جداگانه BLOCKED باقی می‌ماند. اتصال lifecycle سمت PWA اکنون کار بعدی است.
