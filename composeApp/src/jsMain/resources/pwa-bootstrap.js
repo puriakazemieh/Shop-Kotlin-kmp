@@ -1,7 +1,15 @@
 (() => {
   const parameters = new URLSearchParams(window.location.search);
   const isSpring = parameters.has('api');
-  const wordpressApiOverride = parameters.get('wpApi');
+  const explicitWordpressApi = parameters.get('wpApi');
+  // The isolated local QA fixture serves the PWA from the same WordPress
+  // origin. Keep that connection after hash-route navigation drops a query
+  // string; shipped non-local bundles still use their generated API root.
+  const isLocalWordpressFixture = !isSpring
+    && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    && /^\/pwa(?:\/|$)/.test(window.location.pathname);
+  const wordpressApiOverride = explicitWordpressApi
+    || (isLocalWordpressFixture ? `${window.location.origin}/wp-json/carmilla/v1/` : null);
   // Keep each generated PWA self-contained when it is hosted in a subdirectory.
   const configUrl = isSpring ? './app-config-spring.json' : './app-config-wp.json';
   const workerUrl = isSpring ? './sw-spring.js' : './sw-wp.js';
