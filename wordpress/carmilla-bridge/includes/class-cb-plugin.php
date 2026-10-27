@@ -194,10 +194,14 @@ class CB_Plugin {
 			return $user_id;
 		}
 		$payload = CB_JWT::decode( $token );
-		if ( ! $payload || ( $payload['typ'] ?? '' ) !== 'access' ) {
-			return $user_id;
+		$uid = ( $payload && ( $payload['typ'] ?? '' ) === 'access' ) ? (int) ( $payload['uid'] ?? 0 ) : 0;
+		// Browser access tokens deliberately use a separate signing key and
+		// token shape.  Accept them only through the enabled, schema-verified
+		// browser-session adapter; never weaken the legacy mobile JWT verifier.
+		if ( $uid < 1 && class_exists( 'CB_Web_Auth_Controller' ) ) {
+			$browser_uid = CB_Web_Auth_Controller::verify_runtime_access_token( $token );
+			$uid = is_int( $browser_uid ) ? $browser_uid : 0;
 		}
-		$uid = (int) ( $payload['uid'] ?? 0 );
 		if ( $uid > 0 && get_user_by( 'id', $uid ) ) {
 			self::$bearer_user = $uid;
 			return $uid;

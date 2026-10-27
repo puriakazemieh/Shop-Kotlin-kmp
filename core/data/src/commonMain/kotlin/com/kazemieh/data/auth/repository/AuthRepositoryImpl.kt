@@ -23,6 +23,12 @@ class AuthRepositoryImpl(
     private val profileLocalDataSource: ProfileLocalDataSource,
 ) : AuthRepository {
 
+    /**
+     * A browser startup refresh can finish after an explicit login.  Keep a
+     * monotonic local generation so an older restore result cannot clear the
+     * credentials and profile created by that newer user action.
+     */
+    private var sessionGeneration: Long = 0L
 
     private val _authState = MutableStateFlow(
         if (tokenManager.hasValidToken()) AuthState.Authenticated
@@ -32,6 +38,7 @@ class AuthRepositoryImpl(
 
     init {
         tokenManager.setOnTokenExpiredListener {
+            sessionGeneration++
             _authState.value = AuthState.Unauthenticated
             TokenExpiredEventBus.publish(event = AuthState.Unauthenticated)
         }
@@ -39,16 +46,21 @@ class AuthRepositoryImpl(
 
     override suspend fun restoreSession(): AppResult<Unit> {
         if (!PlatformConfig.usesWebSessionCookie) return AppResult.Success(Unit)
+        val restoreGeneration = sessionGeneration
         _authState.value = AuthState.Loading
         return authDataSource.refreshBrowserSession()
             .doOnSuccess { accessToken ->
-                tokenManager.saveTokens(accessToken = accessToken, refreshToken = "")
-                _authState.value = AuthState.Authenticated
+                if (sessionGeneration == restoreGeneration) {
+                    tokenManager.saveTokens(accessToken = accessToken, refreshToken = "")
+                    _authState.value = AuthState.Authenticated
+                }
             }
             .doOnError {
-                tokenManager.clearTokens()
-                profileLocalDataSource.clearProfile()
-                _authState.value = AuthState.Unauthenticated
+                if (sessionGeneration == restoreGeneration) {
+                    tokenManager.clearTokens()
+                    profileLocalDataSource.clearProfile()
+                    _authState.value = AuthState.Unauthenticated
+                }
             }
             .map { }
     }
@@ -59,6 +71,7 @@ class AuthRepositoryImpl(
     ): AppResult<Unit> {
         return authDataSource.login(email, password)
             .doOnSuccess { auth ->
+                sessionGeneration++
                 tokenManager.saveTokens(
                     accessToken = auth.accessToken,
                     refreshToken = auth.refreshToken
@@ -76,6 +89,7 @@ class AuthRepositoryImpl(
     ): AppResult<Unit> {
         return authDataSource.register(email, mobile, password)
             .doOnSuccess { auth ->
+                sessionGeneration++
                 tokenManager.saveTokens(
                     accessToken = auth.accessToken,
                     refreshToken = auth.refreshToken
@@ -101,6 +115,7 @@ class AuthRepositoryImpl(
     override suspend fun loginWithOtp(mobile: String, otpCode: String): AppResult<Unit> {
         return authDataSource.loginWithOtp(mobile, otpCode)
             .doOnSuccess { auth ->
+                sessionGeneration++
                 tokenManager.saveTokens(
                     accessToken = auth.accessToken,
                     refreshToken = auth.refreshToken
@@ -121,6 +136,7 @@ class AuthRepositoryImpl(
 
     override suspend fun signOut(): AppResult<Unit> {
         return try {
+            sessionGeneration++
             tokenManager.clearTokens()
             _authState.value = AuthState.Unauthenticated
             TokenExpiredEventBus.publish(event = AuthState.Unauthenticated)

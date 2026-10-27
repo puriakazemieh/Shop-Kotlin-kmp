@@ -30,6 +30,32 @@ final class CB_Web_Auth_Controller {
 		} catch ( Throwable $ignored ) { return null; }
 	}
 
+	/**
+	 * Verifies only the short-lived browser access-token format.  This is used
+	 * by the normal REST authentication bridge after the web-session adapter
+	 * has been explicitly enabled and its schema marker has been validated.
+	 */
+	public static function verify_runtime_access_token( string $token ): ?int {
+		try {
+			if ( $token === '' || ! defined( 'CB_WEB_SESSION_ENABLED' ) || CB_WEB_SESSION_ENABLED !== true ) {
+				return null;
+			}
+			$controller = self::from_runtime();
+			if ( ! $controller instanceof self ) {
+				return null;
+			}
+			$policy = $controller->policy;
+			$store = CB_Web_Session_WP_Adapter::from_wordpress();
+			$key = hex2bin( CB_WEB_SESSION_SECRET_HEX );
+			if ( $key === false ) {
+				return null;
+			}
+			return ( new CB_Web_Access_Token( $store, $policy->site_id(), $key ) )->verify( $token );
+		} catch ( Throwable $ignored ) {
+			return null;
+		}
+	}
+
 	private function __construct( CB_Web_Request_Policy $policy, CB_Web_Password_Login $login, CB_Web_Browser_Registration $registration, CB_Web_Auth_Session $session ) {
 		$this->policy = $policy; $this->login = $login; $this->registration = $registration; $this->session = $session;
 	}

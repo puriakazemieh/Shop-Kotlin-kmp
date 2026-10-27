@@ -25,5 +25,7 @@
 - A fresh WordPress 6.4/PHP 8.1 fixture at `http://localhost:8091` was configured with the isolated browser-session schema and synthetic account only.
 - Browser-session route policy smoke test passed: 97 checks, 0 failures. The additional Docker Desktop gateway is accepted only when the explicit local-QA configuration supplies its exact IP; production and non-local configurations reject it.
 - Real route sequence passed over the WordPress REST endpoint: password login `200`, logout `200`, and refresh after logout `401 INVALID_SESSION`.
+- The browser access-token path was verified against the live fixture: a web login token successfully read `GET /wp-json/carmilla/v1/api/users/me` for `qa-browser@example.test`. Browser tokens remain isolated from the legacy mobile-JWT verifier.
+- The startup-restore/login race is guarded by a session generation: an older failed refresh cannot erase credentials or profile data written by a newer explicit login.
 - The PWA development distribution was rebuilt and deployed with a bumped worker/bundle version. The visible login form and its Persian labels load from the deployed resource bundle.
 - The remaining manual check is intentionally browser-specific: a Secure, HttpOnly cookie must be observed across a real Chromium reload and cleared by application logout.
