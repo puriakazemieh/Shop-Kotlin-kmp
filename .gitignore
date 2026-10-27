@@ -22,3 +22,4 @@ playwright-report/
 kotlin-js-store
 .artifacts
 /.artifacts
+/.gitnexus/
