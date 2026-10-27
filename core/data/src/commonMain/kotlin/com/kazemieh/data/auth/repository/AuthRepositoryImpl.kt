@@ -42,6 +42,9 @@ class AuthRepositoryImpl(
             _authState.value = AuthState.Unauthenticated
             TokenExpiredEventBus.publish(event = AuthState.Unauthenticated)
         }
+        BrowserSessionLifecycle.observeSignOut {
+            clearLocalSession()
+        }
     }
 
     override suspend fun restoreSession(): AppResult<Unit> {
@@ -143,10 +146,10 @@ class AuthRepositoryImpl(
             }
         }
         return try {
-            sessionGeneration++
-            tokenManager.clearTokens()
-            _authState.value = AuthState.Unauthenticated
-            TokenExpiredEventBus.publish(event = AuthState.Unauthenticated)
+            clearLocalSession()
+            if (PlatformConfig.usesWebSessionCookie) {
+                BrowserSessionLifecycle.publishSignOut()
+            }
             AppResult.Success(Unit)
         } catch (e: Exception) {
             AppResult.Error(e.message ?: "Unknown error")
@@ -155,6 +158,14 @@ class AuthRepositoryImpl(
 
     override fun isLoggedIn(): Flow<Boolean> = flow {
         emit(tokenManager.getAccessToken() != null)
+    }
+
+    private suspend fun clearLocalSession() {
+        sessionGeneration++
+        tokenManager.clearTokens()
+        profileLocalDataSource.clearProfile()
+        _authState.value = AuthState.Unauthenticated
+        TokenExpiredEventBus.publish(event = AuthState.Unauthenticated)
     }
 
 }
