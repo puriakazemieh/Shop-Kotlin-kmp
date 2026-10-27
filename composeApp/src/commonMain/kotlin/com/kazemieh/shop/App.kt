@@ -183,7 +183,7 @@ fun initKoin(
         com.kazemieh.network.common.ApiOriginValidator.validateOriginOverride(
             candidateUrl = it,
             allowedHosts = spec.backendProfile.allowedAuthHosts,
-            isRelease = !com.kazemieh.common.isDebugLoggingEnabled
+            isRelease = com.kazemieh.network.common.PlatformConfig.isReleaseBuild
         )
     }
     ApiConfig.baseUrlOverride = validatedOverride ?: spec.backendProfile.apiRoot
