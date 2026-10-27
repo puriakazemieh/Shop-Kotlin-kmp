@@ -176,7 +176,10 @@ class CB_Manifest_Controller {
 		}
 		$response = new WP_REST_Response( $payload, 200 );
 		$response->header( 'ETag', $etag );
-		$response->header( 'Cache-Control', 'public, max-age=300' );
+		// Feature switches are an administrator-controlled safety boundary.
+		// Keep the response cacheable only with a mandatory revalidation so an
+		// app never silently uses a stale manifest after a valid admin change.
+		$response->header( 'Cache-Control', 'no-cache, max-age=0, must-revalidate' );
 		return $response;
 	}
 
