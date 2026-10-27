@@ -30,7 +30,7 @@ Compare only matched newly completed sessions and success rate; note that cached
 
 ## 3. GitNexus installation / indexing on the Windows development machine
 
-Requirements: `git`, `npx`, and Node.js **22.18+ in 22.x or 24.11+**. From the checked-out KMP repository:
+Requirements: `git`, `npx`, and Node.js **22.18+ in 22.x or 24.11+**. **License notice:** GitNexus is under the [PolyForm Noncommercial 1.0.0 license](https://github.com/abhigyanpatwari/GitNexus/blob/main/LICENSE). Check whether your planned commercial Shop development is permitted or obtain a commercial license **before running the installer**. On Windows, keyword/FTS queries can require the x64 Visual C++ Redistributable and OpenSSL 3 runtime; missing these may let indexing finish while searches return no results. From the checked-out KMP repository:
 
 ```powershell
 .\tools\codex\setup-gitnexus.ps1 -ServerRepoPath 'D:\Android\AndroidStudioProjects\ShopServer\Shop'
