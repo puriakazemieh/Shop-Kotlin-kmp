@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WEB-022G — transient browser credentials and startup restoration
 
-- Status: AWAITING_MANUAL_QA; Size: M; Owner: AI; Risk: HIGH
+- Status: DONE; Size: M; Owner: AI; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WEB-022F`.
 - Store browser access credentials only in memory, never in persistent browser settings. On PWA startup, restore a valid session solely by calling the guarded cookie-backed refresh endpoint; a missing, expired or malformed cookie must leave the user unauthenticated without a misleading error.
 - Preserve persistent token storage and refresh behavior for Android, iOS and JVM/Spring clients. Add positive and negative browser tests, including reload after login and expired/no-cookie startup.
@@ -15,3 +15,7 @@
 ## Manual QA step
 
 Open the WordPress QA PWA, log in, reload, and confirm Profile still shows the signed-in account. Then log out, reload, and confirm Profile remains signed out with no stale profile. This task stays awaiting manual QA until the result is confirmed.
+
+## Manual QA evidence — 2026-10-27
+
+- Confirmed on the disposable WordPress browser-session fixture: Profile remains signed in after login and hard reload; application logout followed by hard reload remains signed out.
