@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WEB-022D — isolated browser logout request
 
-- Status: BLOCKED; Size: S; Owner: BOTH; Risk: HIGH
+- Status: DONE; Size: S; Owner: BOTH; Risk: HIGH
 - Depends on: `P00-PWA-AUTH-WEB-022C` automated client work; owner authorized independent work ahead of backend integration.
 - Add a browser-only API operation for `POST /api/auth/web/logout`, using the HttpOnly cookie and scoped request header. A 401/logout failure must not trigger automatic refresh or be reported as successful server-side revocation. Propagate cancellation and never send a refresh credential in JSON. Keep the existing repository sign-out unwired until its local cleanup and concurrent-refresh lifecycle are separately verified. Preserve native endpoints and retained sites.
 - Test compiled browser client with synthetic Fetch for success and server error, credentials/header and no retry/refresh; run JVM regression and JS/JVM app compilers. Record actual limitations and owner steps under `docs/evidence/P00-PWA-AUTH-WEB-022D/`. This is a network API prerequisite, not complete logout or a P00 Gate pass.
@@ -10,3 +10,8 @@
 
 - Implemented only the browser API operation with 401 refresh blocked and verified it with substituted-Fetch browser tests, JVM guard and app compilation. [Evidence and pending owner steps](../evidence/P00-PWA-AUTH-WEB-022D/verification.md).
 - The sign-out UI/repository is not wired; concurrent refresh and cache cleanup remain unverified. No actual revocation or owner confirmation is claimed.
+
+## Completion — 2026-10-27
+
+- Browser logout API operation without 401 refresh verified with automated tests.
+- Superseded and fully integrated through the completed lifecycle chain (`WEB-022F`-`WEB-022H`), parent `WEB-022`, and owner manual verification under `P00-PWA-AUTH-QA-023`. Status marked DONE.
