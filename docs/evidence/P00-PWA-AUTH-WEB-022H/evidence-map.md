@@ -26,3 +26,10 @@
 The cross-tab browser behavior requires an owner check in two real tabs at
 `http://localhost:8091/pwa/#/login`. Exact steps and success criteria are in
 the task card. This evidence does not claim that manual proof has occurred.
+
+## Manual verification — 2026-10-27
+
+- Owner completed the two-tab sign-out scenario successfully.
+- The second tab became anonymous without a refresh after sign-out in the
+  first tab, and both tabs remained anonymous after reload.
+- No stale profile or generic error was reported.
