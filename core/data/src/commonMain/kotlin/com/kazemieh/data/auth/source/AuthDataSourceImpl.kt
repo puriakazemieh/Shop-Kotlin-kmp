@@ -22,6 +22,10 @@ class AuthDataSourceImpl(
         }
     }
 
+    override suspend fun logoutBrowserSession(): AppResult<Unit> = safeApiCall {
+        authApi.logoutWeb()
+    }
+
     override suspend fun login(email: String, password: String): AppResult<Auth> = safeApiCall {
         authApi.login(LoginRequest(username = email, password = password)).toDomain()
     }

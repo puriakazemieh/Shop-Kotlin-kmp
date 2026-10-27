@@ -135,6 +135,13 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun signOut(): AppResult<Unit> {
+        if (PlatformConfig.usesWebSessionCookie) {
+            when (val result = authDataSource.logoutBrowserSession()) {
+                is AppResult.Error -> return result
+                is AppResult.Loading -> return result
+                is AppResult.Success -> Unit
+            }
+        }
         return try {
             sessionGeneration++
             tokenManager.clearTokens()
