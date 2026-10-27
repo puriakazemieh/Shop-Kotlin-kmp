@@ -1,6 +1,6 @@
 # P00-PWA-AUTH-WEB-022 — browser session lifecycle
 
-- Status: READY; Size: L; Owner: AI; Risk: HIGH
+- Status: DONE; Size: L; Owner: AI; Risk: HIGH
 - Depends on: P00-PWA-AUTH-WP-021.
 - Align PWA credential sending, in-memory access token, refresh, startup restoration and logout with the reviewed web-session contract; preserve mobile and Spring behavior. Add automated positive and negative tests. This was split before completion into `022F` (guarded endpoint selection), `022G` (in-memory browser credentials and startup restoration) and `022H` (server logout and multi-tab lifecycle).
 - UI/network changes require `AWAITING_MANUAL_QA` and evidence. Do not claim P00-T05 passes without owner confirmation.
@@ -19,3 +19,11 @@ The three lifecycle children `WEB-022F`, `WEB-022G`, and `WEB-022H` now have
 their automated and focused browser evidence. The parent is ready for one
 bounded reconciliation pass; it must not itself claim P00-T05 passes before
 the separate end-to-end QA card is completed.
+
+## Completion — 2026-10-27
+
+- Reconciliation pass completed. All three children (`WEB-022F`, `WEB-022G`, `WEB-022H`) are verified with automated tests and owner-confirmed focused browser tests.
+- Full compilation verified: `:core:data:compileKotlinJs`, `:core:data:compileKotlinJvm`, `:composeApp:compileKotlinJs`, and `:composeApp:compileKotlinJvm` all passed cleanly.
+- Preserved native mobile and Spring token/session semantics.
+- Evidence recorded under [evidence map](../evidence/P00-PWA-AUTH-WEB-022/evidence-map.md).
+- End-to-end verification and full `P00-T05` gate remain with downstream card `P00-PWA-AUTH-QA-023`.
