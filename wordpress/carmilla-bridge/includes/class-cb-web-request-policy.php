@@ -10,10 +10,11 @@ final class CB_Web_Request_Policy {
 	private $origins;
 	private $local_qa;
 	private $proxy_ips;
+	private $local_qa_client_ips;
 	private $site_id;
 
 	/** All arguments are trusted server configuration, never request data. */
-	public function __construct( string $site_url, int $blog_id, array $origins, string $environment, bool $enable_local_qa = false, array $proxy_ips = array(), bool $proxy_strips_headers = false ) {
+	public function __construct( string $site_url, int $blog_id, array $origins, string $environment, bool $enable_local_qa = false, array $proxy_ips = array(), bool $proxy_strips_headers = false, array $local_qa_client_ips = array() ) {
 		try {
 			if ( ! preg_match( '#\Ahttps?://[a-zA-Z0-9.-]+(?::[0-9]{1,5})?(?:/[a-zA-Z0-9._~/-]*)?\z#i', $site_url ) ) { throw new RuntimeException(); }
 			$this->site_url = CB_Web_Session_WP_Adapter::canonical_site_url( $site_url );
@@ -40,6 +41,12 @@ final class CB_Web_Request_Policy {
 			foreach ( $proxy_ips as $ip ) {
 				if ( ! is_string( $ip ) || ! filter_var( $ip, FILTER_VALIDATE_IP ) || isset( $this->proxy_ips[ $ip ] ) ) { throw new RuntimeException(); }
 				$this->proxy_ips[ $ip ] = true;
+			}
+			$this->local_qa_client_ips = array( '127.0.0.1' => true, '::1' => true );
+			if ( $local_qa_client_ips && ! $this->local_qa ) { throw new RuntimeException(); }
+			foreach ( $local_qa_client_ips as $ip ) {
+				if ( ! is_string( $ip ) || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) { throw new RuntimeException(); }
+				$this->local_qa_client_ips[ $ip ] = true;
 			}
 		} catch ( Throwable $e ) {
 			throw new InvalidArgumentException( 'Invalid browser session policy configuration.' );
@@ -87,8 +94,21 @@ final class CB_Web_Request_Policy {
 	}
 
 	private function allowed_origin( array $headers ): bool {
-		if ( ! isset( $headers['origin'] ) ) { return false; }
-		try { return isset( $this->origins[ self::origin( $headers['origin'] ) ] ); } catch ( Throwable $e ) { return false; }
+		if ( isset( $headers['origin'] ) ) {
+			try { return isset( $this->origins[ self::origin( $headers['origin'] ) ] ); } catch ( Throwable $e ) { return false; }
+		}
+		// Browsers omit Origin on some same-origin POSTs. The endpoint still
+		// requires the non-simple request header, and a matching Referer keeps
+		// that browser case scoped to an explicitly configured origin. A
+		// cross-origin request carries Origin and therefore never reaches this
+		// fallback.
+		if ( ! isset( $headers['referer'] ) ) { return false; }
+		$referer = parse_url( $headers['referer'] );
+		if ( ! is_array( $referer ) || ! isset( $referer['scheme'], $referer['host'] ) || isset( $referer['user'], $referer['pass'] ) ) { return false; }
+		try {
+			$origin = self::origin( $referer['scheme'] . '://' . $referer['host'] . ( isset( $referer['port'] ) ? ':' . $referer['port'] : '' ) );
+			return isset( $this->origins[ $origin ] );
+		} catch ( Throwable $e ) { return false; }
 	}
 
 	private function transport_ok( array $headers, array $server ): bool {
@@ -109,7 +129,8 @@ final class CB_Web_Request_Policy {
 			// Apache on Windows commonly reports plain HTTP as "off", while
 			// other SAPIs omit HTTPS. Both are non-TLS only in the strict
 			// localhost exception; any other value remains denied.
-			return $this->local_qa && ! $direct_tls && ( $https === '' || strtolower( $https ) === 'off' ) && $forwarded === null && in_array( $remote, array( '127.0.0.1', '::1' ), true ) && in_array( $local, array( '127.0.0.1', '::1' ), true );
+			$loopback = in_array( $remote, array( '127.0.0.1', '::1' ), true );
+			return $this->local_qa && ! $direct_tls && ( $https === '' || strtolower( $https ) === 'off' ) && $forwarded === null && isset( $this->local_qa_client_ips[ $remote ] ) && ( ( $loopback && in_array( $local, array( '127.0.0.1', '::1' ), true ) ) || ! $loopback );
 		}
 		if ( $this->proxy_ips ) {
 			// A proxy deployment must not silently fall back to accepting a

@@ -117,8 +117,13 @@ fun App() {
     LaunchedEffect(authRepository) {
         // JS credentials are deliberately in-memory. A new PWA instance must
         // prove its server-owned HttpOnly cookie before exposing prior state.
-        authRepository.restoreSession()
-        sessionRestoreComplete = true
+        try {
+            authRepository.restoreSession()
+        } finally {
+            // A malformed or unavailable browser response must never leave
+            // the whole application on the startup spinner.
+            sessionRestoreComplete = true
+        }
     }
 
     AppTheme(

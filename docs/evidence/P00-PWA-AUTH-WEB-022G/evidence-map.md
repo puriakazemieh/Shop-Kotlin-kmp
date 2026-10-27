@@ -19,3 +19,11 @@
 1. In the WordPress QA deployment, sign in, refresh the PWA tab, and open Profile. The same signed-in account must remain visible.
 2. Use the application logout, refresh the tab, then open Profile. The app must remain signed out; it must not show a previous profile or a generic error.
 3. Close the PWA tab, reopen it at the same URL, and verify the result matches the server cookie state: signed in only while the valid cookie remains; otherwise signed out.
+
+## Disposable Docker QA preparation — 2026-10-27
+
+- A fresh WordPress 6.4/PHP 8.1 fixture at `http://localhost:8091` was configured with the isolated browser-session schema and synthetic account only.
+- Browser-session route policy smoke test passed: 97 checks, 0 failures. The additional Docker Desktop gateway is accepted only when the explicit local-QA configuration supplies its exact IP; production and non-local configurations reject it.
+- Real route sequence passed over the WordPress REST endpoint: password login `200`, logout `200`, and refresh after logout `401 INVALID_SESSION`.
+- The PWA development distribution was rebuilt and deployed with a bumped worker/bundle version. The visible login form and its Persian labels load from the deployed resource bundle.
+- The remaining manual check is intentionally browser-specific: a Secure, HttpOnly cookie must be observed across a real Chromium reload and cleared by application logout.

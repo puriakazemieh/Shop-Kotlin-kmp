@@ -12,7 +12,10 @@
     || (isLocalWordpressFixture ? `${window.location.origin}/wp-json/carmilla/v1/` : null);
   // Keep each generated PWA self-contained when it is hosted in a subdirectory.
   const configUrl = isSpring ? './app-config-spring.json' : './app-config-wp.json';
-  const workerUrl = isSpring ? './sw-spring.js' : './sw-wp.js';
+  // Service-worker scripts are checked through their own URL. Version the
+  // local bundle so a freshly deployed QA build can replace a worker that
+  // otherwise keeps serving its previously cached HTML shell.
+  const workerUrl = isSpring ? './sw-spring.js?v=10' : './sw-wp.js?v=10';
 
   document.getElementById('pwa-manifest').href = isSpring ? './manifest-spring.json' : './manifest-wp.json';
 
@@ -31,7 +34,7 @@
       window.appConfig = config;
       const script = document.createElement('script');
       // Keep a deployed bundle from being confused with an older service-worker cache.
-      script.src = './composeApp.js?v=8';
+      script.src = './composeApp.js?v=10';
       document.body.appendChild(script);
     })
     .catch(error => console.error('Failed to load app config', error));

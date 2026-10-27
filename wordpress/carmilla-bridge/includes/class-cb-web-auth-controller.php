@@ -16,7 +16,8 @@ final class CB_Web_Auth_Controller {
 		try {
 			if ( ! defined( 'CB_WEB_SESSION_ENABLED' ) || CB_WEB_SESSION_ENABLED !== true || ! defined( 'CB_WEB_SESSION_ENVIRONMENT' ) || ! is_string( CB_WEB_SESSION_ENVIRONMENT ) || ! defined( 'CB_WEB_SESSION_ALLOWED_ORIGINS' ) || ! is_array( CB_WEB_SESSION_ALLOWED_ORIGINS ) || ! defined( 'CB_WEB_SESSION_TRUSTED_INGRESS' ) || CB_WEB_SESSION_TRUSTED_INGRESS !== true ) { return null; }
 			$local = defined( 'CB_WEB_SESSION_LOCAL_QA' ) && CB_WEB_SESSION_LOCAL_QA === true;
-			$policy = new CB_Web_Request_Policy( CB_WEB_SESSION_SITE_URL, get_current_blog_id(), CB_WEB_SESSION_ALLOWED_ORIGINS, CB_WEB_SESSION_ENVIRONMENT, $local );
+			$local_clients = defined( 'CB_WEB_SESSION_LOCAL_QA_CLIENT_IPS' ) && is_array( CB_WEB_SESSION_LOCAL_QA_CLIENT_IPS ) ? CB_WEB_SESSION_LOCAL_QA_CLIENT_IPS : array();
+			$policy = new CB_Web_Request_Policy( CB_WEB_SESSION_SITE_URL, get_current_blog_id(), CB_WEB_SESSION_ALLOWED_ORIGINS, CB_WEB_SESSION_ENVIRONMENT, $local, array(), false, $local_clients );
 			$store = CB_Web_Session_WP_Adapter::from_wordpress();
 			global $wpdb;
 			$marker = $wpdb->get_var( "SELECT version FROM `{$wpdb->prefix}carmilla_web_schema` WHERE id=1" );

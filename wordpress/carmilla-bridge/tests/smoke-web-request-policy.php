@@ -25,8 +25,12 @@ foreach ( array( null, '', 'null', 'https://evil.example.test', 'http://shop.exa
 	$bad = $headers; $bad['Origin'] = $value;
 	check_policy( ! $policy->allows_post( 'POST', $bad, $server ), 'missing malformed hostile or multiple origin rejected' );
 }
-$bad = $headers; unset( $bad['Origin'] );
-check_policy( ! $policy->allows_post( 'POST', $bad, $server ), 'absent origin rejected' );
+$same_origin_without_origin = $headers; unset( $same_origin_without_origin['Origin'] ); $same_origin_without_origin['Referer'] = 'https://shop.example.test:8443/pwa/#/login';
+check_policy( $policy->allows_post( 'POST', $same_origin_without_origin, $server ), 'same-origin browser POST without Origin accepts configured Referer' );
+$bad = $same_origin_without_origin; $bad['Referer'] = 'https://evil.example.test/pwa/';
+check_policy( ! $policy->allows_post( 'POST', $bad, $server ), 'absent Origin with hostile Referer rejected' );
+$bad = $same_origin_without_origin; unset( $bad['Referer'] );
+check_policy( ! $policy->allows_post( 'POST', $bad, $server ), 'absent Origin and Referer rejected' );
 $bad = $headers; $bad['origin'] = $bad['Origin'];
 check_policy( ! $policy->allows_post( 'POST', $bad, $server ), 'duplicate case-insensitive origin rejected' );
 foreach ( array( 'GET', 'OPTIONS', 'post', '' ) as $method ) { check_policy( ! $policy->allows_post( $method, $headers, $server ), 'wrong request method rejected' ); }
@@ -64,6 +68,10 @@ $local = new CB_Web_Request_Policy( 'http://localhost:8080/one', 1, array( 'http
 $local_headers = array( 'Host' => 'localhost:8080', 'Origin' => 'http://localhost:8090', 'Content-Type' => 'application/json', 'X-Carmilla-Web-Request' => '1' );
 $local_server = array( 'REMOTE_ADDR' => '127.0.0.1', 'SERVER_ADDR' => '::1', 'HTTPS' => '' );
 check_policy( $local->allows_post( 'POST', $local_headers, $local_server ), 'explicit local QA and loopback allowed' );
+$docker_local = new CB_Web_Request_Policy( 'http://localhost:8080/one', 1, array( 'http://localhost:8090' ), 'local', true, array(), false, array( '172.17.0.1' ) );
+$docker_server = array( 'REMOTE_ADDR' => '172.17.0.1', 'SERVER_ADDR' => '172.17.0.4', 'HTTPS' => 'off' );
+check_policy( $docker_local->allows_post( 'POST', $local_headers, $docker_server ), 'explicit local QA Docker gateway allowed' );
+check_policy( ! $local->allows_post( 'POST', $local_headers, $docker_server ), 'unconfigured Docker gateway rejected' );
 foreach ( array( 'REMOTE_ADDR', 'SERVER_ADDR' ) as $field ) {
 	$bad_server = $local_server; $bad_server[$field] = '192.0.2.1';
 	check_policy( ! $local->allows_post( 'POST', $local_headers, $bad_server ), 'local QA rejects non-loopback address' );
