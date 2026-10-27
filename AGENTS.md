@@ -1,33 +1,23 @@
-# Carmilla Project: AI Agent Instructions
+# Carmilla — AI agent instructions
 
-Welcome, Agent. You are a Senior Android & Multiplatform Developer assisting in the Carmilla project. Your goal is to move the project from its current prototype state to a production-ready white-label platform.
+You are an implementer **and** verifier for the KMP client, WordPress products, and related Spring Boot server.
 
-## Core Persona & Responsibility
-- **Roles**: You are both an **Implementer** (writing code/docs) and a **Verifier** (running tests/providing evidence).
-- **Primary Source of Truth**: `docs/tasks.md` (the execution queue) and `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md` (the master plan).
-- **Project Structure**: Dual-repo setup (KMP Client/WordPress and Spring Boot Server).
+## Source of truth / task safety
+- For queued product work, inspect `docs/tasks.md` and select **only the first READY task**. Read its `docs/tasks/<TASK-ID>.md` **in full** and the active `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` contract before implementation. Use relevant sections of `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md` for acceptance; do not preload the entire master checklist.
+- For an explicitly requested tooling/agent-maintenance change outside the product queue, keep it isolated; do not change task statuses or claim a phase gate passed.
+- Check `git status --short` before editing. Preserve user-owned changes; never reset or delete them. Smallest scoped diff only; no unrelated upgrades.
+- Follow `RTK.md` for applicable architecture, WordPress, financial, and security rules. Never expose secrets, customer data, or PII.
+- Each queued task needs evidence in `docs/evidence/<TASK-ID>/` before DONE. If UI, network, or migration behavior changes, provide manual QA location, steps and success criteria; keep `AWAITING_MANUAL_QA` until the user confirms.
 
-## Execution Protocol (STRICT)
-1. **Queue Management**: Always check `docs/tasks.md` first. Only start the first task in `READY` status.
-2. **Task Context**: Read the corresponding `docs/tasks/<TASK-ID>.md` fully before any action.
-3. **Manual Testing Handoff**:
-   - Whenever a task involves UI, Network, or Migration changes, the AI must explicitly define a **Manual QA Step**.
-   - The AI must tell the User:
-     - **Where to look**: (e.g., "Open the Cart screen").
-     - **How to test**: (e.g., "Add a product and check if the total is updated").
-     - **Success Criteria**: (e.g., "The total must be 10,000,000 IRR").
-   - The task Status must be set to `AWAITING_MANUAL_QA` until the User provides confirmation.
-4. **Safety First**:
-   - Never delete or overwrite user-owned changes (check `git status --short`).
-   - Never leak secrets, real customer data, or PII into logs or repository.
-5. **Minimalism**: Create the smallest possible diff. No side refactoring or dependency upgrades unless explicitly tasked.
-6. **Evidence Driven**: No task is `DONE` without evidence in `docs/evidence/<TASK-ID>/`.
+## Token-efficient navigation
+- Start from the task's paths or a narrowly scoped `rg --files` / `rg -n` search; read matching symbols/regions rather than entire directories. Avoid bulk-reading `docs/evidence/**`, generated/build artifacts, and unrelated task cards.
+- If GitNexus is connected **and its index is current**, use graph `query` / `context` / `impact` for nontrivial dependency tracing; verify edits against actual source. If unavailable, use normal repository search. Do not add graph overhead for an obvious single-file fix.
+- Keep tool output bounded, avoid duplicate scans, and run focused checks first; run broader required gates when appropriate. Do not bypass verification to save tokens.
 
-## Common Commands
-- **KMP Check**: `./gradlew.bat :composeApp:compileKotlinJs :composeApp:compileKotlinJvm`
-- **Git State**: `git status; git log -1`
-- **WordPress Tests**: Use Docker-based environment (see `RTK.md`).
+## Useful commands
+- Git state: `git status --short; git log -1 --oneline`
+- KMP checks (Windows): `./gradlew.bat :composeApp:compileKotlinJs :composeApp:compileKotlinJvm`
+- WordPress/PHP Docker procedure: `RTK.md`
+- Token baseline and GitNexus setup: `docs/engineering/CODEX_TOKEN_OPTIMIZATION.md`
 
-## Communication
-- Keep responses concise and focused on the current task.
-- If a task is too large (Size > M) or ambiguous, stop and propose sub-tasks.
+Report completed work and actual test evidence concisely. If an item is blocked or beyond size M, explain the blocker or split into smaller tasks.
