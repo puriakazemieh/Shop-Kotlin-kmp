@@ -45,6 +45,10 @@ private fun handleWebLogoutPurge() {
 }
 
 private fun resolveSkuAndApi(): Pair<String, String?> {
+    val params = URLSearchParams(window.location.search)
+    val queryApi = params.get("api")?.takeIf { it.isNotBlank() }
+        ?: params.get("wpApi")?.takeIf { it.isNotBlank() }
+
     // In production, app-config.json sets window.appConfig
     val appConfig = window.asDynamic().appConfig
     
@@ -54,10 +58,19 @@ private fun resolveSkuAndApi(): Pair<String, String?> {
         "carmila"
     }
 
-    val api = if (appConfig != null) {
+    val configApi = if (appConfig != null) {
         appConfig.backend.apiRoot as String
     } else {
         null
+    }
+
+    val isLocalhost = window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1"
+    
+    // In release, untrusted query parameter origin overrides (?api= / ?wpApi=) are completely ignored.
+    val api = if (isLocalhost) {
+        queryApi ?: configApi
+    } else {
+        configApi
     }
     
     return Pair(sku, api)

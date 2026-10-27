@@ -179,7 +179,14 @@ fun initKoin(
     val spec = GeneratedProductSpecs.specs[sku] ?: throw IllegalStateException("Unknown SKU: $sku")
     
     val brand = com.kazemieh.designsystem.brand.BrandRegistry.byId(spec.branding.id)
-    ApiConfig.baseUrlOverride = apiBaseUrlOverride ?: spec.backendProfile.apiRoot
+    val validatedOverride = apiBaseUrlOverride?.let {
+        com.kazemieh.network.common.ApiOriginValidator.validateOriginOverride(
+            candidateUrl = it,
+            allowedHosts = spec.backendProfile.allowedAuthHosts,
+            isRelease = !com.kazemieh.common.isDebugLoggingEnabled
+        )
+    }
+    ApiConfig.baseUrlOverride = validatedOverride ?: spec.backendProfile.apiRoot
     val tenantConfig = spec.tenant
     val backendProfile = spec.backendProfile.copy(apiRoot = ApiConfig.baseUrl)
 
