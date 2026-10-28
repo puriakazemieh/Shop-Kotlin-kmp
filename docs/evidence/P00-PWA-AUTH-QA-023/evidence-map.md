@@ -4,7 +4,7 @@
 
 - **Tested by:** Owner
 - **Environment:** Disposable Docker QA fixture (`carmilla-p00-web-auth-wp-20261027` at `http://localhost:8091/pwa/#/login`)
-- **Synthetic QA Account:** `qa-browser@example.test`
+- **Synthetic QA Account:** پس از تست حذف شد؛ شناسه در Evidence نگهداری نمی‌شود.
 
 ## Verification Observations
 

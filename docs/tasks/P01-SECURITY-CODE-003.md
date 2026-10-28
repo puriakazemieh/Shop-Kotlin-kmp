@@ -137,3 +137,10 @@ request/response/token logging کلاینت redacted و debug-only شود
 - Evidence paths: docs/evidence/P01-SECURITY-CODE-003/RESULTS.md
 - Remaining risks/blockers: baseline سراسری به WalletBalanceResponse ناموجود در core:data شکست می‌خورد؛ خارج از Scope این Task.
 - Final status: DONE
+
+## Revalidation record (2026-10-27)
+
+- Scope: local WordPress fixture and browser-console inspection only; no production service or customer data.
+- A synthetic local account was used for one direct browser-auth check and then deleted. No credential, token, OTP, cookie, payment payload, or health data was retained in source or Evidence.
+- Result: the direct guarded auth request succeeded with HTTP 200; without its required request header it was rejected with HTTP 403. The inspected browser console contained no matching sensitive logging markers, but the PWA login page emitted `Fail to fetch` before an in-app authentication flow could run.
+- Decision: **Status remains `AWAITING_MANUAL_QA`**. This revalidation is not evidence of a successful in-app login/OTP/payment/health flow. Details: `docs/evidence/P01-SECURITY-CODE-003/revalidation-20261027.md`.

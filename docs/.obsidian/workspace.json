@@ -4,52 +4,63 @@
     "type": "split",
     "children": [
       {
-        "id": "1fd458e2cbaec47c",
+        "id": "6ca5603d7ab4fc44",
         "type": "tabs",
         "children": [
           {
-            "id": "8711e0212ad59b92",
+            "id": "1b3bec71ab20fcc1",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "tasks/P01-SECURITY-DISC-001.md",
+                "file": "راهنمای جامع تست دستی فازهای ۰۰ تا ۱۰.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "P01-SECURITY-DISC-001"
+              "title": "راهنمای جامع تست دستی فازهای ۰۰ تا ۱۰"
             }
           },
           {
-            "id": "7b3aa129c6f6dd5b",
+            "id": "9cc5a64beaa23c50",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "qa/EXPLORATORY_BASELINE_CHECKLIST.md",
+                "file": "tasks.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "EXPLORATORY_BASELINE_CHECKLIST"
+              "title": "tasks"
             }
           },
           {
-            "id": "538a444122abde0e",
+            "id": "e9d20864c047e5a6",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "tasks/P01-SECURITY-DISC-001.md",
+                "file": "MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "P01-SECURITY-DISC-001"
+              "title": "MASTER_IMPLEMENTATION_CHECKLIST_FA"
+            }
+          },
+          {
+            "id": "91a7c49958d5898c",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -213,8 +224,29 @@
       "bases:Create new base": false
     }
   },
-  "active": "8711e0212ad59b92",
+  "active": "e9d20864c047e5a6",
   "lastOpenFiles": [
+    "tasks/P10-RELEASE-SEC-020.md",
+    "evidence/P01-SECURITY-OPS-002/revalidation-20261027.md",
+    "evidence/P01-SECURITY-CODE-006/evidence-map.md",
+    "tasks.md",
+    "راهنمای جامع تست دستی فازهای ۰۰ تا ۱۰.md",
+    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
+    "evidence/P00-PWA-AUTH-WP-021C04B04A/verification.md",
+    "evidence/P00-PWA-AUTH-WP-021C04B04A",
+    "tasks/P00-PWA-AUTH-WP-021C04B04A.md",
+    "evidence/P00-QA-MANUAL-018/web-smoke-20261014.md",
+    "evidence/P00-QA-MANUAL-018/reference-environments-20261014.md",
+    "evidence/P00-QA-MANUAL-018/backend-profiles-20261014.md",
+    "evidence/P00-QA-MANUAL-018/inventory-20261014.md",
+    "evidence/P00-QA-MANUAL-018/revalidation-20261014.md",
+    "evidence/P00-QA-MANUAL-018",
+    "tasks/P04-WORDPRESS-CODE-051.md",
+    "tasks/P04-FEATURE-CODE-050.md",
+    "tasks/P04-STOREFRONT-CODE-049.md",
+    "tasks/P03-ARCH-ADR-026.md",
+    "tasks/P01-SECURITY-DISC-001.md",
+    "qa/EXPLORATORY_BASELINE_CHECKLIST.md",
     "evidence/P01-SECURITY-CODE-003/RESULTS.md",
     "evidence/P01-SECURITY-CODE-003",
     "evidence/P01-SECURITY-OPS-002/MANUAL_QA.md",
@@ -225,31 +257,10 @@
     "tasks/P01-SPRING-DATA-027.md",
     "tasks/P01-SPRING-SEC-026.md",
     "tasks/P01-SPRING-SEC-025.md",
-    "tasks/P01-SPRING-SEC-024.md",
-    "tasks/CB-SUCCESS-BIZ-036.md",
-    "MASTER_IMPLEMENTATION_CHECKLIST_FA.md",
     "MASTER_IMPLEMENTATION_CHECKLIST_FA.md~",
-    "tasks/P00-PROGRAM-GATE-019.md",
-    "tasks/P00-QA-MANUAL-018.md",
     "tasks/P00-PROGRAM-GATE-019.md~",
-    "tasks/P04-WORDPRESS-GATE-037.md",
-    "tasks/P04-WPTHEME-GATE-036.md",
-    "tasks/P04-WORDPRESS-MANUAL-035.md",
-    "tasks/P04-WPPLUGIN-MANUAL-034.md",
-    "tasks/P04-WPPLUGIN-CODE-033.md",
-    "tasks/P04-WORDPRESS-CODE-032.md",
-    "tasks/P04-WPPLUGIN-CODE-031.md",
-    "tasks/P04-WPTHEME-CODE-030.md",
-    "tasks/P04-WORDPRESS-CODE-029.md",
-    "tasks/P04-WORDPRESS-CODE-028.md",
-    "tasks/P04-WORDPRESS-CODE-027.md",
-    "tasks/P04-WORDPRESS-CODE-026.md",
-    "tasks/P04-WPPLUGIN-GATE-024.md",
-    "tasks/P04-WPTHEME-CODE-025.md",
     "engineering",
     "evidence/P00-PROGRAM-ADR-003",
-    "architecture/adr",
-    "architecture",
-    "evidence/P00-PROGRAM-DISC-002/summary.md~"
+    "architecture/adr"
   ]
 }

@@ -9,15 +9,13 @@
 
 - PWA URL: `http://localhost:8091/pwa/#/login`
 - Docker Container: `carmilla-p00-web-auth-wp-20261027` (WordPress 6.4 / PHP 8.1 / MariaDB 10.6)
-- Synthetic QA Account:
-  - Email / Username: `qa-browser@example.test`
-  - Password: `BrowserQaOnly-2026!`
+- Synthetic QA account: deleted after QA. Its identifier and password are not retained in this card.
 
 ## Manual QA Verification Steps for Owner
 
 1. **Login & Session Cookie:**
    - Open Chrome / Edge and navigate to `http://localhost:8091/pwa/#/login`.
-   - Log in with `qa-browser@example.test` and `BrowserQaOnly-2026!`.
+   - Log in with a newly created, disposable synthetic account; do not record its identifier or password in source, chat, screenshots, or Evidence.
    - Open Developer Tools -> Application -> Cookies for `http://localhost:8091`:
      - Verify that the session cookie is present with `HttpOnly` and `SameSite` attributes.
    - Open Developer Tools -> Application -> Local Storage & Session Storage:

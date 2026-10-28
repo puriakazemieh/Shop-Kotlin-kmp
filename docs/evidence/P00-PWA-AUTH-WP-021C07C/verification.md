@@ -6,7 +6,7 @@
 
 - WordPress fixture: `http://localhost/carmilla-p00-browser-auth-qa/`
 - صفحهٔ آزمون هم‌مبدأ: `http://localhost/carmilla-p00-browser-auth-qa/web-auth-qa.html`
-- حساب مشتری ساختگی: `qa-browser@example.test` با رمز `BrowserQaOnly-2026!`.
+- حساب مشتری ساختگیِ آن اجرای QA پس از تست حذف شد؛ شناسه و رمز آن نگهداری نشده‌اند.
 - این fixture به یک پایگاه‌دادهٔ ساختگی جدا متصل است و برای سایت‌های موجود، داده یا تنظیمات تولیدی ایجاد نکرده است.
 
 ## اصلاح‌های کشف‌شده در آزمون واقعی

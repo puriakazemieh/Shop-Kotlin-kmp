@@ -61,7 +61,7 @@
   // Service-worker scripts are checked through their own URL. Version the
   // local bundle so a freshly deployed QA build can replace a worker that
   // otherwise keeps serving its previously cached HTML shell.
-  const workerUrl = isSpring ? './sw-spring.js?v=13' : './sw-wp.js?v=13';
+  const workerUrl = isSpring ? './sw-spring.js?v=14' : './sw-wp.js?v=14';
 
   document.getElementById('pwa-manifest').href = isSpring ? './manifest-spring.json' : './manifest-wp.json';
 
@@ -83,7 +83,7 @@
       window.appConfig = config;
       const script = document.createElement('script');
       // Keep a deployed bundle from being confused with an older service-worker cache.
-      script.src = './composeApp.js?v=13';
+      script.src = './composeApp.js?v=14';
       document.body.appendChild(script);
     })
     .catch(error => console.error('Failed to load app config', error));

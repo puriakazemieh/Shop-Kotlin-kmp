@@ -1,0 +1,87 @@
+import sys
+
+with open('composeApp/build.gradle.kts', 'r') as f:
+    lines = f.readlines()
+
+new_lines = []
+new_lines.append('import groovy.json.JsonSlurper\n')
+
+for line in lines:
+    if line.strip() == 'commonMain.dependencies {':
+        new_lines.append('        kotlin.srcDir(generateProductSpecs.map { it.outputs.files.singleFile })\n')
+    new_lines.append(line)
+
+task_code = """
+val generateProductSpecs by tasks.registering {
+    val inputFile = rootProject.file("tools/build-config/products.json")
+    val outputDir = layout.buildDirectory.dir("generated/source/buildConfig/commonMain/kotlin")
+    inputs.file(inputFile)
+    outputs.dir(outputDir)
+
+    doLast {
+        val outDir = outputDir.get().asFile
+        val outFile = File(outDir, "com/kazemieh/shop/GeneratedProductSpecs.kt")
+        outFile.parentFile.mkdirs()
+        
+        val jsonText = inputFile.readText()
+        val parsedJson = JsonSlurper().parseText(jsonText) as Map<*, *>
+        
+        val sb = StringBuilder()
+        sb.appendLine("package com.kazemieh.shop")
+        sb.appendLine()
+        sb.appendLine("import com.kazemieh.config.capabilities.*")
+        sb.appendLine("import kotlin.collections.setOf")
+        sb.appendLine("import kotlin.collections.mapOf")
+        sb.appendLine()
+        sb.appendLine("object GeneratedProductSpecs {")
+        sb.appendLine("    val specs = mapOf<String, ProductBuildSpec>(")
+        
+        for ((skuObj, specObj) in parsedJson) {
+            val sku = skuObj as String
+            val spec = specObj as Map<*, *>
+            val tenant = spec["tenant"] as Map<*, *>
+            val branding = spec["branding"] as Map<*, *>
+            val backend = spec["backendProfile"] as Map<*, *>
+            val features = spec["compiledFeatureIds"] as List<*>
+            val featuresString = features.joinToString(", ") { "\\\"$it\\\"" }
+            val authHosts = (backend["allowedAuthHosts"] as List<*>).joinToString(", ") { "\\\"$it\\\"" }
+            
+            sb.appendLine("        \\\"${sku}\\\" to ProductBuildSpec(")
+            sb.appendLine("            productKind = ProductKind.${spec["productKind"]},")
+            sb.appendLine("            sku = \\\"${spec["sku"]}\\\",")
+            sb.appendLine("            platform = ClientPlatform.${spec["platform"]},")
+            sb.appendLine("            tenant = TenantConfig(\\\"${tenant["id"]}\\\"),")
+            sb.appendLine("            branding = BrandingConfig(\\\"${branding["id"]}\\\", \\\"${branding["displayName"]}\\\", \\\"${branding["currency"]}\\\"),")
+            sb.appendLine("            buildIdentity = BuildIdentity(\\\"com.kazemieh.shop\\\", \\\"1.0\\\", 1),")
+            sb.appendLine("            backendProfile = BackendProfile(BackendKind.${backend["kind"]}, \\\"${backend["apiRoot"]}\\\", \\\"${backend["assetRoot"]}\\\", setOf(${authHosts}), ${backend["contractVersion"]}, \\\"${backend["manifestPath"]}\\\"),")
+            sb.appendLine("            compiledFeatureIds = setOf(${featuresString})")
+            sb.appendLine("        ),")
+        }
+        sb.appendLine("    )")
+        sb.appendLine()
+        sb.appendLine("    val localConfigs = mapOf<String, LocalFeatureManifestConfig>(")
+        for ((skuObj, specObj) in parsedJson) {
+            val sku = skuObj as String
+            val spec = specObj as Map<*, *>
+            val backend = spec["backendProfile"] as Map<*, *>
+            val tenant = spec["tenant"] as Map<*, *>
+            val local = spec["localFeatures"] as Map<*, *>
+            sb.appendLine("        \\\"${sku}\\\" to LocalFeatureManifestConfig(")
+            sb.appendLine("            backendKind = BackendKind.${backend["kind"]},")
+            sb.appendLine("            tenantId = \\\"${tenant["id"]}\\\",")
+            sb.appendLine("            contentBlog = ${local["contentBlog"]},")
+            sb.appendLine("            commerceCore = ${local["commerceCore"]},")
+            sb.appendLine("            commercePhysical = ${local["commercePhysical"]},")
+            sb.appendLine("            commerceDigital = ${local["commerceDigital"]}")
+            sb.appendLine("        ),")
+        }
+        sb.appendLine("    )")
+        sb.appendLine("}")
+        outFile.writeText(sb.toString())
+    }
+}
+"""
+new_lines.append(task_code)
+
+with open('composeApp/build.gradle.kts', 'w') as f:
+    f.writelines(new_lines)

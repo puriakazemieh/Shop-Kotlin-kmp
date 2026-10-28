@@ -48,7 +48,7 @@ P01-SECURITY-OPS-002
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P01 / SECURITY / OPS
 - Priority/Risk/Size: P0/HIGH / S (عملیات زیرساختی انسانی محدود)
 - Owner: HUMAN
@@ -152,3 +152,10 @@ scan بیرونی و config evidence؛ full Spring به فاز ۱۵ می‌رو�
 - Evidence paths: docs/evidence/P01-SECURITY-OPS-002/MANUAL_QA.md
 - Remaining risks/blockers: سه پرداخت آزمایشیِ unverified در job زمان‌بندی‌شده بازیابی نشدند؛ رسیدگی آن در Taskهای payment بعدی است.
 - Final status: DONE
+
+## Re-validation and owner scope decision (2026-10-27)
+
+- Revalidated local-only controls: `docker compose config --quiet`, healthy local PostgreSQL, loopback-only database listener, loopback default Spring bind address, and current local JUnit reports with no failures in the relevant suites. Details are redacted in `docs/evidence/P01-SECURITY-OPS-002/revalidation-20261027.md`.
+- Owner decision: the current local-build scope has no intended public Spring endpoint. Creating a public endpoint or weakening a firewall solely to manufacture an external scan was not performed.
+- The required external hostname/IP/CDN/load-balancer/firewall scan is deferred as a release prerequisite to `P10-RELEASE-SEC-020`.
+- Final status: DONE for the confirmed local scope; this does not represent a public-deployment security pass.

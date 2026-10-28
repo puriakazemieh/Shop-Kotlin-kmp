@@ -1,0 +1,64 @@
+import groovy.json.JsonSlurper
+
+val generateProductSpecs by tasks.registering {
+    val inputFile = rootProject.file("tools/build-config/products.json")
+    val outputDir = layout.buildDirectory.dir("generated/source/buildConfig/commonMain/kotlin")
+    inputs.file(inputFile)
+    outputs.dir(outputDir)
+
+    doLast {
+        val outDir = outputDir.get().asFile
+        val outFile = File(outDir, "com/kazemieh/shop/GeneratedProductSpecs.kt")
+        outFile.parentFile.mkdirs()
+        
+        val jsonText = inputFile.readText()
+        val parsedJson = JsonSlurper().parseText(jsonText) as Map<String, Map<String, Any>>
+        
+        val sb = StringBuilder()
+        sb.appendLine("package com.kazemieh.shop")
+        sb.appendLine()
+        sb.appendLine("import com.kazemieh.config.capabilities.*")
+        sb.appendLine()
+        sb.appendLine("object GeneratedProductSpecs {")
+        sb.appendLine("    val specs = mapOf<String, ProductBuildSpec>(")
+        
+        for ((sku, spec) in parsedJson) {
+            val tenant = spec["tenant"] as Map<String, Any>
+            val branding = spec["branding"] as Map<String, Any>
+            val backend = spec["backendProfile"] as Map<String, Any>
+            val features = spec["compiledFeatureIds"] as List<String>
+            val featuresString = features.joinToString(", ") { "\"$it\"" }
+            val authHosts = (backend["allowedAuthHosts"] as List<String>).joinToString(", ") { "\"$it\"" }
+            
+            sb.appendLine("        \"$sku\" to ProductBuildSpec(")
+            sb.appendLine("            productKind = ProductKind.${spec["productKind"]},")
+            sb.appendLine("            sku = \"${spec["sku"]}\",")
+            sb.appendLine("            platform = ClientPlatform.${spec["platform"]},")
+            sb.appendLine("            tenant = TenantConfig(\"${tenant["id"]}\"),")
+            sb.appendLine("            branding = BrandingConfig(\"${branding["id"]}\", \"${branding["displayName"]}\", \"${branding["currency"]}\"),")
+            sb.appendLine("            buildIdentity = BuildIdentity(\"com.kazemieh.shop\", \"1.0\", 1),")
+            sb.appendLine("            backendProfile = BackendProfile(BackendKind.${backend["kind"]}, \"${backend["apiRoot"]}\", \"${backend["assetRoot"]}\", setOf($authHosts), ${backend["contractVersion"]}, \"${backend["manifestPath"]}\"),")
+            sb.appendLine("            compiledFeatureIds = setOf($featuresString)")
+            sb.appendLine("        ),")
+        }
+        sb.appendLine("    )")
+        sb.appendLine()
+        sb.appendLine("    val localConfigs = mapOf<String, LocalFeatureManifestConfig>(")
+        for ((sku, spec) in parsedJson) {
+            val backend = spec["backendProfile"] as Map<String, Any>
+            val tenant = spec["tenant"] as Map<String, Any>
+            val local = spec["localFeatures"] as Map<String, Any>
+            sb.appendLine("        \"$sku\" to LocalFeatureManifestConfig(")
+            sb.appendLine("            backendKind = BackendKind.${backend["kind"]},")
+            sb.appendLine("            tenantId = \"${tenant["id"]}\",")
+            sb.appendLine("            contentBlog = ${local["contentBlog"]},")
+            sb.appendLine("            commerceCore = ${local["commerceCore"]},")
+            sb.appendLine("            commercePhysical = ${local["commercePhysical"]},")
+            sb.appendLine("            commerceDigital = ${local["commerceDigital"]}")
+            sb.appendLine("        ),")
+        }
+        sb.appendLine("    )")
+        sb.appendLine("}")
+        outFile.writeText(sb.toString())
+    }
+}
