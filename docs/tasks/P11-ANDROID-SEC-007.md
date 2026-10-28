@@ -60,6 +60,12 @@ P11-ANDROID-SEC-007
 ## هدف قابل اندازه‌گیری
 secure token storage، backup policy و tenant switch purge
 
+## تصمیم محصولِ منتقل‌شده از فاز ۰۱
+
+- Android باید نشست را میان restartهای برنامه حفظ کند، اما فقط در `EncryptedSharedPreferences` با `Android Keystore`؛ token در preferences معمولی،backup قابل‌انتقال یا log مجاز نیست.
+- پیاده‌سازی فعلی از `MasterKey(AES256_GCM)` و `EncryptedSharedPreferences` استفاده می‌کند؛ این کارت باید migration،backup policy و behavior واقعی دستگاه را مستقل از ادعای کد بررسی کند.
+- logout،expiry،revoke و tenant/backend/origin switch باید هر دو token را حذف کنند؛ restart عادی نباید logout اجباری ایجاد کند.
+
 ## خروجی مورد انتظار
 token migration/expiry/logout tests
 
@@ -96,12 +102,12 @@ token migration/expiry/logout tests
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: token migration/expiry/logout tests
+- معیار اختصاصی: token migration/expiry/logout/restart tests؛ token در backup و plaintext preferences صفر.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: token migration/expiry/logout tests
+- انتظار: token migration/expiry/logout/restart tests؛ token در backup و plaintext preferences صفر.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

@@ -49,6 +49,7 @@ P01-SECURITY-CODE-019
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: خروجی قابل‌بازتولید secret scan و اثبات fail-closed ثبت نشده است؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -136,4 +137,4 @@ secret scan؛ production بدون secret لازم fail-closed
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to P10 release secret/artifact scan)

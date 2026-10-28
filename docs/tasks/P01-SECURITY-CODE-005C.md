@@ -1,6 +1,6 @@
 # P01-SECURITY-CODE-005C — Web session-cookie contract
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Owner: BOTH
 - Depends on: P01-SECURITY-CODE-005B
 - Goal: حذف persistent Bearer token وب و تعریف session cookie با HttpOnly, Secure, SameSite؛ نیازمند تغییر قرارداد backend.
@@ -23,9 +23,8 @@ Success: cookie دارای HttpOnly/Secure/SameSite=Strict است،token در br
 
 ## Completion record
 
-- Implemented at: 2026-08-25
-- Automated verification: `:core:network:compileKotlinJs :core:data:compileKotlinJs :core:network:compileKotlinJvm :core:data:compileKotlinJvm` exit 0؛`:core:network:compileAndroidMain :core:data:compileAndroidMain` exit 0؛ShopServer `WebSessionCookieFactoryTest` exit 0.
-- Full ShopServer verification: پس از بالا آمدن container `postgres_db` با healthcheck سالم،`.\gradlew.bat test --console=plain` با ۵ تست و exit 0 اجرا شد.
-- Evidence: `docs/evidence/P01-SECURITY-CODE-005C/verification.md`
-- Manual tester/date/result: تأیید صریح مالک پروژه در 2026-08-25؛تست HTTPS مرورگر،cookie،rotation و logout موفق.
-- Final status: DONE
+- Completed at: 2026-10-28
+- Disposition: مالک پروژه تأیید کرد که QA مرورگرِ وابسته به HTTPS در محیط محلی انجام‌پذیر نیست و باید در `P10-RELEASE-SEC-021`، روی staging/release HTTPS واقعی، انجام شود. این DONE فقط پایان scope فاز ۰۱ است و اجرای موفق آزمون HTTPS را ادعا نمی‌کند.
+- Evidence: `docs/evidence/P01-SECURITY-CODE-005C/deferral-decision-20261028.md`
+- Remaining control: کارت P10 باید ویژگی‌های cookie، نبود refresh token در browser storage، rotation و invalidation پس از logout را همراه آزمون TLS و host binding ثبت کند.
+- Final status: DONE (routing to P10 Web/PWA HTTPS session-cookie validation)

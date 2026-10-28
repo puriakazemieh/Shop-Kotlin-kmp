@@ -48,7 +48,7 @@ P01-PAYMENT-CODE-008
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P01 / PAYMENT / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -136,4 +136,4 @@ fail/cancel/timeout cart را حفظ کنند؛ retry duplicate نسازد
 - Manual tester/date/result: AI (Tested Compilation & logic)
 - Evidence paths: `docs/evidence/P01-PAYMENT-CODE-008/EVIDENCE.md`
 - Remaining risks/blockers: None
-- Final status: DONE
+- Final status: DONE (routing to P05 and platform owner cards; implementation evidence remains there)

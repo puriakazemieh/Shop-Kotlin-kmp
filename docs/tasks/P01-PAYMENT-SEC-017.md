@@ -49,6 +49,7 @@ P01-PAYMENT-SEC-017
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: تطبیق‌های کد جزئی‌اند، اما آزمون replay/concurrency و قرارداد callback کامل نیست؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / PAYMENT / SEC
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH

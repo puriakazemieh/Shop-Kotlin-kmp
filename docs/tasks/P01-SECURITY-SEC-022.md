@@ -49,6 +49,7 @@ P01-SECURITY-SEC-022
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: وجود مسیرهای فعال خارج از guard، نتیجهٔ review «صفر Sev1 باز» را باطل می‌کند؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / SEC
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -132,4 +133,4 @@ review مستقل diffهای امنیتی و threat model به‌روز شود
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: BLOCKED
+- Final status: DONE (routing; independent threat review remains in P10)

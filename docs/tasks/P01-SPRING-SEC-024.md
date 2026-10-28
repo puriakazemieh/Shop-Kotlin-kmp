@@ -1,6 +1,7 @@
 # P01-SPRING-SEC-024 — بستن کامل RBAC و IDOR در سرور Spring Boot
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: کنترل کد دیده شد، اما Evidence فقط compile است و آزمون acceptance/RBAC ندارد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / SEC
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI

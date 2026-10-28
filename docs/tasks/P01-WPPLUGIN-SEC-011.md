@@ -48,7 +48,7 @@ P01-WPPLUGIN-SEC-011
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P01 / WPPLUGIN / SEC
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -134,4 +134,4 @@ brute force/rate/account enumeration tests
 - Manual tester/date/result: AI (Tested syntax and reviewed logic)
 - Evidence paths: `docs/evidence/P01-WPPLUGIN-SEC-011/EVIDENCE.md`
 - Remaining risks/blockers: None
-- Final status: DONE
+- Final status: DONE (routing to P04 WordPress security owner cards)

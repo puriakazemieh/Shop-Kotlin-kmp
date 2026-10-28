@@ -60,6 +60,11 @@ P11-ANDROID-CODE-006
 ## هدف قابل اندازه‌گیری
 verified App Links و opaque payment result
 
+## ورودی انتقال‌یافته از P01
+
+- deep link فقط شناسهٔ opaque پرداخت/سفارش را trigger می‌کند؛ پارامترهای `success`،`status`،amount یا cart در URI منبع trusted نیستند.
+- قبل از نمایش نتیجه یا پاک‌سازی cart، کلاینت باید وضعیت را از server authoritative query کند. تست جعلی `status=success` باید عدم تغییر order/cart را ثابت کند.
+
 ## خروجی مورد انتظار
 cold/warm/killed؛ server polling
 

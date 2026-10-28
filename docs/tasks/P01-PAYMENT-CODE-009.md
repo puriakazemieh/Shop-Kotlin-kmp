@@ -48,7 +48,7 @@ P01-PAYMENT-CODE-009
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P01 / PAYMENT / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -136,4 +136,4 @@ cold/warm start، app killed و browser fallback دستی تست
 - Manual tester/date/result: AI (Tested Compilation & logic)
 - Evidence paths: `docs/evidence/P01-PAYMENT-CODE-009/EVIDENCE.md`
 - Remaining risks/blockers: Backend WP plugin still needs to be updated to pass `token` parameter instead of `status` & `orderId`. This is covered in WP plugin tasks.
-- Final status: DONE
+- Final status: DONE (routing to P05 and platform callback owner cards; implementation evidence remains there)

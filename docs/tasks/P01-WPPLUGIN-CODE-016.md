@@ -49,6 +49,7 @@ P01-WPPLUGIN-CODE-016
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: Evidence آزمون endpoint/job و حالت legacy معیار پذیرش را ندارد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -133,4 +134,4 @@ feature خاموش endpoint/job صفر؛ legacy فعال دو رزرو هم‌ز
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to P14 booking owner cards)

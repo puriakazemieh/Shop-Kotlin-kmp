@@ -1,6 +1,7 @@
 # P01-SPRING-SEC-026 — لغو نوبت (Cancel Appointment) به‌صورت Idempotent در Spring
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: عنوان/معیار کارت با ردیف Master هم‌راستا نیست و Evidence صرفاً تحلیل ایستا است؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / SEC
 - Priority/Risk/Size: P0/HIGH / S
 - Owner: AI

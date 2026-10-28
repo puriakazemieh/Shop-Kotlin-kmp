@@ -60,6 +60,11 @@ P17-DESKTOP-CODE-006
 ## هدف قابل اندازه‌گیری
 deep link/single-instance/payment callback
 
+## ورودی انتقال‌یافته از P01
+
+- callback/deep link پرداخت فقط شناسهٔ opaque را trigger می‌کند؛ هیچ `success`،`status`،amount یا cart از URI trusted نیست.
+- نتیجه و cart فقط پس از query authoritative سمت server تغییر می‌کنند؛ malicious URI با `status=success` نباید سفارش را موفق یا cart را خالی کند.
+
 ## خروجی مورد انتظار
 malicious URI و cold/warm tests
 

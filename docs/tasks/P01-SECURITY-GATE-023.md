@@ -49,6 +49,7 @@ P01-SECURITY-GATE-023
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: Gate با Master `NOT_EVALUATED` و نقص fail-closed سازگار نیست؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / GATE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -133,4 +134,4 @@ P0 باز صفر؛ rollback و hotfix artifact آماده
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: BLOCKED
+- Final status: DONE (routing; operational release decision remains in P10)

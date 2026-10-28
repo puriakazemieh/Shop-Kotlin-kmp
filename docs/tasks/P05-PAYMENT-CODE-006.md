@@ -60,6 +60,11 @@ P05-PAYMENT-CODE-006
 ## هدف قابل اندازه‌گیری
 hosted redirect + opaque HTTPS result session
 
+## ورودی انتقال‌یافته از P01
+
+- redirect فقط یک reference/session opaque و کوتاه‌عمر به کلاینت برمی‌گرداند؛ status،amount،cart یا نتیجهٔ provider در URL نتیجه trusted نیست.
+- کلاینت فقط با query authoritative وضعیت را می‌خواند؛ callback/deep link موفق جعلی هیچ اثر order/cart ندارد.
+
 ## خروجی مورد انتظار
 WebView/direct card entry/merchant key در app صفر
 

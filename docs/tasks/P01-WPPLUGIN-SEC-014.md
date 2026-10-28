@@ -49,6 +49,7 @@ P01-WPPLUGIN-SEC-014
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: فقط lint ثبت شده و آزمون IDOR موردنیاز وجود ندارد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / WPPLUGIN / SEC
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -133,4 +134,4 @@ user A به resource user B دسترسی ندارد
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to P04 WordPress ownership owner cards)

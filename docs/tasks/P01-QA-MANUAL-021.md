@@ -49,6 +49,7 @@ P01-QA-MANUAL-021
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: Evidence فاقد device و request IDهای redacted و با وضعیت Gate ناسازگار است؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / QA / MANUAL
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -133,4 +134,4 @@ tester/date/device/request IDs redacted ثبت
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to platform and release manual-QA cards)

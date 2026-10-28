@@ -49,6 +49,7 @@ P01-QA-AUTO-020
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: harness موجود فقط سه کنترل CPT را می‌سنجد و regression ۰۰۳ تا ۰۱۹ را پوشش نمی‌دهد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / QA / AUTO
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: AI
@@ -132,4 +133,4 @@ P01-QA-AUTO-020
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to P08/P09/P10 regression evidence)

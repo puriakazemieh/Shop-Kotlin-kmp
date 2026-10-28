@@ -1,6 +1,7 @@
 # P01-WPPLUGIN-ARCH-029 — حذف وضعیت Split-brain میان پوسته و افزونه وردپرس
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: Evidence split-brain را شرح می‌دهد، اما acceptance امنیت مرزهای داخلی را اثبات نمی‌کند؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / ARCH
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI

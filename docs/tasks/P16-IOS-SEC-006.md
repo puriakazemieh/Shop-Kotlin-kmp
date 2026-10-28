@@ -60,6 +60,12 @@ P16-IOS-SEC-006
 ## هدف قابل اندازه‌گیری
 Keychain token storage،backup/accessibility policy
 
+## ورودی انتقال‌یافته از فاز ۰۱
+
+- منبع: `P01-SECURITY-CODE-005B` در ۲۰۲۶-۱۰-۲۸ با تأیید مالک پروژه به این Gate منتقل شد؛ وضعیت `DONE` آن فقط پایان scope فاز ۰۱ است و شواهد پیاده‌سازی محسوب نمی‌شود.
+- وضعیت اثبات‌شدهٔ فعلی: `TokenSettingsFactory.ios.kt` هنوز از `NSUserDefaultsSettings` استفاده می‌کند؛ Keychain پیاده‌سازی/تأیید نشده است.
+- پذیرش افزوده: migration امن و پاک‌سازی token قدیمی، اجتناب از backup نامناسب، انتخاب accessibility مناسب، و آزمون واقعی logout/expiry/reinstall/device-backup. تا ثبت Evidence معتبر این کارت و Master تیک نمی‌خورند.
+
 ## خروجی مورد انتظار
 logout/expiry/reinstall/device backup tests
 

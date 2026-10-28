@@ -60,6 +60,13 @@ P17-DESKTOP-SEC-005
 ## هدف قابل اندازه‌گیری
 OS keychain/credential vault و session policy
 
+## تصمیم محصولِ منتقل‌شده از فاز ۰۱
+
+- نشست Desktop باید پس از restart برنامه، فقط با refresh token در vault امن سیستم‌عامل، قابل بازیابی باشد؛ logout اجباری در هر restart تجربهٔ محصول مطلوب نیست.
+- Windows باید از DPAPI یا Windows Credential Manager، macOS از Keychain و Linux از Secret Service/libsecret استفاده کند. plaintext preferences، فایل تنظیمات و log محل مجاز token نیستند.
+- در نبود vault قابل‌استفاده، برنامه باید fail-closed و ناشناس بماند؛ بازگرداندن persistence در `PreferencesSettings` مجاز نیست.
+- migration از fallback حافظه‌ای به vault نباید token را به plaintext منتقل کند؛ tenant/backend/origin switch،logout،expiry و revoke باید رکورد vault را حذف کنند.
+
 ## خروجی مورد انتظار
 token در file/log/plain preferences صفر
 
@@ -96,12 +103,12 @@ token در file/log/plain preferences صفر
 - Command baseline: .\gradlew.bat :composeApp:compileKotlinJvm و سپس task هدفی که پس از discovery مشخص می‌شود.
 - Command وب در صورت تغییر: .\gradlew.bat :composeApp:compileKotlinJs
 - Expected: commandهای محدود به Scope exit code 0 و report ذخیره‌شده داشته باشند.
-- معیار اختصاصی: token در file/log/plain preferences صفر
+- معیار اختصاصی: token در file/log/plain preferences صفر؛ restart با vault معتبر session را بازیابی می‌کند و logout/expiry/tenant-switch رکورد vault را پاک می‌کنند.
 
 ## Manual tests با environment/data/steps/expected
 - اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
 - Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: token در file/log/plain preferences صفر
+- انتظار: token در file/log/plain preferences صفر؛ restart با vault معتبر session را بازیابی می‌کند و logout/expiry/tenant-switch رکورد vault را پاک می‌کنند.
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria

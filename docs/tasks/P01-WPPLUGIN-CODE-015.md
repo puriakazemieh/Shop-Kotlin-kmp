@@ -49,6 +49,7 @@ P01-WPPLUGIN-CODE-015
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: Evidence اجرای مسیرهای route/job/API و آزمون هم‌زمانی معیار پذیرش را اثبات نمی‌کند؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -133,4 +134,4 @@ feature خاموش دسترسی صفر؛ در حالت legacy concurrency test �
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to P05/P14 owner cards)

@@ -48,7 +48,7 @@ P01-PAYMENT-CODE-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P01 / PAYMENT / CODE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -129,11 +129,9 @@ success جعلی سفارش/cart را تغییر ندهد
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at: 2026-08-25T14:12:00
-- Completed at: 2026-08-25T14:32:00
-- Changed files: `PaymentCompleted.kt`, `PaymentContract.kt`, `PaymentViewModel.kt`, `CartModule.kt`, `AppNavigation.kt`, `Screen.kt`
-- Commands and exit codes: `.\gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs` (Exit code 0)
-- Manual tester/date/result: AI (Tested Compilation & logic)
-- Evidence paths: `docs/evidence/P01-PAYMENT-CODE-007/EVIDENCE.md`
-- Remaining risks/blockers: None
-- Final status: DONE
+- Completed at: 2026-10-28
+- Disposition: مالک پروژه تأیید کرد که کنترل نتیجهٔ پرداخت بر اساس پلتفرم و backend اجرا شود. این کارت P01 فقط انتقال scope را می‌بندد؛ URL یا deep link هنوز منبع trusted وضعیت پرداخت نیست.
+- Platform/backend routing: Android `P11-ANDROID-CODE-006`؛ iOS `P16-IOS-CODE-007`؛ Desktop `P17-DESKTOP-CODE-006`؛ Web/PWA `P08-PWA-SEC-020`؛ قرارداد hosted redirect و verify سمت سرور `P05-PAYMENT-CODE-006` و `P05-PAYMENT-CODE-007`.
+- Evidence: `docs/evidence/P01-PAYMENT-CODE-007/platform-scope-transfer-20261028.md`
+- Master checklist: عمداً باز می‌ماند تا کارت‌های مقصد با آزمون جعلی-success،server verification و lifecycle واقعی تکمیل شوند.
+- Final status: DONE (routing to P05/P08/P11/P16/P17; implementation evidence remains in owner cards)

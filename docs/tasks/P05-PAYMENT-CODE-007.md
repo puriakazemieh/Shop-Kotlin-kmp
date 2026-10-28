@@ -60,6 +60,11 @@ P05-PAYMENT-CODE-007
 ## هدف قابل اندازه‌گیری
 callback recorder و server-to-server verify
 
+## ورودی انتقال‌یافته از P01
+
+- callback عمومی و URL بازگشت صرفاً trigger هستند؛ نتیجهٔ پرداخت فقط پس از verify server-to-server و تطبیق state/nonce/expiry/HMAC معتبر است.
+- یک test باید نشان دهد `status=success` یا reference جعلی، بدون verify معتبر، status سفارش یا cart را تغییر نمی‌دهد.
+
 ## خروجی مورد انتظار
 callback عمومی trusted نباشد؛ state nonce/expiry/HMAC
 

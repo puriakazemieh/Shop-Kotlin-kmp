@@ -49,6 +49,7 @@ P01-SECURITY-CODE-005
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: نتیجهٔ `DONE` به‌علت زیرکارت باز و نبود Evidence کامل لغو شد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / CODE
 - Priority/Risk/Size: P0/HIGH / L
 - Owner: BOTH
@@ -129,11 +130,14 @@ foreign host test فاقد header؛ logout/expiry/rotation test
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at: 2026-08-25
-- Completed at: 2026-08-25
-- Changed files: تغییرات پلتفرمی token storage،contract وب،host allowlist و کارت‌های 005A تا 005E.
-- Commands and exit codes: compile Android/JS/JVM و `:core:network:jvmTest` exit 0؛ShopServer test با PostgreSQL Docker exit 0.
-- Manual tester/date/result: تأیید مالک پروژه برای iOS Keychain و QA مرورگر در 2026-08-25.
-- Evidence paths: `docs/evidence/P01-SECURITY-CODE-005C/`; `docs/evidence/P01-SECURITY-CODE-005D/`; `docs/evidence/P01-SECURITY-CODE-005E/`.
-- Remaining risks/blockers: بازبینی Keychain پیش از انتشار iOS در `P16-IOS-SEC-023` باقی می‌ماند.
-- Final status: DONE
+
+- Decomposed at: 2026-10-28
+- Disposition at: 2026-10-28 — مالک پروژه تأیید کرد که scope پلتفرمی این کارت از فاز ۰۱ خارج و به Gateهای اختصاصی منتقل شود. `DONE` فقط پایان scope P01 است و PASS شدن Gateهای مقصد را ادعا نمی‌کند.
+- Platform routing:
+  - Android: `P11-ANDROID-SEC-007` — Keystore، migration، backup policy، restart، expiry/logout و tenant switch.
+  - iOS: `P16-IOS-SEC-006` — Keychain، accessibility/backup و lifecycle device tests.
+  - Desktop: `P17-DESKTOP-SEC-005` — credential vault بومی، بازیابی امن پس از restart و purge lifecycle.
+  - Web/PWA و host binding: `P10-RELEASE-SEC-021` — HTTPS واقعی، cookie/session lifecycle و redirect/foreign-host validation.
+- Evidence: `docs/evidence/P01-SECURITY-CODE-005/platform-scope-transfer-20261028.md`
+- Master checklist: تیک P01-SECURITY-CODE-005 عمداً باز می‌ماند؛ نتیجهٔ فازهای مقصد باید جداگانه با Evidence واقعی تأیید شود.
+- Final status: DONE (routing to P10/P11/P16/P17; secure-storage evidence remains in owner cards)

@@ -1,6 +1,7 @@
 # P01-WPPLUGIN-DATA-028 — اصلاح IDهای محلی و Ledger در وردپرس (P0-11)
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: کارت legacy ledger را obsolete می‌داند، اما Master safe-query/input-sanitization می‌خواهد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / DATA
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI

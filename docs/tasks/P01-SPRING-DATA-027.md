@@ -1,6 +1,7 @@
 # P01-SPRING-DATA-027 — استراتژی مهاجرت دیتابیس (Migration) برای پروداکشن در Spring
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: کارت migration را می‌سنجد ولی Master SQLi hardening می‌خواهد؛ Evidence acceptance را پوشش نمی‌دهد؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / SECURITY / DATA
 - Priority/Risk/Size: P0/HIGH / S
 - Owner: AI

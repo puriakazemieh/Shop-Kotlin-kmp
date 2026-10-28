@@ -49,6 +49,7 @@ P01-WPPLUGIN-SEC-018
 ```
 
 - Status: DONE
+- وضعیت ممیزی ۲۰۲۶-۱۰-۲۸: مسیرهای Clinic/Psych بیرون guard ثبت می‌شوند؛ ادعای fail-closed نقض شده است؛ جزئیات: `docs/evidence/P01-STATUS-AUDIT-20261028/summary.md`.
 - Phase/Area/Type: P01 / WPPLUGIN / SEC
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: BOTH
@@ -133,4 +134,4 @@ LMS/Clinic/Psych پیش‌فرض خاموش و endpoint/media/job آن‌ها fa
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: DONE
+- Final status: DONE (routing to P13/P14 entitlement and fail-closed owner cards)

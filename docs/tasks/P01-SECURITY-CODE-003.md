@@ -48,12 +48,12 @@ P01-SECURITY-CODE-003
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P01 / SECURITY / CODE
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: AI
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P01-SECURITY-OPS-002
+- Depends on: P01-QA-OPS-003A02
 - Blocks: P01-SECURITY-CODE-004
 - Requirement source: Master checklist row P01-SECURITY-CODE-003 و Source audit بخش SECURITY
 
@@ -144,3 +144,11 @@ request/response/token logging کلاینت redacted و debug-only شود
 - A synthetic local account was used for one direct browser-auth check and then deleted. No credential, token, OTP, cookie, payment payload, or health data was retained in source or Evidence.
 - Result: the direct guarded auth request succeeded with HTTP 200; without its required request header it was rejected with HTTP 403. The inspected browser console contained no matching sensitive logging markers, but the PWA login page emitted `Fail to fetch` before an in-app authentication flow could run.
 - Decision: **Status remains `AWAITING_MANUAL_QA`**. This revalidation is not evidence of a successful in-app login/OTP/payment/health flow. Details: `docs/evidence/P01-SECURITY-CODE-003/revalidation-20261027.md`.
+
+## Manual-QA completion — 2026-10-28
+
+- Environment: local PWA with the isolated WordPress browser-session fixture; synthetic account only.
+- Tester confirmation: successful and failed in-app login were exercised after the CORS preflight correction. The tester confirmed the browser Console contained none of `Authorization`, `Bearer`, access/refresh-token values, password, OTP, payment, or health data.
+- Privacy: no screenshot, token, cookie, request body, password, OTP, payment payload, health data, or customer data was retained.
+- Evidence: `docs/evidence/P01-SECURITY-CODE-003/manual-qa-20261028.md`
+- Final status: DONE

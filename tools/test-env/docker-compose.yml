@@ -21,6 +21,69 @@ services:
       - ../../wordpress/carmilla-theme:/var/www/html/wp-content/themes/carmilla-theme
       - ../../wordpress/carmilla-bridge:/var/www/html/wp-content/plugins/carmilla-bridge
 
+  # One-shot security probe: shares the MariaDB network namespace, so its
+  # WordPress primary connection and the adapter's independent loopback
+  # connection can be proven to target the same local database server.
+  wordpress-session-loopback-probe:
+    image: wordpress:latest
+    profiles: ["web-session-qa"]
+    network_mode: "service:db"
+    working_dir: /var/www/html
+    entrypoint: ["/bin/bash", "-ec"]
+    environment:
+      WORDPRESS_DB_HOST: 127.0.0.1:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ../../wordpress/carmilla-theme:/var/www/html/wp-content/themes/carmilla-theme:ro
+      - ../../wordpress/carmilla-bridge:/var/www/html/wp-content/plugins/carmilla-bridge:ro
+      - ./scripts/verify-web-session-loopback.php:/opt/carmilla-test-tools/verify-web-session-loopback.php:ro
+    command:
+      - |
+        /usr/local/bin/docker-entrypoint.sh apache2-foreground >/tmp/carmilla-probe-apache.log 2>&1 &
+        server_pid=$$!
+        for attempt in $(seq 1 30); do
+          test -f /var/www/html/wp-includes/load.php && break
+          sleep 1
+        done
+        php /opt/carmilla-test-tools/verify-web-session-loopback.php
+        result=$$?
+        kill "$$server_pid" 2>/dev/null || true
+        wait "$$server_pid" 2>/dev/null || true
+        exit "$$result"
+
+  wordpress-web-session-fixture:
+    image: wordpress:latest
+    profiles: ["web-session-qa"]
+    network_mode: "service:db"
+    working_dir: /var/www/html
+    environment:
+      WORDPRESS_DB_HOST: 127.0.0.1:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://localhost:8092');
+        define('WP_SITEURL', 'http://localhost:8092');
+    volumes:
+      - ../../wordpress/carmilla-theme:/var/www/html/wp-content/themes/carmilla-theme:ro
+      - ../../wordpress/carmilla-bridge:/var/www/html/wp-content/plugins/carmilla-bridge:ro
+      - ./mu-plugins/carmilla-local-web-session.php:/var/www/html/wp-content/mu-plugins/carmilla-local-web-session.php:ro
+      - ./scripts/initialize-web-session.php:/opt/carmilla-test-tools/initialize-web-session.php:ro
+
+  wordpress-web-session-proxy:
+    image: alpine/socat
+    profiles: ["web-session-qa"]
+    depends_on:
+      - wordpress-web-session-fixture
+    command: ["TCP-LISTEN:8092,fork,reuseaddr", "TCP:db:80"]
+    ports:
+      - "8092:8092"
+    networks:
+      default:
+        ipv4_address: 172.20.0.250
+
   db:
     image: mariadb:10.6
     environment:
@@ -28,3 +91,8 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress_password
+
+networks:
+  default:
+    external: true
+    name: test-env_default

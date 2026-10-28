@@ -60,6 +60,11 @@ P16-IOS-CODE-007
 ## هدف قابل اندازه‌گیری
 Universal Links و callback opaque
 
+## ورودی انتقال‌یافته از P01
+
+- Universal Link فقط شناسهٔ opaque پرداخت/سفارش را trigger می‌کند؛ پارامترهای `success`،`status`،amount یا cart در URI منبع trusted نیستند.
+- نتیجه و cart فقط پس از query authoritative سمت server تغییر می‌کنند؛ URL جعلی `status=success` باید بی‌اثر باشد.
+
 ## خروجی مورد انتظار
 cold/warm/killed + server verify
 

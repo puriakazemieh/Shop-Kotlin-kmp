@@ -2,6 +2,7 @@ package com.kazemieh.data.local
 
 import com.russhwolf.settings.Settings
 
+/** JVM/Desktop keeps authentication only for the current process lifetime. */
 private class InMemoryTokenSettings : Settings {
     private val values = mutableMapOf<String, Any>()
 
@@ -30,4 +31,4 @@ private class InMemoryTokenSettings : Settings {
     override fun getBooleanOrNull(key: String): Boolean? = values[key] as? Boolean
 }
 
-actual fun createTokenSettings(platformSettings: Settings): Settings = platformSettings
+actual fun createTokenSettings(platformSettings: Settings): Settings = InMemoryTokenSettings()

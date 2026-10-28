@@ -91,7 +91,11 @@ class CB_Plugin {
 			
 			header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
 			// PWA manifest revalidation uses If-None-Match after its first successful fetch.
-			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, If-None-Match' );
+			// Browser-session routes require this non-simple, server-validated
+			// request header. It must be present in the allowlisted-origin
+			// preflight response or browsers reject the POST before it reaches
+			// the route policy.
+			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, If-None-Match, X-Carmilla-Web-Request' );
 			header( 'Vary: Origin', false );
 			// Preflight: answer OPTIONS immediately with the headers above.
 			if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) ) {

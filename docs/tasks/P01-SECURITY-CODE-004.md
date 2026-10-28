@@ -48,7 +48,7 @@ P01-SECURITY-CODE-004
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P01 / SECURITY / CODE
 - Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
@@ -136,4 +136,12 @@ HTTPS production pass؛ MITM/invalid cert fail
 - Manual tester/date/result: کاربر / 2026-08-25 / تأیید تکمیل QA.
 - Evidence paths: docs/evidence/P01-SECURITY-CODE-004/RESULTS.md
 - Remaining risks/blockers: baseline سراسری core:data دارای WalletBalanceResponse ناموجود است.
+- Final status: DONE
+
+## Manual-QA revalidation — 2026-10-28
+
+- Tester: مالک محصول.
+- Result: tester confirmed the release TLS scenarios passed: valid HTTPS connection succeeded; cleartext HTTP was rejected; invalid-certificate and controlled MITM attempts failed.
+- Privacy: no endpoint identifier, certificate material, token, cookie, password, OTP, payment payload, health data, screenshot, or proxy capture is retained in Evidence.
+- Evidence: `docs/evidence/P01-SECURITY-CODE-004/manual-qa-20261028.md`
 - Final status: DONE
