@@ -48,7 +48,7 @@ P01-SECURITY-CODE-006
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P01 / SECURITY / CODE
 - Priority/Risk/Size: P0/HIGH / S
 - Owner: AI
@@ -130,10 +130,10 @@ localhost/private/foreign URL در release رد شود
 
 ## Completion record
 - Started at: 2026-10-27T18:32:00+03:30
-- Completed at: 2026-10-27T18:55:00+03:30
+- Completed at: 2026-10-28T10:24:00+03:30
 - Changed files: core/network/src/commonMain/kotlin/com/kazemieh/network/common/ApiOriginValidator.kt, composeApp/src/commonMain/kotlin/com/kazemieh/shop/App.kt, composeApp/src/webMain/kotlin/com/kazemieh/shop/main.kt, composeApp/src/jsMain/resources/pwa-bootstrap.js, composeApp/src/jsMain/resources/index.html
 - Commands and exit codes: `.\gradlew.bat :core:network:jvmTest` (Exit Code 0), `.\gradlew.bat :core:network:jsBrowserTest` (Exit Code 0), `.\gradlew.bat :composeApp:compileKotlinJs` (Exit Code 0), `.\gradlew.bat :composeApp:compileKotlinJvm` (Exit Code 0)
-- Manual tester/date/result: Awaiting human QA verification on fixture (http://localhost:8091/pwa/)
+- Manual tester/date/result: Human QA completed on 2026-10-28. Scenarios verified: foreign host override injection blocked with 0 requests sent to attacker host; private IP injection blocked; local WordPress fixture happy path verified working cleanly on http://localhost:8091/pwa/#/login.
 - Evidence paths: docs/evidence/P01-SECURITY-CODE-006/
 - Remaining risks/blockers: None.
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE
