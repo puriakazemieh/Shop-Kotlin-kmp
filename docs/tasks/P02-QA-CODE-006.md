@@ -132,4 +132,9 @@ harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: TODO
+
+## Status audit — 2026-10-28
+- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
+- دلیل: تست‌های ثبت‌شدهٔ دامنه و Ktor صرفاً assert ثابت دارند و معیار تست واقعی/contract را نمی‌سنجند.
+- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md

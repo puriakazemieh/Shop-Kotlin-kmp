@@ -133,4 +133,9 @@ auth/home/product/cart/payment-return روی fixture
 - Manual tester/date/result: Product-owner direction, 2026-08-26: P02 phase task accepted as DONE; mandatory release-candidate recheck is tracked in `P09-QA-MANUAL-004`.
 - Evidence paths: `docs/evidence/P02-QA-MANUAL-017/completion.md`
 - Remaining risks/blockers: JVM compilation could not be independently verified in this environment because Gradle could not establish a loopback connection. Re-run the smoke suite and the JVM compile in `P09-QA-MANUAL-004` before the P09 release gate.
-- Final status: DONE
+- Final status: TODO
+
+## Status audit — 2026-10-28
+- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
+- دلیل: تأیید مشروط تاریخی مالک ثبت است، ولی smoke انسانی با tester/build/fixture/result وجود ندارد.
+- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md

@@ -132,4 +132,9 @@ navigation characterization/deep-link tests قبل و بعد یکسان
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-ARCH-CODE-014/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: DONE
+- Final status: TODO
+
+## Status audit — 2026-10-28
+- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
+- دلیل: گراف‌ها جدا شده‌اند، اما تست characterization و deep-link قبل/بعد ثبت نشده است.
+- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md

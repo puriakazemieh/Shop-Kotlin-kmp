@@ -132,4 +132,9 @@ clean install، activation و smokeهای موجود در CI واقعاً اجر
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-QA-CODE-007/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: DONE
+- Final status: TODO
+
+## Status audit — 2026-10-28
+- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
+- دلیل: گردش‌کار CI شاهد اجرای matrix ندارد و smokeهای real-WP به محیط/flagهایی نیاز دارند که این workflow فراهم نمی‌کند.
+- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md

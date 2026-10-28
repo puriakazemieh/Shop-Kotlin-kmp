@@ -132,4 +132,9 @@ failure تست PR را fail کند؛ best-effort برای gate حیاتی ممن
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-CI-CODE-009/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: DONE
+- Final status: TODO
+
+## Status audit — 2026-10-28
+- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
+- دلیل: شاهد اجرای PR آزمایشی و fail شدن gate وجود ندارد؛ workflow اصلی integration وردپرس را اجرا نمی‌کند.
+- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md

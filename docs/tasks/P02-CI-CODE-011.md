@@ -132,4 +132,9 @@ tampered dependency/known secret fixture CI را fail کند
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-CI-CODE-011/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: DONE
+- Final status: TODO
+
+## Status audit — 2026-10-28
+- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
+- دلیل: فایل verification-metadata و lockfile موجود نیست؛ آزمون منفی dependency/secret ثبت نشده است.
+- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md
