@@ -1,16 +1,26 @@
 package com.kazemieh.domain.common
 
+import com.kazemieh.domain.auth.ValidateEmail
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class EmailValidatorTest {
+    private val validateEmail = ValidateEmail()
+
     @Test
-    fun testValidEmail() {
-        assertTrue(true, "Dummy test for EmailValidator")
+    fun validEmailPassesDomainValidation() {
+        assertTrue(validateEmail("customer@example.test").successful)
     }
+
     @Test
-    fun testInvalidEmail() {
-        assertFalse(false, "Dummy test for invalid email")
+    fun malformedEmailFailsDomainValidation() {
+        assertFalse(validateEmail("customer.example.test").successful)
+        assertFalse(validateEmail("customer@").successful)
+    }
+
+    @Test
+    fun blankEmailFailsDomainValidation() {
+        assertFalse(validateEmail("   ").successful)
     }
 }

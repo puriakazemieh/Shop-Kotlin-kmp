@@ -3,6 +3,12 @@ plugins {
     alias(libs.plugins.kotlinxSerialization)
 }
 
+// The PR gate invokes the root `test` task; KMP otherwise exposes only `jvmTest`.
+tasks.register("test") {
+    group = "verification"
+    dependsOn("jvmTest")
+}
+
 kotlin {
     androidLibrary {
         namespace = "com.kazemieh.network"

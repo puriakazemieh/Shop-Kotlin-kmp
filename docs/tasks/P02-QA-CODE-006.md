@@ -48,9 +48,9 @@ P02-QA-CODE-006
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / QA / CODE
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/MEDIUM / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P02-CORE-CODE-005
@@ -132,7 +132,15 @@ harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO
+- Final status: AWAITING_MANUAL_QA
+
+## Implementation handoff — 2026-10-28
+- Started at: 2026-10-28; code and local verification finished the same day, CI acceptance pending.
+- Changed files: `core/domain/build.gradle.kts`, `core/network/build.gradle.kts`, both corresponding `commonTest` files, this card, `docs/tasks.md`, and `docs/evidence/P02-QA-CODE-006/verification-20261028.md`.
+- Commands and exit codes: see `verification-20261028.md`; focused tests, root test selection, JS/JVM compilation, Android debug APK and server `bootJar` all exited 0.
+- Manual tester/date/result: no device test required; actual PR CI run and negative gate test await reviewer evidence.
+- Evidence paths: `docs/evidence/P02-QA-CODE-006/verification-20261028.md` and local JUnit XML reports.
+- Remaining risks/blockers: GitHub PR gate has not been observed on this revision; Master checkbox remains open. The next queue task must not start in this turn.
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
