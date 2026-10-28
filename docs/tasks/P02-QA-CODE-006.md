@@ -48,7 +48,7 @@ P02-QA-CODE-006
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0/MEDIUM / M
 - Owner: AI
@@ -132,7 +132,7 @@ harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: AWAITING_MANUAL_QA
+- Final status: DONE
 
 ## Implementation handoff — 2026-10-28
 - Started at: 2026-10-28; code and local verification finished the same day, CI acceptance pending.
@@ -141,6 +141,11 @@ harness امنیت فاز ۱ به `commonTest` و fixture foundation عمومی 
 - Manual tester/date/result: no device test required; actual PR CI run and negative gate test await reviewer evidence.
 - Evidence paths: `docs/evidence/P02-QA-CODE-006/verification-20261028.md` and local JUnit XML reports.
 - Remaining risks/blockers: GitHub PR gate has not been observed on this revision; Master checkbox remains open. The next queue task must not start in this turn.
+
+## Owner acceptance — 2026-10-28
+- Manual tester/date/result: product owner / 2026-10-28 / explicitly approved this task and requested `DONE`.
+- Completion decision: `DONE` based on the successful local test/build evidence in `docs/evidence/P02-QA-CODE-006/verification-20261028.md` and the owner's acceptance. This supersedes the pending-status sentence in the earlier implementation handoff.
+- Remaining limitation: the commit has not been pushed and no actual GitHub PR run or negative gate run was observed. CI execution remains a verification item for `P02-CI-CODE-009`; this decision does not mark that card or a phase/release gate complete.
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
