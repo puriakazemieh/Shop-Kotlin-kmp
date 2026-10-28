@@ -1,5 +1,7 @@
 <div dir="rtl" align="right">
 
+> پیگیری چک‌باکس‌های فازهای قبل: پس از تکمیل کنترل‌های مرتبط این کارت و ثبت Evidence و تأیید لازم، طبق نگاشت `docs/evidence/P01-PLATFORM-SCOPE-TRANSFER-20261028/summary.md` نتیجه را به چک‌باکس متناظر راهنمای تست دستی و Gate در Master بازگردانید. چک‌باکس مشترک فقط با تکمیل تمام بخش‌های مربوط به همهٔ مقصدها تیک می‌خورد؛ Evidence جزئی را ثبت کنید.
+
 # P04-WORDPRESS-CODE-051 — قرارداد canonical WordPress برای کلاینت Kotlin
 
 - Status: TODO

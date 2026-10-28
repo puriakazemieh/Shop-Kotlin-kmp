@@ -1,5 +1,7 @@
 # P08-PWA-SEC-020 — نتیجهٔ پرداخت Web/PWA فقط با query authoritative
 
+> پیگیری چک‌باکس‌های فازهای قبل: پس از تکمیل کنترل‌های مرتبط این کارت و ثبت Evidence و تأیید لازم، طبق نگاشت `docs/evidence/P01-PLATFORM-SCOPE-TRANSFER-20261028/summary.md` نتیجه را به چک‌باکس متناظر راهنمای تست دستی و Gate در Master بازگردانید. چک‌باکس مشترک فقط با تکمیل تمام بخش‌های مربوط به همهٔ مقصدها تیک می‌خورد؛ Evidence جزئی را ثبت کنید.
+
 - Status: TODO
 - Phase/Area/Type: P08 / PWA / SEC
 - Priority/Risk/Size: P0/HIGH / M

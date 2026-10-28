@@ -1,5 +1,7 @@
 # P10-RELEASE-SEC-021 — اعتبارسنجی HTTPS/TLS کلاینت پیش از انتشار محدود
 
+> پیگیری چک‌باکس‌های فازهای قبل: پس از تکمیل کنترل‌های مرتبط این کارت و ثبت Evidence و تأیید لازم، طبق نگاشت `docs/evidence/P01-PLATFORM-SCOPE-TRANSFER-20261028/summary.md` نتیجه را به چک‌باکس متناظر راهنمای تست دستی و Gate در Master بازگردانید. چک‌باکس مشترک فقط با تکمیل تمام بخش‌های مربوط به همهٔ مقصدها تیک می‌خورد؛ Evidence جزئی را ثبت کنید.
+
 - Status: TODO
 - Phase/Area/Type: P10 / RELEASE / SECURITY
 - Priority/Risk/Size: P0/HIGH / S

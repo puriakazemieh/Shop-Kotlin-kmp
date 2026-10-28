@@ -27,6 +27,24 @@
 | `P01-WPPLUGIN-DATA-028/ARCH-029` | P04 + P05 (`P04-WPPLUGIN-CODE-003/004/032`،`P04-WORDPRESS-DATA-042`،`P05-PAYMENT-DATA-003`) | migration،ledger و kernel مشترک Theme/Plugin. |
 | `P01-SECURITY-SEC-022/GATE-023` | P10 (`P10-RELEASE-SEC-020/021`) | threat review،external exposure و release decision. |
 
+## بازگشت شواهد و تیک‌های فازهای قبل
+
+فاز ۰۰ در بخش‌های فاز ۰۰ دو سند راهنما و Master در زمان این ثبت چک‌باکس بازِ انتقال‌یافته ندارد؛ بازآزمایی build جدید مانند P00-T05 نتیجهٔ تاریخی را خودکار تغییر نمی‌دهد. در فاز ۰۱، پس از تکمیل هر کنترل زیر، کارت مقصد Evidence شامل build، محیط، تاریخ و تأیید لازم را ثبت و چک‌باکس متناظر راهنما را به‌روز می‌کند. اگر سناریو چند backend/platform دارد، تا پوشش تمام دامنه‌های لازم تیک نهایی زده نشود؛ نتیجهٔ جزئی در Evidence ثبت شود.
+
+| راهنمای فاز ۰۱ | کارت‌های مقصد برای پیگیری |
+|---|---|
+| T01، T06 | P04-WPPLUGIN-CODE-014، P04-WORDPRESS-CODE-051، P15-SPRING-SEC-009 |
+| T02–T04 | P04-WPPLUGIN-CODE-010، P15-SPRING-SEC-010 |
+| T05 | P04-WPPLUGIN-CODE-009، P15-SPRING-SEC-008 |
+| T07 | P04-WORDPRESS-CODE-051، P15-SPRING-SEC-010 |
+| T08 | P10-RELEASE-SEC-021 و Gateهای platform |
+| T09 | P09-QA-GATE-018، P10-RELEASE-SEC-020/021 و Gateهای platform |
+| T10–T11 | P05-PAYMENT-CODE-006/007/008، P08-PWA-SEC-020، P11-ANDROID-CODE-006، P16-IOS-CODE-007، P17-DESKTOP-CODE-006 |
+| T12 | P13-LMS-SEC-005/008، P14-CLINIC-SEC-004/020 و P05-PAYMENT-CODE-008 |
+| T13 | P10-RELEASE-SEC-020 و P15-SPRING-SEC-009 |
+
+توقف‌گاه Clinic/Psych پس از اثبات fail-closed در P13/P14، و توقف‌گاه callback پس از پذیرش P05 و adapterهای مشمول تیک می‌خورند. دو توقف‌گاه Gate و دو معیار عبور باز راهنما تنها پس از جمع‌بندی P10 و Gateهای مرتبط بسته می‌شوند. در Master، بندهای callback و payment پس از P05 و platformهای مشمول؛ IDOR/RBAC پس از P04/P15؛ log/secret پس از P09/P10 و platformها؛ exposure Spring پس از P10/P15؛ و دو بند کلیِ P0 و QA فقط پس از تکمیل همهٔ شواهد و تصمیم انسانی Gate تیک می‌خورند. این نگاشت جایگزین acceptance مستقل کارت مقصد یا Gate انتشار نیست.
+
 ## محدودیت وضعیت
 
 `DONE` فاز ۰۱ صرفاً انتقال برنامه‌ریزی است. تا زمانی که کارت مقصد Evidence مستقل و authority لازم ندارد، هیچ قابلیت پرداخت،دادهٔ خصوصی،storage امن،JWT/OTP یا انتشار عمومی PASS محسوب نمی‌شود.
