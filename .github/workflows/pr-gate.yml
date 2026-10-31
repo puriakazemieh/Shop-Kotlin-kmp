@@ -8,9 +8,11 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
+  wordpress-integration:
+    uses: ./.github/workflows/wordpress-integration.yml
+
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -37,17 +39,35 @@ jobs:
         run: ./gradlew assembleDebug :composeApp:packageUberJarForCurrentOS --no-daemon --stacktrace
 
       - name: Upload Test Reports
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: '**/build/reports/tests/'
-          if-no-files-found: ignore
+          path: |
+            **/build/reports/tests/**
+            **/build/test-results/**
+          if-no-files-found: warn
 
       - name: Upload Lint Reports
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lint-reports
           path: '**/build/reports/lint-results*.html'
-          if-no-files-found: ignore
+          if-no-files-found: warn
+
+  gate:
+    name: PR Gate Result
+    if: always()
+    needs: [validate, wordpress-integration]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all critical jobs
+        env:
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+          WORDPRESS_RESULT: ${{ needs['wordpress-integration'].result }}
+        run: |
+          echo "KMP lint/unit/package: $VALIDATE_RESULT"
+          echo "WordPress integration: $WORDPRESS_RESULT"
+          test "$VALIDATE_RESULT" = success
+          test "$WORDPRESS_RESULT" = success
