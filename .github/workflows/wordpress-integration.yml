@@ -193,6 +193,13 @@ jobs:
             fixture_db: carmilla_adapter_qa
             fixture_user: synthetic_qa
             fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: db-session-store
+            fixture_db: carmilla_session_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
       fail-fast: false
 
     steps:
@@ -260,6 +267,7 @@ jobs:
           done
 
       - name: Run disposable real WordPress smoke
+        timeout-minutes: 15
         run: |
           set -euo pipefail
           cd wp-env
@@ -309,6 +317,9 @@ jobs:
               ;;
             db-session-adapter)
               CARMILLA_ADAPTER_TEST_PORT=3306 CARMILLA_ADAPTER_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php"
+              ;;
+            db-session-store)
+              CARMILLA_SESSION_DISPOSABLE=yes CARMILLA_TEST_DB_PORT=3306 CARMILLA_TEST_TABLE_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-session-store.php"
               ;;
             *) echo 'Unknown real smoke' >&2; exit 2 ;;
           esac

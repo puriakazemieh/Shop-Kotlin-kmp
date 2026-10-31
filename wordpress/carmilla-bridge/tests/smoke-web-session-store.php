@@ -5,11 +5,10 @@
  * CARMILLA_TEST_DB_PORT selects its loopback-only port. Never point at WP data.
  */
 define( 'ABSPATH', __DIR__ . '/' );
-mysqli_report( MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT );
 require_once dirname( __DIR__ ) . '/includes/class-cb-web-session-store.php';
 
 $port = (int) getenv( 'CARMILLA_TEST_DB_PORT' );
-if ( $port < 1 || $port > 65535 ) {
+if ( getenv( 'CARMILLA_SESSION_DISPOSABLE' ) !== 'yes' || $port < 1 || $port > 65535 ) {
 	fwrite( STDERR, "A disposable loopback database port is required.\n" );
 	exit( 2 );
 }
@@ -18,15 +17,18 @@ if ( ! preg_match( '/\Aqa_[0-9a-f]{12}_\z/', (string) $prefix ) ) {
 	fwrite( STDERR, "A random qa_ test table prefix is required.\n" );
 	exit( 2 );
 }
+mysqli_report( MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT );
+define( 'CARMILLA_TEST_DB_USER', 'synthetic_qa' );
+define( 'CARMILLA_TEST_DB_PASSWORD', 'synthetic_qa_password' );
 $site_a = hash( 'sha256', 'https://qa.example.test/site-a|1' );
 $site_b = hash( 'sha256', 'https://qa.example.test/site-b|2' );
 $secret = str_repeat( 'test-only-key-', 4 );
 $now = 1700000000;
 $passwords = array( 1 => 'synthetic-password-hash-a', 2 => 'synthetic-password-hash-b' );
-$db = new mysqli( '127.0.0.1', 'root', '', 'carmilla_session_qa', $port );
+$db = new mysqli( '127.0.0.1', CARMILLA_TEST_DB_USER, CARMILLA_TEST_DB_PASSWORD, 'carmilla_session_qa', $port );
 $db->set_charset( 'utf8mb4' );
 $password_provider = static function ( int $user_id ) use ( &$passwords ) { return $passwords[ $user_id ] ?? null; };
-$password_db = new mysqli( '127.0.0.1', 'root', '', 'carmilla_session_qa', $port );
+$password_db = new mysqli( '127.0.0.1', CARMILLA_TEST_DB_USER, CARMILLA_TEST_DB_PASSWORD, 'carmilla_session_qa', $port );
 $shared_password_provider = static function ( int $user_id ) use ( $password_db, $prefix ) {
 	$stmt = $password_db->prepare( 'SELECT password_hash FROM `' . $prefix . 'synthetic_users` WHERE user_id=?' );
 	$stmt->bind_param( 'i', $user_id ); $stmt->execute();
@@ -167,14 +169,14 @@ try {
 	$db->query( 'SET @qa_fail_insert=0' );
 	session_check( is_array( $store->rotate( $rollback['credential'] ) ), 'failed rotation rolled back old credential consumption' );
 
-	$commit_db = new CB_Test_Commit_Failure_Connection( '127.0.0.1', 'root', '', 'carmilla_session_qa', $port );
+	$commit_db = new CB_Test_Commit_Failure_Connection( '127.0.0.1', CARMILLA_TEST_DB_USER, CARMILLA_TEST_DB_PASSWORD, 'carmilla_session_qa', $port );
 	$commit_store = new CB_Web_Session_Store( $commit_db, $prefix, $site_a, $secret, $password_provider, $clock );
 	$before = scalar( $db, "SELECT COUNT(*) FROM `{$families}`" );
 	$commit_db->fail_next_commit = true;
 	session_check( session_fails( static function () use ( $commit_store ) { $commit_store->create( 1 ); } ) && scalar( $db, "SELECT COUNT(*) FROM `{$families}`" ) === $before, 'failed creation commit returns no session and rolls back rows' );
 
 	$commit_rotate = $store->create( 1 );
-	$commit_db = new CB_Test_Commit_Failure_Connection( '127.0.0.1', 'root', '', 'carmilla_session_qa', $port );
+	$commit_db = new CB_Test_Commit_Failure_Connection( '127.0.0.1', CARMILLA_TEST_DB_USER, CARMILLA_TEST_DB_PASSWORD, 'carmilla_session_qa', $port );
 	$commit_store = new CB_Web_Session_Store( $commit_db, $prefix, $site_a, $secret, $password_provider, $clock );
 	$commit_db->fail_next_commit = true;
 	session_check( session_fails( static function () use ( $commit_store, $commit_rotate ) { $commit_store->rotate( $commit_rotate['credential'] ); } ) && is_array( $store->rotate( $commit_rotate['credential'] ) ), 'failed rotation commit returns no replacement and preserves old credential' );
@@ -272,3 +274,4 @@ try {
 	fwrite( STDERR, "Test infrastructure failed: " . get_class( $e ) . "\n" );
 	exit( 2 );
 }
+
