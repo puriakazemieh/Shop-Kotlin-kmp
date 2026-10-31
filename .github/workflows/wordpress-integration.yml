@@ -125,5 +125,5 @@ jobs:
           done
 
       - name: Synthetic negative gate
-        if: ${{ inputs.negative_smoke == true }}
+        if: ${{ inputs.negative_smoke == true || github.head_ref == 'codex/p02-ci-verification' }}
         run: php -r 'exit(17);'
