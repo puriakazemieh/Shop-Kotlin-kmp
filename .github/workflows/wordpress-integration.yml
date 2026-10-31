@@ -302,13 +302,13 @@ jobs:
               test ! -e /work
               sudo ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" /work
               MYSQL_PWD=ci_disposable_root_only mysql -h 127.0.0.1 -uroot -e "CREATE USER 'synthetic_fault'@'%' IDENTIFIED BY 'synthetic_fault_password'; GRANT CREATE ON \`carmilla_adapter_qa\`.\`${qa_prefix}carmilla_web_families\` TO 'synthetic_fault'@'%';"
-              CARMILLA_ADAPTER_DISPOSABLE=yes CARMILLA_ADAPTER_TEST_PREFIX="$qa_prefix" php wordpress/carmilla-bridge/tests/smoke-session-migration-ddl-fault.php
+              CARMILLA_ADAPTER_DISPOSABLE=yes CARMILLA_ADAPTER_TEST_PREFIX="$qa_prefix" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-session-migration-ddl-fault.php"
               ;;
             db-access-token)
-              CARMILLA_TOKEN_DISPOSABLE=yes CARMILLA_TOKEN_TEST_PORT=3306 CARMILLA_TOKEN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php wordpress/carmilla-bridge/tests/smoke-web-access-token.php
+              CARMILLA_TOKEN_DISPOSABLE=yes CARMILLA_TOKEN_TEST_PORT=3306 CARMILLA_TOKEN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-access-token.php"
               ;;
             db-session-adapter)
-              CARMILLA_ADAPTER_TEST_PORT=3306 CARMILLA_ADAPTER_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php
+              CARMILLA_ADAPTER_TEST_PORT=3306 CARMILLA_ADAPTER_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php"
               ;;
             *) echo 'Unknown real smoke' >&2; exit 2 ;;
           esac
