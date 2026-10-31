@@ -26,6 +26,10 @@ migration_check( in_array( 'shop_order', $post_types, true ), 'orders are blocke
 migration_check( in_array( 'cb_health_record', $post_types, true ), 'health records are blocked from export' );
 migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( '_billing_email' ), 'billing email is blocked' );
 migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'provider_api_key' ), 'provider API keys are blocked' );
+migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'Provider_TOKEN_v2' ), 'mixed-case token keys are blocked' );
+migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'backup_Password_hint' ), 'mixed-case password keys are blocked' );
+migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'client_Secret_label' ), 'mixed-case secret keys are blocked' );
+migration_check( \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'vendor_API_KEY_hint' ), 'mixed-case API keys are blocked' );
 migration_check( ! \Carmilla\Bridge\Migration\Migration_Config::is_denied_meta_key( 'public_display_name' ), 'public metadata remains eligible' );
 
 $key     = str_repeat( 'k', 32 );

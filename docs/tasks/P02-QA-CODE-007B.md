@@ -1,6 +1,6 @@
 # P02-QA-CODE-007B — clean WordPress/Woo/PHP CI matrix
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -32,8 +32,8 @@ Manual QA: if CI/network behavior needs human acceptance, provide exact disposab
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO (2026-10-31: workflow implementation started; PHP 7.4 smoke failure requires 007B1 before matrix verification)
+- Final status: READY (2026-10-31: 007B1 fixed the PHP 7.4 smoke failure; matrix verification remains)
 
 ## 2026-10-31 checkpoint
 
-The CI workflow now separates hermetic smoke tests from real-WP/DB tests, copies the shared core into both WordPress products, installs a disposable database with generated credentials, verifies activation and the manifest endpoint, and exposes an opt-in synthetic failing smoke. YAML and shell syntax parsed. The actual matrix has not run in GitHub Actions and the positive/negative CI gates are not claimed. Local PHP 7.4 hermetic smoke revealed a `str_contains` fatal in `Migration_Config::is_denied_meta_key`, outside this card's allowed files. Child 007B1 is READY; this card is TODO until its prerequisite is DONE and all CI evidence exists.
+The CI workflow now separates hermetic smoke tests from real-WP/DB tests, copies the shared core into both WordPress products, installs a disposable database with generated credentials, verifies activation and the manifest endpoint, and exposes an opt-in synthetic failing smoke. YAML and shell syntax parsed. The actual matrix has not run in GitHub Actions and the positive/negative CI gates are not claimed. Local PHP 7.4 hermetic smoke revealed a `str_contains` fatal in `Migration_Config::is_denied_meta_key`, outside this card's allowed files. Child 007B1 fixed that defect with cross-version tests; this card is READY for the actual matrix.

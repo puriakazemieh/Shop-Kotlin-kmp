@@ -68,9 +68,9 @@ class Migration_Config {
             return true;
         }
 
-        return str_contains( $normalized_key, 'token' )
-            || str_contains( $normalized_key, 'password' )
-            || str_contains( $normalized_key, 'secret' )
-            || str_contains( $normalized_key, 'api_key' );
+        return strpos( $normalized_key, 'token' ) !== false
+            || strpos( $normalized_key, 'password' ) !== false
+            || strpos( $normalized_key, 'secret' ) !== false
+            || strpos( $normalized_key, 'api_key' ) !== false;
     }
 }
