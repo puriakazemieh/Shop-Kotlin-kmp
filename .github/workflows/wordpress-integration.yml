@@ -1,6 +1,11 @@
 name: WordPress Integration
 
 on:
+  workflow_call:
+    inputs:
+      negative_smoke:
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       negative_smoke:
@@ -9,10 +14,6 @@ on:
         default: false
   push:
     branches: [develop]
-    paths:
-      - 'wordpress/**'
-      - '.github/workflows/wordpress-integration.yml'
-  pull_request:
     paths:
       - 'wordpress/**'
       - '.github/workflows/wordpress-integration.yml'
@@ -327,4 +328,3 @@ jobs:
       - name: Synthetic negative gate
         if: ${{ inputs.negative_smoke == true }}
         run: php -r 'exit(17);'
-
