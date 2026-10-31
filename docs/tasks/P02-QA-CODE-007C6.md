@@ -1,10 +1,10 @@
 # P02-QA-CODE-007C6 — database-only disposable smoke
 
-- Status: READY
+- Status: TODO
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
-- Depends on: P02-QA-CODE-007C5
+- Depends on: P02-QA-CODE-007C6B (ordered children C6A then C6B; original C5 dependency moves to C6A)
 - Blocks: P02-QA-CODE-007C
 - Requirement: P02-QA-CODE-007C and inventory 007A; use the active independent-products contract.
 
@@ -27,4 +27,4 @@ Run guard-negative probes first (expected exit 2), then four positive tests agai
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: READY (2026-10-31: C5 real-WP CI checks passed)
+- Final status: TODO (2026-10-31: size gate split DB-only smokes by fixture/credential model; C6A READY)

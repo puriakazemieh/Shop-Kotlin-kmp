@@ -1,0 +1,3 @@
+# P02-QA-CODE-007C6 size gate — 2026-10-31
+
+The four DB-only tests do not share one safe fixture. Three use `synthetic_qa` or a limited `synthetic_fault` account against named token/adapter schemas; `smoke-web-session-store.php` hardcodes root with an empty password and exercises concurrency/commit faults. Running them under one MariaDB service would either fail for infrastructure reasons or weaken the database boundary. The owner already authorized ordered splitting. C6A covers the three token/adapter/DDL tests with explicit fixture grants; C6B separately characterizes and runs the session-store concurrency test. C6 itself remains TODO until both are proven; C6A is first READY. No DB-only positive test was executed by this decomposition.
