@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C6 — database-only disposable smoke
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -20,11 +20,11 @@ Run guard-negative probes first (expected exit 2), then four positive tests agai
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO (2026-10-31: size gate split DB-only smokes by fixture/credential model; C6A READY)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: CI workflow and test fixture through children C6A/C6B; this card, `docs/tasks.md`, and parent evidence.
+- Commands and exit codes: C6A three guard-negative probes exited 2, PHP lints exited 0, final CI run 41199892940 passed 26/26 jobs; C6B guard-negative exited 2, lint exited 0, final CI run 41215947307 passed 27/27 jobs with session-store 36 checks and 0 failures.
+- Manual tester/date/result: Not required for CI fixture-only changes; no product network or migration implementation changed.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C6/verification-20261031.md`, child C6A/C6B checkpoints and linked CI jobs.
+- Remaining risks/blockers: Disposable MariaDB and WordPress fixtures do not establish production migration acceptance.
+- Final status: DONE (2026-10-31)
