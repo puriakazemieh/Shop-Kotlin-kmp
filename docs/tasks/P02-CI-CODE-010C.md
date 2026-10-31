@@ -2,9 +2,9 @@
 
 - Status: TODO
 - Phase/Area/Type: P02 / CI / CODE
-- Priority/Risk/Size: P1 / HIGH / M
+- Priority/Risk/Size: P1 / HIGH / L (decomposed into ordered C1–C4)
 - Owner: AI; completion authority: BOTH for CI evidence
-- Depends on: P02-CI-CODE-010B
+- Depends on: P02-CI-CODE-010C4 (ordered children C1–C4; original 010B prerequisite moves to C1)
 - Blocks: P02-CI-CODE-010
 - Requirement: parent P02-CI-CODE-010 and active independent-products contract.
 
@@ -21,4 +21,4 @@ Record pre-existing Kotlin/PHP/Plugin Check/Theme Check findings as bounded base
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO (2026-10-31: waits for 010B)
+- Final status: TODO (2026-10-31: size gate split into C1–C4; C1 READY)

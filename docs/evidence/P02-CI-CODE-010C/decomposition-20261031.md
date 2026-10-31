@@ -1,0 +1,3 @@
+# P02-CI-CODE-010C size gate — 2026-10-31
+
+The four checkers now execute in actual PR CI. Detekt reports 2,621 weighted existing issues (exit 2). WPCS reports Bridge errors/warnings (exit 2). Theme Check reports REQUIRED findings and exits 1. Plugin Check produced hundreds of findings, including output escaping and SQL-related messages. Combining security triage, four bounded baselines, and positive/negative PR proof exceeds M and may require product changes outside the card's CI/docs scope. The owner authorized ordered splitting: C1 inventories and triages risks, C2 handles Kotlin/WPCS, C3 handles Plugin/Theme, C4 proves regression behavior. No new violation is yet waived, and the parent remains TODO. C1 is first READY.
