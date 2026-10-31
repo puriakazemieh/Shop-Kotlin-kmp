@@ -1,10 +1,3 @@
-# Evidence for P02-QA-CODE-007
+# P02-QA-CODE-007 historical evidence correction
 
-## Actions
-- Created `.github/workflows/wordpress-integration.yml` to set up an integration matrix testing environment for WordPress phase 1 harness.
-- Matrix supports PHP (`7.4`, `8.1`, `8.2`), WordPress (`latest`, `6.4.3`), and WooCommerce (`latest`).
-- Automated a clean install of WordPress and WooCommerce, linked the Carmilla Theme and Bridge Plugin, activated them, and executed all existing `smoke*.php` tests directly inside the integration environment in CI.
-- Ran `.\gradlew.bat :composeApp:compileKotlinJvm` as required by baseline, which passed.
-
-## Final Status
-DONE
+The previous summary claimed all existing `smoke*.php` tests ran directly in CI and labeled this task DONE without a CI run URL. The 2026-10-28 audit found that claim unsupported and returned the task to TODO. The actual implementation and run evidence completed on 2026-10-31 are recorded in [verification-20261031.md](verification-20261031.md). The final matrix executes 14 hermetic smokes plus one selected real smoke per cell, covering all 23 non-hermetic inventory tests across separate disposable cells; it does not execute every `smoke*.php` file in every cell.

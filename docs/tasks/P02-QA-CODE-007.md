@@ -48,7 +48,7 @@ P02-QA-CODE-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0/MEDIUM / L (decomposition required)
 - Owner: AI
@@ -132,7 +132,7 @@ clean install، activation و smokeهای موجود در CI واقعاً اجر
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-QA-CODE-007/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: TODO (owner authorized decomposition and CI workflow scope on 2026-10-31; parent acceptance remains open)
+- Final status: DONE (2026-10-31; verified child evidence and actual CI runs, with pinned subset limitation)
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
@@ -146,4 +146,10 @@ clean install، activation و smokeهای موجود در CI واقعاً اجر
 
 ## Owner decision — 2026-10-31
 
-The owner explicitly authorized splitting oversized Phase 02 tasks, widening the CI workflow scope, and proceeding through the phase in queue order. Child cards 007A, 007B and 007C are now in the queue. The parent remains TODO until all original acceptance criteria and executed CI evidence are satisfied.
+The owner explicitly authorized splitting oversized Phase 02 tasks, widening the CI workflow scope, and proceeding through the phase in queue order. Child cards 007A, 007B and 007C were added to the queue. The parent remained TODO until the original acceptance criteria and executed CI evidence were satisfied.
+
+## Verified completion — 2026-10-31
+
+- Children 007A, 007B, 007C (including their ordered grandchildren) are DONE with independent evidence. The final WordPress Integration run 41215947307 passed 27/27 cells at `fb4274ef`; each installed and activated a disposable WordPress/Woo/Bridge/Theme environment, ran 14 hermetic smokes and its selected real smoke. PHP 7.4/8.1/8.2 are covered by the generic P07 smoke on latest WP/Woo and the version-pinned Woo reference smoke on WP 6.4.3/Woo 8.5.2. The remaining 21 fixture-specific tests use pinned PHP 8.1/WP 6.4.3/Woo 8.5.2; full combinatorial coverage is not claimed.
+- Negative synthetic gate run 41190362802 failed intentionally at exit 17; normal matrix run 41190660399 passed. Local `.\gradlew.bat :composeApp:compileKotlinJvm --offline --no-daemon` succeeded, exit 0, 234 actionable tasks (30 executed, 204 up-to-date). No KMP code was changed, so the JS compile is not applicable to this workflow task.
+- Manual QA: N/A for CI/test fixture-only changes; production migration or network behavior was not edited. Evidence: `docs/evidence/P02-QA-CODE-007/verification-20261031.md`. Rollback: revert only the scoped workflow/test fixture commits; no production data or migration was touched.
