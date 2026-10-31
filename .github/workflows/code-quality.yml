@@ -59,15 +59,88 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: WPCS via reviewdog
-        uses: reviewdog/action-phpcs@v1
+      - name: Setup PHP and Composer
+        uses: shivammathur/setup-php@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          phpcs_standard: WordPress
-          phpcs_args: "--ignore=*/vendor/*,*/node_modules/*,*/tests/*"
-          target_directory: "./wordpress/carmilla-bridge"
-          reporter: github-pr-review
-          fail_on_error: true
+          php-version: '8.1'
+          tools: composer
+      - name: Install pinned WPCS tools
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/wpcs"
+          composer --working-dir="$RUNNER_TEMP/wpcs" init --no-interaction --name=qa/wpcs
+          composer --working-dir="$RUNNER_TEMP/wpcs" config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer --working-dir="$RUNNER_TEMP/wpcs" require --no-interaction --dev \
+            wp-coding-standards/wpcs:3.4.1 squizlabs/php_codesniffer:3.13.6
+          "$RUNNER_TEMP/wpcs/vendor/bin/phpcs" --version
+      - name: Run WPCS on Bridge
+        run: |
+          "$RUNNER_TEMP/wpcs/vendor/bin/phpcs" \
+            --standard=WordPress \
+            --ignore='*/vendor/*,*/node_modules/*,*/tests/*' \
+            --report=summary \
+            --report-file="$RUNNER_TEMP/wpcs-summary.txt" \
+            wordpress/carmilla-bridge
+      - name: Upload WPCS report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wpcs-report
+          path: ${{ runner.temp }}/wpcs-summary.txt
+          if-no-files-found: warn
+
+  theme-check:
+    name: WordPress Theme Check
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: ci_disposable_root_only
+          MARIADB_DATABASE: carmilla_theme_qa
+          MARIADB_USER: synthetic_qa
+          MARIADB_PASSWORD: ci_disposable_fixture_only
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP and WP CLI
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mysqli, pdo_mysql
+          tools: wp-cli
+      - name: Install disposable WordPress and Theme Check
+        run: |
+          set -euo pipefail
+          mkdir wp-env
+          cd wp-env
+          wp core download --version=6.4.3
+          wp config create --dbname=carmilla_theme_qa --dbuser=synthetic_qa --dbpass=ci_disposable_fixture_only --dbhost=127.0.0.1 --dbprefix="qa_$(openssl rand -hex 6)_"
+          wp core install --url=http://localhost:8080 --title='Synthetic QA' --admin_user=qa_admin --admin_password="$(openssl rand -hex 16)" --admin_email=qa_admin@example.test --skip-email
+          cp -R ../wordpress/carmilla-theme wp-content/themes/carmilla-theme
+          mkdir -p wp-content/themes/carmilla-theme/packages
+          cp -R ../wordpress/packages/carmilla-core wp-content/themes/carmilla-theme/packages/carmilla-core
+          wp theme activate carmilla-theme
+          wp plugin install theme-check --version=20260901 --activate
+          printf 'PHP=%s WP=%s ThemeCheck=%s\n' "$(php -r 'echo PHP_VERSION;')" "$(wp core version)" "$(wp plugin get theme-check --field=version)"
+      - name: Run Theme Check
+        run: |
+          cd wp-env
+          wp theme-check run carmilla-theme --format=json > "$RUNNER_TEMP/theme-check.json"
+          test -s "$RUNNER_TEMP/theme-check.json"
+      - name: Upload Theme Check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-check-report
+          path: ${{ runner.temp }}/theme-check.json
+          if-no-files-found: warn
 
   wp-plugin-check:
     name: WordPress Plugin Check
