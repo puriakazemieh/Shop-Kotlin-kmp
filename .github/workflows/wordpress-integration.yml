@@ -1,6 +1,11 @@
 name: WordPress Integration
 
 on:
+  workflow_call:
+    inputs:
+      negative_smoke:
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       negative_smoke:
@@ -9,10 +14,6 @@ on:
         default: false
   push:
     branches: [develop]
-    paths:
-      - 'wordpress/**'
-      - '.github/workflows/wordpress-integration.yml'
-  pull_request:
     paths:
       - 'wordpress/**'
       - '.github/workflows/wordpress-integration.yml'
@@ -151,6 +152,55 @@ jobs:
             fixture_db: carmilla_login_qa
             fixture_user: synthetic_qa
             fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-access-token
+            fixture_db: carmilla_token_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-session-migration
+            fixture_db: carmilla_adapter_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-session-wp-adapter
+            fixture_db: carmilla_adapter_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: db-ddl-fault
+            fixture_db: carmilla_adapter_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: db-access-token
+            fixture_db: carmilla_token_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: db-session-adapter
+            fixture_db: carmilla_adapter_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: db-session-store
+            fixture_db: carmilla_session_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
       fail-fast: false
 
     steps:
@@ -218,6 +268,7 @@ jobs:
           done
 
       - name: Run disposable real WordPress smoke
+        timeout-minutes: 15
         run: |
           set -euo pipefail
           cd wp-env
@@ -240,6 +291,36 @@ jobs:
               sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /work
               sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /bridge
               CARMILLA_LOGIN_DISPOSABLE=yes CARMILLA_LOGIN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" CARMILLA_LOGIN_WP_ROOT=/usr/src/wordpress php "/work/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
+              ;;
+            web-access-token)
+              sudo mkdir -p /usr/src/wordpress
+              sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /usr/src/wordpress/
+              test ! -e /work
+              sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /work
+              CARMILLA_TOKEN_DISPOSABLE=yes CARMILLA_TOKEN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php /work/tests/smoke-web-access-token-real-wp.php
+              ;;
+            web-session-migration|web-session-wp-adapter)
+              sudo mkdir -p /usr/src/wordpress
+              sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /usr/src/wordpress/
+              test ! -e /work
+              sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /work
+              CARMILLA_ADAPTER_DISPOSABLE=yes CARMILLA_ADAPTER_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "/work/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
+              ;;
+            db-ddl-fault)
+              qa_prefix="qa_$(openssl rand -hex 6)_"
+              test ! -e /work
+              sudo ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" /work
+              MYSQL_PWD=ci_disposable_root_only mysql -h 127.0.0.1 -uroot -e "CREATE USER 'synthetic_fault'@'%' IDENTIFIED BY 'synthetic_fault_password'; GRANT CREATE ON \`carmilla_adapter_qa\`.\`${qa_prefix}carmilla_web_families\` TO 'synthetic_fault'@'%';"
+              CARMILLA_ADAPTER_DISPOSABLE=yes CARMILLA_ADAPTER_TEST_PREFIX="$qa_prefix" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-session-migration-ddl-fault.php"
+              ;;
+            db-access-token)
+              CARMILLA_TOKEN_DISPOSABLE=yes CARMILLA_TOKEN_TEST_PORT=3306 CARMILLA_TOKEN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-access-token.php"
+              ;;
+            db-session-adapter)
+              CARMILLA_ADAPTER_TEST_PORT=3306 CARMILLA_ADAPTER_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php"
+              ;;
+            db-session-store)
+              CARMILLA_SESSION_DISPOSABLE=yes CARMILLA_TEST_DB_PORT=3306 CARMILLA_TEST_TABLE_PREFIX="qa_$(openssl rand -hex 6)_" php "$GITHUB_WORKSPACE/wordpress/carmilla-bridge/tests/smoke-web-session-store.php"
               ;;
             *) echo 'Unknown real smoke' >&2; exit 2 ;;
           esac
