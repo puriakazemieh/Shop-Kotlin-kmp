@@ -1,6 +1,6 @@
 # P02-CI-CODE-010B — runnable WPCS and Theme Check jobs
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / MEDIUM / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -14,11 +14,11 @@ Replace the unavailable WPCS action, add Theme Check, and prove both run on the 
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: 010A tools executed in CI)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/code-quality.yml`, this card, `docs/tasks.md`, and evidence checkpoint.
+- Commands and exit codes: YAML parse and diff check exited 0. Actual CI runs 41221299123 and 41221594001 installed and executed both tools. Final WPCS exited 2 with existing Bridge findings; final Theme Check exited 1 with required/recommended Theme findings; both report artifacts uploaded. No clean checker result is claimed.
+- Manual tester/date/result: N/A; disposable CI-only tooling change.
+- Evidence paths: `docs/evidence/P02-CI-CODE-010B/checkpoint-20261031.md`; [final CI run](https://github.com/puriakazemieh/Shop-Kotlin-kmp/actions/runs/41221594001).
+- Remaining risks/blockers: WPCS, Theme Check, detekt and Plugin Check are still red on baseline source findings. Regression policy is 010C; any product fix outside scope needs its own authorization/card.
+- Final status: DONE (2026-10-31: tools actually executed; existing findings remain)
