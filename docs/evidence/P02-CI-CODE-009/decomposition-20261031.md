@@ -1,0 +1,3 @@
+# P02-CI-CODE-009 size gate — 2026-10-31
+
+The current `pr-gate.yml` has one `validate` job with `./gradlew lint`, `./gradlew test` and Android/Desktop packaging. It does not call the WordPress integration workflow; report uploads run only on failure. On PR #30 at `fb4274ef`, PR Gate run 41215947316 passed its one validate job, while WordPress Integration run 41215947307 passed separately. The parent acceptance needs one fail-closed PR gate and proof of a negative fixture. This spans more than M, so the owner-authorized ordered split is 009A (CI wiring/report behavior) then 009B (synthetic negative PR proof). No code was changed by this size review. Historical EVIDENCE.md asserting DONE is not sufficient CI proof.

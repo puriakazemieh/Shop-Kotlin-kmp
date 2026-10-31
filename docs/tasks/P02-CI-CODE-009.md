@@ -48,12 +48,12 @@ P02-CI-CODE-009
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: TODO
 - Phase/Area/Type: P02 / CI / CODE
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/MEDIUM / L (decomposed into 009A then 009B)
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P02-QA-CODE-008
+- Depends on: P02-CI-CODE-009B (ordered children 009A then 009B; original prerequisite 008 moves to 009A)
 - Blocks: P02-CI-CODE-010
 - Requirement source: Master checklist row P02-CI-CODE-009 و Source audit بخش CI
 
@@ -138,3 +138,7 @@ failure تست PR را fail کند؛ best-effort برای gate حیاتی ممن
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
 - دلیل: شاهد اجرای PR آزمایشی و fail شدن gate وجود ندارد؛ workflow اصلی integration وردپرس را اجرا نمی‌کند.
 - گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md
+
+## Size gate — 2026-10-31
+
+The original PR gate spans KMP lint/unit/package, a separate 27-cell WordPress integration workflow, artifact reports and a live negative PR check. That is L and crosses multiple CI boundaries. With owner-authorized splitting, 009A (M) wires the fail-closed gate and reports; 009B (S) proves a deliberately failing PR cannot pass. Original acceptance remains open until both children have actual CI evidence. See `docs/evidence/P02-CI-CODE-009/decomposition-20261031.md`.
