@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C1 — quality debt and security triage
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DISC
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; completion authority: BOTH for triage evidence
@@ -14,11 +14,11 @@ Inventory the actual detekt, WPCS, Plugin Check and Theme Check findings at fixe
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `docs/tasks.md`, this card, the C2 blocker record, and triage evidence only.
+- Commands and exit codes: Read-only GitNexus query/context/explain plus targeted source inspection; CI run 41221594001: detekt exit 2, WPCS exit 2, Theme Check exit 1, Plugin Check exit 1 (also comment-size failure). No source tests were run for this discovery card.
+- Manual tester/date/result: N/A; read-only security triage.
+- Evidence paths: `docs/evidence/P02-CI-CODE-010C1/triage-20261031.md`, linked CI run and source paths.
+- Remaining risks/blockers: Product source fixes outside the parent card's allowed paths are needed before safely baselining unreviewed security/privacy findings. Owner scope decision requested; C2 is BLOCKED pending that decision.
+- Final status: DONE (2026-10-31: inventory/triage completed, no findings waived)

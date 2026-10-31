@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2 — Kotlin and WPCS bounded baselines
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -21,4 +21,4 @@ Using fixed tool versions and the approved C1 classification, record detekt and 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO (waits for C1)
+- Final status: BLOCKED (2026-10-31: C1 identified product security/privacy findings outside 010C scope; owner scope decision pending)
