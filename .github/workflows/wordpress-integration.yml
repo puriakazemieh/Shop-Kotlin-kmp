@@ -20,6 +20,23 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: ci_disposable_root_only
+          MARIADB_DATABASE: carmilla_ci
+          MARIADB_USER: carmilla_ci
+          MARIADB_PASSWORD: ci_disposable_fixture_only
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      CI_DB_PASSWORD: ci_disposable_fixture_only
     strategy:
       matrix:
         php: ['7.4', '8.1', '8.2']
@@ -36,19 +53,6 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mysqli, pdo_mysql, json
           tools: wp-cli
-
-      - name: Start MySQL
-        run: |
-          set -euo pipefail
-          sudo systemctl start mysql.service
-          ci_db_password="$(openssl rand -hex 16)"
-          echo "::add-mask::$ci_db_password"
-          echo "CI_DB_PASSWORD=$ci_db_password" >> "$GITHUB_ENV"
-          sudo mysql <<SQL
-          CREATE DATABASE carmilla_ci;
-          CREATE USER 'carmilla_ci'@'127.0.0.1' IDENTIFIED BY '$ci_db_password';
-          GRANT ALL PRIVILEGES ON carmilla_ci.* TO 'carmilla_ci'@'127.0.0.1';
-          SQL
 
       - name: Install WordPress
         run: |
