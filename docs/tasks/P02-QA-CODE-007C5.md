@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C5 — token and session adapter smoke
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -20,11 +20,11 @@ All three use per-test random prefix and disposable DB, correct WordPress root a
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: C4 CI matrix passed)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, this card, queue and evidence.
+- Commands and exit codes: three guard-negative Docker probes exit 2; three PHP 8.1 lints exit 0; CI run `41198628730` passed 23/23 jobs.
+- Manual tester/date/result: N/A; CI-only fixture change, no product token or migration code change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C5/checkpoint-20261031.md`; linked CI run.
+- Remaining risks/blockers: C6 database-only smokes remain; other CI workflows are not claimed green.
+- Final status: DONE
