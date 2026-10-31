@@ -48,12 +48,12 @@ P02-CI-CODE-010
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: TODO
 - Phase/Area/Type: P02 / CI / CODE
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / L (decomposed into 010A then 010B then 010C)
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P02-CI-CODE-009
+- Depends on: P02-CI-CODE-010C (ordered children 010A → 010B → 010C; original prerequisite 009 moves to 010A)
 - Blocks: P02-CI-CODE-011
 - Requirement source: Master checklist row P02-CI-CODE-010 و Source audit بخش CI
 
@@ -138,3 +138,7 @@ baseline debt جدا؛ کد جدید violation اضافه نکند
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
 - دلیل: Theme Check در workflow موجود نیست و فایل پیکربندی detekt ارجاع‌شده نیز یافت نشد؛ اجرای gate اثبات نشده است.
 - گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md
+
+## Size gate — 2026-10-31
+
+This card spans Kotlin lint/detekt, PHP WPCS, Plugin Check, Theme Check and an existing-debt/new-violation policy. Existing CI at `e8f3798` has missing detekt/WPCS action repositories, Theme Check is absent, and Plugin Check reports product-code findings. The original card is L and crosses CI/tooling/product boundaries. The owner-authorized split is 010A Kotlin tools, 010B WordPress/Theme tool execution, then 010C baseline debt and regression gate. The parent remains TODO until all acceptance criteria have real CI evidence. See `docs/evidence/P02-CI-CODE-010/decomposition-20261031.md`.
