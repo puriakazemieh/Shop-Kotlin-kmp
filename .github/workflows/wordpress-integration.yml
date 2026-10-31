@@ -1,6 +1,12 @@
 name: WordPress Integration
 
 on:
+  workflow_dispatch:
+    inputs:
+      negative_smoke:
+        description: 'Run the synthetic failing smoke to verify the CI gate'
+        type: boolean
+        default: false
   push:
     branches: [develop]
     paths:
@@ -33,12 +39,20 @@ jobs:
 
       - name: Start MySQL
         run: |
+          set -euo pipefail
           sudo systemctl start mysql.service
-          mysql -e "CREATE DATABASE wordpress;" -uroot -proot || mysql -e "CREATE DATABASE wordpress;" -uroot
-          mysql -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'root'@'localhost';" -uroot -proot || true
+          ci_db_password="$(openssl rand -hex 16)"
+          echo "::add-mask::$ci_db_password"
+          echo "CI_DB_PASSWORD=$ci_db_password" >> "$GITHUB_ENV"
+          sudo mysql <<SQL
+          CREATE DATABASE carmilla_ci;
+          CREATE USER 'carmilla_ci'@'127.0.0.1' IDENTIFIED BY '$ci_db_password';
+          GRANT ALL PRIVILEGES ON carmilla_ci.* TO 'carmilla_ci'@'127.0.0.1';
+          SQL
 
       - name: Install WordPress
         run: |
+          set -euo pipefail
           mkdir wp-env
           cd wp-env
           if [ "${{ matrix.wp }}" = "latest" ]; then
@@ -46,16 +60,21 @@ jobs:
           else
             wp core download --version="${{ matrix.wp }}"
           fi
-          wp config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1
-          wp core install --url="http://localhost:8080" --title="Integration Test" --admin_user=admin --admin_password=admin --admin_email=admin@example.com
+          wp config create --dbname=carmilla_ci --dbuser=carmilla_ci --dbpass="$CI_DB_PASSWORD" --dbhost=127.0.0.1 --dbprefix="qa_$(openssl rand -hex 6)_"
+          wp core install --url="http://localhost:8080" --title="Synthetic QA" --admin_user=qa_admin --admin_password="$(openssl rand -hex 16)" --admin_email=qa_admin@example.test --skip-email
 
-      - name: Link Theme and Plugin
+      - name: Copy Theme, Plugin and shared core
         run: |
-          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-bridge" "$GITHUB_WORKSPACE/wp-env/wp-content/plugins/carmilla-bridge"
-          ln -s "$GITHUB_WORKSPACE/wordpress/carmilla-theme" "$GITHUB_WORKSPACE/wp-env/wp-content/themes/carmilla-theme"
+          set -euo pipefail
+          cp -R wordpress/carmilla-bridge wp-env/wp-content/plugins/carmilla-bridge
+          cp -R wordpress/carmilla-theme wp-env/wp-content/themes/carmilla-theme
+          mkdir -p wp-env/wp-content/plugins/carmilla-bridge/packages wp-env/wp-content/themes/carmilla-theme/packages
+          cp -R wordpress/packages/carmilla-core wp-env/wp-content/plugins/carmilla-bridge/packages/carmilla-core
+          cp -R wordpress/packages/carmilla-core wp-env/wp-content/themes/carmilla-theme/packages/carmilla-core
 
       - name: Install WooCommerce
         run: |
+          set -euo pipefail
           cd wp-env
           if [ "${{ matrix.woo }}" = "latest" ]; then
             wp plugin install woocommerce --activate
@@ -65,14 +84,26 @@ jobs:
 
       - name: Activate Carmilla Bridge and Theme
         run: |
+          set -euo pipefail
           cd wp-env
           wp plugin activate carmilla-bridge
           wp theme activate carmilla-theme
+          wp plugin is-active woocommerce
+          wp plugin is-active carmilla-bridge
+          wp theme is-active carmilla-theme
+          wp eval 'if ( ! class_exists( "Carmilla_Kernel" ) ) { exit( 1 ); }'
+          wp eval '$response = rest_do_request( new WP_REST_Request( "GET", "/carmilla/v1/client-manifest" ) ); if ( $response->get_status() !== 200 ) { exit( 1 ); }'
+          printf 'PHP=%s WP=%s Woo=%s\n' "$(php -r 'echo PHP_VERSION;')" "$(wp core version)" "$(wp plugin get woocommerce --field=version)"
 
-      - name: Run Existing Smokes
+      - name: Run hermetic smokes
         run: |
-          cd wordpress/carmilla-bridge/tests
-          for f in smoke*.php; do
-            echo "Running $f..."
-            php "$f"
+          set -euo pipefail
+          cd wordpress/carmilla-bridge
+          for f in smoke.php smoke-legacy-migration.php smoke-manifest-security.php smoke-manifest.php smoke-messaging.php smoke-p07-seed-migration.php smoke-phase2.php smoke-phase3.php smoke-phase4.php smoke-phase5.php smoke-phase6.php smoke-phase7.php smoke-security.php smoke-web-request-policy.php; do
+            echo "Running $f"
+            php "tests/$f"
           done
+
+      - name: Synthetic negative gate
+        if: ${{ inputs.negative_smoke == true }}
+        run: php -r 'exit(17);'
