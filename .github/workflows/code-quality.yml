@@ -38,7 +38,7 @@ jobs:
           curl --fail --location --retry 3 --silent --show-error \
             https://github.com/detekt/detekt/releases/download/v1.23.8/detekt-cli-1.23.8.zip \
             --output "$RUNNER_TEMP/detekt-cli.zip"
-          sha256sum "$RUNNER_TEMP/detekt-cli.zip"
+          echo "ff9f9258879ff2ec4349114740221498afec46a85cf6302c9f80b06eb4429501  $RUNNER_TEMP/detekt-cli.zip" | sha256sum --check
           unzip -q "$RUNNER_TEMP/detekt-cli.zip" -d "$RUNNER_TEMP"
       - name: Run detekt
         run: |
