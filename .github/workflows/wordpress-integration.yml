@@ -39,9 +39,25 @@ jobs:
       CI_DB_PASSWORD: ci_disposable_fixture_only
     strategy:
       matrix:
-        php: ['7.4', '8.1', '8.2']
-        wp: ['latest', '6.4.3']
-        woo: ['latest']
+        include:
+          - php: '7.4'
+            wp: latest
+            woo: latest
+          - php: '8.1'
+            wp: latest
+            woo: latest
+          - php: '8.2'
+            wp: latest
+            woo: latest
+          - php: '7.4'
+            wp: '6.4.3'
+            woo: '8.5.2'
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+          - php: '8.2'
+            wp: '6.4.3'
+            woo: '8.5.2'
       fail-fast: false
 
     steps:
