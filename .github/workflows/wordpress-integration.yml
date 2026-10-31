@@ -25,9 +25,9 @@ jobs:
         image: mariadb:10.6
         env:
           MARIADB_ROOT_PASSWORD: ci_disposable_root_only
-          MARIADB_DATABASE: carmilla_ci
-          MARIADB_USER: carmilla_ci
-          MARIADB_PASSWORD: ci_disposable_fixture_only
+          MARIADB_DATABASE: ${{ matrix.fixture_db || 'carmilla_ci' }}
+          MARIADB_USER: ${{ matrix.fixture_user || 'carmilla_ci' }}
+          MARIADB_PASSWORD: ${{ matrix.fixture_pass || 'ci_disposable_fixture_only' }}
         ports:
           - 3306:3306
         options: >-
@@ -36,7 +36,7 @@ jobs:
           --health-timeout=5s
           --health-retries=10
     env:
-      CI_DB_PASSWORD: ci_disposable_fixture_only
+      CI_DB_PASSWORD: ${{ matrix.fixture_pass || 'ci_disposable_fixture_only' }}
     strategy:
       matrix:
         include:
@@ -80,6 +80,48 @@ jobs:
             wp: '6.4.3'
             woo: '8.5.2'
             real_smoke: web-registration
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: deletion-incident-notice
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: deletion-incident-observer
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: deletion-incident-runtime
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: deletion-incident-store
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: identity-exact-audit
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: identity-supported-writer
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
       fail-fast: false
 
     steps:
@@ -102,7 +144,7 @@ jobs:
           else
             wp core download --version="${{ matrix.wp }}"
           fi
-          wp config create --dbname=carmilla_ci --dbuser=carmilla_ci --dbpass="$CI_DB_PASSWORD" --dbhost=127.0.0.1 --dbprefix="qa_$(openssl rand -hex 6)_"
+          wp config create --dbname="${{ matrix.fixture_db || 'carmilla_ci' }}" --dbuser="${{ matrix.fixture_user || 'carmilla_ci' }}" --dbpass="$CI_DB_PASSWORD" --dbhost=127.0.0.1 --dbprefix="qa_$(openssl rand -hex 6)_"
           wp core install --url="http://localhost:8080" --title="Synthetic QA" --admin_user=qa_admin --admin_password="$(openssl rand -hex 16)" --admin_email=qa_admin@example.test --skip-email
 
       - name: Copy Theme, Plugin and shared core
@@ -161,6 +203,14 @@ jobs:
               sudo mkdir -p /var/www/html
               sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /var/www/html/
               CARMILLA_LOGIN_DISPOSABLE=yes php "/var/www/html/wp-content/plugins/carmilla-bridge/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
+              ;;
+            deletion-incident-notice|deletion-incident-observer|deletion-incident-runtime|deletion-incident-store|identity-exact-audit|identity-supported-writer)
+              sudo mkdir -p /usr/src/wordpress
+              sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /usr/src/wordpress/
+              test ! -e /work && test ! -e /bridge
+              sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /work
+              sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /bridge
+              CARMILLA_LOGIN_DISPOSABLE=yes CARMILLA_LOGIN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" CARMILLA_LOGIN_WP_ROOT=/usr/src/wordpress php "/work/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
               ;;
             *) echo 'Unknown real smoke' >&2; exit 2 ;;
           esac

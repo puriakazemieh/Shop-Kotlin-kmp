@@ -1,0 +1,5 @@
+# P02-QA-CODE-007C3 checkpoint — 2026-10-31
+
+Baseline `ed05a358`. The six C3 tests all exited 2 in a network-disabled Docker PHP 8.1 container without their disposable flags and random prefixes. They require a fresh `carmilla_login_qa` MariaDB schema with fixture-only `synthetic_qa` credentials, a separate `qa_<12 hex>_` table prefix, WordPress at `/usr/src/wordpress`, and the Bridge available at `/work` and `/bridge`. The CI workflow now adds six separate PHP 8.1/WP 6.4.3/Woo 8.5.2 cells and provisions exactly those fixtures per job; the existing ten cells keep their `carmilla_ci` service. Each job runs one guarded test and GitHub Actions destroys its service container afterward.
+
+Pre-CI YAML parse: 16 cells, six shared-root cells, exit 0. Docker PHP 8.1 lint of all six scripts exited 0. GitNexus impact on the YAML path is UNKNOWN; text review matched the six explicit test names and fixture paths. Actual CI run is pending. These tests exercise synthetic deletion and migration fault paths only; no product code or production data was changed. The separate lint workflow's prior failure is not treated as a pass.
