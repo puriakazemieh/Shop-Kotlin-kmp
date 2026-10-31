@@ -1,6 +1,6 @@
 # P02-CI-CODE-009A — fail-closed PR gate wiring and reports
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -14,11 +14,11 @@ Ensure the PR Gate makes lint, unit, package and the existing WordPress integrat
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/pr-gate.yml`, `.github/workflows/wordpress-integration.yml`, this card, `docs/tasks.md`, and evidence checkpoint.
+- Commands and exit codes: JVM baseline exit 0; both YAML parses exit 0; `git diff --check` exit 0; actual PR Gate run 41217894201 at `e8f3798` concluded success with 29/29 jobs (27 WordPress cells, validate, final gate). Test and lint report uploads both succeeded.
+- Manual tester/date/result: N/A; CI-only change.
+- Evidence paths: `docs/evidence/P02-CI-CODE-009A/checkpoint-20261031.md`; [PR Gate run](https://github.com/puriakazemieh/Shop-Kotlin-kmp/actions/runs/41217894201).
+- Remaining risks/blockers: The independent Lint & Code Quality workflow failed in the same PR; no claim is made that it passed. Negative PR proof belongs to 009B. Branch protection required-check configuration is not established by this CI run.
+- Final status: DONE (2026-10-31)
