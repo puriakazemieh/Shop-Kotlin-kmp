@@ -75,12 +75,20 @@ jobs:
           "$RUNNER_TEMP/wpcs/vendor/bin/phpcs" --version
       - name: Run WPCS on Bridge
         run: |
+          set +e
           "$RUNNER_TEMP/wpcs/vendor/bin/phpcs" \
             --standard=WordPress \
             --ignore='*/vendor/*,*/node_modules/*,*/tests/*' \
             --report=summary \
             --report-file="$RUNNER_TEMP/wpcs-summary.txt" \
             wordpress/carmilla-bridge
+          status=$?
+          set -e
+          echo "WPCS exit: $status"
+          if [ -f "$RUNNER_TEMP/wpcs-summary.txt" ]; then
+            sed -n '1,60p' "$RUNNER_TEMP/wpcs-summary.txt"
+          fi
+          exit "$status"
       - name: Upload WPCS report
         if: always()
         uses: actions/upload-artifact@v4
@@ -131,9 +139,17 @@ jobs:
           printf 'PHP=%s WP=%s ThemeCheck=%s\n' "$(php -r 'echo PHP_VERSION;')" "$(wp core version)" "$(wp plugin get theme-check --field=version)"
       - name: Run Theme Check
         run: |
+          set +e
           cd wp-env
           wp theme-check run carmilla-theme --format=json > "$RUNNER_TEMP/theme-check.json"
-          test -s "$RUNNER_TEMP/theme-check.json"
+          status=$?
+          set -e
+          echo "Theme Check exit: $status"
+          if [ -s "$RUNNER_TEMP/theme-check.json" ]; then
+            head -c 3000 "$RUNNER_TEMP/theme-check.json"
+            echo
+          fi
+          exit "$status"
       - name: Upload Theme Check report
         if: always()
         uses: actions/upload-artifact@v4
