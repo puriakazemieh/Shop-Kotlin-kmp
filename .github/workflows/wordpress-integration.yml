@@ -64,6 +64,22 @@ jobs:
             wp: '6.4.3'
             woo: '8.5.2'
             real_smoke: woo-reference
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: auth-error-contract
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: identity-synthetic-migration
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: local-otp-sink
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-registration
       fail-fast: false
 
     steps:
@@ -140,6 +156,11 @@ jobs:
               ;;
             woo-reference)
               CARMILLA_REFERENCE_DISPOSABLE=yes CARMILLA_REFERENCE_PREFIX="qa_$(openssl rand -hex 6)_" wp eval-file ../wordpress/carmilla-bridge/tests/smoke-woo-reference.php
+              ;;
+            auth-error-contract|identity-synthetic-migration|local-otp-sink|web-registration)
+              sudo mkdir -p /var/www/html
+              sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /var/www/html/
+              CARMILLA_LOGIN_DISPOSABLE=yes php "/var/www/html/wp-content/plugins/carmilla-bridge/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
               ;;
             *) echo 'Unknown real smoke' >&2; exit 2 ;;
           esac

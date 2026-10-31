@@ -1,0 +1,5 @@
+# P02-QA-CODE-007C2 checkpoint — 2026-10-31
+
+Baseline `14f13d71`. Four additional PHP 8.1 / WP 6.4.3 / Woo 8.5.2 CI jobs each provision a separate MariaDB service and random `qa_<12 hex>_` WordPress prefix. Each job copies its new WordPress installation into the literal `/var/www/html` path required by one test, runs only that test with `CARMILLA_LOGIN_DISPOSABLE=yes`, and ends with GitHub Actions service cleanup. The four tests are auth error contract, synthetic identity migration, local OTP sink and browser registration. PHP 7.4 and 8.2 installation, activation and real WP commerce smokes were already exercised in 007B/007C1; these four security/identity tests use one PHP 8.1 compatibility cell each to keep the bounded card within M size.
+
+Pre-CI checks: `js-yaml` parses ten matrix cells (exit 0). Each of the four test scripts exited 2 without the disposable flag under Docker PHP 8.1 with no network, confirming guard-negative behavior. GitNexus cannot resolve the workflow YAML path (`risk: UNKNOWN`); text inspection confirms its explicit test dispatch. Actual CI has not run for this card yet. No auth, migration or OTP PASS is claimed.
