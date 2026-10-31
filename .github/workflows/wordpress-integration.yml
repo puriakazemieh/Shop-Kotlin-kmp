@@ -123,6 +123,34 @@ jobs:
             fixture_db: carmilla_login_qa
             fixture_user: synthetic_qa
             fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: managed-user-deletion
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-auth-route-activation
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-login
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-refresh-logout
+            fixture_db: carmilla_login_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
       fail-fast: false
 
     steps:
@@ -205,7 +233,7 @@ jobs:
               sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /var/www/html/
               CARMILLA_LOGIN_DISPOSABLE=yes php "/var/www/html/wp-content/plugins/carmilla-bridge/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
               ;;
-            deletion-incident-notice|deletion-incident-observer|deletion-incident-runtime|deletion-incident-store|identity-exact-audit|identity-supported-writer)
+            deletion-incident-notice|deletion-incident-observer|deletion-incident-runtime|deletion-incident-store|identity-exact-audit|identity-supported-writer|managed-user-deletion|web-auth-route-activation|web-login|web-refresh-logout)
               sudo mkdir -p /usr/src/wordpress
               sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /usr/src/wordpress/
               test ! -e /work && test ! -e /bridge

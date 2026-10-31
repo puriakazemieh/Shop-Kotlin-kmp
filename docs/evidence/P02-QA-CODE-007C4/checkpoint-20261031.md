@@ -1,0 +1,5 @@
+# P02-QA-CODE-007C4 checkpoint — 2026-10-31
+
+Baseline `e2c426ac`. Four new PHP 8.1 / WP 6.4.3 / Woo 8.5.2 matrix cells each run one shared-root login/route smoke: managed-user-deletion, web-auth-route-activation, web-login or web-refresh-logout. Each cell uses a fresh `carmilla_login_qa` MariaDB service, `synthetic_qa` fixture-only credentials, an independently generated `qa_<12 hex>_` table prefix, `/usr/src/wordpress` and `/work`/`/bridge` Bridge paths. The shared fixture intercepts `wp_mail`; no customer endpoint or retained database is used. The existing 16 C1–C3 cells and synthetic negative gate remain in place.
+
+All four scripts exited 2 without the disposable flag in network-disabled Docker PHP 8.1. Docker PHP 8.1 lint of all four scripts exited 0; `js-yaml` parsed 20 matrix cells (exit 0). GitNexus impact could not resolve the workflow YAML path (`UNKNOWN`), so the explicit dispatch and fixture path were text-reviewed. Actual CI has not run for this card yet; no login/route PASS is claimed.
