@@ -7,5 +7,5 @@
 - Artifact reporting (Test and Lint reports) is configured to upload upon step failure.
 - Ran baseline `.\gradlew.bat :composeApp:compileKotlinJvm` which completed successfully.
 
-## Final Status
-DONE
+## Historical status correction
+The original summary reported DONE based on YAML inspection and a local JVM build, without a negative PR run or WordPress integration as a mandatory PR Gate dependency. The 2026-10-28 audit returned this to TODO. See [verification-20261031.md](verification-20261031.md) for the actual positive and negative CI evidence that now supports DONE.

@@ -48,7 +48,7 @@ P02-CI-CODE-009
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P0/MEDIUM / L (decomposed into 009A then 009B)
 - Owner: AI
@@ -132,7 +132,7 @@ failure تست PR را fail کند؛ best-effort برای gate حیاتی ممن
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-CI-CODE-009/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: TODO
+- Final status: DONE (2026-10-31: 009A positive and 009B negative PR runs verified)
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
@@ -142,3 +142,9 @@ failure تست PR را fail کند؛ best-effort برای gate حیاتی ممن
 ## Size gate — 2026-10-31
 
 The original PR gate spans KMP lint/unit/package, a separate 27-cell WordPress integration workflow, artifact reports and a live negative PR check. That is L and crosses multiple CI boundaries. With owner-authorized splitting, 009A (M) wires the fail-closed gate and reports; 009B (S) proves a deliberately failing PR cannot pass. Original acceptance remains open until both children have actual CI evidence. See `docs/evidence/P02-CI-CODE-009/decomposition-20261031.md`.
+
+## Verified completion — 2026-10-31
+
+- 009A: [positive PR Gate run 41217894201](https://github.com/puriakazemieh/Shop-Kotlin-kmp/actions/runs/41217894201) succeeded with 27 WordPress integration jobs, KMP lint/unit/package and final aggregate gate. Test and lint report artifacts were uploaded.
+- 009B: [negative draft PR run 41218333725](https://github.com/puriakazemieh/Shop-Kotlin-kmp/actions/runs/41218333725) failed as intended after a synthetic exit 17; the final aggregate gate failed and both artifacts uploaded. The synthetic branch was restored and draft PR #31 closed unmerged. Local JVM baseline and YAML parses passed in 009A.
+- Manual QA: N/A for CI-only changes. Independent Lint & Code Quality failures and branch protection settings are separate unverified concerns; they are not claimed green. Evidence: `docs/evidence/P02-CI-CODE-009/verification-20261031.md`. Rollback: revert the scoped CI wiring; no product data or migrations were touched.
