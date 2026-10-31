@@ -1,6 +1,6 @@
 # P02-QA-CODE-007B — clean WordPress/Woo/PHP CI matrix
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -25,14 +25,14 @@ Manual QA: if CI/network behavior needs human acceptance, provide exact disposab
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: 007B1 fixed the PHP 7.4 smoke failure; matrix verification remains)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, this card, queue, evidence.
+- Commands and exit codes: YAML parse 0; PHP 7.4/8.1/8.2 hermetic smoke 0; final CI run `41190660399` six jobs success; negative probe run `41190362802` six jobs fail at intended exit 17.
+- Manual tester/date/result: N/A; CI workflow only, no product network or migration change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007B/checkpoint-20261031.md` and linked GitHub Actions runs.
+- Remaining risks/blockers: Real WordPress smoke subset is 007C; no product smoke or phase gate claimed here.
+- Final status: DONE
 
 ## 2026-10-31 checkpoint
 

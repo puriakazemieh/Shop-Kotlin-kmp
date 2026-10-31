@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C — real WordPress smoke integration
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -32,4 +32,4 @@ Manual QA: for network/migration effects, provide exact disposable environment, 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO
+- Final status: READY (2026-10-31: 007B CI matrix complete; integration smoke work remains)
