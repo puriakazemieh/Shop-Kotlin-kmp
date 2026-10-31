@@ -1,10 +1,10 @@
 # P02-QA-CODE-007C — real WordPress smoke integration
 
-- Status: READY
+- Status: TODO
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
-- Depends on: P02-QA-CODE-007B
+- Depends on: P02-QA-CODE-007C6 (ordered children C1–C6; original 007B dependency moves to C1)
 - Blocks: parent P02-QA-CODE-007
 - Requirement: parent P02-QA-CODE-007 and 007A/007B fixture and matrix evidence.
 
@@ -32,4 +32,4 @@ Manual QA: for network/migration effects, provide exact disposable environment, 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: READY (2026-10-31: 007B CI matrix complete; integration smoke work remains)
+- Final status: TODO (2026-10-31: size gate split heterogeneous 23 smoke tests into C1–C6; C1 is READY)
