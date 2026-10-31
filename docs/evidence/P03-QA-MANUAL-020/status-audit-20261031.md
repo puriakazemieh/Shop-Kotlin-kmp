@@ -1,0 +1,5 @@
+# Status audit — P03-QA-MANUAL-020 — 2026-10-31
+
+The queue and Master checklist previously marked this human QA task DONE. Its own Completion record says the AI's attempt was partial and insufficient for DONE: no deployed P03 build or Manifest settings access, and toggle, stale/invalid manifest, deep link, restart and HTTP 403 checks remained unverified. `docs/evidence/P03-QA-MANUAL-020/summary.md` records the blocked observations and explicitly says the task should not be DONE. `docs/evidence/P03-QA-REVIEW-023/summary.md` independently identified this mismatch and assigned replacement QA to P03-QA-MANUAL-027.
+
+The historical DONE checkbox is cleared and the queue row is corrected to AWAITING_MANUAL_QA because human verification remains outstanding. This correction does not claim that manual QA was performed. P03-QA-MANUAL-027 remains the active replacement acceptance path; the old card is retained as historical evidence and must not be counted as a passed Gate. No source code, environment, or customer data was changed in this audit.
