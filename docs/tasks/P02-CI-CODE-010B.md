@@ -1,6 +1,6 @@
 # P02-CI-CODE-010B — runnable WPCS and Theme Check jobs
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / MEDIUM / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -21,4 +21,4 @@ Replace the unavailable WPCS action, add Theme Check, and prove both run on the 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO (2026-10-31: waits for 010A)
+- Final status: READY (2026-10-31: 010A tools executed in CI)
