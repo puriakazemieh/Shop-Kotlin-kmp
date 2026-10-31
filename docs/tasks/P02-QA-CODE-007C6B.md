@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C6B — isolated session-store concurrency smoke
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -16,11 +16,11 @@ Allowed: `.github/workflows/wordpress-integration.yml`, `wordpress/carmilla-brid
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: C6A DB-only CI checks passed)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, `wordpress/carmilla-bridge/tests/smoke-web-session-store.php`, this card, `docs/tasks.md`, and the evidence checkpoint.
+- Commands and exit codes: PHP 8.1 lint exit 0; local guard-negative with valid port and prefix but no disposable opt-in exit 2; YAML parse 27 cells exit 0; GitHub WordPress Integration run 41215947307 on `fb4274e` succeeded with 27/27 jobs. The `db-session-store` job 124580378172 ran 36 checks with 0 failures.
+- Manual tester/date/result: Not required; only the disposable test harness and CI workflow changed, with no product migration or network behavior change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C6B/checkpoint-20261031.md`; [CI run](https://github.com/puriakazemieh/Shop-Kotlin-kmp/actions/runs/41215947307).
+- Remaining risks/blockers: CI validates a disposable MariaDB fixture, not a production database.
+- Final status: DONE (2026-10-31)
