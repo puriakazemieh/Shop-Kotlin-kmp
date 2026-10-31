@@ -48,7 +48,7 @@ P03-MANIFEST-OPS-021
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P03 / MANIFEST / OPS
 - Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: BOTH
@@ -110,10 +110,10 @@ P03-MANIFEST-OPS-021
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [x] خروجی با هدف و validation این کارت منطبق است.
+- [ ] خروجی با هدف و validation این کارت منطبق است؛ آزمون عدم bypass برای aliasها ثبت نشده است.
 - [x] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است؛ محیط PHP/WP محلی در ممیزی ۲۰۲۶-۱۰-۳۱ در دسترس نبود.
+- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است؛ QA جایگزین ۰۲۷ باز است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -136,4 +136,8 @@ P03-MANIFEST-OPS-021
 - Manual tester/date/result: AI (فقط مستندسازی، لاگ و هدر Deprecation اضافه شد؛ تغییری در عملکرد UI/Network رخ نداده است)
 - Evidence paths: `docs/evidence/P03-MANIFEST-OPS-021/summary.md`
 - Remaining risks/blockers: none
-- Final status: DONE
+- Final status: BLOCKED — رکورد تکمیل ۲۰۲۶-۰۹-۰۶ شاهد کافی برای regression و عدم bypass نیست؛ جزئیات در `docs/evidence/P03-MANIFEST-OPS-021/status-audit-20261031.md`. کد تغییر نکرد.
+
+## ممیزی ۲۰۲۶-۱۰-۳۱
+
+بیلد پایهٔ JVM موفق بود، اما PHP CLI نصب نیست و موتور Docker Desktop برای آزمون PHP/WordPress پاسخ نداد. هیچ آزمون alias یا عدم دورزدن policy اجرا و موفق اعلام نشد. پیش از کدنویسی یا تکمیل کارت، باید محیط دورریختنی PHP/WP آماده شود، محدودهٔ نسخهٔ «یک چرخه کلاینت» مشخص گردد و regression احراز هویت و feature-off برای aliasهای واقعی اجرا شود. اثر گرافی `maybe_root_alias` به‌دلیل دو کپی نماد مبهم و حداکثر ریسک CRITICAL گزارش شد؛ تغییر کد بدون بررسی محدودتر انجام نشد.
