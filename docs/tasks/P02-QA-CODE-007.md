@@ -48,12 +48,12 @@ P02-QA-CODE-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: BLOCKED
+- Status: TODO
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0/MEDIUM / L (decomposition required)
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P02-QA-CODE-006
+- Depends on: P02-QA-CODE-007C (decomposed children 007A → 007B → 007C; original prerequisite P02-QA-CODE-006 remains on 007A)
 - Blocks: P02-QA-CODE-008
 - Requirement source: Master checklist row P02-QA-CODE-007 و Source audit بخش QA
 
@@ -132,7 +132,7 @@ clean install، activation و smokeهای موجود در CI واقعاً اجر
 - Manual tester/date/result: N/A
 - Evidence paths: docs/evidence/P02-QA-CODE-007/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: BLOCKED
+- Final status: TODO (owner authorized decomposition and CI workflow scope on 2026-10-31; parent acceptance remains open)
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
@@ -143,3 +143,7 @@ clean install، activation و smokeهای موجود در CI واقعاً اجر
 - Current status: `BLOCKED` before coding. The parent spans CI, installation matrix, disposable WordPress databases, real-WP smokes and negative gate validation; assessed L.
 - Scope blocker: `.github/workflows/wordpress-integration.yml` must change to meet acceptance but `.github/**` is absent from Allowed files/directories. The card requires an owner scope decision in this case.
 - Proposed ordered S/M child tasks, prerequisites, acceptance and evidence are in `docs/evidence/P02-QA-CODE-007/scope-review-20261028.md`. No child was created or executed during this decomposition.
+
+## Owner decision — 2026-10-31
+
+The owner explicitly authorized splitting oversized Phase 02 tasks, widening the CI workflow scope, and proceeding through the phase in queue order. Child cards 007A, 007B and 007C are now in the queue. The parent remains TODO until all original acceptance criteria and executed CI evidence are satisfied.
