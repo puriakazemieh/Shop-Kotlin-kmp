@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C6A — guarded database-only token and adapter smokes
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -16,11 +16,11 @@ Allowed: `.github/workflows/wordpress-integration.yml`, `wordpress/carmilla-brid
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, this card, queue and evidence.
+- Commands and exit codes: three guard-negative probes exit 2; three PHP 8.1 lints exit 0; final CI run `41199892940` passed 26/26 jobs after a path-only CI failure was fixed.
+- Manual tester/date/result: N/A; CI-only fixture change, no product migration/network code change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C6A/checkpoint-20261031.md`; linked CI runs.
+- Remaining risks/blockers: C6B session-store concurrency smoke remains.
+- Final status: DONE
