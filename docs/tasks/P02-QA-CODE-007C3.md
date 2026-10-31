@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C3 — shared-root identity and deletion smoke
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -20,11 +20,11 @@ Each test uses its declared fixture and random prefix, disposable database and c
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: C2 real-WP CI checks passed)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, this card, queue and evidence.
+- Commands and exit codes: six unqualified Docker guard probes each exit 2; six PHP 8.1 lints exit 0; final CI run `41197637470` passed 16/16 jobs.
+- Manual tester/date/result: N/A; CI-only fixture change, no product migration or network code change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C3/checkpoint-20261031.md`; linked CI runs.
+- Remaining risks/blockers: C4–C6 smoke groups remain; separate lint workflow is not claimed green.
+- Final status: DONE

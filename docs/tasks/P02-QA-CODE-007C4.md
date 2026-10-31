@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C4 — shared-root login route smoke
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -27,4 +27,4 @@ Four tests run with explicit login opt-in, isolated DB and path, intercepted out
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO
+- Final status: READY (2026-10-31: C3 CI matrix passed)
