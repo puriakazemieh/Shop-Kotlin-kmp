@@ -19,6 +19,7 @@ on:
 
 jobs:
   test:
+    name: PHP ${{ matrix.php }} / WP ${{ matrix.wp }} / Woo ${{ matrix.woo }} / ${{ matrix.real_smoke }}
     runs-on: ubuntu-latest
     services:
       db:
