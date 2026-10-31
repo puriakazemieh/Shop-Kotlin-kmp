@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C3 — shared-root identity and deletion smoke
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -27,4 +27,4 @@ Each test uses its declared fixture and random prefix, disposable database and c
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO
+- Final status: READY (2026-10-31: C2 real-WP CI checks passed)

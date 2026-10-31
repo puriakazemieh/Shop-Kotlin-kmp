@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C2 — installed-root login smoke
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -20,11 +20,11 @@ All four tests run with per-test fresh database/prefix and `CARMILLA_LOGIN_DISPO
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: C1 CI smoke matrix passed)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, this card, queue and evidence.
+- Commands and exit codes: YAML parse 0; four unqualified guard probes each exit 2; CI run `41196005502` ten jobs success, including four new guarded tests.
+- Manual tester/date/result: N/A; CI orchestration only, no product auth or migration code change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C2/checkpoint-20261031.md` and linked CI run.
+- Remaining risks/blockers: C3–C6 smoke groups remain; separate Lint workflow has unrelated failures.
+- Final status: DONE
