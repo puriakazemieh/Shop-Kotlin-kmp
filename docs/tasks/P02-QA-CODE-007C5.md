@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C5 — token and session adapter smoke
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -27,4 +27,4 @@ All three use per-test random prefix and disposable DB, correct WordPress root a
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO
+- Final status: READY (2026-10-31: C4 CI matrix passed)

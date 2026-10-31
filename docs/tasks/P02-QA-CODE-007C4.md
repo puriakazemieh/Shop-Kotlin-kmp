@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C4 — shared-root login route smoke
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -20,11 +20,11 @@ Four tests run with explicit login opt-in, isolated DB and path, intercepted out
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-10-31: C3 CI matrix passed)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: `.github/workflows/wordpress-integration.yml`, this card, queue and evidence.
+- Commands and exit codes: four guard-negative probes exit 2; four PHP 8.1 lints exit 0; CI push run `41198134020` passed 20/20 jobs.
+- Manual tester/date/result: N/A; CI orchestration only, no product network or migration code change.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C4/checkpoint-20261031.md`; linked CI run.
+- Remaining risks/blockers: C5 token/adapter and C6 DB-only groups remain.
+- Final status: DONE
