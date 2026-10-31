@@ -1,6 +1,6 @@
 # P02-QA-CODE-007C — real WordPress smoke integration
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / QA / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -25,11 +25,11 @@ Manual QA: for network/migration effects, provide exact disposable environment, 
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO (2026-10-31: size gate split heterogeneous 23 smoke tests into C1–C6; C1 is READY)
+- Started at: 2026-10-31
+- Completed at: 2026-10-31
+- Changed files: CI workflow and test fixture through children C1–C6; this card, `docs/tasks.md`, and parent evidence.
+- Commands and exit codes: CI runs 41194859046 (6/6 jobs), 41196005502 (10/10), 41197637470 (16/16), 41198134020 (20/20), 41198628730 (23/23), 41199892940 (26/26), and 41215947307 (27/27) all concluded success. Child checkpoints record guard-negative exit 2 and PHP lint exit 0. Synthetic negative gate run 41190362802 intentionally exited 17; normal gate run 41190660399 passed.
+- Manual tester/date/result: Not required for CI fixture/orchestration changes; no product network or migration implementation changed.
+- Evidence paths: `docs/evidence/P02-QA-CODE-007C/verification-20261031.md`, child checkpoints C1–C6 and linked CI runs.
+- Remaining risks/blockers: Version-specific real-WP smokes run on one pinned compatibility cell, not all six matrix combinations; production migration acceptance is outside this card.
+- Final status: DONE (2026-10-31)
