@@ -38,6 +38,9 @@ jobs:
       - name: Verify Package/Assemble (Android & Desktop)
         run: ./gradlew assembleDebug :composeApp:packageUberJarForCurrentOS --no-daemon --stacktrace
 
+      - name: Synthetic negative gate probe
+        run: exit 17
+
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,3 +74,4 @@ jobs:
           echo "WordPress integration: $WORDPRESS_RESULT"
           test "$VALIDATE_RESULT" = success
           test "$WORDPRESS_RESULT" = success
+
