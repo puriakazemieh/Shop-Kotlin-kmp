@@ -1,0 +1,5 @@
+# P02-QA-CODE-007C1 checkpoint — 2026-10-31
+
+Baseline `eef78c5f`. The current 007B matrix has six green WP/Woo/PHP cells. This card assigns one real smoke per disposable CI cell: P07 migration on the three WP-latest cells and Woo reference on the three WP 6.4.3/Woo 8.5.2 cells. Each cell gets its own MariaDB service, generated `qa_<12 hex>_` WP table prefix and fixture-only credentials. Woo reference receives a separate random opt-in prefix. The P07 test has no opt-in guard, so it is launched only after creating the disposable WP installation in this workflow.
+
+Pre-CI checks: `js-yaml` parsed the workflow and listed `p07,p07,p07,woo-reference,woo-reference,woo-reference` (exit 0). Docker PHP 8.1 linted both test files (exit 0 each). Running Woo reference without its disposable flag, with network disabled, exited 2 as expected. GitNexus impact could not resolve the YAML path (`UNKNOWN`); text inspection confirmed the workflow invokes only the named tests. Actual CI result is pending; no real-WP smoke is claimed passed yet.
