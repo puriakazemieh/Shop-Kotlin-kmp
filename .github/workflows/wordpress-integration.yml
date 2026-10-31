@@ -43,21 +43,27 @@ jobs:
           - php: '7.4'
             wp: latest
             woo: latest
+            real_smoke: p07
           - php: '8.1'
             wp: latest
             woo: latest
+            real_smoke: p07
           - php: '8.2'
             wp: latest
             woo: latest
+            real_smoke: p07
           - php: '7.4'
             wp: '6.4.3'
             woo: '8.5.2'
+            real_smoke: woo-reference
           - php: '8.1'
             wp: '6.4.3'
             woo: '8.5.2'
+            real_smoke: woo-reference
           - php: '8.2'
             wp: '6.4.3'
             woo: '8.5.2'
+            real_smoke: woo-reference
       fail-fast: false
 
     steps:
@@ -124,6 +130,21 @@ jobs:
             php "tests/$f"
           done
 
+      - name: Run disposable real WordPress smoke
+        run: |
+          set -euo pipefail
+          cd wp-env
+          case '${{ matrix.real_smoke }}' in
+            p07)
+              wp eval-file ../wordpress/carmilla-bridge/tests/smoke-p07-wordpress.php
+              ;;
+            woo-reference)
+              CARMILLA_REFERENCE_DISPOSABLE=yes CARMILLA_REFERENCE_PREFIX="qa_$(openssl rand -hex 6)_" wp eval-file ../wordpress/carmilla-bridge/tests/smoke-woo-reference.php
+              ;;
+            *) echo 'Unknown real smoke' >&2; exit 2 ;;
+          esac
+
       - name: Synthetic negative gate
         if: ${{ inputs.negative_smoke == true }}
         run: php -r 'exit(17);'
+
