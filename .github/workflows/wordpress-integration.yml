@@ -151,6 +151,27 @@ jobs:
             fixture_db: carmilla_login_qa
             fixture_user: synthetic_qa
             fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-access-token
+            fixture_db: carmilla_token_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-session-migration
+            fixture_db: carmilla_adapter_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
+          - php: '8.1'
+            wp: '6.4.3'
+            woo: '8.5.2'
+            real_smoke: web-session-wp-adapter
+            fixture_db: carmilla_adapter_qa
+            fixture_user: synthetic_qa
+            fixture_pass: synthetic_qa_password
       fail-fast: false
 
     steps:
@@ -241,9 +262,24 @@ jobs:
               sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /bridge
               CARMILLA_LOGIN_DISPOSABLE=yes CARMILLA_LOGIN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" CARMILLA_LOGIN_WP_ROOT=/usr/src/wordpress php "/work/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
               ;;
+            web-access-token)
+              sudo mkdir -p /usr/src/wordpress
+              sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /usr/src/wordpress/
+              test ! -e /work
+              sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /work
+              CARMILLA_TOKEN_DISPOSABLE=yes CARMILLA_TOKEN_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php /work/tests/smoke-web-access-token-real-wp.php
+              ;;
+            web-session-migration|web-session-wp-adapter)
+              sudo mkdir -p /usr/src/wordpress
+              sudo cp -a "$GITHUB_WORKSPACE/wp-env/." /usr/src/wordpress/
+              test ! -e /work
+              sudo ln -s /usr/src/wordpress/wp-content/plugins/carmilla-bridge /work
+              CARMILLA_ADAPTER_DISPOSABLE=yes CARMILLA_ADAPTER_TEST_PREFIX="qa_$(openssl rand -hex 6)_" php "/work/tests/smoke-${{ matrix.real_smoke }}-real-wp.php"
+              ;;
             *) echo 'Unknown real smoke' >&2; exit 2 ;;
           esac
 
       - name: Synthetic negative gate
         if: ${{ inputs.negative_smoke == true }}
         run: php -r 'exit(17);'
+
