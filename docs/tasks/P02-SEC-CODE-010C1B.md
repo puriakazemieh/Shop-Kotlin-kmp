@@ -18,7 +18,7 @@ Ensure the legacy export command never writes unencrypted posts/media payloads t
 - Completed at: pending human QA
 - Changed files: `Export_Command.php`, focused synthetic smoke, queue, this card, evidence.
 - Commands and exit codes: Docker PHP 8.1 and 7.4 export/failure smoke, existing P07 migration smoke, PHP 8.1 and 7.4 production syntax, local QA ZIP construction and `git diff --check` all exit 0.
-- Manual tester/date/result: pending owner on disposable WordPress migration source/target.
+- Manual tester/date/result: Codex ran real disposable WordPress source/target export, failure, legacy-file and repeated-import checks on 2026-11-01; all final probes passed. Owner acceptance remains pending.
 - Evidence paths: `docs/evidence/P02-SEC-CODE-010C1B/verification.md`; ignored QA ZIP in `.artifacts/p02-security-010C1B/`.
-- Remaining risks/blockers: real WordPress export/import and filesystem failure behavior require human QA; C2 remains BLOCKED until 010C1A/B are confirmed.
+- Remaining risks/blockers: owner acceptance remains pending; the real installed export/import and filesystem failure probes passed. C2 remains BLOCKED until 010C1A/B are confirmed.
 - Final status: AWAITING_MANUAL_QA
