@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2B3 — WPCS clinic and academy findings
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,10 @@ Classify every pinned WPCS Security/DB finding in clinic, admin clinic and acade
 
 ## Completion record
 
-- Final status: TODO
+- Started at: 2026-11-01
+- Completed at: 2026-11-01
+- Changed files: this card, queue, seven scoped follow-up cards and triage evidence
+- Commands and exit codes: parsed pinned WPCS JSON report, 21 findings mapped; no product code or test run in this review task
+- Evidence paths: `docs/evidence/P02-CI-CODE-010C2B3/triage-20261101.md`
+- Remaining risks/blockers: ten source-backed booking/cancellation findings need repair; ten slow-query findings need measurements before disposition.
+- Final status: DONE
