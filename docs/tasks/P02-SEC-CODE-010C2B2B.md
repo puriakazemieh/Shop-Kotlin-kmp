@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2B — Verify deletion observer DB topology
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,10 @@ The native-deletion incident observer opens a second mysqli connection without p
 
 ## Completion record
 
-- Final status: TODO
+- Started at: 2026-11-01
+- Changed files: deletion incident runtime, focused installed-WP test, this card, queue and evidence
+- Commands and exit codes: PHP 8.1 syntax checks 0/0; final installed topology smoke 0 (5 PASS); managed deletion regression smoke 0 (7 PASS); QA ZIP built and hashed
+- Evidence paths: `docs/evidence/P02-SEC-CODE-010C2B2B/qa-20261101.md`
+- Manual tester/date/result: agent installed synthetic check 2026-11-01 PASS; owner confirmation pending
+- Remaining risks/blockers: owner confirmation; unsupported nonstandard DB topologies intentionally disable the observer
+- Final status: AWAITING_MANUAL_QA
