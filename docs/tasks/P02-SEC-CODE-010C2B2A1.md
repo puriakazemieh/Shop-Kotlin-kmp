@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A1 — Fail closed on managed deletion reads
 
-- Status: READY
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,10 @@
 
 ## Completion record
 
-- Final status: READY
+- Started at: 2026-11-01
+- Changed files: managed deletion class, focused installed-WP test, this card, queue and evidence
+- Commands and exit codes: PHP 8.1 syntax checks 0/0; installed-WP focused smoke 0 (7 PASS); QA ZIP built and hashed
+- Evidence paths: `docs/evidence/P02-SEC-CODE-010C2B2A1/qa-20261101.md`
+- Manual tester/date/result: agent installed synthetic check 2026-11-01 PASS; owner confirmation pending
+- Remaining risks/blockers: owner confirmation of deletion flow; concurrent dependency race is separately queued
+- Final status: AWAITING_MANUAL_QA

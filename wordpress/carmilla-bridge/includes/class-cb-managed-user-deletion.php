@@ -48,13 +48,16 @@ final class CB_Managed_User_Deletion {
 		global $wpdb;
 		if ( $id < 1 || $id === get_current_user_id() ) { return 'invalid_account'; }
 		if ( ! $this->is_managed( $id ) ) { return 'not_managed'; }
-		if ( $this->has_dependencies( $id ) ) { return 'dependencies_exist'; }
+		$dependencies = $this->has_dependencies( $id );
+		if ( $dependencies === null ) { return 'unavailable'; }
+		if ( $dependencies ) { return 'dependencies_exist'; }
 		if ( $wpdb->query( 'START TRANSACTION' ) === false ) { return 'unavailable'; }
 		try {
 			$meta = $wpdb->delete( $wpdb->usermeta, array( 'user_id' => $id ), array( '%d' ) );
 			$deleted = $meta !== false && $wpdb->delete( $wpdb->users, array( 'ID' => $id ), array( '%d' ) ) === 1;
-			$remaining = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->users} WHERE ID=%d", $id ) );
-			if ( ! $deleted || $remaining !== 0 ) { $wpdb->query( 'ROLLBACK' ); return 'unavailable'; }
+			$wpdb->last_error = '';
+			$remaining = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->users} WHERE ID=%d", $id ) );
+			if ( ! $deleted || $wpdb->last_error !== '' || ! is_scalar( $remaining ) || ! ctype_digit( (string) $remaining ) || (int) $remaining !== 0 ) { $wpdb->query( 'ROLLBACK' ); return 'unavailable'; }
 			if ( $wpdb->query( 'COMMIT' ) === false ) { return 'unavailable'; }
 			clean_user_cache( $id );
 			do_action( 'carmilla_managed_user_deleted', $id );
@@ -66,11 +69,15 @@ final class CB_Managed_User_Deletion {
 		return $id > 0 && ( metadata_exists( 'user', $id, 'cb_mobile' ) || metadata_exists( 'user', $id, 'cb_identity_managed' ) );
 	}
 
-	private function has_dependencies( int $id ): bool {
+	private function has_dependencies( int $id ): ?bool {
 		global $wpdb;
-		$post_count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_author=%d", $id ) );
-		$comment_count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->comments} WHERE user_id=%d", $id ) );
-		return $post_count > 0 || $comment_count > 0;
+		$wpdb->last_error = '';
+		$post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_author=%d", $id ) );
+		if ( $wpdb->last_error !== '' || ! is_scalar( $post_count ) || ! ctype_digit( (string) $post_count ) ) { return null; }
+		$wpdb->last_error = '';
+		$comment_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->comments} WHERE user_id=%d", $id ) );
+		if ( $wpdb->last_error !== '' || ! is_scalar( $comment_count ) || ! ctype_digit( (string) $comment_count ) ) { return null; }
+		return (int) $post_count > 0 || (int) $comment_count > 0;
 	}
 
 	private function message( string $status ): string {
