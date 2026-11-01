@@ -95,7 +95,10 @@ class CB_Auth_Controller {
 		$override = apply_filters( 'cb_send_otp_override', null, $mobile, $code, $purpose );
 		if ( $override !== null ) {
 			if ( is_wp_error( $override ) ) {
-				throw new Exception( $override->get_error_message() );
+				delete_transient( 'cb_otp_cooldown_' . $hash_key );
+				delete_transient( 'cb_otp_' . $hash_key );
+				error_log( 'Carmilla OTP dispatch unavailable (override).' );
+				throw new RuntimeException( 'ارسال کد تأیید موقتاً در دسترس نیست.' );
 			}
 		} else {
 			// Build message using template engine if available
@@ -107,7 +110,8 @@ class CB_Auth_Controller {
 				// Don't set cooldown if sending failed so they can retry immediately
 				delete_transient( 'cb_otp_cooldown_' . $hash_key );
 				delete_transient( 'cb_otp_' . $hash_key );
-				throw new Exception( 'خطا در ارسال پیامک: ' . $result->get_error_message() );
+				error_log( 'Carmilla OTP dispatch unavailable (SMS adapter).' );
+				throw new RuntimeException( 'ارسال کد تأیید موقتاً در دسترس نیست.' );
 			}
 		}
 

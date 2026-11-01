@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B1A — Redact public OTP provider errors
 
-- Status: READY
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,10 @@ The public OTP endpoints currently return filter or SMS provider error text thro
 
 ## Completion record
 
-- Final status: READY
+- Started at: 2026-11-01
+- Changed files: `wordpress/carmilla-bridge/includes/class-cb-auth-controller.php`, focused installed-WP test, this card, queue, evidence
+- Commands and exit codes: PHP 8.1 syntax checks 0/0; focused installed-WP smoke 0 (7 PASS); auth error contract smoke 0 (4 PASS); QA ZIP built and hashed
+- Evidence paths: `docs/evidence/P02-SEC-CODE-010C2B1A/qa-20261101.md`
+- Manual tester/date/result: agent installed synthetic check 2026-11-01 PASS; owner confirmation pending
+- Remaining risks/blockers: owner confirmation of changed REST response
+- Final status: AWAITING_MANUAL_QA
