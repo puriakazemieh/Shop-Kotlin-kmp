@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2A — Native detekt baseline
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / MEDIUM / M
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -14,10 +14,10 @@ Using the pinned detekt CLI 1.23.8 and the exact CI input set, generate a native
 ## Completion record
 
 - Started at: 2026-11-01
-- Completed at:
+- Completed at: 2026-11-01
 - Changed files: `.github/workflows/code-quality.yml`, `tools/code-quality/detekt-baseline.xml`, `docs/evidence/P02-CI-CODE-010C2A/detekt-baseline-20261101.md`, this card
-- Commands and exit codes: pinned detekt baseline generation 0; positive run 0; synthetic negative run 1 (expected); see evidence.
+- Commands and exit codes: pinned detekt baseline generation 0; positive run 0; synthetic negative run 1 (expected); GitHub Actions detekt job 124792002525 success; see evidence.
 - Manual tester/date/result: N/A
 - Evidence paths: `docs/evidence/P02-CI-CODE-010C2A/detekt-baseline-20261101.md`
-- Remaining risks/blockers: GitHub Actions run on the committed revision still required for CI evidence.
-- Final status: READY
+- Remaining risks/blockers: none for this subtask; WPCS and other CI jobs remain separate queued tasks.
+- Final status: DONE
