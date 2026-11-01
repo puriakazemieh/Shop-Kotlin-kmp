@@ -45,6 +45,7 @@ jobs:
           "$RUNNER_TEMP/detekt-cli-1.23.8/bin/detekt-cli" \
             --input composeApp,core,feature,androidApp,build-logic \
             --base-path . \
+            --baseline tools/code-quality/detekt-baseline.xml \
             --report "sarif:$RUNNER_TEMP/detekt.sarif"
       - name: Upload detekt report
         if: always()
