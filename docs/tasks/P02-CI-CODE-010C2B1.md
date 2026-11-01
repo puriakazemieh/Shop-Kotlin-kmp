@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2B1 — WPCS auth and session findings
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,10 @@ Classify all pinned WPCS Security/DB findings in Bridge auth, web auth, login, s
 
 ## Completion record
 
-- Final status: TODO
+- Started at: 2026-11-01
+- Completed at: 2026-11-01
+- Changed files: this card, `docs/tasks.md`, `docs/tasks/P02-SEC-CODE-010C2B1A.md`, triage evidence
+- Commands and exit codes: parsed pinned WPCS JSON report, 29 findings mapped; no product code or test run in this review task
+- Evidence paths: `docs/evidence/P02-CI-CODE-010C2B1/triage-20261101.md`
+- Remaining risks/blockers: two public OTP error disclosures require `P02-SEC-CODE-010C2B1A`; 27 justified-context findings remain for bounded WPCS disposition in C2C.
+- Final status: DONE
