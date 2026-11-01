@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C1B — Keep migration export plaintext off disk
 
-- Status: READY
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / SECURITY / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; human confirmation required for migration export
@@ -14,11 +14,11 @@ Ensure the legacy export command never writes unencrypted posts/media payloads t
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: READY (2026-11-01: independent C1 prerequisite is DONE; first open READY after 010C1A reached manual QA)
+- Started at: 2026-11-01
+- Completed at: pending human QA
+- Changed files: `Export_Command.php`, focused synthetic smoke, queue, this card, evidence.
+- Commands and exit codes: Docker PHP 8.1 and 7.4 export/failure smoke, existing P07 migration smoke, PHP 8.1 and 7.4 production syntax, local QA ZIP construction and `git diff --check` all exit 0.
+- Manual tester/date/result: pending owner on disposable WordPress migration source/target.
+- Evidence paths: `docs/evidence/P02-SEC-CODE-010C1B/verification.md`; ignored QA ZIP in `.artifacts/p02-security-010C1B/`.
+- Remaining risks/blockers: real WordPress export/import and filesystem failure behavior require human QA; C2 remains BLOCKED until 010C1A/B are confirmed.
+- Final status: AWAITING_MANUAL_QA

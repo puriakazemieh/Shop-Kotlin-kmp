@@ -23,20 +23,11 @@ class Export_Command {
             \WP_CLI::error( "Could not create export directory: {$output_dir}" );
             return;
         }
-
-        $posts_file = trailingslashit( $output_dir ) . 'posts.ndjson';
-        $media_file = trailingslashit( $output_dir ) . 'media.ndjson';
-        $posts_handle = fopen( $posts_file, 'wb' );
-        $media_handle = fopen( $media_file, 'wb' );
-        if ( false === $posts_handle || false === $media_handle ) {
-            if ( is_resource( $posts_handle ) ) {
-                fclose( $posts_handle );
+        foreach ( array( 'posts.ndjson', 'media.ndjson' ) as $legacy_name ) {
+            if ( file_exists( trailingslashit( $output_dir ) . $legacy_name ) ) {
+                \WP_CLI::error( 'A legacy plaintext export exists in the output directory. Securely remove it before retrying.' );
+                return;
             }
-            if ( is_resource( $media_handle ) ) {
-                fclose( $media_handle );
-            }
-            \WP_CLI::error( 'Could not open migration export files.' );
-            return;
         }
 
         $denied_types = implode( ',', array_map( static fn( $type ) => "'" . esc_sql( $type ) . "'", Migration_Config::get_denied_post_types() ) );
@@ -55,10 +46,8 @@ class Export_Command {
                 'meta'      => self::exportable_meta( (int) $post->ID, $wpdb ),
             );
             $line = wp_json_encode( $record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . "\n";
-            fwrite( $posts_handle, $line );
             $posts_payload .= $line;
         }
-        fclose( $posts_handle );
 
         $media_payload = '';
         $attachments = $wpdb->get_results( "SELECT ID, post_title, guid FROM {$wpdb->posts} WHERE post_type = 'attachment'" );
@@ -71,15 +60,41 @@ class Export_Command {
                 'checksum' => $attachment_path && file_exists( $attachment_path ) ? md5_file( $attachment_path ) : null,
             );
             $line = wp_json_encode( $record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . "\n";
-            fwrite( $media_handle, $line );
             $media_payload .= $line;
         }
-        fclose( $media_handle );
 
-        file_put_contents( trailingslashit( $output_dir ) . 'posts.enc', Migration_Crypto::encrypt_payload( $posts_payload, $encryption_key, $customer_uuid, $expiry ), LOCK_EX );
-        file_put_contents( trailingslashit( $output_dir ) . 'media.enc', Migration_Crypto::encrypt_payload( $media_payload, $encryption_key, $customer_uuid, $expiry ), LOCK_EX );
-        unlink( $posts_file );
-        unlink( $media_file );
+        $posts_temp = null;
+        $media_temp = null;
+        $export_error = null;
+        try {
+            $posts_encrypted = Migration_Crypto::encrypt_payload( $posts_payload, $encryption_key, $customer_uuid, $expiry );
+            $media_encrypted = Migration_Crypto::encrypt_payload( $media_payload, $encryption_key, $customer_uuid, $expiry );
+            $posts_temp = trailingslashit( $output_dir ) . 'posts.enc.' . bin2hex( random_bytes( 8 ) ) . '.tmp';
+            $media_temp = trailingslashit( $output_dir ) . 'media.enc.' . bin2hex( random_bytes( 8 ) ) . '.tmp';
+            if ( strlen( $posts_encrypted ) !== @file_put_contents( $posts_temp, $posts_encrypted, LOCK_EX )
+                || strlen( $media_encrypted ) !== @file_put_contents( $media_temp, $media_encrypted, LOCK_EX )
+                || ! @rename( $posts_temp, trailingslashit( $output_dir ) . 'posts.enc' )
+                || ! @rename( $media_temp, trailingslashit( $output_dir ) . 'media.enc' ) ) {
+                throw new \RuntimeException( 'Could not write encrypted migration export files.' );
+            }
+        } catch ( \Throwable $exception ) {
+            $export_error = $exception->getMessage();
+        } finally {
+            if ( null !== $posts_temp && file_exists( $posts_temp ) ) {
+                if ( ! @unlink( $posts_temp ) ) {
+                    $export_error = 'Could not remove a temporary encrypted export file.';
+                }
+            }
+            if ( null !== $media_temp && file_exists( $media_temp ) ) {
+                if ( ! @unlink( $media_temp ) ) {
+                    $export_error = 'Could not remove a temporary encrypted export file.';
+                }
+            }
+        }
+        if ( null !== $export_error ) {
+            \WP_CLI::error( 'Encrypted migration export failed: ' . $export_error );
+            return;
+        }
         \WP_CLI::success( "Encrypted export completed: {$output_dir}" );
     }
 
