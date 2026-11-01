@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C1A — Remove fixed fallback key for messaging secrets
 
-- Status: AWAITING_MANUAL_QA
+- Status: DONE
 - Phase/Area/Type: P02 / SECURITY / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; human confirmation required for the live messaging setting path
@@ -15,10 +15,10 @@ Remove the public fixed encryption key from the shared message settings implemen
 ## Completion record
 
 - Started at: 2026-11-01
-- Completed at: pending human QA
+- Completed at: 2026-11-01, after owner accepted the installed synthetic QA evidence in this chat.
 - Changed files: shared MessageSettings and MessageSender, Bridge SMS/SMTP adapters, focused smoke tests, this card, queue and evidence.
 - Commands and exit codes: Docker PHP 8.1 keyless/keyed synthetic smoke, core/Bridge messaging smoke, PHP syntax (7 files), and local QA ZIP construction all exit 0; `git diff --check` exit 0.
-- Manual tester/date/result: Codex ran four real disposable WordPress installs and authenticated admin form checks on 2026-11-01; all final probes passed. Owner acceptance remains pending; see evidence.
+- Manual tester/date/result: Codex ran four real disposable WordPress installs and authenticated admin form checks on 2026-11-01; all final probes passed. Owner explicitly accepted this QA evidence in chat on 2026-11-01.
 - Evidence paths: `docs/evidence/P02-SEC-CODE-010C1A/verification.md`; ignored QA ZIPs under `.artifacts/p02-security-010C1A/`.
-- Remaining risks/blockers: external SMS/SMTP provider delivery and owner acceptance remain unverified. Installed admin/form paths passed; C2 remains BLOCKED pending owner confirmation.
-- Final status: AWAITING_MANUAL_QA
+- Remaining risks/blockers: external SMS/SMTP provider delivery was not tested and is outside this synthetic acceptance; no claim of provider production readiness.
+- Final status: DONE
