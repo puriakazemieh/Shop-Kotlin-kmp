@@ -4,7 +4,7 @@
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
-- Depends on: P02-CI-CODE-010C1
+- Depends on: P02-SEC-CODE-010C1A, P02-SEC-CODE-010C1B
 - Blocks: P02-CI-CODE-010C3
 - Requirement: 010C1 triage and 010C parent.
 
@@ -21,4 +21,4 @@ Using fixed tool versions and the approved C1 classification, record detekt and 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: BLOCKED (2026-10-31: C1 identified product security/privacy findings outside 010C scope; owner scope decision pending)
+- Final status: BLOCKED (2026-11-01: owner authorized scoped product fixes; awaits verified completion and manual QA of 010C1A/B)
