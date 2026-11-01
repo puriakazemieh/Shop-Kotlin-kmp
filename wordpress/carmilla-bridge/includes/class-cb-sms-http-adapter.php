@@ -22,6 +22,9 @@ class CB_SMS_HTTP_Adapter {
         if (empty($api_url) || strpos($api_url, 'https://') !== 0) {
             return new WP_Error('invalid_config', 'SMS provider URL must be configured and use HTTPS.');
         }
+        if ( '' === $api_key ) {
+            return new WP_Error('invalid_config', 'SMS provider key is unavailable; configure a site-specific secret key and re-enter the credential.');
+        }
 
         // Masking the API key in any logged context
         $masked_key = !empty($api_key) ? substr($api_key, 0, 4) . '***' : '';

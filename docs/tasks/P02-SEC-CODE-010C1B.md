@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C1B — Keep migration export plaintext off disk
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / SECURITY / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; human confirmation required for migration export
@@ -21,4 +21,4 @@ Ensure the legacy export command never writes unencrypted posts/media payloads t
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO
+- Final status: READY (2026-11-01: independent C1 prerequisite is DONE; first open READY after 010C1A reached manual QA)

@@ -20,13 +20,17 @@ class MessageSender {
         if ( empty( $host ) ) {
             return;
         }
+        $password = MessageSettings::decrypt_secret( $settings['smtp_pass'] ?? '' );
+        if ( ! empty( $settings['smtp_user'] ) && '' === $password ) {
+            return;
+        }
 
         $phpmailer->isSMTP();
         $phpmailer->Host       = $host;
         $phpmailer->SMTPAuth   = ! empty( $settings['smtp_user'] );
         $phpmailer->Port       = (int) ( $settings['smtp_port'] ?? 587 );
         $phpmailer->Username   = $settings['smtp_user'] ?? '';
-        $phpmailer->Password   = MessageSettings::decrypt_secret( $settings['smtp_pass'] ?? '' );
+        $phpmailer->Password   = $password;
         $phpmailer->SMTPSecure = $settings['smtp_secure'] ?? 'tls';
 
         if ( ! empty( $settings['email_from'] ) ) {
@@ -53,6 +57,9 @@ class MessageSender {
         }
 
         $key = MessageSettings::decrypt_secret( $settings['sms_api_key'] ?? '' );
+        if ( '' === $key ) {
+            return new \WP_Error( 'invalid_config', 'SMS provider key is unavailable; configure a site-specific secret key and re-enter the credential.' );
+        }
         $response = wp_safe_remote_request( $url, [
             'method'      => $settings['sms_method'] ?? 'POST',
             'headers'     => [

@@ -30,13 +30,16 @@ class MessageSettings {
 
     /**
      * Helper to encrypt secrets before storing in DB.
-     * Uses CARMILLA_SECRET_KEY if defined in wp-config.php, otherwise falls back to WP_SALT.
+     * Uses a site-specific key; never encrypts with a public fallback.
      */
     public static function encrypt_secret($plain_text) {
         if (empty($plain_text)) return '';
-        $key = defined('CARMILLA_SECRET_KEY') ? CARMILLA_SECRET_KEY : (defined('SECURE_AUTH_KEY') ? SECURE_AUTH_KEY : 'default-fallback-key');
+        $key = self::secret_key();
+        if ( '' === $key ) return '';
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        if ( false === $iv ) return '';
         $encrypted = openssl_encrypt($plain_text, 'aes-256-cbc', $key, 0, $iv);
+        if ( false === $encrypted ) return '';
         return base64_encode($encrypted . '::' . $iv);
     }
 
@@ -45,10 +48,23 @@ class MessageSettings {
      */
     public static function decrypt_secret($encrypted_text) {
         if (empty($encrypted_text)) return '';
-        $key = defined('CARMILLA_SECRET_KEY') ? CARMILLA_SECRET_KEY : (defined('SECURE_AUTH_KEY') ? SECURE_AUTH_KEY : 'default-fallback-key');
-        $parts = explode('::', base64_decode($encrypted_text), 2);
-        if (count($parts) !== 2) return '';
-        return openssl_decrypt($parts[0], 'aes-256-cbc', $key, 0, $parts[1]);
+        $key = self::secret_key();
+        if ( '' === $key ) return '';
+        $decoded = base64_decode($encrypted_text, true);
+        if ( false === $decoded ) return '';
+        $parts = explode('::', $decoded, 2);
+        if (count($parts) !== 2 || strlen($parts[1]) !== openssl_cipher_iv_length('aes-256-cbc')) return '';
+        $plain = openssl_decrypt($parts[0], 'aes-256-cbc', $key, 0, $parts[1]);
+        return false === $plain ? '' : $plain;
+    }
+
+    private static function secret_key() {
+        foreach (['CARMILLA_SECRET_KEY', 'SECURE_AUTH_KEY'] as $name) {
+            if (defined($name) && is_string(constant($name)) && '' !== trim(constant($name)) && 'put your unique phrase here' !== constant($name)) {
+                return constant($name);
+            }
+        }
+        return '';
     }
 
     /**
@@ -65,7 +81,12 @@ class MessageSettings {
                 $old_settings = get_option(self::OPTION_NAME, []);
                 $sanitized['sms_api_key'] = $old_settings['sms_api_key'] ?? '';
             } else {
-                $sanitized['sms_api_key'] = self::encrypt_secret(sanitize_text_field($input['sms_api_key']));
+                $encrypted = self::encrypt_secret(sanitize_text_field($input['sms_api_key']));
+                if ( '' === $encrypted && function_exists('add_settings_error') ) {
+                    add_settings_error(self::OPTION_NAME, 'missing_secret_key', 'Configure a site-specific secret key before saving messaging credentials.');
+                }
+                $old_settings = get_option(self::OPTION_NAME, []);
+                $sanitized['sms_api_key'] = '' !== $encrypted ? $encrypted : ($old_settings['sms_api_key'] ?? '');
             }
         }
         if (isset($input['email_provider'])) {
@@ -76,7 +97,12 @@ class MessageSettings {
                 $old_settings = get_option(self::OPTION_NAME, []);
                 $sanitized['smtp_pass'] = $old_settings['smtp_pass'] ?? '';
             } else {
-                $sanitized['smtp_pass'] = self::encrypt_secret(sanitize_text_field($input['smtp_pass']));
+                $encrypted = self::encrypt_secret(sanitize_text_field($input['smtp_pass']));
+                if ( '' === $encrypted && function_exists('add_settings_error') ) {
+                    add_settings_error(self::OPTION_NAME, 'missing_secret_key', 'Configure a site-specific secret key before saving messaging credentials.');
+                }
+                $old_settings = get_option(self::OPTION_NAME, []);
+                $sanitized['smtp_pass'] = '' !== $encrypted ? $encrypted : ($old_settings['smtp_pass'] ?? '');
             }
         }
         

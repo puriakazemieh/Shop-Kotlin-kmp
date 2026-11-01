@@ -19,6 +19,9 @@ class CB_Mail_Adapter {
 
         $encrypted_pass = $settings['smtp_pass'] ?? '';
         $smtp_pass = \Carmilla\Core\Settings\MessageSettings::decrypt_secret($encrypted_pass);
+        if ( ! empty($settings['smtp_user']) && '' === $smtp_pass ) {
+            return;
+        }
 
         $phpmailer->isSMTP();
         $phpmailer->Host       = $smtp_host;

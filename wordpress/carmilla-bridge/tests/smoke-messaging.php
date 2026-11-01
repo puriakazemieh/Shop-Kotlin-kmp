@@ -5,6 +5,9 @@ echo "Running Messaging Smoke Tests...\n";
 if (!defined('ABSPATH')) {
     define('ABSPATH', __DIR__ . '/');
 }
+if (!defined('SECURE_AUTH_KEY')) {
+    define('SECURE_AUTH_KEY', hash('sha256', 'synthetic-bridge-message-test'));
+}
 
 // 1. Mock dependencies
 $GLOBALS['wp_options'] = [

@@ -1,6 +1,7 @@
 <?php
 echo "Running Core MessageSender smoke tests...\n";
 if ( ! defined( 'ABSPATH' ) ) { define( 'ABSPATH', __DIR__ . '/' ); }
+if ( ! defined( 'SECURE_AUTH_KEY' ) ) { define( 'SECURE_AUTH_KEY', hash( 'sha256', 'synthetic-core-message-test' ) ); }
 $GLOBALS['wp_options'] = [ 'carmilla_message_settings' => [ 'sms_api_url' => 'https://sms.example.test/send', 'sms_success_code' => 200 ] ];
 function get_option( $key, $default = false ) { return $GLOBALS['wp_options'][ $key ] ?? $default; }
 function add_action() {}
