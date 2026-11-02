@@ -1,0 +1,15 @@
+# Native deletion compatibility review — 2026-11-02
+
+Installed WordPress 7.1.3 `wp-admin/includes/user.php:351-475`: `wp_delete_user` fires `delete_user`, then deletes or reassigns posts and links, deletes usermeta and the user row, fires `deleted_user`, and returns `true`. It does not update `wp_comments.user_id` and does not check whether `$wpdb->delete(users)` succeeded. On a disposable migrated clone, `wp_delete_user($owner,$reassign)` moved the post but the comment FK rejected the user DELETE; the user survived while WordPress's function still returned true. Evidence: `../P02-SEC-QA-010C2B2A2B2C/native-compatibility-failure.md`.
+
+## Compared boundaries
+
+- WordPress `delete_user` action could reassign or zero comment IDs before the user-row DELETE, but only while this plugin is active. Direct SQL and disabled-plugin native deletion bypass it. A failure later in the native flow can leave comment changes outside an atomic boundary. It is insufficient as the sole invariant.
+- FK `ON DELETE CASCADE` would destroy comments. `SET NULL` does not preserve the existing non-null `user_id=0` anonymous convention and is not applicable to the generated reference column. Keeping `RESTRICT` alone breaks native deletion with comments.
+- A database `BEFORE DELETE` trigger on users can update surviving comments to `user_id=0` in the same DELETE statement, before the RESTRICT FK check. It runs for WordPress, other plugins and direct SQL while the plugin is inactive. If the user DELETE is rejected by another FK, the trigger's update is rolled back with that SQL statement on InnoDB. Posts retain RESTRICT protection; ordinary WordPress reassign/delete paths must complete before the user-row DELETE. This changes historical comment user attribution on deletion to anonymous but preserves comment content and avoids a nonzero orphan.
+
+Disposable MariaDB 10.6 scratch probe `trigger-probe.php`: InnoDB user/comment tables, nullable generated reference, RESTRICT FK and `BEFORE DELETE` trigger; deleting a referenced user affected one row and set the comment's `user_id` to `0`, exit 0. Trigger and tables were dropped. This is a mechanism proof, not installed-product QA or MySQL 8 support.
+
+## Selected bounded design
+
+Add a deterministic, verified user-delete trigger to the migration contract on supported MariaDB single-site InnoDB only. Installation must require a verified backup, zero legacy nonzero orphans, no conflicting unmanaged trigger behavior, and an exact post-DDL check of trigger name/body plus both FKs. Existing installations with only FKs are partial and must fail closed until a controlled repair/migration. The managed deletion guard must require the full three-part state. Test native clean deletion, post reassignment, comment anonymization, direct SQL, concurrent writes, plugin active/inactive, failure and backup restore on disposable WordPress before marking QA done. Unsupported engines/topologies stay closed. Do not alter retained/production schema in this review.

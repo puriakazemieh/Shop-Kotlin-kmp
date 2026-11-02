@@ -1,6 +1,6 @@
 # P02-SEC-REVIEW-010C2B2A2B2D — Resolve native comment deletion conflict
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,7 @@ Read installed WordPress `wp_delete_user` behavior and evaluate bounded ways to 
 
 ## Completion record
 
-- Final status: READY
+- Completed at: 2026-11-02
+- Evidence: `docs/evidence/P02-SEC-REVIEW-010C2B2A2B2D/design.md` and `trigger-probe.php`
+- Verification: installed WordPress `wp_delete_user` source inspected; disposable MariaDB 10.6 scratch trigger/FK probe exit 0 and cleaned up
+- Final status: DONE
