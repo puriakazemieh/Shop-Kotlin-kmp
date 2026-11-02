@@ -1,6 +1,6 @@
 # P02-PERF-REVIEW-010C2B3B1 — Measure academy lesson query
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Performance / REVIEW
 - Priority/Risk/Size: P2 / MEDIUM / S
 - Owner: AI
@@ -13,4 +13,8 @@ Measure the two pinned `lesson_questions` SlowDBQuery findings with synthetic sm
 
 ## Completion record
 
-- Final status: TODO
+- Completed at: 2026-11-02
+- Verification: actual SQL `EXPLAIN`/`ANALYZE` and timings at 30, 3,000, 30,000 synthetic course comments; temporary index experiment; complete cleanup
+- Evidence: `docs/evidence/P02-PERF-REVIEW-010C2B3B1/verification.md`, raw plans and probe
+- Follow-up: `P02-PERF-DISC-010C2B3B1A` for bounded pagination contract
+- Final status: DONE
