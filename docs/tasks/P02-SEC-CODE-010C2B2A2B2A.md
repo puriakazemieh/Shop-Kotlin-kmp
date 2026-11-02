@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2B2A — Implement constrained FK migration core
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,9 @@ Implement a callable, explicit migration core for the verified MariaDB single-si
 
 ## Completion record
 
-- Final status: READY
+- Completed at: 2026-11-02
+- Changed files: explicit migration core, disposable installed-WordPress test, this card, queue and evidence
+- Verification: PHP 8.1 syntax checks passed; installed WordPress 7.1.3/MariaDB 10.6.28 scratch-table test exit 0, 7 PASS, 0 FAIL
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B2A2B2A/verification.md`
+- Remaining: operator-only entrypoint/backup prerequisite and migration recovery QA are separate cards; no product schema was changed
+- Final status: DONE

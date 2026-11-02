@@ -1,0 +1,7 @@
+# P02-SEC-CODE-010C2B2A2B2A — migration core evidence
+
+2026-11-02. `CB_User_Integrity_Migration::install()` is callable but has no activation/request hook. It runs the read-only verifier first; only `uninstalled` proceeds. It adds nullable persistent generated columns and deterministic RESTRICT FKs to posts and comments, then requires the verifier to report `installed`. Existing `installed` state is idempotent. Unsupported, unreadable, orphaned or partial states refuse before DDL. Any DDL failure returns `failed` with post-failure state; it never reports success or silently claims rollback of autocommit DDL.
+
+On disposable installed WordPress 7.1.3, PHP 8.3.35, MariaDB 10.6.28, ran `CARMILLA_LOGIN_DISPOSABLE=yes php /tmp/smoke-user-integrity-migration-real-wp.php`: exit 0, 7 PASS, 0 FAIL. Scratch tables covered fresh install, valid legacy references, idempotent rerun, actual FK rejection of a missing user, orphan preflight refusal, and interrupted second ALTER leaving a partial state that refuses retry. The test removed all scratch tables. PHP 8.1 lint passed for both new PHP files. No WordPress product table, retained database or production data was migrated.
+
+This card does not establish an operator backup, production invocation, recovery from partial DDL, or two-connection concurrency proof. Those are assigned to the next cards. MariaDB 10.6 is the tested capability; other engines/versions remain unsupported unless verified separately.
