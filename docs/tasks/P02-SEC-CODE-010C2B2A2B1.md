@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2B1 — Verify deletion integrity topology
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,8 @@ Create a narrowly scoped read-only PHP verifier for single-site InnoDB users/pos
 
 ## Completion record
 
-- Final status: READY
+- Completed at: 2026-11-02
+- Changed files: read-only integrity verifier, disposable installed-WP smoke, this card, queue and evidence
+- Tests: PHP 8.1 lint 0/0; installed WordPress 7.1.3 / MariaDB 10.6.28 smoke 6 PASS, 0 FAIL, exit 0
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B2A2B1/verification.md`
+- Final status: DONE
