@@ -225,33 +225,64 @@ class CB_Clinic_Controller {
 
 		// Atomic lock: UNIQUE(therapist_id, slot_time) rejects a double booking.
 		$table    = cb_bookings_table();
-		$inserted = $wpdb->query( $wpdb->prepare(
-			"INSERT IGNORE INTO $table (therapist_id, slot_time, user_id, created_at) VALUES (%d, %s, %d, %s)",
-			$tid, $slot_time, $uid, current_time( 'mysql', true )
-		) );
-		if ( ! $inserted ) {
-			return cb_error( 'این بازه هم‌اکنون رزرو شد', 409, 'SLOT_TAKEN', 'api/clinic/appointments' );
+		$wpdb->last_error = '';
+		$engines = $wpdb->get_results( $wpdb->prepare(
+			'SELECT TABLE_NAME,ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (%s,%s,%s)',
+			$wpdb->posts, $wpdb->postmeta, $table
+		), ARRAY_A );
+		if ( $wpdb->last_error !== '' || ! is_array( $engines ) || count( $engines ) !== 3 ) {
+			return cb_error( 'رزرو در حال حاضر در دسترس نیست', 503, 'BOOKING_UNAVAILABLE', 'api/clinic/appointments' );
 		}
-		$booking_id = (int) $wpdb->insert_id;
-
-
-
-		$appt_id = wp_insert_post( array(
-			'post_type'   => 'cb_appointment',
-			'post_status' => 'publish',
-			'post_title'  => 'نوبت ' . get_the_title( $therapist ) . ' — ' . $slot_time,
-			'post_author' => $uid,
-		) );
-		update_post_meta( $appt_id, 'cb_therapist_id', $tid );
-		update_post_meta( $appt_id, 'cb_user_id', $uid );
-		update_post_meta( $appt_id, 'cb_slot', $slot_time );
-		update_post_meta( $appt_id, 'cb_status', 'PENDING' );
-		if ( $notes ) {
-			update_post_meta( $appt_id, 'cb_notes', $notes );
+		foreach ( $engines as $engine ) {
+			if ( strcasecmp( (string) $engine['ENGINE'], 'InnoDB' ) !== 0 ) {
+				return cb_error( 'رزرو در حال حاضر در دسترس نیست', 503, 'BOOKING_UNAVAILABLE', 'api/clinic/appointments' );
+			}
 		}
-		$wpdb->update( $table, array( 'appointment_id' => $appt_id ), array( 'id' => $booking_id ) );
+		if ( $wpdb->query( 'START TRANSACTION' ) === false ) {
+			return cb_error( 'رزرو در حال حاضر در دسترس نیست', 503, 'BOOKING_UNAVAILABLE', 'api/clinic/appointments' );
+		}
+		$appt_id = 0;
+		try {
+			$wpdb->last_error = '';
+			$inserted = $wpdb->query( $wpdb->prepare(
+				"INSERT IGNORE INTO $table (therapist_id, slot_time, user_id, created_at) VALUES (%d, %s, %d, %s)",
+				$tid, $slot_time, $uid, current_time( 'mysql', true )
+			) );
+			if ( $inserted === 0 && $wpdb->last_error === '' ) {
+				$wpdb->query( 'ROLLBACK' );
+				return cb_error( 'این بازه هم‌اکنون رزرو شد', 409, 'SLOT_TAKEN', 'api/clinic/appointments' );
+			}
+			if ( $inserted !== 1 || $wpdb->last_error !== '' ) { throw new RuntimeException( 'slot_lock' ); }
+			$booking_id = (int) $wpdb->insert_id;
+			if ( $booking_id < 1 ) { throw new RuntimeException( 'slot_lock_id' ); }
 
-		return cb_response( $this->appointment_dto( get_post( $appt_id ) ), 201 );
+			$appt_id = wp_insert_post( array(
+				'post_type'   => 'cb_appointment',
+				'post_status' => 'publish',
+				'post_title'  => 'نوبت ' . get_the_title( $therapist ) . ' — ' . $slot_time,
+				'post_author' => $uid,
+			), true );
+			if ( is_wp_error( $appt_id ) || ! is_int( $appt_id ) || $appt_id < 1 ) { throw new RuntimeException( 'appointment_post' ); }
+			foreach ( array( 'cb_therapist_id' => $tid, 'cb_user_id' => $uid, 'cb_slot' => $slot_time, 'cb_status' => 'PENDING' ) as $key => $value ) {
+				if ( update_post_meta( $appt_id, $key, $value ) === false ) { throw new RuntimeException( 'appointment_meta' ); }
+			}
+			if ( $notes && update_post_meta( $appt_id, 'cb_notes', $notes ) === false ) { throw new RuntimeException( 'appointment_notes' ); }
+			if ( $wpdb->update( $table, array( 'appointment_id' => $appt_id ), array( 'id' => $booking_id ), array( '%d' ), array( '%d' ) ) !== 1 ) { throw new RuntimeException( 'slot_link' ); }
+			$linked = $wpdb->get_var( $wpdb->prepare( "SELECT appointment_id FROM $table WHERE id=%d AND therapist_id=%d AND user_id=%d", $booking_id, $tid, $uid ) );
+			if ( $wpdb->last_error !== '' || (int) $linked !== $appt_id ) { throw new RuntimeException( 'slot_link_check' ); }
+			$appointment = get_post( $appt_id );
+			if ( ! $appointment instanceof WP_Post ) { throw new RuntimeException( 'appointment_read' ); }
+			$dto = $this->appointment_dto( $appointment );
+			if ( $wpdb->query( 'COMMIT' ) === false ) { throw new RuntimeException( 'booking_commit' ); }
+			return cb_response( $dto, 201 );
+		} catch ( Throwable $error ) {
+			$wpdb->query( 'ROLLBACK' );
+			if ( is_int( $appt_id ) && $appt_id > 0 ) {
+				clean_post_cache( $appt_id );
+				wp_cache_delete( $appt_id, 'post_meta' );
+			}
+			return cb_error( 'رزرو در حال حاضر در دسترس نیست', 503, 'BOOKING_UNAVAILABLE', 'api/clinic/appointments' );
+		}
 	}
 
 	public function cancel( WP_REST_Request $request ): WP_REST_Response {

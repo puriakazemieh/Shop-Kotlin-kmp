@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A2B — Repair booking partial writes
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,7 @@ Use the characterized failure matrix to ensure a failed appointment post/meta/lo
 
 ## Completion record
 
-- Final status: TODO
+- Completed at: 2026-11-02 after installed synthetic WordPress rollback QA; current owner instruction accepts agent-confirmed complete representative QA
+- Verification: seven focused scenarios PASS, two PHP lints PASS, no synthetic database residue
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A2B/verification.md` and `tests/smoke-booking-atomic-real-wp.php`
+- Final status: DONE
