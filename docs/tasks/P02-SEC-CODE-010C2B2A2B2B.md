@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2B2B — Expose controlled integrity migration
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,9 @@ Provide an explicit operator-only invocation for the migration core, with a docu
 
 ## Completion record
 
-- Final status: TODO
+- Completed at: 2026-11-02
+- Changed files: explicit CLI operator command, disposable installed-WordPress test, this card, queue and evidence
+- Verification: PHP 8.1 syntax checks passed; installed WordPress 7.1.3/MariaDB 10.6.28 scratch-table command test exit 0, 8 PASS, 0 FAIL; direct CLI preflight exit 0 and missing/mismatched backup denial exit 3
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B2A2B2B/verification.md`
+- Remaining: real backup restore proof and migration recovery are tested in the next QA card; no product schema was changed
+- Final status: DONE
