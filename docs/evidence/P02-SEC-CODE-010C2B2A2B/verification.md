@@ -1,0 +1,5 @@
+# P02-SEC-CODE-010C2B2A2B — managed deletion integrity parent
+
+2026-11-02. This parent was decomposed before coding. The read-only topology verifier (B1), explicit backup-gated migration (B2A/B2B), managed deletion transaction guard and two-connection probe (B3), native-compatible deletion trigger/cache adapter (E), and disposable migration/recovery QA (B2C) are all DONE. Their task cards and `docs/evidence/<task-id>/` records contain the test outputs, schema state, backup digest, rollback and cleanup details.
+
+The supported single-site InnoDB contract is fail-closed: installed topology requires two exact generated-column FKs plus the user-delete trigger; unsupported/partial/unreadable metadata refuses managed deletion or migration. Post/comment references to a missing nonzero user are rejected by the database. The clone tests covered healthy WordPress operations, native clean/reassigned deletion, injected SQL failures, partial migration and a competing comment insert. No production data was migrated.
