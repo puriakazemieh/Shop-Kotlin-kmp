@@ -1,6 +1,6 @@
 # P02-PERF-REVIEW-010C2B3B2 — Measure clinic meta queries
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Performance / REVIEW
 - Priority/Risk/Size: P2 / MEDIUM / M
 - Owner: AI
@@ -13,4 +13,6 @@ Measure the six pinned clinic SlowDBQuery findings in `my_appointments`, `list_m
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-02)
+- Evidence: `docs/evidence/P02-PERF-REVIEW-010C2B3B2/verification.md` and raw query plans.
+- Follow-up: `P14-CLINIC-PERF-CODE-034A/B/C` address the measured slow paths before clinic QA.
