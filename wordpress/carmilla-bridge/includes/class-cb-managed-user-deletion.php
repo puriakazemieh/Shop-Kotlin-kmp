@@ -1,6 +1,7 @@
 <?php
 /** Transactional deletion for Carmilla-managed WordPress accounts. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+require_once __DIR__ . '/class-cb-user-integrity.php';
 
 final class CB_Managed_User_Deletion {
 	private static $instance;
@@ -48,11 +49,15 @@ final class CB_Managed_User_Deletion {
 		global $wpdb;
 		if ( $id < 1 || $id === get_current_user_id() ) { return 'invalid_account'; }
 		if ( ! $this->is_managed( $id ) ) { return 'not_managed'; }
-		$dependencies = $this->has_dependencies( $id );
-		if ( $dependencies === null ) { return 'unavailable'; }
-		if ( $dependencies ) { return 'dependencies_exist'; }
+		if ( CB_User_Integrity::inspect()['state'] !== 'installed' ) { return 'unavailable'; }
 		if ( $wpdb->query( 'START TRANSACTION' ) === false ) { return 'unavailable'; }
 		try {
+			$wpdb->last_error = '';
+			$locked = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->users} WHERE ID=%d FOR UPDATE", $id ) );
+			if ( $wpdb->last_error !== '' || ! is_scalar( $locked ) || (int) $locked !== $id ) { $wpdb->query( 'ROLLBACK' ); return 'unavailable'; }
+			$dependencies = $this->has_dependencies( $id );
+			if ( $dependencies === null ) { $wpdb->query( 'ROLLBACK' ); return 'unavailable'; }
+			if ( $dependencies ) { $wpdb->query( 'ROLLBACK' ); return 'dependencies_exist'; }
 			$meta = $wpdb->delete( $wpdb->usermeta, array( 'user_id' => $id ), array( '%d' ) );
 			$deleted = $meta !== false && $wpdb->delete( $wpdb->users, array( 'ID' => $id ), array( '%d' ) ) === 1;
 			$wpdb->last_error = '';

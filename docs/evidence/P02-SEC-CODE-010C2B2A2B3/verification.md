@@ -1,0 +1,9 @@
+# P02-SEC-CODE-010C2B2A2B3 — managed deletion guard
+
+2026-11-02. Managed deletion now requires `CB_User_Integrity::inspect()` to report the exact installed two-FK-plus-trigger state. It starts a transaction, locks the user row with `SELECT ... FOR UPDATE`, then reads post/comment dependencies before metadata or user deletion. With InnoDB FKs, competing inserts of nonzero references must share the parent user-row lock. A writer that commits before the lock is seen by the in-transaction dependency read; a writer arriving after deletion cannot reference the deleted user.
+
+Disposable installed WordPress clone `cb_qa_integrity_20261102`, WordPress 7.1.3/PHP 8.3.35/MariaDB 10.6.28: guard smoke exit 0, 6 PASS, 0 FAIL (native managed capability block, unreadable verifier, missing-trigger partial state, no-write refusal, trigger restoration and clean managed deletion). Original disposable `wordpress` fixture without constraints: missing-constraint smoke exit 0, PASS, user and identity marker preserved. The prior SQL read-failure smoke on the migrated clone exited 0 with 7 PASS and 0 FAIL.
+
+Two independent DB connections: `managed-race-probe.php` injected a committed comment from the secondary connection immediately before the primary `START TRANSACTION`, after the old pre-transaction dependency check point. Result: `status=dependencies_exist`, owner survived, dependent comment survived, zero nonzero orphans; exit 0. This replaces the earlier observed unsafe `status=deleted` with anonymized dependent content under the same interleaving. The broader concurrency matrix remains assigned to `P02-SEC-QA-010C2B2A2C`.
+
+No production migration or owner-only QA occurred. The migrated clone is temporary and will be restored/removed in the migration QA card. The native comment cache adapter and trigger integration are a separate ready card and are not claimed complete by this evidence.
