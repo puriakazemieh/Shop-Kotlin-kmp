@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2B — Enforce managed deletion integrity
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,5 @@ Implement only the approved bounded invariant and migration design from the prer
 
 ## Completion record
 
-- Final status: TODO
+- Decomposed at: 2026-11-02 into B1 topology/verifier, B2 migration, and B3 deletion integration. This spans database DDL, WordPress lifecycle and deletion code; the M size gate prohibits coding it as one card.
+- Final status: BLOCKED until the three child cards pass
