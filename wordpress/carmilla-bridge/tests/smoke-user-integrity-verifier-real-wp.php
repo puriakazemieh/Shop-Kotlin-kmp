@@ -2,7 +2,7 @@
 /** Disposable installed WordPress only; scratch tables are removed afterward. */
 if ( getenv( 'CARMILLA_LOGIN_DISPOSABLE' ) !== 'yes' ) { exit( 2 ); }
 require '/var/www/html/wp-load.php';
-require '/var/www/html/wp-content/plugins/carmilla-bridge/includes/class-cb-user-integrity.php';
+require_once '/var/www/html/wp-content/plugins/carmilla-bridge/includes/class-cb-user-integrity.php';
 global $wpdb;
 $suffix = bin2hex( random_bytes( 4 ) );
 $tables = array( 'users' => 'cb_qa_u_' . $suffix, 'posts' => 'cb_qa_p_' . $suffix, 'comments' => 'cb_qa_c_' . $suffix );

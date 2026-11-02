@@ -30,7 +30,9 @@ try {
 	$deleted = wp_delete_user( $owner, $reassign );
 	$check( $deleted === true && ! get_user_by( 'id', $owner ), 'native deletion with reassignment succeeds' );
 	$check( (int) get_post( $post )->post_author === $reassign, 'post author is reassigned' );
-	$check( (int) get_comment( $comment )->user_id !== $owner, 'comment no longer references deleted user' );
+	$db_comment_user = (int) $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM {$wpdb->comments} WHERE comment_ID=%d", $comment ) );
+	$check( $db_comment_user === 0, 'stored comment is anonymized by trigger' );
+	$check( (int) get_comment( $comment )->user_id === 0, 'WordPress comment cache reflects anonymization immediately' );
 	$wpdb->last_error = '';
 	$bad = $wpdb->insert( $wpdb->comments, array( 'comment_post_ID' => $post, 'comment_content' => 'Bad synthetic', 'comment_author' => 'QA', 'user_id' => $owner + 1000000000 ) );
 	$check( $bad === false && $wpdb->last_error !== '', 'direct SQL cannot insert deleted user reference' );
@@ -40,6 +42,22 @@ try {
 	$check( $zero === 1, 'anonymous zero comment remains valid' );
 	$orphans = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} p LEFT JOIN {$wpdb->users} u ON u.ID=p.post_author WHERE p.post_author<>0 AND u.ID IS NULL" ) + (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->comments} c LEFT JOIN {$wpdb->users} u ON u.ID=c.user_id WHERE c.user_id<>0 AND u.ID IS NULL" );
 	$check( $orphans === 0, 'no nonzero post/comment orphans after native operations' );
+	$fault_user = $make( 'fault' ); $ids[] = $fault_user;
+	$fault_comment = wp_insert_comment( array( 'comment_post_ID' => $post, 'comment_content' => 'Fault synthetic', 'comment_author' => 'QA', 'user_id' => $fault_user, 'comment_approved' => 1 ) );
+	$comments[] = $fault_comment;
+	$needle = "SELECT comment_ID FROM {$wpdb->comments} WHERE user_id={$fault_user}";
+	$fault = static function ( string $sql ) use ( $needle ): string { return strpos( $sql, $needle ) !== false ? 'SELECT comment_ID FROM cb_qa_missing_comment_inventory' : $sql; };
+	add_filter( 'query', $fault );
+	$stopped = false;
+	try { wp_delete_user( $fault_user ); } catch ( Throwable $error ) { $stopped = true; }
+	remove_filter( 'query', $fault );
+	$check( $stopped && get_user_by( 'id', $fault_user ) instanceof WP_User && (int) $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM {$wpdb->comments} WHERE comment_ID=%d", $fault_comment ) ) === $fault_user, 'comment-cache read failure stops native deletion' );
+	$direct = $make( 'direct' ); $ids[] = $direct;
+	$direct_comment = wp_insert_comment( array( 'comment_post_ID' => $post, 'comment_content' => 'Direct synthetic', 'comment_author' => 'QA', 'user_id' => $direct, 'comment_approved' => 1 ) );
+	$comments[] = $direct_comment;
+	$direct_deleted = $wpdb->delete( $wpdb->users, array( 'ID' => $direct ), array( '%d' ) );
+	$check( $direct_deleted === 1 && (int) $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM {$wpdb->comments} WHERE comment_ID=%d", $direct_comment ) ) === 0, 'direct SQL deletion anonymizes comments without WordPress hook' );
+	$wpdb->delete( $wpdb->usermeta, array( 'user_id' => $direct ), array( '%d' ) );
 } finally {
 	foreach ( $comments as $id ) { wp_delete_comment( $id, true ); }
 	foreach ( $posts as $id ) { wp_delete_post( $id, true ); }

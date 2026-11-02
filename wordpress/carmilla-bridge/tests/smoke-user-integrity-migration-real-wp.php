@@ -2,8 +2,8 @@
 /** Disposable installed WordPress only; operates on scratch tables, never wp_posts. */
 if ( getenv( 'CARMILLA_LOGIN_DISPOSABLE' ) !== 'yes' ) { exit( 2 ); }
 require '/var/www/html/wp-load.php';
-require '/var/www/html/wp-content/plugins/carmilla-bridge/includes/class-cb-user-integrity.php';
-require '/var/www/html/wp-content/plugins/carmilla-bridge/includes/class-cb-user-integrity-migration.php';
+require_once '/var/www/html/wp-content/plugins/carmilla-bridge/includes/class-cb-user-integrity.php';
+require_once '/var/www/html/wp-content/plugins/carmilla-bridge/includes/class-cb-user-integrity-migration.php';
 global $wpdb;
 $failures = 0;
 $check = static function ( bool $ok, string $label ) use ( &$failures ): void {

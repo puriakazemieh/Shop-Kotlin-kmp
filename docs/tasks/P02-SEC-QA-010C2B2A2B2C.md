@@ -1,11 +1,11 @@
 # P02-SEC-QA-010C2B2A2B2C — Verify integrity migration recovery
 
-- Status: BLOCKED
+- Status: DONE
 - Phase/Area/Type: P02 / Security / QA
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
 - Depends on: P02-SEC-CODE-010C2B2A2B2E
-- Blocks: P02-SEC-CODE-010C2B2A2B2; P02-SEC-CODE-010C2B2A2B3
+- Blocks: P02-SEC-CODE-010C2B2A2B2
 
 ## Scope and acceptance
 
@@ -17,4 +17,7 @@ On a disposable WordPress database copy, prove fresh install, upgrade with valid
 - Evidence: `docs/evidence/P02-SEC-QA-010C2B2A2B2C/native-compatibility-failure.md` and `native-wp-probe.php`
 - Blocker: after installing the comment FK on a disposable WordPress database clone, native `wp_delete_user($owner, $reassign)` reassigns the post but leaves the comment `user_id`; the FK rejects deletion. The clone was restored and removed.
 - Remediation: ordered review `P02-SEC-REVIEW-010C2B2A2B2D` then code `P02-SEC-CODE-010C2B2A2B2E`; rerun this full QA afterward.
-- Final status: BLOCKED
+- Reverified at: 2026-11-02 after native-compatibility remediation
+- Verification: fresh clone install and preflight; native probe 11 PASS; scratch migration 7 PASS, verifier 7 PASS, operator 8 PASS; second-connection race PASS; full dump restore, row counts and zero-orphan checks; disposable clone cleaned
+- Evidence: `docs/evidence/P02-SEC-QA-010C2B2A2B2C/verification.md`
+- Final status: DONE
