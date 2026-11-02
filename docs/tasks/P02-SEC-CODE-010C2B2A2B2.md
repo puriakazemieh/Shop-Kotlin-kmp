@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2B2 — Migrate deletion integrity constraints
 
-- Status: TODO
+- Status: BLOCKED
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,5 @@ Implement explicit idempotent migration for nullable generated columns and RESTR
 
 ## Completion record
 
-- Final status: TODO
+- Size gate at: 2026-11-02. Database DDL, controlled activation/backup and migration recovery/QA span more than M; ordered child cards B2A, B2B and B2C replace execution of this parent.
+- Final status: BLOCKED until child evidence satisfies the scope
