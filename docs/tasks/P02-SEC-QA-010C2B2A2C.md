@@ -1,6 +1,6 @@
 # P02-SEC-QA-010C2B2A2C — Prove deletion race boundary
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / QA
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,7 @@ Use two independent synthetic DB connections against a disposable installed sing
 
 ## Completion record
 
-- Final status: TODO
+- Completed at: 2026-11-02 after representative disposable two-connection QA; current owner instruction accepts agent-confirmed complete QA
+- Verification: second-connection pre-transaction insert PASS; guard smoke 6 PASS; before/during/after matrix 8 PASS; restore to 14/11/1 rows and zero orphans; clone removed
+- Evidence: `docs/evidence/P02-SEC-QA-010C2B2A2C/verification.md` and `concurrent-deletion-probe.php`
+- Final status: DONE
