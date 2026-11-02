@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2 — Guard managed deletion dependency race
 
-- Status: BLOCKED
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -18,4 +18,7 @@ The dependency check for posts/comments precedes `START TRANSACTION`, allowing a
 - Blocker: Standard WordPress post/comment tables do not enforce a user foreign key. A lock held only by the deletion path cannot constrain independent writers after release. The allowed class/test/docs scope cannot establish the required lasting invariant.
 - Required decision: authorize a separate database-integrity/migration design with compatibility and rollback requirements, or explicitly narrow the guarantee to cooperative Carmilla writers and accept unsupported external writes.
 - Owner decision: on 2026-11-02, authorized the database-integrity design path. Ordered child cards `P02-SEC-DISC-010C2B2A2A`, `P02-SEC-CODE-010C2B2A2B`, and `P02-SEC-QA-010C2B2A2C` were queued; this parent remains BLOCKED until their evidence and manual confirmation satisfy its acceptance.
-- Final status: BLOCKED
+- Completed at: 2026-11-02 after owner-authorized integrity implementation and representative two-connection QA
+- Verification: pre-transaction race PASS; before/during/after matrix 8 PASS, guard smoke 6 PASS, backup restore and zero-orphan checks; see child records
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B2A2/verification.md`
+- Final status: DONE
