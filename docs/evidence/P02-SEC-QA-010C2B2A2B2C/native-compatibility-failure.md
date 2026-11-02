@@ -1,0 +1,9 @@
+# Migration QA stopped on native deletion conflict — 2026-11-02
+
+Environment: disposable database clone `cb_qa_integrity_20261102` copied from the installed WordPress test fixture (WordPress 7.1.3, PHP 8.3.35, MariaDB 10.6.28). No retained/production database was migrated. A `mariadb-dump --single-transaction --routines --triggers` backup was taken before migration; SHA-256 was supplied to the operator CLI. `preflight` reported `uninstalled` before, `installed` after both FKs, and the install exited 0.
+
+`native-wp-probe.php` ran against the clone only. Final run: exit 1, 6 PASS, 2 FAIL. Native clean-user deletion passed. Native post and comment creation passed. With a user owning both, `wp_delete_user($owner, $reassign)` reassigned the post but returned failure because `wp_comments.user_id` still referenced the user and `cb_comment_user_ref` RESTRICT FK rejected the user-row DELETE. The comment still referenced the surviving user. Direct SQL referencing a definitely missing user was correctly rejected; anonymous `user_id=0` still worked; no nonzero post/comment orphan was observed. This is a compatibility failure, not a successful QA or a request for human confirmation.
+
+The clone was dropped, recreated and restored from its pre-migration backup. Post-restore `preflight` returned `uninstalled`, and clone/original counts matched (`users=14`, `posts=11`, `comments=1`). The clone database and temporary dump copies were then removed; the original fixture still reported `uninstalled`. The backup digest was checked for file identity; this restore demonstrated the backup's usefulness for this disposable copy.
+
+Required fix: determine an integrity-preserving native deletion strategy, implement it, then rerun the entire migration/rollback and concurrency matrix. No production migration is authorized or claimed.
