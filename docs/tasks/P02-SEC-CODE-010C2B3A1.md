@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A1 — Fail closed on booking availability reads
 
-- Status: READY
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,9 @@
 
 ## Completion record
 
-- Final status: READY
+- Implemented at: 2026-11-02
+- Changed files: clinic controller, focused installed-WordPress test, this card, queue and evidence
+- Automated verification: PHP 8.1 lint passed for both PHP files; disposable installed-WordPress smoke passed 8/8 checks, exit 0
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A1/verification.md`
+- Manual QA: pending owner confirmation of the three REST responses on a disposable WordPress installation
+- Final status: AWAITING_MANUAL_QA

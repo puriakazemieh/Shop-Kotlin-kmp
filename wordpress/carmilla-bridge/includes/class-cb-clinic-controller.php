@@ -83,11 +83,12 @@ class CB_Clinic_Controller {
 		return $out;
 	}
 
-	private function booked_slot_times( int $tid ): array {
+	private function booked_slot_times( int $tid ): ?array {
 		global $wpdb;
 		$table = cb_bookings_table();
+		$wpdb->last_error = '';
 		$rows  = $wpdb->get_col( $wpdb->prepare( "SELECT slot_time FROM $table WHERE therapist_id = %d", $tid ) );
-		return is_array( $rows ) ? $rows : array();
+		return $wpdb->last_error === '' && is_array( $rows ) ? $rows : null;
 	}
 
 
@@ -109,8 +110,9 @@ class CB_Clinic_Controller {
 		return array( intdiv( $slot_id, self::SLOT_BASE ), $slot_id % self::SLOT_BASE );
 	}
 
-	private function slot_dtos( int $tid ): array {
+	private function slot_dtos( int $tid ): ?array {
 		$booked  = $this->booked_slot_times( $tid );
+		if ( $booked === null ) { return null; }
 		$minutes = $this->session_minutes( $tid );
 		$out     = array();
 		foreach ( $this->all_slots( $tid ) as $index => $s ) {
@@ -131,9 +133,11 @@ class CB_Clinic_Controller {
 		return $out;
 	}
 
-	private function therapist_summary( WP_Post $t, int $uid ): array {
+	private function therapist_summary( WP_Post $t, int $uid ): ?array {
 		$id   = (int) $t->ID;
 		$slug = get_post_meta( $id, 'cb_product_slug', true );
+		$slots = $this->slot_dtos( $id );
+		if ( $slots === null ) { return null; }
 		return array(
 			'id'                 => $id,
 			'name'               => get_the_title( $t ),
@@ -141,7 +145,7 @@ class CB_Clinic_Controller {
 			'specialty'          => get_post_meta( $id, 'cb_specialty', true ) ?: null,
 			'photoUrl'           => get_the_post_thumbnail_url( $t, 'medium' ) ?: null,
 			'sessionPrice'       => (float) get_post_meta( $id, 'cb_session_price', true ),
-			'availableSlotCount' => count( $this->slot_dtos( $id ) ),
+			'availableSlotCount' => count( $slots ),
 			'requiresPurchase'   => (bool) $slug,
 			'productSlug'        => $slug ?: null,
 			'isPaid'             => (bool) get_post_meta( $id, 'cb_is_paid', true ),
@@ -155,7 +159,9 @@ class CB_Clinic_Controller {
 		$posts = get_posts( array( 'post_type' => 'cb_therapist', 'post_status' => 'publish', 'numberposts' => 100 ) );
 		$out   = array();
 		foreach ( $posts as $t ) {
-			$out[] = $this->therapist_summary( $t, $uid );
+			$summary = $this->therapist_summary( $t, $uid );
+			if ( $summary === null ) { return cb_error( 'ظرفیت نوبت‌دهی موقتاً در دسترس نیست', 503, 'AVAILABILITY_UNAVAILABLE', 'api/therapists' ); }
+			$out[] = $summary;
 		}
 		return cb_response( $out );
 	}
@@ -168,6 +174,8 @@ class CB_Clinic_Controller {
 		$id   = (int) $t->ID;
 		$uid  = get_current_user_id();
 		$slug = get_post_meta( $id, 'cb_product_slug', true );
+		$slots = $this->slot_dtos( $id );
+		if ( $slots === null ) { return cb_error( 'ظرفیت نوبت‌دهی موقتاً در دسترس نیست', 503, 'AVAILABILITY_UNAVAILABLE', 'api/therapists/' . $t->post_name ); }
 		return cb_response( array(
 			'id'                    => $id,
 			'name'                  => get_the_title( $t ),
@@ -177,7 +185,7 @@ class CB_Clinic_Controller {
 			'photoUrl'              => get_the_post_thumbnail_url( $t, 'large' ) ?: null,
 			'sessionPrice'          => (float) get_post_meta( $id, 'cb_session_price', true ),
 			'sessionDurationMinutes' => $this->session_minutes( $id ),
-			'slots'                 => $this->slot_dtos( $id ),
+			'slots'                 => $slots,
 			'requiresPurchase'      => (bool) $slug,
 			'productSlug'           => $slug ?: null,
 			'isPaid'                => (bool) get_post_meta( $id, 'cb_is_paid', true ),
@@ -502,7 +510,9 @@ class CB_Clinic_Controller {
 			$hay   = get_post_meta( $t->ID, 'cb_specialty', true ) . ' ' . get_post_meta( $t->ID, 'cb_approach', true );
 			$score = self::match_score( $hay, $tags );
 			if ( $score > 0 ) {
-				$scored[] = array( 'therapist' => $this->therapist_summary( $t, $uid ), 'matchScore' => $score );
+				$summary = $this->therapist_summary( $t, $uid );
+				if ( $summary === null ) { return cb_error( 'ظرفیت نوبت‌دهی موقتاً در دسترس نیست', 503, 'AVAILABILITY_UNAVAILABLE', 'api/clinic/therapist-match/submit' ); }
+				$scored[] = array( 'therapist' => $summary, 'matchScore' => $score );
 			}
 		}
 		usort( $scored, function ( $a, $b ) {
