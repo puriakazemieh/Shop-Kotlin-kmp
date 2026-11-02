@@ -1,6 +1,6 @@
 # P02-SEC-REVIEW-010C2B3A2A — Characterize booking partial writes
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,7 @@ In disposable installed WordPress, inject separate failures after slot-lock INSE
 
 ## Completion record
 
-- Final status: TODO
+- Completed at: 2026-11-02
+- Verification: disposable WordPress direct-controller fault probe 4 observations, PHP lint, zero synthetic residue after cleanup
+- Evidence: `docs/evidence/P02-SEC-REVIEW-010C2B3A2A/verification.md` and `partial-write-probe.php`
+- Final status: DONE
