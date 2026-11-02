@@ -26,7 +26,9 @@ try {
 	$check( 'partial', 'generated column without FK' );
 	$wpdb->query( "ALTER TABLE `{$tables['posts']}` ADD CONSTRAINT `{$names['posts_fk']}` FOREIGN KEY (`{$names['posts_column']}`) REFERENCES `{$tables['users']}`(ID) ON DELETE RESTRICT" );
 	$wpdb->query( "ALTER TABLE `{$tables['comments']}` ADD COLUMN `{$names['comments_column']}` BIGINT UNSIGNED GENERATED ALWAYS AS (NULLIF(user_id,0)) PERSISTENT, ADD INDEX (`{$names['comments_column']}`), ADD CONSTRAINT `{$names['comments_fk']}` FOREIGN KEY (`{$names['comments_column']}`) REFERENCES `{$tables['users']}`(ID) ON DELETE RESTRICT" );
-	$check( 'installed', 'both generated FKs verified' );
+	$check( 'partial', 'both FKs without deletion trigger remain incomplete' );
+	$wpdb->query( "CREATE TRIGGER `{$names['users_trigger']}` BEFORE DELETE ON `{$tables['users']}` FOR EACH ROW UPDATE `{$tables['comments']}` SET user_id=0 WHERE `{$names['comments_column']}`=OLD.ID" );
+	$check( 'installed', 'both generated FKs and trigger verified' );
 	$filter = static function ( string $sql ): string { return strpos( $sql, 'information_schema.TABLES' ) !== false ? 'SELECT * FROM cb_qa_missing_metadata' : $sql; };
 	add_filter( 'query', $filter );
 	$check( 'unreadable', 'SQL metadata failure is never clean' );
@@ -34,6 +36,7 @@ try {
 	$check( 'installed', 'healthy verifier recovers' );
 } finally {
 	if ( isset( $filter ) ) { remove_filter( 'query', $filter ); }
+	$wpdb->query( "DROP TRIGGER IF EXISTS `{$names['users_trigger']}`" );
 	$wpdb->query( "DROP TABLE IF EXISTS `{$tables['comments']}`" );
 	$wpdb->query( "DROP TABLE IF EXISTS `{$tables['posts']}`" );
 	$wpdb->query( "DROP TABLE IF EXISTS `{$tables['users']}`" );

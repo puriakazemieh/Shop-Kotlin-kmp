@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B2A2B2E — Preserve native deletion with comment integrity
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,8 @@ Implement only the selected bounded design from the review. Native `wp_delete_us
 
 ## Completion record
 
-- Final status: TODO
+- Completed at: 2026-11-02
+- Changed files: integrity verifier and explicit migration, WordPress comment-cache adapter, standalone boot, focused smoke tests, evidence and queue
+- Verification: disposable migrated WordPress clone native probe 11 PASS/0 FAIL; verifier 7 PASS, migration 7 PASS, operator 8 PASS; managed-deletion race probe PASS; PHP lint passed
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B2A2B2E/verification.md`
+- Final status: DONE

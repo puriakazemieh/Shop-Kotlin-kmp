@@ -29,6 +29,8 @@ try {
 	$check( cb_user_integrity_command( array( 'tool', 'install' ), $tables )['code'] === 0, 'installed invocation is no-op' );
 	$check( CB_User_Integrity::inspect()['state'] === 'uninstalled', 'real WordPress tables remain unchanged' );
 } finally {
+	$names = CB_User_Integrity::names( $tables['posts'], $tables['comments'] );
+	$wpdb->query( "DROP TRIGGER IF EXISTS `{$names['users_trigger']}`" );
 	$wpdb->query( "DROP TABLE IF EXISTS `{$tables['comments']}`" );
 	$wpdb->query( "DROP TABLE IF EXISTS `{$tables['posts']}`" );
 	$wpdb->query( "DROP TABLE IF EXISTS `{$tables['users']}`" );

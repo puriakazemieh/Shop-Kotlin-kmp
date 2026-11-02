@@ -9,6 +9,7 @@ final class CB_User_Integrity {
 			'comments_column' => 'cb_comment_user_ref',
 			'posts_fk' => 'cb_author_fk_' . substr( sha1( $posts ), 0, 12 ),
 			'comments_fk' => 'cb_comment_fk_' . substr( sha1( $comments ), 0, 12 ),
+			'users_trigger' => 'cb_comment_zero_' . substr( sha1( $posts ), 0, 12 ),
 		);
 	}
 
@@ -54,7 +55,18 @@ final class CB_User_Integrity {
 				}
 			}
 		}
-		return array( 'state' => $present === 0 ? 'uninstalled' : ( $present === 2 ? 'installed' : 'partial' ), 'reason' => $present === 1 ? 'one_constraint' : 'verified' );
+		$other = self::read_var( $wpdb->prepare( "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA=DATABASE() AND EVENT_OBJECT_TABLE=%s AND ACTION_TIMING='BEFORE' AND EVENT_MANIPULATION='DELETE' AND TRIGGER_NAME<>%s", $tables['users'], $names['users_trigger'] ) );
+		if ( $other === null || ! ctype_digit( $other ) ) { return array( 'state' => 'unreadable', 'reason' => 'trigger_metadata' ); }
+		if ( (int) $other > 0 ) { return array( 'state' => 'unsupported', 'reason' => 'conflicting_user_trigger' ); }
+		$trigger = self::read_row( $wpdb->prepare( 'SELECT ACTION_TIMING,EVENT_MANIPULATION,ACTION_STATEMENT FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA=DATABASE() AND EVENT_OBJECT_TABLE=%s AND TRIGGER_NAME=%s', $tables['users'], $names['users_trigger'] ) );
+		if ( $trigger === null ) { return array( 'state' => 'unreadable', 'reason' => 'trigger_metadata' ); }
+		if ( $trigger ) {
+			++$present;
+			$statement = strtolower( preg_replace( '/[`\s()]/', '', $trigger['ACTION_STATEMENT'] ) );
+			$expected = 'update' . strtolower( $tables['comments'] ) . 'setuser_id=0where' . $names['comments_column'] . '=old.id';
+			if ( $trigger['ACTION_TIMING'] !== 'BEFORE' || $trigger['EVENT_MANIPULATION'] !== 'DELETE' || $statement !== $expected ) { return array( 'state' => 'partial', 'reason' => 'user_trigger' ); }
+		}
+		return array( 'state' => $present === 0 ? 'uninstalled' : ( $present === 3 ? 'installed' : 'partial' ), 'reason' => $present === 0 || $present === 3 ? 'verified' : 'incomplete_constraints' );
 	}
 
 	private static function read_var( string $sql ): ?string {

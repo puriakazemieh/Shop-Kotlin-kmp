@@ -46,6 +46,8 @@ $fixture = static function ( string $kind ) use ( $wpdb, $check ): void {
 		}
 	} finally {
 		if ( $filter ) { remove_filter( 'query', $filter ); }
+		$names = CB_User_Integrity::names( $t['posts'], $t['comments'] );
+		$wpdb->query( "DROP TRIGGER IF EXISTS `{$names['users_trigger']}`" );
 		$wpdb->query( "DROP TABLE IF EXISTS `{$t['comments']}`" );
 		$wpdb->query( "DROP TABLE IF EXISTS `{$t['posts']}`" );
 		$wpdb->query( "DROP TABLE IF EXISTS `{$t['users']}`" );

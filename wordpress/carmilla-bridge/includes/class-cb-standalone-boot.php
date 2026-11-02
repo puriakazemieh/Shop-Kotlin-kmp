@@ -125,6 +125,8 @@ class CB_Standalone_Boot {
 			'class-cb-local-qa-otp-sink.php',
 			'class-cb-deletion-incident-runtime.php',
 			'class-cb-managed-user-deletion.php',
+			'class-cb-user-integrity.php',
+			'class-cb-user-integrity-comment-cache.php',
 			'class-cb-auth-controller.php',
 			'class-cb-web-auth-controller.php',
 			'class-cb-catalog-controller.php',
@@ -179,6 +181,9 @@ class CB_Standalone_Boot {
 		}
 		if ( class_exists( 'CB_Managed_User_Deletion' ) ) {
 			CB_Managed_User_Deletion::boot();
+		}
+		if ( class_exists( 'CB_User_Integrity_Comment_Cache' ) ) {
+			CB_User_Integrity_Comment_Cache::boot();
 		}
 		if ( class_exists( 'CB_Local_QA_OTP_Sink' ) ) {
 			CB_Local_QA_OTP_Sink::boot();

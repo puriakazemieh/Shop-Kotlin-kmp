@@ -24,6 +24,12 @@ final class CB_User_Integrity_Migration {
 				return array( 'status' => 'failed', 'reason' => 'ddl', 'state' => $after['state'] );
 			}
 		}
+		$wpdb->last_error = '';
+		$trigger = "CREATE TRIGGER `{$names['users_trigger']}` BEFORE DELETE ON `{$tables['users']}` FOR EACH ROW UPDATE `{$tables['comments']}` SET user_id=0 WHERE `{$names['comments_column']}`=OLD.ID";
+		if ( $wpdb->query( $trigger ) === false || $wpdb->last_error !== '' ) {
+			$after = CB_User_Integrity::inspect( $tables );
+			return array( 'status' => 'failed', 'reason' => 'trigger_ddl', 'state' => $after['state'] );
+		}
 		$after = CB_User_Integrity::inspect( $tables );
 		return $after['state'] === 'installed'
 			? array( 'status' => 'installed', 'changed' => true )
