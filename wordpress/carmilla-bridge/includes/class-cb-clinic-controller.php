@@ -291,15 +291,42 @@ class CB_Clinic_Controller {
 		if ( ! $appt || $appt->post_type !== 'cb_appointment' || (int) get_post_meta( $appt->ID, 'cb_user_id', true ) !== get_current_user_id() ) {
 			return cb_error( 'نوبت یافت نشد', 404, 'NOT_FOUND', 'api/clinic/appointments' );
 		}
-		if ( get_post_meta( $appt->ID, 'cb_status', true ) === 'CANCELLED' ) {
-			return cb_response( null, 200 );
-		}
 		$tid = (int) get_post_meta( $appt->ID, 'cb_therapist_id', true );
-		$uid = (int) get_post_meta( $appt->ID, 'cb_user_id', true );
-		update_post_meta( $appt->ID, 'cb_status', 'CANCELLED' );
-		// Free the slot lock
-		$wpdb->delete( cb_bookings_table(), array( 'appointment_id' => $appt->ID ) );
-		return cb_response( null, 200 );
+		$slot = (string) get_post_meta( $appt->ID, 'cb_slot', true );
+		$table = cb_bookings_table();
+		if ( $tid < 1 || $slot === '' ) { return cb_error( 'لغو نوبت در دسترس نیست', 503, 'CANCELLATION_UNAVAILABLE', 'api/clinic/appointments' ); }
+		$wpdb->last_error = '';
+		$engines = $wpdb->get_results( $wpdb->prepare(
+			'SELECT TABLE_NAME,ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (%s,%s)',
+			$wpdb->postmeta, $table
+		), ARRAY_A );
+		if ( $wpdb->last_error !== '' || ! is_array( $engines ) || count( $engines ) !== 2 ) {
+			return cb_error( 'لغو نوبت در دسترس نیست', 503, 'CANCELLATION_UNAVAILABLE', 'api/clinic/appointments' );
+		}
+		foreach ( $engines as $engine ) {
+			if ( strcasecmp( (string) $engine['ENGINE'], 'InnoDB' ) !== 0 ) {
+				return cb_error( 'لغو نوبت در دسترس نیست', 503, 'CANCELLATION_UNAVAILABLE', 'api/clinic/appointments' );
+			}
+		}
+		if ( $wpdb->query( 'START TRANSACTION' ) === false ) {
+			return cb_error( 'لغو نوبت در دسترس نیست', 503, 'CANCELLATION_UNAVAILABLE', 'api/clinic/appointments' );
+		}
+		try {
+			$wpdb->last_error = '';
+			$lock = $wpdb->get_row( $wpdb->prepare( "SELECT id,appointment_id FROM $table WHERE therapist_id=%d AND slot_time=%s FOR UPDATE", $tid, $slot ), ARRAY_A );
+			if ( $wpdb->last_error !== '' || ( $lock && (int) $lock['appointment_id'] !== $appt->ID ) ) { throw new RuntimeException( 'slot_lock' ); }
+			$wpdb->last_error = '';
+			$status = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id=%d AND meta_key='cb_status' ORDER BY meta_id DESC LIMIT 1 FOR UPDATE", $appt->ID ) );
+			if ( $wpdb->last_error !== '' || ! is_string( $status ) || ( ! $lock && $status !== 'CANCELLED' ) ) { throw new RuntimeException( 'appointment_status' ); }
+			if ( $status !== 'CANCELLED' && update_post_meta( $appt->ID, 'cb_status', 'CANCELLED' ) === false ) { throw new RuntimeException( 'status_update' ); }
+			if ( $lock && $wpdb->delete( $table, array( 'id' => (int) $lock['id'] ), array( '%d' ) ) !== 1 ) { throw new RuntimeException( 'slot_release' ); }
+			if ( $wpdb->query( 'COMMIT' ) === false ) { throw new RuntimeException( 'cancel_commit' ); }
+			return cb_response( null, 200 );
+		} catch ( Throwable $error ) {
+			$wpdb->query( 'ROLLBACK' );
+			wp_cache_delete( $appt->ID, 'post_meta' );
+			return cb_error( 'لغو نوبت در دسترس نیست', 503, 'CANCELLATION_UNAVAILABLE', 'api/clinic/appointments' );
+		}
 	}
 
 	public function my_appointments(): WP_REST_Response {

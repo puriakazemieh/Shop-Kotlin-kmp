@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A3 — Keep cancellation and slot lock consistent
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,8 @@
 
 ## Completion record
 
-- Final status: TODO
+- Implemented at: 2026-11-02
+- Verification: installed synthetic WordPress six checks PASS; controller and test PHP lint PASS; no synthetic SQL residue
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A3/verification.md` and `tests/smoke-booking-cancel-atomic-real-wp.php`
+- Manual QA: public booking/cancellation route is currently disabled; authenticated HTTP cancellation and injected failure remain for owner-enabled disposable build
+- Final status: AWAITING_MANUAL_QA
