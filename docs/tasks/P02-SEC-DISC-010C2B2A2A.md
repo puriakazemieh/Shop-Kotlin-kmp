@@ -1,6 +1,6 @@
 # P02-SEC-DISC-010C2B2A2A — Define managed deletion integrity contract
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / DISC
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,8 @@ Read-only design for standard single-site WordPress. Inventory the installed sch
 
 ## Completion record
 
-- Final status: READY
+- Completed at: 2026-11-02
+- Evidence: `docs/evidence/P02-SEC-DISC-010C2B2A2A/design.md` and `race-probe.php`
+- Checks: installed WordPress schema/engine/FK/trigger/orphan inventory; two independent connection scratch-table race probe exit 0; scratch-table generated-column/FK capability probe passed on MariaDB 10.6.28; no product schema changed
+- Limit: MySQL 8 and other topologies not verified; implementation must capability-test and fail closed
+- Final status: DONE
