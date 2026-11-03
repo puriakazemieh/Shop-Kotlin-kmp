@@ -4,7 +4,7 @@
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
-- Depends on: P02-SEC-CODE-010C2B5C
+- Depends on: P02-SEC-CODE-010C2B5D3
 - Blocks: P02-CI-CODE-010C2B6
 
 ## Scope and acceptance
@@ -13,4 +13,4 @@ Characterize root `/api/users/me`, `/api/addresses*`, `/api/favorites*`, `/api/r
 
 ## Completion record
 
-- Final status: TODO
+- Final status: TODO; decomposed on 2026-11-03 into ordered D1–D3 cards before source edits. Aggregate their evidence before completion.
