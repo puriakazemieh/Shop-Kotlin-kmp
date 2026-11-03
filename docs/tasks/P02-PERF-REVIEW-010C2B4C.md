@@ -1,6 +1,6 @@
 # P02-PERF-REVIEW-010C2B4C — Measure admin user-meta scans
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Performance / REVIEW
 - Priority/Risk/Size: P2 / MEDIUM / M
 - Owner: AI
@@ -13,4 +13,6 @@ Measure seven pinned `get_users(meta_key, number=500)` findings in admin content
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-PERF-REVIEW-010C2B4C/verification.md` and raw plans.
+- Follow-up: `P04-WP-ADMIN-DATA-052`, `P04-WP-ADMIN-CODE-053/054` address the observed 500-user omission and full scan.
