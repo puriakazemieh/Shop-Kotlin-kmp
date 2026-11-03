@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2B4 — WPCS admin and catalog findings
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,6 @@ Classify every pinned WPCS Security/DB finding in admin content, admin controlle
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-CI-CODE-010C2B4/triage.md` classifies all 22 pinned findings.
+- Follow-up: `P02-SEC-CODE-010C2B4A/B` and `P02-PERF-REVIEW-010C2B4C/D` are queued before B5.
