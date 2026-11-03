@@ -461,8 +461,11 @@ class CB_Admin_Content_Controller {
 		$lines    = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) ) );
 		$minutes  = (int) get_post_meta( $id, 'cb_duration', true ) ?: 45;
 		global $wpdb;
+		$wpdb->last_error = '';
 		$booked   = $wpdb->get_col( $wpdb->prepare( 'SELECT slot_time FROM ' . cb_bookings_table() . ' WHERE therapist_id = %d', $id ) );
-		$booked   = is_array( $booked ) ? $booked : array();
+		if ( $wpdb->last_error !== '' || ! is_array( $booked ) ) {
+			return cb_error( 'زمان‌های آزاد فعلاً در دسترس نیست', 503, 'AVAILABILITY_UNAVAILABLE', 'api/admin/therapists' );
+		}
 		$out      = array();
 		foreach ( $lines as $i => $s ) {
 			$ts    = strtotime( $s ) ?: time();

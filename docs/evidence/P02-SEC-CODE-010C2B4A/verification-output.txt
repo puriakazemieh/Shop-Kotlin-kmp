@@ -1,0 +1,5 @@
+PASS healthy slot is free
+PASS healthy slot is booked
+PASS DB read failure fails closed
+PASS normal read recovers
+Failures: 0.

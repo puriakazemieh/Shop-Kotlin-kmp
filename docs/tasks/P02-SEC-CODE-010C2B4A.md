@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B4A — Fail closed on admin therapist slot read failure
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,5 @@ Characterize `CB_Admin_Content_Controller::therapist_slots` under a failed booki
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B4A/verification.md`; direct installed-WP and authenticated HTTP tests passed.

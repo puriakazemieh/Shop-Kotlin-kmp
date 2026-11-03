@@ -1,0 +1,11 @@
+PASS HTTP unauthenticated request denied
+HTTP status=200 errorCode=
+PASS HTTP admin free slot
+HTTP status=200 errorCode=
+PASS HTTP admin booked slot
+HTTP status=503 errorCode=AVAILABILITY_UNAVAILABLE
+PASS HTTP admin DB failure fails closed
+HTTP status=200 errorCode=
+PASS HTTP admin recovered slot
+PASS synthetic HTTP fixture cleaned
+Failures: 0.
