@@ -1,0 +1,4 @@
+PASS scalar error=1 success=0 escaped=1 warnings=0 unchanged=1
+PASS array error=0 success=1 escaped=1 warnings=0 unchanged=1
+PASS object error=0 success=0 escaped=1 warnings=0 unchanged=1
+PASS success error=0 success=1 escaped=1 warnings=0 unchanged=1

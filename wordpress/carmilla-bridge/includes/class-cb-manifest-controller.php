@@ -56,11 +56,13 @@ class CB_Manifest_Controller {
 			return;
 		}
 		$configured = self::normalize_configured_features( get_option( self::FEATURES_OPTION, array() ) );
+		$manifest_error = isset( $_GET['cb_manifest_error'] ) && is_string( $_GET['cb_manifest_error'] )
+			? sanitize_text_field( wp_unslash( $_GET['cb_manifest_error'] ) ) : null;
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Carmilla Feature Manifest', 'carmilla-bridge' ); ?></h1>
-			<?php if ( isset( $_GET['cb_manifest_error'] ) ) : ?>
-				<div class="notice notice-error"><p><?php echo esc_html( sprintf( __( 'Saved nothing. These features need an enabled parent: %s', 'carmilla-bridge' ), wp_unslash( $_GET['cb_manifest_error'] ) ) ); ?></p></div>
+			<?php if ( null !== $manifest_error ) : ?>
+				<div class="notice notice-error"><p><?php echo esc_html( sprintf( __( 'Saved nothing. These features need an enabled parent: %s', 'carmilla-bridge' ), $manifest_error ) ); ?></p></div>
 			<?php elseif ( isset( $_GET['cb_manifest_updated'] ) ) : ?>
 				<div class="notice notice-success"><p><?php echo esc_html__( 'Manifest updated.', 'carmilla-bridge' ); ?></p></div>
 			<?php endif; ?>
