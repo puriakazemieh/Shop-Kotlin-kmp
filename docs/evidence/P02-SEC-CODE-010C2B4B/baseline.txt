@@ -1,0 +1,14 @@
+BASELINE_EXIT=255
+[03-Nov-2026 06:56:24 UTC] PHP Fatal error:  Uncaught TypeError: ltrim(): Argument #1 ($string) must be of type string, array given in /var/www/html/wp-includes/formatting.php:4558
+Stack trace:
+#0 /var/www/html/wp-includes/formatting.php(4558): ltrim(Array)
+#1 /var/www/html/wp-includes/formatting.php(4690): esc_url(Array, NULL, 'db')
+#2 /var/www/html/wp-includes/formatting.php(4670): sanitize_url(Array, NULL)
+#3 /var/www/html/wp-content/plugins/carmilla-bridge/includes/meta-boxes.php(137): esc_url_raw(Array)
+#4 /var/www/html/wp-includes/class-wp-hook.php(353): CB_Standalone_Boot::{closure}(63071)
+#5 /var/www/html/wp-includes/class-wp-hook.php(377): WP_Hook->apply_filters(NULL, Array)
+#6 /var/www/html/wp-includes/plugin.php(523): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-content/plugins/carmilla-bridge/tests/smoke-meta-box-scalar-shape-real-wp.php(26): do_action('save_post', 63071)
+#8 {main}
+  thrown in /var/www/html/wp-includes/formatting.php on line 4558
+<!DOCTYPE html>

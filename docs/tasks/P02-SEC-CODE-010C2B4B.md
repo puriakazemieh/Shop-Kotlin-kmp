@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B4B — Validate scalar meta-box input shape
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: AI
@@ -13,4 +13,5 @@ Characterize malformed array input for scalar meta-box fields, then reject/ignor
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B4B/verification.md`; real WordPress `save_post` probe 7 PASS, 0 FAIL.

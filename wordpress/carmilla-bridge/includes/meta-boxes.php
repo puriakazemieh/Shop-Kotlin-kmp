@@ -128,7 +128,7 @@ add_action( 'save_post', function ( $post_id ) {
 		return;
 	}
 	foreach ( $conf['fields'] as $key => $field ) {
-		if ( ! isset( $_POST[ $key ] ) ) {
+		if ( ! isset( $_POST[ $key ] ) || ! is_scalar( $_POST[ $key ] ) ) {
 			continue;
 		}
 		$raw  = wp_unslash( $_POST[ $key ] );

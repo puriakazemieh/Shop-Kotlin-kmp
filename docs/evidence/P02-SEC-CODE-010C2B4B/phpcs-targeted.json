@@ -1,0 +1,1 @@
+{"totals":{"errors":1,"warnings":0,"fixable":0},"files":{"\/app\/wordpress\/carmilla-bridge\/includes\/meta-boxes.php":{"errors":1,"warnings":0,"messages":[{"message":"Detected usage of a non-sanitized input variable: $_POST[$key]","source":"WordPress.Security.ValidatedSanitizedInput.InputNotSanitized","severity":5,"fixable":false,"type":"ERROR","line":134,"column":29}]}}}

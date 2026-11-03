@@ -1,0 +1,8 @@
+PASS array text ignored
+PASS array number ignored
+PASS array URL ignored
+PASS invalid nonce denied
+PASS missing edit capability denied
+PASS valid scalar sanitized and saved
+PASS synthetic post and user cleaned
+Failures: 0.
