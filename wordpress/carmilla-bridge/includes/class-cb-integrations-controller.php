@@ -20,9 +20,13 @@ class CB_Integrations_Controller {
 
         check_admin_referer('carmilla_test_message', 'carmilla_test_message_nonce');
 
-        $type = isset($_POST['test_type']) ? sanitize_text_field($_POST['test_type']) : '';
-        $recipient = isset($_POST['test_recipient']) ? sanitize_text_field($_POST['test_recipient']) : '';
-        $body = isset($_POST['test_body']) ? sanitize_textarea_field($_POST['test_body']) : '';
+        $type = isset($_POST['test_type']) && is_string($_POST['test_type']) ? sanitize_text_field(wp_unslash($_POST['test_type'])) : '';
+        $recipient = isset($_POST['test_recipient']) && is_string($_POST['test_recipient']) ? sanitize_text_field(wp_unslash($_POST['test_recipient'])) : '';
+        $body = isset($_POST['test_body']) && is_string($_POST['test_body']) ? sanitize_textarea_field(wp_unslash($_POST['test_body'])) : '';
+
+        if (!in_array($type, array('sms', 'email'), true)) {
+            wp_die(__('Unsupported message type.', 'carmilla-bridge'));
+        }
 
         if (empty($recipient) || empty($body)) {
             wp_die(__('Recipient and message are required.', 'carmilla-bridge'));
@@ -45,7 +49,7 @@ class CB_Integrations_Controller {
             $redacted_recipient = substr($recipient, 0, 3) . '***' . substr($recipient, -2);
             error_log("Test $type message sent successfully to $redacted_recipient");
             
-            wp_redirect(add_query_arg(['page' => 'carmilla-integrations', 'tab' => 'test', 'status' => 'success'], admin_url('admin.php')));
+            wp_safe_redirect(add_query_arg(['page' => 'carmilla-integrations', 'tab' => 'test', 'status' => 'success'], admin_url('admin.php')));
             exit;
         } catch (Exception $e) {
             error_log("Test $type message failed: " . $e->getMessage());
@@ -75,7 +79,10 @@ class CB_Integrations_Controller {
         if ( ! $this->can_manage_integrations() ) {
             return;
         }
-        $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'sms';
+        $active_tab = isset( $_GET['tab'] ) && is_string( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'sms';
+        if ( ! in_array( $active_tab, array( 'sms', 'email', 'templates', 'health', 'test' ), true ) ) {
+            $active_tab = 'sms';
+        }
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('Carmilla Integrations', 'carmilla-bridge'); ?></h1>

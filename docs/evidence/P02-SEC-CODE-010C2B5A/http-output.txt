@@ -1,0 +1,5 @@
+PASS HTTP admin email intercepted and redirected safely
+PASS HTTP invalid type denied without delivery
+PASS HTTP bad nonce denied without delivery
+PASS synthetic HTTP admin removed
+Failures: 0.

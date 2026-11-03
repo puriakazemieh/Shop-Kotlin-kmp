@@ -1,0 +1,12 @@
+MODE=email EXIT=0
+PASS integration_email mail=1 body=1 redirect=1 die=0 tab=0
+MODE=invalid EXIT=0
+PASS integration_invalid mail=0 body=0 redirect=0 die=1 tab=0
+MODE=array EXIT=0
+PASS integration_array mail=0 body=0 redirect=0 die=1 tab=0
+MODE=tab EXIT=0
+PASS integration_tab mail=0 body=0 redirect=0 die=0 tab=1
+MODE=bad_nonce EXIT=0
+PASS integration_bad_nonce mail=0 body=0 redirect=0 die=1 tab=0
+MODE=no_cap EXIT=0
+PASS integration_no_cap mail=0 body=0 redirect=0 die=1 tab=0

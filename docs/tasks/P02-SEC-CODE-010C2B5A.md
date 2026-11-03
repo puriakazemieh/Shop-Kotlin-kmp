@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B5A — Normalize integration form input and redirect
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: AI
@@ -13,4 +13,5 @@ In the admin integration test-message form, unslash and validate the scalar type
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B5A/verification.md`; direct WordPress and HTTP scenarios passed without external delivery.

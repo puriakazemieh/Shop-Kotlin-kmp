@@ -1,0 +1,8 @@
+MODE=email EXIT=0
+FAIL integration_email mail=1 body=0 redirect=1 die=0 tab=0
+MODE=invalid EXIT=0
+FAIL integration_invalid mail=0 body=0 redirect=1 die=0 tab=0
+MODE=array EXIT=0
+PASS integration_array mail=0 body=0 redirect=0 die=1 tab=0
+MODE=tab EXIT=0
+FAIL integration_tab mail=0 body=0 redirect=0 die=0 tab=0
