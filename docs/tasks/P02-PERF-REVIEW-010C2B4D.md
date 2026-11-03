@@ -1,6 +1,6 @@
 # P02-PERF-REVIEW-010C2B4D — Measure blog and catalog meta queries
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Performance / REVIEW
 - Priority/Risk/Size: P2 / MEDIUM / M
 - Owner: AI
@@ -13,4 +13,6 @@ Measure eight pinned blog/catalog meta-filter and sort findings on synthetic Wor
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-PERF-REVIEW-010C2B4D/verification.md` and raw EXPLAIN/ANALYZE plans.
+- Follow-up: `P04-WP-CATALOG-CODE-055` fixes ignored price range; `P04-WP-CONTENT-PERF-CODE-056` bounds banners.
