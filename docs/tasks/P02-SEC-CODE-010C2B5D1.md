@@ -13,4 +13,5 @@ In disposable WordPress, run actual HTTP requests against root and canonical RES
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03); characterization found 8 root-only cookie/no-nonce bypasses, including 4 writes. D2 must fix before parent acceptance.
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B5D1/verification.md`.
