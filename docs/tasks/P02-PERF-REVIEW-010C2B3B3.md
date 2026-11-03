@@ -1,6 +1,6 @@
 # P02-PERF-REVIEW-010C2B3B3 — Measure admin clinic patient query
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Performance / REVIEW
 - Priority/Risk/Size: P2 / MEDIUM / S
 - Owner: AI
@@ -13,4 +13,6 @@ Measure the two pinned admin-clinic `list_messages` SlowDBQuery findings with sy
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-PERF-REVIEW-010C2B3B3/verification.md` and raw plans.
+- Follow-up: `P14-CLINIC-PERF-CODE-034D` addresses the measured admin message path.
