@@ -1,0 +1,5 @@
+PASS retryable retry=1 log= exception=SMS sending failed (retryable adapter error).
+PASS secret_code retry=1 log= exception=SMS sending failed (retryable adapter error).
+PASS invalid_config retry=0 log=[03-Nov-2026 07:41:58 UTC] CB SMS Non-retryable error: invalid_config exception=
+PASS missing_config retry=0 log=[03-Nov-2026 07:41:58 UTC] CB SMS Non-retryable error: missing_config exception=
+PASS http_400 retry=0 log=[03-Nov-2026 07:41:58 UTC] CB SMS Non-retryable error: http_400 exception=

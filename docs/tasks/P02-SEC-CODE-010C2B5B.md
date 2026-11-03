@@ -13,4 +13,5 @@ Prevent adapter-provided SMS error text from entering thrown exceptions and Acti
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B5B/verification.md`; five synthetic adapter failures passed without external delivery.

@@ -49,11 +49,12 @@ class CB_Message_Queue {
         if (is_wp_error($result)) {
             $code = $result->get_error_code();
             // non-retryable errors
-            if ($code === 'invalid_config' || $code === 'missing_config' || strpos($code, '400') !== false) {
-                error_log('CB SMS Non-retryable error: ' . $result->get_error_message());
+            if ($code === 'invalid_config' || $code === 'missing_config' || strpos((string) $code, '400') !== false) {
+                $safe_code = $code === 'invalid_config' || $code === 'missing_config' ? $code : 'http_400';
+                error_log('CB SMS Non-retryable error: ' . $safe_code);
                 return; // don't throw, so it doesn't retry
             }
-            throw new Exception('SMS sending failed: ' . $result->get_error_message()); // throw to retry
+            throw new Exception('SMS sending failed (retryable adapter error).'); // throw to retry
         }
     }
 

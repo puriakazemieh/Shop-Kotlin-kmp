@@ -1,0 +1,7 @@
+# Message queue error redaction — 2026-11-03
+
+The SMS queue handler no longer copies adapter error messages into retry exceptions or non-retryable error logs. Non-retryable classification remains `invalid_config`, `missing_config`, or a code containing `400`; logs use only the fixed codes `invalid_config`, `missing_config`, or `http_400`. Other failures still throw to trigger the existing Action Scheduler retry path, with a fixed exception string.
+
+GitNexus pre-edit impact for the class returned `UNKNOWN` with no resolved callers, so this is not treated as an unused symbol. Source inspection confirmed `CB_Message_Queue::init()` registers `process_sms` on `cb_process_sms_queue`, and the plugin calls `init()`.
+
+Command: `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/plugins/carmilla-bridge/tests/smoke-message-queue-redaction.php`. The isolated PHP harness used a fake adapter and `WP_Error` with a fake phone/token in error messages, including one error code, and captured PHP error log output. Five cases passed, zero failed, exit 0 (`verification-output.txt`). Retry exceptions and non-retryable logs contained no fake secret. No provider request was made. PHP lint of source and harness both passed. This tests the queue handler's values handed to Action Scheduler; it does not run a live scheduler worker or an external SMS provider. No owner manual QA is required for this task.
