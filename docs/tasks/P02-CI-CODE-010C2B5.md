@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2B5 — WPCS integration and manifest findings
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,6 @@ Classify every pinned WPCS Security/DB finding in integrations, manifest, messag
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-03)
+- Evidence: `docs/evidence/P02-CI-CODE-010C2B5/triage.md` classifies all 28 pinned findings.
+- Follow-up: `P02-SEC-CODE-010C2B5A/B/C/D` queued in order before B6.
