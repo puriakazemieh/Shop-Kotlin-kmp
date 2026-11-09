@@ -1,0 +1,434 @@
+[
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/Carmilla_Kernel.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Adapter/WooCommerceAdapter.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Adapter/WooCompat.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Capabilities/CapabilityRegistry.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Catalog/DependencyResolver.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Catalog/EntitlementClaims.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Catalog/EntitlementSchema.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Entitlement/EntitlementResolver.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Health/HealthChecker.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Import/Carmilla_Importer.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Lifecycle/LifecycleManager.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Messaging/MessageSender.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Migration/SchemaRunner.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Payment/WalletService.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Payment/WC_Gateway_Carmilla_Wallet.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Privacy/PrivacyManager.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Rest/RestInfrastructure.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Settings/AdminSettingsPage.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Settings/MessageSettings.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/inc/Settings/SettingsService.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/tests/smoke-carmilla-core.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/tests/smoke-message-secret-key.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/packages/carmilla-core/tests/smoke-message-sender.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/audit-mobile-identity-claims.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/audit-wp-registration-identity-race.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/browser-checkout-probe.cjs",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/characterize-email-reset-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/characterize-otp-concurrency-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-identity-composite-wp-writers.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-identity-shared-concurrency.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-identity-shared-references.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-identity-user-insert.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-identity-user-lifecycle.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-managed-synthetic-deletion.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-native-deletion-incident.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-native-deletion-observer.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-native-deletion-recovery.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/experiment-native-incident-access.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/fixture-block-mail.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/fixture-browser-checkout-verify.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/fixture-browser-checkout.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/probe-root-alias-auth-http-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/probe-root-alias-foreign-token-http-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/probe-root-alias-isolation-http-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/probe-root-alias-malformed-http-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/qa-admin-slots-mu.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/qa-integration-mail-mu.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-admin-therapist-slots-http-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-admin-therapist-slots-read-failure-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-auth-error-contract-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-declared-minimum.sh",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-deletion-incident-notice-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-deletion-incident-observer-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-deletion-incident-store-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-deletion-observer-topology-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-identity-exact-audit-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-identity-supported-writer-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-identity-synthetic-migration-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-integrations-form-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-legacy-migration.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-local-otp-sink-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-managed-deletion-read-failures-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-managed-integrity-guard-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-managed-integrity-missing-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-manifest-notice-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-manifest-security.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-manifest.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-message-queue-redaction.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-messaging.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-meta-box-scalar-shape-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-otp-provider-errors-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-p07-seed-migration.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-p07-wordpress.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-packaged-reference.sh",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-phase2.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-phase3.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-phase4.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-phase5.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-phase6.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-phase7.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-security.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-session-migration-ddl-fault.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-user-integrity-operator-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-access-token-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-access-token.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-auth-route-activation-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-login-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-refresh-logout-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-registration-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-request-policy.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-session-migration-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-session-store.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-session-wp-adapter-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-web-session-wp-adapter.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-woo-reference.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke-woo-reference.sh",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/smoke.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/test-otp-atomic-consumer-real-wp.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-bridge/tests/verify-session-migration-restore-real-wp.php",
+    "SideIndicator": "=>"
+  }
+]

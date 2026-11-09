@@ -1,0 +1,30 @@
+[
+  {
+    "archive": "workflow-theme",
+    "sha256": "a47356751a9b631026e1e53433639472dddc8bf7e2107aa4e70e04bd62ca35df",
+    "files": 93,
+    "coreFiles": 0,
+    "testFiles": 1
+  },
+  {
+    "archive": "workflow-bridge",
+    "sha256": "afe4b9093ebd30621d787c17228a638f61c47baf1541dfa870fe16c41f018195",
+    "files": 76,
+    "coreFiles": 0,
+    "testFiles": 0
+  },
+  {
+    "archive": "local-carmilla-theme",
+    "sha256": "ca34c6f0b52a56515635b4801f0d38aaf607d8be42752762614f5ddfdb19b4cb",
+    "files": 113,
+    "coreFiles": 23,
+    "testFiles": 4
+  },
+  {
+    "archive": "local-carmilla-bridge",
+    "sha256": "9c3303b8cf99507a8ae9353101f5693e21f9c1a19e521eeec32472a7ebf2fa1e",
+    "files": 184,
+    "coreFiles": 23,
+    "testFiles": 88
+  }
+]

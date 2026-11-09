@@ -5,7 +5,7 @@
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
 - Depends on: P02-CI-CODE-010C2
-- Blocks: P02-CI-CODE-010C3B1
+- Blocks: P02-CI-CODE-010C3A1
 
 ## Scope and acceptance
 

@@ -153,12 +153,19 @@ jobs:
             echo
           fi
           exit "$status"
+      - name: Fingerprint Theme Check report
+        if: always()
+        run: |
+          test -s "$RUNNER_TEMP/theme-check.json"
+          sha256sum "$RUNNER_TEMP/theme-check.json" > "$RUNNER_TEMP/theme-check.sha256"
       - name: Upload Theme Check report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: theme-check-report
-          path: ${{ runner.temp }}/theme-check.json
+          path: |
+            ${{ runner.temp }}/theme-check.json
+            ${{ runner.temp }}/theme-check.sha256
           if-no-files-found: warn
 
   wp-plugin-check:
@@ -166,7 +173,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install pinned Plugin Check scanner
+        run: |
+          set -euo pipefail
+          npm install --global --no-fund @wordpress/env
+          cat > .wp-env.json <<'JSON'
+          {"core":"WordPress/WordPress#6.4.3","mappings":{"wp-content/plugins/carmilla-bridge":"./wordpress/carmilla-bridge"}}
+          JSON
+          wp-env start
+          curl --fail --location --retry 3 --silent --show-error \
+            https://downloads.wordpress.org/plugin/plugin-check.2.1.0.zip \
+            --output "$RUNNER_TEMP/plugin-check-2.1.0.zip"
+          echo "6ff4bd2145f3befcf907df158cc466b1649dafed5686de8369907403c3013fc4  $RUNNER_TEMP/plugin-check-2.1.0.zip" | sha256sum --check
+          wp-env run cli wp plugin install https://downloads.wordpress.org/plugin/plugin-check.2.1.0.zip --activate
+          test "$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')" = 2.1.0
       - name: Run Plugin Check
-        uses: wordpress/plugin-check-action@v1
+        uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         with:
           build-dir: './wordpress/carmilla-bridge'
+          wp-version: '6.4.3'
+      - name: Fingerprint Plugin Check report
+        if: always()
+        run: |
+          test -s "$RUNNER_TEMP/plugin-check-results.txt"
+          sha256sum "$RUNNER_TEMP/plugin-check-results.txt" > "$RUNNER_TEMP/plugin-check-results.sha256"
+      - name: Upload Plugin Check fingerprint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-check-fingerprint
+          path: ${{ runner.temp }}/plugin-check-results.sha256
+          if-no-files-found: warn

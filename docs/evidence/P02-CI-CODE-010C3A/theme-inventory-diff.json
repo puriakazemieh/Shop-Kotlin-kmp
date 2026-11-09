@@ -1,0 +1,106 @@
+[
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/Carmilla_Kernel.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Adapter/WooCommerceAdapter.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Adapter/WooCompat.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Capabilities/CapabilityRegistry.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Catalog/DependencyResolver.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Catalog/EntitlementClaims.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Catalog/EntitlementSchema.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Entitlement/EntitlementResolver.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Health/HealthChecker.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Import/Carmilla_Importer.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Lifecycle/LifecycleManager.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Messaging/MessageSender.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Migration/SchemaRunner.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Payment/WalletService.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Payment/WC_Gateway_Carmilla_Wallet.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Privacy/PrivacyManager.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Rest/RestInfrastructure.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Settings/AdminSettingsPage.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Settings/MessageSettings.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/inc/Settings/SettingsService.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/tests/smoke-carmilla-core.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/tests/smoke-message-secret-key.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/packages/carmilla-core/tests/smoke-message-sender.php",
+    "SideIndicator": "=>"
+  },
+  {
+    "InputObject": "carmilla-theme/PARITY.md",
+    "SideIndicator": "<="
+  },
+  {
+    "InputObject": "carmilla-theme/preview-pages.html",
+    "SideIndicator": "<="
+  },
+  {
+    "InputObject": "carmilla-theme/preview.html",
+    "SideIndicator": "<="
+  }
+]
