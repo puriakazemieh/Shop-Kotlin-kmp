@@ -107,49 +107,32 @@ class CB_Plugin {
 	}
 
 	/**
-	 * Dispatch root-level /api/users/me and /api/addresses* to the matching REST
-	 * route via rest_do_request, then emit the JSON and stop. No-op for any other
-	 * URL, so normal WordPress routing is untouched.
+	 * Map legacy host-root aliases into WordPress's normal REST serving path.
+	 * This preserves cookie nonce authentication, headers, body parsing and
+	 * route validation for the same canonical endpoint.
 	 */
 	public function maybe_root_alias(): void {
 		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) : '';
 		$uri = '/' . ltrim( untrailingslashit( $uri ), '/' );
 		$root_paths = array( '/api/users/me', '/api/addresses', '/api/favorites', '/api/recently-viewed' );
-		$match = false;
+		$match = null;
 		foreach ( $root_paths as $rp ) {
 			if ( $uri === $rp || strpos( $uri, $rp . '/' ) === 0 ) {
-				$match = true;
+				$match = $rp;
 				break;
 			}
 		}
-		if ( ! $match ) {
+		if ( null === $match ) {
 			return;
 		}
 
 		// Telemetry and Deprecation for legacy root aliases
-		error_log( 'Carmilla Bridge Legacy Alias Usage: ' . $uri );
+		error_log( 'Carmilla Bridge Legacy Alias Usage: ' . $match );
 		header( 'X-Carmilla-Deprecated: root-alias' );
 		header( 'Warning: 299 - "Legacy root alias is deprecated and will be removed in the next client cycle"' );
 
-		$method  = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : 'GET';
-		$request = new WP_REST_Request( $method, '/' . CB_REST_NAMESPACE . $uri );
-		foreach ( (array) $_GET as $k => $v ) {
-			$request->set_param( sanitize_text_field( (string) $k ), $v );
-		}
-		$body = file_get_contents( 'php://input' );
-		if ( $body !== '' && $body !== false ) {
-			$request->set_body( $body );
-			$request->set_header( 'Content-Type', 'application/json' );
-		}
-
-		$response = rest_do_request( $request );
-		$server   = rest_get_server();
-		$data     = $server->response_to_data( $response, false );
-
-		status_header( $response->get_status() );
-		header( 'Content-Type: application/json; charset=utf-8' );
-		echo wp_json_encode( $data );
-		exit;
+		$GLOBALS['wp']->query_vars['rest_route'] = '/' . CB_REST_NAMESPACE . $uri;
+		rest_api_loaded();
 	}
 
 	public function register_routes(): void {

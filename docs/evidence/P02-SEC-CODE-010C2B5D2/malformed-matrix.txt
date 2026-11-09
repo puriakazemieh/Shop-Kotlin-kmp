@@ -1,0 +1,7 @@
+PASS array_page root=200/ canonical=200/
+PASS array_size root=200/ canonical=200/
+PASS nested_query root=200/ canonical=200/
+PASS invalid_nonce root=403/rest_cookie_invalid_nonce canonical=403/rest_cookie_invalid_nonce
+PASS invalid_bearer root=401/rest_forbidden canonical=401/rest_forbidden
+PASS form_content_type root=200/ canonical=200/
+Failures: 0; cleanup=1

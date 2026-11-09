@@ -13,4 +13,5 @@ Use D1 findings to preserve native REST authentication, permission and validatio
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-09)
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B5D2/verification.md`; installed WordPress HTTP parity and malformed-input probes passed.
