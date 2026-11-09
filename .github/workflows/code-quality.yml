@@ -80,22 +80,23 @@ jobs:
           "$RUNNER_TEMP/wpcs/vendor/bin/phpcs" \
             --standard=WordPress \
             --ignore='*/vendor/*,*/node_modules/*,*/tests/*' \
-            --report=summary \
-            --report-file="$RUNNER_TEMP/wpcs-summary.txt" \
+            --report=json \
+            --report-file="$RUNNER_TEMP/wpcs-report.json" \
             wordpress/carmilla-bridge
           status=$?
           set -e
-          echo "WPCS exit: $status"
-          if [ -f "$RUNNER_TEMP/wpcs-summary.txt" ]; then
-            sed -n '1,60p' "$RUNNER_TEMP/wpcs-summary.txt"
-          fi
-          exit "$status"
+          echo "WPCS scan exit: $status"
+          test -s "$RUNNER_TEMP/wpcs-report.json"
+          python3 tools/code-quality/check_wpcs_baseline.py \
+            --report "$RUNNER_TEMP/wpcs-report.json" \
+            --baseline tools/code-quality/wpcs-style-baseline.json \
+            --mode strict
       - name: Upload WPCS report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: wpcs-report
-          path: ${{ runner.temp }}/wpcs-summary.txt
+          path: ${{ runner.temp }}/wpcs-report.json
           if-no-files-found: warn
 
   theme-check:

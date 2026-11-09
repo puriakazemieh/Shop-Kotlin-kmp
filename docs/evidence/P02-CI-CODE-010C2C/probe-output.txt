@@ -1,0 +1,6 @@
+PASS existing_style_baseline_clean
+PASS security_db_remains_blocking
+PASS synthetic_new_style_fails
+Style current=5425 baseline=5425 new=0 resolved=0; Security/DB unresolved=168; mode=style
+Style current=5425 baseline=5425 new=0 resolved=0; Security/DB unresolved=168; mode=strict
+Style current=5426 baseline=5425 new=1 resolved=0; Security/DB unresolved=168; mode=style

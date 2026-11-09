@@ -13,4 +13,5 @@ Build an exact-finding baseline for pre-existing nonsecurity WPCS style debt, pi
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-09); exact style baseline implemented and clean/new-violation behavior verified. Strict Security/DB gate remains red as documented.
+- Evidence: `docs/evidence/P02-CI-CODE-010C2C/verification.md`.
