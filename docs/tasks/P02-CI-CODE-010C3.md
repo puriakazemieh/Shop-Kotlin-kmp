@@ -1,8 +1,8 @@
 # P02-CI-CODE-010C3 — Plugin and Theme Check bounded baselines
 
-- Status: TODO (decomposed; C3A first READY)
+- Status: TODO (decomposed; C3A done, C3A1 first READY)
 - Phase/Area/Type: P02 / CI / CODE
-- Priority/Risk/Size: P1 / HIGH / L (real 3,381-finding Plugin Check plus Theme Check; decomposed into ordered M-or-smaller C3A–C3E)
+- Priority/Risk/Size: P1 / HIGH / L (real 3,381-finding Plugin Check plus Theme Check; decomposed into ordered M-or-smaller C3A–C3E with package correction C3A1)
 - Owner: AI; completion authority: BOTH for CI evidence
 - Depends on: P02-CI-CODE-010C3E
 - Blocks: P02-CI-CODE-010C4
@@ -23,4 +23,4 @@ Record approved pre-existing Plugin Check and Theme Check debt with exact fixed 
 - Manual tester/date/result:
 - Evidence paths:
 - Remaining risks/blockers:
-- Final status: TODO (waits for ordered C3A → C3B1 → C3B2 → C3B3 → C3C → C3D → C3E and any genuine fix cards).
+- Final status: TODO (waits for ordered C3A1 → C3B1 → C3B2 → C3B3 → C3C → C3D → C3E and any genuine fix cards; C3A completed with pinned scanner reports and package mismatch evidence).
