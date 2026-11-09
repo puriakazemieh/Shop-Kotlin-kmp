@@ -13,4 +13,5 @@ Run the pinned combined code-quality workflow on an isolated PR. Capture positiv
 
 ## Completion record
 
-- Final status: TODO
+- Final status: BLOCKED (2026-11-09); strict WPCS gate has 168 unresolved Security/DB findings, so a positive combined PR run cannot be proved without fixing them. No PR was opened or positive result claimed.
+- Evidence: `docs/evidence/P02-CI-CODE-010C2D/blocker.md`.
