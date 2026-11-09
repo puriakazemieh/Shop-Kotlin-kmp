@@ -13,4 +13,5 @@ Characterize root `/api/users/me`, `/api/addresses*`, `/api/favorites*`, `/api/r
 
 ## Completion record
 
-- Final status: TODO; decomposed on 2026-11-03 into ordered D1–D3 cards before source edits. Aggregate their evidence before completion.
+- Final status: DONE (2026-11-09); decomposed into D1–D3, then verified with aggregate HTTP and tenant-token evidence.
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B5D/verification.md`, plus D1–D3 evidence directories.

@@ -1,0 +1,5 @@
+PASS root_get_foreign_issuer_denied
+PASS root_post_foreign_issuer_denied
+PASS canonical_get_foreign_issuer_denied
+PASS canonical_post_foreign_issuer_denied
+Failures: 0; cleanup=1
