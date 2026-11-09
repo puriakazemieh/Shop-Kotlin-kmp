@@ -90,7 +90,8 @@ jobs:
           python3 tools/code-quality/check_wpcs_baseline.py \
             --report "$RUNNER_TEMP/wpcs-report.json" \
             --baseline tools/code-quality/wpcs-style-baseline.json \
-            --mode strict
+            --security-ledger tools/code-quality/wpcs-security-dispositions.json \
+            --mode phase
       - name: Upload WPCS report
         if: always()
         uses: actions/upload-artifact@v4

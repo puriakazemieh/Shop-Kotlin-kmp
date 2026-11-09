@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A3 — Keep cancellation and slot lock consistent
 
-- Status: AWAITING_MANUAL_QA
+- Status: CODE_COMPLETE (HTTP acceptance transferred to P14-CLINIC-QA-025B)
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -17,4 +17,6 @@
 - Verification: installed synthetic WordPress six checks PASS; controller and test PHP lint PASS; no synthetic SQL residue
 - Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A3/verification.md` and `tests/smoke-booking-cancel-atomic-real-wp.php`
 - Manual QA: public booking/cancellation route is currently disabled; authenticated HTTP cancellation and injected failure remain for owner-enabled disposable build
-- Final status: AWAITING_MANUAL_QA
+- Prior status: AWAITING_MANUAL_QA
+- Reclassified 2026-11-09: implementation and installed-WordPress checks remain as recorded; authenticated HTTP cancellation/fault QA is owned by `P14-CLINIC-QA-025B` before the P14 clinic UAT/gate. This card is CODE_COMPLETE, not a claim that HTTP acceptance passed.
+- Current status: CODE_COMPLETE.

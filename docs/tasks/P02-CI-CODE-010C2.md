@@ -10,7 +10,7 @@
 
 ## Scope and acceptance
 
-Using fixed tool versions and the approved C1 classification, record detekt and WPCS existing findings in bounded baselines, then make unseen issues fail CI without blanket count thresholds. Prove actual CI execution and reports. Allowed: `.github/workflows/code-quality.yml`, `tools/**`, `docs/**`. No product source edit or waiving security issues. Evidence: `docs/evidence/P02-CI-CODE-010C2/`. Human QA N/A.
+Using fixed tool versions and the approved C1 classification, record detekt and WPCS existing findings in bounded baselines, then make unseen issues fail CI without blanket count thresholds. Prove actual CI execution and reports. Allowed: `.github/workflows/code-quality.yml`, `tools/**`, `docs/**`. No product source edit. The owner-approved 2026-11-09 exact Security/DB phase ledger requires source-backed justification or a future-phase task for every current finding; any unreviewed issue fails. This transfers follow-up work and is not a pass of its later gate. Evidence: `docs/evidence/P02-CI-CODE-010C2/`. Human QA N/A.
 
 ## Completion record
 

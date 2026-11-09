@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare an exact, version-pinned WPCS style baseline with a PHPCS JSON report."""
+"""Compare exact WPCS style and reviewed Security/DB findings with a PHPCS report."""
 
 import argparse
 import collections
@@ -50,12 +50,38 @@ def from_records(records):
     return result
 
 
+def reviewed_security_records(ledger, repository_root):
+    if (ledger.get("schema"), ledger.get("standard"), ledger.get("wpcsVersion"), ledger.get("phpcsVersion")) != (1, "WordPress", "3.4.1", "3.13.6"):
+        raise ValueError("Unsupported Security/DB review metadata")
+    reviewed = collections.Counter()
+    for row in ledger["securityDbFindings"]:
+        key = tuple(row[field] for field in ("path", "line", "column", "source", "message", "type"))
+        if not key[3].startswith(("WordPress.Security.", "WordPress.DB.")):
+            raise ValueError("Non-Security/DB finding in review ledger")
+        if row.get("count") != 1 or reviewed[key]:
+            raise ValueError("Duplicate or invalid Security/DB review entry")
+        if row.get("disposition") not in ("context_justified", "deferred") or len(row.get("reason", "")) < 30:
+            raise ValueError("Security/DB entry lacks a reviewed disposition and reason")
+        evidence = row.get("evidence", "")
+        if not evidence.startswith("docs/evidence/") or not (repository_root / evidence).is_file():
+            raise ValueError(f"Security/DB entry has missing evidence: {evidence}")
+        target = row.get("targetTask")
+        if row["disposition"] == "deferred":
+            if not isinstance(target, str) or not target.startswith(("P03-", "P04-", "P05-", "P06-", "P07-", "P08-", "P09-", "P10-", "P11-", "P12-", "P13-", "P14-", "P15-", "P16-", "P17-", "P18-")) or not (repository_root / "docs/tasks" / f"{target}.md").is_file():
+                raise ValueError(f"Deferred Security/DB entry lacks a future-phase task: {target}")
+        elif target is not None:
+            raise ValueError("Context-justified Security/DB entry must not have a target task")
+        reviewed[key] = 1
+    return reviewed
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", type=pathlib.Path, required=True)
     parser.add_argument("--baseline", type=pathlib.Path, required=True)
     parser.add_argument("--write-baseline", action="store_true")
-    parser.add_argument("--mode", choices=("style", "strict"), default="strict")
+    parser.add_argument("--mode", choices=("style", "strict", "phase"), default="strict")
+    parser.add_argument("--security-ledger", type=pathlib.Path, help="Exact reviewed Security/DB dispositions for phase mode")
     parser.add_argument("--revision", help="Git source revision when creating a baseline")
     args = parser.parse_args()
 
@@ -85,16 +111,31 @@ def main():
     known = from_records(baseline["styleFindings"])
     added = style - known
     removed = known - style
+    unreviewed = collections.Counter()
+    resolved_security = collections.Counter()
+    if args.mode == "phase":
+        if not args.security_ledger:
+            parser.error("--security-ledger is required in phase mode")
+        repository_root = pathlib.Path(__file__).resolve().parents[2]
+        ledger = json.loads(args.security_ledger.read_text(encoding="utf-8"))
+        reviewed = reviewed_security_records(ledger, repository_root)
+        unreviewed = security_db - reviewed
+        resolved_security = reviewed - security_db
     print(
         f"Style current={sum(style.values())} baseline={sum(known.values())} "
         f"new={sum(added.values())} resolved={sum(removed.values())}; "
-        f"Security/DB unresolved={sum(security_db.values())}; mode={args.mode}"
+        f"Security/DB current={sum(security_db.values())} unreviewed={sum(unreviewed.values())} "
+        f"resolved={sum(resolved_security.values())}; mode={args.mode}"
     )
     for finding, count in sorted(added.items())[:20]:
         print(f"NEW {count}x {finding[0]}:{finding[1]}:{finding[2]} {finding[3]} {finding[4]}")
     if len(added) > 20:
         print(f"... {len(added) - 20} additional distinct new style findings")
-    if added or (args.mode == "strict" and security_db):
+    for finding, count in sorted(unreviewed.items())[:20]:
+        print(f"UNREVIEWED {count}x {finding[0]}:{finding[1]}:{finding[2]} {finding[3]} {finding[4]}")
+    if len(unreviewed) > 20:
+        print(f"... {len(unreviewed) - 20} additional distinct unreviewed Security/DB findings")
+    if added or unreviewed or (args.mode == "strict" and security_db):
         return 1
     return 0
 

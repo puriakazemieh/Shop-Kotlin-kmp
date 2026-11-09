@@ -53,7 +53,7 @@ P14-QA-MANUAL-026
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P14-QA-AUTO-025
+- Depends on: P14-CLINIC-QA-025B
 - Blocks: P14-SECURITY-SEC-027
 - Requirement source: Master checklist row P14-QA-MANUAL-026 و Source audit بخش QA
 - مرجع تغییر دامنه: [تعریف محصولات مستقل](../INDEPENDENT_PRODUCTS_SPEC_FA.md) و [ADR-006](../architecture/adr/ADR-006-INDEPENDENT-PRODUCTS-AND-ENTITLEMENTS.md)؛ برای همین قابلیت و کار باقی‌مانده.
@@ -70,7 +70,7 @@ booking-only بدون psych کار کند؛ لینک مستقیم فیچر غا�
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P14-QA-AUTO-025
+- Dependencyها: P14-CLINIC-QA-025B (پس از P14-QA-AUTO-025 و آزمون HTTP دو کارت 025A/025B)
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories

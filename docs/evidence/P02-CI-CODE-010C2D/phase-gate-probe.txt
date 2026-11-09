@@ -1,0 +1,11 @@
+PASS existing_style_baseline_clean
+PASS security_db_remains_blocking
+PASS reviewed_phase_passes
+PASS synthetic_new_style_fails
+PASS synthetic_new_security_fails
+PASS missing_review_evidence_fails
+Style current=5425 baseline=5425 new=0 resolved=0; Security/DB current=168 unreviewed=0 resolved=0; mode=style
+Style current=5425 baseline=5425 new=0 resolved=0; Security/DB current=168 unreviewed=0 resolved=0; mode=strict
+Style current=5425 baseline=5425 new=0 resolved=0; Security/DB current=168 unreviewed=0 resolved=0; mode=phase
+Style current=5426 baseline=5425 new=1 resolved=0; Security/DB current=168 unreviewed=0 resolved=0; mode=phase
+Style current=5425 baseline=5425 new=0 resolved=0; Security/DB current=169 unreviewed=1 resolved=0; mode=phase

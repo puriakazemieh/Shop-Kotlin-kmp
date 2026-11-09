@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A1 — Fail closed on booking availability reads
 
-- Status: AWAITING_MANUAL_QA
+- Status: CODE_COMPLETE (HTTP acceptance transferred to P14-CLINIC-QA-025A)
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -18,4 +18,6 @@
 - Automated verification: PHP 8.1 lint passed for both PHP files; disposable installed-WordPress smoke passed 8/8 checks, exit 0
 - Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A1/verification.md`
 - Manual QA: pending owner confirmation of the three REST responses on a disposable WordPress installation
-- Final status: AWAITING_MANUAL_QA
+- Prior status: AWAITING_MANUAL_QA
+- Reclassified 2026-11-09: implementation and installed-WordPress checks remain as recorded; HTTP availability QA is owned by `P14-CLINIC-QA-025A` before the P14 clinic UAT/gate. This card is CODE_COMPLETE, not a claim that HTTP acceptance passed.
+- Current status: CODE_COMPLETE.
