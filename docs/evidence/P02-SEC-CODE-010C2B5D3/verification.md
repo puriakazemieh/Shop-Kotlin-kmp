@@ -1,0 +1,5 @@
+# Root alias user isolation — 2026-11-09
+
+Environment: disposable `test-env-wordpress-test-1` with Carmilla Bridge, two synthetic customer accounts and signed access JWTs. Command: `docker exec -e CARMILLA_LOGIN_DISPOSABLE=yes test-env-wordpress-test-1 php /var/www/html/wp-content/plugins/carmilla-bridge/tests/probe-root-alias-isolation-http-real-wp.php`.
+
+Eighteen HTTP checks passed (`isolation-output.txt`), zero failures. For both root aliases and canonical REST paths, each user saw only their own address list and own favorite/recent counts. User A's read and PATCH of B's address ID returned 404 without changing either account's address meta. A's favorite/recent writes changed only A's meta. Anonymous favorite writes and B's cookie/no-nonce recent write returned 401 and left both accounts' meta unchanged. An unrecognized root path took normal WordPress routing (301 canonical redirect in this fixture, with no alias deprecation header). Both synthetic users and session were removed; PHP lint passed. No owner manual QA is required for this task.

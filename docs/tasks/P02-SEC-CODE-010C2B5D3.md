@@ -13,4 +13,5 @@ In disposable WordPress, verify two synthetic users cannot read or change each o
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-09)
+- Evidence: `docs/evidence/P02-SEC-CODE-010C2B5D3/verification.md`; two-user installed WordPress HTTP isolation passed.
