@@ -21,3 +21,5 @@ docker run --rm -v "${PWD}:/app" -w /app python:3.12-alpine python tools/code-qu
 ```
 
 Results: exact style 5,425/5,425, 0 new; Security/DB 168/168 reviewed, 0 new; synthetic new style rejected (exit 1), synthetic new Security rejected (exit 1), missing evidence rejected as invalid input (exit 2), raw strict gate remains red (exit 1). This removes the local WPCS prerequisite for `P02-CI-CODE-010C2D`, which is now READY for actual isolated PR proof. Do not mark D or parent C2 DONE until remote positive/negative workflow jobs and uploaded reports are captured.
+
+Isolated PR: https://github.com/puriakazemieh/Shop-Kotlin-kmp/pull/33 from `codex/p02-ci-phase-triage` to `develop`. The initial `opened` event on commit `cf87d1aa` had no associated workflow run as of 10:29 UTC; a follow-up PR synchronize event is required to test whether Actions will schedule the workflow.
