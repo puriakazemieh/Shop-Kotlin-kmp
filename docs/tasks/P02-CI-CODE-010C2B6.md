@@ -13,4 +13,5 @@ Classify every pinned WPCS Security/DB finding in migration export, overlay expo
 
 ## Completion record
 
-- Final status: TODO
+- Final status: DONE (2026-11-09)
+- Evidence: `docs/evidence/P02-CI-CODE-010C2B6/triage.md`; 13 pinned findings classified and two future P07 tasks queued.

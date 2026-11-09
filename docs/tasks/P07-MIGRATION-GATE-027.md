@@ -53,7 +53,7 @@ P07-MIGRATION-GATE-027
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P07-SEED-GATE-026
+- Depends on: P07-SEED-GATE-026, P07-MIGRATION-PERF-REVIEW-029
 - Blocks: —
 - Requirement source: Master checklist row P07-MIGRATION-GATE-027 و Source audit بخش MIGRATION
 
@@ -69,7 +69,7 @@ consent/export/delta/encryption/UAT و economics pass
 
 ## Preconditions
 - Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P07-SEED-GATE-026
+- Dependencyها: P07-SEED-GATE-026, P07-MIGRATION-PERF-REVIEW-029
 - git status و baseline پیش از تغییر ثبت شوند.
 
 ## Allowed files/directories
