@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C2 — Kotlin and WPCS bounded baselines
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / L (decomposed into ordered C2A, C2B1–B6, C2C, C2D)
 - Owner: AI; completion authority: BOTH for CI evidence
@@ -14,11 +14,11 @@ Using fixed tool versions and the approved C1 classification, record detekt and 
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO (2026-11-01: size gate found 5,297 WPCS findings across 65 files, including 135 Security/DB findings across 27 files; split before implementation)
+- Started at: 2026-11-01 (decomposed into ordered C2A, C2B1–B6, C2C and C2D)
+- Completed at: 2026-11-09
+- Changed files in this closeout: this card, `docs/tasks.md`, `docs/evidence/P02-CI-CODE-010C2/verification.md`; baseline/workflow changes were committed under the child tasks.
+- Commands and exit codes: Docker WPCS phase probe 0 with 6/6 assertions; actual PR detekt/WPCS positive jobs success, synthetic WPCS negative job failure as intended, final clean-head detekt/WPCS jobs success. Details, versions and artifact IDs in evidence.
+- Manual tester/date/result: N/A; complete CI jobs and reports were inspected by the agent.
+- Evidence paths: `docs/evidence/P02-CI-CODE-010C2/verification.md`, plus child evidence C2A/C2C/C2D cited there.
+- Remaining risks/blockers: whole workflow remains red on Theme Check and Plugin Check; C3 is next. Later-phase Security/DB and clinic HTTP follow-ups retain their own gates. No claim of full P02 quality or phase PASS.
+- Final status: DONE for bounded detekt/WPCS baselines and their positive/negative CI proof.
