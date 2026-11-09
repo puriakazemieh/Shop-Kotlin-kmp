@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3A — Pin scanners and capture delivery-shaped reports
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DISC+CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Pin the Plugin Check action and scanner to immutable versions and retain the The
 
 ## Completion record
 
-- Final status: READY; no implementation started in the decomposition turn.
+- Final status: DONE on 2026-11-09. The scanner action, Plugin Check ZIP and WP/Theme Check versions were pinned and verified in isolated PR run `42649930350`; complete reports and matching SHA-256 fingerprints are in `docs/evidence/P02-CI-CODE-010C3A/`. Four reproducible ZIP inventories proved both package-workflow artifacts omit required core and scanner staging differs from delivery. No shipped-file baseline or overall quality PASS was claimed; `P02-CI-CODE-010C3A1` owns correction before finding triage.
