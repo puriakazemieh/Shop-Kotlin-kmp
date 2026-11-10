@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2F — Triage auth/session atomic DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in web session adapter,
 
 ## Completion record
 
-- Final status: READY for independent read-only DB review; wallet checkout QA remains open.
+- Final status: DONE on 2026-11-10. All 16 pinned shipped-file DB findings have exact identity, source risk, WPCS comparison, and disposition in `docs/evidence/P02-CI-CODE-010C3B2F/`. Builder verified 16/16. Wallet checkout QA remains a separate open phase gate.

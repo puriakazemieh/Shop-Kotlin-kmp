@@ -1,0 +1,328 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2F",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 16,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php",
+      "shippedZipPath": "includes/class-cb-web-session-wp-adapter.php",
+      "line": 54,
+      "column": 27,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "SELECT DATABASE() checks the active WordPress connection against trusted DB_NAME before separate mysqli connections are allowed; a cached value would defeat this fail-closed check.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php:54",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php",
+      "wpcs": {
+        "column": 27,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php",
+      "shippedZipPath": "includes/class-cb-web-session-wp-adapter.php",
+      "line": 54,
+      "column": 27,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "SELECT DATABASE() checks the active WordPress connection against trusted DB_NAME before separate mysqli connections are allowed; a cached value would defeat this fail-closed check.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php:54",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php",
+      "wpcs": {
+        "column": 27,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php",
+      "shippedZipPath": "includes/class-cb-web-session-wp-adapter.php",
+      "line": 55,
+      "column": 27,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "SELECT CONNECTION_ID() identifies the live WordPress connection for same-primary validation; a cached value would be unsafe.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php:55",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php",
+      "wpcs": {
+        "column": 27,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php",
+      "shippedZipPath": "includes/class-cb-web-session-wp-adapter.php",
+      "line": 55,
+      "column": 27,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "SELECT CONNECTION_ID() identifies the live WordPress connection for same-primary validation; a cached value would be unsafe.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php:55",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php",
+      "wpcs": {
+        "column": 27,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php",
+      "shippedZipPath": "includes/class-cb-web-session-wp-adapter.php",
+      "line": 135,
+      "column": 10,
+      "code": "WordPress.DB.RestrictedFunctions.mysql_mysqli_init",
+      "message": "Accessing the database directly should be avoided. Please use the $wpdb object and associated functions instead. Found: mysqli_init.",
+      "severity": "ERROR",
+      "sqlOriginAndRisk": "mysqli_init creates separate local connections required for atomic browser-session and password-state checks; config, topology, identity, and errors are guarded and fail closed.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-wp-adapter.php:135",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-session-wp-adapter.php",
+      "wpcs": {
+        "column": 19,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-login.php",
+      "shippedZipPath": "includes/class-cb-web-auth-login.php",
+      "line": 96,
+      "column": 24,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared login/email/mobile lookup binds all request-derived identifiers; table names come from WordPress. Live read detects ambiguous matches and last_error is checked before password authentication.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-auth-login.php:96",
+      "testPath": null,
+      "wpcs": {
+        "column": 24,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-login.php",
+      "shippedZipPath": "includes/class-cb-web-auth-login.php",
+      "line": 96,
+      "column": 24,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared login/email/mobile lookup binds all request-derived identifiers; table names come from WordPress. Live read detects ambiguous matches and last_error is checked before password authentication.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-auth-login.php:96",
+      "testPath": null,
+      "wpcs": {
+        "column": 24,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-login.php",
+      "shippedZipPath": "includes/class-cb-web-auth-login.php",
+      "line": 96,
+      "column": 31,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found $sql",
+      "severity": "ERROR",
+      "sqlOriginAndRisk": "Prepared login/email/mobile lookup binds all request-derived identifiers; table names come from WordPress. Live read detects ambiguous matches and last_error is checked before password authentication.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-auth-login.php:96",
+      "testPath": null,
+      "wpcs": {
+        "column": 40,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "shippedZipPath": "includes/class-cb-web-auth-controller.php",
+      "line": 23,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Fixed-prefix schema-version marker read gates browser-auth controller construction; last_error and exact version are checked, so stale cache would be inappropriate.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php:23",
+      "testPath": null,
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "shippedZipPath": "includes/class-cb-web-auth-controller.php",
+      "line": 23,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Fixed-prefix schema-version marker read gates browser-auth controller construction; last_error and exact version are checked, so stale cache would be inappropriate.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php:23",
+      "testPath": null,
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-otp-atomic-consumer.php",
+      "shippedZipPath": "includes/class-cb-otp-atomic-consumer.php",
+      "line": 25,
+      "column": 17,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared transient-hash read uses authoritative options table after external cache is rejected; current hash must match before conditional one-row deletion.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-otp-atomic-consumer.php:25",
+      "testPath": null,
+      "wpcs": {
+        "column": 17,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-otp-atomic-consumer.php",
+      "shippedZipPath": "includes/class-cb-otp-atomic-consumer.php",
+      "line": 25,
+      "column": 17,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared transient-hash read uses authoritative options table after external cache is rejected; current hash must match before conditional one-row deletion.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-otp-atomic-consumer.php:25",
+      "testPath": null,
+      "wpcs": {
+        "column": 17,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-otp-atomic-consumer.php",
+      "shippedZipPath": "includes/class-cb-otp-atomic-consumer.php",
+      "line": 33,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared conditional DELETE binds expiry name, OTP name, and checked hash; BINARY value comparison and database expiry enforce one-time consumption.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-otp-atomic-consumer.php:33",
+      "testPath": null,
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-reset-atomic-consumer.php",
+      "shippedZipPath": "includes/class-cb-reset-atomic-consumer.php",
+      "line": 16,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared transient mapping read uses authoritative options table after external cache is rejected; expected login must match before conditional delete.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-reset-atomic-consumer.php:16",
+      "testPath": null,
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-reset-atomic-consumer.php",
+      "shippedZipPath": "includes/class-cb-reset-atomic-consumer.php",
+      "line": 16,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared transient mapping read uses authoritative options table after external cache is rejected; expected login must match before conditional delete.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-reset-atomic-consumer.php:16",
+      "testPath": null,
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-reset-atomic-consumer.php",
+      "shippedZipPath": "includes/class-cb-reset-atomic-consumer.php",
+      "line": 21,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Prepared conditional DELETE binds expiry name, mapping name, and checked login; BINARY value comparison and database expiry enforce one-time consumption.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2F",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-reset-atomic-consumer.php:21",
+      "testPath": null,
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; columns differ between scanners where shown"
+      }
+    }
+  ]
+}

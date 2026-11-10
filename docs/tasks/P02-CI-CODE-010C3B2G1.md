@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2G1 — Triage admin content/catalog DB findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
