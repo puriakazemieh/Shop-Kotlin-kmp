@@ -1,0 +1,7 @@
+# P02-CI-CODE-010C3B2G1 — admin/catalog DB triage
+
+Date: 2026-11-10. The pinned shipped-file Plugin Check report uncompressed SHA-256 is `50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd`. `node docs/evidence/P02-CI-CODE-010C3B2G1/build-ledger.cjs` reproduced 16 exact findings, verified one-to-one path+line+code matches and prior dispositions against WPCS, and confirmed every deferred target card exists. Full identity, messages, source risks, and ownership appear in `ledger.json`.
+
+Thirteen performance/data findings remain owned by existing P04 work: seven admin meta-key user scans by `P04-WP-ADMIN-DATA-052`, three catalog price filtering/sorting findings by `P04-WP-CATALOG-CODE-055`, one unbounded banner-sort finding by `P04-WP-CONTENT-PERF-CODE-056`, and two active-campaign meta filters by `P04-WP-CONTENT-PERF-CODE-057`. The catalog price-range parameter was measured as ignored by the WooCommerce data store in the earlier P02 baseline; it must not be described as a working filter. Three findings at the therapist-slots booking read are context-justified: the table identifier comes from the bridge helper, the therapist ID is bound by `wpdb->prepare`, a live read is required, and SQL error returns 503. There is no product edit or blanket waiver.
+
+This source-backed triage does not establish P04 performance or response correctness. Those cards retain their measured acceptance gates.

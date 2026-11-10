@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2G2 — Triage academy/blog/admin clinic DB findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI

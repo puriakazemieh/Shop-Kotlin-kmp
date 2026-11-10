@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2G1",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 16,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 302,
+      "column": 36,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:302",
+      "testPath": null,
+      "wpcs": {
+        "column": 36,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 465,
+      "column": 21,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Therapist booking read uses a trusted bookings-table identifier and wpdb->prepare for numeric ID; live availability must not be cached and last_error returns 503.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:465",
+      "testPath": null,
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 465,
+      "column": 21,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Therapist booking read uses a trusted bookings-table identifier and wpdb->prepare for numeric ID; live availability must not be cached and last_error returns 503.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:465",
+      "testPath": null,
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 465,
+      "column": 74,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found cb_bookings_table",
+      "severity": "ERROR",
+      "sqlOriginAndRisk": "Therapist booking read uses a trusted bookings-table identifier and wpdb->prepare for numeric ID; live availability must not be cached and last_error returns 503.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:465",
+      "testPath": null,
+      "wpcs": {
+        "column": 80,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 616,
+      "column": 36,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:616",
+      "testPath": null,
+      "wpcs": {
+        "column": 36,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 747,
+      "column": 36,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:747",
+      "testPath": null,
+      "wpcs": {
+        "column": 36,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 764,
+      "column": 41,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:764",
+      "testPath": null,
+      "wpcs": {
+        "column": 41,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-content-controller.php",
+      "line": 863,
+      "column": 39,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:863",
+      "testPath": null,
+      "wpcs": {
+        "column": 39,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-controller.php",
+      "line": 443,
+      "column": 36,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-controller.php:443",
+      "testPath": null,
+      "wpcs": {
+        "column": 36,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-controller.php",
+      "line": 459,
+      "column": 37,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Admin get_users meta-key scan is capped at 500 users but may miss later matching users and update/list logic can be costly; data model and pagination belong to P04.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-ADMIN-DATA-052",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-controller.php:459",
+      "testPath": null,
+      "wpcs": {
+        "column": 37,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-ADMIN-DATA-052",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php",
+      "shippedZipPath": "includes/class-cb-catalog-controller.php",
+      "line": 155,
+      "column": 19,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_query",
+      "message": "Detected usage of meta_query, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "The measured WooCommerce environment ignores this product meta_query argument, so the advertised price range does not filter results; P04 owns a supported query path and performance.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-CATALOG-CODE-055",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php:155",
+      "testPath": null,
+      "wpcs": {
+        "column": 19,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CATALOG-CODE-055",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php",
+      "shippedZipPath": "includes/class-cb-catalog-controller.php",
+      "line": 179,
+      "column": 23,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "WooCommerce numeric price sort uses postmeta; page size bounds output but not the database sort.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-CATALOG-CODE-055",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php:179",
+      "testPath": null,
+      "wpcs": {
+        "column": 23,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CATALOG-CODE-055",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php",
+      "shippedZipPath": "includes/class-cb-catalog-controller.php",
+      "line": 184,
+      "column": 23,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "WooCommerce numeric price sort uses postmeta; page size bounds output but not the database sort.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-CATALOG-CODE-055",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php:184",
+      "testPath": null,
+      "wpcs": {
+        "column": 23,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CATALOG-CODE-055",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php",
+      "shippedZipPath": "includes/class-cb-catalog-controller.php",
+      "line": 491,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Public active-campaign lookup filters postmeta without a dedicated indexed projection.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-CONTENT-PERF-CODE-057",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php:491",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CONTENT-PERF-CODE-057",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php",
+      "shippedZipPath": "includes/class-cb-catalog-controller.php",
+      "line": 492,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Public active-campaign lookup filters postmeta without a dedicated indexed projection.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-CONTENT-PERF-CODE-057",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php:492",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CONTENT-PERF-CODE-057",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php",
+      "shippedZipPath": "includes/class-cb-catalog-controller.php",
+      "line": 527,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Unbounded banner list sorted by numeric postmeta may scan/sort all banners.",
+      "disposition": "deferred_to_p04",
+      "fixTaskId": "P04-WP-CONTENT-PERF-CODE-056",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G1",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-catalog-controller.php:527",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CONTENT-PERF-CODE-056",
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}
