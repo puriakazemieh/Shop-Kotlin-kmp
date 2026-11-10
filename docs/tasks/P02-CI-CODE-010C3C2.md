@@ -13,4 +13,4 @@ Run C3C1's exact checker on the ZIP-shaped Plugin Check report in `.github/workf
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE. Pinned action plus independent exact-baseline gate, full report/diagnostic artifacts, local actionlint and checker scenarios, actual disposable WordPress scan, and relevant prior CI run recorded in `docs/evidence/P02-CI-CODE-010C3C2/summary.md`. Current package correctly fails the gate; the changed workflow's remote PR run belongs to C3C3.

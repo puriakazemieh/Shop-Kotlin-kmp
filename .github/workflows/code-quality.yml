@@ -195,18 +195,39 @@ jobs:
           test "$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')" = 2.1.0
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        continue-on-error: true
         with:
           build-dir: ${{ runner.temp }}/plugin-scan/carmilla-bridge
           wp-version: '6.4.3'
+      - name: Enforce exact Plugin Check baseline
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            if ! test -s "$RUNNER_TEMP/plugin-check-results.txt"; then
+              echo 'Plugin Check report is missing or empty.' >&2
+              exit 1
+            fi
+            scanner_version="$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')"
+            wp_version="$(wp-env run cli wp core version | tail -n 1 | tr -d '\r')"
+            node tools/code-quality/check_plugin_check_baseline.cjs \
+              --report "$RUNNER_TEMP/plugin-check-results.txt" \
+              --scanner-version "$scanner_version" \
+              --action-ref 10857da14b6c2246d15402b3e69f777edcf8c12e \
+              --wp-version "$wp_version"
+          } 2>&1 | tee "$RUNNER_TEMP/plugin-check-baseline.txt"
       - name: Fingerprint Plugin Check report
         if: always()
         run: |
           test -s "$RUNNER_TEMP/plugin-check-results.txt"
           sha256sum "$RUNNER_TEMP/plugin-check-results.txt" > "$RUNNER_TEMP/plugin-check-results.sha256"
-      - name: Upload Plugin Check fingerprint
+      - name: Upload full Plugin Check report and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-check-fingerprint
-          path: ${{ runner.temp }}/plugin-check-results.sha256
-          if-no-files-found: warn
+          name: plugin-check-gate
+          path: |
+            ${{ runner.temp }}/plugin-check-results.txt
+            ${{ runner.temp }}/plugin-check-results.sha256
+            ${{ runner.temp }}/plugin-check-baseline.txt
+          if-no-files-found: error
