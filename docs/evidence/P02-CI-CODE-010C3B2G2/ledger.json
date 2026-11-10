@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2G2",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 6,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-academy-controller.php",
+      "shippedZipPath": "includes/class-cb-academy-controller.php",
+      "line": 721,
+      "column": 92,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Lesson-question commentmeta key/value filters and unbounded oldest-first list can scan and materialize large comment sets.",
+      "disposition": "deferred_to_owner_phase",
+      "fixTaskId": "P13-LMS-PERF-CODE-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-academy-controller.php:721",
+      "testPath": null,
+      "wpcs": {
+        "column": 92,
+        "disposition": "deferred",
+        "targetTask": "P13-LMS-PERF-CODE-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-academy-controller.php",
+      "shippedZipPath": "includes/class-cb-academy-controller.php",
+      "line": 721,
+      "column": 122,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Lesson-question commentmeta key/value filters and unbounded oldest-first list can scan and materialize large comment sets.",
+      "disposition": "deferred_to_owner_phase",
+      "fixTaskId": "P13-LMS-PERF-CODE-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-academy-controller.php:721",
+      "testPath": null,
+      "wpcs": {
+        "column": 122,
+        "disposition": "deferred",
+        "targetTask": "P13-LMS-PERF-CODE-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-blog-controller.php",
+      "shippedZipPath": "includes/class-cb-blog-controller.php",
+      "line": 146,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Public featured-post meta key/value filters may scan postmeta; response size is capped but query selectivity needs measurement.",
+      "disposition": "deferred_to_owner_phase",
+      "fixTaskId": "P04-WP-CONTENT-PERF-CODE-057",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-blog-controller.php:146",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CONTENT-PERF-CODE-057",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-blog-controller.php",
+      "shippedZipPath": "includes/class-cb-blog-controller.php",
+      "line": 147,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Public featured-post meta key/value filters may scan postmeta; response size is capped but query selectivity needs measurement.",
+      "disposition": "deferred_to_owner_phase",
+      "fixTaskId": "P04-WP-CONTENT-PERF-CODE-057",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-blog-controller.php:147",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P04-WP-CONTENT-PERF-CODE-057",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-clinic-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-clinic-controller.php",
+      "line": 176,
+      "column": 79,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Patient-message commentmeta key/value filters and unbounded date ordering can scan and materialize a growing conversation.",
+      "disposition": "deferred_to_owner_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034D",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-clinic-controller.php:176",
+      "testPath": null,
+      "wpcs": {
+        "column": 79,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034D",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-clinic-controller.php",
+      "shippedZipPath": "includes/class-cb-admin-clinic-controller.php",
+      "line": 176,
+      "column": 107,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Patient-message commentmeta key/value filters and unbounded date ordering can scan and materialize a growing conversation.",
+      "disposition": "deferred_to_owner_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034D",
+      "verificationTaskId": "P02-CI-CODE-010C3B2G2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-clinic-controller.php:176",
+      "testPath": null,
+      "wpcs": {
+        "column": 107,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034D",
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}
