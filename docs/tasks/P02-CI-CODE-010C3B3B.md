@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B3B — Triage i18n findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / MEDIUM / M
 - Owner: AI
