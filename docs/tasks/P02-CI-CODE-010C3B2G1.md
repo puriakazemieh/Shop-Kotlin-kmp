@@ -1,0 +1,16 @@
+# P02-CI-CODE-010C3B2G1 — Triage admin content/catalog DB findings
+
+- Status: TODO
+- Phase/Area/Type: P02 / CI / DB-REVIEW
+- Priority/Risk/Size: P1 / HIGH / M
+- Owner: AI
+- Depends on: P02-CI-CODE-010C3B2F
+- Blocks: P02-CI-CODE-010C3B2G2
+
+## Scope and acceptance
+
+Review all pinned shipped-file `WordPress.DB.*` findings in admin content, catalog and admin controllers (16 preliminary instances). Identify direct SQL, slow meta queries and cache consistency needs; record exact identity, source/risk, WPCS comparison, disposition and fix/test task. No product fix. Evidence: `docs/evidence/P02-CI-CODE-010C3B2G1/`. Allowed: read-only product source, `tools/code-quality/**`, `docs/**`.
+
+## Completion record
+
+- Final status: TODO.
