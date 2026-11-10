@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2 — Triage Plugin Check database findings
 
-- Status: READY (nine category ledgers reconciled; parent review pending)
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / L (135 shipped findings across 22 files; decomposed)
 - Owner: AI
@@ -13,4 +13,4 @@ Review every `WordPress.DB.*` finding in the pinned shipped-file Plugin Check re
 
 ## Completion record
 
-- Final status: READY after B2H proved exact 135/135 ledger coverage; parent review is still required. `docs/evidence/P02-CI-CODE-010C3B2/size-gate-20261110.md` records the original decomposition.
+- Final status: DONE on 2026-11-10 for classification and ownership. Nine source-backed ledgers and B2H reconciliation prove exact 135/135 coverage, 123 WPCS matches, 12 independently reviewed bundled-core findings, and existing owners for all genuine work. Evidence: `docs/evidence/P02-CI-CODE-010C3B2/summary.md`. Wallet QA and Plugin Check publication gate remain open.
