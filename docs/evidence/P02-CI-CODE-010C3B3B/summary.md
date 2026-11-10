@@ -1,0 +1,5 @@
+# P02-CI-CODE-010C3B3B — i18n triage
+
+Date: 2026-11-10. `node docs/evidence/P02-CI-CODE-010C3B3B/build-ledger.cjs` reproduced all 35 exact pinned shipped-file i18n findings: 31 shared-core text-domain mismatches, one nonliteral privacy-policy translation, two missing translator comments and one Bridge-local missing domain. Full identities, messages, severities, source risks and ownership are in `ledger.json`.
+
+The Bridge ZIP declares `carmilla-bridge`, while the Theme declares and loads `carmilla`. The shared core's PrivacyManager uses `carmilla` strings when bundled into both, so simply changing every domain to the Bridge domain would risk Theme-only localization, and retaining the current code does not prove Bridge-only translations work. All 35 are assigned to `P04-WP-I18N-CODE-059` for an explicit dual-host solution and real language-catalog tests. The concatenated privacy policy and placeholders are included because translation extraction and legal copy review matter. This is not an assertion of i18n compliance or a scanner waiver.

@@ -55,7 +55,7 @@ P04-CI-CODE-019
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
 - Completion authority: BOTH
-- Depends on: P04-WP-CONTENT-PERF-CODE-057, P04-WP-PREFIX-CODE-058
+- Depends on: P04-WP-CONTENT-PERF-CODE-057, P04-WP-PREFIX-CODE-058, P04-WP-I18N-CODE-059
 - Blocks: P04-QA-AUTO-048
 - Requirement source: Master checklist row P04-CI-CODE-019 و Source audit بخش CI
 
