@@ -1,10 +1,10 @@
 # P02-CI-CODE-010C3B1 — Triage Plugin Check security findings
 
-- Status: READY
+- Status: TODO (decomposed; B1A1 first READY)
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
-- Priority/Risk/Size: P1 / HIGH / M
+- Priority/Risk/Size: P1 / HIGH / L (58 findings across 19 files plus WPCS reconciliation; decomposed)
 - Owner: AI
-- Depends on: P02-CI-CODE-010C3A1
+- Depends on: P02-CI-CODE-010C3B1E
 - Blocks: P02-CI-CODE-010C3B2
 
 ## Scope and acceptance
@@ -13,4 +13,4 @@ For every `WordPress.Security.*` and `PluginCheck.Security.*` finding in the pin
 
 ## Completion record
 
-- Final status: READY after C3A1; pinned shipped-file Plugin Check report is in `docs/evidence/P02-CI-CODE-010C3A1/`.
+- Final status: TODO after size gate. Pinned shipped-file Plugin Check report in `docs/evidence/P02-CI-CODE-010C3A1/` has 58 security findings across 19 files. Ordered A1 → A2 → B → C → D → E review cards precede this aggregate completion; no finding has been waived or approved by decomposition.
