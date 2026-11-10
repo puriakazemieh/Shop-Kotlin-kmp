@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B3 — Triage remaining Plugin Check and package findings
 
-- Status: READY (five category ledgers reconciled; parent review pending)
+- Status: DONE
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / MEDIUM / L (122 shipped findings; decomposed)
 - Owner: AI
@@ -13,4 +13,4 @@ Classify all 122 remaining shipped-file Plugin Check findings after the 58 Secur
 
 ## Completion record
 
-- Final status: READY after C3B3E proved exact 122/122 ledger coverage. Parent review is still required. `docs/evidence/P02-CI-CODE-010C3B3/size-gate-20261110.md` records the original decomposition.
+- Final status: DONE on 2026-11-10 for source-backed classification and ownership. Five ledgers and C3B3E prove exact 122/122 remaining findings, zero test paths and no duplicate/missing/extra/message mismatch. Three P02 fixes were independently verified. Evidence: `docs/evidence/P02-CI-CODE-010C3B3/summary.md`. Plugin Check gate remains open.

@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C — Exact Plugin Check regression gate
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / CODE+QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI

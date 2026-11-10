@@ -1,0 +1,5 @@
+# P02-CI-CODE-010C3B3 — parent remaining-finding review
+
+Date: 2026-11-10. Five bounded category ledgers cover all 122 shipped-file Plugin Check findings outside the 58 Security and 135 DB findings. C3B3E reconciled all 315 report records against the pinned SHA-256, with zero duplicate/missing/extra/message mismatches and zero test paths in the actual delivery report. Exact source assessments and owners are retained in `docs/evidence/P02-CI-CODE-010C3B3A1/`, `A2/`, `B/`, `C/`, `D/` and the machine-readable `docs/evidence/P02-CI-CODE-010C3B3E/reconciliation.json`.
+
+Of 122, 100 are owned by future P04/P07 product/channel work, 19 have source-specific context dispositions, and three required P02 fixes: two integration logs and one shared-core direct-entry guard. Both P02 fix cards were implemented and verified against disposable WordPress HTTP/package scenarios. The 3,115 test-path findings in the earlier raw-source scan are absent from the pinned delivery-shaped report, so that raw count is not used as a waiver for shipped code. No WordPress.org channel compliance or Plugin Check regression PASS is inferred from classification.
