@@ -234,9 +234,13 @@ jobs:
             if (line.startsWith('FILE: ')) { file = line.slice(6); lines.push(line); }
             else if (line.startsWith('[')) lines.push(JSON.stringify(JSON.parse(line).filter(x => allowed.has([file, x.line, x.column, x.code].join('|')))));
           }
+          const firstBlock = lines.findIndex(line => line.startsWith('['));
+          const findings = JSON.parse(lines[firstBlock]);
+          findings.push({line: 999, column: 1, type: 'ERROR', code: 'WordPress.Security.Synthetic.NewFinding', message: 'Synthetic new finding.'});
+          lines[firstBlock] = JSON.stringify(findings);
           const target = path.join(process.env.RUNNER_TEMP, 'plugin-check-results.txt');
           fs.writeFileSync(target, lines.join('\n') + '\n');
-          fs.writeFileSync(path.join(process.env.RUNNER_TEMP, 'plugin-check-synthetic-marker.txt'), 'SYNTHETIC APPROVED FIXTURE; not a product scan\n');
+          fs.writeFileSync(path.join(process.env.RUNNER_TEMP, 'plugin-check-synthetic-marker.txt'), 'SYNTHETIC NEW-FINDING FIXTURE; not a product scan\n');
           NODE
       - name: Enforce exact Plugin Check baseline
         if: always()
