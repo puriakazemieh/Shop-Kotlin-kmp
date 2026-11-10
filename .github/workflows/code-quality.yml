@@ -233,6 +233,7 @@ jobs:
             fi
             scanner_version="$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')"
             wp_version="$(wp-env run cli wp core version | tail -n 1 | tr -d '\r')"
+            printf 'Observed scanner=<%s> WordPress=<%s>\n' "$scanner_version" "$wp_version"
             node tools/code-quality/check_plugin_check_baseline.cjs \
               --report "$RUNNER_TEMP/plugin-check-results.txt" \
               --scanner-version "$scanner_version" \
