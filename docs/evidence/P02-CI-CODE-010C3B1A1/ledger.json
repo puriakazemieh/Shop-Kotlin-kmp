@@ -1,0 +1,350 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B1A1",
+  "pluginCheckReportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 18,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 93,
+      "column": 68,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['REMOTE_ADDR'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REMOTE_ADDR is string and IP validated, then constrained by direct-peer or proxy policy.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:114-140",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 71,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 93,
+      "column": 68,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['REMOTE_ADDR']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REMOTE_ADDR is string and IP validated, then constrained by direct-peer or proxy policy.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:114-140",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 71,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 93,
+      "column": 116,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['SERVER_ADDR'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "SERVER_ADDR is string and IP validated; local QA additionally checks loopback address.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:114-140",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 119,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 93,
+      "column": 116,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['SERVER_ADDR']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "SERVER_ADDR is string and IP validated; local QA additionally checks loopback address.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:114-140",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 119,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 93,
+      "column": 158,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['HTTPS'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "HTTPS is string checked and compared against exact TLS or local QA protocol values.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:114-140",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 161,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 93,
+      "column": 158,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['HTTPS']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "HTTPS is string checked and compared against exact TLS or local QA protocol values.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:114-140",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 161,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 105,
+      "column": 129,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['HTTP_HOST'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "HTTP_HOST is string checked, control characters and duplicate headers are rejected, and canonical origin must equal configured site origin.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:118-120,143-167",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 135,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 105,
+      "column": 129,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['HTTP_HOST']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "HTTP_HOST is string checked, control characters and duplicate headers are rejected, and canonical origin must equal configured site origin.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-request-policy.php:118-120,143-167",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 135,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 110,
+      "column": 69,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_COOKIE[$name] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Cookie is an opaque exact-byte credential. Store digest accepts only 64 lowercase hex characters before rotate or revoke; unslashing would alter credentials.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-store.php:100-101,149-150,226-227",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-refresh-logout-real-wp.php",
+      "wpcs": {
+        "column": 75,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-web-auth-controller.php",
+      "line": 110,
+      "column": 69,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_COOKIE[$name]",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Cookie is an opaque exact-byte credential. Store digest accepts only 64 lowercase hex characters before rotate or revoke; unslashing would alter credentials.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-web-session-store.php:100-101,149-150,226-227",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-refresh-logout-real-wp.php",
+      "wpcs": {
+        "column": 75,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 101,
+      "column": 83,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['REQUEST_METHOD'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REQUEST_METHOD is uppercased and compared only with literal OPTIONS for preflight; it is not emitted or used as a dynamic route.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:98-105",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 92,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 101,
+      "column": 83,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['REQUEST_METHOD']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REQUEST_METHOD is uppercased and compared only with literal OPTIONS for preflight; it is not emitted or used as a dynamic route.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:98-105",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-web-request-policy.php",
+      "wpcs": {
+        "column": 92,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 115,
+      "column": 68,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['REQUEST_URI'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REQUEST_URI is parsed to path and restricted to four literal root prefixes before WordPress REST routing and route authentication; the log uses only the matched literal prefix.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:114-135",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-malformed-http-real-wp.php",
+      "wpcs": {
+        "column": 74,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 115,
+      "column": 68,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['REQUEST_URI']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REQUEST_URI is parsed to path and restricted to four literal root prefixes before WordPress REST routing and route authentication; the log uses only the matched literal prefix.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:114-135",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-malformed-http-real-wp.php",
+      "wpcs": {
+        "column": 74,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 204,
+      "column": 14,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['HTTP_AUTHORIZATION'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "HTTP_AUTHORIZATION supplies an opaque Bearer credential; JWT or browser verifier validates signature and claims before user identity is accepted.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:175-196,201-219",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-foreign-token-http-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 204,
+      "column": 14,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['HTTP_AUTHORIZATION']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "HTTP_AUTHORIZATION supplies an opaque Bearer credential; JWT or browser verifier validates signature and claims before user identity is accepted.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:175-196,201-219",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-foreign-token-http-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 206,
+      "column": 14,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['REDIRECT_HTTP_AUTHORIZATION'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REDIRECT_HTTP_AUTHORIZATION follows the same Bearer extraction and signed-token verification path.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:175-196,201-219",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-foreign-token-http-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-plugin.php",
+      "line": 206,
+      "column": 14,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['REDIRECT_HTTP_AUTHORIZATION']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "REDIRECT_HTTP_AUTHORIZATION follows the same Bearer extraction and signed-token verification path.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-plugin.php:175-196,201-219",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A1",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-foreign-token-http-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns differ"
+      }
+    }
+  ]
+}

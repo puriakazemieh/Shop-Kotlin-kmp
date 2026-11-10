@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1A2 — Triage other shipped input findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ Review all remaining `WordPress.Security.ValidatedSanitizedInput.*` findings in 
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1A1.

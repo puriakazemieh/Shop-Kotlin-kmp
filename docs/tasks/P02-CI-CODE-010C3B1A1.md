@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1A1 — Triage shipped auth and plugin input findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ From pinned shipped-file Plugin Check report SHA-256 `50f0c694447c4b9aab40b1d66c
 
 ## Completion record
 
-- Final status: READY after decomposition of oversized C3B1.
+- Final status: DONE on 2026-11-10. The pinned shipped-file report yielded 18 findings at nine locations, all individually reconciled with WPCS and source-backed in `docs/evidence/P02-CI-CODE-010C3B1A1/ledger.json`. The standalone request-policy test passed 97/97. No product edit or scanner suppression.
