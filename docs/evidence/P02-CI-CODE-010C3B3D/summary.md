@@ -1,0 +1,5 @@
+# P02-CI-CODE-010C3B3D — direct access, readme and performance
+
+Date: 2026-11-10. `node docs/evidence/P02-CI-CODE-010C3B3D/build-ledger.cjs` reproduced all 12 exact pinned shipped-file findings with path/line/column/code/message, source assessment and owner in `ledger.json`.
+
+The operator-only `tools/user-integrity.php` refuses non-CLI requests before loading WordPress and is context-justified despite not using the scanner's expected ABSPATH pattern. The shared `Carmilla_Kernel.php` entry lacks that guard and has bounded P02 fix owner `P02-SEC-CODE-010C3B3D1`. Eight README.md warnings are WordPress.org-style metadata, language and name rules. The current deliverable is an independently installable ZIP, with no WordPress.org channel selected in the active product contract; `P04-WP-README-CODE-060` owns a channel-specific package/readme decision and scan. This does not claim WordPress.org acceptance. Two related-item exclusion query warnings are output-limited to four items but need actual SQL measurement; `P04-WP-RELATED-PERF-CODE-061` owns that work. No product or package source was changed by this review.

@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B3E — Reconcile remaining Plugin Check ledger
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: AI
