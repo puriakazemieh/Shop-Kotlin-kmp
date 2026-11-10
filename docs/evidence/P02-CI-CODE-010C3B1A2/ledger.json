@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B1A2",
+  "pluginCheckReportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 9,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php",
+      "shippedZipPath": "includes/class-cb-manifest-controller.php",
+      "line": 30,
+      "column": 6,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_POST['cb_manifest_features'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Admin capability and nonce precede this read. Only known feature IDs are projected to booleans; submitted values and unknown keys are not persisted.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php:24-44",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-manifest-security.php",
+      "wpcs": {
+        "column": 15,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php",
+      "shippedZipPath": "includes/class-cb-manifest-controller.php",
+      "line": 30,
+      "column": 6,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_POST['cb_manifest_features']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Admin capability and nonce precede this read. Only known feature IDs are projected to booleans; submitted values and unknown keys are not persisted.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php:24-44",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-manifest-security.php",
+      "wpcs": {
+        "column": 15,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/tools/user-integrity.php",
+      "shippedZipPath": "tools/user-integrity.php",
+      "line": 33,
+      "column": 16,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['SCRIPT_FILENAME'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "SCRIPT_FILENAME is compared only by realpath to the fixed current file to select CLI entry; no HTML, SQL, or dynamic file open uses it.",
+      "sourceTrace": "wordpress/carmilla-bridge/tools/user-integrity.php:33-37",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-operator-real-wp.php",
+      "wpcs": {
+        "column": 16,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/tools/user-integrity.php",
+      "shippedZipPath": "tools/user-integrity.php",
+      "line": 33,
+      "column": 16,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['SCRIPT_FILENAME']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "SCRIPT_FILENAME is compared only by realpath to the fixed current file to select CLI entry; no HTML, SQL, or dynamic file open uses it.",
+      "sourceTrace": "wordpress/carmilla-bridge/tools/user-integrity.php:33-37",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-operator-real-wp.php",
+      "wpcs": {
+        "column": 16,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/meta-boxes.php",
+      "shippedZipPath": "includes/meta-boxes.php",
+      "line": 134,
+      "column": 23,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_POST[$key]",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Nonce, edit_post capability, known field key, and scalar shape checks precede wp_unslash; field-type sanitization precedes update_post_meta.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/meta-boxes.php:116-145",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-meta-box-scalar-shape-real-wp.php",
+      "wpcs": {
+        "column": 29,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-local-qa-otp-sink.php",
+      "shippedZipPath": "includes/class-cb-local-qa-otp-sink.php",
+      "line": 30,
+      "column": 90,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_GET['mobile']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Localhost-only feature and admin capability gate the page; value is unslashed, hashed into an exact transient lookup key, and escaped if echoed. Nonce gates lookup.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-local-qa-otp-sink.php:9-44",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-local-otp-sink-real-wp.php",
+      "wpcs": {
+        "column": 96,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "shippedZipPath": "includes/class-cb-managed-user-deletion.php",
+      "line": 42,
+      "column": 98,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_POST['confirmation']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "Admin capability and nonce precede an unslashed exact-word hash_equals comparison; only the boolean result controls deletion.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:26-44",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 104,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/packages/carmilla-core/inc/Health/HealthChecker.php",
+      "shippedZipPath": "packages/carmilla-core/inc/Health/HealthChecker.php",
+      "line": 243,
+      "column": 41,
+      "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+      "message": "$_SERVER['SERVER_SOFTWARE'] not unslashed before sanitization. Use wp_unslash() or similar",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "SERVER_SOFTWARE is server-provided environment metadata placed in a diagnostic array; repository search found no production consumer that emits it as HTML or SQL.",
+      "sourceTrace": "wordpress/packages/carmilla-core/inc/Health/HealthChecker.php:228-247",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/packages/carmilla-core/tests/smoke-carmilla-core.php",
+      "wpcs": {
+        "matchBasis": "no entry: bundled core absent from prior WPCS scan root"
+      }
+    },
+    {
+      "path": "wordpress/packages/carmilla-core/inc/Health/HealthChecker.php",
+      "shippedZipPath": "packages/carmilla-core/inc/Health/HealthChecker.php",
+      "line": 243,
+      "column": 41,
+      "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+      "message": "Detected usage of a non-sanitized input variable: $_SERVER['SERVER_SOFTWARE']",
+      "severity": "WARNING",
+      "disposition": "context_justified",
+      "risk": "low_after_validation",
+      "reason": "SERVER_SOFTWARE is server-provided environment metadata placed in a diagnostic array; repository search found no production consumer that emits it as HTML or SQL.",
+      "sourceTrace": "wordpress/packages/carmilla-core/inc/Health/HealthChecker.php:228-247",
+      "verificationTaskId": "P02-CI-CODE-010C3B1A2",
+      "testPath": "wordpress/packages/carmilla-core/tests/smoke-carmilla-core.php",
+      "wpcs": {
+        "matchBasis": "no entry: bundled core absent from prior WPCS scan root"
+      }
+    }
+  ]
+}

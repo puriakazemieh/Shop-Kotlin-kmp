@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1A2 — Triage other shipped input findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ Review all remaining `WordPress.Security.ValidatedSanitizedInput.*` findings in 
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1A1.
+- Final status: DONE on 2026-11-10. Nine shipped findings at six locations individually dispositioned in `docs/evidence/P02-CI-CODE-010C3B1A2/ledger.json`; seven matched prior WPCS and two bundled-core findings were independently reviewed. Manifest and core smoke checks passed. No product edit or scanner suppression.
