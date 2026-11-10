@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Catalog/EntitlementSchema.php';
     require_once __DIR__ . '/inc/Catalog/EntitlementClaims.php';

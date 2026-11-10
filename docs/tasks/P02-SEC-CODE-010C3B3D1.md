@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C3B3D1 — Guard shared-core direct entry
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ Add a direct-request guard to shipped `packages/carmilla-core/Carmilla_Kernel.ph
 
 ## Completion record
 
-- Final status: TODO; fix owner from C3B3D triage.
+- Final status: DONE on 2026-11-10. Changed core entry and verified direct HTTP blank responses plus Theme-only, Bridge-only and combined boot from newly built ZIPs in disposable WordPress. Evidence: `docs/evidence/P02-SEC-CODE-010C3B3D1/`.
