@@ -1,0 +1,7 @@
+# P02-CI-CODE-010C3B1C — shipped output triage
+
+Date: 2026-11-10. `node docs/evidence/P02-CI-CODE-010C3B1C/build-ledger.cjs` verified the pinned shipped Plugin Check report SHA-256 `50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd` and wrote `ledger.json`: seven findings at seven locations, all matched to prior WPCS entries by source path, line and code. Each ledger row has the exact scanner message, output context, data origin, risk, source trace and review task ID.
+
+Four `wp_die` messages use fixed plugin translation strings; the sole dynamic exception detail at line 56 is passed through `esc_html`. The deletion notice chooses from two `esc_html__` strings and escapes the integer account ID. The migration exception includes only an integer local line index, never imported payload text. `exit()` receives a fixed internal integer status and emits no HTML. These are context-specific low-XSS-risk dispositions, not raw-request waivers. The first three `wp_die` calls lack an explicit escape call and could be changed for coding-standard cleanliness, but current source exposes only trusted translation content; this triage does not assert a product change or passing scanner gate.
+
+Checks: ledger rebuild printed `findings=7 locations=7 wpcsMatched=7` (exit 0). `C:\xampp\php\php.exe -l` passed for the four affected source files. Existing real-WordPress test paths are listed per ledger row but were not rerun. No product source or scanner rule was changed.

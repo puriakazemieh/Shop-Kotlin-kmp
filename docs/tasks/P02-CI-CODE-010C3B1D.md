@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1D — Triage shipped direct-DB security findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review every `PluginCheck.Security.DirectDB.UnescapedDBParameter` finding in the
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1C.

@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B1C",
+  "pluginCheckReportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 7,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 18,
+      "column": 20,
+      "code": "WordPress.Security.EscapeOutput.OutputNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '__'.",
+      "severity": "ERROR",
+      "outputContext": "wp_die HTML message",
+      "dataOriginAndRisk": "Fixed translation string with no request data after failed capability check; translation catalog is trusted plugin content.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:16-21",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 28,
+      "column": 20,
+      "code": "WordPress.Security.EscapeOutput.OutputNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '__'.",
+      "severity": "ERROR",
+      "outputContext": "wp_die HTML message",
+      "dataOriginAndRisk": "Fixed translation string for unsupported enumerated message type; no request value is interpolated.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:23-32",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 32,
+      "column": 20,
+      "code": "WordPress.Security.EscapeOutput.OutputNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '__'.",
+      "severity": "ERROR",
+      "outputContext": "wp_die HTML message",
+      "dataOriginAndRisk": "Fixed translation string for empty recipient/body; no request value is interpolated.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:23-32",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 56,
+      "column": 20,
+      "code": "WordPress.Security.EscapeOutput.OutputNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '__'.",
+      "severity": "ERROR",
+      "outputContext": "wp_die HTML message",
+      "dataOriginAndRisk": "Fixed translated prefix is concatenated only with esc_html-escaped exception detail.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:54-57",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-notice.php",
+      "line": 27,
+      "column": 117,
+      "code": "WordPress.Security.EscapeOutput.OutputNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '$code'.",
+      "severity": "ERROR",
+      "outputContext": "admin notice HTML text",
+      "dataOriginAndRisk": "Code selects one of two esc_html__ fixed strings; account ID is cast to int and escaped before output.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-notice.php:11-29",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-notice-real-wp.php",
+      "wpcs": {
+        "column": 117,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Import_Command.php",
+      "line": 61,
+      "column": 81,
+      "code": "WordPress.Security.EscapeOutput.ExceptionNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '$line_number'.",
+      "severity": "ERROR",
+      "outputContext": "CLI exception message",
+      "dataOriginAndRisk": "Line number is a local integer array index plus one; no NDJSON line content is included and no HTML sink exists here.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Import_Command.php:53-66",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": null,
+      "wpcs": {
+        "column": 81,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/tools/user-integrity.php",
+      "line": 37,
+      "column": 11,
+      "code": "WordPress.Security.EscapeOutput.OutputNotEscaped",
+      "message": "All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '$result['code']'.",
+      "severity": "ERROR",
+      "outputContext": "CLI process exit status",
+      "dataOriginAndRisk": "Result code is a fixed internal integer status and exit() emits no HTML or text.",
+      "disposition": "context_justified",
+      "risk": "low_trusted_or_already_escaped",
+      "sourceTrace": "wordpress/carmilla-bridge/tools/user-integrity.php:11-37",
+      "verificationTaskId": "P02-CI-CODE-010C3B1C",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-operator-real-wp.php",
+      "wpcs": {
+        "column": 11,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}
