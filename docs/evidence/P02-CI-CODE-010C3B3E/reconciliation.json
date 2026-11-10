@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B3E",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "allReportFindings": 315,
+  "reportTestPathFindings": 0,
+  "reportedCount": 122,
+  "ledgerCount": 122,
+  "duplicateCount": 0,
+  "missingCount": 0,
+  "extraCount": 0,
+  "messageMismatchCount": 0,
+  "ledgers": [
+    {
+      "taskId": "P02-CI-CODE-010C3B3A1",
+      "count": 40
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B3A2",
+      "count": 15
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B3B",
+      "count": 35
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B3C",
+      "count": 20
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B3D",
+      "count": 12
+    }
+  ],
+  "dispositions": {
+    "deferred_to_p04_prefix_migration": 54,
+    "context_justified_wordpress_core_filter": 1,
+    "deferred_to_independent_product_i18n": 35,
+    "fix_required_in_p02": 3,
+    "context_justified": 17,
+    "deferred_to_seed_security": 1,
+    "context_justified_cli_guard": 1,
+    "deferred_to_channel_specific_package": 8,
+    "deferred_to_p04_performance": 2
+  },
+  "fixOwners": {
+    "P04-WP-PREFIX-CODE-058": 54,
+    "P04-WP-I18N-CODE-059": 35,
+    "P02-SEC-CODE-010C3B3C1": 2,
+    "P07-SEED-SEC-CODE-030": 1,
+    "P04-WP-README-CODE-060": 8,
+    "P02-SEC-CODE-010C3B3D1": 1,
+    "P04-WP-RELATED-PERF-CODE-061": 2
+  }
+}
