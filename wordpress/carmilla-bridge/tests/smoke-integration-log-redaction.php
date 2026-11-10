@@ -23,6 +23,7 @@ function sanitize_textarea_field( $value ) { return $value; }
 function wp_unslash( $value ) { return $value; }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
 function __( $text, $domain = null ) { return $text; }
+function esc_html__( $text, $domain = null ) { return $text; }
 function wp_die( $message ) { throw new RuntimeException( $message ); }
 function admin_url( $path ) { return '/wp-admin/' . $path; }
 function add_query_arg( $args, $url ) { return $url . '?' . http_build_query( $args ); }
@@ -38,7 +39,7 @@ register_shutdown_function( static function () use ( $mode, $log, &$die ): void 
     $clean = ! preg_match( "/$sensitive/", $logged . $die . $GLOBALS['redirect'] );
     $ok = $clean && ( $mode === 'success'
         ? ( CB_Mail_Adapter::$sent && str_contains( $GLOBALS['redirect'], 'status=success' ) && $logged === '' && $die === '' )
-        : ( $GLOBALS['redirect'] === '' && $die === 'Failed to send test message.' && str_contains( $logged, 'Carmilla test message failed.' ) ) );
+        : ( $GLOBALS['redirect'] === '' && $die === 'Failed to send test message.' && $logged === '' ) );
     echo $ok ? "PASS $mode\n" : "FAIL $mode\n";
     if ( ! $ok ) { exit( 1 ); }
 } );

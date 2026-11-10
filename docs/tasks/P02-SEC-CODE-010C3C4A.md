@@ -13,4 +13,4 @@ Inspect the current delivery-shaped Plugin Check report and the integration test
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE. The generic failure is escaped and no longer logged; PHP smoke, real installed-WordPress HTTP failure/success controls and pinned delivery-ZIP Plugin Check were run. Two target findings disappeared; three read-only GET warnings retain an exact source-backed disposition for C3C4D. Evidence: `docs/evidence/P02-SEC-CODE-010C3C4A/summary.md` and full report.

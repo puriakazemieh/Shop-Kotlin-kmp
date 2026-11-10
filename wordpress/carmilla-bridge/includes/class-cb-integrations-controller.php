@@ -48,8 +48,8 @@ class CB_Integrations_Controller {
             wp_safe_redirect(add_query_arg(['page' => 'carmilla-integrations', 'tab' => 'test', 'status' => 'success'], admin_url('admin.php')));
             exit;
         } catch (Exception $ignored) {
-            error_log('Carmilla test message failed.');
-            wp_die(__('Failed to send test message.', 'carmilla-bridge'));
+            // Provider errors must not expose message or recipient details.
+            wp_die(esc_html__('Failed to send test message.', 'carmilla-bridge'));
         }
     }
 
