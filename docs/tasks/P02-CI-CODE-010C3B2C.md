@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2C — Triage integrity and deletion incident DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `class-cb-user-integ
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B2B.
+- Final status: DONE on 2026-11-10. Twenty exact integrity/incident DB findings individually source-reviewed and matched with WPCS in `docs/evidence/P02-CI-CODE-010C3B2C/ledger.json`; PHP lint passed for four files. No product edit.

@@ -1,0 +1,408 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2C",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 20,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 22,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "DDL identifiers come from inspected ASCII WordPress table names and fixed/hash-generated names; SQL errors fail the explicit install.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-27; class-cb-user-integrity-migration.php:7-24",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 22,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "DDL identifiers come from inspected ASCII WordPress table names and fixed/hash-generated names; SQL errors fail the explicit install.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-27; class-cb-user-integrity-migration.php:7-24",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 22,
+      "column": 23,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found $sql",
+      "severity": "ERROR",
+      "sqlOriginAndGuard": "DDL identifiers come from inspected ASCII WordPress table names and fixed/hash-generated names; SQL errors fail the explicit install.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-27; class-cb-user-integrity-migration.php:7-24",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcs": {
+        "column": 32,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 29,
+      "column": 14,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Trigger DDL uses the same validated table identifiers and fixed/hash-generated names; errors fail the explicit install.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:6-27; class-cb-user-integrity-migration.php:27-36",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcs": {
+        "column": 14,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 29,
+      "column": 14,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Trigger DDL uses the same validated table identifiers and fixed/hash-generated names; errors fail the explicit install.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:6-27; class-cb-user-integrity-migration.php:27-36",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcs": {
+        "column": 14,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 29,
+      "column": 22,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found $trigger",
+      "severity": "ERROR",
+      "sqlOriginAndGuard": "Trigger DDL uses the same validated table identifiers and fixed/hash-generated names; errors fail the explicit install.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:6-27; class-cb-user-integrity-migration.php:27-36",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcs": {
+        "column": 28,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 75,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Internal read_var receives fixed version SQL, validated-identifier metadata SQL, or wpdb-prepared metadata values; DB error becomes unreadable.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-75",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 75,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Internal read_var receives fixed version SQL, validated-identifier metadata SQL, or wpdb-prepared metadata values; DB error becomes unreadable.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-75",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 75,
+      "column": 28,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found $sql",
+      "severity": "ERROR",
+      "sqlOriginAndGuard": "Internal read_var receives fixed version SQL, validated-identifier metadata SQL, or wpdb-prepared metadata values; DB error becomes unreadable.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-75",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcs": {
+        "column": 34,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 82,
+      "column": 16,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Internal read_row receives wpdb-prepared information_schema values after table-name validation; DB error becomes unreadable.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-82",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcs": {
+        "column": 16,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 82,
+      "column": 16,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Internal read_row receives wpdb-prepared information_schema values after table-name validation; DB error becomes unreadable.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-82",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcs": {
+        "column": 16,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 82,
+      "column": 26,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found $sql",
+      "severity": "ERROR",
+      "sqlOriginAndGuard": "Internal read_row receives wpdb-prepared information_schema values after table-name validation; DB error becomes unreadable.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-82",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcs": {
+        "column": 32,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php",
+      "line": 71,
+      "column": 25,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed SELECT DATABASE() verifies the primary DB name against configured DB_NAME; live read is required before a second connection.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php:59-75",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+      "wpcs": {
+        "column": 25,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php",
+      "line": 71,
+      "column": 25,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed SELECT DATABASE() verifies the primary DB name against configured DB_NAME; live read is required before a second connection.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php:59-75",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+      "wpcs": {
+        "column": 25,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php",
+      "line": 74,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed SELECT CONNECTION_ID() verifies the primary connection and a prepared processlist query later proves the second connection points to the same DB.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php:70-83",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php",
+      "line": 74,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed SELECT CONNECTION_ID() verifies the primary connection and a prepared processlist query later proves the second connection points to the same DB.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php:70-83",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php",
+      "line": 78,
+      "column": 10,
+      "code": "WordPress.DB.RestrictedFunctions.mysql_mysqli_init",
+      "message": "Accessing the database directly should be avoided. Please use the $wpdb object and associated functions instead. Found: mysqli_init.",
+      "severity": "ERROR",
+      "sqlOriginAndGuard": "Dedicated mysqli connection is required for durable incident observation outside WordPress deletion transaction; strict stock-wpdb, host, prefix and DB identity guards reject unsupported deployments.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php:59-86",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+      "wpcs": {
+        "column": 19,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php",
+      "line": 79,
+      "column": 21,
+      "code": "WordPress.DB.RestrictedFunctions.mysql_mysqli_real_connect",
+      "message": "Accessing the database directly should be avoided. Please use the $wpdb object and associated functions instead. Found: mysqli_real_connect.",
+      "severity": "ERROR",
+      "sqlOriginAndGuard": "mysqli_real_connect uses only configured DB_HOST/USER/PASSWORD/NAME after strict host/port guards; processlist identity check fails closed.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-deletion-incident-runtime.php:59-86",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-deletion-incident-runtime-real-wp.php",
+      "wpcs": {
+        "column": 30,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-comment-cache.php",
+      "line": 17,
+      "column": 16,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live comment inventory uses internal comments table and prepared integer user ID before deletion; SQL error throws and stops deletion, caching would miss trigger changes.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-comment-cache.php:13-24",
+      "testPath": null,
+      "wpcs": {
+        "column": 16,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-comment-cache.php",
+      "line": 17,
+      "column": 16,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live comment inventory uses internal comments table and prepared integer user ID before deletion; SQL error throws and stops deletion, caching would miss trigger changes.",
+      "risk": "low_validated_or_fixed_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2C",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-comment-cache.php:13-24",
+      "testPath": null,
+      "wpcs": {
+        "column": 16,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}
