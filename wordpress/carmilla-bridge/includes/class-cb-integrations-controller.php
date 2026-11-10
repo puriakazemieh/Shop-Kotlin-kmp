@@ -45,15 +45,11 @@ class CB_Integrations_Controller {
                 }
             }
             
-            // Redact recipient for logging
-            $redacted_recipient = substr($recipient, 0, 3) . '***' . substr($recipient, -2);
-            error_log("Test $type message sent successfully to $redacted_recipient");
-            
             wp_safe_redirect(add_query_arg(['page' => 'carmilla-integrations', 'tab' => 'test', 'status' => 'success'], admin_url('admin.php')));
             exit;
-        } catch (Exception $e) {
-            error_log("Test $type message failed: " . $e->getMessage());
-            wp_die(__('Failed to send test message: ', 'carmilla-bridge') . esc_html($e->getMessage()));
+        } catch (Exception $ignored) {
+            error_log('Carmilla test message failed.');
+            wp_die(__('Failed to send test message.', 'carmilla-bridge'));
         }
     }
 

@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C3B3C1 — Remove recipient and exception data from integration logs
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ The test-message admin action logs even a redacted recipient and logs `$e->getMe
 
 ## Completion record
 
-- Final status: TODO; fix owner from C3B3C triage.
+- Final status: DONE on 2026-11-10. Focused synthetic success/error checks and real disposable WordPress HTTP success/failure requests passed; logs and HTTP failure response contained no synthetic recipient, body or provider marker. Evidence: `docs/evidence/P02-SEC-CODE-010C3B3C1/`.
