@@ -1,0 +1,328 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2D",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 16,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 34,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "One-shot CLI export scans all allowed posts from trusted WP table; resource bound and query shape require P07 review.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:34",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 34,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "One-shot CLI export scans all allowed posts from trusted WP table; resource bound and query shape require P07 review.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:34",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 35,
+      "column": 13,
+      "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+      "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$denied_types} at &quot;SELECT ID, post_title, post_content, post_type, post_status, post_parent FROM {$wpdb-&gt;posts} WHERE post_type NOT IN ({$denied_types})&quot;",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Denied types are fixed and esc_sql-escaped, but placeholders are pending P07 security work.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-SEC-CODE-028",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:35",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-SEC-CODE-028",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 53,
+      "column": 24,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "One-shot CLI attachment scan uses internal WP posts table; resource bound requires P07 review.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:53",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 24,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 53,
+      "column": 24,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "One-shot CLI attachment scan uses internal WP posts table; resource bound requires P07 review.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:53",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 24,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 102,
+      "column": 22,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Per-post prepared postmeta read can become N+1; P07 performance review owns bounds.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:102",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 22,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 102,
+      "column": 22,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Per-post prepared postmeta read can become N+1; P07 performance review owns bounds.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php:102",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 22,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php",
+      "line": 35,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Overlay scan uses internal posts table and fixed-prefix seed table; fixed denied types, placeholder and resource work belong to P07.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php:35",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php",
+      "line": 35,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Overlay scan uses internal posts table and fixed-prefix seed table; fixed denied types, placeholder and resource work belong to P07.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php:35",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php",
+      "line": 35,
+      "column": 40,
+      "code": "WordPress.DB.PreparedSQL.NotPrepared",
+      "message": "Use placeholders and $wpdb->prepare(); found $sql",
+      "severity": "ERROR",
+      "sqlOriginAndRisk": "Overlay scan uses internal posts table and fixed-prefix seed table; fixed denied types, placeholder and resource work belong to P07.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-SEC-CODE-028",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php:35",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 40,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-SEC-CODE-028",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php",
+      "line": 62,
+      "column": 17,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Per-post prepared postmeta read can become N+1; P07 performance review owns bounds.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php:62",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 17,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php",
+      "line": 62,
+      "column": 17,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Per-post prepared postmeta read can become N+1; P07 performance review owns bounds.",
+      "disposition": "deferred_to_migration_phase",
+      "fixTaskId": "P07-MIGRATION-PERF-REVIEW-029",
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php:62",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcs": {
+        "column": 17,
+        "disposition": "deferred",
+        "targetTask": "P07-MIGRATION-PERF-REVIEW-029",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php",
+      "line": 42,
+      "column": 121,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Explicit bounded synthetic migration uses wpdb->insert with fixed meta key and explicit formats inside transaction.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php:42",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-identity-synthetic-migration-real-wp.php",
+      "wpcs": {
+        "column": 121,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php",
+      "line": 42,
+      "column": 158,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Explicit bounded synthetic migration uses wpdb->insert with fixed meta key and explicit formats inside transaction.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php:42",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-identity-synthetic-migration-real-wp.php",
+      "wpcs": {
+        "column": 158,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php",
+      "line": 43,
+      "column": 102,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Explicit bounded synthetic migration uses wpdb->insert with fixed meta key and explicit formats inside transaction.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php:43",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-identity-synthetic-migration-real-wp.php",
+      "wpcs": {
+        "column": 102,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php",
+      "line": 43,
+      "column": 145,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndRisk": "Explicit bounded synthetic migration uses wpdb->insert with fixed meta key and explicit formats inside transaction.",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-identity-synthetic-migration.php:43",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-identity-synthetic-migration-real-wp.php",
+      "wpcs": {
+        "column": 145,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}

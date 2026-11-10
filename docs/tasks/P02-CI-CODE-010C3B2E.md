@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2E — Triage bundled core importer and wallet DB findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `packages/carmilla-c
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B2D.

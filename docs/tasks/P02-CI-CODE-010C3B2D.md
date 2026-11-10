@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2D — Triage migration DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `includes/Migration/
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B2C.
+- Final status: DONE on 2026-11-10. Sixteen exact migration DB findings reviewed in `docs/evidence/P02-CI-CODE-010C3B2D/ledger.json`: 12 assigned to existing P07 security/performance cards and four context-justified synthetic migration writes. No product edit.
