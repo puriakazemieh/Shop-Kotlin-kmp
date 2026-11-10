@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2 — Triage Plugin Check database findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review every `WordPress.DB.*` finding in the pinned shipped-file Plugin Check re
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1. Size/ambiguity gate remains to be applied before review.
