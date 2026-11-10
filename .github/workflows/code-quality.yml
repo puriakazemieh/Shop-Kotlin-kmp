@@ -197,12 +197,28 @@ jobs:
           echo "6ff4bd2145f3befcf907df158cc466b1649dafed5686de8369907403c3013fc4  $RUNNER_TEMP/plugin-check-2.1.0.zip" | sha256sum --check
           wp-env run cli wp plugin install https://downloads.wordpress.org/plugin/plugin-check.2.1.0.zip --activate
           test "$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')" = 2.1.0
+      - name: Scan in pinned WordPress environment
+        run: |
+          set -euo pipefail
+          scanner_version="$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')"
+          wp_version="$(wp-env run cli wp core version | tail -n 1 | tr -d '\r')"
+          test "$scanner_version" = 2.1.0
+          test "$wp_version" = 6.4.3
+          printf '%s\n' "$scanner_version" > "$RUNNER_TEMP/plugin-check-scanner-version.txt"
+          printf '%s\n' "$wp_version" > "$RUNNER_TEMP/plugin-check-wp-version.txt"
+          wp-env run cli wp plugin check carmilla-bridge --format=json \
+            --require=./wp-content/plugins/plugin-check/cli.php \
+            > "$RUNNER_TEMP/plugin-check-pinned-results.txt"
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         continue-on-error: true
         with:
           build-dir: ${{ runner.temp }}/plugin-scan/carmilla-bridge
           wp-version: '6.4.3'
+      - name: Restore pinned Plugin Check report
+        if: always()
+        run: |
+          cp "$RUNNER_TEMP/plugin-check-pinned-results.txt" "$RUNNER_TEMP/plugin-check-results.txt"
       - name: Inject approved synthetic Plugin Check report
         run: |
           node <<'NODE'
@@ -231,9 +247,8 @@ jobs:
               echo 'Plugin Check report is missing or empty.' >&2
               exit 1
             fi
-            scanner_version="$(wp-env run cli wp plugin get plugin-check --field=version | tail -n 1 | tr -d '\r')"
-            wp_version="$(wp-env run cli wp core version | tail -n 1 | tr -d '\r')"
-            printf 'Observed scanner=<%s> WordPress=<%s>\n' "$scanner_version" "$wp_version"
+            scanner_version="$(cat "$RUNNER_TEMP/plugin-check-scanner-version.txt")"
+            wp_version="$(cat "$RUNNER_TEMP/plugin-check-wp-version.txt")"
             node tools/code-quality/check_plugin_check_baseline.cjs \
               --report "$RUNNER_TEMP/plugin-check-results.txt" \
               --scanner-version "$scanner_version" \
@@ -255,4 +270,6 @@ jobs:
             ${{ runner.temp }}/plugin-check-results.sha256
             ${{ runner.temp }}/plugin-check-baseline.txt
             ${{ runner.temp }}/plugin-check-synthetic-marker.txt
+            ${{ runner.temp }}/plugin-check-scanner-version.txt
+            ${{ runner.temp }}/plugin-check-wp-version.txt
           if-no-files-found: error
