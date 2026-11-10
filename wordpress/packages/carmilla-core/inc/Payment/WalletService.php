@@ -14,36 +14,12 @@ class WalletService {
     }
     
     public static function add_funds($user_id, $amount, $reason = '') {
-        $current = self::get_balance($user_id);
-        $new_balance = $current + $amount;
-        update_user_meta($user_id, self::WALLET_META_KEY, $new_balance);
-        self::log_transaction($user_id, $amount, $new_balance, 'credit', $reason);
-        return $new_balance;
+        // Disabled until balance, ledger and order effects are atomic and idempotent.
+        return false;
     }
     
     public static function deduct_funds($user_id, $amount, $reason = '') {
-        $current = self::get_balance($user_id);
-        if ($current < $amount) {
-            return false; // Insufficient funds
-        }
-        $new_balance = $current - $amount;
-        update_user_meta($user_id, self::WALLET_META_KEY, $new_balance);
-        self::log_transaction($user_id, -$amount, $new_balance, 'debit', $reason);
-        return $new_balance;
-    }
-
-    private static function log_transaction($user_id, $amount, $balance, $type, $reason) {
-        global $wpdb;
-        $table = $wpdb->prefix . 'carmilla_wallet_logs';
-        
-        // Ensure table exists (in a real scenario, this is done in SchemaRunner)
-        $wpdb->insert($table, [
-            'user_id' => $user_id,
-            'amount' => $amount,
-            'balance_after' => $balance,
-            'type' => $type,
-            'reason' => $reason,
-            'created_at' => current_time('mysql')
-        ]);
+        // Never debit a balance before an unchecked ledger write.
+        return false;
     }
 }

@@ -13,4 +13,4 @@ Trace every caller of `WalletService::deduct_funds` and the current direct-query
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE for the bounded fail-closed service change. Direct financial/gateway smoke, installed-WordPress authenticated HTTP mutation denial, PHP lint and delivery-ZIP Plugin Check passed; the exact DB finding disappeared. Evidence: `docs/evidence/P02-SEC-CODE-010C3C4C/summary.md` and full report. Real WooCommerce checkout QA remains open in P02-SEC-CODE-010C3B2E1.
