@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1D — Triage shipped direct-DB security findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review every `PluginCheck.Security.DirectDB.UnescapedDBParameter` finding in the
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1C.
+- Final status: DONE on 2026-11-10. Eleven shipped DirectDB findings individually traced in `docs/evidence/P02-CI-CODE-010C3B1D/ledger.json`; nine context-justified, two static export queries deferred to existing `P07-MIGRATION-SEC-CODE-028`. No product edit or scanner suppression.

@@ -1,0 +1,283 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B1D",
+  "pluginCheckReportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 11,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 22,
+      "column": 16,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $sql used in $wpdb->query()\\n$sql assigned unsafely at line 21.",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "DDL identifiers derive from WordPress table names or fixed/hash-generated names. inspect validates all table names against ASCII identifier allowlist and schema before install; SQL values are not request-supplied.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-53; class-cb-user-integrity-migration.php:7-24",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 22,
+          "column": 32,
+          "source": "WordPress.DB.PreparedSQL.NotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity-migration.php",
+      "line": 29,
+      "column": 15,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $trigger used in $wpdb->query()\\n$trigger assigned unsafely at line 28.",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "Trigger DDL uses the same inspected table identifiers and fixed/hash-generated constraint names; no request-supplied SQL fragments.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:6-27; class-cb-user-integrity-migration.php:27-31",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-migration-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 29,
+          "column": 28,
+          "source": "WordPress.DB.PreparedSQL.NotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 75,
+      "column": 19,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $sql used in $wpdb->get_var()\\n$sql used without escaping.",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "Internal read_var receives fixed SQL or wpdb->prepare output, plus a query built only after table-name identifier allowlist and schema checks.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:17-40,58-75",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 75,
+          "column": 34,
+          "source": "WordPress.DB.PreparedSQL.NotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php",
+      "line": 82,
+      "column": 17,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $sql used in $wpdb->get_row()\\n$sql used without escaping.",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "Internal read_row receives wpdb->prepare output from fixed information_schema queries with bound table/column/constraint values.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-user-integrity.php:28-61,79-83",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-user-integrity-verifier-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 82,
+          "column": 32,
+          "source": "WordPress.DB.PreparedSQL.NotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Command.php",
+      "line": 34,
+      "column": 25,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $denied_types used in $wpdb->get_results()\\n$denied_types assigned unsafely at line 33.",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "Denied post types are a fixed Migration_Config list and each value is esc_sql-escaped before quoting. No request input reaches the SQL list. Placeholder conversion is queued for the migration security gate.",
+      "sqlInjectionRisk": "low_static_values_but_placeholder_work_pending",
+      "disposition": "deferred_to_migration_security_gate",
+      "fixTaskId": "P07-MIGRATION-SEC-CODE-028",
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Migration_Config.php:12-23; Migration/Export_Command.php:26-35",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcsNearby": [
+        {
+          "line": 35,
+          "column": 13,
+          "source": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+          "disposition": "deferred",
+          "targetTask": "P07-MIGRATION-SEC-CODE-028"
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/Migration/Export_Overlay_Command.php",
+      "line": 35,
+      "column": 27,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $sql used in $wpdb->get_results()\\n$sql assigned unsafely at line 28.",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "Denied post types are the fixed escaped Migration_Config list; seed table is WordPress configured prefix plus a literal suffix. Placeholder conversion is queued for the migration security gate.",
+      "sqlInjectionRisk": "low_static_values_but_placeholder_work_pending",
+      "disposition": "deferred_to_migration_security_gate",
+      "fixTaskId": "P07-MIGRATION-SEC-CODE-028",
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/Migration/Migration_Config.php:12-23; Migration/Export_Overlay_Command.php:26-35",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-migration-export-no-plaintext.php",
+      "wpcsNearby": [
+        {
+          "line": 35,
+          "column": 40,
+          "source": "WordPress.DB.PreparedSQL.NotPrepared",
+          "disposition": "deferred",
+          "targetTask": "P07-MIGRATION-SEC-CODE-028"
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "line": 465,
+      "column": 22,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter cb_bookings_table() . ' WHERE therapist_id = %d' used in $wpdb->get_col()",
+      "severity": "ERROR",
+      "variableOriginAndGuard": "Table identifier is cb_bookings_table: configured wpdb prefix plus a fixed suffix; therapist ID is bound with %d through wpdb->prepare.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/helpers.php:540-542; class-cb-admin-content-controller.php:458-468",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 465,
+          "column": 80,
+          "source": "WordPress.DB.PreparedSQL.NotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 90,
+      "column": 19,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $table used in $wpdb->get_col()\\n$table assigned unsafely at line 88.",
+      "severity": "WARNING",
+      "variableOriginAndGuard": "Table identifier is configured wpdb prefix plus fixed suffix; therapist ID is bound with %d through wpdb->prepare.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/helpers.php:540-542; class-cb-clinic-controller.php:86-91",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 90,
+          "column": 50,
+          "source": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 247,
+      "column": 23,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $table used in $wpdb->query()\\n$table assigned unsafely at line 227.",
+      "severity": "WARNING",
+      "variableOriginAndGuard": "Booking table identifier is internal; therapist, slot, user and timestamp values use %d/%s placeholders. Transaction checks engine and rolls back on failure.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/helpers.php:540-542; class-cb-clinic-controller.php:227-253",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 248,
+          "column": 17,
+          "source": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 271,
+      "column": 21,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $table used in $wpdb->get_var()\\n$table assigned unsafely at line 227.",
+      "severity": "WARNING",
+      "variableOriginAndGuard": "Booking table identifier is internal; booking, therapist and user IDs use bound %d placeholders.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/helpers.php:540-542; class-cb-clinic-controller.php:270-272",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 271,
+          "column": 55,
+          "source": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 316,
+      "column": 19,
+      "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "message": "Unescaped parameter $table used in $wpdb->get_row()\\n$table assigned unsafely at line 296.",
+      "severity": "WARNING",
+      "variableOriginAndGuard": "Booking table identifier is internal; therapist ID and slot are bound via %d/%s in the FOR UPDATE query.",
+      "sqlInjectionRisk": "low_validated_identifier_or_prepared_values",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B1D",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/helpers.php:540-542; class-cb-clinic-controller.php:296-317",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcsNearby": [
+        {
+          "line": 316,
+          "column": 53,
+          "source": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+          "disposition": "context_justified",
+          "targetTask": null
+        }
+      ],
+      "comparisonNote": "Plugin Check DirectDB and WPCS PreparedSQL are different rules; nearby source lines, not identical finding IDs."
+    }
+  ]
+}
