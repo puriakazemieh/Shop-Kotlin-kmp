@@ -1,0 +1,2 @@
+wordpress/build-theme-zip.sh text eol=lf
+wordpress/build-bridge-zip.sh text eol=lf

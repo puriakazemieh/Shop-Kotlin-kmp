@@ -134,9 +134,10 @@ jobs:
           wp core download --version=6.4.3
           wp config create --dbname=carmilla_theme_qa --dbuser=synthetic_qa --dbpass=ci_disposable_fixture_only --dbhost=127.0.0.1 --dbprefix="qa_$(openssl rand -hex 6)_"
           wp core install --url=http://localhost:8080 --title='Synthetic QA' --admin_user=qa_admin --admin_password="$(openssl rand -hex 16)" --admin_email=qa_admin@example.test --skip-email
-          cp -R ../wordpress/carmilla-theme wp-content/themes/carmilla-theme
-          mkdir -p wp-content/themes/carmilla-theme/packages
-          cp -R ../wordpress/packages/carmilla-core wp-content/themes/carmilla-theme/packages/carmilla-core
+          bash ../wordpress/build-theme-zip.sh "$RUNNER_TEMP/carmilla-theme.zip"
+          unzip -q "$RUNNER_TEMP/carmilla-theme.zip" -d wp-content/themes
+          test -f wp-content/themes/carmilla-theme/packages/carmilla-core/Carmilla_Kernel.php
+          test ! -d wp-content/themes/carmilla-theme/packages/carmilla-core/tests
           wp theme activate carmilla-theme
           wp plugin install theme-check --version=20260901 --activate
           printf 'PHP=%s WP=%s ThemeCheck=%s\n' "$(php -r 'echo PHP_VERSION;')" "$(wp core version)" "$(wp plugin get theme-check --field=version)"
@@ -176,9 +177,14 @@ jobs:
       - name: Install pinned Plugin Check scanner
         run: |
           set -euo pipefail
+          bash wordpress/build-bridge-zip.sh "$RUNNER_TEMP/carmilla-bridge.zip"
+          mkdir -p "$RUNNER_TEMP/plugin-scan"
+          unzip -q "$RUNNER_TEMP/carmilla-bridge.zip" -d "$RUNNER_TEMP/plugin-scan"
+          test -f "$RUNNER_TEMP/plugin-scan/carmilla-bridge/packages/carmilla-core/Carmilla_Kernel.php"
+          test ! -d "$RUNNER_TEMP/plugin-scan/carmilla-bridge/tests"
           npm install --global --no-fund @wordpress/env
-          cat > .wp-env.json <<'JSON'
-          {"core":"WordPress/WordPress#6.4.3","mappings":{"wp-content/plugins/carmilla-bridge":"./wordpress/carmilla-bridge"}}
+          cat > .wp-env.json <<JSON
+          {"core":"WordPress/WordPress#6.4.3","mappings":{"wp-content/plugins/carmilla-bridge":"$RUNNER_TEMP/plugin-scan/carmilla-bridge"}}
           JSON
           wp-env start
           curl --fail --location --retry 3 --silent --show-error \
@@ -190,7 +196,7 @@ jobs:
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         with:
-          build-dir: './wordpress/carmilla-bridge'
+          build-dir: ${{ runner.temp }}/plugin-scan/carmilla-bridge
           wp-version: '6.4.3'
       - name: Fingerprint Plugin Check report
         if: always()

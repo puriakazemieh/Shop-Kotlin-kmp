@@ -19,6 +19,8 @@ on:
       - 'wordpress/carmilla-theme/**'
       - 'wordpress/carmilla-bridge/**'
       - 'wordpress/packages/carmilla-core/**'
+      - 'wordpress/build-theme-zip.sh'
+      - 'wordpress/build-bridge-zip.sh'
       - '.github/workflows/wordpress-package.yml'
 
 permissions:
@@ -47,15 +49,12 @@ jobs:
           echo "theme_ver=$theme_ver" >> "$GITHUB_OUTPUT"
           echo "plug_ver=$plug_ver"  >> "$GITHUB_OUTPUT"
 
-          # Zip from wordpress/ so the archive's top-level folder is the
-          # theme/plugin dir exactly as WordPress expects on upload.
+          # Both CI and local builds use the same staging and exclusions.
           if [ "$TARGET" = "both" ] || [ "$TARGET" = "theme" ]; then
-            ( cd wordpress && zip -rq "$GITHUB_WORKSPACE/dist/carmilla-theme-v${theme_ver}.zip" \
-                carmilla-theme -x '*/.DS_Store' -x '*/node_modules/*' )
+            bash wordpress/build-theme-zip.sh "$GITHUB_WORKSPACE/dist/carmilla-theme-v${theme_ver}.zip"
           fi
           if [ "$TARGET" = "both" ] || [ "$TARGET" = "plugin" ]; then
-            ( cd wordpress && zip -rq "$GITHUB_WORKSPACE/dist/carmilla-bridge-v${plug_ver}.zip" \
-                carmilla-bridge -x '*/tests/*' -x '*/.DS_Store' -x '*/node_modules/*' )
+            bash wordpress/build-bridge-zip.sh "$GITHUB_WORKSPACE/dist/carmilla-bridge-v${plug_ver}.zip"
           fi
           echo "== built ==" && ls -la dist
 

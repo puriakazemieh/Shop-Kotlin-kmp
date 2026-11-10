@@ -1,0 +1,18 @@
+[
+  {
+    "file": "theme-local.zip",
+    "sha256": "e8fa0e4577a160e934a5909cd1b1c52a97970c55a3e902b451b47f8a3a0eb95e"
+  },
+  {
+    "file": "bridge-local.zip",
+    "sha256": "f601abb96f5ac7acb23a668ea57be48bc11c75f2d9f01047b58291984eb15567"
+  },
+  {
+    "file": "carmilla-theme-v0.8.0.zip",
+    "sha256": "6b6e9b1b3a2b53ae87909e5bff4af3257763e8391366701168f540f82ab862df"
+  },
+  {
+    "file": "carmilla-bridge-v1.0.0.zip",
+    "sha256": "9a5033f118f1f909fd33926def83b5dc84ccd032c5461299e0a9dc05aab12228"
+  }
+]
