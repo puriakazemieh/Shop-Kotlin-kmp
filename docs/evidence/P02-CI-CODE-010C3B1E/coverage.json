@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B1E",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "expectedCount": 58,
+  "ledgerCounts": {
+    "P02-CI-CODE-010C3B1A1": 18,
+    "P02-CI-CODE-010C3B1A2": 9,
+    "P02-CI-CODE-010C3B1B": 13,
+    "P02-CI-CODE-010C3B1C": 7,
+    "P02-CI-CODE-010C3B1D": 11
+  },
+  "actualCount": 58,
+  "uniqueExpected": 58,
+  "uniqueActual": 58,
+  "wpcsComparison": {
+    "directMatches": 45,
+    "nearbyDifferentRule": 11,
+    "noPriorEntryBundledCore": 2
+  },
+  "missing": [],
+  "extra": [],
+  "messageMismatch": [],
+  "invalid": [],
+  "deferred": [
+    {
+      "key": "includes/Migration/Export_Command.php|34|25|PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "fixTaskId": "P07-MIGRATION-SEC-CODE-028"
+    },
+    {
+      "key": "includes/Migration/Export_Overlay_Command.php|35|27|PluginCheck.Security.DirectDB.UnescapedDBParameter",
+      "fixTaskId": "P07-MIGRATION-SEC-CODE-028"
+    }
+  ],
+  "dispositions": {
+    "context_justified": 56,
+    "deferred_to_migration_security_gate": 2
+  }
+}

@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1E — Reconcile Plugin Check security ledger
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ Combine the prior five per-category ledgers and prove one-to-one coverage of all
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1D.
+- Final status: DONE on 2026-11-10. `docs/evidence/P02-CI-CODE-010C3B1E/coverage.json` proves 58/58 unique shipped security findings, zero discrepancies, 45 direct WPCS matches, 11 nearby different-rule matches, two bundled-core-only findings, and two explicit P07 migration fixes.
