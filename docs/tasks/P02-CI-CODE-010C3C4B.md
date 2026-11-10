@@ -13,4 +13,4 @@ Investigate the `Internal.LineEndings.Mixed` finding at `includes/class-cb-order
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE. The path-specific LF rule keeps the shipped bytes identical to the existing Git blob; built ZIP lint and Plugin Check 2.1.0 proved the sole mixed-line-ending finding gone. Evidence: `docs/evidence/P02-CI-CODE-010C3C4B/summary.md` and full report.
