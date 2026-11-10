@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C1 — Exact Plugin Check baseline checker
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Build a version-pinned exact fingerprint baseline from C3B1/B2/B3 source-backed 
 
 ## Completion record
 
-- Final status: READY after C3C size gate.
+- Final status: DONE on 2026-11-10 for the local exact checker. All 315 pinned findings and 19 ledger hashes are verified, four P02 fix fingerprints must disappear, and 15 positive/negative scenarios passed. Evidence: `docs/evidence/P02-CI-CODE-010C3C1/`. Fresh CI and wallet checkout QA remain separate gates.
