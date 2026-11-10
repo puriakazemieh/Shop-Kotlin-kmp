@@ -1,10 +1,10 @@
 # P02-CI-CODE-010C3C — Exact Plugin Check regression gate
 
-- Status: READY
+- Status: TODO (decomposed; C3C1 first READY)
 - Phase/Area/Type: P02 / CI / CODE+QA
-- Priority/Risk/Size: P1 / HIGH / M
+- Priority/Risk/Size: P1 / HIGH / L (checker, workflow and isolated PR; decomposed)
 - Owner: AI
-- Depends on: P02-CI-CODE-010C3B3, P02-SEC-CODE-010C3B3C1, P02-SEC-CODE-010C3B3D1, and any other genuine P02 fix cards produced by B1–B3
+- Depends on: P02-CI-CODE-010C3C3, P02-SEC-CODE-010C3B3C1, P02-SEC-CODE-010C3B3D1, and any other genuine P02 fix cards produced by B1–B3
 - Blocks: P02-CI-CODE-010C3D
 
 ## Scope and acceptance
@@ -13,4 +13,4 @@ Build an exact, version-pinned baseline only for approved pre-existing Plugin Ch
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: TODO after size gate. `docs/evidence/P02-CI-CODE-010C3C/size-gate-20261110.md` records ordered checker, workflow and isolated-PR cards. No regression gate has passed from decomposition.
