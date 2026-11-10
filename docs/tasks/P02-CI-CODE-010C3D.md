@@ -4,7 +4,7 @@
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
-- Depends on: P02-CI-CODE-010C3C
+- Depends on: P02-CI-CODE-010C3A1 (pinned Theme Check report; independent of the Plugin Check parent gate)
 - Blocks: P02-CI-CODE-010C3E
 
 ## Scope and acceptance
