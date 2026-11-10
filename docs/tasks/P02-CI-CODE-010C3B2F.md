@@ -1,10 +1,10 @@
 # P02-CI-CODE-010C3B2F — Triage auth/session atomic DB findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
-- Depends on: P02-SEC-CODE-010C3B2E1
+- Depends on: P02-CI-CODE-010C3B2E (wallet checkout QA remains a separate phase gate)
 - Blocks: P02-CI-CODE-010C3B2G1
 
 ## Scope and acceptance
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in web session adapter,
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY for independent read-only DB review; wallet checkout QA remains open.

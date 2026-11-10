@@ -22,16 +22,8 @@ class WooCompat {
     }
 
     public static function register_gateways( array $gateways ): array {
-        $wallet_service = dirname( __DIR__ ) . '/Payment/WalletService.php';
-        $wallet_gateway = dirname( __DIR__ ) . '/Payment/WC_Gateway_Carmilla_Wallet.php';
-        if ( ! file_exists( $wallet_service ) || ! file_exists( $wallet_gateway ) ) {
-            return $gateways;
-        }
-
-        require_once $wallet_service;
-        require_once $wallet_gateway;
-        $gateways[] = '\\Carmilla\\Core\\Payment\\WC_Gateway_Carmilla_Wallet';
-
+        // Wallet balance and ledger writes are not atomic. Keep checkout closed
+        // until a verified replacement can safely register this gateway.
         return $gateways;
     }
 
