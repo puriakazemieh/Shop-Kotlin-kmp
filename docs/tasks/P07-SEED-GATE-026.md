@@ -53,7 +53,7 @@ P07-SEED-GATE-026
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
 - Completion authority: BOTH یا HUMAN طبق Evidence
-- Depends on: P07-SEED-DOC-025
+- Depends on: P07-SEED-DOC-025, P07-SEED-SEC-CODE-030
 - Blocks: P07-MIGRATION-GATE-027, P08-PWA-ADR-001, P13-LMS-DISC-001, P14-CLINIC-DISC-001
 - Requirement source: Master checklist row P07-SEED-GATE-026 و Source audit بخش SEED
 

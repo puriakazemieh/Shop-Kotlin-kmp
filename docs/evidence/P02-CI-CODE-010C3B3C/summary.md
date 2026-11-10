@@ -1,0 +1,5 @@
+# P02-CI-CODE-010C3B3C — alternative functions and logs
+
+Date: 2026-11-10. `node docs/evidence/P02-CI-CODE-010C3B3C/build-ledger.cjs` reproduced all 20 exact pinned shipped-file findings with source/risk and owner. Seventeen are context-justified: seven native URL parses are surrounded by strict origin/site validation; six direct CLI filesystem operations support encrypted export atomic rename/cleanup or operator STDOUT/STDERR; four logs contain only fixed error or allowlisted route codes. These scanner warnings are retained for exact future baseline review, not globally suppressed.
+
+Two admin integration test-message logs have a real privacy risk: the success message retains part of the recipient and the failure message concatenates exception text. `P02-SEC-CODE-010C3B3C1` owns the bounded log/UI fix. The shared-core importer parses and allowlists media URL host but does not explicitly enforce HTTPS or redirect/destination safety. `P07-SEED-SEC-CODE-030` owns a full seed-import URL path test before that phase gate. This review neither asserts that import is SSRF-safe nor passes the Plugin Check gate.
