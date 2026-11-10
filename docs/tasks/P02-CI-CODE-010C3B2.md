@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2 — Triage Plugin Check database findings
 
-- Status: TODO (decomposed; B2A1 first READY)
+- Status: READY (nine category ledgers reconciled; parent review pending)
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / L (135 shipped findings across 22 files; decomposed)
 - Owner: AI
@@ -13,4 +13,4 @@ Review every `WordPress.DB.*` finding in the pinned shipped-file Plugin Check re
 
 ## Completion record
 
-- Final status: TODO after size gate. `docs/evidence/P02-CI-CODE-010C3B2/size-gate-20261110.md` records 135 shipped findings across 22 files and ordered bounded review cards. No database finding has been dispositioned by this decomposition.
+- Final status: READY after B2H proved exact 135/135 ledger coverage; parent review is still required. `docs/evidence/P02-CI-CODE-010C3B2/size-gate-20261110.md` records the original decomposition.

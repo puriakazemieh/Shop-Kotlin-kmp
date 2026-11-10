@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2H",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "reportedCount": 135,
+  "ledgerCount": 135,
+  "duplicateCount": 0,
+  "missingCount": 0,
+  "extraCount": 0,
+  "messageMismatchCount": 0,
+  "wpcsMatched": 123,
+  "bundledCoreOutsideWpcs": 12,
+  "ledgers": [
+    {
+      "taskId": "P02-CI-CODE-010C3B2A1",
+      "count": 15
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2A2",
+      "count": 17
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2B",
+      "count": 17
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2C",
+      "count": 20
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2D",
+      "count": 16
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2E",
+      "count": 12
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2F",
+      "count": 16
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2G1",
+      "count": 16
+    },
+    {
+      "taskId": "P02-CI-CODE-010C3B2G2",
+      "count": 6
+    }
+  ],
+  "dispositions": {
+    "context_justified": 97,
+    "deferred_to_clinic_phase": 6,
+    "deferred_to_migration_phase": 12,
+    "fix_required": 1,
+    "deferred_to_p04": 13,
+    "deferred_to_owner_phase": 6
+  },
+  "fixOwners": {
+    "P14-CLINIC-PERF-CODE-034A": 2,
+    "P14-CLINIC-PERF-CODE-034B": 2,
+    "P14-CLINIC-PERF-CODE-034C": 2,
+    "P07-MIGRATION-PERF-REVIEW-029": 10,
+    "P07-MIGRATION-SEC-CODE-028": 2,
+    "P02-SEC-CODE-010C3B2E1": 1,
+    "P04-WP-ADMIN-DATA-052": 7,
+    "P04-WP-CATALOG-CODE-055": 3,
+    "P04-WP-CONTENT-PERF-CODE-057": 4,
+    "P04-WP-CONTENT-PERF-CODE-056": 1,
+    "P13-LMS-PERF-CODE-029": 2,
+    "P14-CLINIC-PERF-CODE-034D": 2
+  }
+}
