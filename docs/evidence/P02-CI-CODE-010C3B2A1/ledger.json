@@ -1,0 +1,308 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2A1",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 15,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 90,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live availability SELECT uses an internal bookings table identifier and a prepared therapist ID; SQL errors return unavailable instead of empty availability.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:86-91; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 90,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live availability SELECT uses an internal bookings table identifier and a prepared therapist ID; SQL errors return unavailable instead of empty availability.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:86-91; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 90,
+      "column": 44,
+      "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+      "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table at &quot;SELECT slot_time FROM $table WHERE therapist_id = %d&quot;",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live availability SELECT uses an internal bookings table identifier and a prepared therapist ID; SQL errors return unavailable instead of empty availability.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:86-91; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php",
+      "wpcs": {
+        "column": 50,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 229,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live information_schema engine check binds three WordPress/internal table names as values and rejects missing or non-InnoDB rows before booking.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:227-240",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 229,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live information_schema engine check binds three WordPress/internal table names as values and rejects missing or non-InnoDB rows before booking.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:227-240",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 241,
+      "column": 14,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "START TRANSACTION is fixed SQL with no variable; failure returns BOOKING_UNAVAILABLE.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:241-243",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 14,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 247,
+      "column": 25,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "INSERT query is wpdb-prepared: internal table identifier, bound therapist/slot/user/timestamp values, and unique slot constraint.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:226-255; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 25,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 248,
+      "column": 5,
+      "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+      "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table at &quot;INSERT IGNORE INTO $table (therapist_id, slot_time, user_id, created_at) VALUES (%d, %s, %d, %s)&quot;",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Only the internal table identifier is interpolated; all data values use %d/%s placeholders in wpdb->prepare.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:227-250; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 17,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 252,
+      "column": 17,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "ROLLBACK is fixed SQL after duplicate-slot detection, preserving transaction consistency.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:247-253",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 17,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 270,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "wpdb->update supplies the internal table name and explicit integer formats for data and WHERE values; failure aborts transaction.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:266-272; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 271,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Link verification uses internal table identifier and prepared integer IDs; live read inside transaction verifies the appointment link.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:270-272; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 271,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Link verification uses internal table identifier and prepared integer IDs; live read inside transaction verifies the appointment link.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:270-272; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 271,
+      "column": 46,
+      "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+      "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table at &quot;SELECT appointment_id FROM $table WHERE id=%d AND therapist_id=%d AND user_id=%d&quot;",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Link verification uses internal table identifier and prepared integer IDs; live read inside transaction verifies the appointment link.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:270-272; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 55,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 276,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "COMMIT is fixed SQL after appointment and link verification; failure enters rollback/error path.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:270-279",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 279,
+      "column": 13,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "ROLLBACK is fixed SQL in exception handler; no request value is interpolated.",
+      "risk": "low_prepared_or_fixed_sql_live_transaction",
+      "disposition": "context_justified",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A1",
+      "fixTaskId": null,
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:276-282",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 13,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code; scanner columns differ"
+      }
+    }
+  ]
+}

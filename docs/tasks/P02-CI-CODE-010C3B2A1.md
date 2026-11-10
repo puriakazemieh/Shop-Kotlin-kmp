@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2A1 — Triage clinic availability and booking DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `includes/class-cb-c
 
 ## Completion record
 
-- Final status: READY after C3B2 size gate.
+- Final status: DONE on 2026-11-10. All 15 shipped clinic availability/booking DB findings have exact, source-backed dispositions and WPCS matches in `docs/evidence/P02-CI-CODE-010C3B2A1/ledger.json`. No product edit or scanner suppression.
