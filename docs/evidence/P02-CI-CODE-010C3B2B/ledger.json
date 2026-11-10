@@ -1,0 +1,348 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2B",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 17,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 53,
+      "column": 14,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed START TRANSACTION follows admin capability, nonce, managed-account and integrity-state checks.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 14,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 56,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live FOR UPDATE user lock uses the internal users table and prepared integer account ID; caching would invalidate the lock.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 56,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live FOR UPDATE user lock uses the internal users table and prepared integer account ID; caching would invalidate the lock.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 57,
+      "column": 98,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed ROLLBACK follows SQL error or invalid locked row; fail closed.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 98,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 59,
+      "column": 45,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed ROLLBACK follows unavailable dependency read; fail closed.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 45,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 60,
+      "column": 36,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed ROLLBACK protects an account with posts or comments.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 36,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 61,
+      "column": 21,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "wpdb->delete uses internal usermeta table and explicit integer user_id format.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 62,
+      "column": 43,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "wpdb->delete uses internal users table and explicit integer ID format.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 43,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 64,
+      "column": 26,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live post-delete verification uses internal users table and prepared integer ID; caching would hide partial deletion.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 26,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 64,
+      "column": 26,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live post-delete verification uses internal users table and prepared integer ID; caching would hide partial deletion.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 26,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 65,
+      "column": 156,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed ROLLBACK follows failed delete or nonzero verification count.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 156,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 66,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed COMMIT runs only after deletion and zero-count verification.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 70,
+      "column": 40,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Fixed ROLLBACK runs in exception path.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 40,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 80,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live dependent-post count uses internal posts table and prepared integer author ID; stale cache could allow unsafe deletion.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 80,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live dependent-post count uses internal posts table and prepared integer author ID; stale cache could allow unsafe deletion.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 83,
+      "column": 26,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live dependent-comment count uses internal comments table and prepared integer user ID; stale cache could allow unsafe deletion.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 26,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 83,
+      "column": 26,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live dependent-comment count uses internal comments table and prepared integer user ID; stale cache could allow unsafe deletion.",
+      "risk": "low_fixed_or_prepared_transaction_fail_closed",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2B",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:38-85",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 26,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}

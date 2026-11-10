@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2B — Triage managed deletion DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `includes/class-cb-m
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B2A2.
+- Final status: DONE on 2026-11-10. Seventeen exact managed-deletion DB findings have source-backed query/transaction dispositions and WPCS matches in `docs/evidence/P02-CI-CODE-010C3B2B/ledger.json`. No product edit or scanner suppression.
