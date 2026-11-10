@@ -1,11 +1,11 @@
 # P02-CI-CODE-010C3B2E — Triage bundled core importer and wallet DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
 - Depends on: P02-CI-CODE-010C3B2D
-- Blocks: P02-CI-CODE-010C3B2F
+- Blocks: P02-SEC-CODE-010C3B2E1
 
 ## Scope and acceptance
 
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `packages/carmilla-c
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B2D.
+- Final status: DONE on 2026-11-10. Twelve exact bundled-core DB findings reviewed in `docs/evidence/P02-CI-CODE-010C3B2E/ledger.json`: 11 importer findings context-justified and one wallet integrity defect assigned to P0 fix card `P02-SEC-CODE-010C3B2E1`. No product edit.

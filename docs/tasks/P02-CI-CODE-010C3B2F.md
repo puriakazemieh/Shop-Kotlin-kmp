@@ -4,7 +4,7 @@
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
-- Depends on: P02-CI-CODE-010C3B2E
+- Depends on: P02-SEC-CODE-010C3B2E1
 - Blocks: P02-CI-CODE-010C3B2G1
 
 ## Scope and acceptance
