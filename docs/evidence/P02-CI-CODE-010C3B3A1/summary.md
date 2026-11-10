@@ -1,0 +1,5 @@
+# P02-CI-CODE-010C3B3A1 — helper naming triage
+
+Date: 2026-11-10. `node docs/evidence/P02-CI-CODE-010C3B3A1/build-ledger.cjs` reproduced all 40 exact pinned shipped-file naming findings in `includes/helpers.php`: 39 global functions and one public filter named `cb_zarinpal_amount`. Each report path, line, column, code, message and severity is retained in `ledger.json`; the builder checks that the corresponding `cb_` symbol still appears on the shipped source line. No finding was suppressed or treated as a scanner false positive.
+
+The existing `cb_` prefix is short for a global WordPress namespace. The helpers are called widely across Bridge code (for example, `cb_response` has hundreds of call sites), while the filter may have external subscribers. Renaming piecemeal risks breaking the existing Theme/Plugin product surface. The 40 findings are assigned to `P04-WP-PREFIX-CODE-058` for a compatibility-aware migration and later verification of standalone and combined ZIPs. Until then the historical exact findings remain visible to the P02 Plugin Check baseline gate; this triage does not assert WordPress.org publication compliance or a naming fix.

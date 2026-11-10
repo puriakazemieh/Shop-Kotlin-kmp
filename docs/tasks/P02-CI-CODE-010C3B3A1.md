@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B3A1 — Triage helpers naming findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / REVIEW
 - Priority/Risk/Size: P1 / MEDIUM / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all 40 pinned shipped-file naming findings in `includes/helpers.php`. Rec
 
 ## Completion record
 
-- Final status: READY after parent size gate.
+- Final status: DONE on 2026-11-10. All 40 exact helper naming findings are source-matched in `docs/evidence/P02-CI-CODE-010C3B3A1/` and owned by `P04-WP-PREFIX-CODE-058`; no naming fix or publication gate is claimed.
