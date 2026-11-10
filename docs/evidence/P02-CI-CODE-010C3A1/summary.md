@@ -24,6 +24,10 @@ Fresh `wordpress:6.4-php8.1-apache` and `mariadb:10.6` containers were started o
 
 Both disposable containers and their network were removed after the check. No owner-only or manual QA is required for this package-alignment card.
 
-## CI confirmation
+## PR CI confirmation
 
-Pending PR run of the updated quality workflow; the task remains READY until the two scanner jobs visibly build and inspect ZIP roots and upload complete reports.
+The updated [Lint & Code Quality run 42751751194](https://github.com/puriakazemieh/Shop-Kotlin-kmp/actions/runs/42751751194) ran on commit `4db12379cdb1dea1fb3c27a6ddd78bb782df5bb2`. Theme Check job `129616733996` logged a build of `$RUNNER_TEMP/carmilla-theme.zip`, installed it, and logged PHP 8.1.34, WordPress 6.4.3 and Theme Check 20260901. Plugin Check job `129616734041` logged a build of `$RUNNER_TEMP/carmilla-bridge.zip`, extracted it to `/home/runner/work/_temp/plugin-scan/carmilla-bridge`, used that exact path as the action's `build-dir`, and confirmed installed Plugin Check 2.1.0. Both install/setup steps succeeded. Both scanner jobs still failed on actual findings; all fingerprint and report uploads succeeded. ktlint, detekt and WPCS passed.
+
+The complete Plugin Check report (artifact `13733373414`) has 315 findings across 42 file headers: 80 ERROR, 235 WARNING, **zero test-path findings**, and 49 findings in bundled core paths. Its SHA-256 is `50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd`, matching fingerprint artifact `13734116938`. The complete raw report is preserved as `plugin-check-results.txt.gz`; decompression reproduced that hash. The Theme Check JSON (artifact `13733412769`) has 58 findings: 13 REQUIRED, 16 WARNING, 22 RECOMMENDED and 7 INFO, with zero test-path mentions. Its SHA-256 is `e5c56a2c74e5bde8e8e6b5f256fee5d5a408567eeb001d3de4958341060200b5`, matching the CI fingerprint. Both complete machine-readable reports and fingerprint files are retained here.
+
+This validates scanner input alignment and artifact capture; it does **not** approve any security/DB/Theme Check finding or the overall quality gate. `P02-CI-CODE-010C3B1` is next for exact security triage. The Theme-only manifest 404 is tracked by the later WordPress independent-product contract, not silently accepted here.

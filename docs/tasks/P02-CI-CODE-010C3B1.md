@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1 — Triage Plugin Check security findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ For every `WordPress.Security.*` and `PluginCheck.Security.*` finding in the pin
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY after C3A1; pinned shipped-file Plugin Check report is in `docs/evidence/P02-CI-CODE-010C3A1/`.

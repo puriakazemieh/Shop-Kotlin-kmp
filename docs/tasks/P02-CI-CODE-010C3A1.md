@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3A1 — Align WordPress delivery ZIPs and scanner roots
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE+QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ The C3A inventory found that the package workflow's Bridge and Theme ZIPs omit t
 
 ## Completion record
 
-- Final status: READY after C3A; created from its measured package mismatch. No implementation in C3A.
+- Final status: DONE on 2026-11-10. Both build paths use the same staged builders; ZIP inventories match, core is bundled, tests are excluded and missing-core builds fail. Disposable WordPress 6.4.3 accepted Theme-only and Plugin-on-standard-Theme ZIP installs and loaded each bundled kernel. PR run `42751751194` proved both scanners read the ZIP-extracted roots and saved complete hashed reports. Evidence: `docs/evidence/P02-CI-CODE-010C3A1/`. Scanner findings and Theme-only manifest 404 remain open in their own cards; no phase gate PASS claimed.
