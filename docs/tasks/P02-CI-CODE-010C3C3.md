@@ -13,4 +13,4 @@ On an isolated synthetic CI branch/PR, observe a positive run and a new-finding 
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE. Isolated draft PR #34 was closed without merge. Positive and one-new-finding negative GitHub Actions runs, job and artifact IDs, extracted full reports, observed versions, diagnostics, rollback and limitations are recorded in `docs/evidence/P02-CI-CODE-010C3C3/summary.md`. The real package and wallet gates remain open.
