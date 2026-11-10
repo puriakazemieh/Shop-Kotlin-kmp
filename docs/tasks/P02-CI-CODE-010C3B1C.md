@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1C — Triage shipped output escaping findings
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI
@@ -13,4 +13,4 @@ Review every `WordPress.Security.EscapeOutput.*` finding in the pinned shipped-f
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1B.

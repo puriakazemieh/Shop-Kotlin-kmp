@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B1B — Triage shipped nonce findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / SECURITY-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all `WordPress.Security.NonceVerification.*` findings in the pinned shipp
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B1A2.
+- Final status: DONE on 2026-11-10. All 13 shipped nonce findings have individual request-boundary and source-backed dispositions in `docs/evidence/P02-CI-CODE-010C3B1B/ledger.json`; 13 WPCS matches. Manifest smoke passed. No product edit or scanner suppression.

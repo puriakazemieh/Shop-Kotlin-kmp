@@ -1,0 +1,268 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B1B",
+  "pluginCheckReportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 13,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 82,
+      "column": 30,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET view selector",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET tab only selects one of five literal admin views after can_manage_integrations; settings writes use a separate form and nonce path.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:78-94,189",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 30,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 82,
+      "column": 59,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET view selector",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET tab only selects one of five literal admin views after can_manage_integrations; settings writes use a separate form and nonce path.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:78-94,189",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 59,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "line": 82,
+      "column": 109,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET view selector",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET tab only selects one of five literal admin views after can_manage_integrations; settings writes use a separate form and nonce path.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:78-94,189",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-integrations-form-http-real-wp.php",
+      "wpcs": {
+        "column": 109,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php",
+      "line": 59,
+      "column": 28,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET notice",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET error string is sanitized, then escaped into a notice after admin capability; POST save has a separate admin nonce gate.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php:24-28,54-65",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-manifest-notice-real-wp.php",
+      "wpcs": {
+        "column": 34,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php",
+      "line": 59,
+      "column": 71,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET notice",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET error string is sanitized, then escaped into a notice after admin capability; POST save has a separate admin nonce gate.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php:24-28,54-65",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-manifest-notice-real-wp.php",
+      "wpcs": {
+        "column": 77,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php",
+      "line": 60,
+      "column": 39,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET notice",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET error string is sanitized, then escaped into a notice after admin capability; POST save has a separate admin nonce gate.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php:24-28,54-65",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-manifest-notice-real-wp.php",
+      "wpcs": {
+        "column": 48,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php",
+      "line": 66,
+      "column": 26,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET notice",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET updated flag selects only fixed success copy after admin capability; POST save has a separate admin nonce gate.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php:24-28,54-67",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-manifest-notice-real-wp.php",
+      "wpcs": {
+        "column": 35,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "line": 504,
+      "column": 15,
+      "code": "WordPress.Security.NonceVerification.Missing",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "authenticated admin REST upload",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "Multipart file presence is checked inside an admin REST POST route. WordPress REST cookie nonce or signed Bearer authentication runs before the require_admin permission callback; upload runs only after that boundary.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:20-38,503-510; class-cb-plugin.php:175-196,242-244",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-auth-http-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php",
+      "line": 551,
+      "column": 15,
+      "code": "WordPress.Security.NonceVerification.Missing",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "authenticated admin REST upload",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "Multipart file presence is checked inside an admin REST POST route. WordPress REST cookie nonce or signed Bearer authentication runs before the require_admin permission callback; upload runs only after that boundary.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php:37-39,550-557; class-cb-plugin.php:175-196,242-244",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-auth-http-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-admin-product-controller.php",
+      "line": 67,
+      "column": 15,
+      "code": "WordPress.Security.NonceVerification.Missing",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "authenticated admin REST upload",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "Multipart file presence is checked inside an admin REST POST route, protected by WordPress REST authentication and require_admin before callback.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-admin-product-controller.php:26-30,66-74; class-cb-plugin.php:175-196,242-244",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-auth-http-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-academy-controller.php",
+      "line": 650,
+      "column": 15,
+      "code": "WordPress.Security.NonceVerification.Missing",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "authenticated user REST upload",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "Multipart project file presence is checked inside a login-gated REST POST route. WordPress cookie nonce or signed Bearer authentication precedes require_login and callback.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-academy-controller.php:47-63,648-656; class-cb-plugin.php:175-196,235-240",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/probe-root-alias-auth-http-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 28,
+      "column": 20,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET notice",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET status selects escaped fixed notice after admin capability; destructive POST checks admin nonce and exact confirmation in handle_delete.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:26-44",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 26,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php",
+      "line": 28,
+      "column": 73,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "requestBoundary": "admin GET notice",
+      "disposition": "context_justified",
+      "risk": "low_after_authentication_or_read_only_selection",
+      "reason": "GET status selects escaped fixed notice after admin capability; destructive POST checks admin nonce and exact confirmation in handle_delete.",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-managed-user-deletion.php:26-44",
+      "verificationTaskId": "P02-CI-CODE-010C3B1B",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-managed-user-deletion-real-wp.php",
+      "wpcs": {
+        "column": 79,
+        "disposition": "context_justified",
+        "matchBasis": "path+line+code+occurrence; scanner columns may differ"
+      }
+    }
+  ]
+}
