@@ -1,0 +1,365 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3B2A2",
+  "reportSha256": "50f0c694447c4b9aab40b1d66c4091cecdad0614ba18c8f70208c3f2b36fd0bd",
+  "count": 17,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 299,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live InnoDB engine inspection binds two internal table names as values and fails closed on missing/error rows.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:296-309",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 299,
+      "column": 20,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Live InnoDB engine inspection binds two internal table names as values and fails closed on missing/error rows.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:296-309",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 20,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 311,
+      "column": 14,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "START TRANSACTION is fixed SQL with no request data; error returns CANCELLATION_UNAVAILABLE.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:311-313",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 14,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 316,
+      "column": 21,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "FOR UPDATE lock query uses internal bookings table identifier and prepared therapist ID/slot; live row lock must bypass cache.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:314-317; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 316,
+      "column": 21,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "FOR UPDATE lock query uses internal bookings table identifier and prepared therapist ID/slot; live row lock must bypass cache.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:314-317; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 21,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 316,
+      "column": 44,
+      "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+      "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table at &quot;SELECT id,appointment_id FROM $table WHERE therapist_id=%d AND slot_time=%s FOR UPDATE&quot;",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "FOR UPDATE lock query uses internal bookings table identifier and prepared therapist ID/slot; live row lock must bypass cache.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:314-317; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 53,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 319,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "FOR UPDATE status read uses internal postmeta table and prepared post ID; fixed meta key and SQL-error check.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:318-320",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 319,
+      "column": 23,
+      "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+      "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "FOR UPDATE status read uses internal postmeta table and prepared post ID; fixed meta key and SQL-error check.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:318-320",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 23,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 322,
+      "column": 27,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "wpdb->delete uses internal bookings table and integer WHERE format; failure aborts transaction.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:321-326; helpers.php:540-542",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 27,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 323,
+      "column": 18,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "COMMIT is fixed SQL after lock, status and release; failure enters rollback path.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:319-328",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 18,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 326,
+      "column": 13,
+      "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+      "message": "Use of a direct database call is discouraged.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "ROLLBACK is fixed SQL in catch path with no variable.",
+      "risk": "low_fixed_or_prepared_live_transaction",
+      "disposition": "context_justified",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:323-329",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-cancel-atomic-real-wp.php",
+      "wpcs": {
+        "column": 13,
+        "disposition": "context_justified",
+        "targetTask": null,
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 338,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "get_posts meta_key filters appointment ownership; numberposts=100 bounds output but meta scan needs indexed ownership work in P14.",
+      "risk": "performance_work_pending",
+      "disposition": "deferred_to_clinic_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034A",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:332-346",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034A",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 339,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "get_posts meta_value is the current integer user ID; ownership meta scan needs indexed ownership work in P14.",
+      "risk": "performance_work_pending",
+      "disposition": "deferred_to_clinic_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034A",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:332-346",
+      "testPath": "wordpress/carmilla-bridge/tests/smoke-booking-atomic-real-wp.php",
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034A",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 473,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "get_comments meta_key filters message ownership; current listing lacks bounded pagination, assigned to P14.",
+      "risk": "performance_work_pending",
+      "disposition": "deferred_to_clinic_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034B",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:467-480",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034B",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 474,
+      "column": 13,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "get_comments meta_value is the current integer user ID; current listing lacks bounded pagination, assigned to P14.",
+      "risk": "performance_work_pending",
+      "disposition": "deferred_to_clinic_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034B",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:467-480",
+      "testPath": null,
+      "wpcs": {
+        "column": 13,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034B",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 519,
+      "column": 83,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+      "message": "Detected usage of meta_key, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Message count filters current user via commentmeta key/value. An indexed ownership predicate is assigned to P14.",
+      "risk": "performance_work_pending",
+      "disposition": "deferred_to_clinic_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034C",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:516-524",
+      "testPath": null,
+      "wpcs": {
+        "column": 83,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034C",
+        "matchBasis": "path+line+code"
+      }
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php",
+      "line": 519,
+      "column": 111,
+      "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_value",
+      "message": "Detected usage of meta_value, possible slow query.",
+      "severity": "WARNING",
+      "sqlOriginAndGuard": "Message count filters current user via commentmeta key/value. An indexed ownership predicate is assigned to P14.",
+      "risk": "performance_work_pending",
+      "disposition": "deferred_to_clinic_phase",
+      "fixTaskId": "P14-CLINIC-PERF-CODE-034C",
+      "verificationTaskId": "P02-CI-CODE-010C3B2A2",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php:516-524",
+      "testPath": null,
+      "wpcs": {
+        "column": 111,
+        "disposition": "deferred",
+        "targetTask": "P14-CLINIC-PERF-CODE-034C",
+        "matchBasis": "path+line+code"
+      }
+    }
+  ]
+}

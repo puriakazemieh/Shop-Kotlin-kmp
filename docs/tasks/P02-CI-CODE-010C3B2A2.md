@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3B2A2 — Triage clinic cancellation and report DB findings
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / DB-REVIEW
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,4 @@ Review all pinned shipped-file `WordPress.DB.*` findings in `includes/class-cb-c
 
 ## Completion record
 
-- Final status: READY after completion of prerequisite P02-CI-CODE-010C3B2A1.
+- Final status: DONE on 2026-11-10. Seventeen exact clinic cancellation/report DB findings reconciled with WPCS in `docs/evidence/P02-CI-CODE-010C3B2A2/ledger.json`: 11 context-justified transaction findings and six slow-meta findings assigned to three existing P14 performance cards. No product edit.
