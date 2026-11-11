@@ -48,9 +48,9 @@ P02-CI-OPS-016
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / OPS
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P02-CORE-CODE-015
