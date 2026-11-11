@@ -167,6 +167,7 @@ jobs:
           const baseline = require('./tools/code-quality/theme-check-baseline.json');
           const target = path.join(process.env.RUNNER_TEMP, 'theme-check.json');
           const approved = baseline.findings.filter(x => x.policy === 'allow').map(x => ({ type: x.type, value: x.value }));
+          approved.push({ type: 'REQUIRED', value: 'SYNTHETIC UNREVIEWED VIOLATION FOR P02-CI-CODE-010C4 NEGATIVE GATE PROOF' });
           fs.writeFileSync(target, JSON.stringify(approved) + '\n');
           fs.writeFileSync(path.join(process.env.RUNNER_TEMP, 'theme-check-synthetic-marker.txt'), 'SYNTHETIC APPROVED FIXTURE; not a product scan\n');
           NODE
