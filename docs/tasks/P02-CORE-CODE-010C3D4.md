@@ -1,6 +1,6 @@
 # P02-CORE-CODE-010C3D4 — Clean up PrivacyManager translation string formatting
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CORE / CODE
 - Priority/Risk/Size: P2 / LOW / XS
 - Owner: AI
