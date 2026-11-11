@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "taskId": "P02-CI-CODE-010C3C4D",
+  "reportSha256": "3c45375b51d1c525be3accd509ddc5f6d11e7c37fc27c5f6974cf2465c2fecbb",
+  "count": 3,
+  "findings": [
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "shippedZipPath": "includes/class-cb-integrations-controller.php",
+      "line": 78,
+      "column": 30,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:74-79,93-121,15-23",
+      "sourceAndRisk": "The first GET read only selects the admin display tab after capability check; the value is sanitized and constrained to five known tabs. No GET mutation occurs. The test-message POST separately checks its nonce and settings forms use WordPress settings_fields.",
+      "disposition": "context_justified_read_only_tab_navigation",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3C4D"
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "shippedZipPath": "includes/class-cb-integrations-controller.php",
+      "line": 78,
+      "column": 59,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:74-79,93-121,15-23",
+      "sourceAndRisk": "The second GET read only checks that the admin tab parameter is a string; it never writes data. Capability, sanitization and five-value allowlist guard the display branch; mutating POST handlers require their own nonce.",
+      "disposition": "context_justified_read_only_tab_navigation",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3C4D"
+    },
+    {
+      "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
+      "shippedZipPath": "includes/class-cb-integrations-controller.php",
+      "line": 78,
+      "column": 109,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "message": "Processing form data without nonce verification.",
+      "severity": "WARNING",
+      "sourceTrace": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php:74-79,93-121,15-23",
+      "sourceAndRisk": "The third GET read is unslashed and sanitized for a display-only tab selection. Invalid values fall back to sms. The rendering path has no state write; the test-message POST and settings form use separate nonce mechanisms.",
+      "disposition": "context_justified_read_only_tab_navigation",
+      "fixTaskId": null,
+      "verificationTaskId": "P02-CI-CODE-010C3C4D"
+    }
+  ]
+}

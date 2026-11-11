@@ -13,4 +13,4 @@ Rescan the actual delivery-shaped Bridge ZIP using the pinned scanner and WordPr
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE. The retained delivery-ZIP report was reconciled against all historical findings; three exact read-only tab warnings received individual source-backed ledger entries. Current full report passed, a synthetic new finding failed, and 19 checker scenarios passed. Evidence: `docs/evidence/P02-CI-CODE-010C3C4D/`. The parent gate remains BLOCKED by distinct WooCommerce checkout QA.

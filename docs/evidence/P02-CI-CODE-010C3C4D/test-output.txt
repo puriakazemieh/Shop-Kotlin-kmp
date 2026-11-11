@@ -1,0 +1,20 @@
+PASS approved subset
+PASS current shipped reviewed report
+PASS current report new finding rejected
+PASS resolved finding may disappear
+PASS unresolved P02 finding rejected
+PASS new security
+PASS new DB
+PASS new other
+PASS message mutation rejected
+PASS duplicate report finding rejected
+PASS empty report rejected
+PASS missing report rejected
+PASS version drift rejected
+PASS malformed baseline rejected
+PASS fixture ledgers accepted
+PASS current ledger tamper rejected
+PASS current report tamper rejected
+PASS duplicate or tampered ledger rejected
+PASS missing ledger rejected
+PASS all baseline scenarios
