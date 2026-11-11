@@ -48,7 +48,7 @@ P02-CI-CODE-010
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1/MEDIUM / L (decomposed into 010A then 010B then 010C)
 - Owner: AI
