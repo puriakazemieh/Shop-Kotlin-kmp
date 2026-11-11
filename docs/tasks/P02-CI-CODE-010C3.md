@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3 — Plugin and Theme Check bounded baselines
 
-- Status: TODO (decomposed; C3A and C3A1 done, C3B1 first READY)
+- Status: READY (all child tasks C3A, C3A1, C3B1-B3, C3C, C3D, 010C3D1-D4, and C3E completed)
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / L (real 3,381-finding Plugin Check plus Theme Check; decomposed into ordered M-or-smaller C3A–C3E with package correction C3A1)
 - Owner: AI; completion authority: BOTH for CI evidence

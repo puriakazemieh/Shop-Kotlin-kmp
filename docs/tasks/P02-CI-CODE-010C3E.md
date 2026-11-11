@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3E — Exact Theme Check regression gate
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE+QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -13,4 +13,11 @@ Implement an exact, pinned Theme Check finding baseline from C3D's approved arti
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE
+- Completed on: 2026-11-11
+- Changes made:
+  - Created `tools/code-quality/check_theme_check_baseline.cjs` to enforce exact Theme Check baseline, scanner/WP version pinning, and cryptographic integrity.
+  - Generated canonical `tools/code-quality/theme-check-baseline.json` with 58 reviewed findings (26 `must_disappear`, 32 `allow`).
+  - Added test suite `tools/code-quality/test_theme_check_baseline.cjs` with 23 scenario tests (all passed).
+  - Updated `.github/workflows/code-quality.yml` `theme-check` job to assert pinned versions and enforce exact baseline.
+- Evidence: `docs/evidence/P02-CI-CODE-010C3E/summary.md`.
