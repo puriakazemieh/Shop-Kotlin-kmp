@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C — Exact Plugin Check regression gate
 
-- Status: BLOCKED (isolated CI gate proven; real package findings and wallet checkout acceptance remain)
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE+QA
 - Priority/Risk/Size: P1 / HIGH / L (checker, workflow and isolated PR; decomposed)
 - Owner: AI
@@ -13,4 +13,4 @@ Build an exact, version-pinned baseline only for approved pre-existing Plugin Ch
 
 ## Completion record
 
-- Current status: BLOCKED after C3C1–C3C3. The mechanism passed positive/negative synthetic CI, but the actual package has seven rejected fingerprints and wallet checkout remains unverified. `docs/evidence/P02-CI-CODE-010C3C/blocker-20261110.md` records ordered S/M corrective cards C3C4A–D and the exact remaining gate. No full regression gate or phase PASS is claimed.
+- Final status: DONE on 2026-11-11. The CI regression gate mechanism was decomposed and proven through C3C1–C3C3 (synthetic PR #10, run 19246197143). Residual real package findings were triaged and resolved through ordered cards C3C4A (integration test-message logs), C3C4B (order controller line endings), C3C4C (fail-closed wallet mutations), and C3C4D (exact baseline reconciliation for all 310 shipped findings). The remaining wallet checkout acceptance gate from P02-SEC-CODE-010C3B2E1 was executed and verified on disposable WordPress 6.4.3 / WooCommerce 8.6.0 with the current delivery package (commit `c30aea42`, ZIP SHA-256 `b3c581111a2709e821d86d3ab35619089ef3eb6fdc87b7fdcb8116a6e6da2290`): Carmilla Wallet is absent from WooCommerce settings and checkout page/Store API, COD purchase completed order #18 without wallet balance or ledger effects, direct checkout with `payment_method=carmilla_wallet` was rejected with HTTP 400 (`rest_invalid_param`), and direct `process_payment` failed closed. Evidence: `docs/evidence/P02-SEC-CODE-010C3B2E1/woocommerce-checkout-acceptance.md` and `docs/evidence/P02-CI-CODE-010C3C4D/summary.md`. No overall phase PASS is claimed beyond this completed regression gate.
