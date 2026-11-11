@@ -1,0 +1,13 @@
+title = "Gitleaks configuration for kmp-shop"
+
+[allowlist]
+description = "Allowlist for known test fixtures and documentation false positives"
+stopwords = [
+    "incorrect/ambiguous",
+    "carmilla-test-key-123",
+    "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuB240409Y_Z6s0Z0eX1lqZ1gY"
+]
+paths = [
+    '''docs/evidence/.*''',
+    '''wordpress/packages/carmilla-core/tests/.*'''
+]

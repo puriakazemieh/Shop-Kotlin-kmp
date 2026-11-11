@@ -48,9 +48,9 @@ P02-CI-CODE-011
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P02-CI-CODE-010
@@ -106,10 +106,10 @@ tampered dependency/known secret fixture CI را fail کند
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -125,16 +125,20 @@ tampered dependency/known secret fixture CI را fail کند
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at: 2026-08-26T11:02:20+03:30
-- Completed at: 2026-08-26T11:05:00+03:30
-- Changed files: .github/workflows/security.yml, gradle/verification-metadata.xml
-- Commands and exit codes: N/A
-- Manual tester/date/result: N/A
-- Evidence paths: docs/evidence/P02-CI-CODE-011/EVIDENCE.md
+- Started at: 2026-11-11T18:50:00+03:30
+- Completed at: 2026-11-11T19:08:00+03:30
+- Changed files: .github/workflows/security.yml, .github/.gitleaks.toml, .github/.gitleaksignore, gradle/verification-metadata.xml, tools/security/verify_security_gates.cjs, docs/evidence/P02-CI-CODE-011/**
+- Commands and exit codes: node tools/security/verify_security_gates.cjs (exit 0), .\gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs (exit 0)
+- Manual tester/date/result: N/A (Automated security gate verification with positive & negative proofs)
+- Evidence paths: docs/evidence/P02-CI-CODE-011/summary.md, docs/evidence/P02-CI-CODE-011/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: TODO
+- Final status: DONE
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
 - دلیل: فایل verification-metadata و lockfile موجود نیست؛ آزمون منفی dependency/secret ثبت نشده است.
 - گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md
+
+## Completion Verification — 2026-11-11
+- وضعیت پس از تولید کامل `gradle/verification-metadata.xml`، پیکربندی Gitleaks و اجرای هر ۴ آزمون مثبت و منفی با اسکریپت خودکار برابر DONE شد.
+- گزارش کامل: `docs/evidence/P02-CI-CODE-011/summary.md`

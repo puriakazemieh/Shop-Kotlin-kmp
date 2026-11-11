@@ -21,6 +21,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .github/.gitleaks.toml
         # tampered dependency/known secret fixture CI را fail کند
 
   dependency-verification:
@@ -39,4 +40,4 @@ jobs:
         # Gradle will automatically verify signatures and checksums 
         # using gradle/verification-metadata.xml during resolving.
         # This checks the dependency locking and verification.
-        run: ./gradlew dependencies --no-daemon
+        run: ./gradlew dependencies :composeApp:dependencies --no-daemon

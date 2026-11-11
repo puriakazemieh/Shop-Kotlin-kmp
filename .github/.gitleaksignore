@@ -1,0 +1,11 @@
+# Gitleaks ignore file
+# Ignores known false positives and historical test fixtures
+
+# False positive in doc: docs/evidence/P00-PWA-AUTH-WP-021C04A/verification.md
+fa52b1e9d513a8ad0a0dd2396fee094dc8f9ffdc:docs/evidence/P00-PWA-AUTH-WP-021C04A/verification.md:generic-api-key:11
+
+# Dummy VAPID public key in index.html
+9d9da7ee1fa9dca40bca0cd2e71831be0983bf12:composeApp/src/webMain/resources/index.html:generic-api-key:61
+
+# Dummy test key in WordPress smoke test
+248742ff7e78109be431e15f1fd023a462727a55:wordpress/packages/carmilla-core/tests/smoke-carmilla-core.php:generic-api-key:70
