@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C4 — quality gate positive and negative PR proof
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI; completion authority: BOTH for CI evidence
