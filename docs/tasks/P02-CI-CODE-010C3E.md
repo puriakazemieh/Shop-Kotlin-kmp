@@ -4,7 +4,7 @@
 - Phase/Area/Type: P02 / CI / CODE+QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
-- Depends on: P02-CI-CODE-010C3D and any genuine fix cards produced by D
+- Depends on: P02-CORE-CODE-010C3D4 (and preceding fix cards P02-SEC-CODE-010C3D1, P02-THEME-CODE-010C3D2, P02-THEME-CODE-010C3D3)
 - Blocks: P02-CI-CODE-010C3
 
 ## Scope and acceptance
