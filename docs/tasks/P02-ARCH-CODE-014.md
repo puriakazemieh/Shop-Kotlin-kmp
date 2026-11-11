@@ -50,7 +50,7 @@ P02-ARCH-CODE-014
 
 - Status: DONE
 - Phase/Area/Type: P02 / ARCH / CODE
-- Priority/Risk/Size: P2/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P2/MEDIUM / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P02-ARCH-CODE-013
@@ -106,10 +106,10 @@ navigation characterization/deep-link tests قبل و بعد یکسان
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -125,16 +125,15 @@ navigation characterization/deep-link tests قبل و بعد یکسان
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at: 2026-08-26T11:29:00+03:30
-- Completed at: 2026-08-26T11:38:00+03:30
-- Changed files: core/navigation/src/commonMain/kotlin/com/kazemieh/navigation/AppNavigation.kt, و ایجاد 7 گراف جدید در همین مسیر
-- Commands and exit codes: `./gradlew.bat :composeApp:compileKotlinJvm` (0), `./gradlew.bat :composeApp:compileKotlinJs` (0)
-- Manual tester/date/result: N/A
-- Evidence paths: docs/evidence/P02-ARCH-CODE-014/EVIDENCE.md
+- Started at: 2026-11-11T19:40:00+03:30
+- Completed at: 2026-11-11T19:51:00+03:30
+- Changed files: core/navigation/src/jvmTest/kotlin/com/kazemieh/navigation/NavigationCharacterizationTest.kt, tools/navigation/verify_navigation_graphs.cjs, docs/evidence/P02-ARCH-CODE-014/summary.md, docs/evidence/P02-ARCH-CODE-014/EVIDENCE.md
+- Commands and exit codes: `node tools/navigation/verify_navigation_graphs.cjs` (0), `./gradlew.bat :core:navigation:jvmTest` (0), `./gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs` (0)
+- Manual tester/date/result: N/A (Automated technical characterization verification complete)
+- Evidence paths: docs/evidence/P02-ARCH-CODE-014/summary.md, docs/evidence/P02-ARCH-CODE-014/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: TODO
+- Final status: DONE
 
-## Status audit — 2026-10-28
-- گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
-- دلیل: گراف‌ها جدا شده‌اند، اما تست characterization و deep-link قبل/بعد ثبت نشده است.
-- گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md
+## Status audit — 2026-10-28 (Resolved 2026-11-11)
+- وضعیت بازبینی ۲۰۲۶-۱۰-۲۸ با اضافه شدن آزمون‌های جامع Characterization و Deep-Link در NavigationCharacterizationTest.kt و اجرای موفق بسته ارزیابی tools/navigation/verify_navigation_graphs.cjs به‌طور کامل مرتفع شد و به DONE ارتقا یافت.
+- شواهد در docs/evidence/P02-ARCH-CODE-014/summary.md در دسترس است.

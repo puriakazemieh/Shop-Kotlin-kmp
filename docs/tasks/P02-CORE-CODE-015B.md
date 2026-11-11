@@ -36,7 +36,7 @@ P02-CORE-CODE-015B
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CORE / CODE
 - Priority/Risk/Size: P1/MEDIUM / M
 - Owner: AI
