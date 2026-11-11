@@ -910,7 +910,7 @@
     },
     {
       "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
-      "line": 82,
+      "line": 78,
       "column": 30,
       "source": "WordPress.Security.NonceVerification.Recommended",
       "message": "Processing form data without nonce verification.",
@@ -922,7 +922,7 @@
     },
     {
       "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
-      "line": 82,
+      "line": 78,
       "column": 59,
       "source": "WordPress.Security.NonceVerification.Recommended",
       "message": "Processing form data without nonce verification.",
@@ -934,7 +934,7 @@
     },
     {
       "path": "wordpress/carmilla-bridge/includes/class-cb-integrations-controller.php",
-      "line": 82,
+      "line": 78,
       "column": 109,
       "source": "WordPress.Security.NonceVerification.Recommended",
       "message": "Processing form data without nonce verification.",
