@@ -50,7 +50,7 @@ P02-ARCH-CODE-013
 
 - Status: DONE
 - Phase/Area/Type: P02 / ARCH / CODE
-- Priority/Risk/Size: P2/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P2/HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P02-ARCH-ADR-012
@@ -106,10 +106,10 @@ current applicationIdها و build behavior حفظ؛ upgrade test
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -125,16 +125,20 @@ current applicationIdها و build behavior حفظ؛ upgrade test
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at: 2026-08-26T11:23:00+03:30
-- Completed at: 2026-08-26T11:29:00+03:30
-- Changed files: settings.gradle.kts, build-logic/convention/src/main/kotlin/carmilla.compose.application.gradle.kts, composeApp/build.gradle.kts, androidApp/build.gradle.kts, androidApp/src/main/AndroidManifest.xml, androidApp/src/main/kotlin/com/kazemieh/shop/MainActivity.kt, androidApp/src/main/kotlin/com/kazemieh/shop/ShopApplication.kt
-- Commands and exit codes: `./gradlew.bat tasks` (0)
-- Manual tester/date/result: N/A
-- Evidence paths: docs/evidence/P02-ARCH-CODE-013/EVIDENCE.md
+- Started at: 2026-11-11T19:22:00+03:30
+- Completed at: 2026-11-11T19:33:00+03:30
+- Changed files: androidApp/build.gradle.kts, gradle/verification-metadata.xml, tools/android/verify_android_app_shell.cjs, docs/evidence/P02-ARCH-CODE-013/**
+- Commands and exit codes: node tools/android/verify_android_app_shell.cjs (exit 0), .\gradlew.bat :androidApp:assembleDebug (exit 0), .\gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs (exit 0)
+- Manual tester/date/result: N/A (Automated multi-flavor build, applicationId checks, and package upgrade compatibility test)
+- Evidence paths: docs/evidence/P02-ARCH-CODE-013/summary.md, docs/evidence/P02-ARCH-CODE-013/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: TODO
+- Final status: DONE
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.
 - دلیل: ماژول androidApp موجود است، اما فقط Gradle tasks اجرا شده؛ Android build و upgrade/رفتار قبلی اثبات نشده است.
 - گزارش: docs/evidence/P02-STATUS-AUDIT-20261028/summary.md
+
+## Completion Verification — 2026-11-11
+- وضعیت پس از تصحیح `targetSdk = 36` مطابق `RTK.md`، بیلد موفق هر ۶ فلِیوِر، راستی‌آزمایی شناسه و سایز APKها، و اجرای موفق آزمون ارتقای پکیج (Upgrade Test) با اسکریپت خودکار برابر DONE شد.
+- گزارش کامل: `docs/evidence/P02-ARCH-CODE-013/summary.md`
