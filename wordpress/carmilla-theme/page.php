@@ -21,6 +21,14 @@ get_header();
 	while ( have_posts() ) :
 		the_post();
 		the_content();
+		wp_link_pages(
+			array(
+				'before'      => '<nav class="page-links" aria-label="' . esc_attr__( 'برگه‌ها', 'carmilla' ) . '"><span class="page-links-title">' . esc_html__( 'برگه‌ها:', 'carmilla' ) . '</span>',
+				'after'       => '</nav>',
+				'link_before' => '<span class="page-number">',
+				'link_after'  => '</span>',
+			)
+		);
 	endwhile;
 	?>
 </main>

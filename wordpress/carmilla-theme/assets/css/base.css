@@ -189,3 +189,41 @@ p, .t-body { font-weight: 400; font-size: 15px; line-height: 28px; margin: 0 0 v
 .product-card .body { padding: var(--sp-md); }
 .price { font-weight: 700; color: var(--ink); }
 .price--old { color: var(--ink-soft); text-decoration: line-through; font-weight: 400; font-size: 12px; }
+
+/* ---- Post Pagination (wp_link_pages) ---- */
+.page-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-xs);
+  align-items: center;
+  margin-block: var(--sp-lg);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+.page-links-title {
+  margin-inline-end: var(--sp-xs);
+  font-weight: 600;
+}
+.page-links a,
+.page-links .page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+.page-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.page-links > .page-number:not(a) {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}

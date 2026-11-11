@@ -40,11 +40,9 @@ $nav_items = carmilla_bottom_nav_items();
 				</div>
 			</div>
 			<div>
-				<div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:12px;">خبرنامه</div>
-				<div style="font-size:12.5px;color:var(--ink-soft);line-height:1.9;margin-bottom:10px;">برای اطلاع از جدیدترین‌ها عضو شوید.</div>
-				<form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" style="display:flex;gap:8px;">
-					<input type="email" placeholder="ایمیل شما" style="flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:10px 13px;color:var(--ink);font-family:inherit;font-size:12.5px;">
-				</form>
+				<div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:12px;"><?php esc_html_e( 'جستجو', 'carmilla' ); ?></div>
+				<div style="font-size:12.5px;color:var(--ink-soft);line-height:1.9;margin-bottom:10px;"><?php esc_html_e( 'جستجو در مقالات و خدمات', 'carmilla' ); ?></div>
+				<?php get_search_form(); ?>
 			</div>
 		</div>
 		<div style="border-top:1px solid var(--line);text-align:center;font-size:12px;color:var(--ink-soft);padding:16px;">© <?php echo esc_html( carmilla_to_persian_digits( date_i18n( 'Y' ) ) ); ?> <?php bloginfo( 'name' ); ?></div>

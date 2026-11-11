@@ -36,7 +36,19 @@ while ( have_posts() ) :
 			</div>
 		</div>
 
-		<div style="font-size:13.5px;color:var(--ink-soft);line-height:1.9;margin-bottom:24px;"><?php the_content(); ?></div>
+		<div style="font-size:13.5px;color:var(--ink-soft);line-height:1.9;margin-bottom:24px;">
+			<?php
+			the_content();
+			wp_link_pages(
+				array(
+					'before'      => '<nav class="page-links" aria-label="' . esc_attr__( 'برگه‌ها', 'carmilla' ) . '"><span class="page-links-title">' . esc_html__( 'برگه‌ها:', 'carmilla' ) . '</span>',
+					'after'       => '</nav>',
+					'link_before' => '<span class="page-number">',
+					'link_after'  => '</span>',
+				)
+			);
+			?>
+		</div>
 
 		<?php
 		$accessible = carmilla_therapist_accessible( $id );

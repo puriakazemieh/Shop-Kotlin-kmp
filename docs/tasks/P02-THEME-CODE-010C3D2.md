@@ -1,6 +1,6 @@
 # P02-THEME-CODE-010C3D2 — Implement wp_link_pages pagination and searchform integration in theme templates
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / THEME / CODE
 - Priority/Risk/Size: P2 / LOW / S
 - Owner: AI
@@ -13,4 +13,4 @@ In `wordpress/carmilla-theme/single.php`, `wordpress/carmilla-theme/page.php`, a
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE on 2026-11-11. `wp_link_pages()` implemented across all single and page content templates (`single.php`, `page.php`, `single-cb_course.php`, `single-cb_psychtest.php`, `single-cb_therapist.php`) with accessible markup and localized labels. `footer.php` search form integrated with standard `get_search_form()`. Added `.page-links` styling in `base.css`. All 6 modified PHP files passed `php -l`. Passed 13-point automated template execution and static test suite (`test-template-pagination-searchform.php`), theme customizer smoke test (`smoke-manifest-theme.php`), and delivery ZIP inspection. Evidence recorded in `docs/evidence/P02-THEME-CODE-010C3D2/summary.md`.

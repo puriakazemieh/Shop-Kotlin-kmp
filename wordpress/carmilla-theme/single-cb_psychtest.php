@@ -29,7 +29,19 @@ while ( have_posts() ) :
 			<div style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);background:var(--surface-2);padding:5px 12px;border-radius:9px;margin-bottom:16px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3 8-8 M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg><?php echo esc_html( carmilla_to_persian_digits( count( $questions ) ) ); ?> سؤال</div>
 		<?php endif; ?>
 
-		<div style="font-size:13.5px;color:var(--ink-soft);line-height:1.9;margin-bottom:22px;"><?php the_content(); ?></div>
+		<div style="font-size:13.5px;color:var(--ink-soft);line-height:1.9;margin-bottom:22px;">
+			<?php
+			the_content();
+			wp_link_pages(
+				array(
+					'before'      => '<nav class="page-links" aria-label="' . esc_attr__( 'برگه‌ها', 'carmilla' ) . '"><span class="page-links-title">' . esc_html__( 'برگه‌ها:', 'carmilla' ) . '</span>',
+					'after'       => '</nav>',
+					'link_before' => '<span class="page-number">',
+					'link_after'  => '</span>',
+				)
+			);
+			?>
+		</div>
 
 		<?php if ( ! $accessible ) : ?>
 			<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;">
