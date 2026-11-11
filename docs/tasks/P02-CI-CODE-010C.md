@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C — baseline debt and new violation regression gate
 
-- Status: TODO
+- Status: READY
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / L (decomposed into ordered C1–C4)
 - Owner: AI; completion authority: BOTH for CI evidence
