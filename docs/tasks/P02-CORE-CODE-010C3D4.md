@@ -1,6 +1,6 @@
 # P02-CORE-CODE-010C3D4 — Clean up PrivacyManager translation string formatting
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CORE / CODE
 - Priority/Risk/Size: P2 / LOW / XS
 - Owner: AI
@@ -13,4 +13,12 @@ In `packages/carmilla-core/inc/Privacy/PrivacyManager.php`, refactor `get_privac
 
 ## Completion record
 
-- Final status: TODO.
+- Final status: DONE
+- Completed on: 2026-11-11
+- Changes made:
+  - Refactored `get_privacy_policy_content()` in `packages/carmilla-core/inc/Privacy/PrivacyManager.php` to return clean HTML string directly without wrapping concatenated multi-line string literals in `__()`.
+  - Eliminated 12 false argument count WARNINGs and 1 false text-domain WARNING emitted by Theme Check parser.
+  - Verified with real WordPress Theme Check `TextDomain_Check` and `I18N_Check` rules.
+  - Added test suite `packages/carmilla-core/tests/test-privacymanager-policy-content.php` (14 assertions passed).
+  - All 39 kernel smoke tests passed.
+- Evidence: `docs/evidence/P02-CORE-CODE-010C3D4/summary.md`.

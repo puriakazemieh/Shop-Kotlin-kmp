@@ -237,8 +237,7 @@ class PrivacyManager {
 	 * @return string
 	 */
 	public static function get_privacy_policy_content(): string {
-		return __(
-			'<h2>Carmilla Platform Privacy Policy Guide</h2>' .
+		return '<h2>Carmilla Platform Privacy Policy Guide</h2>' .
 			'<p>Carmilla processes user personal data to deliver integrated commerce, academic learning (LMS), psychological testing, and clinic appointment booking services.</p>' .
 			'<h3>What Personal Data We Collect and Why</h3>' .
 			'<ul>' .
@@ -250,9 +249,7 @@ class PrivacyManager {
 			'<h3>Data Retention and Financial Compliance</h3>' .
 			'<p>Financial transaction records, invoices, and purchase histories are retained in accordance with statutory accounting and tax regulations (typically between 5 and 10 years depending on local law). When a user requests data erasure, financial ledger records are strictly anonymized rather than deleted, ensuring personal identifying details are removed while accounting integrity is maintained.</p>' .
 			'<h3>User Rights</h3>' .
-			'<p>Under GDPR and applicable privacy legislation, registered users have the right to request a complete export of their personal data or request anonymization and erasure of their profile records.</p>',
-			'carmilla'
-		);
+			'<p>Under GDPR and applicable privacy legislation, registered users have the right to request a complete export of their personal data or request anonymization and erasure of their profile records.</p>';
 	}
 
 	/**
