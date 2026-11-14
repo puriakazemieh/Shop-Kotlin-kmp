@@ -100,9 +100,17 @@ fun MainGraphScreen(
     val features by store.features.collectAsState()
     val navController = rememberNavController()
 
-    // Switch to cart if needed when screen is loaded
-    LaunchedEffect(showCart) {
-        if (showCart) {
+    val visibleDestinations = remember(features) {
+        if (features.isEnabled("commerce.core")) {
+            BottomBarDestination.entries
+        } else {
+            BottomBarDestination.entries.filter { it != BottomBarDestination.Cart }
+        }
+    }
+
+    // Switch to cart if needed when screen is loaded and commerce is enabled
+    LaunchedEffect(showCart, features) {
+        if (showCart && features.isEnabled("commerce.core")) {
             navController.navigate(Screen.Cart) {
                 popUpTo(Screen.ProductsOverview) { saveState = true }
                 launchSingleTop = true
@@ -152,6 +160,13 @@ fun MainGraphScreen(
         }
     }
 
+    // Automatically navigate away from Cart if commerce is dynamically disabled
+    LaunchedEffect(features) {
+        if (!features.isEnabled("commerce.core") && selectedDestination == BottomBarDestination.Cart) {
+            onSelectDestination(BottomBarDestination.ProductsOverview)
+        }
+    }
+
     // نوارِ بالا بر اساسِ تبِ فعال — در هر دو چیدمان مشترک است
     val topBar: @Composable () -> Unit = {
         when (selectedDestination) {
@@ -194,7 +209,7 @@ fun MainGraphScreen(
             composable<Screen.Categories> {
                 MoreScreen(
                     isLoggedIn = state.isLoggedIn,
-                    isAdmin = state.isAdmin,
+                    isAdmin = state.isAdmin && features.isEnabled("admin.mobile"),
                     userName = state.userName,
                     userPhone = state.userPhone,
                     showAcademy = features.isEnabled("academy.core"),
@@ -203,6 +218,8 @@ fun MainGraphScreen(
                     showComparison = features.isEnabled("commerce.physical"),
                     showFreeCourses = features.isEnabled("academy.core"),
                     showBundles = features.isEnabled("commerce.core"),
+                    showRecurringOrders = features.isEnabled("commerce.core"),
+                    showShoppingAssistant = features.isEnabled("commerce.core"),
                     onLoginClick = navigateToAuth,
                     onEditProfileClick = navigateToProfile,
                     onCustomerClubClick = navigateToCustomerClub,
@@ -245,7 +262,8 @@ fun MainGraphScreen(
                     cartItemCount = state.cartItemCount,
                     selected = selectedDestination,
                     onSelect = onSelectDestination,
-                    expanded = window.isExpanded
+                    expanded = window.isExpanded,
+                    destinations = visibleDestinations
                 )
                 Scaffold(
                     modifier = Modifier.weight(1f),
@@ -293,7 +311,8 @@ fun MainGraphScreen(
                             BottomBar(
                                 cartItemCount = state.cartItemCount,
                                 selected = selectedDestination,
-                                onSelect = onSelectDestination
+                                onSelect = onSelectDestination,
+                                destinations = visibleDestinations
                             )
                         }
                     }

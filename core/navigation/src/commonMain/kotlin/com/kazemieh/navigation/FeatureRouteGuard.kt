@@ -18,14 +18,24 @@ class FeatureRouteGuard(private val store: com.kazemieh.config.capabilities.Effe
         else RouteGuardDecision.Blocked(route, featureId)
     }
 
+    fun checkRoute(destination: Any): RouteGuardDecision {
+        val routeName = when (destination) {
+            is String -> destination
+            else -> destination.toString()
+        }
+        return checkRoute(routeName)
+    }
+
+    fun isFeatureEnabled(featureId: String): Boolean = store.features.value.isEnabled(featureId)
+
     private fun featureIdFor(route: String): String? = when {
         route.contains("Admin") || route.contains("Manage") -> "admin.mobile"
         route.contains("Course") || route.contains("Certificate") || route.contains("Placement") || route.contains("PeerReview") -> "academy.core"
-        route.contains("Therapist") || route.contains("Appointment") || route.contains("Mood") || route.contains("Messaging") || route.contains("Homework") || route.contains("Journal") || route.contains("SessionReceipt") -> "clinic.booking"
+        route.contains("Therapist") || route.contains("Appointment") || route.contains("Mood") || route.contains("Messaging") || route.contains("Homework") || route.contains("Journal") || route.contains("SessionReceipt") || route.contains("Emergency") -> "clinic.booking"
         route.contains("PsychTest") || route.contains("TakeTest") -> "psych.tests"
         route.contains("Wallet") -> "wallet"
         route.contains("Blog") -> "content.blog"
-        route.contains("ProductDetail") || route.contains("Cart") || route.contains("Checkout") || route.contains("CategorySearch") || route.contains("Bundle") || route.contains("Comparison") || route.contains("ShoppingAssistant") -> "commerce.core"
+        route.contains("ProductDetail") || route.contains("Cart") || route.contains("Checkout") || route.contains("CategorySearch") || route.contains("Bundle") || route.contains("Comparison") || route.contains("ShoppingAssistant") || route.contains("ReturnRequest") -> "commerce.core"
         else -> null
     }
 }

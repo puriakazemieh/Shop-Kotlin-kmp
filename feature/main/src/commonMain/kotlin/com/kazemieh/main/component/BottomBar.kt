@@ -43,6 +43,7 @@ fun BottomBar(
     cartItemCount: Int,
     selected: BottomBarDestination,
     onSelect: (BottomBarDestination) -> Unit,
+    destinations: List<BottomBarDestination> = BottomBarDestination.entries,
 ) {
     val colors = AppTheme.colors
     Row(
@@ -54,7 +55,7 @@ fun BottomBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        BottomBarDestination.entries.forEach { destination ->
+        destinations.forEach { destination ->
             val isSelected = selected == destination
             val animatedTint by animateColorAsState(
                 targetValue = if (isSelected) colors.primary else colors.onSurfaceVariant

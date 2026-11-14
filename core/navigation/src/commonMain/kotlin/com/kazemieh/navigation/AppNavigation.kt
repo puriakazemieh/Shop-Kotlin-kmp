@@ -92,9 +92,19 @@ fun AppNavHost(
     routeGuard: FeatureRouteGuard? = null,
     modifier: Modifier = Modifier,
 ) {
-    val navController = rememberNavController()
     val store = koinInject<EffectiveFeatureStore>()
     val features by store.features.collectAsState()
+
+    val resolvedStartDestination = remember(startDestination, features) {
+        val decision = routeGuard?.checkRoute(startDestination)
+        if (decision is RouteGuardDecision.Blocked) {
+            Screen.FeatureUnavailable(decision.featureId)
+        } else {
+            startDestination
+        }
+    }
+
+    val navController = rememberNavController()
     val currentEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentEntry?.destination?.route
 
@@ -149,10 +159,19 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = resolvedStartDestination,
         modifier = modifier
     ) {
 
+        composable<Screen.FeatureUnavailable> { backStackEntry ->
+            val unavailable = backStackEntry.toRoute<Screen.FeatureUnavailable>()
+            FeatureUnavailableScreen(featureId = unavailable.featureId) {
+                navController.navigate(Screen.HomeGraph()) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
 
         authNavGraph(navController)
         adminNavGraph(navController)

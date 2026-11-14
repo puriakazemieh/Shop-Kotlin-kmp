@@ -49,6 +49,7 @@ fun SideNavRail(
     onSelect: (BottomBarDestination) -> Unit,
     expanded: Boolean = false,
     header: @Composable (() -> Unit)? = null,
+    destinations: List<BottomBarDestination> = BottomBarDestination.entries,
     modifier: Modifier = Modifier,
 ) {
     val colors = AppTheme.colors
@@ -66,7 +67,7 @@ fun SideNavRail(
             header()
             Spacer(Modifier.height(8.dp))
         }
-        BottomBarDestination.entries.forEach { destination ->
+        destinations.forEach { destination ->
             val isSelected = selected == destination
             val animatedTint by animateColorAsState(
                 targetValue = if (isSelected) colors.primary else colors.onSurfaceVariant

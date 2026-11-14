@@ -58,6 +58,8 @@ fun MoreScreen(
     showComparison: Boolean = false,
     showFreeCourses: Boolean = false,
     showBundles: Boolean = false,
+    showRecurringOrders: Boolean = true,
+    showShoppingAssistant: Boolean = true,
     onLoginClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onCustomerClubClick: () -> Unit,
@@ -124,12 +126,14 @@ fun MoreScreen(
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
 
-            AccountRow(
-                title = "خریدهایِ تکراری",
-                subtitle = "سفارشِ خودکارِ دوره‌ای برایِ کالاهایِ مصرفی",
-                onClick = onRecurringOrdersClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
+            if (showRecurringOrders) {
+                AccountRow(
+                    title = "خریدهایِ تکراری",
+                    subtitle = "سفارشِ خودکارِ دوره‌ای برایِ کالاهایِ مصرفی",
+                    onClick = onRecurringOrdersClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
 
             AccountRow(
                 title = "عضویتِ ویژه",
@@ -258,12 +262,14 @@ fun MoreScreen(
             Spacer(Modifier.height(12.dp))
         }
 
-        AccountRow(
-            title = "دستیارِ خرید",
-            subtitle = "راهنمایی و پیشنهادِ محصول",
-            onClick = onShoppingAssistantClick
-        ) { AccountIcon(vector = Icons.Default.Star) }
-        Spacer(Modifier.height(12.dp))
+        if (showShoppingAssistant) {
+            AccountRow(
+                title = "دستیارِ خرید",
+                subtitle = "راهنمایی و پیشنهادِ محصول",
+                onClick = onShoppingAssistantClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
 
         AccountRow(
             title = "پشتیبانی و سؤالات",
