@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C3C4C — Fail closed unsafe wallet debit path
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / SECURITY / CODE
 - Priority/Risk/Size: P0 / CRITICAL / M
 - Owner: AI

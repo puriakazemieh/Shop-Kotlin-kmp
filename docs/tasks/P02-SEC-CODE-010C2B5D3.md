@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B5D3 — Verify alias tenant and user isolation
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / QA
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI

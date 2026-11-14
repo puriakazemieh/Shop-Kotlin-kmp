@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C3 — Prove Plugin Check gate on isolated PR
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / QA
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI

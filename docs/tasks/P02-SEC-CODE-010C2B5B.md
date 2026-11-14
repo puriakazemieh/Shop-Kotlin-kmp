@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B5B — Redact message queue failure exception
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / MEDIUM / S
 - Owner: AI

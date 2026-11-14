@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C4B — Normalize shipped order-controller line endings
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P2 / MEDIUM / XS
 - Owner: AI

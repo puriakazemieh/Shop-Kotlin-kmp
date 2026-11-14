@@ -1184,7 +1184,7 @@ Android برای WordPress با هویت و signing مشتری، پرداخت ا
 
 ### پیش‌شرط تکمیلی
 
-- [ ] Taskهای مؤخر Foundation یعنی `P02-CORE-CODE-004/005`،
+- [x] Taskهای مؤخر Foundation یعنی `P02-CORE-CODE-004/005`،
   `P02-ARCH-CODE-013/014/015` در حد لازم برای release Android Done شده‌اند؛ این
   Taskها انتشار WordPress/PWA را مسدود نکرده‌اند، اما Gate Android را مسدود می‌کنند.
 

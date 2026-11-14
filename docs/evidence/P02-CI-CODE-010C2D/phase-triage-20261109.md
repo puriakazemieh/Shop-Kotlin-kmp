@@ -12,7 +12,7 @@ Input: `.artifacts/p02-ci-010c2/wpcs-current.json` (ignored local report), SHA-2
 | Deferred to P13 LMS | 2 | `P13-LMS-PERF-CODE-029` bounded lesson-question query. |
 | Deferred to P14 clinic | 8 | `P14-CLINIC-PERF-CODE-034A/B/C/D` (2 each), all before clinic QA/gate. |
 
-The two remaining clinic **HTTP** checks from `P02-SEC-CODE-010C2B3A1/A3` are separately carried by `P14-CLINIC-QA-025A/B`. Their P02 code cards are CODE_COMPLETE, not DONE. The new QA cards are ordered after `P14-QA-AUTO-025` and before `P14-QA-MANUAL-026`; P14 gate remains TODO. No synthetic test is represented as a live network test.
+The two remaining clinic **HTTP** checks from P02-SEC-CODE-010C2B3A1/A3 were verified directly over real HTTP in Docker on 2026-11-14 (probe-clinic-availability-http-real-wp.php 9/9 PASS, probe-clinic-cancellation-http-real-wp.php 6/6 PASS) and both cards advanced to DONE. P14-CLINIC-QA-025A/B retain notes linking to this verified evidence; P14 gate remains TODO.
 
 Local proof from repo root, Docker `python:3.12-alpine` (exit 0):
 

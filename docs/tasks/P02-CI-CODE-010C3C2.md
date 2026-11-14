@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C2 — Wire exact Plugin Check CI gate
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI

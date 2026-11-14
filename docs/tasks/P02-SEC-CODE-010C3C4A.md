@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C3C4A — Resolve integration test-message scan drift
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / SECURITY / CODE
 - Priority/Risk/Size: P1 / HIGH / S
 - Owner: AI

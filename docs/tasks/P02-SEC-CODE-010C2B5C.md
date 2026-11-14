@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B5C — Validate manifest notice input shape
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P2 / LOW / S
 - Owner: AI

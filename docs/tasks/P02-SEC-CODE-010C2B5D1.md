@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B5D1 — Characterize root alias authentication parity
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / Security / QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI

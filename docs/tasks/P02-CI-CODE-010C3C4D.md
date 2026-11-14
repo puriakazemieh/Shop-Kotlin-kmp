@@ -1,6 +1,6 @@
 # P02-CI-CODE-010C3C4D — Reconcile exact current Plugin Check fingerprints
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / CI / CODE+QA
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
