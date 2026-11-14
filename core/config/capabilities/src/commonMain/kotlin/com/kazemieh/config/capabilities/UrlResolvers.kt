@@ -31,7 +31,11 @@ class ProfileAssetUrlResolver(private val profile: BackendProfile) : AssetUrlRes
 /** موقتاً برای profileهای legacy توسعه؛ artifactهای release باید profile صریح داشته باشند. */
 object BootstrapProfiles {
 	/** ساخت یکی از دو profile رسمی؛ backend دیگری در artifact مجاز نیست. */
-	fun forBackend(kind: BackendKind, apiRoot: String): BackendProfile {
+	fun forBackend(
+		kind: BackendKind,
+		apiRoot: String,
+		wordPressHostMode: WordPressHostMode? = null
+	): BackendProfile {
 		val origin = apiRoot.origin()
 		return BackendProfile(
 			kind = kind,
@@ -43,13 +47,15 @@ object BootstrapProfiles {
 				"/wp-json/carmilla/v1/client-manifest"
 			} else {
 				"/client-manifest"
-			}
+			},
+			wordPressHostMode = if (kind == BackendKind.WORDPRESS) (wordPressHostMode ?: WordPressHostMode.CO_INSTALL) else null
 		)
 	}
 
-	fun wordpress(apiRoot: String): BackendProfile = forBackend(BackendKind.WORDPRESS, apiRoot)
+	fun wordpress(apiRoot: String, hostMode: WordPressHostMode = WordPressHostMode.CO_INSTALL): BackendProfile =
+		forBackend(BackendKind.WORDPRESS, apiRoot, hostMode)
 
-	fun spring(apiRoot: String): BackendProfile = forBackend(BackendKind.SPRING, apiRoot)
+	fun spring(apiRoot: String): BackendProfile = forBackend(BackendKind.SPRING, apiRoot, null)
 
 	@Deprecated("Use forBackend with an explicit backend dimension.")
     fun fromLegacyApiRoot(apiRoot: String): BackendProfile {

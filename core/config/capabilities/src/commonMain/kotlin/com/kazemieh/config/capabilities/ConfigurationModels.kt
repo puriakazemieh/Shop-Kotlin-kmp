@@ -9,6 +9,17 @@ enum class BackendKind {
     SPRING
 }
 
+/**
+ * سه حالت میزبانی مجاز و مستقل برای محیط WordPress.
+ * فقط با BackendKind.WORDPRESS مجاز است و در BackendKind.SPRING ممنوع می‌باشد.
+ */
+@Serializable
+enum class WordPressHostMode {
+    THEME_ONLY,
+    PLUGIN_ONLY,
+    CO_INSTALL
+}
+
 /** هویت tenant مستقل از backend و branding؛ در cache و manifest namespace می‌شود. */
 @Serializable
 data class TenantConfig(val id: String) {
@@ -19,7 +30,7 @@ data class TenantConfig(val id: String) {
 
 /**
  * هویت تغییرناپذیر backend که از branding و قابلیت‌های tenant جدا نگه داشته می‌شود.
- * Manifest فقط tenant و capability را حمل می‌کند و نمی‌تواند این originها را تغییر دهد.
+ * Manifest فقط tenant و capability را حمل می‌کند و نمی‌تواند این originها یا حالت host را تغییر دهد.
  */
 @Serializable
 data class BackendProfile(
@@ -28,7 +39,8 @@ data class BackendProfile(
     val assetRoot: String,
     val allowedAuthHosts: Set<String>,
     val contractVersion: Int,
-    val manifestPath: String
+    val manifestPath: String,
+    val wordPressHostMode: WordPressHostMode? = null
 ) {
     init {
         require(apiRoot.isTrustedHttpsUrl()) { "API root must use HTTPS." }
@@ -38,7 +50,18 @@ data class BackendProfile(
         }
         require(contractVersion > 0) { "Contract version must be positive." }
         require(manifestPath.startsWith("/")) { "Manifest path must be absolute." }
+
+        // Spring provider با WordPress mode اشتباه گرفته نمی‌شود؛ backend سوم نیز مجاز نیست
+        if (kind == BackendKind.SPRING) {
+            require(wordPressHostMode == null) {
+                "Spring backend profile must not specify a WordPressHostMode."
+            }
+        }
     }
+
+    /** حالت مؤثر میزبانی وردپرس؛ در صورت عدم تعیین صریح، برای وردپرس CO_INSTALL و برای اسپرینگ null است. */
+    val effectiveHostMode: WordPressHostMode?
+        get() = if (kind == BackendKind.WORDPRESS) wordPressHostMode ?: WordPressHostMode.CO_INSTALL else null
 }
 
 /** داده‌های هویتی/نمایشی برند؛ بدون endpoint و بدون feature flag. */

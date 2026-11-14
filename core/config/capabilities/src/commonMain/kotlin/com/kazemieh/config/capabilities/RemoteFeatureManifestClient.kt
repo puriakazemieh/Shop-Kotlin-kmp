@@ -51,6 +51,7 @@ private data class RemoteFeatureManifestPayload(
     val manifestVersion: String,
     val backendProfile: String,
     val tenantId: String,
+    val hostMode: String? = null,
     val minimumAppVersion: String = "",
     val issuedAt: String = "",
     val expiresAt: String = "",
@@ -113,8 +114,19 @@ class RemoteFeatureManifestClient(
     private fun decode(body: String, etag: String?): RemoteManifestFetchResult {
         val payload = json.decodeFromString<RemoteFeatureManifestPayload>(body)
         require(payload.schemaVersion == 1) { "Unsupported manifest schema." }
-        require(payload.backendProfile == profile.kind.name) { "Manifest backend mismatch." }
-        require(payload.tenantId == expectedTenantId) { "Manifest tenant mismatch." }
+        require(payload.backendProfile == profile.kind.name) {
+            "Manifest backend mismatch: expected ${profile.kind.name}, got ${payload.backendProfile}."
+        }
+        require(payload.tenantId == expectedTenantId) {
+            "Manifest tenant mismatch: expected $expectedTenantId, got ${payload.tenantId}."
+        }
+        if (profile.kind == BackendKind.SPRING) {
+            require(payload.hostMode == null) { "Spring manifest must not specify hostMode." }
+        } else if (profile.wordPressHostMode != null && payload.hostMode != null) {
+            require(payload.hostMode == profile.wordPressHostMode.name) {
+                "Manifest host mode mismatch: expected ${profile.wordPressHostMode.name}, got ${payload.hostMode}."
+            }
+        }
         val manifest = payload.toManifest()
         val resolved = ceiling.apply(catalog.resolve(manifest))
         return RemoteManifestFetchResult.Success(manifest, resolved, etag)

@@ -2,7 +2,7 @@
 
 # P03-ARCH-ADR-026 — قرارداد BackendProfile و mode مستقل WordPress
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / ARCH / ADR
 - Priority/Risk/Size: P0 / HIGH / S
 - Owner: BOTH
@@ -35,9 +35,15 @@
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Evidence paths:
-- Final status: TODO
+- Started at: 2026-11-14T16:56
+- Completed at: 2026-11-14T17:16
+- Changed files: `docs/architecture/adr/ADR-026-TRUSTED-BACKEND-PROFILES-AND-WORDPRESS-HOST-MODES.md`, `core/config/capabilities/src/commonMain/kotlin/com/kazemieh/config/capabilities/ConfigurationModels.kt`, `core/config/capabilities/src/commonMain/kotlin/com/kazemieh/config/capabilities/PrivateSessionNamespace.kt`, `core/config/capabilities/src/commonMain/kotlin/com/kazemieh/config/capabilities/UrlResolvers.kt`, `core/config/capabilities/src/commonMain/kotlin/com/kazemieh/config/capabilities/RemoteFeatureManifestClient.kt`, `core/config/capabilities/src/jvmTest/kotlin/com/kazemieh/config/capabilities/BackendProfileTest.kt`, `core/config/capabilities/src/jvmTest/kotlin/com/kazemieh/config/capabilities/PrivateSessionNamespaceTest.kt`, `core/config/capabilities/src/jvmTest/kotlin/com/kazemieh/config/capabilities/RemoteFeatureManifestClientTest.kt`, `docs/evidence/P03-ARCH-ADR-026/summary.md`.
+- Commands and exit codes:
+  - `.\gradlew.bat :core:config:capabilities:jvmTest` (0)
+  - `.\gradlew.bat :core:config:capabilities:jvmTest :core:navigation:jvmTest :core:network:jvmTest :composeApp:jvmTest :composeApp:compileKotlinJs :composeApp:compileKotlinJvm` (0)
+- Manual tester/date/build/result: AI Automated + Human Steps Documented / 2026-11-14 / Local Debug / Success
+- Evidence paths: `docs/evidence/P03-ARCH-ADR-026/summary.md`, `docs/architecture/adr/ADR-026-TRUSTED-BACKEND-PROFILES-AND-WORDPRESS-HOST-MODES.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

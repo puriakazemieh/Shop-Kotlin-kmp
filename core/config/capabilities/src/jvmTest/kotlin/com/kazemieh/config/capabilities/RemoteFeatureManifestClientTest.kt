@@ -76,6 +76,52 @@ class RemoteFeatureManifestClientTest {
         assertTrue(timeout is RemoteManifestFetchResult.Failure)
     }
 
+    @Test
+    fun `hostMode matching succeeds and mismatching or invalid hostMode fails closed`() = runBlocking {
+        val wpProfileWithMode = profile.copy(wordPressHostMode = WordPressHostMode.PLUGIN_ONLY)
+        val validPayloadWithMode = validPayload().replace(
+            "\"tenantId\":\"tenant-1\",",
+            "\"tenantId\":\"tenant-1\",\"hostMode\":\"PLUGIN_ONLY\","
+        )
+
+        // Matching hostMode succeeds
+        val successResult = RemoteFeatureManifestClient(
+            profile = wpProfileWithMode,
+            expectedTenantId = "tenant-1",
+            transport = RemoteManifestTransport { RemoteManifestResponse(200, validPayloadWithMode, null) },
+            ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))
+        ).fetch()
+        assertTrue(successResult is RemoteManifestFetchResult.Success)
+
+        // Mismatched hostMode fails closed
+        val mismatchedPayload = validPayloadWithMode.replace("\"PLUGIN_ONLY\"", "\"THEME_ONLY\"")
+        val mismatchedResult = RemoteFeatureManifestClient(
+            profile = wpProfileWithMode,
+            expectedTenantId = "tenant-1",
+            transport = RemoteManifestTransport { RemoteManifestResponse(200, mismatchedPayload, null) },
+            ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))
+        ).fetch()
+        assertTrue(mismatchedResult is RemoteManifestFetchResult.Failure)
+
+        // Spring profile receiving hostMode fails closed
+        val springProfile = BackendProfile(
+            kind = BackendKind.SPRING,
+            apiRoot = "https://api.example.test/",
+            assetRoot = "https://assets.example.test/",
+            allowedAuthHosts = setOf("api.example.test"),
+            contractVersion = 1,
+            manifestPath = "/api/v1/manifest"
+        )
+        val springPayloadWithHostMode = validPayloadWithMode.replace("\"WORDPRESS\"", "\"SPRING\"")
+        val springResult = RemoteFeatureManifestClient(
+            profile = springProfile,
+            expectedTenantId = "tenant-1",
+            transport = RemoteManifestTransport { RemoteManifestResponse(200, springPayloadWithHostMode, null) },
+            ceiling = CompiledFeatureCeiling(setOf("content.blog", "commerce.core", "commerce.physical", "commerce.digital", "wallet"))
+        ).fetch()
+        assertTrue(springResult is RemoteManifestFetchResult.Failure)
+    }
+
     private fun validPayload() =
         """{"schemaVersion":1,"manifestVersion":"2026.08.1","backendProfile":"WORDPRESS","tenantId":"tenant-1","minimumAppVersion":"1.0.0","issuedAt":"2026-08-26T00:00:00Z","expiresAt":"2026-08-27T00:00:00Z","features":{"content.blog":true,"commerce.core":true,"commerce.physical":true,"commerce.digital":false}}"""
 }
