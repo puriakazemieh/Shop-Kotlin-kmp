@@ -20,6 +20,35 @@ val generateProductSpecs by tasks.registering {
         
         val jsonText = inputFile.readText()
         val parsedJson = JsonSlurper().parseText(jsonText) as Map<*, *>
+
+        // Zero-secret validation: ensure no credentials or secret keys exist in build config
+        val forbiddenKeywords = listOf("password", "secret", "private_key", "token", "apikey")
+        fun assertNoSecrets(element: Any?, path: String) {
+            when (element) {
+                is Map<*, *> -> {
+                    for ((k, v) in element) {
+                        val keyLower = k.toString().lowercase()
+                        require(forbiddenKeywords.none { keyLower.contains(it) }) {
+                            "Potential secret key detected in $path: $k"
+                        }
+                        assertNoSecrets(v, "$path.$k")
+                    }
+                }
+                is List<*> -> {
+                    element.forEachIndexed { i, itm -> assertNoSecrets(itm, "$path[$i]") }
+                }
+                is String -> {
+                    val valLower = element.lowercase()
+                    require(forbiddenKeywords.none { valLower.contains("$it=") || valLower.contains("$it:") }) {
+                        "Potential secret pattern detected in $path: $element"
+                    }
+                }
+            }
+        }
+        assertNoSecrets(parsedJson, "products.json")
+
+        // Deterministic sorting of SKUs
+        val sortedEntries = parsedJson.entries.sortedBy { it.key.toString() }
         
         val sb = StringBuilder()
         sb.appendLine("package com.kazemieh.shop")
@@ -31,9 +60,10 @@ val generateProductSpecs by tasks.registering {
         sb.appendLine("object GeneratedProductSpecs {")
         sb.appendLine("    val specs = mapOf<String, ProductBuildSpec>(")
         
-        for ((skuObj, specObj) in parsedJson) {
+        for ((skuObj, specObj) in sortedEntries) {
             val sku = skuObj as String
             val spec = specObj as Map<*, *>
+            require(sku.isNotBlank() && !sku.contains(' ')) { "Invalid SKU: '$sku' in products.json" }
             val tenant = spec["tenant"] as Map<*, *>
             val branding = spec["branding"] as Map<*, *>
             val backend = spec["backendProfile"] as Map<*, *>
@@ -55,7 +85,7 @@ val generateProductSpecs by tasks.registering {
         sb.appendLine("    )")
         sb.appendLine()
         sb.appendLine("    val localConfigs = mapOf<String, LocalFeatureManifestConfig>(")
-        for ((skuObj, specObj) in parsedJson) {
+        for ((skuObj, specObj) in sortedEntries) {
             val sku = skuObj as String
             val spec = specObj as Map<*, *>
             val backend = spec["backendProfile"] as Map<*, *>
@@ -139,6 +169,10 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+
+        jvmTest.dependencies {
+            implementation(kotlin("test"))
         }
 
         jsMain {

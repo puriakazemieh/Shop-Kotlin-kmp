@@ -103,7 +103,7 @@
       "contractVersion": 1,
       "manifestPath": "/api/v1/manifest"
     },
-    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.digital", "academy"],
+    "compiledFeatureIds": ["content.blog", "commerce.core", "commerce.digital", "academy.core"],
     "localFeatures": {
       "contentBlog": true,
       "commerceCore": true,
@@ -131,7 +131,7 @@
       "contractVersion": 1,
       "manifestPath": "/api/v1/manifest"
     },
-    "compiledFeatureIds": ["psychtest", "clinic", "wallet"],
+    "compiledFeatureIds": ["content.blog", "commerce.core", "psych.tests", "clinic.booking", "wallet"],
     "localFeatures": {
       "contentBlog": false,
       "commerceCore": false,
