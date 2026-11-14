@@ -48,7 +48,7 @@ P02-QA-MANUAL-017
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P02 / QA / MANUAL
 - Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN

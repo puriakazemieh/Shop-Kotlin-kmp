@@ -48,7 +48,7 @@ P02-CI-OPS-016
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P02 / CI / OPS
 - Priority/Risk/Size: P1/MEDIUM / M
 - Owner: BOTH
@@ -106,10 +106,10 @@ artifact دارای version/checksum/SBOM و retention
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -125,11 +125,11 @@ artifact دارای version/checksum/SBOM و retention
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-11-14T10:43:00+03:30
+- Completed at: 2026-11-14T11:05:00+03:30
+- Changed files: .github/workflows/release-artifact.yml, tools/ci/generate_sbom.cjs, tools/ci/verify_release_workflow.cjs, docs/evidence/P02-CI-OPS-016/summary.md, docs/evidence/P02-CI-OPS-016/EVIDENCE.md
+- Commands and exit codes: `node tools/ci/verify_release_workflow.cjs` (0), `node tools/ci/generate_sbom.cjs` (0), `./gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs` (0)
+- Manual tester/date/result: N/A (Automated technical CI/OPS verification complete)
+- Evidence paths: docs/evidence/P02-CI-OPS-016/summary.md, docs/evidence/P02-CI-OPS-016/EVIDENCE.md
+- Remaining risks/blockers: None
+- Final status: DONE
