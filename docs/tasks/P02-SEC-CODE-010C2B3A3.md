@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A3 — Keep cancellation and slot lock consistent
 
-- Status: CODE_COMPLETE (HTTP acceptance transferred to P14-CLINIC-QA-025B)
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -15,8 +15,7 @@
 
 - Implemented at: 2026-11-02
 - Verification: installed synthetic WordPress six checks PASS; controller and test PHP lint PASS; no synthetic SQL residue
+- Live HTTP QA verified at: 2026-11-14
+- HTTP verification: disposable installed WordPress (WordPress latest / PHP 8.3 Apache + MariaDB 10.6 in Docker). Executed `probe-clinic-cancellation-http-real-wp.php`: 6/6 PASS, exit 0. Tested authenticated REST cancellation route (`POST /api/clinic/appointments/{id}/cancel`). Confirmed HTTP 401/403 for unauthenticated, HTTP 404 for cross-patient, HTTP 503 `CANCELLATION_UNAVAILABLE` on simulated slot delete failure with atomic rollback preserving PENDING status and surviving lock, healthy cancellation (HTTP 200) updating status to CANCELLED and releasing lock, idempotent repeat call (HTTP 200), and complete fixture cleanup.
 - Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A3/verification.md` and `tests/smoke-booking-cancel-atomic-real-wp.php`
-- Manual QA: public booking/cancellation route is currently disabled; authenticated HTTP cancellation and injected failure remain for owner-enabled disposable build
-- Prior status: AWAITING_MANUAL_QA
-- Reclassified 2026-11-09: implementation and installed-WordPress checks remain as recorded; authenticated HTTP cancellation/fault QA is owned by `P14-CLINIC-QA-025B` before the P14 clinic UAT/gate. This card is CODE_COMPLETE, not a claim that HTTP acceptance passed.
-- Current status: CODE_COMPLETE.
+- Final status: DONE.
