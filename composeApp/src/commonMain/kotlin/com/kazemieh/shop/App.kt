@@ -223,7 +223,7 @@ fun initKoin(
                     val source = LocalFeatureManifestSource(localConfig, ceiling = get())
                     source.resolveFor(get<ProductBuildSpec>().backendProfile.kind)
                 }
-                single<EffectiveFeatureStore> { DefaultEffectiveFeatureStore(get()) }
+                single<EffectiveFeatureStore> { DefaultEffectiveFeatureStore(get(), get()) }
                 single { FeatureUseCaseGuard(get<EffectiveFeatureStore>()) }
                 single { FeatureRouteGuard(get<EffectiveFeatureStore>()) }
                 single {

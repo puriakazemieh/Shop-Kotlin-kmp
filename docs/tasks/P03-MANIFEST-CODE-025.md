@@ -7,7 +7,7 @@
 نقش: Implementer و Verifier فقط همین کارت. ابتدا `docs/tasks.md`، AGENTS.md، این کارت و `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` را کامل بخوان. فقط اولین READY مجاز است. این کارت نیازمندی مصوب مالک محصول را اجرا می‌کند؛ تصمیم استقلال دو محصول را دوباره به پرسش انتخاب محصول تبدیل نکن.
 
 - Repository: `D:/Android/AndroidStudioProjects/kmp-shop`
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / MANIFEST / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -64,10 +64,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
+- [x] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
 
 ## Evidence و Rollback
 
@@ -77,13 +77,16 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
+- Started at: 2026-11-14T17:36
+- Completed at: 2026-11-14T17:52
+- Changed files: `core/config/capabilities/src/commonMain/kotlin/com/kazemieh/config/capabilities/EffectiveFeatureStore.kt`, `composeApp/src/commonMain/kotlin/com/kazemieh/shop/App.kt`, `core/config/capabilities/src/jvmTest/kotlin/com/kazemieh/config/capabilities/EffectiveFeatureStoreTest.kt`, `docs/evidence/P03-MANIFEST-CODE-025/summary.md`.
 - Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+  - `.\gradlew.bat :core:config:capabilities:jvmTest` (0)
+  - `.\gradlew.bat :core:config:capabilities:jvmTest :core:navigation:jvmTest :core:network:jvmTest :composeApp:jvmTest :composeApp:compileKotlinJs :composeApp:compileKotlinJvm` (0)
+  - `.\gradlew.bat :androidApp:assembleDebug` (0)
+- Manual tester/date/build/result: AI Automated + Human Steps Documented / 2026-11-14 / Local Debug / Success
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-025/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>
