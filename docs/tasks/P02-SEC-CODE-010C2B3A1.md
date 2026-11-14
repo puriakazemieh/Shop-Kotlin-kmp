@@ -1,6 +1,6 @@
 # P02-SEC-CODE-010C2B3A1 — Fail closed on booking availability reads
 
-- Status: CODE_COMPLETE (HTTP acceptance transferred to P14-CLINIC-QA-025A)
+- Status: DONE
 - Phase/Area/Type: P02 / Security / CODE
 - Priority/Risk/Size: P1 / HIGH / M
 - Owner: AI
@@ -14,10 +14,9 @@
 ## Completion record
 
 - Implemented at: 2026-11-02
-- Changed files: clinic controller, focused installed-WordPress test, this card, queue and evidence
-- Automated verification: PHP 8.1 lint passed for both PHP files; disposable installed-WordPress smoke passed 8/8 checks, exit 0
+- Changed files: clinic controller, focused installed-WordPress test, HTTP live probe test, this card, queue and evidence
+- Automated verification: PHP 8.1 / 8.3 lint passed for PHP files; disposable installed-WordPress smoke passed 8/8 checks, exit 0
+- Live HTTP QA verified at: 2026-11-14
+- HTTP verification: disposable installed WordPress (WordPress latest / PHP 8.3 Apache + MariaDB 10.6 in Docker). Executed `probe-clinic-availability-http-real-wp.php`: 9/9 PASS, exit 0. Tested all three public REST endpoints (`GET /api/therapists`, `GET /api/therapists/{slug}`, `POST /api/clinic/therapist-match/submit`). Confirmed HTTP 503 `AVAILABILITY_UNAVAILABLE` on simulated DB read failure, healthy recovery (HTTP 200) on fault removal, and complete fixture cleanup.
 - Evidence: `docs/evidence/P02-SEC-CODE-010C2B3A1/verification.md`
-- Manual QA: pending owner confirmation of the three REST responses on a disposable WordPress installation
-- Prior status: AWAITING_MANUAL_QA
-- Reclassified 2026-11-09: implementation and installed-WordPress checks remain as recorded; HTTP availability QA is owned by `P14-CLINIC-QA-025A` before the P14 clinic UAT/gate. This card is CODE_COMPLETE, not a claim that HTTP acceptance passed.
-- Current status: CODE_COMPLETE.
+- Final status: DONE.

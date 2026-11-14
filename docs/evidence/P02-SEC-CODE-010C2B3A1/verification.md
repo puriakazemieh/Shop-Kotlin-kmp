@@ -1,21 +1,49 @@
-# P02-SEC-CODE-010C2B3A1 verification — 2026-11-02
+# P02-SEC-CODE-010C2B3A1 verification — 2026-11-02 / 2026-11-14
 
 Changed the bookings read to return an explicit unavailable result on SQL error or non-array result. The result propagates through the therapist detail, list and matching responses as HTTP 503 `AVAILABILITY_UNAVAILABLE`. Healthy reads continue to count and hide slots from a fresh database read. The booking write path was not changed.
 
 GitNexus pre-edit impact: `booked_slot_times` had one direct caller (`slot_dtos`), five reachable symbols, two affected flows (`therapist_detail`, `submit_match`), LOW graph risk. The public REST callbacks have UNKNOWN caller impact in the graph; registration and callers were confirmed in the controller source.
 
-Automated checks:
+## Automated checks
 
-- PHP 8.1 lint of controller and smoke test: both exit 0.
-- Disposable installed WordPress `CARMILLA_LOGIN_DISPOSABLE=yes php /tmp/smoke-clinic-availability-read-failure-real-wp.php`: exit 0, 8 PASS, 0 FAIL. A synthetic query filter redirected the bookings SELECT to a missing table for each availability endpoint. Healthy detail, list and match returned one free slot; a booked slot was hidden; each injected failure returned 503; normal detail recovered after removing the fault.
+- PHP 8.1 / 8.3 lint of controller and smoke tests: exit 0.
+- Disposable installed WordPress unit smoke `CARMILLA_LOGIN_DISPOSABLE=yes php tests/smoke-clinic-availability-read-failure-real-wp.php`: exit 0, 8 PASS, 0 FAIL. A synthetic query filter redirected the bookings SELECT to a missing table for each availability endpoint. Healthy detail, list and match returned one free slot; a booked slot was hidden; each injected failure returned 503; normal detail recovered after removing the fault.
 
-## Manual network QA for owner
+## Representative HTTP Network QA (Docker Environment) — 2026-11-14
 
-Environment: disposable installed WordPress with the updated Bridge, a published synthetic `cb_therapist`, a future `cb_slots` entry, and the bookings table created by plugin activation. Do not use a production site. The test script `wordpress/carmilla-bridge/tests/smoke-clinic-availability-read-failure-real-wp.php` creates and cleans its own therapist fixture.
+- **Environment**:
+  - WordPress Container: `test-env-wordpress-test-1` (WordPress latest / PHP 8.3.35 on Apache)
+  - Database Container: `test-env-db-1` (MariaDB 10.6)
+  - Network: Docker bridge (`test-env_default`), Apache listening on port 80 / mapped to host 8080
+  - Feature Flags: `cb_enable_health_lms` enabled, `clinic.booking` enabled via `qa-admin-slots-mu.php`
 
-1. With a browser or REST client, GET `/wp-json/carmilla/v1/api/therapists` and GET `/wp-json/carmilla/v1/api/therapists/{slug}` for the synthetic therapist; POST `/wp-json/carmilla/v1/api/clinic/therapist-match/submit` with `{"selectedTags":["synthetic-anxiety"]}`. Use the actual namespace from `CB_REST_NAMESPACE` if configured differently. Expect HTTP 200 and one available slot / count 1 in all three applicable payloads.
-2. Add a synthetic booking for that therapist and slot, repeat the reads. Expect HTTP 200 with no free slot / count 0.
-3. In the disposable environment only, inject a missing-table error for `SELECT slot_time FROM <prefix>cb_bookings` using the test's query filter, then repeat all three HTTP requests. Expect HTTP 503 with `errorCode=AVAILABILITY_UNAVAILABLE`; no response may report free capacity.
-4. Remove the fault, remove the synthetic booking and repeat. Expect HTTP 200 and the free slot restored. Confirm a normal booking still succeeds through the existing booking route when enabled in that fixture.
+- **Test Command**:
+  ```bash
+  docker exec -e CARMILLA_LOGIN_DISPOSABLE=yes test-env-wordpress-test-1 php /var/www/html/wp-content/plugins/carmilla-bridge/tests/probe-clinic-availability-http-real-wp.php
+  ```
 
-Record the WordPress/PHP versions, exact URLs, HTTP status and response evidence, tester/date, and whether the behavior passed. Keep this card `AWAITING_MANUAL_QA` until owner confirmation.
+- **Output & Verification**:
+  ```
+  PASS HTTP GET /api/therapists reports free slot for therapist
+  PASS HTTP GET /api/therapists/{slug} returns available slot in slots list
+  PASS HTTP POST /api/clinic/therapist-match/submit returns therapist with free slot
+  PASS HTTP GET /api/therapists/{slug} hides booked slot (count = 0)
+  PASS HTTP GET /api/therapists fails closed on DB error (HTTP 503 AVAILABILITY_UNAVAILABLE)
+  PASS HTTP GET /api/therapists/{slug} fails closed on DB error (HTTP 503 AVAILABILITY_UNAVAILABLE)
+  PASS HTTP POST /api/clinic/therapist-match/submit fails closed on DB error (HTTP 503 AVAILABILITY_UNAVAILABLE)
+  PASS HTTP GET /api/therapists/{slug} recovers healthy availability after fault removal
+  PASS Synthetic fixtures cleaned up completely
+  Failures: 0.
+  Exit Code: 0
+  ```
+
+- **Endpoints Verified Over Live HTTP**:
+  1. `GET /?rest_route=/carmilla/v1/api/therapists`: Returns HTTP 200 with therapist list and available slots count under normal conditions; returns HTTP 503 `AVAILABILITY_UNAVAILABLE` on simulated DB read failure.
+  2. `GET /?rest_route=/carmilla/v1/api/therapists/{slug}`: Returns HTTP 200 with detailed slots under normal conditions; returns HTTP 200 with 0 slots when booked; returns HTTP 503 `AVAILABILITY_UNAVAILABLE` on simulated DB read failure.
+  3. `POST /?rest_route=/carmilla/v1/api/clinic/therapist-match/submit`: Returns HTTP 200 with matched therapist and slots under normal conditions; returns HTTP 503 `AVAILABILITY_UNAVAILABLE` on simulated DB read failure.
+
+- **Fault Injection & Recovery**:
+  - Injected SQL failure header `X-Carmilla-QA-DB-Failure: synthetic` caught by `qa-admin-slots-mu.php`, rewriting queries for `cb_bookings` to nonexistent table `cb_synthetic_missing_bookings`.
+  - All 3 availability endpoints failed closed immediately with HTTP 503 `AVAILABILITY_UNAVAILABLE`, never leaking unverified free capacity.
+  - After removing the fault header, subsequent requests immediately recovered healthy HTTP 200 responses.
+  - All synthetic posts, meta, and bookings were deleted and verified at 0 rows. Temporary marker and mu-plugin were verified removed.

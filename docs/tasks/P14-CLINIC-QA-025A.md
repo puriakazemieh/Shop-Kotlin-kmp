@@ -13,4 +13,5 @@ Carry the outstanding network acceptance of `P02-SEC-CODE-010C2B3A1` into the cl
 
 ## Completion record
 
-- Final status: TODO; HTTP acceptance not yet executed.
+- Status: TODO (queued for Phase 14).
+- Note (2026-11-14): The representative HTTP network QA for `P02-SEC-CODE-010C2B3A1` was executed directly in Docker (`test-env-wordpress-test-1` / PHP 8.3 Apache + MariaDB 10.6) via `wordpress/carmilla-bridge/tests/probe-clinic-availability-http-real-wp.php` with 9/9 PASS (exit 0). Complete HTTP evidence recorded in `docs/evidence/P02-SEC-CODE-010C2B3A1/verification.md`.
