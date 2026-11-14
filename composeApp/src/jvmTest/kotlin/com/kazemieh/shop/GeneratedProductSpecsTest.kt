@@ -4,9 +4,11 @@ import com.kazemieh.config.capabilities.BackendKind
 import com.kazemieh.config.capabilities.CompiledFeatureCeiling
 import com.kazemieh.config.capabilities.FeatureCatalog
 import com.kazemieh.config.capabilities.FeatureManifest
+import com.kazemieh.config.capabilities.privateSessionNamespace
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -113,6 +115,45 @@ class GeneratedProductSpecsTest {
             assertNotNull(localConfig, "Local config for $sku must exist")
             assertEquals(spec.backendProfile.kind, localConfig.backendKind)
             assertEquals(spec.tenant.id, localConfig.tenantId)
+        }
+    }
+
+    @Test
+    fun `brand does not dictate backend profile kind - arbitrary brand can be bound to WordPress or Spring`() {
+        val carmilaSpec = GeneratedProductSpecs.specs["carmila"]!!
+        val academySpec = GeneratedProductSpecs.specs["academy"]!!
+        val chronosSpec = GeneratedProductSpecs.specs["chronos"]!!
+        val psychSpec = GeneratedProductSpecs.specs["psych"]!!
+
+        // WordPress backend can host different brands
+        assertEquals(BackendKind.WORDPRESS, carmilaSpec.backendProfile.kind)
+        assertEquals("carmila", carmilaSpec.branding.id)
+        assertEquals(BackendKind.WORDPRESS, chronosSpec.backendProfile.kind)
+        assertEquals("chronos", chronosSpec.branding.id)
+
+        // Spring backend can host different brands
+        assertEquals(BackendKind.SPRING, academySpec.backendProfile.kind)
+        assertEquals("academy", academySpec.branding.id)
+        assertEquals(BackendKind.SPRING, psychSpec.backendProfile.kind)
+        assertEquals("psych", psychSpec.branding.id)
+
+        // Brand id does not dictate backend profile kind
+        assertNotEquals(carmilaSpec.backendProfile.kind, academySpec.backendProfile.kind)
+    }
+
+    @Test
+    fun `private session namespace is deterministically derived from tenant, backend, and origin`() {
+        for ((sku, spec) in GeneratedProductSpecs.specs) {
+            val ns = spec.backendProfile.privateSessionNamespace(spec.tenant.id)
+            assertEquals(spec.backendProfile.kind, ns.backendKind)
+            assertEquals(spec.tenant.id, ns.tenantId)
+            assertEquals(spec.backendProfile.apiRoot, ns.origin)
+
+            val expectedFingerprint = "${spec.backendProfile.kind}|${spec.tenant.id}|${spec.backendProfile.apiRoot.removeSuffix("/").lowercase()}"
+            assertEquals(expectedFingerprint, ns.fingerprint)
+
+            val sessionKey = ns.key("authToken")
+            assertTrue(sessionKey.startsWith("private.$expectedFingerprint."))
         }
     }
 }
