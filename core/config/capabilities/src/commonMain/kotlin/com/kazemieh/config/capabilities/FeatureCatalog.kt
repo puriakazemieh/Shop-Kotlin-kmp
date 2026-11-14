@@ -60,5 +60,7 @@ class FeatureCatalog(private val definitions: List<FeatureDefinition> = v1Defini
             FeatureDefinition("wallet", setOf("commerce.core")),
             FeatureDefinition("admin.mobile")
         )
+
+        val knownFeatureIds: Set<String> = v1Definitions.map(FeatureDefinition::id).toSet()
     }
 }

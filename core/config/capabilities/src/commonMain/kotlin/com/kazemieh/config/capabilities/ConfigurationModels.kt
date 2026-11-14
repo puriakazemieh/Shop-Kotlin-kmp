@@ -121,8 +121,26 @@ data class ProductBuildSpec(
 ) {
     init {
         require(sku.isNotBlank()) { "SKU must not be blank." }
-        // Note: The rest of the validation is delegated to the init blocks of 
-        // TenantConfig, BrandingConfig, BuildIdentity, and BackendProfile.
+        require(!sku.contains(' ')) { "SKU must not contain whitespace." }
+        val unknown = compiledFeatureIds - FeatureCatalog.knownFeatureIds
+        require(unknown.isEmpty()) { "Unknown feature IDs in compiled features: $unknown" }
+    }
+
+    /**
+     * اعتبارسنجی الزامات سخت‌گیرانه برای بیلد Release:
+     * - tenant باید واقعی باشد (غیر از local-default یا test).
+     * - apiRoot و assetRoot باید حتماً HTTPS باشند.
+     */
+    fun validateForRelease() {
+        require(tenant.id.isNotBlank() && tenant.id != "local-default" && tenant.id != "test") {
+            "Real tenant is required in release build: got '${tenant.id}'."
+        }
+        require(backendProfile.apiRoot.startsWith("https://")) {
+            "Release API root must use HTTPS: got '${backendProfile.apiRoot}'."
+        }
+        require(backendProfile.assetRoot.startsWith("https://")) {
+            "Release Asset root must use HTTPS: got '${backendProfile.assetRoot}'."
+        }
     }
 }
 
