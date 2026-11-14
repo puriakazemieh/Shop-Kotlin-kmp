@@ -673,6 +673,13 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 
 - Gate decision: `CONDITIONAL_PASS` — 2026-08-26؛ طبق تصمیم مالک محصول،کنترل‌های باقی‌مانده (Gradle/Android پایدار،integration WordPress/Woo،rollback سازگار و architecture exceptionها) به `P09-QA-GATE-018` منتقل شده‌اند و پیش از Candidate/انتشار P10 باید Pass شوند.
 
+### وضعیت به‌روزرسانی و تکمیل فاز ۲ — ۱۴ نوامبر ۲۰۲۶
+
+- همه ۲۲ Task اصلی و تمام ۹۷ زیرتسک فاز ۲ (مجموعاً ۱۱۹ ردیف صف و ۱۳۲ کارت تسک) با شواهد کامل در وضعیت `DONE` قرار گرفتند.
+- تست‌های کامپایل ماژولار KMP (JS/JVM)، تست‌های واحد دامین و شبکه، و گردش‌کارهای PR Gate و اعتبارسنجی وابستگی‌ها به طور کامل راستی‌آزمایی و پاس شدند.
+- آخرین آزمون‌های معوق اعتبارسنجی شبکه HTTP نوبت‌دهی و لغو نوبت در محیط یکپارچگی زنده داکر وردپرس/آپاچی با موفقیت کامل اجرا و ثبت شدند (`docs/evidence/P02-SEC-CODE-010C2B3A1/` و `docs/evidence/P02-SEC-CODE-010C2B3A3/`).
+- تنها ۴ استثنای مجاز معماری ثبت‌شده در `architectureCheck` طبق مصوبه تا گیت فاز ۹ (`P09-QA-GATE-018`) معوق باقی می‌مانند.
+
 ---
 
 ## ۱۰. فاز ۳ — دو Backend Profile و Feature Manifest انتها‌به‌انتها
@@ -2190,29 +2197,29 @@ Suggested next READY task:
 
 | ترتیب | Task ID | موضوع |
 |---:|---|---|
-| ۲۰ | `P01-SECURITY-DISC-001` | تبدیل یافته‌های P0 به ticket خصوصی اتمیک |
-| ۲۱ | `P01-SECURITY-OPS-002` | محدودکردن Spring فعلی در صورت public بودن |
-| ۲۲ | `P01-SECURITY-CODE-003` | redaction و حذف log حساس |
-| ۲۳ | `P01-SECURITY-CODE-004` | TLS/cleartext/trust policy |
-| ۲۴ | `P01-SECURITY-CODE-005` | token storage و host binding |
-| ۲۵ | `P01-SECURITY-CODE-006` | بستن API origin override |
-| ۲۶ | `P01-PAYMENT-CODE-007` | بی‌اعتمادکردن نتیجه deep link |
-| ۲۷ | `P01-PAYMENT-CODE-008` | پاک‌کردن cart فقط پس از verify |
-| ۲۸ | `P01-PAYMENT-CODE-009` | یکسان‌سازی callback و تست lifecycle |
-| ۲۹ | `P01-WPPLUGIN-SEC-010` | JWT hardening |
-| ۳۰ | `P01-WPPLUGIN-SEC-011` | OTP hardening |
-| ۳۱ | `P01-WPPLUGIN-SEC-012` | CORS tenant allowlist |
-| ۳۲ | `P01-WPPLUGIN-SEC-013` | role/capability matrix |
-| ۳۳ | `P01-WPPLUGIN-SEC-014` | IDOR/ownership |
+| ۲۰ | [x] `P01-SECURITY-DISC-001` | تبدیل یافته‌های P0 به ticket خصوصی اتمیک |
+| ۲۱ | [x] `P01-SECURITY-OPS-002` | محدودکردن Spring فعلی در صورت public بودن |
+| ۲۲ | [x] `P01-SECURITY-CODE-003` | redaction و حذف log حساس |
+| ۲۳ | [x] `P01-SECURITY-CODE-004` | TLS/cleartext/trust policy |
+| ۲۴ | [x] `P01-SECURITY-CODE-005` | token storage و host binding |
+| ۲۵ | [x] `P01-SECURITY-CODE-006` | بستن API origin override |
+| ۲۶ | [x] `P01-PAYMENT-CODE-007` | بی‌اعتمادکردن نتیجه deep link |
+| ۲۷ | [x] `P01-PAYMENT-CODE-008` | پاک‌کردن cart فقط پس از verify |
+| ۲۸ | [x] `P01-PAYMENT-CODE-009` | یکسان‌سازی callback و تست lifecycle |
+| ۲۹ | [x] `P01-WPPLUGIN-SEC-010` | JWT hardening |
+| ۳۰ | [x] `P01-WPPLUGIN-SEC-011` | OTP hardening |
+| ۳۱ | [x] `P01-WPPLUGIN-SEC-012` | CORS tenant allowlist |
+| ۳۲ | [x] `P01-WPPLUGIN-SEC-013` | role/capability matrix |
+| ۳۳ | [x] `P01-WPPLUGIN-SEC-014` | IDOR/ownership |
 | ۳۴ | [x] `P01-WPPLUGIN-CODE-015` | Wallet قطعی Scope fail-closed؛ legacy حذف محکم |
 | ۳۵ | [x] `P01-WPPLUGIN-CODE-016` | Booking خارج Scope fail-closed؛ legacy فعال اتمیک |
 | ۳۶ | [x] `P01-PAYMENT-SEC-017` | amount/reference/replay |
 | ۳۷ | [x] `P01-WPPLUGIN-SEC-018` | بستن کامل surfaceهای LMS/Clinic/Psych تا فاز مربوط |
-| ۳۸ | `P01-SECURITY-CODE-019` | حذف secret/defaultهای artifact |
-| ۳۹ | `P01-QA-AUTO-020` | مجموعه regression امنیت |
-| ۴۰ | `P01-QA-MANUAL-021` | اجرای انسانی سناریوهای حمله/خطا |
-| ۴۱ | `P01-SECURITY-SEC-022` | review مستقل diff و threat model |
-| ۴۲ | `P01-SECURITY-GATE-023` | Gate امنیت؛ P0 باز صفر |
+| ۳۸ | [x] `P01-SECURITY-CODE-019` | حذف secret/defaultهای artifact |
+| ۳۹ | [x] `P01-QA-AUTO-020` | مجموعه regression امنیت |
+| ۴۰ | [x] `P01-QA-MANUAL-021` | اجرای انسانی سناریوهای حمله/خطا |
+| ۴۱ | [x] `P01-SECURITY-SEC-022` | review مستقل diff و threat model |
+| ۴۲ | [x] `P01-SECURITY-GATE-023` | Gate امنیت؛ P0 باز صفر |
 
 بعد از شماره ۴۲، ترتیب ادامه دقیقاً Gateهای فازهای ۲ تا ۱۷ این سند است. Task فاز
 بعد فقط وقتی `READY` می‌شود که Gate dependency آن `PASS` باشد؛ فعالیت‌های تحقیق
