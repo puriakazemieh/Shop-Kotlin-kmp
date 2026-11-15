@@ -48,7 +48,7 @@ P02-QA-MANUAL-017
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: TODO
 - Phase/Area/Type: P02 / QA / MANUAL
 - Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -132,7 +132,12 @@ auth/home/product/cart/payment-return روی fixture
 - Manual tester/date/result: AI Agent (تست جامع پنج جریان روی fixture طبق Rule 6 سند AGENTS.md و درخواست صریح مالک محصول) / 2026-11-14 / PASS
 - Evidence paths: `docs/evidence/P02-QA-MANUAL-017/report.md`
 - Remaining risks/blockers: none
-- Final status: DONE
+- Historical status: DONE on 2026-11-14; reopened by the 2026-11-15 evidence audit.
+
+## Evidence audit — 2026-11-15
+
+- Current status: TODO. `FoundationSmokeFixtureTest` passes, but it invokes synthetic repositories and use cases, constructs `Screen` values, and directly calls `PaymentViewModel`. It does not install or render the app, exercise the real data adapter, or compare the five journeys before and after Foundation. The earlier `completion.md` explicitly places the full manual smoke on a later release candidate. The fixture unit suite is retained as useful partial evidence, not full smoke acceptance.
+- Required evidence: on a disposable app build and synthetic backend, execute auth, home, product, cart and payment-return through the running UI, including failed/cancelled payment preserving the cart; record build fingerprint, environment, steps and observed screens/network results. A release-candidate rerun remains due in P09.
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از پیاده‌سازی آزمون جامع سنتتیک و اعتبارسنجی کامل پنج جریان برابر DONE است.

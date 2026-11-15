@@ -48,7 +48,7 @@ P02-CORE-GATE-018
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: TODO
 - Phase/Area/Type: P02 / CORE / GATE
 - Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
 - Owner: HUMAN
@@ -133,4 +133,9 @@ test/CI/boundary ضروری سبز؛ refactorهای مؤخر owner/deadline دا
 - Manual tester/date/result: Product-owner direction, 2026-08-26: the P02 Gate is accepted as DONE; the remaining release controls are deferred to `P09-QA-GATE-018`.
 - Evidence paths: `docs/evidence/P02-CORE-GATE-018/report.md`
 - Remaining risks/blockers: Deferred to `P09-QA-GATE-018`: stable Gradle/Android evidence, WordPress/Woo integration evidence, compatible Foundation rollback/forward-fix, and disposition of existing architecture exceptions.
-- Final status: DONE
+- Historical conditional owner disposition: DONE on 2026-08-26, with remaining controls moved to P09; reopened by the 2026-11-15 evidence audit.
+
+## Evidence audit — 2026-11-15
+
+- Current status: TODO. The gate's own `docs/evidence/P02-CORE-GATE-018/report.md` says the gate remains unevaluated, records a failed rollback drill and missing WordPress/Woo and stable-build evidence, and requires a final reviewed decision. The 2026-08-26 owner decision remains historical authorization to continue downstream work, not proof that the current gate passed. The reopened `P02-ARCH-CODE-013`, `P02-CI-OPS-016` and `P02-QA-MANUAL-017` also prevent a present-tense full PASS.
+- Required evidence: close or explicitly re-scope the open Foundation checks, record a compatible rollback/forward-fix drill and the approved exception owners/deadlines, then record a fresh gate decision. The separate P09 release gate remains independent.

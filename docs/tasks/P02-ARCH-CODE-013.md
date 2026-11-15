@@ -48,7 +48,7 @@ P02-ARCH-CODE-013
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: TODO
 - Phase/Area/Type: P02 / ARCH / CODE
 - Priority/Risk/Size: P2/HIGH / M
 - Owner: BOTH
@@ -132,7 +132,12 @@ current applicationIdها و build behavior حفظ؛ upgrade test
 - Manual tester/date/result: N/A (Automated multi-flavor build, applicationId checks, and package upgrade compatibility test)
 - Evidence paths: docs/evidence/P02-ARCH-CODE-013/summary.md, docs/evidence/P02-ARCH-CODE-013/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: DONE
+- Historical status: DONE on 2026-11-11; reopened by the 2026-11-15 evidence audit.
+
+## Evidence audit — 2026-11-15
+
+- Current status: TODO. The six debug APK builds and application IDs are evidenced, but `tools/android/verify_android_app_shell.cjs` only changes version fields and rebuilds an APK. It never installs the old APK, upgrades it on an emulator or device, or checks retained app data and launch after upgrade. This does not complete the card's upgrade acceptance or the Phase 02 installed-APK check.
+- Required evidence: install a baseline APK on a disposable emulator with synthetic data; install a higher-version APK with the same application ID and signing identity over it; confirm the upgrade succeeds, existing local state is retained as expected, and the app launches. Record device/emulator, APK hashes, versions, commands and results without using customer data.
 
 ## Status audit — 2026-10-28
 - گزارش پیشین در Completion record سابقهٔ تاریخی است؛ وضعیت جاری پس از تطبیق معیار پذیرش با کد و Evidence برابر TODO است.

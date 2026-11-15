@@ -48,7 +48,7 @@ P02-CI-OPS-016
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: DONE
+- Status: TODO
 - Phase/Area/Type: P02 / CI / OPS
 - Priority/Risk/Size: P1/MEDIUM / M
 - Owner: BOTH
@@ -132,4 +132,9 @@ artifact دارای version/checksum/SBOM و retention
 - Manual tester/date/result: N/A (Automated technical CI/OPS verification complete)
 - Evidence paths: docs/evidence/P02-CI-OPS-016/summary.md, docs/evidence/P02-CI-OPS-016/EVIDENCE.md
 - Remaining risks/blockers: None
-- Final status: DONE
+- Historical status: DONE on 2026-11-14; reopened by the 2026-11-15 evidence audit.
+
+## Evidence audit — 2026-11-15
+
+- Current status: TODO. The local verifier proves only static workflow text, SBOM generation on a dummy APK, and KMP compilation. GitHub reports zero executions of `release-artifact.yml`. The workflow silently accepts a missing desktop JAR (`|| true`) and a missing web distribution (conditional directory check); its upload step can still succeed because the SBOM generator creates files even when no product artifact exists. Running that generator on an empty output directory reproduced four metadata files and zero product artifacts.
+- Required evidence: fail the workflow if any selected product output is absent, validate the artifact inventory and hashes, then run the release workflow on a disposable ref and inspect its actual versioned artifacts, checksums, SBOM and retention. Keep publication to a production release separate from this verification.
