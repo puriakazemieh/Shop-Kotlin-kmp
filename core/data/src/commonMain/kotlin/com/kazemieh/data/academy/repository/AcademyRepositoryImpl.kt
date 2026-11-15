@@ -51,118 +51,196 @@ import com.kazemieh.network.academy.dto.SubmitQuizRequestDto
 import com.kazemieh.network.academy.dto.UpdateProgressRequestDto
 import com.kazemieh.network.academy.dto.WaitlistResponse
 import com.kazemieh.network.common.safeApiCall
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
+import com.kazemieh.data.common.guardOrError
 
 class AcademyRepositoryImpl(
-    private val api: AcademyApi
+    private val api: AcademyApi,
+    private val guard: FeatureUseCaseGuard? = null
 ) : AcademyRepository {
 
-    override suspend fun getCourses(): AppResult<List<CourseSummary>> = safeApiCall {
-        api.getCourses().map { it.toDomain() }
-    }
+    override suspend fun getCourses(): AppResult<List<CourseSummary>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getCourses().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun getCourse(slug: String): AppResult<CourseDetail> = safeApiCall {
-        api.getCourse(slug).toDomain()
-    }
+    override suspend fun getCourse(slug: String): AppResult<CourseDetail> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getCourse(slug).toDomain()
+            }
+        }
 
-    override suspend fun getMyCourses(): AppResult<List<CourseSummary>> = safeApiCall {
-        api.getMyCourses().map { it.toDomain() }
-    }
+    override suspend fun getMyCourses(): AppResult<List<CourseSummary>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getMyCourses().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun enroll(courseId: Long): AppResult<CourseDetail> = safeApiCall {
-        api.enroll(courseId).toDomain()
-    }
+    override suspend fun enroll(courseId: Long): AppResult<CourseDetail> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.enroll(courseId).toDomain()
+            }
+        }
 
     override suspend fun updateLessonProgress(
         lessonId: Long,
         completed: Boolean?,
         lastPositionSeconds: Int?
-    ): AppResult<CourseProgress> = safeApiCall {
-        api.updateLessonProgress(lessonId, UpdateProgressRequestDto(completed, lastPositionSeconds)).toDomain()
-    }
-
-    override suspend fun getQuiz(courseId: Long): AppResult<Quiz> = safeApiCall {
-        api.getQuiz(courseId).toDomain()
-    }
-
-    override suspend fun submitQuiz(courseId: Long, answers: Map<Int, Int>): AppResult<QuizResult> = safeApiCall {
-        api.submitQuiz(courseId, SubmitQuizRequestDto(answers)).toDomain()
-    }
-
-    override suspend fun getCertificates(): AppResult<List<Certificate>> = safeApiCall {
-        api.getCertificates().map { it.toDomain() }
-    }
-
-    override suspend fun joinWaitlist(courseId: Long): AppResult<WaitlistResult> = safeApiCall {
-        api.joinWaitlist(courseId).toDomain()
-    }
-
-    override suspend fun getLessonQuiz(lessonId: Long): AppResult<LessonQuiz> = safeApiCall {
-        api.getLessonQuiz(lessonId).toDomain()
-    }
-
-    override suspend fun submitLessonQuiz(lessonId: Long, answers: Map<Int, Int>): AppResult<LessonQuizResult> = safeApiCall {
-        api.submitLessonQuiz(lessonId, SubmitLessonQuizRequestDto(answers)).toDomain()
-    }
-
-    override suspend fun submitProject(courseId: Long, fileBytes: ByteArray, fileName: String, note: String?): AppResult<ProjectSubmission> = safeApiCall {
-        api.submitProject(courseId, fileBytes, fileName, note).toDomain()
-    }
-
-    override suspend fun submitProjectByLink(courseId: Long, fileUrl: String, note: String?): AppResult<ProjectSubmission> = safeApiCall {
-        api.submitProjectByLink(courseId, com.kazemieh.network.academy.dto.SubmitProjectRequestDto(fileUrl = fileUrl, note = note)).toDomain()
-    }
-
-    override suspend fun getMyProject(courseId: Long): AppResult<ProjectSubmission?> = safeApiCall {
-        api.getMyProject(courseId).submission?.toDomain()
-    }
-
-    override suspend fun getLessonQuestions(lessonId: Long): AppResult<List<LessonQuestion>> = safeApiCall {
-        api.getLessonQuestions(lessonId).map { it.toDomain() }
-    }
-
-    override suspend fun createLessonQuestion(lessonId: Long, content: String, parentId: Long?): AppResult<LessonQuestion> = safeApiCall {
-        api.createLessonQuestion(lessonId, CreateLessonQuestionRequestDto(content, parentId)).toDomain()
-    }
-
-    override suspend fun markCourseUpdateSeen(courseId: Long): AppResult<Unit> = safeApiCall {
-        api.markCourseUpdateSeen(courseId)
-    }
-
-    override suspend fun getPeerSubmissions(courseId: Long): AppResult<List<ProjectSubmission>> = safeApiCall {
-        api.getPeerSubmissions(courseId).map { it.toDomain() }
-    }
-
-    override suspend fun getPeerComments(submissionId: Long): AppResult<List<PeerComment>> = safeApiCall {
-        api.getPeerComments(submissionId).map { it.toDomain() }
-    }
-
-    override suspend fun addPeerComment(submissionId: Long, comment: String): AppResult<PeerComment> = safeApiCall {
-        api.addPeerComment(submissionId, CreatePeerCommentRequestDto(comment)).toDomain()
-    }
-
-    override suspend fun verifyCertificate(certNumber: String): AppResult<CertificateVerification> = safeApiCall {
-        val r = api.verifyCertificate(certNumber)
-        CertificateVerification(valid = r.valid, courseTitle = r.courseTitle, certNumber = r.certNumber, issuedAt = r.issuedAt)
-    }
-
-    override suspend fun getPlacementQuiz(): AppResult<List<PlacementQuizQuestion>> = safeApiCall {
-        api.getPlacementQuiz().questions.map { q ->
-            PlacementQuizQuestion(id = q.id, text = q.text, options = q.options.map { PlacementQuizOption(it.label, it.score) })
+    ): AppResult<CourseProgress> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.updateLessonProgress(lessonId, UpdateProgressRequestDto(completed, lastPositionSeconds)).toDomain()
+            }
         }
-    }
 
-    override suspend fun submitPlacementQuiz(answers: List<Int>): AppResult<PlacementQuizResult> = safeApiCall {
-        val r = api.submitPlacementQuiz(SubmitPlacementQuizRequestDto(answers))
-        PlacementQuizResult(level = r.level, label = r.label)
-    }
+    override suspend fun getQuiz(courseId: Long): AppResult<Quiz> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.getQuiz(courseId).toDomain()
+            }
+        }
 
-    override suspend fun requestRefund(courseId: Long, reason: String?): AppResult<CourseRefundRequest> = safeApiCall {
-        api.requestRefund(courseId, com.kazemieh.network.academy.dto.CourseRefundRequestRequestDto(reason)).toDomain()
-    }
+    override suspend fun submitQuiz(courseId: Long, answers: Map<Int, Int>): AppResult<QuizResult> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.submitQuiz(courseId, SubmitQuizRequestDto(answers)).toDomain()
+            }
+        }
 
-    override suspend fun getMyRefundRequests(): AppResult<List<CourseRefundRequest>> = safeApiCall {
-        api.getMyRefundRequests().map { it.toDomain() }
-    }
+    override suspend fun getCertificates(): AppResult<List<Certificate>> =
+        guard.guardOrError("academy.certificate") {
+            safeApiCall {
+                api.getCertificates().map { it.toDomain() }
+            }
+        }
+
+    override suspend fun joinWaitlist(courseId: Long): AppResult<WaitlistResult> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.joinWaitlist(courseId).toDomain()
+            }
+        }
+
+    override suspend fun getLessonQuiz(lessonId: Long): AppResult<LessonQuiz> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.getLessonQuiz(lessonId).toDomain()
+            }
+        }
+
+    override suspend fun submitLessonQuiz(lessonId: Long, answers: Map<Int, Int>): AppResult<LessonQuizResult> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.submitLessonQuiz(lessonId, SubmitLessonQuizRequestDto(answers)).toDomain()
+            }
+        }
+
+    override suspend fun submitProject(courseId: Long, fileBytes: ByteArray, fileName: String, note: String?): AppResult<ProjectSubmission> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.submitProject(courseId, fileBytes, fileName, note).toDomain()
+            }
+        }
+
+    override suspend fun submitProjectByLink(courseId: Long, fileUrl: String, note: String?): AppResult<ProjectSubmission> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.submitProjectByLink(courseId, com.kazemieh.network.academy.dto.SubmitProjectRequestDto(fileUrl = fileUrl, note = note)).toDomain()
+            }
+        }
+
+    override suspend fun getMyProject(courseId: Long): AppResult<ProjectSubmission?> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getMyProject(courseId).submission?.toDomain()
+            }
+        }
+
+    override suspend fun getLessonQuestions(lessonId: Long): AppResult<List<LessonQuestion>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getLessonQuestions(lessonId).map { it.toDomain() }
+            }
+        }
+
+    override suspend fun createLessonQuestion(lessonId: Long, content: String, parentId: Long?): AppResult<LessonQuestion> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.createLessonQuestion(lessonId, CreateLessonQuestionRequestDto(content, parentId)).toDomain()
+            }
+        }
+
+    override suspend fun markCourseUpdateSeen(courseId: Long): AppResult<Unit> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.markCourseUpdateSeen(courseId)
+            }
+        }
+
+    override suspend fun getPeerSubmissions(courseId: Long): AppResult<List<ProjectSubmission>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getPeerSubmissions(courseId).map { it.toDomain() }
+            }
+        }
+
+    override suspend fun getPeerComments(submissionId: Long): AppResult<List<PeerComment>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getPeerComments(submissionId).map { it.toDomain() }
+            }
+        }
+
+    override suspend fun addPeerComment(submissionId: Long, comment: String): AppResult<PeerComment> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.addPeerComment(submissionId, CreatePeerCommentRequestDto(comment)).toDomain()
+            }
+        }
+
+    override suspend fun verifyCertificate(certNumber: String): AppResult<CertificateVerification> =
+        guard.guardOrError("academy.certificate") {
+            safeApiCall {
+                val r = api.verifyCertificate(certNumber)
+                CertificateVerification(valid = r.valid, courseTitle = r.courseTitle, certNumber = r.certNumber, issuedAt = r.issuedAt)
+            }
+        }
+
+    override suspend fun getPlacementQuiz(): AppResult<List<PlacementQuizQuestion>> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.getPlacementQuiz().questions.map { q ->
+                    PlacementQuizQuestion(id = q.id, text = q.text, options = q.options.map { PlacementQuizOption(it.label, it.score) })
+                }
+            }
+        }
+
+    override suspend fun submitPlacementQuiz(answers: List<Int>): AppResult<PlacementQuizResult> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                val r = api.submitPlacementQuiz(SubmitPlacementQuizRequestDto(answers))
+                PlacementQuizResult(level = r.level, label = r.label)
+            }
+        }
+
+    override suspend fun requestRefund(courseId: Long, reason: String?): AppResult<CourseRefundRequest> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.requestRefund(courseId, com.kazemieh.network.academy.dto.CourseRefundRequestRequestDto(reason)).toDomain()
+            }
+        }
+
+    override suspend fun getMyRefundRequests(): AppResult<List<CourseRefundRequest>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getMyRefundRequests().map { it.toDomain() }
+            }
+        }
 
     private fun com.kazemieh.network.academy.dto.CourseRefundRequestResponse.toDomain() = CourseRefundRequest(
         id = id, courseId = courseId, courseTitle = courseTitle, amount = amount, reason = reason,

@@ -34,74 +34,98 @@ import com.kazemieh.network.academy.dto.QuizOptionResponse
 import com.kazemieh.network.academy.dto.QuizQuestionResponse
 import com.kazemieh.network.academy.dto.SectionResponse
 import com.kazemieh.network.common.safeApiCall
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
+import com.kazemieh.data.common.guardOrError
 
 class AdminAcademyRepositoryImpl(
-    private val api: AdminAcademyApi
+    private val api: AdminAcademyApi,
+    private val guard: FeatureUseCaseGuard? = null
 ) : AdminAcademyRepository {
 
-    override suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): AppResult<String> = safeApiCall {
-        api.uploadMedia(fileBytes, fileName)
-    }
+    override suspend fun uploadMedia(fileBytes: ByteArray, fileName: String): AppResult<String> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.uploadMedia(fileBytes, fileName)
+            }
+        }
 
-    override suspend fun listCourses(): AppResult<List<CourseSummary>> = safeApiCall {
-        api.listCourses().map { it.toDomain() }
-    }
+    override suspend fun listCourses(): AppResult<List<CourseSummary>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.listCourses().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun getCourseDetail(id: Long): AppResult<CourseDetail> = safeApiCall {
-        api.getCourseDetail(id).toDomain()
-    }
+    override suspend fun getCourseDetail(id: Long): AppResult<CourseDetail> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.getCourseDetail(id).toDomain()
+            }
+        }
 
-    override suspend fun createCourse(params: AdminCourseParams): AppResult<Long> = safeApiCall {
-        api.createCourse(
-            AdminCreateCourseRequestDto(
-                title = params.title,
-                slug = params.slug,
-                description = params.description,
-                thumbnailUrl = params.thumbnailUrl,
-                instructor = params.instructor,
-                price = params.price,
-                discountedPrice = params.discountedPrice,
-                productId = params.productId,
-                isPublished = params.isPublished,
-                courseType = params.courseType,
-                format = params.format,
-                level = params.level,
-                location = params.location,
-                capacity = params.capacity,
-                jobMarketBadge = params.jobMarketBadge,
-                freeUpdateBadge = params.freeUpdateBadge,
-                instructorBio = params.instructorBio,
-                instructorSkills = params.instructorSkills,
-                requiresProjectSubmission = params.requiresProjectSubmission,
-                cohortStartDate = params.cohortStartDate
-            )
-        )
-    }
+    override suspend fun createCourse(params: AdminCourseParams): AppResult<Long> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.createCourse(
+                    AdminCreateCourseRequestDto(
+                        title = params.title,
+                        slug = params.slug,
+                        description = params.description,
+                        thumbnailUrl = params.thumbnailUrl,
+                        instructor = params.instructor,
+                        price = params.price,
+                        discountedPrice = params.discountedPrice,
+                        productId = params.productId,
+                        isPublished = params.isPublished,
+                        courseType = params.courseType,
+                        format = params.format,
+                        level = params.level,
+                        location = params.location,
+                        capacity = params.capacity,
+                        jobMarketBadge = params.jobMarketBadge,
+                        freeUpdateBadge = params.freeUpdateBadge,
+                        instructorBio = params.instructorBio,
+                        instructorSkills = params.instructorSkills,
+                        requiresProjectSubmission = params.requiresProjectSubmission,
+                        cohortStartDate = params.cohortStartDate
+                    )
+                )
+            }
+        }
 
-    override suspend fun updateCourse(id: Long, params: AdminCourseUpdateParams): AppResult<Unit> = safeApiCall {
-        api.updateCourse(
-            id,
-            AdminUpdateCourseRequestDto(
-                title = params.title,
-                description = params.description,
-                thumbnailUrl = params.thumbnailUrl,
-                instructor = params.instructor,
-                price = params.price,
-                discountedPrice = params.discountedPrice,
-                isPublished = params.isPublished,
-                requiresProjectSubmission = params.requiresProjectSubmission,
-                cohortStartDate = params.cohortStartDate
-            )
-        )
-    }
+    override suspend fun updateCourse(id: Long, params: AdminCourseUpdateParams): AppResult<Unit> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.updateCourse(
+                    id,
+                    AdminUpdateCourseRequestDto(
+                        title = params.title,
+                        description = params.description,
+                        thumbnailUrl = params.thumbnailUrl,
+                        instructor = params.instructor,
+                        price = params.price,
+                        discountedPrice = params.discountedPrice,
+                        isPublished = params.isPublished,
+                        requiresProjectSubmission = params.requiresProjectSubmission,
+                        cohortStartDate = params.cohortStartDate
+                    )
+                )
+            }
+        }
 
-    override suspend fun deleteCourse(id: Long): AppResult<Unit> = safeApiCall {
-        api.deleteCourse(id)
-    }
+    override suspend fun deleteCourse(id: Long): AppResult<Unit> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.deleteCourse(id)
+            }
+        }
 
-    override suspend fun addSection(courseId: Long, title: String, sortOrder: Int): AppResult<Long> = safeApiCall {
-        api.addSection(courseId, AdminCreateSectionRequestDto(title = title, sortOrder = sortOrder))
-    }
+    override suspend fun addSection(courseId: Long, title: String, sortOrder: Int): AppResult<Long> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.addSection(courseId, AdminCreateSectionRequestDto(title = title, sortOrder = sortOrder))
+            }
+        }
 
     override suspend fun addLesson(
         courseId: Long,
@@ -113,93 +137,126 @@ class AdminAcademyRepositoryImpl(
         isFreePreview: Boolean,
         subtitleLanguage: String?,
         subtitleUrl: String?
-    ): AppResult<Long> = safeApiCall {
-        val subtitles = if (!subtitleUrl.isNullOrBlank()) {
-            listOf(com.kazemieh.network.academy.dto.SubtitleTrackResponse(subtitleLanguage.orEmpty(), subtitleUrl))
-        } else emptyList()
-        api.addLesson(
-            courseId, sectionId,
-            AdminCreateLessonRequestDto(
-                title = title, videoUrl = videoUrl, durationSeconds = durationSeconds,
-                sortOrder = sortOrder, isFreePreview = isFreePreview, subtitles = subtitles
-            )
-        )
-    }
+    ): AppResult<Long> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                val subtitles = if (!subtitleUrl.isNullOrBlank()) {
+                    listOf(com.kazemieh.network.academy.dto.SubtitleTrackResponse(subtitleLanguage.orEmpty(), subtitleUrl))
+                } else emptyList()
+                api.addLesson(
+                    courseId, sectionId,
+                    AdminCreateLessonRequestDto(
+                        title = title, videoUrl = videoUrl, durationSeconds = durationSeconds,
+                        sortOrder = sortOrder, isFreePreview = isFreePreview, subtitles = subtitles
+                    )
+                )
+            }
+        }
 
     override suspend fun upsertQuiz(
         courseId: Long,
         title: String,
         passScore: Int,
         questions: List<AdminQuizQuestion>
-    ): AppResult<Unit> = safeApiCall {
-        api.upsertQuiz(
-            courseId,
-            AdminUpsertQuizRequestDto(
-                title = title,
-                passScore = passScore,
-                questions = questions.mapIndexed { i, q ->
-                    QuizQuestionResponse(
-                        index = i,
-                        text = q.text,
-                        options = q.options.mapIndexed { oi, opt ->
-                            QuizOptionResponse(text = opt, correct = oi == q.correctIndex)
+    ): AppResult<Unit> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.upsertQuiz(
+                    courseId,
+                    AdminUpsertQuizRequestDto(
+                        title = title,
+                        passScore = passScore,
+                        questions = questions.mapIndexed { i, q ->
+                            QuizQuestionResponse(
+                                index = i,
+                                text = q.text,
+                                options = q.options.mapIndexed { oi, opt ->
+                                    QuizOptionResponse(text = opt, correct = oi == q.correctIndex)
+                                }
+                            )
                         }
                     )
-                }
-            )
-        )
-    }
+                )
+            }
+        }
 
-    override suspend fun listWaitlist(courseId: Long): AppResult<List<AdminWaitlistEntry>> = safeApiCall {
-        api.listWaitlist(courseId).map { it.toDomain() }
-    }
+    override suspend fun listWaitlist(courseId: Long): AppResult<List<AdminWaitlistEntry>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.listWaitlist(courseId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun notifyNextInWaitlist(courseId: Long): AppResult<AdminWaitlistEntry?> = safeApiCall {
-        api.notifyNextInWaitlist(courseId).entry?.toDomain()
-    }
+    override suspend fun notifyNextInWaitlist(courseId: Long): AppResult<AdminWaitlistEntry?> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.notifyNextInWaitlist(courseId).entry?.toDomain()
+            }
+        }
 
-    override suspend fun addLessonFile(courseId: Long, lessonId: Long, fileBytes: ByteArray, fileName: String, displayName: String): AppResult<Int> = safeApiCall {
-        api.addLessonFile(courseId, lessonId, fileBytes, fileName, displayName)
-    }
+    override suspend fun addLessonFile(courseId: Long, lessonId: Long, fileBytes: ByteArray, fileName: String, displayName: String): AppResult<Int> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.addLessonFile(courseId, lessonId, fileBytes, fileName, displayName)
+            }
+        }
 
-    override suspend fun addLessonFileByLink(courseId: Long, lessonId: Long, name: String, url: String, sizeLabel: String?): AppResult<Int> = safeApiCall {
-        api.addLessonFileByLink(courseId, lessonId, AdminAddLessonFileRequestDto(name = name, url = url, sizeLabel = sizeLabel))
-    }
+    override suspend fun addLessonFileByLink(courseId: Long, lessonId: Long, name: String, url: String, sizeLabel: String?): AppResult<Int> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.addLessonFileByLink(courseId, lessonId, AdminAddLessonFileRequestDto(name = name, url = url, sizeLabel = sizeLabel))
+            }
+        }
 
-    override suspend fun deleteLessonFile(courseId: Long, lessonId: Long, index: Int): AppResult<Unit> = safeApiCall {
-        api.deleteLessonFile(courseId, lessonId, index)
-    }
+    override suspend fun deleteLessonFile(courseId: Long, lessonId: Long, index: Int): AppResult<Unit> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.deleteLessonFile(courseId, lessonId, index)
+            }
+        }
 
-    override suspend fun getLessonQuiz(courseId: Long, lessonId: Long): AppResult<LessonQuiz?> = safeApiCall {
-        api.getLessonQuiz(courseId, lessonId).quiz?.toDomain()
-    }
+    override suspend fun getLessonQuiz(courseId: Long, lessonId: Long): AppResult<LessonQuiz?> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.getLessonQuiz(courseId, lessonId).quiz?.toDomain()
+            }
+        }
 
-    override suspend fun upsertLessonQuiz(courseId: Long, lessonId: Long, title: String, passScore: Int, questions: List<AdminQuizQuestion>): AppResult<Unit> = safeApiCall {
-        api.upsertLessonQuiz(
-            courseId, lessonId,
-            AdminUpsertLessonQuizRequestDto(
-                title = title,
-                passScore = passScore,
-                questions = questions.mapIndexed { i, q ->
-                    QuizQuestionResponse(
-                        index = i,
-                        text = q.text,
-                        options = q.options.mapIndexed { oi, opt ->
-                            QuizOptionResponse(text = opt, correct = oi == q.correctIndex)
+    override suspend fun upsertLessonQuiz(courseId: Long, lessonId: Long, title: String, passScore: Int, questions: List<AdminQuizQuestion>): AppResult<Unit> =
+        guard.guardOrError("academy.quiz") {
+            safeApiCall {
+                api.upsertLessonQuiz(
+                    courseId, lessonId,
+                    AdminUpsertLessonQuizRequestDto(
+                        title = title,
+                        passScore = passScore,
+                        questions = questions.mapIndexed { i, q ->
+                            QuizQuestionResponse(
+                                index = i,
+                                text = q.text,
+                                options = q.options.mapIndexed { oi, opt ->
+                                    QuizOptionResponse(text = opt, correct = oi == q.correctIndex)
+                                }
+                            )
                         }
                     )
-                }
-            )
-        )
-    }
+                )
+            }
+        }
 
-    override suspend fun listProjectSubmissions(courseId: Long): AppResult<List<ProjectSubmission>> = safeApiCall {
-        api.listProjectSubmissions(courseId).map { it.toDomain() }
-    }
+    override suspend fun listProjectSubmissions(courseId: Long): AppResult<List<ProjectSubmission>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.listProjectSubmissions(courseId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun reviewProjectSubmission(submissionId: Long, status: String, mentorFeedback: String?): AppResult<Unit> = safeApiCall {
-        api.reviewProjectSubmission(submissionId, AdminReviewProjectRequestDto(status = status, mentorFeedback = mentorFeedback))
-    }
+    override suspend fun reviewProjectSubmission(submissionId: Long, status: String, mentorFeedback: String?): AppResult<Unit> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.reviewProjectSubmission(submissionId, AdminReviewProjectRequestDto(status = status, mentorFeedback = mentorFeedback))
+            }
+        }
 
     private fun AdminWaitlistEntryResponse.toDomain() = AdminWaitlistEntry(
         id = id, userId = userId, notified = notified, createdAt = createdAt, notifiedAt = notifiedAt
@@ -255,33 +312,54 @@ class AdminAcademyRepositoryImpl(
         cohortStartDate = cohortStartDate
     )
 
-    override suspend fun listOrganizations(): AppResult<List<com.kazemieh.domain.academy.Organization>> = safeApiCall {
-        api.listOrganizations().map { it.toDomain() }
-    }
+    override suspend fun listOrganizations(): AppResult<List<com.kazemieh.domain.academy.Organization>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.listOrganizations().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun createOrganization(name: String, contactEmail: String?): AppResult<com.kazemieh.domain.academy.Organization> = safeApiCall {
-        api.createOrganization(com.kazemieh.network.academy.dto.CreateOrganizationRequestDto(name, contactEmail)).toDomain()
-    }
+    override suspend fun createOrganization(name: String, contactEmail: String?): AppResult<com.kazemieh.domain.academy.Organization> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.createOrganization(com.kazemieh.network.academy.dto.CreateOrganizationRequestDto(name, contactEmail)).toDomain()
+            }
+        }
 
-    override suspend fun buySeats(organizationId: Long, courseId: Long, count: Int): AppResult<List<com.kazemieh.domain.academy.OrganizationSeat>> = safeApiCall {
-        api.buySeats(organizationId, com.kazemieh.network.academy.dto.BuySeatsRequestDto(courseId, count)).map { it.toDomain() }
-    }
+    override suspend fun buySeats(organizationId: Long, courseId: Long, count: Int): AppResult<List<com.kazemieh.domain.academy.OrganizationSeat>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.buySeats(organizationId, com.kazemieh.network.academy.dto.BuySeatsRequestDto(courseId, count)).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun listSeats(organizationId: Long): AppResult<List<com.kazemieh.domain.academy.OrganizationSeat>> = safeApiCall {
-        api.listSeats(organizationId).map { it.toDomain() }
-    }
+    override suspend fun listSeats(organizationId: Long): AppResult<List<com.kazemieh.domain.academy.OrganizationSeat>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.listSeats(organizationId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun assignSeat(organizationId: Long, courseId: Long, email: String): AppResult<com.kazemieh.domain.academy.OrganizationSeat> = safeApiCall {
-        api.assignSeat(organizationId, com.kazemieh.network.academy.dto.AssignSeatRequestDto(courseId, email)).toDomain()
-    }
+    override suspend fun assignSeat(organizationId: Long, courseId: Long, email: String): AppResult<com.kazemieh.domain.academy.OrganizationSeat> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.assignSeat(organizationId, com.kazemieh.network.academy.dto.AssignSeatRequestDto(courseId, email)).toDomain()
+            }
+        }
 
-    override suspend fun listRefundRequests(): AppResult<List<com.kazemieh.domain.academy.AdminCourseRefundRequest>> = safeApiCall {
-        api.listRefundRequests().map { it.toDomain() }
-    }
+    override suspend fun listRefundRequests(): AppResult<List<com.kazemieh.domain.academy.AdminCourseRefundRequest>> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.listRefundRequests().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun reviewRefundRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<com.kazemieh.domain.academy.AdminCourseRefundRequest> = safeApiCall {
-        api.reviewRefundRequest(id, com.kazemieh.network.academy.dto.AdminReviewRefundRequestDto(approve, adminNote)).toDomain()
-    }
+    override suspend fun reviewRefundRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<com.kazemieh.domain.academy.AdminCourseRefundRequest> =
+        guard.guardOrError("academy.core") {
+            safeApiCall {
+                api.reviewRefundRequest(id, com.kazemieh.network.academy.dto.AdminReviewRefundRequestDto(approve, adminNote)).toDomain()
+            }
+        }
 
     private fun com.kazemieh.network.academy.dto.OrganizationResponse.toDomain() = com.kazemieh.domain.academy.Organization(
         id = id, name = name, contactEmail = contactEmail, createdAt = createdAt

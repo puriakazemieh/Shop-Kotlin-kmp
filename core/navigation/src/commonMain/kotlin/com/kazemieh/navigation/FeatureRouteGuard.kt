@@ -31,7 +31,7 @@ class FeatureRouteGuard(private val store: com.kazemieh.config.capabilities.Effe
     private fun featureIdFor(route: String): String? = when {
         route.contains("HomeGraph") -> if (route.contains("showCart=true")) "commerce.core" else null
         route.contains("Admin") || route.contains("Manage") -> "admin.mobile"
-        route.contains("Course") || route.contains("Certificate") || route.contains("Placement") || route.contains("PeerReview") -> "academy.core"
+        route.contains("Course") || route.contains("Certificate") || route.contains("Placement") || route.contains("PeerReview") || route.contains("LessonQuiz") || route.contains("ProjectSubmission") -> "academy.core"
         route.contains("Therapist") || route.contains("Appointment") || route.contains("Mood") || route.contains("Messaging") || route.contains("Homework") || route.contains("Journal") || route.contains("SessionReceipt") || route.contains("Emergency") -> "clinic.booking"
         route.contains("PsychTest") || route.contains("TakeTest") -> "psych.tests"
         route.contains("Wallet") -> "wallet"
