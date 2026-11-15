@@ -1,6 +1,8 @@
 package com.kazemieh.data.order.repository
 
 import com.kazemieh.common.AppResult
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
+import com.kazemieh.data.common.guardOrError
 import com.kazemieh.domain.order.AdminReturnRequest
 import com.kazemieh.domain.order.ReturnRequest
 import com.kazemieh.domain.order.ReturnRequestRepository
@@ -12,24 +14,37 @@ import com.kazemieh.network.order.dto.response.AdminReturnRequestResponse
 import com.kazemieh.network.order.dto.response.ReturnRequestResponse
 
 class ReturnRequestRepositoryImpl(
-    private val api: ReturnRequestApi
+    private val api: ReturnRequestApi,
+    private val guard: FeatureUseCaseGuard? = null
 ) : ReturnRequestRepository {
 
-    override suspend fun create(orderItemId: Long, type: String, reason: String): AppResult<ReturnRequest> = safeApiCall {
-        api.create(CreateReturnRequestRequest(orderItemId, type, reason)).toDomain()
-    }
+    override suspend fun create(orderItemId: Long, type: String, reason: String): AppResult<ReturnRequest> =
+        guard.guardOrError("commerce.core") {
+            safeApiCall {
+                api.create(CreateReturnRequestRequest(orderItemId, type, reason)).toDomain()
+            }
+        }
 
-    override suspend fun listMine(): AppResult<List<ReturnRequest>> = safeApiCall {
-        api.listMine().map { it.toDomain() }
-    }
+    override suspend fun listMine(): AppResult<List<ReturnRequest>> =
+        guard.guardOrError("commerce.core") {
+            safeApiCall {
+                api.listMine().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun adminList(): AppResult<List<AdminReturnRequest>> = safeApiCall {
-        api.adminList().map { it.toAdminDomain() }
-    }
+    override suspend fun adminList(): AppResult<List<AdminReturnRequest>> =
+        guard.guardOrError("commerce.core") {
+            safeApiCall {
+                api.adminList().map { it.toAdminDomain() }
+            }
+        }
 
-    override suspend fun adminUpdateStatus(id: Long, status: String, adminNote: String?): AppResult<AdminReturnRequest> = safeApiCall {
-        api.adminUpdateStatus(id, AdminUpdateReturnRequestRequest(status, adminNote)).toAdminDomain()
-    }
+    override suspend fun adminUpdateStatus(id: Long, status: String, adminNote: String?): AppResult<AdminReturnRequest> =
+        guard.guardOrError("commerce.core") {
+            safeApiCall {
+                api.adminUpdateStatus(id, AdminUpdateReturnRequestRequest(status, adminNote)).toAdminDomain()
+            }
+        }
 
     private fun ReturnRequestResponse.toDomain() = ReturnRequest(
         id = id, orderId = orderId, orderItemId = orderItemId, itemTitle = itemTitle,

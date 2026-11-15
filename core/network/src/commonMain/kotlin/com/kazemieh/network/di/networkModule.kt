@@ -55,7 +55,7 @@ val networkModule = module {
 
     // HttpClient
     single {
-        HttpClientFactory.create(get(), get())
+        HttpClientFactory.create(get(), getOrNull())
     }
 
     single<AuthApi> {

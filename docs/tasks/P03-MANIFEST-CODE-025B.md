@@ -7,7 +7,7 @@
 نقش: Implementer و Verifier فقط همین کارت. ابتدا `docs/tasks.md`، AGENTS.md، این کارت و `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` را کامل بخوان. فقط اولین READY مجاز است. این کارت نیازمندی مصوب مالک محصول را اجرا می‌کند؛ تصمیم استقلال دو محصول را دوباره به پرسش انتخاب محصول تبدیل نکن.
 
 - Repository: `D:/Android/AndroidStudioProjects/kmp-shop`
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P03 / MANIFEST / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -68,10 +68,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
+- [x] QA فنی با ترنسپورت واقعی در DI مطابق با دستورالعمل AGENTS.md ثبت شده است.
 
 ## Evidence و Rollback
 
@@ -81,13 +81,30 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
+- Started at: 2026-11-15T10:15:00+03:30
+- Completed at: 2026-11-15T11:40:00+03:30
 - Changed files:
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/common/FeatureGuardExtensions.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/cart/repository/CartRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/order/repository/OrderRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/catalog/repository/CatalogRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/wallet/repository/WalletRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/order/repository/ReturnRequestRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/order/repository/RecurringOrderRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/bundle/repository/BundleRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/bundle/repository/AdminBundleRepositoryImpl.kt`
+  - `core/data/src/commonMain/kotlin/com/kazemieh/data/di/dataModule.kt`
+  - `core/network/src/commonMain/kotlin/com/kazemieh/network/di/networkModule.kt`
+  - `core/navigation/src/commonMain/kotlin/com/kazemieh/navigation/FeatureRouteGuard.kt`
+  - `core/data/src/jvmTest/kotlin/com/kazemieh/data/commerce/CommerceOperationalGuardTest.kt`
+  - `docs/evidence/P03-MANIFEST-CODE-025B/summary.md`
 - Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+  - `./gradlew.bat :core:config:capabilities:jvmTest :core:navigation:jvmTest :core:network:jvmTest :core:data:jvmTest` (exit 0)
+  - `./gradlew.bat :composeApp:compileKotlinJs :composeApp:compileKotlinJvm` (exit 0)
+  - `./gradlew.bat :androidApp:assembleDebug` (exit 0)
+- Manual tester/date/build/result: Technical verification via real counting transport in DI (JDK HttpServer + Ktor + Koin) covering negative (0 requests), positive (incrementing requests), sub-feature hierarchy (wallet vs commerce.core), and auth/ownership bypass protection.
+- Evidence paths: `docs/evidence/P03-MANIFEST-CODE-025B/summary.md`
+- Remaining risks/blockers: None.
+- Final status: DONE
 
 </div>

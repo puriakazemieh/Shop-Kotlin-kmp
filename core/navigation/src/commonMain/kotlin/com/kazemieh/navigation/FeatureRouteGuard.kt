@@ -29,6 +29,7 @@ class FeatureRouteGuard(private val store: com.kazemieh.config.capabilities.Effe
     fun isFeatureEnabled(featureId: String): Boolean = store.features.value.isEnabled(featureId)
 
     private fun featureIdFor(route: String): String? = when {
+        route.contains("HomeGraph") -> if (route.contains("showCart=true")) "commerce.core" else null
         route.contains("Admin") || route.contains("Manage") -> "admin.mobile"
         route.contains("Course") || route.contains("Certificate") || route.contains("Placement") || route.contains("PeerReview") -> "academy.core"
         route.contains("Therapist") || route.contains("Appointment") || route.contains("Mood") || route.contains("Messaging") || route.contains("Homework") || route.contains("Journal") || route.contains("SessionReceipt") || route.contains("Emergency") -> "clinic.booking"

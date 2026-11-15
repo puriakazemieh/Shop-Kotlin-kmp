@@ -80,12 +80,15 @@ import com.kazemieh.domain.bundle.BundleRepository
 import com.kazemieh.data.bundle.repository.BundleRepositoryImpl
 import com.kazemieh.domain.bundle.AdminBundleRepository
 import com.kazemieh.data.bundle.repository.AdminBundleRepositoryImpl
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
 import org.koin.dsl.module
 
 
 val dataModule = module {
 
-    single<WalletRepository> { WalletRepositoryImpl(get(), get()) }
+    single<WalletRepository> {
+        WalletRepositoryImpl(get(), get(), getOrNull<FeatureUseCaseGuard>())
+    }
 
     single<StoryRepository> { StoryRepositoryImpl(get(), get()) }
 
@@ -139,7 +142,7 @@ val dataModule = module {
     }
 
     single<CatalogRepository> {
-        CatalogRepositoryImpl(get(), get(), get())
+        CatalogRepositoryImpl(get(), get(), get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<InteractionRepository> {
@@ -159,7 +162,7 @@ val dataModule = module {
     }
 
     single<CartRepository> {
-        CartRepositoryImpl(get(), get())
+        CartRepositoryImpl(get(), get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<CartDataSource> {
@@ -167,11 +170,11 @@ val dataModule = module {
     }
 
     single<OrderRepository> {
-        OrderRepositoryImpl(get(), get())
+        OrderRepositoryImpl(get(), get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<com.kazemieh.domain.order.ReturnRequestRepository> {
-        com.kazemieh.data.order.repository.ReturnRequestRepositoryImpl(get())
+        com.kazemieh.data.order.repository.ReturnRequestRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<com.kazemieh.domain.referral.ReferralRepository> {
@@ -179,7 +182,7 @@ val dataModule = module {
     }
 
     single<com.kazemieh.domain.order.RecurringOrderRepository> {
-        com.kazemieh.data.order.repository.RecurringOrderRepositoryImpl(get())
+        com.kazemieh.data.order.repository.RecurringOrderRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<com.kazemieh.domain.membership.MembershipRepository> {
@@ -233,11 +236,11 @@ val dataModule = module {
     }
 
     single<BundleRepository> {
-        BundleRepositoryImpl(get(), get())
+        BundleRepositoryImpl(get(), get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<AdminBundleRepository> {
-        AdminBundleRepositoryImpl(get())
+        AdminBundleRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single { TokenManager(settings = createTokenSettings(get()), namespace = get()) }
