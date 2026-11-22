@@ -7,7 +7,7 @@
 نقش: Implementer و Verifier فقط همین کارت. ابتدا `docs/tasks.md`، AGENTS.md، این کارت و `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` را کامل بخوان. فقط اولین READY مجاز است. این کارت نیازمندی مصوب مالک محصول را اجرا می‌کند؛ تصمیم استقلال دو محصول را دوباره به پرسش انتخاب محصول تبدیل نکن.
 
 - Repository: `D:/Android/AndroidStudioProjects/kmp-shop`
-- Status: READY
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P03 / QA / MANUAL
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: HUMAN
@@ -65,10 +65,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با سناریو و آزمون خودکار پایه آماده‌سازی شد.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق آزمون یکپارچگی 026 آزموده شده است.
+- [ ] QA انسانی در محیط Staging وردپرس طبق چک‌لیست ثبت شود (منتظر اجرا و تایید آزمایش‌کننده).
 
 ## Evidence و Rollback
 
@@ -78,13 +78,20 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
+- Started at: 2026-11-22 11:20 +03:30
+- Completed at: 2026-11-22 11:25 +03:30
 - Changed files:
+  - `docs/evidence/P03-QA-MANUAL-027/summary.md`
+  - `docs/tasks/P03-QA-MANUAL-027.md`
+  - `docs/tasks.md`
 - Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+  - `.\gradlew.bat :composeApp:jvmTest --tests "com.kazemieh.shop.ManifestIntegrationWiringTest"` (exit 0)
+  - `.\gradlew.bat :core:config:capabilities:jvmTest :core:navigation:jvmTest :core:network:jvmTest` (exit 0)
+  - `.\gradlew.bat :composeApp:compileKotlinJs :composeApp:compileKotlinJvm` (exit 0)
+  - `.\gradlew.bat :androidApp:assembleDebug` (exit 0)
+- Manual tester/date/build/result: PENDING (منتظر اجرای سناریوی تست دستی در محیط Staging وردپرس توسط کاربر/تستر)
+- Evidence paths: `docs/evidence/P03-QA-MANUAL-027/summary.md`
+- Remaining risks/blockers: وابستگی گیت فاز ۳ (P03-MANIFEST-GATE-022) به نتیجه تست دستی انسانی.
+- Final status: AWAITING_MANUAL_QA
 
 </div>
