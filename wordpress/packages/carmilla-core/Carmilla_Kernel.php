@@ -77,6 +77,33 @@ class Carmilla_Kernel {
         $carmilla_active_features = $active_features;
     }
 
+    /**
+     * Returns all active features resolved by the kernel for this request.
+     *
+     * @return array<string, bool>
+     */
+    public static function get_active_features(): array {
+        global $carmilla_active_features;
+        if ($carmilla_active_features === null) {
+            self::resolve_features();
+        }
+        return $carmilla_active_features ?? [];
+    }
+
+    /**
+     * Checks whether a specific feature (by canonical id or alias) is currently active.
+     *
+     * @param string $feature_id
+     * @return bool
+     */
+    public static function is_feature_active(string $feature_id): bool {
+        $active = self::get_active_features();
+        $canonical = class_exists('\Carmilla\Core\Catalog\EntitlementSchema')
+            ? \Carmilla\Core\Catalog\EntitlementSchema::resolve_feature_id($feature_id)
+            : $feature_id;
+        return !empty($active[$canonical]);
+    }
+
     public static function get_boot_contexts() {
         return self::$booted_by;
     }
@@ -107,8 +134,13 @@ class Carmilla_Kernel {
      */
     public static function reset_state(): void {
         self::$booted_by = [];
+        global $carmilla_active_features;
+        $carmilla_active_features = null;
         if (class_exists('\Carmilla\Core\Migration\SchemaRunner')) {
             \Carmilla\Core\Migration\SchemaRunner::reset_checkpoints();
+        }
+        if (class_exists('\Carmilla\Core\Entitlement\EntitlementResolver')) {
+            \Carmilla\Core\Entitlement\EntitlementResolver::reset_quota_cache();
         }
     }
 }

@@ -33,6 +33,13 @@ class EntitlementSchema {
         'builder.desktop'         => 'builder.target.desktop',
         'builder.pwa'             => 'builder.target.pwa',
         'builder.web'             => 'builder.target.web',
+        'content.blog'            => 'content.core',
+        'commerce.physical'       => 'commerce.core',
+        'commerce.digital'        => 'commerce.core',
+        'academy.quiz'            => 'academy.quizzes',
+        'academy.certificate'     => 'academy.certificates',
+        'clinic.messaging'        => 'clinic.consultation',
+        'wallet'                  => 'commerce.wallet',
     ];
 
     /**

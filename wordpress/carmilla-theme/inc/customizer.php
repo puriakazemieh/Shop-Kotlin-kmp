@@ -43,6 +43,9 @@ function carmilla_feature_toggles() {
  * runtime source of truth, while these defaults keep Theme-only installs safe.
  */
 function carmilla_manifest_features() {
+	if ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted() ) {
+		return \Carmilla_Kernel::get_active_features();
+	}
 	$defaults = array(
 		'content.blog' => true, 'commerce.core' => true, 'commerce.physical' => true,
 		'commerce.digital' => false, 'academy.core' => false, 'academy.quiz' => false,
@@ -78,6 +81,12 @@ function carmilla_manifest_features() {
 
 /** Whether a theme surface is enabled by the canonical manifest. */
 function carmilla_feature_enabled( $slug ) {
+	if ( class_exists( '\Carmilla\Theme\ThemeHostAdapter' ) ) {
+		return \Carmilla\Theme\ThemeHostAdapter::is_feature_enabled( $slug );
+	}
+	if ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted() ) {
+		return \Carmilla_Kernel::is_feature_active( $slug );
+	}
 	$map = array(
 		'shop'       => 'commerce.core',
 		'blog'       => 'content.blog',

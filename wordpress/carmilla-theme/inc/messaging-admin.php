@@ -6,7 +6,10 @@
  * same Core option schema and sender so a Theme-only installation can configure
  * and send messages without an extra plugin.
  */
-if ( ! defined( 'ABSPATH' ) || class_exists( 'CB_Integrations_Controller' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
+}
+if ( ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted_by( 'plugin' ) ) || class_exists( 'CB_Integrations_Controller' ) ) {
 	return;
 }
 
@@ -14,7 +17,7 @@ add_action( 'admin_menu', 'carmilla_theme_register_messaging_page', 20 );
 add_action( 'admin_post_carmilla_theme_test_message', 'carmilla_theme_handle_test_message' );
 
 function carmilla_theme_register_messaging_page() {
-	if ( class_exists( 'CB_Integrations_Controller' ) ) {
+	if ( ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted_by( 'plugin' ) ) || class_exists( 'CB_Integrations_Controller' ) ) {
 		return;
 	}
 	add_submenu_page(

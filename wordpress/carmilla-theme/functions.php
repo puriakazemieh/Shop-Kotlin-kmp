@@ -26,6 +26,9 @@ add_action('after_setup_theme', 'carmilla_theme_boot_kernel', 5);
 function carmilla_theme_boot_kernel() {
     if ( class_exists( 'Carmilla_Kernel' ) ) {
         \Carmilla_Kernel::boot('theme', CARMILLA_THEME_VERSION);
+        if ( class_exists( '\Carmilla\Theme\ThemeHostAdapter' ) ) {
+            \Carmilla\Theme\ThemeHostAdapter::init();
+        }
     }
 }
 
@@ -40,6 +43,7 @@ function carmilla_require_inc( $file ) {
 	}
 }
 
+carmilla_require_inc( 'class-theme-host-adapter.php' );
 carmilla_require_inc( 'icons.php' );
 carmilla_require_inc( 'customizer.php' );
 carmilla_require_inc( 'template-functions.php' );
