@@ -7,7 +7,7 @@
 نقش: Implementer و Verifier فقط همین کارت. ابتدا `docs/tasks.md`، AGENTS.md، این کارت و `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` را کامل بخوان. فقط اولین READY مجاز است. این کارت نیازمندی مصوب مالک محصول را اجرا می‌کند؛ تصمیم استقلال دو محصول را دوباره به پرسش انتخاب محصول تبدیل نکن.
 
 - Repository: `D:/Android/AndroidStudioProjects/kmp-shop`
-- Status: READY
+- Status: DONE
 - Phase/Area/Type: P04 / PRODUCT / ADR
 - Priority/Risk/Size: P0 / LOW / S
 - Owner: BOTH
@@ -62,10 +62,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش در قرارداد به رد عملیات و حفظ داده نگاشت شده‌اند؛ آزمون runtime به کارت‌های پیاده‌سازی واگذار شد.
+- [x] QA انسانی N/A: تغییر فقط مستنداتی است و UI، شبکه یا migration تغییر نکرده است.
 
 ## Evidence و Rollback
 
@@ -75,13 +75,13 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+- Started at: 2026-11-22
+- Completed at: 2026-11-22
+- Changed files: ADR-006، ADR-038، row صف، همین کارت، Master و evidence همین کارت.
+- Commands and exit codes: `git diff --check` و بررسی ماتریس/لینک/صف؛ نتیجه در evidence.
+- Manual tester/date/build/result: N/A؛ صرفاً قرارداد مستنداتی، بدون تغییر محصول.
+- Evidence paths: `docs/evidence/P04-PRODUCT-ADR-038/summary.md`
+- Remaining risks/blockers: bootstrap/version در ADR-002؛ SKU/alias در 039؛ migration و runtime QA در کارت‌های بعدی.
+- Final status: DONE
 
 </div>

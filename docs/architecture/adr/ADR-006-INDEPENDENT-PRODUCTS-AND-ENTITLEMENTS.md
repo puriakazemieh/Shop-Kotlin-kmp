@@ -52,43 +52,6 @@ App Builder از هر دو میزبان تجربه مستقل درخواست ت�
 
 </div>
 
-## Entity Read/Write Matrix (ADR-038 Addition)
+## قرارداد تفصیلی مالکیت
 
-این ماتریکس وظیفه تفکیک مالکیت (Ownership) و مسیرهای خواندن/نوشتن (Read/Write Paths) را بر اساس تفکیک موجودیت‌های کاننیکال (Canonical) و سایت‌-محور (Site-owned) مشخص می‌کند.
-
-| Entity (موجودیت) | Canonical Owner | Theme-only | Plugin-only (Bridge) | App Builder Role | Read Path (مسیر خواندن) | Write Path (مسیر نوشتن) |
-|---|---|---|---|---|---|---|
-| **محصولات (Products/SKU)** | Bridge/Woo | ❌ | ✅ (با Woo) | API Consumer | Bridge API / Woo API | wp-admin (Woo) / Bridge API |
-| **تنظیمات پوسته (Theme Options)** | Theme | ✅ | ❌ | N/A | Theme Config API | Theme Customizer / wp-admin |
-| **تنظیمات اپ (App Settings)** | Bridge | ❌ | ✅ | Configurator | Bridge API | App Builder Panel |
-| **محتوای آکادمی (Courses/Lessons)** | Bridge | ❌ | ✅ | API Consumer | Bridge API | wp-admin (Bridge CPT) |
-| **رزروها (Bookings/Appointments)** | Bridge | ❌ | ✅ | API Consumer | Bridge API | Bridge API / wp-admin |
-| **نوشته‌ها و برگه‌ها (Posts/Pages)** | WordPress Core | ✅ (UI) | ✅ (API) | API Consumer | WP REST / Bridge API | wp-admin |
-| **قالب‌های نمایشی (Templates)** | Theme | ✅ | ❌ | N/A | WP Core | Theme Editor |
-
-### قواعد مرزبندی (Boundary Rules):
-1. **کانونیکال بودن (Canonicality)**: افزونه (Bridge) صاحب (Owner) تمام دیتای بیزینسی (CPTهای آکادمی، کلینیک، سفارشات) است. پوسته (Theme) صرفاً صاحب دیتای نمایشی (UI/Templates) است.
-2. **سناریوی Theme-only**: فقط امکان رندر مقالات و صفحات وبسایت عادی وجود دارد.
-3. **سناریوی Plugin-only**: تمام APIها برای App و App Builder باز است، اما وب‌سایت خاموش است (Headless).
-4. **سناریوی Both (Co-install)**: افزونه API می‌دهد، پوسته وب‌سایت را رندر می‌کند بدون تداخل در CPTهای یکدیگر.
-5. **App Builder**: صرفاً تنظیمات خودش را روی Bridge (افزونه) می‌نویسد و از آن می‌خواند. پوسته هیچ اتصالی به App Builder ندارد.
-
-## Plugin & Theme Co-install and Schema Authority (ADR-002 Addition)
-
-این بخش معماری نحوه کار همزمان یا تکی پوسته (Carmilla Theme) و افزونه (Carmilla Bridge) در محیط وردپرس را مشخص می‌کند:
-
-### 1. ساختار Kernel و Bootstrap
-برای جلوگیری از هرگونه تداخل (Collision) یا دو بار لود شدن (Duplicate boot) در سناریوی Co-install، یک مکانیزم Shared Kernel تعریف می‌شود. 
-هنگام لود وردپرس، افزونه یا پوسته‌ای که سریع‌تر لود شود (First-loaded)، کلاسی با عنوان Carmilla_Kernel را در حافظه ثبت می‌کند. محصول دوم ابتدا بررسی می‌کند class_exists('Carmilla_Kernel') و اگر وجود داشت، فرآیند Bootstrap خودش را متوقف کرده و به کرنل موجود متصل می‌شود.
-
-### 2. اتوریتی اسکیما (Schema Authority)
-افزونه (Bridge) صاحب مطلق دیتابیس، CPTها و Schemaهای مرتبط با اپلیکیشن و سرویس‌های پایه (فروش، نوبت‌دهی، آکادمی) است. 
-- در حالت **Theme-only**: پوسته هیچ تیبل یا CPT کاستومی ایجاد نمی‌کند و فقط به REST API پیش‌فرض وردپرس و متا دیتای پست‌ها متکی است.
-- در حالت **Plugin-only**: افزونه بدون رندر فرانت‌اند، تمامی CPTها و APIها را Register می‌کند تا کلاینت‌های هدلس (KMP) استفاده کنند.
-- در حالت **Co-install**: افزونه Schemaها را مدیریت می‌کند و پوسته صرفاً iew contract (قرارداد نمایشی) را اجرا کرده و مقادیر را در Templateها رندر می‌کند.
-
-### 3. استراتژی حل تضاد نسخه (Version Mismatch)
-اگر نسخه پوسته و افزونه همخوانی نداشت (مثلاً Theme v1.0.0 و Plugin v2.0.0):
-- همیشه نسخه بالاتر به عنوان **Version Authority** انتخاب می‌شود.
-- اگر محصولی نسخه پایین‌تر داشت، از طریق قابلیت‌های پشتیبانی معکوس (Graceful Degradation) کار می‌کند اما به کاربر ادمین یک پیغام اخطار (Admin Notice) مبنی بر نیاز به آپدیت همگام نمایش داده می‌شود.
-- در هیچ سناریویی، اختلاف نسخه نباید منجر به Fatal Error در سایت یا مسدود شدن شریان‌های حیاتی (مانند APIهای سبد خرید) شود.
+ماتریس entity/read/write/schema/host/SKU در [ADR-038](ADR-038-PRODUCT-OWNERSHIP-MATRIX.md) ثبت شده است. جزئیات bootstrap و انتخاب نسخه به P04-WPPLUGIN-ADR-002 واگذار شده‌اند. پیوست‌های قبلی این فایل که Bridge-only، Theme-only بدون دامنه، Plugin-only بدون UI و انتخاب first-loaded/highest-version را مقرر می‌کردند، با قرارداد فعال تعارض داشتند و از تصمیم جاری حذف شدند.
