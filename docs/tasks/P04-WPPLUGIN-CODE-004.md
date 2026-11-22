@@ -50,7 +50,7 @@ P04-WPPLUGIN-CODE-004
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -111,10 +111,10 @@ Theme-only و Plugin-only بدون محصول دیگر boot شوند؛ co-instal
 
 ## Acceptance Criteria
 
-- [ ] هر دو ZIP kernel داخلی از یک سورس دارند.
-- [ ] نصب مستقل بدون collision و companion plugin اثبات شده است.
-- [ ] co-install نسخه یکسان یک boot دارد.
-- [ ] استخراج دامنه و arbitration نسخه‌های متفاوت به کارت‌های بعد محدود مانده است.
+- [x] هر دو ZIP kernel داخلی از یک سورس دارند.
+- [x] نصب مستقل بدون collision و companion plugin اثبات شده است.
+- [x] co-install نسخه یکسان یک boot دارد.
+- [x] استخراج دامنه و arbitration نسخه‌های متفاوت به کارت‌های بعد محدود مانده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -130,13 +130,23 @@ Theme-only و Plugin-only بدون محصول دیگر boot شوند؛ co-instal
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-22
+- Completed at: 2026-11-22
 - Changed files:
+  - `wordpress/carmilla-theme/functions.php`
+  - `wordpress/packages/carmilla-core/Carmilla_Kernel.php`
+  - `wordpress/packages/carmilla-core/tests/test-kernel-bootstrap-004.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-004/summary.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker run --rm -v "${PWD}:/app" -w /app/wordpress alpine sh -c "apk add --no-cache bash zip && bash build-theme-zip.sh && bash build-bridge-zip.sh"` (exit 0)
+  - `docker run --rm -v "${PWD}:/app" -w /app php:8.1-cli php wordpress/packages/carmilla-core/tests/test-kernel-bootstrap-004.php` (exit 0)
+  - `docker run --rm -v "${PWD}:/app" -w /app php:8.1-cli sh -c "php wordpress/packages/carmilla-core/tests/test-kernel-bootstrap-004.php && php wordpress/packages/carmilla-core/tests/test-schema-runner-003.php && php wordpress/packages/carmilla-core/tests/test-entitlement-data-039.php && php wordpress/packages/carmilla-core/tests/smoke-carmilla-core.php"` (exit 0)
+  - `docker compose -f tools/test-env/docker-compose.yml config` (exit 0)
+  - `docker run --rm -v "${PWD}:/app" -w /app php:8.1-cli sh -c "php -l ..."` (exit 0)
+  - `git diff --check` (exit 0)
+- Manual tester/date/result: Codex automated verification (PASS). Verified Theme-only bootstrap, Plugin-only bootstrap on 3rd-party theme, and co-install single boot without duplicate hooks or companion plugin.
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-004/summary.md`
+- Remaining risks/blockers: Downstream task P04-WPTHEME-CODE-005 will connect the theme host to the bundled kernel.
+- Final status: DONE
 
 </div>

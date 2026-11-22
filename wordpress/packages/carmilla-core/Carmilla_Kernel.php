@@ -80,5 +80,36 @@ class Carmilla_Kernel {
     public static function get_boot_contexts() {
         return self::$booted_by;
     }
+
+    /**
+     * Checks if the kernel has been booted by any host.
+     *
+     * @return bool
+     */
+    public static function is_booted(): bool {
+        return !empty(self::$booted_by);
+    }
+
+    /**
+     * Checks if the kernel was booted by a specific host context ('theme' or 'plugin').
+     *
+     * @param string $context
+     * @return bool
+     */
+    public static function is_booted_by(string $context): bool {
+        return isset(self::$booted_by[$context]);
+    }
+
+    /**
+     * Resets kernel boot state and checkpoints (for testing and isolation).
+     *
+     * @return void
+     */
+    public static function reset_state(): void {
+        self::$booted_by = [];
+        if (class_exists('\Carmilla\Core\Migration\SchemaRunner')) {
+            \Carmilla\Core\Migration\SchemaRunner::reset_checkpoints();
+        }
+    }
 }
 }
