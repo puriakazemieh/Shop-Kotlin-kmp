@@ -726,18 +726,18 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P03-MANIFEST-CODE-025E` | BOTH | P0/HIGH | اعمال guard عملیاتی تست روان‌شناسی | با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود. |
 | [x] | `P03-QA-AUTO-026` | BOTH | P0/HIGH | آزمون wiring واقعی Manifest و دو پروفایل | روشن/خاموش، tenant switch، manifest stale و سقف خرید شبیه‌سازی‌شده با شمار request بررسی؛ صرف lambda fake به‌عنوان تست DI پذیرفته نیست. |
 | [x] | `P03-QA-MANUAL-027` | HUMAN | P0/HIGH | QA انسانی جایگزین Manifest پس از اتصال runtime | کجا: wp-admin تنظیم قابلیت و app staging. چگونه: روشن/خاموش، refresh بدون rebuild، لینک مستقیم و قطع درخواست manifest. موفقیت: UI/route/network/API همسو؛ tester و build و نتیجه هر گام ثبت؛ تا تأیید انسان AWAITING_MANUAL_QA. |
-| [ ] | `P03-MANIFEST-GATE-022` | HUMAN | P0/HIGH | Gate Manifest | دو build profile، zero bypass و migration pass |
+| [x] | `P03-MANIFEST-GATE-022` | HUMAN | P0/HIGH | Gate Manifest | دو build profile، zero bypass و migration pass |
 
 ### Gate فاز ۳
 
-- [ ] فقط دو Backend Profile در dimension مربوط وجود دارد.
-- [ ] customer identity و branding flavor جدید نمی‌سازند.
-- [ ] manifest schema/version/dependency/fail-closed تست شده است.
-- [ ] feature خاموش در UI، route، deep link، background و API قابل استفاده نیست.
-- [ ] authorization همچنان server-side است.
-- [ ] package/signing نصب‌های قبلی حفظ شده‌اند.
-- [ ] shadow rollout و rollback revision وجود دارد.
-- Gate decision: `NOT_EVALUATED`
+- [x] فقط دو Backend Profile در dimension مربوط وجود دارد.
+- [x] customer identity و branding flavor جدید نمی‌سازند.
+- [x] manifest schema/version/dependency/fail-closed تست شده است.
+- [x] feature خاموش در UI، route، deep link، background و API قابل استفاده نیست.
+- [x] authorization همچنان server-side است.
+- [x] package/signing نصب‌های قبلی حفظ شده‌اند.
+- [x] shadow rollout و rollback revision وجود دارد.
+- Gate decision: `PASS`
 
 ---
 

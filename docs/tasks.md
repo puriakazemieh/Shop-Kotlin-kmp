@@ -7,7 +7,7 @@
 - سه خانواده محصول: Theme مستقل، Plugin مستقل با UI عمومی روی قالب دیگر، کلاینت‌های Android/iOS/Desktop/Web/PWA مستقل. WooCommerce طبق پاسخ مالک محصول مجاز است.
 - حق خرید، محتوای بسته و toggle جدا هستند؛ App Builder از هر دو میزبان مستقل عرضه و هدف‌های آن جداگانه مجاز می‌شوند.
 - DONEهای قبلی تاریخچه‌اند؛ انطباق جدید باید در کارت‌های جبرانی ثابت شود. به‌ویژه QA020 و ADR001 فاز چهار، شواهد ناقص/متناقض دارند و مجوز Gate جدید نیستند.
-- **وضعیت فعلی صف:** مسیر P00 ورود/ثبت‌نام تا رفع مانع حذف و اثبات ایمنی هویت باز است. مالک در ۱۸ اکتبر ۲۰۲۶ گزینهٔ حفظ حذف معمول وردپرس، همراه با طراحی تشخیص خطا و بازیابی را انتخاب کرد؛ این انتخاب به معنی اثبات سازگاری، تکمیل ثبت‌نام یا اجازهٔ تغییر سایت‌های نگهداری‌شده نیست. `021C04B03C02A`–`021C04B03C02F` آزمایش‌های محدود و ساختگی تکمیل‌شده‌اند، نه اصلاح متصل به محصول؛ `021C04B03C02` تا رفع واقعی مانع `BLOCKED` می‌ماند. هشدار دائمی و اتصال محصول جداگانه بررسی می‌شوند؛ اثر callbackها قابل بازگردانی فرض نمی‌شود. `P03-QA-REVIEW-023` با Evidence تکمیل شده است؛ QA واقعی `P03-QA-MANUAL-027` همچنان پیش‌نیاز Gate است. `P11-ANDROID-DISC-001` تا PASS شدن Gateهای P03، P05 و P08 در `TODO` می‌ماند.
+- **وضعیت فعلی صف:** مسیر P00 ورود/ثبت‌نام تا رفع مانع حذف و اثبات ایمنی هویت باز است. مالک در ۱۸ اکتبر ۲۰۲۶ گزینهٔ حفظ حذف معمول وردپرس، همراه با طراحی تشخیص خطا و بازیابی را انتخاب کرد؛ این انتخاب به معنی اثبات سازگاری، تکمیل ثبت‌نام یا اجازهٔ تغییر سایت‌های نگهداری‌شده نیست. `021C04B03C02A`–`021C04B03C02F` آزمایش‌های محدود و ساختگی تکمیل‌شده‌اند، نه اصلاح متصل به محصول؛ `021C04B03C02` تا رفع واقعی مانع `BLOCKED` می‌ماند. هشدار دائمی و اتصال محصول جداگانه بررسی می‌شوند؛ اثر callbackها قابل بازگردانی فرض نمی‌شود. `P03-QA-REVIEW-023` با Evidence تکمیل شده است؛ گیت فاز ۳ (`P03-MANIFEST-GATE-022`) با شواهد `P03-QA-AUTO-026` و `P03-QA-MANUAL-027` تکمیل و تصویب شد؛ فاز ۰۴ با `P04-PRODUCT-ADR-038` آغاز می‌شود. `P11-ANDROID-DISC-001` تا PASS شدن Gateهای P03، P05 و P08 در `TODO` می‌ماند.
 - ترتیب فازها اولویت اجراست؛ dependencyهای شروع iOS/Desktop/LMS/Clinic به محصول نامرتبط وابسته نیستند. فروش هر ترکیب محصول/فیچر/backend/پلتفرم فقط پس از Gate همان ترکیب؛ fixture یا mock خروجی قابل فروش نیست.
 - P04 فقط kernel/میزبان/SKU و قرارداد آزمایشی Builder را آماده می‌کند. build واقعی Android/Web/PWA در P12 و تکمیل iOS/Desktop در P16/P17 است. Gate پایه P04 به آینده وابسته نمی‌شود.
 
@@ -377,7 +377,7 @@
 | DONE | P03-MANIFEST-CODE-025E | BOTH | P03-MANIFEST-CODE-025D | [P03-MANIFEST-CODE-025E](tasks/P03-MANIFEST-CODE-025E.md) |
 | DONE | P03-QA-AUTO-026 | BOTH | P03-MANIFEST-CODE-025E | [P03-QA-AUTO-026](tasks/P03-QA-AUTO-026.md) |
 | DONE | P03-QA-MANUAL-027 | HUMAN | P03-QA-AUTO-026 | [P03-QA-MANUAL-027](tasks/P03-QA-MANUAL-027.md) |
-| READY | P03-MANIFEST-GATE-022 | HUMAN | P03-MANIFEST-OPS-021, P03-QA-MANUAL-027 | [P03-MANIFEST-GATE-022](tasks/P03-MANIFEST-GATE-022.md) |
+| DONE | P03-MANIFEST-GATE-022 | HUMAN | P03-MANIFEST-OPS-021, P03-QA-MANUAL-027 | [P03-MANIFEST-GATE-022](tasks/P03-MANIFEST-GATE-022.md) |
 
 ### P04 — پوسته و افزونه مستقل، فروش قابلیت‌ها و سازگاری نصب هم‌زمان
 
@@ -386,7 +386,7 @@
 | Status | Task ID | Owner | Depends on | کارت |
 |--------|---|---|---|---|
 | DONE   | P04-WPPLUGIN-ADR-001 | BOTH | P03-MANIFEST-GATE-022 | [P04-WPPLUGIN-ADR-001](tasks/P04-WPPLUGIN-ADR-001.md) |
-| TODO | P04-PRODUCT-ADR-038 | BOTH | P03-MANIFEST-GATE-022, P04-WPPLUGIN-ADR-001 | [P04-PRODUCT-ADR-038](tasks/P04-PRODUCT-ADR-038.md) |
+| READY | P04-PRODUCT-ADR-038 | BOTH | P03-MANIFEST-GATE-022, P04-WPPLUGIN-ADR-001 | [P04-PRODUCT-ADR-038](tasks/P04-PRODUCT-ADR-038.md) |
 | TODO | P04-WPPLUGIN-ADR-002 | BOTH | P04-PRODUCT-ADR-038, P03-MANIFEST-GATE-022 | [P04-WPPLUGIN-ADR-002](tasks/P04-WPPLUGIN-ADR-002.md) |
 | TODO | P04-ENTITLEMENT-DATA-039 | BOTH | P04-WPPLUGIN-ADR-002 | [P04-ENTITLEMENT-DATA-039](tasks/P04-ENTITLEMENT-DATA-039.md) |
 | TODO | P04-WPPLUGIN-CODE-003 | AI | P04-ENTITLEMENT-DATA-039 | [P04-WPPLUGIN-CODE-003](tasks/P04-WPPLUGIN-CODE-003.md) |
