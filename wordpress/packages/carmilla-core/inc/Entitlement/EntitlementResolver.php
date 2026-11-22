@@ -6,12 +6,13 @@ use Carmilla\Core\Catalog\EntitlementClaims;
 use Carmilla\Core\Catalog\DependencyResolver;
 
 /**
- * Entitlement Resolver
+ * Entitlement Resolver (v1)
  *
  * Validates license claims against site binding, signature integrity, and expiry.
- * Resolves effective features and manages quota single-counting in co-install mode.
+ * Resolves effective features, manages quota single-counting in co-install mode,
+ * and enforces platform builder targets and lifecycle states (grace, revoke, transfer).
  *
- * Part of Task P04-ENTITLEMENT-CODE-040.
+ * Part of Task P04-ENTITLEMENT-DATA-039 / P04-ENTITLEMENT-CODE-040.
  */
 class EntitlementResolver {
 
@@ -26,15 +27,19 @@ class EntitlementResolver {
      * Validates license claims against site binding, status, expiry, and tampering.
      *
      * @param mixed $claims The license claims array to validate.
+     * @param bool  $allow_grace Whether to treat active grace-period as technically valid. Defaults to false.
      * @return bool True if license is valid and bound to this site, false otherwise.
      */
-    public static function validate_license($claims): bool {
+    public static function validate_license($claims, bool $allow_grace = false): bool {
         if (!is_array($claims) || empty($claims)) {
             return false;
         }
 
-        // 1. Check status is strictly 'active'
-        if (!isset($claims['status']) || $claims['status'] !== 'active') {
+        // 1. Check status is strictly 'active' (or grace_period if allowed)
+        if (!isset($claims['status'])) {
+            return false;
+        }
+        if ($claims['status'] !== 'active' && !($allow_grace && $claims['status'] === 'grace_period')) {
             return false;
         }
 
@@ -52,20 +57,20 @@ class EntitlementResolver {
         // 3. Expiration check
         if (!empty($claims['expires_at'])) {
             $now = time();
+            $grace_seconds = $allow_grace ? (14 * 86400) : 0;
             if (is_numeric($claims['expires_at'])) {
-                if ($now > (int) $claims['expires_at']) {
+                if ($now > ((int) $claims['expires_at'] + $grace_seconds)) {
                     return false;
                 }
             } else {
                 $exp_time = strtotime((string) $claims['expires_at']);
-                if ($exp_time !== false && $now > $exp_time) {
+                if ($exp_time !== false && $now > ($exp_time + $grace_seconds)) {
                     return false;
                 }
             }
         }
 
         // 4. Site binding check
-        // If site binding is specified in the claims, it must match the current site URL
         $claim_site = $claims['site_url'] ?? $claims['site_binding'] ?? $claims['bound_site_url'] ?? null;
         if (!empty($claim_site)) {
             $current_site = function_exists('get_site_url') ? get_site_url() : '';
@@ -80,6 +85,48 @@ class EntitlementResolver {
         }
 
         return true;
+    }
+
+    /**
+     * Determines detailed lifecycle status of the license.
+     *
+     * @param mixed $claims
+     * @return string 'active'|'grace_period'|'expired'|'revoked'|'transferred'|'invalid'
+     */
+    public static function get_license_status($claims): string {
+        if (!is_array($claims) || empty($claims)) {
+            return 'invalid';
+        }
+
+        if (!empty($claims['tampered']) || (isset($claims['is_valid']) && $claims['is_valid'] === false)) {
+            return 'invalid';
+        }
+
+        $raw_status = $claims['status'] ?? 'invalid';
+        if ($raw_status === 'revoked') {
+            return 'revoked';
+        }
+        if ($raw_status === 'transferred') {
+            return 'transferred';
+        }
+        if ($raw_status === 'suspended') {
+            return 'suspended';
+        }
+
+        // Check expiration and grace
+        if (!empty($claims['expires_at'])) {
+            $now = time();
+            $exp_time = is_numeric($claims['expires_at']) ? (int) $claims['expires_at'] : strtotime((string) $claims['expires_at']);
+            if ($exp_time && $now > $exp_time) {
+                $grace_limit = $exp_time + (14 * 86400);
+                if ($now <= $grace_limit) {
+                    return 'grace_period';
+                }
+                return 'expired';
+            }
+        }
+
+        return ($raw_status === 'active') ? 'active' : 'invalid';
     }
 
     /**
@@ -99,12 +146,42 @@ class EntitlementResolver {
         $effective = EntitlementClaims::resolve_effective_features($claims);
 
         // 2. Obtain current boot contexts (Theme, Plugin, or Co-install)
-        $boot_contexts = class_exists('\Carmilla_Kernel') 
-            ? \Carmilla_Kernel::get_boot_contexts() 
+        $boot_contexts = class_exists('\Carmilla_Kernel')
+            ? \Carmilla_Kernel::get_boot_contexts()
             : [];
 
         // 3. Filter against environmental capabilities (e.g. WooCommerce availability)
         return DependencyResolver::filter_environment_capabilities($effective, $boot_contexts);
+    }
+
+    /**
+     * Checks if a specific feature is active in the resolved manifest.
+     *
+     * @param mixed  $claims
+     * @param string $feature_id
+     * @return bool
+     */
+    public static function has_feature($claims, string $feature_id): bool {
+        $canonical = EntitlementSchema::resolve_feature_id($feature_id);
+        $features = self::resolve($claims);
+        return !empty($features[$canonical]);
+    }
+
+    /**
+     * Checks if a specific builder target platform is entitled.
+     *
+     * @param mixed  $claims The license claims array.
+     * @param string $target Target platform: 'android'|'ios'|'desktop'|'pwa'|'web'.
+     * @return bool True if license is valid and target is explicitly entitled.
+     */
+    public static function has_builder_target($claims, string $target): bool {
+        if (!self::validate_license($claims)) {
+            return false;
+        }
+
+        $features = self::resolve($claims);
+        $target_key = "builder.target.{$target}";
+        return !empty($features[$target_key]);
     }
 
     /**
@@ -128,7 +205,6 @@ class EntitlementResolver {
 
     /**
      * Resolves an effective quota value, preventing quota duplication in co-install mode.
-     * If both Theme and Plugin inspect or register quotas, this ensures a canonical single count.
      *
      * @param mixed  $claims    The license claims array.
      * @param string $quota_key The quota identifier (e.g. 'max_products', 'max_courses').
@@ -140,7 +216,6 @@ class EntitlementResolver {
             return 0;
         }
 
-        // Return from memory cache if already resolved in this request cycle to avoid co-install double counting
         if (isset(self::$resolved_quotas[$quota_key])) {
             return self::$resolved_quotas[$quota_key];
         }
@@ -150,7 +225,6 @@ class EntitlementResolver {
             $quota_val = (int) $claims['quotas'][$quota_key];
         }
 
-        // In co-install, quota represents the absolute entitlement ceiling, never additive per product
         self::$resolved_quotas[$quota_key] = max(0, $quota_val);
 
         return self::$resolved_quotas[$quota_key];
@@ -187,9 +261,7 @@ class EntitlementResolver {
      */
     private static function normalize_url(string $url): string {
         $url = trim($url);
-        // Strip scheme
         $url = preg_replace('#^https?://#i', '', $url);
-        // Strip trailing slash
         $url = rtrim($url, "/\\");
         return strtolower($url);
     }

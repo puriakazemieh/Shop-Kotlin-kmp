@@ -20,7 +20,7 @@
 
 ## ترتیب bootstrap و نقطهٔ انتخاب
 
-WordPress `plugins_loaded` را پیش از `after_setup_theme` و `init` اجرا می‌کند. پس boot در `plugins_loaded` زودهنگام است: Theme هنوز candidate خود را معرفی نکرده است. هر دو ورودی صرفاً metadata سبک candidate را ثبت می‌کنند: `product`, `kernelVersion`, `apiRange`, `schemaReadableRange`, `schemaWritableRange`, `moduleRequirements`, `path`, و `artifactDigest`. بارگذاری کلاس‌های دامنه، hookهای CPT/REST و migration پیش از انتخاب ممنوع است. candidateها با شناسهٔ محصول deduplicate می‌شوند؛ metadata فاقد امضا/ساختار معتبر رد می‌شود و path صرفاً از ZIP محلی معتبر خوانده می‌شود.
+در WordPress `plugins_loaded` را پیش از `after_setup_theme` و `init` اجرا می‌کند. پس boot در `plugins_loaded` زودهنگام است: Theme هنوز candidate خود را معرفی نکرده است. هر دو ورودی صرفاً metadata سبک candidate را ثبت می‌کنند: `product`, `kernelVersion`, `apiRange`, `schemaReadableRange`, `schemaWritableRange`, `moduleRequirements`, `path`, و `artifactDigest`. بارگذاری کلاس‌های دامنه، hookهای CPT/REST و migration پیش از انتخاب ممنوع است. candidateها با شناسهٔ محصول deduplicate می‌شوند؛ metadata فاقد امضا/ساختار معتبر رد می‌شود و path صرفاً از ZIP محلی معتبر خوانده می‌شود.
 
 ترتیب hookها: [plugins_loaded](https://developer.wordpress.org/reference/hooks/plugins_loaded/)، [after_setup_theme](https://developer.wordpress.org/reference/hooks/after_setup_theme/)، [init](https://developer.wordpress.org/reference/hooks/init/) و [rest_api_init](https://developer.wordpress.org/reference/hooks/rest_api_init/) در مستند رسمی WordPress.
 

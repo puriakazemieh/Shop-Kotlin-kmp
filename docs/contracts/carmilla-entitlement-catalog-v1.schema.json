@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://carmilla.org/schemas/entitlement-catalog.v1.json",
+  "title": "Carmilla Entitlement and Capability Catalog Schema v1",
+  "description": "Schema for Carmilla versioned capabilities, SKUs, artifact inventories, and entitlement claims under the Independent Products architecture.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "productKinds",
+    "features",
+    "aliases",
+    "builderTargets",
+    "skus",
+    "artifactInventory",
+    "lifecyclePolicies"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of the entitlement catalog schema."
+    },
+    "productKinds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["theme", "plugin", "client"]
+      },
+      "description": "Allowed product delivery kinds."
+    },
+    "features": {
+      "type": "object",
+      "description": "Canonical features registry mapping feature id to definition.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "domain", "label", "default", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "domain": { "type": "string" },
+          "label": { "type": "string" },
+          "default": { "type": "boolean" },
+          "type": { "type": "string", "enum": ["base", "vertical", "builder", "infra"] },
+          "requires": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "aliases": {
+      "type": "object",
+      "description": "Legacy and backward-compatible feature aliases mapping alias -> canonical id.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "builderTargets": {
+      "type": "object",
+      "description": "Specification for client application builder targets.",
+      "required": ["targets", "missingDefault", "requiresCore"],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["android", "ios", "desktop", "pwa", "web"]
+          }
+        },
+        "missingDefault": {
+          "type": "boolean",
+          "const": false
+        },
+        "requiresCore": {
+          "type": "string",
+          "const": "builder.core"
+        }
+      }
+    },
+    "skus": {
+      "type": "object",
+      "description": "Catalog of purchaseable SKUs and package bundles.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "name", "artifactKind", "type", "features", "builders"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "artifactKind": { "type": "string", "enum": ["theme", "plugin", "both", "client"] },
+          "type": { "type": "string", "enum": ["base", "vertical", "addon", "bundle"] },
+          "requires": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "features": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "builders": {
+            "type": "object",
+            "properties": {
+              "android": { "type": "boolean" },
+              "ios": { "type": "boolean" },
+              "desktop": { "type": "boolean" },
+              "pwa": { "type": "boolean" },
+              "web": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "artifactInventory": {
+      "type": "object",
+      "description": "Assembler registry mapping each feature to module, files, resources, routes, admin views, and templates.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["module", "files", "routes", "admin", "view", "dependencies"],
+        "properties": {
+          "module": { "type": "string" },
+          "files": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "resources": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "routes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "admin": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "view": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "dependencies": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "lifecyclePolicies": {
+      "type": "object",
+      "required": ["statuses", "offline", "gracePeriod", "revocation", "upgrade", "siteTransfer"],
+      "properties": {
+        "statuses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["active", "grace_period", "expired", "revoked", "suspended", "transferred"]
+          }
+        },
+        "offline": {
+          "type": "object",
+          "required": ["allowed", "manifestSignatureVerification", "requireOnlinePingForBasicUsage"],
+          "properties": {
+            "allowed": { "type": "boolean" },
+            "manifestSignatureVerification": { "type": "boolean" },
+            "requireOnlinePingForBasicUsage": { "type": "boolean", "const": false }
+          }
+        },
+        "gracePeriod": {
+          "type": "object",
+          "required": ["defaultDays", "allowWritesDuringGrace", "adminNoticeRequired"],
+          "properties": {
+            "defaultDays": { "type": "integer" },
+            "allowWritesDuringGrace": { "type": "boolean" },
+            "adminNoticeRequired": { "type": "boolean" }
+          }
+        },
+        "revocation": {
+          "type": "object",
+          "required": ["haltPremiumWrites", "haltBuildJobs", "preserveSiteData"],
+          "properties": {
+            "haltPremiumWrites": { "type": "boolean", "const": true },
+            "haltBuildJobs": { "type": "boolean", "const": true },
+            "preserveSiteData": { "type": "boolean", "const": true }
+          }
+        },
+        "upgrade": {
+          "type": "object",
+          "required": ["forwardFixOnly", "noDestructiveSchemaDowngrades", "retainExistingData"],
+          "properties": {
+            "forwardFixOnly": { "type": "boolean", "const": true },
+            "noDestructiveSchemaDowngrades": { "type": "boolean", "const": true },
+            "retainExistingData": { "type": "boolean", "const": true }
+          }
+        },
+        "siteTransfer": {
+          "type": "object",
+          "required": ["requireToken", "unbindPriorDomain", "preserveDataOnOldSite"],
+          "properties": {
+            "requireToken": { "type": "boolean", "const": true },
+            "unbindPriorDomain": { "type": "boolean", "const": true },
+            "preserveDataOnOldSite": { "type": "boolean", "const": true }
+          }
+        }
+      }
+    }
+  }
+}

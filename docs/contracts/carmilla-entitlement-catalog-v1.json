@@ -1,0 +1,696 @@
+{
+  "schemaVersion": 1,
+  "productKinds": ["theme", "plugin", "client"],
+  "features": {
+    "theme.base": {
+      "id": "theme.base",
+      "domain": "content",
+      "label": "Theme Base Layout and Styling",
+      "default": true,
+      "type": "base",
+      "requires": [],
+      "description": "Core layout, templates, typography, navigation, and theme customization settings."
+    },
+    "plugin.base": {
+      "id": "plugin.base",
+      "domain": "content",
+      "label": "Plugin Standalone Host Adapter",
+      "default": true,
+      "type": "base",
+      "requires": [],
+      "description": "Standalone shortcodes, blocks, and default styles for running on third-party WordPress themes."
+    },
+    "content.core": {
+      "id": "content.core",
+      "domain": "content",
+      "label": "General Content and Media",
+      "default": true,
+      "type": "base",
+      "requires": [],
+      "description": "Standard posts, pages, categories, tags, media library integration, and basic site pages."
+    },
+    "content.stories": {
+      "id": "content.stories",
+      "domain": "content",
+      "label": "Stories and Visual Feeds",
+      "default": true,
+      "type": "base",
+      "requires": ["content.core"],
+      "description": "Mobile-first ephemeral stories and interactive multimedia banners."
+    },
+    "content.banners": {
+      "id": "content.banners",
+      "domain": "content",
+      "label": "Promotional Banners and Campaigns",
+      "default": true,
+      "type": "base",
+      "requires": ["content.core"],
+      "description": "Hero sliders, campaign grids, countdown banners, and targeted marketing displays."
+    },
+    "content.support": {
+      "id": "content.support",
+      "domain": "support",
+      "label": "Customer Support and Messaging",
+      "default": true,
+      "type": "base",
+      "requires": ["content.core"],
+      "description": "Help center, ticketing, contact forms, SMS/Email transactional notifications."
+    },
+    "commerce.core": {
+      "id": "commerce.core",
+      "domain": "shop",
+      "label": "Core E-Commerce Engine",
+      "default": false,
+      "type": "vertical",
+      "requires": [],
+      "description": "Product catalog, SKU management, inventory, pricing, variations, and tax calculation via WooCommerce."
+    },
+    "commerce.cart": {
+      "id": "commerce.cart",
+      "domain": "shop",
+      "label": "Shopping Cart and Checkout",
+      "default": false,
+      "type": "vertical",
+      "requires": ["commerce.core"],
+      "description": "Persistent cart, shipping methods, coupons, address management, and order checkout flows."
+    },
+    "commerce.payment": {
+      "id": "commerce.payment",
+      "domain": "shop",
+      "label": "Payment Gateways and Transactions",
+      "default": false,
+      "type": "vertical",
+      "requires": ["commerce.core", "commerce.cart"],
+      "description": "Online payment provider adapters (Zarinpal, Mellat, IDPay), receipt verification, and order capture."
+    },
+    "commerce.wallet": {
+      "id": "commerce.wallet",
+      "domain": "shop",
+      "label": "Customer Digital Wallet",
+      "default": false,
+      "type": "vertical",
+      "requires": ["commerce.core", "commerce.payment"],
+      "description": "Prepaid balance, deposit gateways, wallet-to-order transactions with row locking and idempotency."
+    },
+    "academy.core": {
+      "id": "academy.core",
+      "domain": "education",
+      "label": "Academy and Learning Management Core",
+      "default": false,
+      "type": "vertical",
+      "requires": [],
+      "description": "Course catalog, instructor profiles, enrollment registry, progress tracking, and student dashboards."
+    },
+    "academy.courses": {
+      "id": "academy.courses",
+      "domain": "education",
+      "label": "Course Syllabus and Lessons",
+      "default": false,
+      "type": "vertical",
+      "requires": ["academy.core"],
+      "description": "Hierarchical chapters, video/audio lessons, downloadable materials, and lesson completion hooks."
+    },
+    "academy.quizzes": {
+      "id": "academy.quizzes",
+      "domain": "education",
+      "label": "Course Quizzes and Assessments",
+      "default": false,
+      "type": "vertical",
+      "requires": ["academy.core", "academy.courses"],
+      "description": "Automated quizzes, pass/fail grading rules, question banks, and retry limits."
+    },
+    "academy.certificates": {
+      "id": "academy.certificates",
+      "domain": "education",
+      "label": "Certificates and Accreditations",
+      "default": false,
+      "type": "vertical",
+      "requires": ["academy.core", "academy.courses"],
+      "description": "Digital PDF certificate generation, verifiable credentials, and completion records."
+    },
+    "clinic.booking": {
+      "id": "clinic.booking",
+      "domain": "clinic",
+      "label": "Appointment Scheduling and Booking",
+      "default": false,
+      "type": "vertical",
+      "requires": [],
+      "description": "Slot reservation, calendar synchronization, booking requests, cancellation policies, and reminders."
+    },
+    "clinic.therapists": {
+      "id": "clinic.therapists",
+      "domain": "clinic",
+      "label": "Service Provider and Specialist Directory",
+      "default": false,
+      "type": "vertical",
+      "requires": ["clinic.booking"],
+      "description": "Therapist/specialist profiles, specialties, working hours, pricing tiers, and public bios."
+    },
+    "clinic.consultation": {
+      "id": "clinic.consultation",
+      "domain": "clinic",
+      "label": "Online Consultation Sessions and Communication",
+      "default": false,
+      "type": "vertical",
+      "requires": ["clinic.booking"],
+      "description": "Secure teleconsultation rooms, video/audio/chat links, session notes, and attendance tracking."
+    },
+    "clinic.records": {
+      "id": "clinic.records",
+      "domain": "clinic",
+      "label": "Confidential Clinical Records",
+      "default": false,
+      "type": "vertical",
+      "requires": ["clinic.booking", "clinic.consultation"],
+      "description": "Encrypted patient intake forms, medical history, therapist clinical notes, and granular access controls."
+    },
+    "psych.tests": {
+      "id": "psych.tests",
+      "domain": "clinic",
+      "label": "Psychological Testing Suite",
+      "default": false,
+      "type": "vertical",
+      "requires": [],
+      "description": "Psychological battery catalog, psychometric questionnaires, item scoring algorithms, and normative scales."
+    },
+    "psych.results": {
+      "id": "psych.results",
+      "domain": "clinic",
+      "label": "Psychometric Analytics and Result Reports",
+      "default": false,
+      "type": "vertical",
+      "requires": ["psych.tests"],
+      "description": "Detailed psychometric result breakdown, visual radar charts, interpretive summaries, and therapist export."
+    },
+    "builder.core": {
+      "id": "builder.core",
+      "domain": "admin",
+      "label": "App Builder Core Orchestrator",
+      "default": false,
+      "type": "builder",
+      "requires": [],
+      "description": "Shared build job adapter, target configuration generator, status polling, and download manager."
+    },
+    "builder.target.android": {
+      "id": "builder.target.android",
+      "domain": "admin",
+      "label": "Android App Generation Target",
+      "default": false,
+      "type": "builder",
+      "requires": ["builder.core"],
+      "description": "Build target enabling automated generation of signed Android APK and AAB binaries."
+    },
+    "builder.target.ios": {
+      "id": "builder.target.ios",
+      "domain": "admin",
+      "label": "iOS App Generation Target",
+      "default": false,
+      "type": "builder",
+      "requires": ["builder.core"],
+      "description": "Build target enabling generation of signed iOS IPA packages and TestFlight delivery payloads."
+    },
+    "builder.target.desktop": {
+      "id": "builder.target.desktop",
+      "domain": "admin",
+      "label": "Desktop App Generation Target",
+      "default": false,
+      "type": "builder",
+      "requires": ["builder.core"],
+      "description": "Build target enabling generation of Windows (.msi/.exe), macOS (.dmg), and Linux (.deb/.rpm) installers."
+    },
+    "builder.target.pwa": {
+      "id": "builder.target.pwa",
+      "domain": "admin",
+      "label": "Progressive Web App Target",
+      "default": false,
+      "type": "builder",
+      "requires": ["builder.core"],
+      "description": "Build target enabling generation of installable PWA with web manifest, service worker caching, and offline shell."
+    },
+    "builder.target.web": {
+      "id": "builder.target.web",
+      "domain": "admin",
+      "label": "Standalone Web Client Target",
+      "default": false,
+      "type": "builder",
+      "requires": ["builder.core"],
+      "description": "Build target enabling generation of standalone single-page web client build."
+    }
+  },
+  "aliases": {
+    "builder.ui": "builder.core",
+    "builder.config": "builder.core",
+    "consultation.core": "clinic.consultation",
+    "clinic.sessions": "clinic.consultation",
+    "clinic.psych": "psych.tests",
+    "clinic.private_records": "clinic.records",
+    "builder.android": "builder.target.android",
+    "builder.ios": "builder.target.ios",
+    "builder.desktop": "builder.target.desktop",
+    "builder.pwa": "builder.target.pwa",
+    "builder.web": "builder.target.web"
+  },
+  "builderTargets": {
+    "targets": ["android", "ios", "desktop", "pwa", "web"],
+    "missingDefault": false,
+    "requiresCore": "builder.core"
+  },
+  "skus": {
+    "sku_theme_base": {
+      "id": "sku_theme_base",
+      "name": "Carmilla Theme Base",
+      "artifactKind": "theme",
+      "type": "base",
+      "requires": [],
+      "features": ["theme.base", "content.core", "content.stories", "content.banners", "content.support"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Clean, standalone presentation theme without commercial verticals or builder targets."
+    },
+    "sku_plugin_base": {
+      "id": "sku_plugin_base",
+      "name": "Carmilla Plugin Base",
+      "artifactKind": "plugin",
+      "type": "base",
+      "requires": [],
+      "features": ["plugin.base", "content.core", "content.support"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Clean, standalone plugin adapter running on any third-party theme without commercial verticals."
+    },
+    "sku_commerce": {
+      "id": "sku_commerce",
+      "name": "Carmilla E-Commerce Engine",
+      "artifactKind": "both",
+      "type": "vertical",
+      "requires": [],
+      "features": ["commerce.core", "commerce.cart", "commerce.payment", "commerce.wallet"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Full e-commerce module with store catalog, cart, multi-gateway payments, and digital wallet."
+    },
+    "sku_academy": {
+      "id": "sku_academy",
+      "name": "Carmilla Academy LMS",
+      "artifactKind": "both",
+      "type": "vertical",
+      "requires": [],
+      "features": ["academy.core", "academy.courses", "academy.quizzes", "academy.certificates"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Learning management system with courses, lessons, quizzes, certificates, and student progress."
+    },
+    "sku_clinic_booking": {
+      "id": "sku_clinic_booking",
+      "name": "Carmilla Clinic Booking",
+      "artifactKind": "both",
+      "type": "vertical",
+      "requires": [],
+      "features": ["clinic.booking", "clinic.therapists"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Appointment scheduling and therapist directory without requiring psych tests or clinical notes."
+    },
+    "sku_clinic_consultation": {
+      "id": "sku_clinic_consultation",
+      "name": "Carmilla Clinic Teleconsultation & Records",
+      "artifactKind": "both",
+      "type": "vertical",
+      "requires": ["sku_clinic_booking"],
+      "features": ["clinic.consultation", "clinic.records"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Secure online consultation rooms, therapist session communication, and private patient clinical records."
+    },
+    "sku_psych": {
+      "id": "sku_psych",
+      "name": "Carmilla Psychometric Testing Suite",
+      "artifactKind": "both",
+      "type": "vertical",
+      "requires": [],
+      "features": ["psych.tests", "psych.results"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Psychological assessment testing engine with normative scoring algorithms and analytics charts."
+    },
+    "sku_builder_android": {
+      "id": "sku_builder_android",
+      "name": "Carmilla App Builder - Android",
+      "artifactKind": "both",
+      "type": "addon",
+      "requires": [],
+      "features": ["builder.core", "builder.target.android"],
+      "builders": { "android": true, "ios": false, "desktop": false, "pwa": false, "web": false },
+      "description": "Automated build entitlement for Android APK/AAB packages."
+    },
+    "sku_builder_ios": {
+      "id": "sku_builder_ios",
+      "name": "Carmilla App Builder - iOS",
+      "artifactKind": "both",
+      "type": "addon",
+      "requires": [],
+      "features": ["builder.core", "builder.target.ios"],
+      "builders": { "android": false, "ios": true, "desktop": false, "pwa": false, "web": false },
+      "description": "Automated build entitlement for iOS IPA / TestFlight payloads."
+    },
+    "sku_builder_desktop": {
+      "id": "sku_builder_desktop",
+      "name": "Carmilla App Builder - Desktop",
+      "artifactKind": "both",
+      "type": "addon",
+      "requires": [],
+      "features": ["builder.core", "builder.target.desktop"],
+      "builders": { "android": false, "ios": false, "desktop": true, "pwa": false, "web": false },
+      "description": "Automated build entitlement for Windows/macOS/Linux desktop installers."
+    },
+    "sku_builder_pwa": {
+      "id": "sku_builder_pwa",
+      "name": "Carmilla App Builder - PWA",
+      "artifactKind": "both",
+      "type": "addon",
+      "requires": [],
+      "features": ["builder.core", "builder.target.pwa"],
+      "builders": { "android": false, "ios": false, "desktop": false, "pwa": true, "web": false },
+      "description": "Automated build entitlement for Progressive Web Application generation."
+    },
+    "theme-booking-android-pwa": {
+      "id": "theme-booking-android-pwa",
+      "name": "Carmilla Theme + Booking + Android + PWA Bundle",
+      "artifactKind": "theme",
+      "type": "bundle",
+      "requires": [],
+      "features": ["theme.base", "content.core", "commerce.core", "clinic.booking", "clinic.therapists", "builder.core", "builder.target.android", "builder.target.pwa"],
+      "builders": { "android": true, "ios": false, "desktop": false, "pwa": true, "web": false },
+      "description": "Canonical bundle specification matching INDEPENDENT_PRODUCTS_SPEC_FA.md example."
+    },
+    "sku_all_in_one": {
+      "id": "sku_all_in_one",
+      "name": "Carmilla Complete Enterprise Bundle",
+      "artifactKind": "both",
+      "type": "bundle",
+      "requires": [],
+      "features": [
+        "theme.base", "plugin.base", "content.core", "content.stories", "content.banners", "content.support",
+        "commerce.core", "commerce.cart", "commerce.payment", "commerce.wallet",
+        "academy.core", "academy.courses", "academy.quizzes", "academy.certificates",
+        "clinic.booking", "clinic.therapists", "clinic.consultation", "clinic.records",
+        "psych.tests", "psych.results",
+        "builder.core", "builder.target.android", "builder.target.ios", "builder.target.desktop", "builder.target.pwa", "builder.target.web"
+      ],
+      "builders": { "android": true, "ios": true, "desktop": true, "pwa": true, "web": true },
+      "description": "Unrestricted bundle covering all verticals and all builder targets."
+    }
+  },
+  "artifactInventory": {
+    "theme.base": {
+      "module": "carmilla-theme-base",
+      "files": [
+        "index.php", "header.php", "footer.php", "functions.php", "style.css",
+        "inc/template-functions.php", "inc/customizer.php"
+      ],
+      "resources": ["assets/css/main.css", "assets/js/main.js"],
+      "routes": ["/carmilla/v1/theme-config"],
+      "admin": ["inc/admin-page.php"],
+      "view": ["header.php", "footer.php", "index.php"],
+      "dependencies": []
+    },
+    "plugin.base": {
+      "module": "carmilla-bridge-base",
+      "files": [
+        "carmilla-bridge.php", "includes/class-cb-plugin.php", "includes/class-cb-blocks.php",
+        "includes/class-cb-template-engine.php"
+      ],
+      "resources": ["assets/css/bridge-embed.css", "assets/js/bridge-embed.js"],
+      "routes": ["/carmilla/v1/ping", "/carmilla/v1/client-manifest"],
+      "admin": ["includes/class-cb-admin-controller.php"],
+      "view": ["includes/class-cb-blocks.php"],
+      "dependencies": []
+    },
+    "content.core": {
+      "module": "carmilla-core-content",
+      "files": [
+        "inc/post-types.php", "inc/cpt-public.php", "single.php", "page.php", "archive.php"
+      ],
+      "resources": [],
+      "routes": ["/carmilla/v1/content/posts", "/carmilla/v1/content/pages"],
+      "admin": ["inc/admin-page.php"],
+      "view": ["single.php", "page.php"],
+      "dependencies": []
+    },
+    "content.stories": {
+      "module": "carmilla-stories",
+      "files": ["includes/class-cb-story-controller.php"],
+      "resources": ["assets/js/story-player.js", "assets/css/stories.css"],
+      "routes": ["/carmilla/v1/stories", "/carmilla/v1/stories/(?P<id>\\d+)"],
+      "admin": ["includes/class-cb-admin-content-controller.php"],
+      "view": ["template-parts/story-tray.php"],
+      "dependencies": ["content.core"]
+    },
+    "content.banners": {
+      "module": "carmilla-banners",
+      "files": ["includes/class-cb-extras-controller.php"],
+      "resources": ["assets/css/banners.css"],
+      "routes": ["/carmilla/v1/banners"],
+      "admin": ["includes/class-cb-admin-content-controller.php"],
+      "view": ["template-parts/banner-grid.php"],
+      "dependencies": ["content.core"]
+    },
+    "content.support": {
+      "module": "carmilla-support",
+      "files": [
+        "includes/class-cb-support-controller.php", "includes/class-cb-mail-adapter.php",
+        "includes/class-cb-sms-http-adapter.php", "includes/class-cb-message-queue.php"
+      ],
+      "resources": [],
+      "routes": ["/carmilla/v1/support/tickets", "/carmilla/v1/support/contact"],
+      "admin": ["includes/class-cb-integrations-controller.php"],
+      "view": ["template-parts/support-form.php"],
+      "dependencies": ["content.core"]
+    },
+    "commerce.core": {
+      "module": "carmilla-commerce",
+      "files": [
+        "includes/class-cb-catalog-controller.php", "includes/class-cb-admin-product-controller.php",
+        "inc/Adapter/WooCommerceAdapter.php", "inc/Adapter/WooCompat.php"
+      ],
+      "resources": ["assets/css/shop.css"],
+      "routes": ["/carmilla/v1/products", "/carmilla/v1/products/(?P<id>\\d+)"],
+      "admin": ["includes/class-cb-admin-product-controller.php"],
+      "view": ["woocommerce/archive-product.php", "woocommerce/single-product.php"],
+      "dependencies": ["WooCommerce"]
+    },
+    "commerce.cart": {
+      "module": "carmilla-cart",
+      "files": ["includes/class-cb-cart-controller.php"],
+      "resources": ["assets/js/cart.js"],
+      "routes": ["/carmilla/v1/cart", "/carmilla/v1/cart/add", "/carmilla/v1/cart/apply-coupon"],
+      "admin": [],
+      "view": ["woocommerce/cart.php", "woocommerce/checkout.php"],
+      "dependencies": ["commerce.core"]
+    },
+    "commerce.payment": {
+      "module": "carmilla-payment",
+      "files": ["includes/class-cb-payment-controller.php", "includes/class-cb-order-controller.php"],
+      "resources": [],
+      "routes": ["/carmilla/v1/payment/initiate", "/carmilla/v1/payment/verify"],
+      "admin": ["includes/class-cb-admin-controller.php"],
+      "view": ["woocommerce/order-received.php"],
+      "dependencies": ["commerce.core", "commerce.cart"]
+    },
+    "commerce.wallet": {
+      "module": "carmilla-wallet",
+      "files": ["inc/Payment/WalletService.php", "inc/Payment/WC_Gateway_Carmilla_Wallet.php"],
+      "resources": ["assets/css/wallet.css"],
+      "routes": ["/carmilla/v1/wallet/balance", "/carmilla/v1/wallet/transactions"],
+      "admin": ["inc/Settings/AdminSettingsPage.php"],
+      "view": ["template-parts/wallet-dashboard.php"],
+      "dependencies": ["commerce.core", "commerce.payment"]
+    },
+    "academy.core": {
+      "module": "carmilla-academy",
+      "files": ["includes/class-cb-academy-controller.php", "includes/class-cb-course-request-controller.php"],
+      "resources": ["assets/css/academy.css"],
+      "routes": ["/carmilla/v1/courses", "/carmilla/v1/courses/(?P<id>\\d+)"],
+      "admin": ["includes/class-cb-admin-controller.php"],
+      "view": ["archive-cb_course.php", "single-cb_course.php"],
+      "dependencies": []
+    },
+    "academy.courses": {
+      "module": "carmilla-academy-lessons",
+      "files": ["includes/class-cb-academy-controller.php"],
+      "resources": ["assets/js/video-player.js"],
+      "routes": ["/carmilla/v1/courses/(?P<id>\\d+)/lessons", "/carmilla/v1/lessons/(?P<id>\\d+)"],
+      "admin": ["includes/class-cb-admin-controller.php"],
+      "view": ["single-cb_lesson.php"],
+      "dependencies": ["academy.core"]
+    },
+    "academy.quizzes": {
+      "module": "carmilla-academy-quizzes",
+      "files": ["includes/class-cb-academy-controller.php"],
+      "resources": ["assets/js/quiz-engine.js"],
+      "routes": ["/carmilla/v1/courses/(?P<id>\\d+)/quizzes", "/carmilla/v1/quizzes/(?P<id>\\d+)/submit"],
+      "admin": [],
+      "view": ["single-cb_quiz.php"],
+      "dependencies": ["academy.core", "academy.courses"]
+    },
+    "academy.certificates": {
+      "module": "carmilla-academy-certificates",
+      "files": ["includes/class-cb-academy-controller.php"],
+      "resources": [],
+      "routes": ["/carmilla/v1/certificates/(?P<id>[a-zA-Z0-9_-]+)"],
+      "admin": [],
+      "view": ["template-parts/certificate-view.php"],
+      "dependencies": ["academy.core", "academy.courses"]
+    },
+    "clinic.booking": {
+      "module": "carmilla-clinic-booking",
+      "files": ["includes/class-cb-clinic-controller.php", "assets/js/booking.js"],
+      "resources": ["assets/js/booking.js", "assets/css/booking.css"],
+      "routes": [
+        "/carmilla/v1/clinic/appointments",
+        "/carmilla/v1/clinic/appointments/(?P<id>\\d+)",
+        "/carmilla/v1/clinic/slots"
+      ],
+      "admin": ["includes/class-cb-admin-clinic-controller.php"],
+      "view": ["single-cb_therapist.php", "template-parts/booking-calendar.php"],
+      "dependencies": []
+    },
+    "clinic.therapists": {
+      "module": "carmilla-clinic-therapists",
+      "files": ["includes/class-cb-clinic-controller.php"],
+      "resources": ["assets/css/therapists.css"],
+      "routes": ["/carmilla/v1/clinic/therapists", "/carmilla/v1/clinic/therapists/(?P<id>\\d+)"],
+      "admin": ["includes/class-cb-admin-clinic-controller.php"],
+      "view": ["archive-cb_therapist.php", "single-cb_therapist.php"],
+      "dependencies": ["clinic.booking"]
+    },
+    "clinic.consultation": {
+      "module": "carmilla-clinic-consultation",
+      "files": ["includes/class-cb-clinic-controller.php"],
+      "resources": ["assets/js/consultation-room.js", "assets/css/consultation.css"],
+      "routes": [
+        "/carmilla/v1/clinic/consultations",
+        "/carmilla/v1/clinic/consultations/(?P<id>\\d+)/join",
+        "/carmilla/v1/clinic/consultations/(?P<id>\\d+)/end"
+      ],
+      "admin": ["includes/class-cb-admin-clinic-controller.php"],
+      "view": ["template-parts/consultation-room.php"],
+      "dependencies": ["clinic.booking"]
+    },
+    "clinic.records": {
+      "module": "carmilla-clinic-records",
+      "files": ["includes/class-cb-clinic-controller.php"],
+      "resources": [],
+      "routes": [
+        "/carmilla/v1/clinic/records/(?P<patient_id>\\d+)",
+        "/carmilla/v1/clinic/records/(?P<patient_id>\\d+)/notes"
+      ],
+      "admin": ["includes/class-cb-admin-clinic-controller.php"],
+      "view": ["template-parts/patient-record.php"],
+      "dependencies": ["clinic.booking", "clinic.consultation"]
+    },
+    "psych.tests": {
+      "module": "carmilla-psych-tests",
+      "files": [
+        "includes/class-cb-psychtest-controller.php", "assets/js/psychtest.js",
+        "archive-cb_psychtest.php", "single-cb_psychtest.php"
+      ],
+      "resources": ["assets/js/psychtest.js", "assets/css/psychtest.css"],
+      "routes": ["/carmilla/v1/psychtests", "/carmilla/v1/psychtests/(?P<id>\\d+)"],
+      "admin": ["includes/class-cb-admin-controller.php"],
+      "view": ["archive-cb_psychtest.php", "single-cb_psychtest.php"],
+      "dependencies": []
+    },
+    "psych.results": {
+      "module": "carmilla-psych-results",
+      "files": ["includes/class-cb-psychtest-controller.php"],
+      "resources": ["assets/js/chart-results.js"],
+      "routes": [
+        "/carmilla/v1/psychtests/(?P<id>\\d+)/submit",
+        "/carmilla/v1/psychtests/results/(?P<result_id>\\d+)"
+      ],
+      "admin": ["includes/class-cb-admin-controller.php"],
+      "view": ["template-parts/psychtest-result.php"],
+      "dependencies": ["psych.tests"]
+    },
+    "builder.core": {
+      "module": "carmilla-builder-core",
+      "files": ["inc/Adapter/BuilderAdapter.php"],
+      "resources": ["assets/js/builder-panel.js", "assets/css/builder-panel.css"],
+      "routes": [
+        "/carmilla/v1/builder/spec",
+        "/carmilla/v1/builder/jobs",
+        "/carmilla/v1/builder/jobs/(?P<job_id>[a-zA-Z0-9_-]+)"
+      ],
+      "admin": ["inc/Settings/AdminSettingsPage.php"],
+      "view": ["template-parts/builder-dashboard.php"],
+      "dependencies": []
+    },
+    "builder.target.android": {
+      "module": "carmilla-builder-android",
+      "files": ["inc/Adapter/BuilderAdapter.php"],
+      "resources": [],
+      "routes": ["/carmilla/v1/builder/targets/android/request"],
+      "admin": [],
+      "view": [],
+      "dependencies": ["builder.core"]
+    },
+    "builder.target.ios": {
+      "module": "carmilla-builder-ios",
+      "files": ["inc/Adapter/BuilderAdapter.php"],
+      "resources": [],
+      "routes": ["/carmilla/v1/builder/targets/ios/request"],
+      "admin": [],
+      "view": [],
+      "dependencies": ["builder.core"]
+    },
+    "builder.target.desktop": {
+      "module": "carmilla-builder-desktop",
+      "files": ["inc/Adapter/BuilderAdapter.php"],
+      "resources": [],
+      "routes": ["/carmilla/v1/builder/targets/desktop/request"],
+      "admin": [],
+      "view": [],
+      "dependencies": ["builder.core"]
+    },
+    "builder.target.pwa": {
+      "module": "carmilla-builder-pwa",
+      "files": ["inc/Adapter/BuilderAdapter.php"],
+      "resources": ["assets/js/service-worker.js", "assets/manifest.json"],
+      "routes": ["/carmilla/v1/builder/targets/pwa/manifest"],
+      "admin": [],
+      "view": ["template-parts/pwa-install-banner.php"],
+      "dependencies": ["builder.core"]
+    },
+    "builder.target.web": {
+      "module": "carmilla-builder-web",
+      "files": ["inc/Adapter/BuilderAdapter.php"],
+      "resources": [],
+      "routes": ["/carmilla/v1/builder/targets/web/config"],
+      "admin": [],
+      "view": [],
+      "dependencies": ["builder.core"]
+    }
+  },
+  "lifecyclePolicies": {
+    "statuses": ["active", "grace_period", "expired", "revoked", "suspended", "transferred"],
+    "offline": {
+      "allowed": true,
+      "manifestSignatureVerification": true,
+      "requireOnlinePingForBasicUsage": false
+    },
+    "gracePeriod": {
+      "defaultDays": 14,
+      "allowWritesDuringGrace": true,
+      "adminNoticeRequired": true
+    },
+    "revocation": {
+      "haltPremiumWrites": true,
+      "haltBuildJobs": true,
+      "preserveSiteData": true
+    },
+    "upgrade": {
+      "forwardFixOnly": true,
+      "noDestructiveSchemaDowngrades": true,
+      "retainExistingData": true
+    },
+    "siteTransfer": {
+      "requireToken": true,
+      "unbindPriorDomain": true,
+      "preserveDataOnOldSite": true
+    }
+  }
+}
