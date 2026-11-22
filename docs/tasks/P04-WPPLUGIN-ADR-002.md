@@ -50,7 +50,7 @@ P04-WPPLUGIN-ADR-002
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / ADR
 - Priority/Risk/Size: P0 / HIGH / S
 - Owner: BOTH
@@ -109,10 +109,10 @@ P04-WPPLUGIN-ADR-002
 
 ## Acceptance Criteria
 
-- [ ] kernel، هر دو میزبان، renderer و build adapter مرز روشن دارند.
-- [ ] زمان انتخاب نسخه و رفتار mismatch/API/schema مشخص است.
-- [ ] استقلال دو ZIP و دوام داده با خاموشی میزبان‌ها تعریف شده است.
-- [ ] بازبینی معماری ثبت شده و ADR-005 فقط مرجع تاریخی است.
+- [x] kernel، هر دو میزبان، renderer و build adapter مرز روشن دارند.
+- [x] زمان انتخاب نسخه و رفتار mismatch/API/schema مشخص است.
+- [x] استقلال دو ZIP و دوام داده با خاموشی میزبان‌ها تعریف شده است.
+- [x] بازبینی فنی معماری ثبت شده و ADR-005 فقط مرجع تاریخی است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -128,13 +128,13 @@ P04-WPPLUGIN-ADR-002
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Started at: 2026-11-22
+- Completed at: 2026-11-22
+- Changed files: ADR-007، evidence، row صف، همین کارت و Master.
+- Commands and exit codes: `git diff --check` exit 0؛ لینک/ماتریس و سناریوهای معماری بازبینی شدند.
+- Manual tester/date/result: Codex، 2026-11-22، بازبینی فنی سند PASS؛ تست محصول/ZIP N/A برای این ADR و در کارت‌های بعدی لازم است.
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-ADR-002/summary.md`
+- Remaining risks/blockers: کد فعلی candidate arbitration را پیاده نکرده است؛ migration، نصب ZIP و runner واقعی در کارت‌های بعدی.
+- Final status: DONE
 
 </div>
