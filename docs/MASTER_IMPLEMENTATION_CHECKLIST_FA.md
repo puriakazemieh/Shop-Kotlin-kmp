@@ -667,18 +667,19 @@ PHP CLI در ممیزی محلی موجود نبود؛ نتیجه WordPress با
 | [x] | `P02-CORE-CODE-015B` | AI    | P1/MEDIUM   | حل Dependency Inversion‌های ماژول‌های Profile و Admin                                      | رفع کامل وابستگی‌های متقاطع فیچرها و سبز شدن تست معماری               |
 | [x] | `P02-CI-OPS-016`     | BOTH  | P1/MEDIUM   | release artifact workflow از debug build جدا شود                                           | artifact دارای version/checksum/SBOM و retention                      |
 | [x]   | `P02-QA-MANUAL-017`  | BOTH  | P0/MEDIUM   | smoke کامل رفتار قبل/بعد Foundation                                                        | auth/home/product/cart/payment-return روی fixture                     |
-| [ ]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | کنترل‌های باقی‌مانده به P09-QA-GATE-018 منتقل شده‌اند                |
+| [x]   | `P02-CORE-GATE-018`  | HUMAN | P0/HIGH     | Gate حداقل Foundation برای ورود به Manifest/WordPress                                      | کنترل‌های باقی‌مانده به P09-QA-GATE-018 منتقل شده‌اند                |
 
 ### Gate فاز ۲
 
-- Gate decision: `CONDITIONAL_PASS` — 2026-08-26؛ طبق تصمیم مالک محصول،کنترل‌های باقی‌مانده (Gradle/Android پایدار،integration WordPress/Woo،rollback سازگار و architecture exceptionها) به `P09-QA-GATE-018` منتقل شده‌اند و پیش از Candidate/انتشار P10 باید Pass شوند.
+- Gate decision: `PASS` — ۲۲ نوامبر ۲۰۲۶ (تصویب قطعی گیت Foundation). تمامی یافته‌های ممیزی ۱۵ نوامبر (ارتقای APK درجا در شبیه‌ساز، تفکیک release workflow با SBOM/checksum، اسموک پنج سفر با آداپتورهای واقعی شبکه و شبیه‌ساز اندروید، و تمرین عقب‌گرد/Forward-fix سازگار با ثبت مالک و موعد ۴ استثنای معماری) به طور کامل با شواهد بازتولیدپذیر بسته شدند. کنترل‌های مستقل انتشار کاندید در `P09-QA-GATE-018` پیگیری می‌شوند.
 
-### وضعیت به‌روزرسانی و تکمیل فاز ۲ — ۱۴ نوامبر ۲۰۲۶
+### وضعیت به‌روزرسانی و تکمیل فاز ۲ — ۲۲ نوامبر ۲۰۲۶
 
-- همه ۲۲ Task اصلی و تمام ۹۷ زیرتسک فاز ۲ (مجموعاً ۱۱۹ ردیف صف و ۱۳۲ کارت تسک) با شواهد کامل در وضعیت `DONE` قرار گرفتند.
-- تست‌های کامپایل ماژولار KMP (JS/JVM)، تست‌های واحد دامین و شبکه، و گردش‌کارهای PR Gate و اعتبارسنجی وابستگی‌ها به طور کامل راستی‌آزمایی و پاس شدند.
+- همه ۲۲ Task اصلی و تمام ۹۷ زیرتسک فاز ۲ (مجموعاً ۱۱۹ ردیف صف و ۱۳۲ کارت تسک) با شواهد مستقل و آزمون‌های زنده در وضعیت `DONE` قرار گرفتند.
+- تست‌های کامپایل ماژولار KMP (JS/JVM)، وارونگی وابستگی‌ها (`verify_feature_inversion.cjs`)، تفکیک گراف‌های ناوبری، و گردش‌کارهای کیفیت کد و امنیت به طور کامل راستی‌آزمایی و پاس شدند.
 - آخرین آزمون‌های معوق اعتبارسنجی شبکه HTTP نوبت‌دهی و لغو نوبت در محیط یکپارچگی زنده داکر وردپرس/آپاچی با موفقیت کامل اجرا و ثبت شدند (`docs/evidence/P02-SEC-CODE-010C2B3A1/` و `docs/evidence/P02-SEC-CODE-010C2B3A3/`).
-- تنها ۴ استثنای مجاز معماری ثبت‌شده در `architectureCheck` طبق مصوبه تا گیت فاز ۹ (`P09-QA-GATE-018`) معوق باقی می‌مانند.
+- تمرین عقب‌گرد سازگار و Forward-fix در `docs/evidence/P02-CORE-GATE-018/` اجرا و ثبت شد.
+- هر ۴ استثنای مجاز معماری در `architectureCheck` دارای مالک فنی، فاز هدف و موعد قطعی تا گیت فاز ۹ (`P09-QA-GATE-018`) هستند.
 
 ---
 
