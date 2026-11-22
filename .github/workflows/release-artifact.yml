@@ -83,20 +83,34 @@ jobs:
           fi
           echo "Building Android release tasks: $TASKS"
           ./gradlew $TASKS --no-daemon -Pandroid.injected.lint.vital=false
-          find androidApp/build/outputs/apk -name '*release*.apk' -exec cp {} dist/ \;
+          COPIED=$(find androidApp/build/outputs/apk -name '*release*.apk' -exec cp -v {} dist/ \; | wc -l)
+          if [ "$COPIED" -eq 0 ]; then
+            echo "Error: No release APK found to copy to dist/!" >&2
+            exit 1
+          fi
 
       - name: Build Desktop Release UberJar
         if: ${{ github.event_name == 'push' || inputs.build_desktop }}
         run: |
           ./gradlew :composeApp:packageUberJarForCurrentOS --no-daemon
-          find composeApp/build/compose/jars -name '*.jar' -exec cp {} dist/ \; 2>/dev/null || true
+          JAR_COPIED=$(find composeApp/build/compose/jars -name '*.jar' -exec cp -v {} dist/ \; | wc -l)
+          if [ "$JAR_COPIED" -eq 0 ]; then
+            echo "Error: No desktop release JAR found to copy to dist/!" >&2
+            exit 1
+          fi
 
       - name: Build Web Release Distribution
         if: ${{ github.event_name == 'push' || inputs.build_web }}
         run: |
           ./gradlew :composeApp:jsBrowserDistribution --no-daemon
-          if [ -d "composeApp/build/dist/js/productionExecutable" ]; then
-            cd composeApp/build/dist/js/productionExecutable && zip -rq "$GITHUB_WORKSPACE/dist/carmilla-web-release.zip" . && cd "$GITHUB_WORKSPACE"
+          if [ ! -d "composeApp/build/dist/js/productionExecutable" ]; then
+            echo "Error: Directory composeApp/build/dist/js/productionExecutable does not exist!" >&2
+            exit 1
+          fi
+          cd composeApp/build/dist/js/productionExecutable && zip -rq "$GITHUB_WORKSPACE/dist/carmilla-web-release.zip" . && cd "$GITHUB_WORKSPACE"
+          if [ ! -f "$GITHUB_WORKSPACE/dist/carmilla-web-release.zip" ]; then
+            echo "Error: carmilla-web-release.zip was not created!" >&2
+            exit 1
           fi
 
       - name: Package WordPress Release Zips
@@ -104,8 +118,25 @@ jobs:
         run: |
           theme_ver=$(grep -m1 -oiP 'Version:\s*\K[0-9.]+' wordpress/carmilla-theme/style.css || echo 1.0.0)
           plug_ver=$(grep -m1 -oiP 'Version:\s*\K[0-9.]+' wordpress/carmilla-bridge/carmilla-bridge.php || echo 1.0.0)
-          bash wordpress/build-theme-zip.sh "$GITHUB_WORKSPACE/dist/carmilla-theme-v${theme_ver}-release.zip"
-          bash wordpress/build-bridge-zip.sh "$GITHUB_WORKSPACE/dist/carmilla-bridge-v${plug_ver}-release.zip"
+          THEME_ZIP="$GITHUB_WORKSPACE/dist/carmilla-theme-v${theme_ver}-release.zip"
+          BRIDGE_ZIP="$GITHUB_WORKSPACE/dist/carmilla-bridge-v${plug_ver}-release.zip"
+          bash wordpress/build-theme-zip.sh "$THEME_ZIP"
+          bash wordpress/build-bridge-zip.sh "$BRIDGE_ZIP"
+          if [ ! -f "$THEME_ZIP" ] || [ ! -f "$BRIDGE_ZIP" ]; then
+            echo "Error: WordPress release zips were not created in dist/!" >&2
+            exit 1
+          fi
+
+      - name: Validate Release Product Artifact Inventory
+        run: |
+          echo "Validating release product artifact inventory..."
+          PRODUCT_COUNT=$(find dist -maxdepth 1 -type f \( -name '*.apk' -o -name '*.jar' -o -name '*.zip' \) | wc -l)
+          if [ "$PRODUCT_COUNT" -eq 0 ]; then
+            echo "Error: No release product artifacts (*.apk, *.jar, *.zip) found in dist/! Refusing to publish metadata-only release." >&2
+            exit 1
+          fi
+          echo "Found $PRODUCT_COUNT product release artifact(s):"
+          ls -lh dist/
 
       - name: Generate SBOM (CycloneDX & SPDX), Checksums & Release Metadata
         run: |

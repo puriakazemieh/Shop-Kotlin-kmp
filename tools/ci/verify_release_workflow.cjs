@@ -2,7 +2,7 @@
  * Automated Verification Script for P02-CI-OPS-016:
  * Validates separation of release artifact workflow from debug builds,
  * existence and compliance of version metadata, SHA-256 checksums,
- * CycloneDX/SPDX SBOM generation, and artifact retention policies.
+ * CycloneDX/SPDX SBOM generation, anti-empty-payload gates, and artifact retention policies.
  */
 
 const { spawnSync } = require('child_process');
@@ -39,8 +39,25 @@ if (!fs.existsSync(releaseWorkflowPath)) {
   }
 }
 
-// 2. Retention & Release Policy Verification
-console.log('--- Test 2: Retention & Release Policy Verification ---');
+// 2. Mandatory Artifact & Inventory Validation Gate in Workflow
+console.log('--- Test 2: Mandatory Artifact & Inventory Validation Gate ---');
+try {
+  const content = fs.readFileSync(releaseWorkflowPath, 'utf-8');
+  const hasNoSilentPass = !content.includes('|| true');
+  const hasInventoryValidation = content.includes('Validate Release Product Artifact Inventory');
+  const hasStrictExit = content.includes('Refusing to publish metadata-only release') || content.includes('No release product artifacts');
+
+  if (hasNoSilentPass && hasInventoryValidation && hasStrictExit) {
+    recordResult('Mandatory Artifact & Inventory Gate', true, 'Workflow strictly fails on missing desktop/web/android/wordpress artifacts and includes inventory validation gate without "|| true" silencing');
+  } else {
+    recordResult('Mandatory Artifact & Inventory Gate', false, `Violations found: hasNoSilentPass=${hasNoSilentPass}, hasInventoryValidation=${hasInventoryValidation}, hasStrictExit=${hasStrictExit}`);
+  }
+} catch (e) {
+  recordResult('Mandatory Artifact & Inventory Gate', false, e.message);
+}
+
+// 3. Retention & Release Policy Verification
+console.log('--- Test 3: Retention & Release Policy Verification ---');
 try {
   const content = fs.readFileSync(releaseWorkflowPath, 'utf-8');
   const retentionMatch = content.match(/retention-days:\s*(\$\{\{[^\}]+\}\}|[0-9]+)/);
@@ -55,8 +72,44 @@ try {
   recordResult('Retention Policy Verification', false, e.message);
 }
 
-// 3. SBOM, Checksum & Metadata Generator Verification
-console.log('--- Test 3: SBOM, Checksum & Release Metadata Verification ---');
+// 4. Negative Probe: Empty Output Rejection (Anti-Metadata-Only Leak)
+console.log('--- Test 4: Negative Probe: Empty Output Rejection ---');
+const emptyTestDir = path.join(repoRoot, 'build', 'empty-release-test-dir');
+try {
+  if (fs.existsSync(emptyTestDir)) {
+    fs.rmSync(emptyTestDir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(emptyTestDir, { recursive: true });
+
+  const sbomToolPath = path.join(repoRoot, 'tools', 'ci', 'generate_sbom.cjs');
+  const emptyRun = spawnSync('node', [sbomToolPath, '--out-dir', emptyTestDir, '--version', '1.0.0'], {
+    cwd: repoRoot,
+    encoding: 'utf-8',
+    shell: true
+  });
+
+  const remainingFiles = fs.readdirSync(emptyTestDir);
+  const rejected = emptyRun.status !== 0 &&
+                   emptyRun.stderr.includes('No product release artifacts found') &&
+                   remainingFiles.length === 0;
+
+  if (rejected) {
+    recordResult('Negative Probe: Empty Output Rejection', true, 'generate_sbom.cjs correctly failed with exit code 1 and produced 0 files when called on an empty payload directory');
+  } else {
+    recordResult('Negative Probe: Empty Output Rejection', false, `Empty payload was not properly rejected: exitCode=${emptyRun.status}, files=${remainingFiles.join(', ')}`);
+  }
+} catch (e) {
+  recordResult('Negative Probe: Empty Output Rejection', false, e.message);
+} finally {
+  try {
+    if (fs.existsSync(emptyTestDir)) {
+      fs.rmSync(emptyTestDir, { recursive: true, force: true });
+    }
+  } catch (err) {}
+}
+
+// 5. SBOM, Checksum & Release Metadata Verification on Valid Payload
+console.log('--- Test 5: SBOM, Checksum & Release Metadata Verification ---');
 const testOutDir = path.join(repoRoot, 'build', 'release-test-dist');
 try {
   if (fs.existsSync(testOutDir)) {
@@ -64,8 +117,10 @@ try {
   }
   fs.mkdirSync(testOutDir, { recursive: true });
 
-  // Create dummy release artifact to verify checksum computation
-  fs.writeFileSync(path.join(testOutDir, 'test-app-release.apk'), 'DUMMY_RELEASE_APK_CONTENT_FOR_HASHING', 'utf-8');
+  // Create product release artifacts to verify checksum and metadata computation
+  fs.writeFileSync(path.join(testOutDir, 'carmilla-shop-carmila-release.apk'), 'DUMMY_RELEASE_APK_BINARY_CONTENT', 'utf-8');
+  fs.writeFileSync(path.join(testOutDir, 'carmilla-desktop-app-release.jar'), 'DUMMY_RELEASE_UBERJAR_BINARY_CONTENT', 'utf-8');
+  fs.writeFileSync(path.join(testOutDir, 'carmilla-web-release.zip'), 'DUMMY_RELEASE_WEB_DIST_CONTENT', 'utf-8');
 
   const sbomToolPath = path.join(repoRoot, 'tools', 'ci', 'generate_sbom.cjs');
   const genResult = spawnSync('node', [sbomToolPath, '--out-dir', testOutDir, '--version', '1.0.0'], {
@@ -95,11 +150,13 @@ try {
 
       const cdxValid = cdx.bomFormat === 'CycloneDX' && cdx.specVersion === '1.5' && Array.isArray(cdx.components) && cdx.components.length > 30;
       const spdxValid = spdx.spdxVersion === 'SPDX-2.3' && Array.isArray(spdx.packages) && spdx.packages.length > 30;
-      const sumsValid = sums.includes('test-app-release.apk') && /^[a-f0-9]{64}\s+test-app-release\.apk/m.test(sums);
-      const metaValid = meta.version === '1.0.0' && meta.retentionPolicyDays === 90 && meta.artifacts.length > 0;
+      const sumsValid = sums.includes('carmilla-shop-carmila-release.apk') &&
+                        sums.includes('carmilla-desktop-app-release.jar') &&
+                        sums.includes('carmilla-web-release.zip');
+      const metaValid = meta.version === '1.0.0' && meta.retentionPolicyDays === 90 && meta.artifacts.length === 3;
 
       if (cdxValid && spdxValid && sumsValid && metaValid) {
-        recordResult('SBOM & Metadata Verification', true, `Generated valid CycloneDX 1.5 (${cdx.components.length} components), SPDX 2.3 (${spdx.packages.length} packages), SHA-256 sums, and release metadata`);
+        recordResult('SBOM & Metadata Verification', true, `Generated valid CycloneDX 1.5 (${cdx.components.length} components), SPDX 2.3 (${spdx.packages.length} packages), SHA-256 sums for 3 artifacts, and 90-day retention metadata`);
       } else {
         recordResult('SBOM & Metadata Verification', false, `Schema validation failed: cdx=${cdxValid}, spdx=${spdxValid}, sums=${sumsValid}, meta=${metaValid}`);
       }
@@ -115,8 +172,8 @@ try {
   } catch (err) {}
 }
 
-// 4. Baseline KMP Compilation Check
-console.log('--- Test 4: Baseline KMP Compilation Check ---');
+// 6. Baseline KMP Compilation Check
+console.log('--- Test 6: Baseline KMP Compilation Check ---');
 try {
   const isWindows = process.platform === 'win32';
   const gradlewCmd = isWindows ? '.\\gradlew.bat' : './gradlew';

@@ -211,19 +211,25 @@ function calculateFileSha256(filePath) {
   return crypto.createHash('sha256').update(fileBuffer).digest('hex');
 }
 
-function generateChecksums(dirPath) {
+function generateChecksums(dirPath, options = {}) {
   if (!fs.existsSync(dirPath)) return [];
   const entries = fs.readdirSync(dirPath);
   const checksums = [];
+  const productArtifacts = [];
 
   for (const entry of entries) {
-    if (entry === 'SHA256SUMS.txt' || entry.endsWith('.sha256')) continue;
+    if (entry === 'SHA256SUMS.txt' || entry.endsWith('.sha256') || entry.startsWith('sbom.') || entry === 'release-metadata.json') continue;
     const fullPath = path.join(dirPath, entry);
     const stat = fs.statSync(fullPath);
     if (stat.isFile()) {
       const sha256 = calculateFileSha256(fullPath);
       checksums.push({ fileName: entry, sha256, sizeBytes: stat.size });
+      productArtifacts.push(entry);
     }
+  }
+
+  if (productArtifacts.length === 0 && !options.allowEmptyPayload) {
+    throw new Error('No product release artifacts found in output directory! Refusing to generate release metadata for empty payload.');
   }
 
   const checksumFileContent = checksums
@@ -269,6 +275,20 @@ function main() {
     fs.mkdirSync(outDir, { recursive: true });
   }
 
+  const allowEmptyPayload = args.includes('--allow-empty-payload');
+  const existingEntries = fs.readdirSync(outDir);
+  const productArtifacts = existingEntries.filter(e => {
+    if (e === 'SHA256SUMS.txt' || e.endsWith('.sha256') || e.startsWith('sbom.') || e === 'release-metadata.json') return false;
+    const full = path.join(outDir, e);
+    return fs.existsSync(full) && fs.statSync(full).isFile();
+  });
+
+  if (productArtifacts.length === 0 && !allowEmptyPayload) {
+    console.error(`[ERROR] No product release artifacts found in output directory: ${outDir}`);
+    console.error('[ERROR] Refusing to generate release metadata/SBOM for empty payload.');
+    process.exit(1);
+  }
+
   const { libraries } = parseTomlDependencies();
   console.log(`Parsed ${libraries.length} dependencies from libs.versions.toml`);
 
@@ -285,7 +305,7 @@ function main() {
   console.log(`[SBOM] Wrote SPDX 2.3 JSON to: ${spdxPath}`);
 
   // 3. Generate Checksums
-  const checksums = generateChecksums(outDir);
+  const checksums = generateChecksums(outDir, { allowEmptyPayload });
   console.log(`[CHECKSUM] Computed SHA-256 for ${checksums.length} artifacts in ${outDir}`);
 
   // 4. Generate Release Metadata
