@@ -173,6 +173,7 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.koin.compose.viewmodel)
         }
 
         jsMain {
