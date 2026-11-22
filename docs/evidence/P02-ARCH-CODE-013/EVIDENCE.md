@@ -8,10 +8,11 @@
 ۴. مقادیر `applicationId`ها، `versionCode`، `versionName` و ۶ فلِیوِر برند (`carmila`, `atris`, `chronos`, `academy`, `psych`, `wp`) در `androidApp/build.gradle.kts` تعریف و بیلد شدند.
 ۵. مقدار `targetSdk = 36` منطبق بر استانداردهای `RTK.md` تنظیم گردید.
 ۶. تست ارتقا (Upgrade Test) با بیلد نسخه جدید (`versionCode = 2`, `versionName = 1.1`) با شناسه اپلیکیشن و امضای یکسان تایید شد.
-۷. اسکریپت اعتبارسنجی خودکار در `tools/android/verify_android_app_shell.cjs` ساخته و تمام تست‌ها با موفقیت پاس شدند.
+۷. آزمون واقعی نصب، ارتقای درجا (In-Place Upgrade) و ماندگاری داده‌ها (Data Retention) روی شبیه‌ساز واقعی اندروید (Pixel 9 Pro XL / API 35) با داده‌های synthetic اجرا و با موفقیت ۱۰۰٪ تایید گردید.
+۸. اسکریپت اعتبارسنجی خودکار در `tools/android/verify_android_app_shell.cjs` ساخته و تمام تست‌ها با موفقیت پاس شدند.
 
 ## گزارش تفصیلی
-گزارش کامل شامل جدول فلِیوِرها، سایز APKها و لاگ‌های بیلد در [summary.md](summary.md) ثبت گردیده است.
+گزارش کامل شامل جدول فلِیوِرها، سایز APKها، هش‌های SHA256، لاگ‌های نصب/ارتقای شبیه‌ساز و تصویر صفحه در [summary.md](summary.md) ثبت گردیده است.
 
 ## وضعیت تسک
 DONE

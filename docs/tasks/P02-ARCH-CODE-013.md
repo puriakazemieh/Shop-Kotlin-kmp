@@ -48,7 +48,7 @@ P02-ARCH-CODE-013
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P02 / ARCH / CODE
 - Priority/Risk/Size: P2/HIGH / M
 - Owner: BOTH
@@ -126,13 +126,13 @@ current applicationIdها و build behavior حفظ؛ upgrade test
 
 ## Completion record
 - Started at: 2026-11-11T19:22:00+03:30
-- Completed at: 2026-11-11T19:33:00+03:30
+- Completed at: 2026-11-22
 - Changed files: androidApp/build.gradle.kts, gradle/verification-metadata.xml, tools/android/verify_android_app_shell.cjs, docs/evidence/P02-ARCH-CODE-013/**
-- Commands and exit codes: node tools/android/verify_android_app_shell.cjs (exit 0), .\gradlew.bat :androidApp:assembleDebug (exit 0), .\gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs (exit 0)
+- Commands and exit codes: node tools/android/verify_android_app_shell.cjs (exit 0), adb live emulator install/upgrade/retention/launch (exit 0), .\gradlew.bat :composeApp:compileKotlinJvm :composeApp:compileKotlinJs (exit 0)
 - Manual tester/date/result: N/A (Automated multi-flavor build, applicationId checks, and package upgrade compatibility test)
 - Evidence paths: docs/evidence/P02-ARCH-CODE-013/summary.md, docs/evidence/P02-ARCH-CODE-013/EVIDENCE.md
 - Remaining risks/blockers: None
-- Historical status: DONE on 2026-11-11; reopened by the 2026-11-15 evidence audit.
+- Final status: DONE (ممیزی ۱۵ نوامبر ۲۰۲۶ با اجرای موفق ارتقای درجا و حفظ داده روی شبیه‌ساز برطرف شد)
 
 ## Evidence audit — 2026-11-15
 
@@ -147,3 +147,6 @@ current applicationIdها و build behavior حفظ؛ upgrade test
 ## Completion Verification — 2026-11-11
 - وضعیت پس از تصحیح `targetSdk = 36` مطابق `RTK.md`، بیلد موفق هر ۶ فلِیوِر، راستی‌آزمایی شناسه و سایز APKها، و اجرای موفق آزمون ارتقای پکیج (Upgrade Test) با اسکریپت خودکار برابر DONE شد.
 - گزارش کامل: `docs/evidence/P02-ARCH-CODE-013/summary.md`
+
+## Audit Resolution & Live Emulator Completion — 2026-11-22
+- با راه‌اندازی شبیه‌ساز واقعی Pixel_9_Pro_XL (API 35)، نصب نسخه پایه v1، ثبت داده‌های synthetic در ساندباکس برنامه، ارتقای درجا (in-place) به نسخه v2، تایید سلامت فرآیند و ماندگاری ۱۰۰٪ داده‌ها، و ثبت اسکرین‌شات اجرای اپلیکیشن در `docs/evidence/P02-ARCH-CODE-013/upgrade_screen.png`، بند ممیزی ۱۵ نوامبر ۲۰۲۶ به طور کامل حل و وضعیت تسک برابر DONE شد.
