@@ -133,13 +133,26 @@ class EntitlementResolver {
      * Resolves effective features based on valid claims and environment constraints.
      * Rejects unsigned, tampered, or wrong-site licenses by returning all-false features.
      *
-     * @param mixed $claims The license claims array.
+     * @param mixed      $claims         The license claims array.
+     * @param array|null $admin_settings Optional admin toggles.
+     * @param array      $options        Optional environment/release overrides.
      * @return array<string, bool> Map of feature ID to boolean enabled state.
      */
-    public static function resolve($claims): array {
+    public static function resolve($claims, ?array $admin_settings = null, array $options = []): array {
         // Reject invalid/unsigned/tampered/wrong-site licenses by returning all-false features
         if (!self::validate_license($claims)) {
             return self::get_all_false_features();
+        }
+
+        // Delegate to unified canonical CapabilityResolver
+        if (class_exists('\Carmilla\Core\Catalog\CapabilityResolver')) {
+            return \Carmilla\Core\Catalog\CapabilityResolver::resolve_effective([
+                'entitlements'    => $claims,
+                'admin_settings'  => $admin_settings,
+                'package_code'    => $options['package_code'] ?? null,
+                'release_catalog' => $options['release_catalog'] ?? null,
+                'environment'     => $options['environment'] ?? null,
+            ]);
         }
 
         // 1. Resolve raw features based on SKU inventory & claims

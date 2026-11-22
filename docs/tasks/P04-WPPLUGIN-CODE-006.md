@@ -50,7 +50,7 @@ P04-WPPLUGIN-CODE-006
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: AI
@@ -110,10 +110,10 @@ resolver خالص kernel وضعیت مؤثر را از کد بسته، حق خر
 
 ## Acceptance Criteria
 
-- [ ] یک resolver canonical و تست جدول وضعیت وجود دارد.
-- [ ] انتخاب مدیر حق خرید یا کد غایب را ایجاد نمی‌کند.
-- [ ] غیرفعال‌بودن prerequisite فقط قابلیت وابسته را می‌بندد.
-- [ ] release gate مستقل از toggle و UI-only پایه محفوظ است.
+- [x] یک resolver canonical و تست جدول وضعیت وجود دارد.
+- [x] انتخاب مدیر حق خرید یا کد غایب را ایجاد نمی‌کند.
+- [x] غیرفعال‌بودن prerequisite فقط قابلیت وابسته را می‌بندد.
+- [x] release gate مستقل از toggle و UI-only پایه محفوظ است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,26 @@ resolver خالص kernel وضعیت مؤثر را از کد بسته، حق خر
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-22T17:24:00+03:30
+- Completed at: 2026-11-22T18:16:00+03:30
 - Changed files:
+  - wordpress/packages/carmilla-core/inc/Catalog/CapabilityResolver.php
+  - wordpress/packages/carmilla-core/Carmilla_Kernel.php
+  - wordpress/packages/carmilla-core/inc/Entitlement/EntitlementResolver.php
+  - wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php
+  - wordpress/carmilla-theme/inc/class-theme-host-adapter.php
+  - wordpress/carmilla-theme/inc/template-functions.php
+  - wordpress/packages/carmilla-core/tests/test-capability-resolver-006.php
+  - wordpress/packages/carmilla-core/tests/verify-phase04-real-wp.php
+  - docs/evidence/P04-WPPLUGIN-CODE-006/summary.md
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/test-capability-resolver-006.php` (Exit: 0, 68 checks passed)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/verify-phase04-real-wp.php` (Exit: 0, 57 checks passed)
+  - `docker compose -f tools/test-env/docker-compose.yml run --rm php-test php wordpress/packages/carmilla-core/tests/test-kernel-bootstrap-004.php` (Exit: 0)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/plugins/carmilla-bridge/tests/smoke-manifest.php` (Exit: 0)
+- Manual tester/date/result: AI (Automated real container & WordPress integration test suites)
+- Evidence paths: docs/evidence/P04-WPPLUGIN-CODE-006/summary.md
+- Remaining risks/blockers: None. Next card P04-ENTITLEMENT-CODE-040 handles license signature and cryptographic verification.
+- Final status: DONE
 
 </div>

@@ -8,6 +8,7 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Catalog/EntitlementSchema.php';
     require_once __DIR__ . '/inc/Catalog/EntitlementClaims.php';
     require_once __DIR__ . '/inc/Catalog/DependencyResolver.php';
+    require_once __DIR__ . '/inc/Catalog/CapabilityResolver.php';
     require_once __DIR__ . '/inc/Migration/SchemaRunner.php';
     require_once __DIR__ . '/inc/Entitlement/EntitlementResolver.php';
     require_once __DIR__ . '/inc/Adapter/WooCommerceAdapter.php';
@@ -70,11 +71,30 @@ class Carmilla_Kernel {
     public static function resolve_features() {
         // Retrieve fixtures or actual claims here
         $claims = \Carmilla\Core\Catalog\EntitlementClaims::get_fully_unlocked_fixture();
-        $active_features = \Carmilla\Core\Entitlement\EntitlementResolver::resolve($claims);
+        $admin_settings = function_exists('get_option') ? get_option('cb_manifest_features', null) : null;
 
-        // Store active features in memory or global for this request
-        global $carmilla_active_features;
-        $carmilla_active_features = $active_features;
+        $matrix = \Carmilla\Core\Catalog\CapabilityResolver::resolve_matrix([
+            'entitlements'   => $claims,
+            'admin_settings' => is_array($admin_settings) ? $admin_settings : null,
+        ]);
+
+        // Store active features and full matrix in memory or global for this request
+        global $carmilla_active_features, $carmilla_feature_matrix;
+        $carmilla_active_features = $matrix['effective_features'];
+        $carmilla_feature_matrix  = $matrix;
+    }
+
+    /**
+     * Returns the full capability resolution matrix for the current request.
+     *
+     * @return array
+     */
+    public static function get_feature_matrix(): array {
+        global $carmilla_feature_matrix;
+        if ($carmilla_feature_matrix === null) {
+            self::resolve_features();
+        }
+        return $carmilla_feature_matrix ?? [];
     }
 
     /**
@@ -134,8 +154,9 @@ class Carmilla_Kernel {
      */
     public static function reset_state(): void {
         self::$booted_by = [];
-        global $carmilla_active_features;
+        global $carmilla_active_features, $carmilla_feature_matrix;
         $carmilla_active_features = null;
+        $carmilla_feature_matrix  = null;
         if (class_exists('\Carmilla\Core\Migration\SchemaRunner')) {
             \Carmilla\Core\Migration\SchemaRunner::reset_checkpoints();
         }

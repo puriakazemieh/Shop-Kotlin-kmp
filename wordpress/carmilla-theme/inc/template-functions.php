@@ -8,6 +8,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Checks whether a feature is active and entitled on the site.
+ * Delegates to ThemeHostAdapter or the shared Carmilla_Kernel.
+ *
+ * @param string $slug_or_feature Slug ('shop', 'blog', 'courses', 'clinic', 'psychtests', 'stories', 'banners') or feature ID.
+ * @return bool
+ */
+if ( ! function_exists( 'carmilla_feature_enabled' ) ) {
+	function carmilla_feature_enabled( $slug_or_feature ) {
+		if ( class_exists( '\Carmilla\Theme\ThemeHostAdapter' ) ) {
+			return \Carmilla\Theme\ThemeHostAdapter::is_feature_enabled( (string) $slug_or_feature );
+		}
+		if ( class_exists( '\Carmilla_Kernel' ) ) {
+			return \Carmilla_Kernel::is_feature_active( (string) $slug_or_feature );
+		}
+		return true;
+	}
+}
+
+/**
  * Format a number as Persian-grouped Toman, mirroring core/designSystem/util/PriceFormat.kt
  * (formatToman): thousands separator "٬", Persian digits, no decimals. Unit added by caller.
  */

@@ -48,11 +48,23 @@ echo "=================================================================\n\n";
 // -------------------------------------------------------------
 echo "-- Group 1: Contract Schema & Catalog Files --\n";
 
-$schema_file = dirname(__DIR__, 4) . '/docs/contracts/carmilla-entitlement-catalog-v1.schema.json';
-assert_test(file_exists($schema_file), 'Schema JSON file exists under docs/contracts/');
-
-$catalog_file = dirname(__DIR__, 4) . '/docs/contracts/carmilla-entitlement-catalog-v1.json';
-assert_test(file_exists($catalog_file), 'Catalog JSON file exists under docs/contracts/');
+$catalog_candidates = [
+    dirname(__DIR__, 4) . '/docs/contracts/carmilla-entitlement-catalog-v1.json',
+    dirname(__DIR__, 5) . '/docs/contracts/carmilla-entitlement-catalog-v1.json',
+    dirname(__DIR__, 3) . '/docs/contracts/carmilla-entitlement-catalog-v1.json',
+    '/var/www/html/docs/contracts/carmilla-entitlement-catalog-v1.json',
+    '/app/docs/contracts/carmilla-entitlement-catalog-v1.json',
+];
+$catalog_file = '';
+foreach ($catalog_candidates as $c) {
+    if (file_exists($c)) {
+        $catalog_file = $c;
+        break;
+    }
+}
+$schema_file = str_replace('.json', '.schema.json', $catalog_file);
+assert_test(!empty($schema_file) && file_exists($schema_file), 'Schema JSON file exists under docs/contracts/');
+assert_test(!empty($catalog_file) && file_exists($catalog_file), 'Catalog JSON file exists under docs/contracts/');
 
 $catalog_json = json_decode(file_get_contents($catalog_file), true);
 assert_test(isset($catalog_json['schemaVersion']) && $catalog_json['schemaVersion'] === 1, 'Catalog schemaVersion is 1');

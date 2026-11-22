@@ -104,11 +104,30 @@ echo "=================================================================\n\n";
 // -------------------------------------------------------------
 echo "-- Group 1: Shared Kernel Source & ZIP Packaging Scripts --\n";
 
-$theme_build_script = dirname(__DIR__, 3) . '/build-theme-zip.sh';
-$bridge_build_script = dirname(__DIR__, 3) . '/build-bridge-zip.sh';
+$wp_candidates = [
+    dirname(__DIR__, 3),
+    dirname(__DIR__, 4) . '/wordpress',
+    dirname(__DIR__, 5) . '/wordpress',
+    '/var/www/html/wp-content',
+    '/app/wordpress',
+];
+$theme_build_script = '';
+foreach ($wp_candidates as $cand) {
+    if (file_exists($cand . '/build-theme-zip.sh')) {
+        $theme_build_script = $cand . '/build-theme-zip.sh';
+        break;
+    }
+}
+$bridge_build_script = '';
+foreach ($wp_candidates as $cand) {
+    if (file_exists($cand . '/build-bridge-zip.sh')) {
+        $bridge_build_script = $cand . '/build-bridge-zip.sh';
+        break;
+    }
+}
 
-assert_test(file_exists($theme_build_script), 'build-theme-zip.sh exists');
-assert_test(file_exists($bridge_build_script), 'build-bridge-zip.sh exists');
+assert_test(!empty($theme_build_script) && file_exists($theme_build_script), 'build-theme-zip.sh exists');
+assert_test(!empty($bridge_build_script) && file_exists($bridge_build_script), 'build-bridge-zip.sh exists');
 
 $theme_script_content = file_get_contents($theme_build_script);
 $bridge_script_content = file_get_contents($bridge_build_script);
@@ -119,8 +138,8 @@ assert_test(strpos($theme_script_content, 'companion') === false, 'No companion 
 assert_test(strpos($bridge_script_content, 'companion') === false, 'No companion plugin packaged in Bridge ZIP');
 
 // Check built zip files
-$theme_zip = dirname(__DIR__, 3) . '/carmilla-theme.zip';
-$bridge_zip = dirname(__DIR__, 3) . '/carmilla-bridge.zip';
+$theme_zip = dirname($theme_build_script) . '/carmilla-theme.zip';
+$bridge_zip = dirname($bridge_build_script) . '/carmilla-bridge.zip';
 
 assert_test(file_exists($theme_zip), 'carmilla-theme.zip artifact exists');
 assert_test(file_exists($bridge_zip), 'carmilla-bridge.zip artifact exists');
@@ -194,13 +213,36 @@ assert_test(isset($co_contexts['theme']) && $co_contexts['theme'] === '0.8.0', '
 // -------------------------------------------------------------
 echo "\n-- Group 5: Host Loader Paths and Clean Inclusion --\n";
 
-$theme_functions = file_get_contents(dirname(__DIR__, 3) . '/carmilla-theme/functions.php');
-$bridge_main = file_get_contents(dirname(__DIR__, 3) . '/carmilla-bridge/carmilla-bridge.php');
+$theme_fn_candidates = [
+    dirname(__DIR__, 3) . '/carmilla-theme/functions.php',
+    dirname(__DIR__, 4) . '/wordpress/carmilla-theme/functions.php',
+    '/var/www/html/wp-content/themes/carmilla-theme/functions.php',
+];
+$bridge_fn_candidates = [
+    dirname(__DIR__, 3) . '/carmilla-bridge/carmilla-bridge.php',
+    dirname(__DIR__, 4) . '/wordpress/carmilla-bridge/carmilla-bridge.php',
+    '/var/www/html/wp-content/plugins/carmilla-bridge/carmilla-bridge.php',
+];
 
-assert_test(strpos($theme_functions, 'Carmilla_Kernel') !== false, 'Theme functions.php includes Carmilla_Kernel check');
-assert_test(strpos($theme_functions, 'Carmilla_Kernel::boot') !== false, 'Theme functions.php calls Carmilla_Kernel::boot');
-assert_test(strpos($bridge_main, 'Carmilla_Kernel') !== false, 'Bridge main file includes Carmilla_Kernel check');
-assert_test(strpos($bridge_main, 'Carmilla_Kernel::boot') !== false, 'Bridge main file calls Carmilla_Kernel::boot');
+$theme_functions = '';
+foreach ($theme_fn_candidates as $cand) {
+    if (file_exists($cand)) {
+        $theme_functions = file_get_contents($cand);
+        break;
+    }
+}
+$bridge_main = '';
+foreach ($bridge_fn_candidates as $cand) {
+    if (file_exists($cand)) {
+        $bridge_main = file_get_contents($cand);
+        break;
+    }
+}
+
+assert_test(!empty($theme_functions) && strpos($theme_functions, 'Carmilla_Kernel') !== false, 'Theme functions.php includes Carmilla_Kernel check');
+assert_test(!empty($theme_functions) && strpos($theme_functions, 'Carmilla_Kernel::boot') !== false, 'Theme functions.php calls Carmilla_Kernel::boot');
+assert_test(!empty($bridge_main) && strpos($bridge_main, 'Carmilla_Kernel') !== false, 'Bridge main file includes Carmilla_Kernel check');
+assert_test(!empty($bridge_main) && strpos($bridge_main, 'Carmilla_Kernel::boot') !== false, 'Bridge main file calls Carmilla_Kernel::boot');
 
 echo "\n=================================================================\n";
 echo ($fail === 0 ? "ALL P04-WPPLUGIN-CODE-004 ACCEPTANCE TESTS PASSED!\n" : "$fail TESTS FAILED!\n");

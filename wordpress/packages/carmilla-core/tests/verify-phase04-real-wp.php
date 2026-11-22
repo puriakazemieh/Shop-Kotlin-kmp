@@ -182,9 +182,75 @@ check_wp(!empty($nav) && $nav[0]['label'] === 'خانه', "Navigation destinatio
 check_wp(carmilla_price(250000) === '۲۵۰٬۰۰۰ تومان', "carmilla_price() formats Persian numerals and commas correctly");
 
 // -------------------------------------------------------------
-// Module 5: Real HTTP Front-End Request (Apache + PHP Engine)
+// Module 5: P04-WPPLUGIN-CODE-006: Shared Capability Resolver on Real WP
 // -------------------------------------------------------------
-echo "\n-- 5. Real Front-End HTTP Request to WordPress --\n";
+echo "\n-- 5. P04-WPPLUGIN-CODE-006: Shared Capability Resolver on Real WP --\n";
+
+use Carmilla\Core\Catalog\CapabilityResolver;
+
+// Verify CapabilityResolver is available in real WordPress runtime
+check_wp(class_exists('\Carmilla\Core\Catalog\CapabilityResolver'), "CapabilityResolver class exists in real WordPress runtime");
+
+// Test matrix resolution on real WordPress
+$real_matrix = CapabilityResolver::resolve_matrix();
+check_wp(!empty($real_matrix['features']), "CapabilityResolver generated full feature matrix on Real WP");
+check_wp(isset($real_matrix['features']['theme.base']), "theme.base present in matrix");
+check_wp($real_matrix['features']['theme.base']['is_active'] === true, "theme.base is active on Real WP");
+check_wp($real_matrix['features']['theme.base']['status'] === CapabilityResolver::STATUS_ACTIVE, "theme.base status is ACTIVE on Real WP");
+
+// Test distinct status codes on Real WP
+$fixtures = CapabilityResolver::get_test_fixtures();
+
+// Test unpurchased toggle invariance on Real WP
+$toggle_res = CapabilityResolver::resolve_matrix([
+    'entitlements'   => $fixtures['admin_toggle_unpurchased']['entitlements'],
+    'admin_settings' => $fixtures['admin_toggle_unpurchased']['admin_settings'],
+]);
+check_wp($toggle_res['features']['commerce.core']['is_active'] === false, "Admin toggle cannot grant unpurchased commerce.core on Real WP");
+check_wp($toggle_res['features']['commerce.core']['status'] === CapabilityResolver::STATUS_NOT_ENTITLED, "commerce.core status is NOT_ENTITLED on Real WP");
+
+// Test missing code in package on Real WP
+$code_res = CapabilityResolver::resolve_matrix([
+    'package_code'   => ['academy.core' => false],
+    'admin_settings' => ['academy.core' => true],
+]);
+check_wp($code_res['features']['academy.core']['status'] === CapabilityResolver::STATUS_MISSING_CODE, "Missing code yields MISSING_CODE status on Real WP");
+check_wp(!empty($code_res['features']['academy.core']['reason']), "Missing code provides Persian explanation on Real WP");
+
+// Test missing WooCommerce prerequisite on Real WP
+$woo_res = CapabilityResolver::resolve_matrix([
+    'environment' => ['woocommerce_active' => false],
+]);
+check_wp($woo_res['features']['commerce.core']['status'] === CapabilityResolver::STATUS_PREREQUISITE_MISSING, "Missing WooCommerce sets commerce.core to PREREQUISITE_MISSING on Real WP");
+check_wp(in_array('woocommerce', $woo_res['features']['commerce.core']['missing_prerequisites'], true), "commerce.core lists woocommerce missing on Real WP");
+check_wp($woo_res['features']['academy.core']['status'] === CapabilityResolver::STATUS_ACTIVE, "academy.core remains ACTIVE when WooCommerce is missing on Real WP");
+check_wp($woo_res['features']['clinic.booking']['status'] === CapabilityResolver::STATUS_ACTIVE, "clinic.booking remains ACTIVE when WooCommerce is missing on Real WP");
+check_wp($woo_res['features']['theme.base']['status'] === CapabilityResolver::STATUS_ACTIVE, "theme.base remains ACTIVE when WooCommerce is missing on Real WP");
+
+// Test release gate on Real WP
+$release_res = CapabilityResolver::resolve_matrix([
+    'release_catalog' => ['clinic.consultation' => false],
+    'admin_settings'  => ['clinic.consultation' => true],
+]);
+check_wp($release_res['features']['clinic.consultation']['status'] === CapabilityResolver::STATUS_RELEASE_GATE_RESTRICTED, "Release gate restricts clinic.consultation on Real WP");
+
+// Test real WordPress option integration
+update_option('cb_manifest_features', [
+    'content.core' => true,
+    'clinic.booking' => false,
+]);
+Carmilla_Kernel::resolve_features();
+check_wp(Carmilla_Kernel::is_feature_active('clinic.booking') === false, "Real wp_option cb_manifest_features disables clinic.booking in Kernel");
+check_wp(carmilla_feature_enabled('stories') === true, "carmilla_feature_enabled('stories') works via Real WP Kernel");
+
+// Reset option
+delete_option('cb_manifest_features');
+Carmilla_Kernel::resolve_features();
+
+// -------------------------------------------------------------
+// Module 6: Real HTTP Front-End Request (Apache + PHP Engine)
+// -------------------------------------------------------------
+echo "\n-- 6. Real Front-End HTTP Request to WordPress --\n";
 
 // Execute local HTTP GET request to Apache on 127.0.0.1
 $response = wp_remote_get('http://127.0.0.1/', ['timeout' => 10, 'headers' => ['Host' => 'localhost:8080']]);

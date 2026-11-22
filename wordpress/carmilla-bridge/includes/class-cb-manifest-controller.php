@@ -7,6 +7,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'Carmilla_Kernel' ) ) {
+	$core_candidates = array(
+		dirname( __DIR__ ) . '/packages/carmilla-core/Carmilla_Kernel.php',
+		dirname( __DIR__, 2 ) . '/packages/carmilla-core/Carmilla_Kernel.php',
+		dirname( __DIR__, 3 ) . '/packages/carmilla-core/Carmilla_Kernel.php',
+		'/var/www/html/wp-content/plugins/carmilla-bridge/packages/carmilla-core/Carmilla_Kernel.php',
+		'/var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/Carmilla_Kernel.php',
+	);
+	foreach ( $core_candidates as $candidate ) {
+		if ( file_exists( $candidate ) ) {
+			require_once $candidate;
+			break;
+		}
+	}
+}
+
 class CB_Manifest_Controller {
 	private const FEATURES_OPTION = 'cb_manifest_features';
 	private const AUDIT_OPTION = 'cb_manifest_audit_log';
@@ -187,6 +203,12 @@ class CB_Manifest_Controller {
 
 	/** Visible for a dependency-free smoke test. */
 	public static function resolve_features( $configured ): array {
+		if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
+			return \Carmilla\Core\Catalog\CapabilityResolver::resolve_effective( array(
+				'admin_settings' => is_array( $configured ) ? $configured : array(),
+			) );
+		}
+
 		$defaults = self::normalize_configured_features( $configured );
 		foreach ( self::feature_dependencies() as $child => $parents ) {
 			foreach ( $parents as $parent ) {
@@ -198,6 +220,12 @@ class CB_Manifest_Controller {
 
 	/** Returns invalid child feature IDs without modifying the stored option. */
 	public static function dependency_violations( $configured ): array {
+		if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
+			return \Carmilla\Core\Catalog\CapabilityResolver::get_dependency_violations(
+				is_array( $configured ) ? $configured : array()
+			);
+		}
+
 		$configured = self::normalize_configured_features( $configured );
 		$violations = array();
 		foreach ( self::feature_dependencies() as $child => $parents ) {
@@ -215,6 +243,10 @@ class CB_Manifest_Controller {
 	}
 
 	private static function feature_defaults(): array {
+		if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
+			return \Carmilla\Core\Catalog\CapabilityResolver::get_feature_defaults();
+		}
+
 		return array(
 			'content.blog' => true, 'commerce.core' => true, 'commerce.physical' => true,
 			'commerce.digital' => false, 'academy.core' => false, 'academy.quiz' => false,
@@ -224,11 +256,14 @@ class CB_Manifest_Controller {
 	}
 
 	private static function feature_dependencies(): array {
+		if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
+			return \Carmilla\Core\Catalog\CapabilityResolver::get_canonical_dependencies();
+		}
+
 		return array(
 			'commerce.physical' => array( 'commerce.core' ), 'commerce.digital' => array( 'commerce.core' ),
-			'academy.core' => array( 'content.blog' ), 'academy.quiz' => array( 'academy.core' ),
-			'academy.certificate' => array( 'academy.core' ), 'clinic.booking' => array( 'content.blog' ),
-			'clinic.messaging' => array( 'clinic.booking' ), 'psych.tests' => array( 'content.blog' ), 'wallet' => array( 'commerce.core' ),
+			'academy.quiz' => array( 'academy.core' ), 'academy.certificate' => array( 'academy.core' ),
+			'clinic.messaging' => array( 'clinic.booking' ), 'wallet' => array( 'commerce.core' ),
 		);
 	}
 

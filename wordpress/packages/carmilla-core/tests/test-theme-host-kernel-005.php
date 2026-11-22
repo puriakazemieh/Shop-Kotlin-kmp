@@ -161,17 +161,22 @@ if (!function_exists('get_permalink')) {
     }
 }
 
+$theme_dir = file_exists(dirname(__DIR__, 3) . '/carmilla-theme/inc/class-theme-host-adapter.php')
+    ? dirname(__DIR__, 3) . '/carmilla-theme'
+    : (file_exists(dirname(__DIR__, 3) . '/inc/class-theme-host-adapter.php') ? dirname(__DIR__, 3) : '/var/www/html/wp-content/themes/carmilla-theme');
+
 if (!function_exists('get_template_directory')) {
     function get_template_directory() {
-        return dirname(__DIR__, 3) . '/carmilla-theme';
+        global $theme_dir;
+        return $theme_dir;
     }
 }
 
 // Load Kernel and Theme components
 require_once dirname(__DIR__) . '/Carmilla_Kernel.php';
-require_once dirname(__DIR__, 3) . '/carmilla-theme/inc/class-theme-host-adapter.php';
-require_once dirname(__DIR__, 3) . '/carmilla-theme/inc/customizer.php';
-require_once dirname(__DIR__, 3) . '/carmilla-theme/inc/template-functions.php';
+require_once $theme_dir . '/inc/class-theme-host-adapter.php';
+require_once $theme_dir . '/inc/customizer.php';
+require_once $theme_dir . '/inc/template-functions.php';
 
 use Carmilla\Theme\ThemeHostAdapter;
 

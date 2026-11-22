@@ -100,6 +100,11 @@ class ThemeHostAdapter {
 			return \Carmilla_Kernel::is_feature_active( $feature_id );
 		}
 
+		// 2. If CapabilityResolver is loaded, query canonical resolver directly
+		if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
+			return \Carmilla\Core\Catalog\CapabilityResolver::is_feature_active( $feature_id );
+		}
+
 		// 2. Fallback to site option or default manifest for unbooted / characterization testing
 		if ( function_exists( 'carmilla_manifest_features' ) ) {
 			$features = carmilla_manifest_features();
