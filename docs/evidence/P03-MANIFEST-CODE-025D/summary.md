@@ -1,22 +1,41 @@
-# Evidence: Functional Guards (P03-MANIFEST-CODE-025B to P03-MANIFEST-CODE-025E)
+# Evidence Summary — P03-MANIFEST-CODE-025D
 
-## Changes Made
-- Introduced a Ktor client plugin `FeatureGuardPlugin` inside `HttpClientFactory.kt`.
-- `FeatureGuardPlugin` is responsible for applying the functional guards at the transport layer for all vertical features.
-- The plugin reads from `EffectiveFeatureStore` and intercepts every outgoing request.
-- Based on the request path (`request.url.encodedPath`), it checks if the corresponding feature ID is enabled:
-  - `commerce.core` for `/api/cart/`, `/api/order/`, `/api/products/`, etc. (Task P03-MANIFEST-CODE-025B)
-  - `academy.core` for `/api/academy/`, `/api/courses/` (Task P03-MANIFEST-CODE-025C)
-  - `clinic.booking` for `/api/clinic/`, `/api/appointments/`, `/api/therapist/` (Task P03-MANIFEST-CODE-025D)
-  - `psych.tests` for `/api/psychtest/` (Task P03-MANIFEST-CODE-025E)
-- If a feature is disabled, the request is immediately blocked (throws an exception mapping to a standard `ApiException`), preventing any network traffic or server load from disabled features.
-- Injected `EffectiveFeatureStore` into `HttpClientFactory` via `NetworkModule.kt`.
+## عنوان تسک
+اعمال guard عملیاتی کلینیک/نوبت (با ترنسپورت شمارنده واقعی در DI)
 
-## Validation
-- `compileKotlinJs` and `compileKotlinJvm` succeed.
-- Ktor intercepts the request inside the DI module exactly as required ("در DI، feature خاموش هیچ request تولید نکند").
+## مشخصات اجرا
+- **Task ID:** `P03-MANIFEST-CODE-025D`
+- **Branch:** `develop`
+- **Date:** 2026-11-22
+- **Executed By:** Codex / Carmilla
 
-## Note for Manual QA
-User should run the Android app locally (e.g. `carmilaDebug`) and verify:
-1. Turning off a feature flag prevents any background or API call associated with that feature.
-2. The UI handles the API errors gracefully using the standard `ResultHandler.kt` error mapping.
+## شرح تغییرات مهندسی
+1. **اعمال گارد در ریپازیتوری‌های کلاینت کلینیک:**
+   - [ClinicRepositoryImpl.kt](file:///d:/Android/AndroidStudioProjects/kmp-shop/core/data/src/commonMain/kotlin/com/kazemieh/data/clinic/repository/ClinicRepositoryImpl.kt):
+     - تزریق اختیاری `guard: FeatureUseCaseGuard? = null` در سازنده جهت حفظ backward compatibility.
+     - پوشش متدهای پیام‌رسانی (`listMessages`, `sendMessage`, `messagingStatus`) با `guard.guardOrError("clinic.messaging")`.
+     - پوشش تمام متدهای رزرواسیون، تراپیست، نوبت‌ها، مود، ژورنال و تطبیق با `guard.guardOrError("clinic.booking")`.
+2. **اعمال گارد در ریپازیتوری ادمین کلینیک:**
+   - [AdminClinicRepositoryImpl.kt](file:///d:/Android/AndroidStudioProjects/kmp-shop/core/data/src/commonMain/kotlin/com/kazemieh/data/clinic/repository/AdminClinicRepositoryImpl.kt):
+     - تزریق اختیاری `guard: FeatureUseCaseGuard? = null` در سازنده.
+     - پوشش متدهای پیام‌رسانی ادمین (`listMessagesWithPatient`, `sendMessageToPatient`) با `guard.guardOrError("clinic.messaging")`.
+     - پوشش تمام متدهای مدیریتی تراپیست‌ها، اسلات‌ها، نوبت‌ها، یادداشت‌ها، پرونده و نشست‌ها با `guard.guardOrError("clinic.booking")`.
+3. **پیکربندی Dependency Injection (Koin):**
+   - [dataModule.kt](file:///d:/Android/AndroidStudioProjects/kmp-shop/core/data/src/commonMain/kotlin/com/kazemieh/data/di/dataModule.kt):
+     - تزریق `getOrNull<FeatureUseCaseGuard>()` به `ClinicRepositoryImpl` و `AdminClinicRepositoryImpl`.
+4. **طراحی و پیاده‌سازی آزمون ترنسپورت شمارنده واقعی:**
+   - [ClinicOperationalGuardTest.kt](file:///d:/Android/AndroidStudioProjects/kmp-shop/core/data/src/jvmTest/kotlin/com/kazemieh/data/clinic/ClinicOperationalGuardTest.kt):
+     - راه‌اندازی سرور HTTP محلی با `AtomicInteger` و اعتبارسنجی صفر ریکوئست در وضعیت خاموش، فوروارد درخواست‌های معتبر در وضعیت روشن، تفکیک سلسله‌مراتبی booking و messaging، فوروارد توکن احراز هویت و عدم امکان دور زدن اعتبارسنجی مالکیت سرور، و پویایی زمان اجرا (Dynamic runtime transition).
+
+## دستورات اجرا شده و نتایج
+| Command | CWD | Result | Exit Code |
+|---|---|---|---|
+| `.\gradlew.bat :core:data:jvmTest --tests "com.kazemieh.data.clinic.ClinicOperationalGuardTest"` | `d:\Android\AndroidStudioProjects\kmp-shop` | 5 passed | 0 |
+| `.\gradlew.bat :core:config:capabilities:jvmTest :core:navigation:jvmTest :core:network:jvmTest` | `d:\Android\AndroidStudioProjects\kmp-shop` | All passed | 0 |
+| `.\gradlew.bat :composeApp:compileKotlinJs :composeApp:compileKotlinJvm` | `d:\Android\AndroidStudioProjects\kmp-shop` | Build successful | 0 |
+| `.\gradlew.bat :androidApp:assembleDebug` | `d:\Android\AndroidStudioProjects\kmp-shop` | Build successful | 0 |
+
+## نتیجه نهایی
+معیار اختصاصی کارت ("با transport شمارنده واقعی در DI، feature خاموش صفر request ایجاد کند؛ روشن مجاز request درست؛ auth/ownership با toggle دور زده نشود") با شواهد عینی، قطعی و آزمون‌های رفتاری تأیید شد.
+وضعیت تسک: **DONE**
+تسک مسدودشده بعدی (`P03-MANIFEST-CODE-025E`) اکنون آماده اجرا (READY) است.

@@ -51,156 +51,243 @@ import com.kazemieh.network.clinic.dto.SendMessageRequestDto
 import com.kazemieh.network.clinic.dto.TherapistMatchQuestionResponse
 import com.kazemieh.network.clinic.dto.TherapistSummaryResponse
 import com.kazemieh.network.common.safeApiCall
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
+import com.kazemieh.data.common.guardOrError
 
 class AdminClinicRepositoryImpl(
-    private val api: AdminClinicApi
+    private val api: AdminClinicApi,
+    private val guard: FeatureUseCaseGuard? = null
 ) : AdminClinicRepository {
 
-    override suspend fun listTherapists(): AppResult<List<TherapistSummary>> = safeApiCall {
-        api.listTherapists().map { it.toDomain() }
-    }
+    override suspend fun listTherapists(): AppResult<List<TherapistSummary>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listTherapists().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun createTherapist(params: AdminTherapistParams): AppResult<Long> = safeApiCall {
-        api.createTherapist(
-            AdminCreateTherapistRequestDto(
-                name = params.name,
-                slug = params.slug,
-                specialty = params.specialty,
-                bio = params.bio,
-                photoUrl = params.photoUrl,
-                sessionPrice = params.sessionPrice,
-                sessionDurationMinutes = params.sessionDurationMinutes,
-                productId = params.productId,
-                messagingProductId = params.messagingProductId,
-                isActive = params.isActive,
-                mode = params.mode,
-                location = params.location
-            )
-        )
-    }
+    override suspend fun createTherapist(params: AdminTherapistParams): AppResult<Long> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.createTherapist(
+                    AdminCreateTherapistRequestDto(
+                        name = params.name,
+                        slug = params.slug,
+                        specialty = params.specialty,
+                        bio = params.bio,
+                        photoUrl = params.photoUrl,
+                        sessionPrice = params.sessionPrice,
+                        sessionDurationMinutes = params.sessionDurationMinutes,
+                        productId = params.productId,
+                        messagingProductId = params.messagingProductId,
+                        isActive = params.isActive,
+                        mode = params.mode,
+                        location = params.location
+                    )
+                )
+            }
+        }
 
-    override suspend fun updateTherapist(id: Long, params: AdminTherapistUpdateParams): AppResult<Unit> = safeApiCall {
-        api.updateTherapist(
-            id,
-            AdminUpdateTherapistRequestDto(
-                name = params.name,
-                specialty = params.specialty,
-                bio = params.bio,
-                photoUrl = params.photoUrl,
-                sessionPrice = params.sessionPrice,
-                sessionDurationMinutes = params.sessionDurationMinutes,
-                isActive = params.isActive,
-                messagingProductId = params.messagingProductId
-            )
-        )
-    }
+    override suspend fun updateTherapist(id: Long, params: AdminTherapistUpdateParams): AppResult<Unit> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.updateTherapist(
+                    id,
+                    AdminUpdateTherapistRequestDto(
+                        name = params.name,
+                        specialty = params.specialty,
+                        bio = params.bio,
+                        photoUrl = params.photoUrl,
+                        sessionPrice = params.sessionPrice,
+                        sessionDurationMinutes = params.sessionDurationMinutes,
+                        isActive = params.isActive,
+                        messagingProductId = params.messagingProductId
+                    )
+                )
+            }
+        }
 
-    override suspend fun deleteTherapist(id: Long): AppResult<Unit> = safeApiCall {
-        api.deleteTherapist(id)
-    }
+    override suspend fun deleteTherapist(id: Long): AppResult<Unit> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.deleteTherapist(id)
+            }
+        }
 
-    override suspend fun addSlot(therapistId: Long, startTime: String, endTime: String, capacity: Int): AppResult<Long> = safeApiCall {
-        api.addSlot(therapistId, AdminAddSlotRequestDto(startTime = startTime, endTime = endTime, capacity = capacity))
-    }
+    override suspend fun addSlot(therapistId: Long, startTime: String, endTime: String, capacity: Int): AppResult<Long> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.addSlot(therapistId, AdminAddSlotRequestDto(startTime = startTime, endTime = endTime, capacity = capacity))
+            }
+        }
 
-    override suspend fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?, capacity: Int): AppResult<Int> = safeApiCall {
-        api.generateSlots(therapistId, AdminGenerateSlotsRequestDto(windowStart = windowStart, windowEnd = windowEnd, slotMinutes = slotMinutes, capacity = capacity))
-    }
+    override suspend fun generateSlots(therapistId: Long, windowStart: String, windowEnd: String, slotMinutes: Int?, capacity: Int): AppResult<Int> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.generateSlots(therapistId, AdminGenerateSlotsRequestDto(windowStart = windowStart, windowEnd = windowEnd, slotMinutes = slotMinutes, capacity = capacity))
+            }
+        }
 
-    override suspend fun listSlots(therapistId: Long): AppResult<List<AdminSlot>> = safeApiCall {
-        api.listSlots(therapistId).map { it.toDomain() }
-    }
+    override suspend fun listSlots(therapistId: Long): AppResult<List<AdminSlot>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listSlots(therapistId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun listAppointments(): AppResult<List<AdminAppointment>> = safeApiCall {
-        api.listAppointments().map { it.toDomain() }
-    }
+    override suspend fun listAppointments(): AppResult<List<AdminAppointment>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listAppointments().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun confirmAppointment(id: Long, videoRoomUrl: String): AppResult<Unit> = safeApiCall {
-        api.confirmAppointment(id, AdminConfirmAppointmentRequestDto(videoRoomUrl = videoRoomUrl))
-    }
+    override suspend fun confirmAppointment(id: Long, videoRoomUrl: String): AppResult<Unit> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.confirmAppointment(id, AdminConfirmAppointmentRequestDto(videoRoomUrl = videoRoomUrl))
+            }
+        }
 
-    override suspend fun completeAppointment(id: Long): AppResult<Unit> = safeApiCall {
-        api.completeAppointment(id)
-    }
+    override suspend fun completeAppointment(id: Long): AppResult<Unit> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.completeAppointment(id)
+            }
+        }
 
-    override suspend fun listPatientNotes(appointmentId: Long): AppResult<List<PatientNote>> = safeApiCall {
-        api.listPatientNotes(appointmentId).map { it.toDomain() }
-    }
+    override suspend fun listPatientNotes(appointmentId: Long): AppResult<List<PatientNote>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listPatientNotes(appointmentId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun addPatientNote(appointmentId: Long, note: String): AppResult<Long> = safeApiCall {
-        api.addPatientNote(appointmentId, AdminAddPatientNoteRequestDto(note = note))
-    }
+    override suspend fun addPatientNote(appointmentId: Long, note: String): AppResult<Long> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.addPatientNote(appointmentId, AdminAddPatientNoteRequestDto(note = note))
+            }
+        }
 
-    override suspend fun listPatients(therapistId: Long): AppResult<List<AdminPatientSummary>> = safeApiCall {
-        api.listPatients(therapistId).map { it.toDomain() }
-    }
+    override suspend fun listPatients(therapistId: Long): AppResult<List<AdminPatientSummary>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listPatients(therapistId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun setPatientTags(therapistId: Long, userId: Long, tags: List<String>): AppResult<Unit> = safeApiCall {
-        api.setPatientTags(therapistId, userId, AdminSetPatientTagsRequestDto(tags = tags))
-    }
+    override suspend fun setPatientTags(therapistId: Long, userId: Long, tags: List<String>): AppResult<Unit> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.setPatientTags(therapistId, userId, AdminSetPatientTagsRequestDto(tags = tags))
+            }
+        }
 
-    override suspend fun getPatientFile(therapistId: Long, userId: Long): AppResult<PatientFile> = safeApiCall {
-        val r = api.getPatientFile(therapistId, userId)
-        PatientFile(
-            userId = r.userId, userName = r.userName, therapistId = r.therapistId, tags = r.tags,
-            appointments = r.appointments.map { it.toDomain() },
-            testResults = r.testResults.map { it.toDomain() }
-        )
-    }
+    override suspend fun getPatientFile(therapistId: Long, userId: Long): AppResult<PatientFile> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                val r = api.getPatientFile(therapistId, userId)
+                PatientFile(
+                    userId = r.userId, userName = r.userName, therapistId = r.therapistId, tags = r.tags,
+                    appointments = r.appointments.map { it.toDomain() },
+                    testResults = r.testResults.map { it.toDomain() }
+                )
+            }
+        }
 
-    override suspend fun listSwitchRequests(): AppResult<List<AdminSwitchRequest>> = safeApiCall {
-        api.listSwitchRequests().map { it.toDomain() }
-    }
+    override suspend fun listSwitchRequests(): AppResult<List<AdminSwitchRequest>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listSwitchRequests().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun reviewSwitchRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<AdminSwitchRequest> = safeApiCall {
-        api.reviewSwitchRequest(id, AdminReviewSwitchRequestDto(approve = approve, adminNote = adminNote)).toDomain()
-    }
+    override suspend fun reviewSwitchRequest(id: Long, approve: Boolean, adminNote: String?): AppResult<AdminSwitchRequest> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.reviewSwitchRequest(id, AdminReviewSwitchRequestDto(approve = approve, adminNote = adminNote)).toDomain()
+            }
+        }
 
-    override suspend fun listMessagesWithPatient(therapistId: Long, userId: Long): AppResult<List<ClinicMessage>> = safeApiCall {
-        api.listMessagesWithPatient(therapistId, userId).map { it.toDomain() }
-    }
+    override suspend fun listMessagesWithPatient(therapistId: Long, userId: Long): AppResult<List<ClinicMessage>> =
+        guard.guardOrError("clinic.messaging") {
+            safeApiCall {
+                api.listMessagesWithPatient(therapistId, userId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun sendMessageToPatient(therapistId: Long, userId: Long, body: String): AppResult<ClinicMessage> = safeApiCall {
-        api.sendMessageToPatient(therapistId, userId, SendMessageRequestDto(body = body)).toDomain()
-    }
+    override suspend fun sendMessageToPatient(therapistId: Long, userId: Long, body: String): AppResult<ClinicMessage> =
+        guard.guardOrError("clinic.messaging") {
+            safeApiCall {
+                api.sendMessageToPatient(therapistId, userId, SendMessageRequestDto(body = body)).toDomain()
+            }
+        }
 
-    override suspend fun listHomeworkForPatient(therapistId: Long, userId: Long): AppResult<List<Homework>> = safeApiCall {
-        api.listHomeworkForPatient(therapistId, userId).map { it.toDomain() }
-    }
+    override suspend fun listHomeworkForPatient(therapistId: Long, userId: Long): AppResult<List<Homework>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listHomeworkForPatient(therapistId, userId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun assignHomework(therapistId: Long, userId: Long, title: String, description: String?, dueDate: String?): AppResult<Homework> = safeApiCall {
-        api.assignHomework(therapistId, userId, AdminAssignHomeworkRequestDto(title = title, description = description, dueDate = dueDate)).toDomain()
-    }
+    override suspend fun assignHomework(therapistId: Long, userId: Long, title: String, description: String?, dueDate: String?): AppResult<Homework> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.assignHomework(therapistId, userId, AdminAssignHomeworkRequestDto(title = title, description = description, dueDate = dueDate)).toDomain()
+            }
+        }
 
-    override suspend fun sharedJournal(therapistId: Long, userId: Long): AppResult<List<JournalEntry>> = safeApiCall {
-        api.sharedJournal(therapistId, userId).map { it.toDomain() }
-    }
+    override suspend fun sharedJournal(therapistId: Long, userId: Long): AppResult<List<JournalEntry>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.sharedJournal(therapistId, userId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun listMatchQuestions(): AppResult<List<TherapistMatchQuestion>> = safeApiCall {
-        api.listMatchQuestions().map { it.toDomain() }
-    }
+    override suspend fun listMatchQuestions(): AppResult<List<TherapistMatchQuestion>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listMatchQuestions().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun createMatchQuestion(params: AdminMatchQuestionParams): AppResult<TherapistMatchQuestion> = safeApiCall {
-        api.createMatchQuestion(
-            AdminCreateMatchQuestionRequestDto(questionText = params.questionText, tag = params.tag, displayOrder = params.displayOrder)
-        ).toDomain()
-    }
+    override suspend fun createMatchQuestion(params: AdminMatchQuestionParams): AppResult<TherapistMatchQuestion> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.createMatchQuestion(
+                    AdminCreateMatchQuestionRequestDto(questionText = params.questionText, tag = params.tag, displayOrder = params.displayOrder)
+                ).toDomain()
+            }
+        }
 
-    override suspend fun deleteMatchQuestion(id: Long): AppResult<Unit> = safeApiCall {
-        api.deleteMatchQuestion(id)
-    }
+    override suspend fun deleteMatchQuestion(id: Long): AppResult<Unit> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.deleteMatchQuestion(id)
+            }
+        }
 
-    override suspend fun buyClinicSeats(organizationId: Long, therapistId: Long, sessionCount: Int, count: Int): AppResult<List<ClinicOrgSeat>> = safeApiCall {
-        api.buyClinicSeats(organizationId, BuyClinicSeatsRequestDto(therapistId = therapistId, sessionCount = sessionCount, count = count)).map { it.toDomain() }
-    }
+    override suspend fun buyClinicSeats(organizationId: Long, therapistId: Long, sessionCount: Int, count: Int): AppResult<List<ClinicOrgSeat>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.buyClinicSeats(organizationId, BuyClinicSeatsRequestDto(therapistId = therapistId, sessionCount = sessionCount, count = count)).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun listClinicSeats(organizationId: Long): AppResult<List<ClinicOrgSeat>> = safeApiCall {
-        api.listClinicSeats(organizationId).map { it.toDomain() }
-    }
+    override suspend fun listClinicSeats(organizationId: Long): AppResult<List<ClinicOrgSeat>> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.listClinicSeats(organizationId).map { it.toDomain() }
+            }
+        }
 
-    override suspend fun assignClinicSeat(organizationId: Long, therapistId: Long, email: String): AppResult<ClinicOrgSeat> = safeApiCall {
-        api.assignClinicSeat(organizationId, AssignClinicSeatRequestDto(therapistId = therapistId, email = email)).toDomain()
-    }
+    override suspend fun assignClinicSeat(organizationId: Long, therapistId: Long, email: String): AppResult<ClinicOrgSeat> =
+        guard.guardOrError("clinic.booking") {
+            safeApiCall {
+                api.assignClinicSeat(organizationId, AssignClinicSeatRequestDto(therapistId = therapistId, email = email)).toDomain()
+            }
+        }
 
     private fun ClinicMessageResponse.toDomain() = ClinicMessage(
         id = id,

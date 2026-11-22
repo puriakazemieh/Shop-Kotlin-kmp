@@ -212,7 +212,7 @@ val dataModule = module {
     }
 
     single<ClinicRepository> {
-        ClinicRepositoryImpl(get())
+        ClinicRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<CourseRequestRepository> {
@@ -224,7 +224,7 @@ val dataModule = module {
     }
 
     single<AdminClinicRepository> {
-        AdminClinicRepositoryImpl(get())
+        AdminClinicRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<PsychTestRepository> {
