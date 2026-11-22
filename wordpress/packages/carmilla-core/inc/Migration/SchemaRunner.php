@@ -177,15 +177,16 @@ class SchemaRunner {
             }
             $charset_collate = method_exists($wpdb, 'get_charset_collate') ? $wpdb->get_charset_collate() : '';
 
-            $sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}carmilla_seed_runs (
+            $sql1 = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}carmilla_seed_runs (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 pack_id varchar(100) NOT NULL,
                 checksum varchar(32) NOT NULL,
                 run_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (id),
                 KEY pack_id (pack_id)
-            ) $charset_collate;
-            CREATE TABLE IF NOT EXISTS {$wpdb->prefix}carmilla_seed_objects (
+            ) $charset_collate;";
+
+            $sql2 = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}carmilla_seed_objects (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 pack_id varchar(100) NOT NULL,
                 feature varchar(100) NOT NULL,
@@ -197,11 +198,16 @@ class SchemaRunner {
                 KEY seed_entity (seed_entity_id)
             ) $charset_collate;";
 
-            if (function_exists('dbDelta')) {
+            if (defined('ABSPATH') && file_exists(ABSPATH . 'wp-admin/includes/upgrade.php')) {
                 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-                dbDelta($sql);
+            }
+
+            if (function_exists('dbDelta')) {
+                dbDelta($sql1);
+                dbDelta($sql2);
             } elseif (method_exists($wpdb, 'query')) {
-                $wpdb->query($sql);
+                $wpdb->query($sql1);
+                $wpdb->query($sql2);
             }
         });
     }
@@ -263,8 +269,11 @@ class SchemaRunner {
                 PRIMARY KEY (id)
             ) $charset_collate;";
 
-            if (function_exists('dbDelta')) {
+            if (defined('ABSPATH') && file_exists(ABSPATH . 'wp-admin/includes/upgrade.php')) {
                 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            }
+
+            if (function_exists('dbDelta')) {
                 dbDelta($sql);
             } elseif (method_exists($wpdb, 'query')) {
                 $wpdb->query($sql);
@@ -278,7 +287,11 @@ class SchemaRunner {
                 return;
             }
             $table = $wpdb->prefix . 'carmilla_synthetic_test';
-            if (method_exists($wpdb, 'insert')) {
+            $exists = false;
+            if (method_exists($wpdb, 'get_var') && method_exists($wpdb, 'prepare')) {
+                $exists = (bool) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$table}` WHERE `item_key` = %s", 'synthetic_alpha'));
+            }
+            if (!$exists && method_exists($wpdb, 'insert')) {
                 $wpdb->insert($table, [
                     'item_key' => 'synthetic_alpha',
                     'item_val' => 'Alpha initial entry'
@@ -300,7 +313,11 @@ class SchemaRunner {
                 return;
             }
             $table = $wpdb->prefix . 'carmilla_synthetic_test';
-            if (method_exists($wpdb, 'insert')) {
+            $exists = false;
+            if (method_exists($wpdb, 'get_var') && method_exists($wpdb, 'prepare')) {
+                $exists = (bool) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$table}` WHERE `item_key` = %s", 'synthetic_beta'));
+            }
+            if (!$exists && method_exists($wpdb, 'insert')) {
                 $wpdb->insert($table, [
                     'item_key' => 'synthetic_beta',
                     'item_val' => 'Beta completed entry'

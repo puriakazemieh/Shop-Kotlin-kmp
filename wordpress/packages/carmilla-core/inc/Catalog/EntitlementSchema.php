@@ -374,6 +374,7 @@ class EntitlementSchema {
             dirname(__DIR__, 5) . '/docs/contracts/carmilla-entitlement-catalog-v1.json',
             dirname(__DIR__, 4) . '/docs/contracts/carmilla-entitlement-catalog-v1.json',
             dirname(__DIR__, 3) . '/docs/contracts/carmilla-entitlement-catalog-v1.json',
+            '/var/www/html/docs/contracts/carmilla-entitlement-catalog-v1.json',
             '/app/docs/contracts/carmilla-entitlement-catalog-v1.json'
         ];
         foreach ($candidate_paths as $json_file) {

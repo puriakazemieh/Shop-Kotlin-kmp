@@ -20,6 +20,10 @@ services:
     volumes:
       - ../../wordpress/carmilla-theme:/var/www/html/wp-content/themes/carmilla-theme
       - ../../wordpress/carmilla-bridge:/var/www/html/wp-content/plugins/carmilla-bridge
+      - ../../wordpress/packages/carmilla-core:/var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core
+      - ../../wordpress/packages/carmilla-core:/var/www/html/wp-content/plugins/carmilla-bridge/packages/carmilla-core
+      - ../../docs/contracts:/var/www/html/docs/contracts:ro
+      - ../../docs/contracts:/app/docs/contracts:ro
 
   # One-shot security probe: shares the MariaDB network namespace, so its
   # WordPress primary connection and the adapter's independent loopback
