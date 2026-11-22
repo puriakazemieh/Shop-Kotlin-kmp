@@ -15,30 +15,48 @@ import com.kazemieh.network.psychtest.dto.PsychTestSummaryResponse
 import com.kazemieh.network.psychtest.dto.SubmitTestRequestDto
 import com.kazemieh.network.psychtest.dto.UserPsychTestResponse
 import com.kazemieh.network.common.safeApiCall
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
+import com.kazemieh.data.common.guardOrError
 
 class PsychTestRepositoryImpl(
-    private val api: PsychTestApi
+    private val api: PsychTestApi,
+    private val guard: FeatureUseCaseGuard? = null
 ) : PsychTestRepository {
 
-    override suspend fun getTests(): AppResult<List<PsychTestSummary>> = safeApiCall {
-        api.getTests().map { it.toDomain() }
-    }
+    override suspend fun getTests(): AppResult<List<PsychTestSummary>> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.getTests().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun getTest(slug: String): AppResult<PsychTestDetail> = safeApiCall {
-        api.getTest(slug).toDomain()
-    }
+    override suspend fun getTest(slug: String): AppResult<PsychTestDetail> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.getTest(slug).toDomain()
+            }
+        }
 
-    override suspend fun getMyTests(): AppResult<List<UserPsychTest>> = safeApiCall {
-        api.getMyTests().map { it.toDomain() }
-    }
+    override suspend fun getMyTests(): AppResult<List<UserPsychTest>> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.getMyTests().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun getUserTestQuestions(userTestId: Long): AppResult<PsychTestDetail> = safeApiCall {
-        api.getUserTestQuestions(userTestId).toDomain()
-    }
+    override suspend fun getUserTestQuestions(userTestId: Long): AppResult<PsychTestDetail> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.getUserTestQuestions(userTestId).toDomain()
+            }
+        }
 
-    override suspend fun submit(userTestId: Long, answers: Map<Int, Int>): AppResult<UserPsychTest> = safeApiCall {
-        api.submit(userTestId, SubmitTestRequestDto(answers)).toDomain()
-    }
+    override suspend fun submit(userTestId: Long, answers: Map<Int, Int>): AppResult<UserPsychTest> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.submit(userTestId, SubmitTestRequestDto(answers)).toDomain()
+            }
+        }
 
     private fun PsychTestSummaryResponse.toDomain() = PsychTestSummary(
         id = id, title = title, slug = slug, description = description, price = price,

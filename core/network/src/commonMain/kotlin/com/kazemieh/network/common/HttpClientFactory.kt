@@ -201,7 +201,7 @@ val FeatureGuardPlugin = createClientPlugin("FeatureGuardPlugin", ::FeatureGuard
             path.contains("/api/admin") -> "admin.mobile"
             path.contains("/api/academy") || path.contains("/api/courses") -> "academy.core"
             path.contains("/api/clinic") || path.contains("/api/appointments") || path.contains("/api/therapist") -> "clinic.booking"
-            path.contains("/api/psychtest") -> "psych.tests"
+            path.contains("/api/psych") || path.contains("/api/my-psych-tests") -> "psych.tests"
             path.contains("/api/cart") || path.contains("/api/order") || path.contains("/api/products") || path.contains("/api/bundle") || path.contains("/api/catalog") -> "commerce.core"
             path.contains("/api/blog") -> "content.blog"
             path.contains("/api/wallet") -> "wallet"

@@ -228,11 +228,11 @@ val dataModule = module {
     }
 
     single<PsychTestRepository> {
-        PsychTestRepositoryImpl(get())
+        PsychTestRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<AdminPsychTestRepository> {
-        AdminPsychTestRepositoryImpl(get())
+        AdminPsychTestRepositoryImpl(get(), getOrNull<FeatureUseCaseGuard>())
     }
 
     single<BundleRepository> {

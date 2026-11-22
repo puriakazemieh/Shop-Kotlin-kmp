@@ -20,18 +20,27 @@ import com.kazemieh.network.psychtest.dto.TestOptionResponse
 import com.kazemieh.network.psychtest.dto.TestQuestionResponse
 import com.kazemieh.network.psychtest.dto.UserPsychTestResponse
 import com.kazemieh.network.common.safeApiCall
+import com.kazemieh.config.capabilities.FeatureUseCaseGuard
+import com.kazemieh.data.common.guardOrError
 
 class AdminPsychTestRepositoryImpl(
-    private val api: AdminPsychTestApi
+    private val api: AdminPsychTestApi,
+    private val guard: FeatureUseCaseGuard? = null
 ) : AdminPsychTestRepository {
 
-    override suspend fun list(): AppResult<List<PsychTestSummary>> = safeApiCall {
-        api.list().map { it.toDomain() }
-    }
+    override suspend fun list(): AppResult<List<PsychTestSummary>> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.list().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun detail(id: Long): AppResult<AdminPsychTestDetail> = safeApiCall {
-        api.detail(id).toDomain()
-    }
+    override suspend fun detail(id: Long): AppResult<AdminPsychTestDetail> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.detail(id).toDomain()
+            }
+        }
 
     override suspend fun create(
         title: String,
@@ -42,21 +51,24 @@ class AdminPsychTestRepositoryImpl(
         resultMode: String,
         questions: List<AdminTestQuestion>,
         ranges: List<AdminScoreRange>
-    ): AppResult<Long> = safeApiCall {
-        api.create(
-            AdminCreatePsychTestRequestDto(
-                title = title, slug = slug, description = description, price = price,
-                productId = productId, resultMode = resultMode,
-                questions = questions.mapIndexed { i, q ->
-                    TestQuestionResponse(
-                        index = i, text = q.text,
-                        options = q.options.map { TestOptionResponse(text = it.first, score = it.second) }
+    ): AppResult<Long> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.create(
+                    AdminCreatePsychTestRequestDto(
+                        title = title, slug = slug, description = description, price = price,
+                        productId = productId, resultMode = resultMode,
+                        questions = questions.mapIndexed { i, q ->
+                            TestQuestionResponse(
+                                index = i, text = q.text,
+                                options = q.options.map { TestOptionResponse(text = it.first, score = it.second) }
+                            )
+                        },
+                        ranges = ranges.map { ScoreRangeResponse(it.minScore, it.maxScore, it.interpretation) }
                     )
-                },
-                ranges = ranges.map { ScoreRangeResponse(it.minScore, it.maxScore, it.interpretation) }
-            )
-        )
-    }
+                )
+            }
+        }
 
     override suspend fun update(
         id: Long,
@@ -67,33 +79,45 @@ class AdminPsychTestRepositoryImpl(
         resultMode: String?,
         questions: List<AdminTestQuestion>?,
         ranges: List<AdminScoreRange>?
-    ): AppResult<Unit> = safeApiCall {
-        api.update(
-            id,
-            AdminUpdatePsychTestRequestDto(
-                title = title, description = description, price = price, productId = productId, resultMode = resultMode,
-                questions = questions?.mapIndexed { i, q ->
-                    TestQuestionResponse(
-                        index = i, text = q.text,
-                        options = q.options.map { TestOptionResponse(text = it.first, score = it.second) }
+    ): AppResult<Unit> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.update(
+                    id,
+                    AdminUpdatePsychTestRequestDto(
+                        title = title, description = description, price = price, productId = productId, resultMode = resultMode,
+                        questions = questions?.mapIndexed { i, q ->
+                            TestQuestionResponse(
+                                index = i, text = q.text,
+                                options = q.options.map { TestOptionResponse(text = it.first, score = it.second) }
+                            )
+                        },
+                        ranges = ranges?.map { ScoreRangeResponse(it.minScore, it.maxScore, it.interpretation) }
                     )
-                },
-                ranges = ranges?.map { ScoreRangeResponse(it.minScore, it.maxScore, it.interpretation) }
-            )
-        )
-    }
+                )
+            }
+        }
 
-    override suspend fun delete(id: Long): AppResult<Unit> = safeApiCall {
-        api.delete(id)
-    }
+    override suspend fun delete(id: Long): AppResult<Unit> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.delete(id)
+            }
+        }
 
-    override suspend fun pendingInterpretations(): AppResult<List<UserPsychTest>> = safeApiCall {
-        api.pendingInterpretations().map { it.toDomain() }
-    }
+    override suspend fun pendingInterpretations(): AppResult<List<UserPsychTest>> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.pendingInterpretations().map { it.toDomain() }
+            }
+        }
 
-    override suspend fun interpret(userTestId: Long, interpretation: String): AppResult<Unit> = safeApiCall {
-        api.interpret(userTestId, AdminInterpretRequestDto(interpretation))
-    }
+    override suspend fun interpret(userTestId: Long, interpretation: String): AppResult<Unit> =
+        guard.guardOrError("psych.tests") {
+            safeApiCall {
+                api.interpret(userTestId, AdminInterpretRequestDto(interpretation))
+            }
+        }
 
     private fun AdminPsychTestDetailResponse.toDomain() = AdminPsychTestDetail(
         id = id, title = title, slug = slug, description = description, price = price,
