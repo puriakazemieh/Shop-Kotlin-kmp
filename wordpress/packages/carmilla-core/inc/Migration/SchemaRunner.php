@@ -261,12 +261,13 @@ class SchemaRunner {
             $charset_collate = method_exists($wpdb, 'get_charset_collate') ? $wpdb->get_charset_collate() : '';
             $table = $wpdb->prefix . 'carmilla_synthetic_test';
 
-            $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            $sql = "CREATE TABLE {$table} (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                item_key varchar(100) NOT NULL UNIQUE,
+                item_key varchar(100) NOT NULL,
                 item_val text NOT NULL,
                 created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                PRIMARY KEY (id)
+                PRIMARY KEY  (id),
+                UNIQUE KEY item_key (item_key)
             ) $charset_collate;";
 
             if (defined('ABSPATH') && file_exists(ABSPATH . 'wp-admin/includes/upgrade.php')) {

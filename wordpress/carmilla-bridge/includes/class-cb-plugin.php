@@ -15,6 +15,9 @@ class CB_Plugin {
 	/** Cache of the user resolved from the Bearer token for the current request. */
 	private static $bearer_user = null;
 
+	/** Flag to ensure REST API routes are registered only once per request. */
+	private bool $routes_registered = false;
+
 	public static function instance(): CB_Plugin {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
@@ -136,6 +139,11 @@ class CB_Plugin {
 	}
 
 	public function register_routes(): void {
+		if ( $this->routes_registered ) {
+			return;
+		}
+		$this->routes_registered = true;
+
 		( new CB_Manifest_Controller() )->register_routes();
 		( new CB_Telemetry_Controller() )->register_routes();
 		( new CB_Auth_Controller() )->register_routes();

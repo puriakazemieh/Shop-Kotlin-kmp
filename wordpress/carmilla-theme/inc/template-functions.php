@@ -26,45 +26,53 @@ if ( ! function_exists( 'carmilla_feature_enabled' ) ) {
 	}
 }
 
-/**
- * Format a number as Persian-grouped Toman, mirroring core/designSystem/util/PriceFormat.kt
- * (formatToman): thousands separator "٬", Persian digits, no decimals. Unit added by caller.
- */
-function carmilla_format_number( $value ) {
-	$n = (int) round( (float) $value );
-	$neg = $n < 0;
-	$s   = (string) abs( $n );
+if ( ! function_exists( 'carmilla_format_number' ) ) {
+	/**
+	 * Format a number as Persian-grouped Toman, mirroring core/designSystem/util/PriceFormat.kt
+	 * (formatToman): thousands separator "٬", Persian digits, no decimals. Unit added by caller.
+	 */
+	function carmilla_format_number( $value ) {
+		$n = (int) round( (float) $value );
+		$neg = $n < 0;
+		$s   = (string) abs( $n );
 
-	// Group thousands with the Arabic thousands separator U+066C.
-	$out = '';
-	$len = strlen( $s );
-	for ( $i = 0; $i < $len; $i++ ) {
-		if ( $i > 0 && ( $len - $i ) % 3 === 0 ) {
-			$out .= '٬';
+		// Group thousands with the Arabic thousands separator U+066C.
+		$out = '';
+		$len = strlen( $s );
+		for ( $i = 0; $i < $len; $i++ ) {
+			if ( $i > 0 && ( $len - $i ) % 3 === 0 ) {
+				$out .= '٬';
+			}
+			$out .= $s[ $i ];
 		}
-		$out .= $s[ $i ];
+		$out = carmilla_to_persian_digits( $out );
+		return $neg ? '−' . $out : $out;
 	}
-	$out = carmilla_to_persian_digits( $out );
-	return $neg ? '−' . $out : $out;
 }
 
-/** Full price label with the «تومان» unit. */
-function carmilla_price( $value ) {
-	return carmilla_format_number( $value ) . ' تومان';
+if ( ! function_exists( 'carmilla_price' ) ) {
+	/** Full price label with the «تومان» unit. */
+	function carmilla_price( $value ) {
+		return carmilla_format_number( $value ) . ' تومان';
+	}
 }
 
-/** Convert ASCII digits to Persian digits. */
-function carmilla_to_persian_digits( $str ) {
-	$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
-	$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' );
-	return str_replace( $en, $fa, (string) $str );
+if ( ! function_exists( 'carmilla_to_persian_digits' ) ) {
+	/** Convert ASCII digits to Persian digits. */
+	function carmilla_to_persian_digits( $str ) {
+		$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+		$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' );
+		return str_replace( $en, $fa, (string) $str );
+	}
 }
 
-/** Persian/Arabic-Indic digits → ASCII (e.g. for tel: links). */
-function carmilla_to_english_digits( $str ) {
-	$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' );
-	$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
-	return str_replace( $fa, $en, (string) $str );
+if ( ! function_exists( 'carmilla_to_english_digits' ) ) {
+	/** Persian/Arabic-Indic digits → ASCII (e.g. for tel: links). */
+	function carmilla_to_english_digits( $str ) {
+		$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' );
+		$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' );
+		return str_replace( $fa, $en, (string) $str );
+	}
 }
 
 /**

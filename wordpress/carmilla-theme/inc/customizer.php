@@ -80,25 +80,27 @@ function carmilla_manifest_features() {
 }
 
 /** Whether a theme surface is enabled by the canonical manifest. */
-function carmilla_feature_enabled( $slug ) {
-	if ( class_exists( '\Carmilla\Theme\ThemeHostAdapter' ) ) {
-		return \Carmilla\Theme\ThemeHostAdapter::is_feature_enabled( $slug );
+if ( ! function_exists( 'carmilla_feature_enabled' ) ) {
+	function carmilla_feature_enabled( $slug ) {
+		if ( class_exists( '\Carmilla\Theme\ThemeHostAdapter' ) ) {
+			return \Carmilla\Theme\ThemeHostAdapter::is_feature_enabled( $slug );
+		}
+		if ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted() ) {
+			return \Carmilla_Kernel::is_feature_active( $slug );
+		}
+		$map = array(
+			'shop'       => 'commerce.core',
+			'blog'       => 'content.blog',
+			'courses'    => 'academy.core',
+			'clinic'     => 'clinic.booking',
+			'psychtests' => 'psych.tests',
+			// The manifest has no standalone stories flag; stories follow content.
+			'stories'    => 'content.blog',
+		);
+		$id = isset( $map[ $slug ] ) ? $map[ $slug ] : $slug;
+		$features = carmilla_manifest_features();
+		return ! empty( $features[ $id ] );
 	}
-	if ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted() ) {
-		return \Carmilla_Kernel::is_feature_active( $slug );
-	}
-	$map = array(
-		'shop'       => 'commerce.core',
-		'blog'       => 'content.blog',
-		'courses'    => 'academy.core',
-		'clinic'     => 'clinic.booking',
-		'psychtests' => 'psych.tests',
-		// The manifest has no standalone stories flag; stories follow content.
-		'stories'    => 'content.blog',
-	);
-	$id = isset( $map[ $slug ] ) ? $map[ $slug ] : $slug;
-	$features = carmilla_manifest_features();
-	return ! empty( $features[ $id ] );
 }
 
 add_action( 'customize_register', function ( $wp_customize ) {

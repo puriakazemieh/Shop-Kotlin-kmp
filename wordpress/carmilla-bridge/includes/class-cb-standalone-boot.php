@@ -61,7 +61,10 @@ class CB_Standalone_Boot {
 		// 2. Load Bridge dependencies and controllers if not already loaded.
 		self::load_dependencies();
 
-		// 3. If Carmilla Theme is NOT active, load headless mode adapters.
+		// 3. Register theme helper stubs / polyfills for any missing functions.
+		self::register_theme_function_stubs();
+
+		// 4. If Carmilla Theme is NOT active, load headless mode adapters.
 		if ( ! $is_theme_active ) {
 			self::load_headless_adapters();
 		}
@@ -222,7 +225,7 @@ class CB_Standalone_Boot {
 	 *
 	 * @return void
 	 */
-	private static function register_theme_function_stubs(): void {
+	public static function register_theme_function_stubs(): void {
 		if ( ! function_exists( 'carmilla_is_theme_active' ) ) {
 			/**
 			 * Polyfill: returns whether Carmilla Theme is active.
@@ -230,7 +233,7 @@ class CB_Standalone_Boot {
 			 * @return bool
 			 */
 			function carmilla_is_theme_active(): bool {
-				return false;
+				return CB_Standalone_Boot::is_carmilla_theme_active();
 			}
 		}
 
@@ -260,6 +263,43 @@ class CB_Standalone_Boot {
 			 */
 			function carmilla_theme_asset( string $path = '' ): string {
 				return '';
+			}
+		}
+
+		if ( ! function_exists( 'carmilla_feature_enabled' ) ) {
+			/**
+			 * Polyfill: checks whether a feature is active and entitled in headless mode.
+			 *
+			 * @param string $slug_or_feature
+			 * @return bool
+			 */
+			function carmilla_feature_enabled( $slug_or_feature ): bool {
+				if ( class_exists( '\Carmilla_Kernel' ) ) {
+					return \Carmilla_Kernel::is_feature_active( (string) $slug_or_feature );
+				}
+				if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
+					return \Carmilla\Core\Catalog\CapabilityResolver::is_feature_active( (string) $slug_or_feature );
+				}
+				return true;
+			}
+		}
+
+		if ( ! function_exists( 'carmilla_price' ) ) {
+			/**
+			 * Polyfill: formats price in Persian format in headless mode.
+			 *
+			 * @param mixed $value
+			 * @return string
+			 */
+			function carmilla_price( $value ): string {
+				if ( function_exists( 'carmilla_format_number' ) ) {
+					return carmilla_format_number( $value ) . ' تومان';
+				}
+				$n = (int) round( (float) $value );
+				$s = number_format( $n );
+				$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',' );
+				$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٬' );
+				return str_replace( $en, $fa, $s ) . ' تومان';
 			}
 		}
 	}

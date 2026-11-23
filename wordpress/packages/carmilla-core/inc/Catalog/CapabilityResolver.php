@@ -62,7 +62,14 @@ class CapabilityResolver {
 
         // 1. Resolve Package Code presence
         $package_code_input = $args['package_code'] ?? null;
-        $package_code_map   = [];
+        if ($package_code_input === null && function_exists('get_option')) {
+            $stored_pkg = get_option('carmilla_package_manifest', null);
+            if (!empty($stored_pkg) && is_array($stored_pkg)) {
+                $package_code_input = $stored_pkg['features'] ?? $stored_pkg;
+            }
+        }
+
+        $package_code_map = [];
         foreach ($manifest as $f_id => $meta) {
             if ($package_code_input !== null && is_array($package_code_input)) {
                 $canonical_f = EntitlementSchema::resolve_feature_id($f_id);
@@ -80,13 +87,26 @@ class CapabilityResolver {
 
         // 2. Resolve Entitlements
         $entitlements_input = $args['entitlements'] ?? null;
-        $entitled_map       = [];
+        if ($entitlements_input === null && function_exists('get_option')) {
+            $stored_claims = get_option('carmilla_license_claims', null);
+            if (!empty($stored_claims) && is_array($stored_claims)) {
+                $entitlements_input = $stored_claims;
+            }
+        }
+
+        $entitled_map = [];
         if ($entitlements_input === null) {
             // Default: fully unlocked claims for development / runtime fallback
             $claims       = EntitlementClaims::get_fully_unlocked_fixture();
             $entitled_map = EntitlementClaims::resolve_effective_features($claims);
         } elseif (is_array($entitlements_input) && (isset($entitlements_input['skus']) || isset($entitlements_input['schemaVersion']) || isset($entitlements_input['license_key']))) {
-            $entitled_map = EntitlementClaims::resolve_effective_features($entitlements_input);
+            if (isset($entitlements_input['status']) && $entitlements_input['status'] === 'revoked') {
+                foreach ($manifest as $f_id => $meta) {
+                    $entitled_map[$f_id] = false;
+                }
+            } else {
+                $entitled_map = EntitlementClaims::resolve_effective_features($entitlements_input);
+            }
         } elseif (is_array($entitlements_input)) {
             foreach ($manifest as $f_id => $meta) {
                 $canonical_f = EntitlementSchema::resolve_feature_id($f_id);
@@ -106,6 +126,12 @@ class CapabilityResolver {
 
         // 3. Resolve Release Gates (releaseReady !== false)
         $release_input = $args['release_catalog'] ?? null;
+        if ($release_input === null && function_exists('get_option')) {
+            $stored_release = get_option('carmilla_release_catalog', null);
+            if (!empty($stored_release) && is_array($stored_release)) {
+                $release_input = $stored_release;
+            }
+        }
         $release_map   = [];
         foreach ($manifest as $f_id => $meta) {
             $canonical_f = EntitlementSchema::resolve_feature_id($f_id);
