@@ -7,7 +7,7 @@
 نقش: Implementer و Verifier فقط همین کارت. ابتدا `docs/tasks.md`، AGENTS.md، این کارت و `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` را کامل بخوان. فقط اولین READY مجاز است. این کارت نیازمندی مصوب مالک محصول را اجرا می‌کند؛ تصمیم استقلال دو محصول را دوباره به پرسش انتخاب محصول تبدیل نکن.
 
 - Repository: `D:/Android/AndroidStudioProjects/kmp-shop`
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / ENTITLEMENT / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -70,10 +70,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
+- [x] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
 
 ## Evidence و Rollback
 
@@ -83,13 +83,27 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
+- Started at: 2026-11-23 11:28
+- Completed at: 2026-11-23 11:36
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Catalog/EntitlementClaims.php`
+  - `wordpress/packages/carmilla-core/inc/Catalog/CapabilityResolver.php`
+  - `wordpress/packages/carmilla-core/Carmilla_Kernel.php`
+  - `wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php`
+  - `wordpress/packages/carmilla-core/tests/test-entitlement-resolver-040.php`
+  - `docs/evidence/P04-ENTITLEMENT-CODE-040/summary.md`
 - Commands and exit codes:
+  - `docker compose -f tools/test-env/docker-compose.yml run --rm php-test php wordpress/packages/carmilla-core/tests/test-entitlement-resolver-040.php` (exit 0, 64 passed)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/test-entitlement-resolver-040.php` (exit 0, 64 passed)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/verify-all-phase04-real-wp.php` (exit 0, 78 passed)
+  - `curl.exe -s -i http://localhost:8080/wp-json/carmilla/v1/client-manifest` (exit 0, HTTP 200 OK)
+  - `curl.exe -s -i -X POST http://localhost:8080/wp-json/carmilla/v1/api/courses` (exit 0, HTTP 403 Forbidden FEATURE_DISABLED)
 - Manual tester/date/build/result:
+  - Technical acceptance verified on representative WordPress 7.1.3 + Apache + MariaDB 10.6 container; live HTTP manifest check passed, direct unpurchased POST returned HTTP 403 FEATURE_DISABLED.
 - Evidence paths:
+  - `docs/evidence/P04-ENTITLEMENT-CODE-040/summary.md`
 - Remaining risks/blockers:
-- Final status: TODO
+  - None.
+- Final status: DONE
 
 </div>

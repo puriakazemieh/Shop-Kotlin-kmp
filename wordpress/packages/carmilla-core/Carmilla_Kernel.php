@@ -69,8 +69,11 @@ class Carmilla_Kernel {
     }
 
     public static function resolve_features() {
-        // Retrieve fixtures or actual claims here
-        $claims = \Carmilla\Core\Catalog\EntitlementClaims::get_fully_unlocked_fixture();
+        // Retrieve stored claims if present, or fallback to default unlocked fixture
+        $claims = function_exists('get_option') ? get_option('carmilla_license_claims', null) : null;
+        if (empty($claims) || !is_array($claims)) {
+            $claims = \Carmilla\Core\Catalog\EntitlementClaims::get_fully_unlocked_fixture();
+        }
         $admin_settings = function_exists('get_option') ? get_option('cb_manifest_features', null) : null;
 
         $matrix = \Carmilla\Core\Catalog\CapabilityResolver::resolve_matrix([
@@ -82,6 +85,21 @@ class Carmilla_Kernel {
         global $carmilla_active_features, $carmilla_feature_matrix;
         $carmilla_active_features = $matrix['effective_features'];
         $carmilla_feature_matrix  = $matrix;
+    }
+
+    /**
+     * Resolves an effective site-level quota, ensuring single-counting across co-installed hosts.
+     *
+     * @param string $quota_key Quota identifier.
+     * @param int    $default   Default fallback value.
+     * @return int
+     */
+    public static function get_quota(string $quota_key, int $default = 0): int {
+        $claims = function_exists('get_option') ? get_option('carmilla_license_claims', null) : null;
+        if (empty($claims) || !is_array($claims)) {
+            $claims = \Carmilla\Core\Catalog\EntitlementClaims::get_fully_unlocked_fixture();
+        }
+        return \Carmilla\Core\Entitlement\EntitlementResolver::resolve_effective_quota($claims, $quota_key, $default);
     }
 
     /**

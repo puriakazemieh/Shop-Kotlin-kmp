@@ -100,7 +100,16 @@ class CapabilityResolver {
             $claims       = EntitlementClaims::get_fully_unlocked_fixture();
             $entitled_map = EntitlementClaims::resolve_effective_features($claims);
         } elseif (is_array($entitlements_input) && (isset($entitlements_input['skus']) || isset($entitlements_input['schemaVersion']) || isset($entitlements_input['license_key']))) {
-            if (isset($entitlements_input['status']) && $entitlements_input['status'] === 'revoked') {
+            $is_valid_license = true;
+            if (class_exists('\Carmilla\Core\Entitlement\EntitlementResolver')) {
+                // Check if this claims array contains license enforcement fields (status, site_url, signed, tampered, expires_at)
+                if (isset($entitlements_input['status']) || isset($entitlements_input['site_url']) || isset($entitlements_input['signed']) || isset($entitlements_input['tampered']) || isset($entitlements_input['expires_at'])) {
+                    $is_valid_license = \Carmilla\Core\Entitlement\EntitlementResolver::validate_license($entitlements_input, true);
+                }
+            }
+
+            if (!$is_valid_license) {
+                // Invalid / wrong-site / revoked / expired / unsigned license yields all-false features (fail closed)
                 foreach ($manifest as $f_id => $meta) {
                     $entitled_map[$f_id] = false;
                 }

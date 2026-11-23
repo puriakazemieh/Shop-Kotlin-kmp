@@ -13,6 +13,15 @@ namespace Carmilla\Core\Catalog;
 class EntitlementClaims {
 
     /**
+     * Resolves default site URL dynamically from WordPress environment when available.
+     *
+     * @return string
+     */
+    public static function get_default_site_url(): string {
+        return (function_exists('get_site_url') && get_site_url()) ? get_site_url() : 'https://example.com';
+    }
+
+    /**
      * Get a fixture of a fully unlocked environment (all verticals, all targets).
      *
      * @return array
@@ -23,7 +32,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-unlocked',
             'status'        => 'active',
             'expires_at'    => time() + 31536000, // 1 year ahead
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => [
                 'sku_theme_base',
                 'sku_plugin_base',
@@ -60,7 +69,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-theme-base',
             'status'        => 'active',
             'expires_at'    => null,
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => ['sku_theme_base'],
             'builders'      => [
                 'android' => false,
@@ -85,7 +94,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-plugin-base',
             'status'        => 'active',
             'expires_at'    => null,
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => ['sku_plugin_base'],
             'builders'      => [
                 'android' => false,
@@ -110,7 +119,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-booking-no-psych',
             'status'        => 'active',
             'expires_at'    => time() + 864000,
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => ['sku_clinic_booking'],
             'builders'      => [
                 'android' => false,
@@ -135,7 +144,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-booking-android-pwa',
             'status'        => 'active',
             'expires_at'    => time() + 864000,
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => ['theme-booking-android-pwa'],
             'features'      => [
                 'commerce.core'       => true,
@@ -164,7 +173,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-grace',
             'status'        => 'active', // Raw claims might say active or expired
             'expires_at'    => time() - (5 * 86400), // Expired 5 days ago (within 14-day grace)
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => ['sku_commerce', 'sku_clinic_booking'],
             'builders'      => ['android' => true]
         ];
@@ -181,7 +190,7 @@ class EntitlementClaims {
             'license_key'   => 'fixture-license-revoked',
             'status'        => 'revoked',
             'revoked_at'    => time() - 3600,
-            'site_url'      => 'https://example.com',
+            'site_url'      => self::get_default_site_url(),
             'skus'          => ['sku_commerce', 'sku_academy'],
             'builders'      => []
         ];
