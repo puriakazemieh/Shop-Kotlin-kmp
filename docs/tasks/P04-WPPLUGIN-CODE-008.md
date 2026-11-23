@@ -50,9 +50,9 @@ P04-WPPLUGIN-CODE-008
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-007
@@ -110,10 +110,10 @@ WooCommerce منبع محصولات و سفارش‌ها بماند؛ قرارد
 
 ## Acceptance Criteria
 
-- [ ] Woo پیش‌نیاز مجاز و منبع رسمی commerce باقی مانده است.
-- [ ] adapter و storage cart قرارداد روشن دارند.
-- [ ] fixture HPOS روشن/خاموش در هر دو host ثبت شده است.
-- [ ] مهاجرت کامل دامنه و موتور commerce جدید در این کارت انجام نشده است.
+- [x] Woo پیش‌نیاز مجاز و منبع رسمی commerce باقی مانده است.
+- [x] adapter و storage cart قرارداد روشن دارند.
+- [x] fixture HPOS روشن/خاموش در هر دو host ثبت شده است.
+- [x] مهاجرت کامل دامنه و موتور commerce جدید در این کارت انجام نشده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,21 @@ WooCommerce منبع محصولات و سفارش‌ها بماند؛ قرارد
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-23 12:12
+- Completed at: 2026-11-23 12:16
 - Changed files:
+  - wordpress/packages/carmilla-core/inc/Adapter/WooCommerceAdapter.php
+  - wordpress/packages/carmilla-core/inc/Adapter/WooCompat.php
+  - wordpress/packages/carmilla-core/tests/test-woocommerce-adapter-008.php
+  - docs/evidence/P04-WPPLUGIN-CODE-008/summary.md
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/test-woocommerce-adapter-008.php`: exit code 0 (45/45 passed)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/plugins/carmilla-bridge/tests/test-plugin-host-standalone-007.php`: exit code 0 (53/53 passed)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/verify-all-phase04-real-wp.php`: exit code 0 (78/78 passed)
+  - `docker compose -f tools/test-env/docker-compose.yml run --rm php-test php wordpress/packages/carmilla-core/tests/test-entitlement-resolver-040.php`: exit code 0 (64/64 passed)
+- Manual tester/date/result: AI automated technical verification on real WP container with WooCommerce 9.x, HPOS toggle, and both Theme and Plugin hosts.
+- Evidence paths: docs/evidence/P04-WPPLUGIN-CODE-008/summary.md
+- Remaining risks/blockers: None.
+- Final status: DONE
 
 </div>

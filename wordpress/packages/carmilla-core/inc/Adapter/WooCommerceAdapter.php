@@ -13,6 +13,7 @@ namespace Carmilla\Core\Adapter;
  *
  * Part of Task P04-WPPLUGIN-CODE-008.
  */
+if ( ! class_exists( 'Carmilla\\Core\\Adapter\\WooCommerceAdapter', false ) ) {
 class WooCommerceAdapter {
 
     /**
@@ -150,6 +151,166 @@ class WooCommerceAdapter {
             return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
         }
 
-        return false;
+        return get_option('woocommerce_custom_orders_table_enabled') === 'yes';
     }
+
+    public const STORAGE_HPOS = 'hpos';
+    public const STORAGE_LEGACY = 'legacy_posts';
+
+    /**
+     * Returns the active order storage mechanism ('hpos' or 'legacy_posts').
+     *
+     * @return string
+     */
+    public static function get_order_storage_type(): string {
+        return self::is_hpos_enabled() ? self::STORAGE_HPOS : self::STORAGE_LEGACY;
+    }
+
+    /**
+     * Sets HPOS enabled/disabled option in representative test/runtime environments.
+     *
+     * @param bool $enabled
+     * @return bool
+     */
+    public static function set_hpos_enabled(bool $enabled): bool {
+        if (!self::is_available()) {
+            return false;
+        }
+        update_option('woocommerce_custom_orders_table_enabled', $enabled ? 'yes' : 'no');
+        return true;
+    }
+
+    /**
+     * Creates a synthetic or standard product via official WC CRUD.
+     *
+     * @param array $props Product properties (name, regular_price, status, sku).
+     * @return \WC_Product|null Created product instance or null on failure.
+     */
+    public static function create_product(array $props = []) {
+        if (!self::is_available() || !class_exists('\WC_Product_Simple')) {
+            return null;
+        }
+
+        try {
+            $product = new \WC_Product_Simple();
+            if (isset($props['name'])) {
+                $product->set_name((string) $props['name']);
+            }
+            if (isset($props['regular_price'])) {
+                $product->set_regular_price((string) $props['regular_price']);
+            }
+            if (isset($props['status'])) {
+                $product->set_status((string) $props['status']);
+            }
+            if (isset($props['sku'])) {
+                $product->set_sku((string) $props['sku']);
+            }
+
+            $product_id = $product->save();
+            return $product_id > 0 ? $product : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Deletes a product via official WC CRUD.
+     *
+     * @param int|\WC_Product $id Product ID or object.
+     * @param bool            $force Whether to permanently delete (bypass trash).
+     * @return bool True on success, false on failure.
+     */
+    public static function delete_product($id, bool $force = true): bool {
+        $product = self::get_product($id);
+        if (!$product) {
+            return false;
+        }
+
+        try {
+            return (bool) $product->delete($force);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Creates an order via official wc_create_order().
+     * Supports both HPOS and legacy post storage without raw SQL.
+     *
+     * @param array $args Order arguments (customer_id, status, etc.).
+     * @return \WC_Order|null Created order instance or null on failure.
+     */
+    public static function create_order(array $args = []) {
+        if (!self::is_available() || !function_exists('wc_create_order')) {
+            return null;
+        }
+
+        try {
+            $order = wc_create_order($args);
+            return $order instanceof \WC_Order ? $order : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Deletes an order via official WC CRUD.
+     * Supports both HPOS and legacy post storage without raw SQL.
+     *
+     * @param int|\WC_Order $id Order ID or object.
+     * @param bool          $force Whether to permanently delete.
+     * @return bool True on success, false on failure.
+     */
+    public static function delete_order($id, bool $force = true): bool {
+        $order = self::get_order($id);
+        if (!$order) {
+            return false;
+        }
+
+        try {
+            return (bool) $order->delete($force);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves active cart items.
+     *
+     * @return array
+     */
+    public static function get_cart_items(): array {
+        $cart = self::get_cart();
+        if (!$cart || !method_exists($cart, 'get_cart')) {
+            return [];
+        }
+        return $cart->get_cart();
+    }
+
+    /**
+     * Clears the active cart.
+     *
+     * @return bool
+     */
+    public static function clear_cart(): bool {
+        $cart = self::get_cart();
+        if (!$cart || !method_exists($cart, 'empty_cart')) {
+            return false;
+        }
+        $cart->empty_cart();
+        return true;
+    }
+
+    /**
+     * Returns the active cart session storage driver name.
+     *
+     * @return string 'wc_persistent_usermeta' for authenticated users, 'wc_session' otherwise.
+     */
+    public static function get_cart_storage_driver(): string {
+        if (function_exists('is_user_logged_in') && is_user_logged_in()) {
+            return 'wc_persistent_usermeta';
+        }
+        return 'wc_session';
+    }
+}
 }

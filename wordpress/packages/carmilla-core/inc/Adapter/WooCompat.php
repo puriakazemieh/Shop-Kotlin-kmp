@@ -4,8 +4,8 @@ namespace Carmilla\Core\Adapter;
 /**
  * WooCommerce compatibility declarations and Carmilla gateway registration.
  */
+if ( ! class_exists( 'Carmilla\\Core\\Adapter\\WooCompat', false ) ) {
 class WooCompat {
-
     public static function init(): void {
         add_action( 'before_woocommerce_init', array( self::class, 'declare_hpos_compatibility' ) );
         add_action( 'wp_enqueue_scripts', array( self::class, 'dequeue_woo_blocks_styles' ), 100 );
@@ -37,4 +37,5 @@ class WooCompat {
             wp_dequeue_style( 'wc-blocks-integration' );
         }
     }
+}
 }
