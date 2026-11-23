@@ -42,6 +42,9 @@ class ThemeHostAdapter {
 			return;
 		}
 		self::$initialized = true;
+
+		// Register standalone REST routes when Bridge plugin is absent
+		add_action( 'rest_api_init', [ self::class, 'register_standalone_routes' ], 15 );
 	}
 
 	/**
@@ -239,6 +242,230 @@ class ThemeHostAdapter {
 			'cb_story'          => 'استوری‌ها',
 			'cb_banner'         => 'بنرهای خانه',
 		];
+	}
+
+	/**
+	 * Registers standalone REST routes when Bridge plugin is absent.
+	 */
+	public static function register_standalone_routes(): void {
+		if ( ! self::is_standalone() ) {
+			return;
+		}
+		if ( ! class_exists( '\Carmilla\Core\Rest\RestInfrastructure' ) ) {
+			return;
+		}
+
+		$ns = \Carmilla\Core\Rest\RestInfrastructure::NAMESPACE;
+
+		// Auth endpoints
+		register_rest_route( $ns, '/api/auth/login', [
+			'methods'             => 'POST',
+			'callback'            => [ self::class, 'rest_login' ],
+			'permission_callback' => '__return_true',
+		] );
+
+		// Commerce: Products
+		register_rest_route( $ns, '/api/products', [
+			'methods'             => 'GET',
+			'callback'            => [ self::class, 'rest_get_products' ],
+			'permission_callback' => '__return_true',
+		] );
+
+		register_rest_route( $ns, '/api/products/(?P<id>\d+)', [
+			'methods'             => 'GET',
+			'callback'            => [ self::class, 'rest_get_product' ],
+			'permission_callback' => '__return_true',
+		] );
+
+		// Account: Profile (/api/users/me)
+		register_rest_route( $ns, '/api/users/me', [
+			'methods'             => [ 'GET', 'PATCH' ],
+			'callback'            => [ self::class, 'rest_user_profile' ],
+			'permission_callback' => [ self::class, 'check_user_logged_in' ],
+		] );
+	}
+
+	/**
+	 * Formats a WC_Product into a standard product summary DTO.
+	 */
+	public static function format_product_summary( $product ): array {
+		if ( ! is_object( $product ) || ! method_exists( $product, 'get_id' ) ) {
+			return [];
+		}
+
+		$cats   = method_exists( $product, 'get_category_ids' ) ? $product->get_category_ids() : [];
+		$cat_id = ! empty( $cats ) ? (int) $cats[0] : null;
+
+		$reg_price  = method_exists( $product, 'get_regular_price' ) ? (float) $product->get_regular_price() : 0.0;
+		$sale_price = method_exists( $product, 'get_sale_price' ) && $product->get_sale_price() !== '' ? (float) $product->get_sale_price() : null;
+
+		$image_id = method_exists( $product, 'get_image_id' ) ? (int) $product->get_image_id() : 0;
+		$images   = [];
+		if ( $image_id > 0 && function_exists( 'wp_get_attachment_url' ) ) {
+			$images[] = [
+				'id'        => $image_id,
+				'url'       => (string) wp_get_attachment_url( $image_id ),
+				'sortOrder' => 0,
+			];
+		}
+
+		return [
+			'id'              => $product->get_id(),
+			'title'           => method_exists( $product, 'get_name' ) ? $product->get_name() : '',
+			'slug'            => method_exists( $product, 'get_slug' ) ? $product->get_slug() : '',
+			'description'     => method_exists( $product, 'get_description' ) ? $product->get_description() : '',
+			'brand'           => method_exists( $product, 'get_meta' ) ? ( $product->get_meta( 'cb_brand' ) ?: null ) : null,
+			'attributes'      => [],
+			'categoryId'      => $cat_id,
+			'categoryName'    => ( $cat_id && function_exists( 'get_term' ) ) ? ( ( $term = get_term( $cat_id, 'product_cat' ) ) && ! is_wp_error( $term ) ? $term->name : null ) : null,
+			'images'          => $images,
+			'videos'          => [],
+			'variants'        => [],
+			'createdAt'       => method_exists( $product, 'get_date_created' ) && $product->get_date_created() ? $product->get_date_created()->date( 'c' ) : gmdate( 'c' ),
+			'basePrice'       => $reg_price,
+			'discountedPrice' => $sale_price,
+			'isFavorite'      => false,
+		];
+	}
+
+	/**
+	 * Standalone REST handler for GET /api/products
+	 */
+	public static function rest_get_products( $request ) {
+		$page     = (int) ( is_object( $request ) ? ( $request->get_param( 'page' ) ?: 1 ) : 1 );
+		$per_page = (int) ( is_object( $request ) ? ( $request->get_param( 'per_page' ) ?: 10 ) : 10 );
+		$per_page = \Carmilla\Core\Rest\RestInfrastructure::sanitize_per_page( $per_page );
+
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::paginated_response( [], 0, $page, $per_page );
+		}
+
+		$query_args = [
+			'limit'    => $per_page,
+			'page'     => $page,
+			'paginate' => true,
+			'status'   => 'publish',
+		];
+
+		if ( class_exists( '\Carmilla\Core\Adapter\WooCommerceAdapter' ) ) {
+			$result = \Carmilla\Core\Adapter\WooCommerceAdapter::get_products( $query_args );
+		} else {
+			$result = wc_get_products( $query_args );
+		}
+
+		$products = [];
+		$total    = 0;
+		if ( is_object( $result ) && isset( $result->products ) ) {
+			$products = $result->products;
+			$total    = (int) $result->total;
+		} elseif ( is_array( $result ) ) {
+			$products = $result;
+			$total    = count( $result );
+		}
+
+		$items = [];
+		foreach ( $products as $product ) {
+			$items[] = self::format_product_summary( $product );
+		}
+
+		return \Carmilla\Core\Rest\RestInfrastructure::paginated_response( $items, $total, $page, $per_page );
+	}
+
+	/**
+	 * Standalone REST handler for GET /api/products/(?P<id>\d+)
+	 */
+	public static function rest_get_product( $request ) {
+		$id = (int) ( is_object( $request ) ? $request->get_param( 'id' ) : ( $request['id'] ?? 0 ) );
+		if ( $id <= 0 ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'NOT_FOUND', 'شناسه محصول نامعتبر است', 404, 'api/products' );
+		}
+
+		$product = null;
+		if ( class_exists( '\Carmilla\Core\Adapter\WooCommerceAdapter' ) ) {
+			$product = \Carmilla\Core\Adapter\WooCommerceAdapter::get_product( $id );
+		} elseif ( function_exists( 'wc_get_product' ) ) {
+			$product = wc_get_product( $id );
+		}
+
+		if ( ! $product ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'NOT_FOUND', 'محصول یافت نشد', 404, 'api/products' );
+		}
+
+		return \Carmilla\Core\Rest\RestInfrastructure::success_response( self::format_product_summary( $product ) );
+	}
+
+	/**
+	 * Standalone REST handler for POST /api/auth/login
+	 */
+	public static function rest_login( $request ) {
+		$username = trim( (string) ( is_object( $request ) ? $request->get_param( 'username' ) : ( $request['username'] ?? '' ) ) );
+		$password = (string) ( is_object( $request ) ? $request->get_param( 'password' ) : ( $request['password'] ?? '' ) );
+
+		if ( $username === '' || $password === '' ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'VALIDATION', 'نام کاربری و رمز عبور الزامی است.', 400, 'api/auth/login' );
+		}
+
+		$user = wp_authenticate( $username, $password );
+		if ( is_wp_error( $user ) ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'BAD_CREDENTIALS', 'نام کاربری یا رمز عبور نادرست است.', 401, 'api/auth/login' );
+		}
+
+		$token   = \Carmilla\Core\Rest\JwtService::issue( $user, 'access' );
+		$refresh = \Carmilla\Core\Rest\JwtService::issue( $user, 'refresh' );
+		$role    = ! empty( $user->roles ) ? reset( $user->roles ) : 'customer';
+
+		$data = [
+			'token'        => $token,
+			'accessToken'  => $token,
+			'refreshToken' => $refresh,
+			'user'         => [
+				'id'        => (string) $user->ID,
+				'username'  => $user->user_login,
+				'email'     => $user->user_email,
+				'role'      => $role,
+				'firstName' => $user->first_name ?: $user->display_name,
+				'lastName'  => $user->last_name ?: '',
+			],
+		];
+
+		return \Carmilla\Core\Rest\RestInfrastructure::success_response( $data, 200 );
+	}
+
+	/**
+	 * Standalone REST handler for GET /api/users/me
+	 */
+	public static function rest_user_profile( $request ) {
+		$user_id = get_current_user_id();
+		if ( $user_id <= 0 ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'UNAUTHORIZED', 'لطفاً وارد شوید.', 401, 'api/users/me' );
+		}
+
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'NOT_FOUND', 'کاربر یافت نشد.', 404, 'api/users/me' );
+		}
+
+		$role = ! empty( $user->roles ) ? reset( $user->roles ) : 'customer';
+		$data = [
+			'id'        => (string) $user->ID,
+			'username'  => $user->user_login,
+			'email'     => $user->user_email,
+			'role'      => $role,
+			'firstName' => $user->first_name ?: $user->display_name,
+			'lastName'  => $user->last_name ?: '',
+		];
+
+		return \Carmilla\Core\Rest\RestInfrastructure::success_response( $data, 200 );
+	}
+
+	/**
+	 * Permission check: user logged in.
+	 */
+	public static function check_user_logged_in() {
+		if ( is_user_logged_in() ) {
+			return true;
+		}
+		return \Carmilla\Core\Rest\RestInfrastructure::error_response( 'UNAUTHORIZED', 'لطفاً وارد شوید.', 401, 'api' );
 	}
 
 	/**

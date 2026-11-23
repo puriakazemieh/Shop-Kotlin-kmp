@@ -101,6 +101,14 @@ class CB_Manifest_Controller {
 	}
 
 	public function register_routes(): void {
+		$server = function_exists( 'rest_get_server' ) ? rest_get_server() : null;
+		if ( $server && is_object( $server ) ) {
+			$routes = $server->get_routes();
+			if ( ! empty( $routes[ '/' . CB_REST_NAMESPACE . '/client-manifest' ] ) ) {
+				return;
+			}
+		}
+
 		register_rest_route( CB_REST_NAMESPACE, '/client-manifest', array(
 			'methods'             => 'GET',
 			'callback'            => array( $this, 'get_manifest' ),
@@ -114,6 +122,9 @@ class CB_Manifest_Controller {
 	 * its callback. Authentication/manifest routes are intentionally unmapped.
 	 */
 	public static function guard_rest_request( $result, $server, $request ) {
+		if ( class_exists( '\Carmilla\Core\Rest\RestInfrastructure' ) ) {
+			return \Carmilla\Core\Rest\RestInfrastructure::guard_rest_request( $result, $server, $request );
+		}
 		if ( $result !== null ) {
 			return $result;
 		}
@@ -183,10 +194,16 @@ class CB_Manifest_Controller {
 	}
 
 	public function get_manifest( WP_REST_Request $request ): WP_REST_Response {
+		$provider_meta = class_exists( '\Carmilla\Core\Rest\RestInfrastructure' )
+			? \Carmilla\Core\Rest\RestInfrastructure::get_provider_metadata()
+			: array( 'mode' => 'plugin', 'backendProfile' => 'WORDPRESS' );
+
 		$payload = array(
 			'schemaVersion'     => 1,
 			'manifestVersion'   => (string) get_option( 'cb_manifest_version', '2026.08.1' ),
 			'backendProfile'    => 'WORDPRESS',
+			'hostMode'          => $provider_meta['mode'],
+			'providerMetadata'  => $provider_meta,
 			'tenantId'          => sanitize_key( (string) get_option( 'cb_manifest_tenant_id', get_current_blog_id() ) ),
 			'minimumAppVersion' => (string) get_option( 'cb_manifest_min_client', '1.0.0' ),
 			'issuedAt'          => gmdate( 'c' ),

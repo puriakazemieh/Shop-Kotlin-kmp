@@ -31,7 +31,7 @@ class WooCommerceAdapter {
      * @param array $args Query arguments passed to wc_get_products().
      * @return \WC_Product[] Array of WC_Product instances or empty array if unavailable.
      */
-    public static function get_products(array $args = []): array {
+    public static function get_products(array $args = []) {
         if (!self::is_available() || !function_exists('wc_get_products')) {
             return [];
         }

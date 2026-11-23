@@ -20,6 +20,9 @@ function cb_response( $data, int $status = 200 ) {
  * ApiException decoder keeps working unchanged.
  */
 function cb_error( string $message, int $status = 400, string $error_code = 'ERROR', string $path = '' ) {
+	if ( class_exists( '\Carmilla\Core\Rest\RestInfrastructure' ) ) {
+		return \Carmilla\Core\Rest\RestInfrastructure::error_response( $error_code, $message, $status, $path );
+	}
 	return new WP_REST_Response(
 		array(
 			'message'   => $message,
@@ -58,6 +61,10 @@ function cb_iso( $date ): string {
  * Standard Spring-style Page<T> wrapper: { content, page:{size,number,totalElements,totalPages} }.
  */
 function cb_page( array $content, int $page, int $size, int $total_elements, int $total_pages ): array {
+	if ( class_exists( '\Carmilla\Core\Rest\RestInfrastructure' ) ) {
+		$res = \Carmilla\Core\Rest\RestInfrastructure::paginated_response( $content, $total_elements, $page, $size );
+		return is_array( $res ) ? $res : $res->get_data();
+	}
 	return array(
 		'content' => $content,
 		'page'    => array(

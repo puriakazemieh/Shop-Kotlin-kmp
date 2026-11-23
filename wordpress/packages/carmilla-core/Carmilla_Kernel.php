@@ -66,6 +66,8 @@ class Carmilla_Kernel {
         require_once __DIR__ . '/inc/Settings/AdminSettingsPage.php';
         \Carmilla\Core\Settings\AdminSettingsPage::init();
 
+        // Initialize unified REST infrastructure
+        \Carmilla\Core\Rest\RestInfrastructure::init();
     }
 
     public static function resolve_features() {
@@ -180,6 +182,9 @@ class Carmilla_Kernel {
         }
         if (class_exists('\Carmilla\Core\Entitlement\EntitlementResolver')) {
             \Carmilla\Core\Entitlement\EntitlementResolver::reset_quota_cache();
+        }
+        if (class_exists('\Carmilla\Core\Rest\RestInfrastructure')) {
+            \Carmilla\Core\Rest\RestInfrastructure::reset_state();
         }
     }
 }
