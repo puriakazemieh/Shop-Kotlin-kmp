@@ -55,17 +55,20 @@ class CB_Standalone_Boot {
 
 		self::$booted = true;
 
+		// Ensure Kernel is booted as plugin context if class is present.
+		if ( class_exists( '\Carmilla_Kernel' ) ) {
+			\Carmilla_Kernel::boot( 'plugin', defined( 'CB_VERSION' ) ? CB_VERSION : '1.0.0' );
+		}
+
 		// 1. Check if Carmilla Theme is active.
 		$is_theme_active = self::is_carmilla_theme_active();
 
 		// 2. Load Bridge dependencies and controllers if not already loaded.
 		self::load_dependencies();
 
-		// 3. Register theme helper stubs / polyfills for any missing functions.
-		self::register_theme_function_stubs();
-
-		// 4. If Carmilla Theme is NOT active, load headless mode adapters.
+		// 3. If Carmilla Theme is NOT active, load headless mode adapters and stubs.
 		if ( ! $is_theme_active ) {
+			self::register_theme_function_stubs();
 			self::load_headless_adapters();
 		}
 
@@ -300,6 +303,36 @@ class CB_Standalone_Boot {
 				$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',' );
 				$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٬' );
 				return str_replace( $en, $fa, $s ) . ' تومان';
+			}
+		}
+
+		if ( ! function_exists( 'carmilla_format_number' ) ) {
+			/**
+			 * Polyfill: formats number with Persian digits.
+			 *
+			 * @param mixed $value
+			 * @return string
+			 */
+			function carmilla_format_number( $value ): string {
+				$n = (int) round( (float) $value );
+				$s = number_format( $n );
+				$en = array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',' );
+				$fa = array( '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٬' );
+				return str_replace( $en, $fa, $s );
+			}
+		}
+
+		if ( ! function_exists( 'carmilla_manifest_features' ) ) {
+			/**
+			 * Polyfill: retrieves manifest features map.
+			 *
+			 * @return array
+			 */
+			function carmilla_manifest_features(): array {
+				if ( class_exists( '\Carmilla_Kernel' ) ) {
+					return \Carmilla_Kernel::get_feature_matrix();
+				}
+				return array();
 			}
 		}
 	}

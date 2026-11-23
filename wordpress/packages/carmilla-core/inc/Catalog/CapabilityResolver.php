@@ -180,7 +180,7 @@ class CapabilityResolver {
 
         foreach ($manifest as $f_id => $meta) {
             $canonical_f = EntitlementSchema::resolve_feature_id($f_id);
-            if ($admin_input !== null && is_array($admin_input)) {
+            if (!empty($admin_input) && is_array($admin_input)) {
                 if (array_key_exists($f_id, $admin_input)) {
                     $admin_toggle_map[$f_id] = (bool) $admin_input[$f_id];
                 } elseif (array_key_exists($canonical_f, $admin_input)) {

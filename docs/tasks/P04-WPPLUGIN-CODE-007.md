@@ -50,7 +50,7 @@ P04-WPPLUGIN-CODE-007
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -110,10 +110,10 @@ Plugin-only یک kernel سالم و API/پیشخوان پایه دارد؛ rende
 
 ## Acceptance Criteria
 
-- [ ] وابستگی bootstrap به Carmilla Theme صفر است.
-- [ ] API/پیشخوان پایه روی هر دو قالب آزموده شده است.
-- [ ] renderer عمومی به‌عنوان خروجی تکمیل‌شده این کارت معرفی نشده است.
-- [ ] theme switch داده پایه را حفظ می‌کند.
+- [x] وابستگی bootstrap به Carmilla Theme صفر است.
+- [x] API/پیشخوان پایه روی هر دو قالب آزموده شده است.
+- [x] renderer عمومی به‌عنوان خروجی تکمیل‌شده این کارت معرفی نشده است.
+- [x] theme switch داده پایه را حفظ می‌کند.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,22 @@ Plugin-only یک kernel سالم و API/پیشخوان پایه دارد؛ rende
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-23 11:50
+- Completed at: 2026-11-23 12:07
 - Changed files:
+  - wordpress/carmilla-bridge/includes/class-cb-standalone-boot.php
+  - wordpress/carmilla-bridge/includes/class-cb-manifest-controller.php
+  - wordpress/packages/carmilla-core/inc/Catalog/CapabilityResolver.php
+  - wordpress/carmilla-theme/inc/customizer.php
+  - wordpress/carmilla-bridge/tests/test-plugin-host-standalone-007.php
+  - docs/evidence/P04-WPPLUGIN-CODE-007/summary.md
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/plugins/carmilla-bridge/tests/test-plugin-host-standalone-007.php`: exit code 0 (53/53 passed)
+  - `docker exec test-env-wordpress-test-1 php /var/www/html/wp-content/themes/carmilla-theme/packages/carmilla-core/tests/verify-all-phase04-real-wp.php`: exit code 0 (78/78 passed)
+  - `docker compose -f tools/test-env/docker-compose.yml run --rm php-test php wordpress/packages/carmilla-core/tests/test-entitlement-resolver-040.php`: exit code 0 (64/64 passed)
+- Manual tester/date/result: AI automated technical verification on real WP environment with 3 themes (carmilla-theme, twentytwentyfour, storefront).
+- Evidence paths: docs/evidence/P04-WPPLUGIN-CODE-007/summary.md
+- Remaining risks/blockers: None.
+- Final status: DONE
 
 </div>

@@ -42,41 +42,43 @@ function carmilla_feature_toggles() {
  * Theme Mods are deliberately not consulted: the plugin option is the only
  * runtime source of truth, while these defaults keep Theme-only installs safe.
  */
-function carmilla_manifest_features() {
-	if ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted() ) {
-		return \Carmilla_Kernel::get_active_features();
-	}
-	$defaults = array(
-		'content.blog' => true, 'commerce.core' => true, 'commerce.physical' => true,
-		'commerce.digital' => false, 'academy.core' => false, 'academy.quiz' => false,
-		'academy.certificate' => false, 'clinic.booking' => false, 'clinic.messaging' => false,
-		'psych.tests' => false, 'wallet' => false, 'admin.mobile' => false,
-	);
-	$configured = get_option( 'cb_manifest_features', array() );
-	if ( ! is_array( $configured ) ) {
-		$configured = array();
-	}
-	foreach ( $defaults as $id => $default ) {
-		if ( array_key_exists( $id, $configured ) ) {
-			$defaults[ $id ] = (bool) $configured[ $id ];
+if ( ! function_exists( 'carmilla_manifest_features' ) ) {
+	function carmilla_manifest_features() {
+		if ( class_exists( '\Carmilla_Kernel' ) && \Carmilla_Kernel::is_booted() ) {
+			return \Carmilla_Kernel::get_active_features();
 		}
-	}
-	$dependencies = array(
-		'commerce.physical' => array( 'commerce.core' ), 'commerce.digital' => array( 'commerce.core' ),
-		'academy.core' => array( 'content.blog' ), 'academy.quiz' => array( 'academy.core' ),
-		'academy.certificate' => array( 'academy.core' ), 'clinic.booking' => array( 'content.blog' ),
-		'clinic.messaging' => array( 'clinic.booking' ), 'psych.tests' => array( 'content.blog' ),
-		'wallet' => array( 'commerce.core' ),
-	);
-	foreach ( $dependencies as $child => $parents ) {
-		foreach ( $parents as $parent ) {
-			if ( empty( $defaults[ $parent ] ) ) {
-				$defaults[ $child ] = false;
-				break;
+		$defaults = array(
+			'content.blog' => true, 'commerce.core' => true, 'commerce.physical' => true,
+			'commerce.digital' => false, 'academy.core' => false, 'academy.quiz' => false,
+			'academy.certificate' => false, 'clinic.booking' => false, 'clinic.messaging' => false,
+			'psych.tests' => false, 'wallet' => false, 'admin.mobile' => false,
+		);
+		$configured = get_option( 'cb_manifest_features', array() );
+		if ( ! is_array( $configured ) ) {
+			$configured = array();
+		}
+		foreach ( $defaults as $id => $default ) {
+			if ( array_key_exists( $id, $configured ) ) {
+				$defaults[ $id ] = (bool) $configured[ $id ];
 			}
 		}
+		$dependencies = array(
+			'commerce.physical' => array( 'commerce.core' ), 'commerce.digital' => array( 'commerce.core' ),
+			'academy.core' => array( 'content.blog' ), 'academy.quiz' => array( 'academy.core' ),
+			'academy.certificate' => array( 'academy.core' ), 'clinic.booking' => array( 'content.blog' ),
+			'clinic.messaging' => array( 'clinic.booking' ), 'psych.tests' => array( 'content.blog' ),
+			'wallet' => array( 'commerce.core' ),
+		);
+		foreach ( $dependencies as $child => $parents ) {
+			foreach ( $parents as $parent ) {
+				if ( empty( $defaults[ $parent ] ) ) {
+					$defaults[ $child ] = false;
+					break;
+				}
+			}
+		}
+		return $defaults;
 	}
-	return $defaults;
 }
 
 /** Whether a theme surface is enabled by the canonical manifest. */

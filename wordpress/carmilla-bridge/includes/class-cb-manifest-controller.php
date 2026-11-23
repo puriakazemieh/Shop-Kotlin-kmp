@@ -212,7 +212,7 @@ class CB_Manifest_Controller {
 	public static function resolve_features( $configured ): array {
 		if ( class_exists( '\Carmilla\Core\Catalog\CapabilityResolver' ) ) {
 			return \Carmilla\Core\Catalog\CapabilityResolver::resolve_effective( array(
-				'admin_settings' => is_array( $configured ) ? $configured : array(),
+				'admin_settings' => ! empty( $configured ) && is_array( $configured ) ? $configured : null,
 			) );
 		}
 
