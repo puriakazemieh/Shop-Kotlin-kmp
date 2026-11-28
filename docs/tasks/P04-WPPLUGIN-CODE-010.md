@@ -52,9 +52,9 @@ P04-WPPLUGIN-CODE-010
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-009
@@ -112,10 +112,10 @@ registry capability و mapping نقش‌های محتوا/فروشگاه/آمو�
 
 ## Acceptance Criteria
 
-- [ ] registry یک source مشترک دارد.
-- [ ] نقش،entitlement و toggle جدا اعمال می‌شوند.
-- [ ] کمینه دسترسی و fixture منفی در هر دو host پاس‌اند.
-- [ ] دامنه این کارت registry/مرز پایه است و جزئیات هر vertical به کارت خودش می‌رود.
+- [x] registry یک source مشترک دارد.
+- [x] نقش،entitlement و toggle جدا اعمال می‌شوند.
+- [x] کمینه دسترسی و fixture منفی در هر دو host پاس‌اند.
+- [x] دامنه این کارت registry/مرز پایه است و جزئیات هر vertical به کارت خودش می‌رود.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -131,13 +131,21 @@ registry capability و mapping نقش‌های محتوا/فروشگاه/آمو�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-23T13:22:55+03:30
+- Completed at: 2026-11-28T13:23:15+03:30
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Capabilities/CapabilityRegistry.php`
+  - `wordpress/packages/carmilla-core/Carmilla_Kernel.php`
+  - `wordpress/packages/carmilla-core/tests/test-capability-roles-010.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-010/summary.md`
+  - `docs/tasks/P04-WPPLUGIN-CODE-010.md`
+  - `docs/tasks.md`
+  - `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ...CapabilityRegistry.php && php -l ...Carmilla_Kernel.php && php ...test-capability-roles-010.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (70/70 passed in test-capability-roles-010.php; 78/78 passed in verify-all-phase04-real-wp.php)
+- Manual tester/date/result: Automated real-WP verification with synthetic accounts across all 3 host modes (Co-Install, Theme-Only, Plugin-Only) / 2026-11-28 / PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-010/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

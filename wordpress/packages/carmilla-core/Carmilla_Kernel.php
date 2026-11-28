@@ -47,8 +47,9 @@ class Carmilla_Kernel {
         // Run core migrations
         \Carmilla\Core\Migration\SchemaRunner::run_migrations();
         
-        // Register custom capabilities to administrator role
+        // Register custom capabilities and roles in kernel
         \Carmilla\Core\Capabilities\CapabilityRegistry::register_capabilities();
+        \Carmilla\Core\Capabilities\CapabilityRegistry::register_roles();
 
         // Messaging settings are shared by the Theme and Bridge.  Register the
         // schema during the canonical Kernel boot so either host can save the
