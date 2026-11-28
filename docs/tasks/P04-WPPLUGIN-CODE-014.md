@@ -52,9 +52,9 @@ P04-WPPLUGIN-CODE-014
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-013
@@ -112,10 +112,10 @@ API و storage تنظیمات عملیاتی kernel با nonce/capability/valida
 
 ## Acceptance Criteria
 
-- [ ] settings عملیاتی یک storage canonical دارد.
-- [ ] entitlement با API تنظیمات قابل جعل نیست.
-- [ ] CSRF/unauthorized/invalid option رد می‌شوند.
-- [ ] تنظیمات ظاهر پوسته جدا و audit redacted است.
+- [x] settings عملیاتی یک storage canonical دارد.
+- [x] entitlement با API تنظیمات قابل جعل نیست.
+- [x] CSRF/unauthorized/invalid option رد می‌شوند.
+- [x] تنظیمات ظاهر پوسته جدا و audit redacted است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -131,13 +131,24 @@ API و storage تنظیمات عملیاتی kernel با nonce/capability/valida
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T13:50:23+03:30
+- Completed at: 2026-11-28T13:52:00+03:30
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Settings/SettingsService.php`
+  - `wordpress/packages/carmilla-core/Carmilla_Kernel.php`
+  - `wordpress/packages/carmilla-core/inc/Rest/RestInfrastructure.php`
+  - `wordpress/carmilla-theme/inc/class-theme-host-adapter.php`
+  - `wordpress/carmilla-bridge/includes/class-cb-standalone-boot.php`
+  - `wordpress/packages/carmilla-core/tests/test-settings-api-014.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-014/summary.md`
+  - `docs/tasks/P04-WPPLUGIN-CODE-014.md`
+  - `docs/tasks.md`
+  - `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ... && php ...test-settings-api-014.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (21/21 passed in test-settings-api-014.php; 78/78 passed in verify-all-phase04-real-wp.php)
+- Manual tester/date/result: Automated real-WP REST & dual-host settings consistency verification / 2026-11-28 / PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-014/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

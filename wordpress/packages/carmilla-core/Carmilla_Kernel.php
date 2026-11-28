@@ -17,6 +17,7 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Health/HealthChecker.php';
     require_once __DIR__ . '/inc/Lifecycle/LifecycleManager.php';
     require_once __DIR__ . '/inc/Privacy/PrivacyManager.php';
+    require_once __DIR__ . '/inc/Settings/SettingsService.php';
     require_once __DIR__ . '/inc/Settings/MessageSettings.php';
     require_once __DIR__ . '/inc/Messaging/MessageSender.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';

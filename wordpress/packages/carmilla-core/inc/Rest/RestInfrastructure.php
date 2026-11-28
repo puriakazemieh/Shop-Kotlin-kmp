@@ -92,6 +92,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Health\HealthChecker' ) ) {
             \Carmilla\Core\Health\HealthChecker::register_rest_routes();
         }
+
+        // Register shared operational settings endpoints (P04-WPPLUGIN-CODE-014)
+        if ( class_exists( '\Carmilla\Core\Settings\SettingsService' ) ) {
+            \Carmilla\Core\Settings\SettingsService::register_rest_routes();
+        }
     }
 
     /**

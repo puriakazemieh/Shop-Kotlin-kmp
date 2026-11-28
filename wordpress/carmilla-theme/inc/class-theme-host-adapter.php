@@ -496,6 +496,16 @@ class ThemeHostAdapter {
 	}
 
 	/**
+	 * Delegates operational settings read/write to canonical shared SettingsService.
+	 */
+	public static function save_operational_settings( array $data, int $user_id = 0, ?string $nonce = null, bool $require_nonce = true ): array {
+		if ( class_exists( '\Carmilla\Core\Settings\SettingsService' ) ) {
+			return \Carmilla\Core\Settings\SettingsService::save_operational_settings( $data, $user_id, $nonce, $require_nonce );
+		}
+		return [ 'ok' => false, 'code' => 'KERNEL_MISSING', 'status' => 500, 'message' => 'SettingsService not loaded.' ];
+	}
+
+	/**
 	 * Resets adapter state (used in testing).
 	 */
 	public static function reset_state(): void {
