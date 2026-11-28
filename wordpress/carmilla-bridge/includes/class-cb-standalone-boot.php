@@ -168,6 +168,7 @@ class CB_Standalone_Boot {
 			'Migration/Export_Overlay_Command.php',
 			'Migration/Migrator.php',
 			'Migration/Import_Command.php',
+			'class-cb-public-renderer.php',
 			'class-cb-plugin.php',
 		);
 
@@ -193,6 +194,9 @@ class CB_Standalone_Boot {
 		}
 		if ( class_exists( 'CB_Local_QA_OTP_Sink' ) ) {
 			CB_Local_QA_OTP_Sink::boot();
+		}
+		if ( class_exists( 'CB_Public_Renderer' ) ) {
+			CB_Public_Renderer::boot();
 		}
 	}
 

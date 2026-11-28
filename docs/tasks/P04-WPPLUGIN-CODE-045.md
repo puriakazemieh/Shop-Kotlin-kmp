@@ -7,7 +7,7 @@
 نقش: Implementer و Verifier فقط همین کارت. ابتدا `docs/tasks.md`، AGENTS.md، این کارت و `docs/INDEPENDENT_PRODUCTS_SPEC_FA.md` را کامل بخوان. فقط اولین READY مجاز است. این کارت نیازمندی مصوب مالک محصول را اجرا می‌کند؛ تصمیم استقلال دو محصول را دوباره به پرسش انتخاب محصول تبدیل نکن.
 
 - Repository: `D:/Android/AndroidStudioProjects/kmp-shop`
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -66,10 +66,10 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Acceptance Criteria
 
-- [ ] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
-- [ ] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
-- [ ] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
-- [ ] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
+- [x] هدف و معیار اختصاصی همین کارت با شواهد قابل بازبینی محقق شده‌اند.
+- [x] scope و مرز محصول رعایت و کار خارج کارت انجام نشده است.
+- [x] خطا/مجوز نامعتبر/قابلیت خاموش طبق مورد آزموده شده است.
+- [x] QA انسانی لازم ثبت شده، یا N/A مستدل برای تغییر صرفاً مستنداتی؛ بدون آن DONE نیست.
 
 ## Evidence و Rollback
 
@@ -79,13 +79,13 @@ Expected: فرمان‌های مربوط exit 0 و گزارش رفتار معی�
 
 ## Completion record
 
-- Started at:
-- Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/build/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO
+- Started at: 2026-11-28
+- Completed at: 2026-11-28
+- Changed files: `wordpress/carmilla-bridge/assets/css/carmilla-public-scoped.css`, `wordpress/carmilla-bridge/includes/class-cb-public-renderer.php`, `wordpress/carmilla-bridge/includes/class-cb-standalone-boot.php`, `wordpress/carmilla-bridge/tests/test-plugin-public-renderer-045.php`, `docs/evidence/P04-WPPLUGIN-CODE-045/summary.md`, `docs/tasks/P04-WPPLUGIN-CODE-045.md`, `docs/tasks.md`, `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
+- Commands and exit codes: `docker exec test-env-wordpress-test-1 sh -c "php -l ... && php .../test-plugin-public-renderer-045.php && php .../verify-all-phase04-real-wp.php"` -> exit code 0 (17/17 + 78/78 passed)
+- Manual tester/date/build/result: Agent-verified in real WordPress Docker container (`test-env-wordpress-test-1`), 2026-11-28, PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-045/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

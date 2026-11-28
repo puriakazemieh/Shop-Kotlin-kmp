@@ -782,7 +782,7 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 | [ ] | `P04-WPTHEME-CODE-017` | BOTH | P1/MEDIUM | accessibility فرم/checkout/menu/account | keyboard، focus، label، contrast، zoom 200% |
 | [ ] | `P04-WPTHEME-CODE-025` | AI | P0/MEDIUM | template hierarchy برگه و Elementor Canvas/Full Width اصلاح شود | matrix layout؛ `the_content`؛ Bridge اثری بر render ندارد |
 | [x] | `P04-WPPLUGIN-CODE-018` | AI | P1/LOW | ترجمه و escaping مرزهای مشترک و میزبان‌های مستقل | ZIP پوسته و افزونه مستقل فارسی/انگلیسی را درست بارگذاری کنند؛ co-install ترجمه تکراری/گم‌شده و output escape نشده در مرزهای این کارت نداشته باشد. |
-| [ ] | `P04-WPPLUGIN-CODE-045` | BOTH | P0/HIGH | زیرساخت نمایش عمومی افزونه روی قالب ثالث | بدون Carmilla Theme صفحه نمونه از روی ZIP plugin رندر شود؛ سبک قالب ثالث خراب نشود؛ یک route/صفحه و permission درست. |
+| [x] | `P04-WPPLUGIN-CODE-045` | BOTH | P0/HIGH | زیرساخت نمایش عمومی افزونه روی قالب ثالث | بدون Carmilla Theme صفحه نمونه از روی ZIP plugin رندر شود؛ سبک قالب ثالث خراب نشود؛ یک route/صفحه و permission درست. |
 | [ ] | `P04-WORDPRESS-CODE-026` | BOTH | P0/HIGH | انتقال نوشته، برگه و رسانه به هسته مشترک | fixture نوشته/برگه/رسانه از مدیریت و frontend هر میزبان و API مشترک پاسخ یکسان داشته باشد؛ permission،اعتبارسنجی رسانه و عدم ثبت تکراری اثبات شود. |
 | [ ] | `P04-WORDPRESS-CODE-026A` | BOTH | P0/HIGH | انتقال کاتالوگ و محصول به adapter مشترک Woo | شناسه محصول ثابت؛ list/detail در Theme-only/Plugin-only/both همسان؛ بدون Woo پیام پیش‌نیاز و بدون fatal. |
 | [ ] | `P04-WORDPRESS-CODE-026B` | BOTH | P0/HIGH | انتقال سبد و سفارش به مسیر مشترک Woo | سبد و سفارش synthetic شناسه/مبلغ یکسان؛ HPOS CRUD؛ یک write/callback؛ capability خاموش مسیر جدید را ببندد. |
