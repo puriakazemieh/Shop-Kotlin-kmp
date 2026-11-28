@@ -147,6 +147,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Psych\PsychTestRestController' ) ) {
             \Carmilla\Core\Psych\PsychTestRestController::register_routes();
         }
+
+        // Register shared support ticket & thread endpoints (P04-WORDPRESS-CODE-029A)
+        if ( class_exists( '\Carmilla\Core\Support\SupportRestController' ) ) {
+            \Carmilla\Core\Support\SupportRestController::register_routes();
+        }
     }
 
     /**
@@ -516,6 +521,7 @@ class RestInfrastructure {
             '/api/pages'             => 'content.core',
             '/api/admin/media'       => 'content.core',
             '/api/stories'           => 'content.stories',
+            '/api/admin/support'     => 'content.support',
             '/api/support'           => 'content.support',
             '/api/admin/products'    => 'commerce.core',
             '/api/admin/variants'    => 'commerce.core',

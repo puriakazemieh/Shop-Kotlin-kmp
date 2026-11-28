@@ -582,6 +582,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_my_psych_results' ) ) {
 			add_shortcode( 'carmilla_my_psych_results', [ self::class, 'render_my_psych_results_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_support_tickets' ) ) {
+			add_shortcode( 'carmilla_support_tickets', [ self::class, 'render_support_tickets_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_support_thread' ) ) {
+			add_shortcode( 'carmilla_support_thread', [ self::class, 'render_support_thread_shortcode' ] );
+		}
 	}
 
 	/**
@@ -967,6 +973,58 @@ class ThemeHostAdapter {
 		}
 		$carmilla_psych_results_data = \Carmilla\Core\Psych\PsychTestService::my_tests( get_current_user_id() );
 		$tpl = locate_template( [ 'carmilla/my-psych-results.php', 'carmilla-my-psych-results.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_support_tickets_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Support\SupportService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Support\SupportService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="support-disabled">' . esc_html__( 'قابلیت پشتیبانی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="support-auth">' . esc_html__( 'برای مشاهده و ارسال تیکت پشتیبانی وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_support_tickets_data = \Carmilla\Core\Support\SupportService::list_tickets( get_current_user_id() );
+		$tpl = locate_template( [ 'carmilla/support-tickets.php', 'carmilla-support-tickets.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_support_thread_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Support\SupportService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Support\SupportService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="support-disabled">' . esc_html__( 'قابلیت پشتیبانی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="support-auth">' . esc_html__( 'برای مشاهده گفتگو وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$atts      = shortcode_atts( [ 'id' => 0 ], is_array( $atts ) ? $atts : [], 'carmilla_support_thread' );
+		$ticket_id = (int) $atts['id'];
+		if ( $ticket_id < 1 ) {
+			return '';
+		}
+		$ticket = \Carmilla\Core\Support\SupportService::get_ticket( get_current_user_id(), $ticket_id );
+		if ( is_wp_error( $ticket ) ) {
+			return '<div class="card" data-carmilla-surface="support-not-found">' . esc_html( $ticket->get_error_message() ) . '</div>';
+		}
+		$carmilla_support_thread_data = $ticket;
+		$tpl = locate_template( [ 'carmilla/support-thread.php', 'carmilla-support-thread.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;
