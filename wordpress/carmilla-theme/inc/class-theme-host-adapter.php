@@ -506,6 +506,22 @@ class ThemeHostAdapter {
 	}
 
 	/**
+	 * Reads and saves purchased-feature toggles via shared FeatureToggleService.
+	 */
+	public static function get_feature_panel( ?array $matrix_args = null ): array {
+		return class_exists( '\Carmilla\Core\Entitlement\FeatureToggleService' )
+			? \Carmilla\Core\Entitlement\FeatureToggleService::get_panel_state( $matrix_args )
+			: [];
+	}
+
+	public static function save_feature_toggles( array $features, int $user_id = 0, ?string $nonce = null, bool $require_nonce = true, array $builders = [], ?array $matrix_args = null ): array {
+		if ( class_exists( '\Carmilla\Core\Entitlement\FeatureToggleService' ) ) {
+			return \Carmilla\Core\Entitlement\FeatureToggleService::save_toggles( $features, $user_id, $nonce, $require_nonce, $builders, $matrix_args );
+		}
+		return [ 'ok' => false, 'code' => 'KERNEL_MISSING', 'status' => 500, 'message' => 'FeatureToggleService not loaded.' ];
+	}
+
+	/**
 	 * Resets adapter state (used in testing).
 	 */
 	public static function reset_state(): void {

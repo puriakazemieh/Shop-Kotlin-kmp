@@ -506,6 +506,22 @@ class CB_Standalone_Boot {
 		}
 		return array( 'ok' => false, 'code' => 'KERNEL_MISSING', 'status' => 500, 'message' => 'SettingsService not loaded.' );
 	}
+
+	/**
+	 * Reads and saves purchased-feature toggles via shared FeatureToggleService.
+	 */
+	public static function get_feature_panel( ?array $matrix_args = null ): array {
+		return class_exists( '\Carmilla\Core\Entitlement\FeatureToggleService' )
+			? \Carmilla\Core\Entitlement\FeatureToggleService::get_panel_state( $matrix_args )
+			: array();
+	}
+
+	public static function save_feature_toggles( array $features, int $user_id = 0, ?string $nonce = null, bool $require_nonce = true, array $builders = array(), ?array $matrix_args = null ): array {
+		if ( class_exists( '\Carmilla\Core\Entitlement\FeatureToggleService' ) ) {
+			return \Carmilla\Core\Entitlement\FeatureToggleService::save_toggles( $features, $user_id, $nonce, $require_nonce, $builders, $matrix_args );
+		}
+		return array( 'ok' => false, 'code' => 'KERNEL_MISSING', 'status' => 500, 'message' => 'FeatureToggleService not loaded.' );
+	}
 }
 
 /**

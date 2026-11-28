@@ -11,6 +11,7 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Catalog/CapabilityResolver.php';
     require_once __DIR__ . '/inc/Migration/SchemaRunner.php';
     require_once __DIR__ . '/inc/Entitlement/EntitlementResolver.php';
+    require_once __DIR__ . '/inc/Entitlement/FeatureToggleService.php';
     require_once __DIR__ . '/inc/Adapter/WooCommerceAdapter.php';
     require_once __DIR__ . '/inc/Rest/RestInfrastructure.php';
     require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
@@ -79,6 +80,9 @@ class Carmilla_Kernel {
 
         // Boot host-agnostic GDPR/Privacy exporter, eraser, and retention policy
         \Carmilla\Core\Privacy\PrivacyManager::boot();
+
+        // Register shared purchased-features toggle panel handler
+        \Carmilla\Core\Entitlement\FeatureToggleService::register_admin_post_handler();
     }
 
     public static function resolve_features() {

@@ -3,6 +3,7 @@ namespace Carmilla\Core\Settings;
 
 use Carmilla\Core\Catalog\EntitlementClaims;
 use Carmilla\Core\Catalog\DependencyResolver;
+use Carmilla\Core\Entitlement\FeatureToggleService;
 use Carmilla\Core\Health\HealthChecker;
 use Carmilla\Core\Lifecycle\LifecycleManager;
 
@@ -41,7 +42,58 @@ class AdminSettingsPage {
         <div class="wrap" dir="rtl">
             <h1>تنظیمات و قابلیت‌های Carmilla</h1>
             
-            <p>در این بخش می‌توانید وضعیت لایسنس و دسترسی‌های اپلیکیشن/سایت خود را مشاهده کنید.</p>
+            <p>در این بخش می‌توانید وضعیت لایسنس، فعال/غیرفعال‌سازی قابلیت‌های خریداری‌شده و اهداف ساخت را مدیریت کنید.</p>
+
+            <?php if (class_exists(FeatureToggleService::class)) :
+                $panel_state = FeatureToggleService::get_panel_state();
+            ?>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-bottom: 24px;">
+                <?php wp_nonce_field(FeatureToggleService::NONCE_ACTION); ?>
+                <input type="hidden" name="action" value="carmilla_save_feature_toggles">
+                <h2>قابلیت‌های خریداری‌شده (Purchased Features)</h2>
+                <table class="widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th>قابلیت (Feature)</th>
+                            <th>وضعیت (Badge)</th>
+                            <th>فعال‌سازی مدیر (Toggle)</th>
+                            <th>توضیحات / نیازمندی</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($panel_state['features'] as $f_id => $f_item) : ?>
+                        <tr>
+                            <td><strong><?php echo esc_html($f_item['title']); ?></strong><br><code><?php echo esc_html($f_id); ?></code></td>
+                            <td><code><?php echo esc_html($f_item['badge']); ?></code></td>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="cb_manifest_features[<?php echo esc_attr($f_id); ?>]" value="1" <?php checked(!empty($f_item['admin_enabled'])); ?> <?php disabled(empty($f_item['can_toggle'])); ?>>
+                                    <?php echo !empty($f_item['can_toggle']) ? 'روشن' : 'غیرقابل تغییر'; ?>
+                                </label>
+                            </td>
+                            <td>
+                                <?php echo esc_html($f_item['reason']); ?>
+                                <?php if (!empty($f_item['upgrade_message'])) : ?>
+                                    <br><small style="color: #b32d2e;"><?php echo esc_html($f_item['upgrade_message']); ?></small>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 16px;">اهداف ساخت مستقل (Builder Targets)</h3>
+                <p>
+                    <?php foreach ($panel_state['builders'] as $b_target => $b_info) : ?>
+                    <label style="margin-left: 16px;">
+                        <input type="checkbox" name="carmilla_builder_targets[<?php echo esc_attr($b_target); ?>]" value="1" <?php checked(!empty($b_info['enabled'])); ?> <?php disabled(empty($b_info['can_toggle'])); ?>>
+                        <strong><?php echo esc_html(strtoupper($b_target)); ?></strong>
+                    </label>
+                    <?php endforeach; ?>
+                </p>
+                <button type="submit" class="button button-primary">ذخیره تنظیمات قابلیت‌ها</button>
+            </form>
+            <?php endif; ?>
 
             <table class="widefat fixed striped">
                 <thead>

@@ -97,6 +97,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Settings\SettingsService' ) ) {
             \Carmilla\Core\Settings\SettingsService::register_rest_routes();
         }
+
+        // Register shared entitlement toggle panel endpoints (P04-ENTITLEMENT-CODE-041)
+        if ( class_exists( '\Carmilla\Core\Entitlement\FeatureToggleService' ) ) {
+            \Carmilla\Core\Entitlement\FeatureToggleService::register_rest_routes();
+        }
     }
 
     /**
