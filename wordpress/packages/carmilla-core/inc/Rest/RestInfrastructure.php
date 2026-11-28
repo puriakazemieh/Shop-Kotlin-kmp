@@ -137,6 +137,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Clinic\TherapistCatalogRestController' ) ) {
             \Carmilla\Core\Clinic\TherapistCatalogRestController::register_routes();
         }
+
+        // Register shared appointment booking, cancel & management endpoints (P04-WORDPRESS-CODE-028A)
+        if ( class_exists( '\Carmilla\Core\Clinic\AppointmentBookingRestController' ) ) {
+            \Carmilla\Core\Clinic\AppointmentBookingRestController::register_routes();
+        }
     }
 
     /**

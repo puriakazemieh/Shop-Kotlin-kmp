@@ -36,6 +36,8 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Academy/CourseQuizRestController.php';
     require_once __DIR__ . '/inc/Clinic/TherapistCatalogService.php';
     require_once __DIR__ . '/inc/Clinic/TherapistCatalogRestController.php';
+    require_once __DIR__ . '/inc/Clinic/AppointmentBookingService.php';
+    require_once __DIR__ . '/inc/Clinic/AppointmentBookingRestController.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**
@@ -98,6 +100,11 @@ class Carmilla_Kernel {
 
         // Register shared purchased-features toggle panel handler
         \Carmilla\Core\Entitlement\FeatureToggleService::register_admin_post_handler();
+
+        // Ensure atomic appointment slot lock table exists in Theme-only & Co-install modes
+        if ( class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) ) {
+            \Carmilla\Core\Clinic\AppointmentBookingService::ensure_bookings_table();
+        }
     }
 
     public static function resolve_features() {

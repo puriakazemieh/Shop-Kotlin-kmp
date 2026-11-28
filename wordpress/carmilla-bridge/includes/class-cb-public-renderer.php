@@ -48,6 +48,8 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_certificates', array( __CLASS__, 'render_certificates_shortcode' ) );
 		add_shortcode( 'carmilla_therapists', array( __CLASS__, 'render_therapists_shortcode' ) );
 		add_shortcode( 'carmilla_therapist', array( __CLASS__, 'render_therapist_shortcode' ) );
+		add_shortcode( 'carmilla_booking', array( __CLASS__, 'render_booking_shortcode' ) );
+		add_shortcode( 'carmilla_my_appointments', array( __CLASS__, 'render_my_appointments_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -792,6 +794,106 @@ class CB_Public_Renderer {
 				<?php endforeach; ?>
 			</ul>
 		</article>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders booking form for a therapist via AppointmentBookingService & TherapistCatalogService.
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_booking_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) || ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\AppointmentBookingService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$atts   = shortcode_atts( array( 'therapist_id' => 0, 'slug' => '' ), is_array( $atts ) ? $atts : array(), 'carmilla_booking' );
+		$lookup = ! empty( $atts['therapist_id'] ) ? (int) $atts['therapist_id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+
+		$t = \Carmilla\Core\Clinic\TherapistCatalogService::get_therapist_detail( $lookup );
+		if ( is_wp_error( $t ) ) {
+			return '<div class="carmilla-public-surface">' . esc_html( $t->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/booking-form.php', 'carmilla-booking-form.php' ) );
+		$override_tpl = apply_filters( 'carmilla_booking_form_template', $override_tpl, $t );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_therapist_data = $t;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir   = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		$slots = isset( $t['slots'] ) && is_array( $t['slots'] ) ? $t['slots'] : array();
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="booking-form" data-therapist-id="<?php echo esc_attr( (string) ( $t['id'] ?? 0 ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html( sprintf( 'رزرو نوبت: %s', (string) ( $t['name'] ?? '' ) ) ); ?></h2>
+			<form class="carmilla-public-surface__form" method="post" action="<?php echo esc_url( rest_url( 'carmilla/v1/api/clinic/appointments' ) ); ?>">
+				<ul class="carmilla-public-surface__list">
+					<?php foreach ( $slots as $s ) : ?>
+						<li>
+							<label>
+								<input type="radio" name="slotId" value="<?php echo esc_attr( (string) ( $s['id'] ?? 0 ) ); ?>" required />
+								<span><?php echo esc_html( (string) ( $s['dayLabel'] ?? '' ) . ' ' . (string) ( $s['timeLabel'] ?? '' ) ); ?></span>
+							</label>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<button type="submit" class="carmilla-public-surface__btn"><?php echo esc_html__( 'ثبت نوبت', 'carmilla-bridge' ); ?></button>
+			</form>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders current user's appointments via AppointmentBookingService.
+	 */
+	public static function render_my_appointments_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\AppointmentBookingService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="my-appointments-auth">' . esc_html__( 'برای مشاهده نوبت‌های من وارد شوید.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$appointments = \Carmilla\Core\Clinic\AppointmentBookingService::my_appointments( get_current_user_id() );
+		$override_tpl = locate_template( array( 'carmilla/my-appointments.php', 'carmilla-my-appointments.php' ) );
+		$override_tpl = apply_filters( 'carmilla_my_appointments_template', $override_tpl, $appointments );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_appointments_data = $appointments;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="my-appointments">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'نوبت‌های من', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $appointments as $a ) : ?>
+					<li data-appointment-id="<?php echo esc_attr( (string) ( $a['id'] ?? 0 ) ); ?>" data-status="<?php echo esc_attr( (string) ( $a['status'] ?? '' ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $a['therapistName'] ?? '' ) ); ?></strong>
+						<span>(<?php echo esc_html( (string) ( $a['dayLabel'] ?? '' ) . ' ' . (string) ( $a['timeLabel'] ?? '' ) ); ?>)</span>
+						<em><?php echo esc_html( (string) ( $a['status'] ?? '' ) ); ?></em>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
 		<?php
 		return (string) ob_get_clean();
 	}

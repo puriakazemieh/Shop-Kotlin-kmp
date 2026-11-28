@@ -15,7 +15,7 @@
 		var slot = btn.getAttribute( 'data-slot' );
 		btn.disabled = true;
 
-		fetch( cfg.restUrl + 'appointments', {
+		fetch( cfg.restUrl + 'api/clinic/appointments', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.nonce },
 			credentials: 'same-origin',

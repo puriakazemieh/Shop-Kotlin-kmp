@@ -33,10 +33,12 @@ class CB_Clinic_Controller {
 			register_rest_route( $ns, '/api/therapists/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $pub ) );
 		}
 
-		register_rest_route( $ns, '/api/clinic/my-appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/clinic/appointments', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/cancel', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/receipt', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingRestController' ) ) {
+			register_rest_route( $ns, '/api/clinic/my-appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+			register_rest_route( $ns, '/api/clinic/appointments', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+			register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/cancel', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+			register_rest_route( $ns, '/api/clinic/appointments/(?P<id>\d+)/receipt', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
+		}
 
 		register_rest_route( $ns, '/api/clinic/mood-checkins', array(
 			array( 'methods' => 'GET', 'callback' => array( $this, 'mood_history' ), 'permission_callback' => $login ),
@@ -208,6 +210,19 @@ class CB_Clinic_Controller {
 	// ---- endpoints: booking (atomic) ---------------------------------------
 
 	public function book( WP_REST_Request $request ): WP_REST_Response {
+		if ( class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) ) {
+			$body = $request->get_json_params();
+			if ( ! is_array( $body ) || empty( $body ) ) {
+				$body = $request->get_params();
+			}
+			$res = \Carmilla\Core\Clinic\AppointmentBookingService::book( get_current_user_id(), is_array( $body ) ? $body : array() );
+			if ( is_wp_error( $res ) ) {
+				$data = $res->get_error_data();
+				$status = is_array( $data ) && isset( $data['status'] ) ? (int) $data['status'] : 400;
+				return cb_error( $res->get_error_message(), $status, (string) $res->get_error_code(), 'api/clinic/appointments' );
+			}
+			return cb_response( $res, 201 );
+		}
 		global $wpdb;
 		$body    = $request->get_json_params();
 		$slot_id = (int) ( $body['slotId'] ?? 0 );
@@ -288,6 +303,15 @@ class CB_Clinic_Controller {
 	}
 
 	public function cancel( WP_REST_Request $request ): WP_REST_Response {
+		if ( class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) ) {
+			$res = \Carmilla\Core\Clinic\AppointmentBookingService::cancel( (int) $request['id'], get_current_user_id() );
+			if ( is_wp_error( $res ) ) {
+				$data = $res->get_error_data();
+				$status = is_array( $data ) && isset( $data['status'] ) ? (int) $data['status'] : 400;
+				return cb_error( $res->get_error_message(), $status, (string) $res->get_error_code(), 'api/clinic/appointments' );
+			}
+			return cb_response( null, 200 );
+		}
 		global $wpdb;
 		$appt = get_post( (int) $request['id'] );
 		if ( ! $appt || $appt->post_type !== 'cb_appointment' || (int) get_post_meta( $appt->ID, 'cb_user_id', true ) !== get_current_user_id() ) {

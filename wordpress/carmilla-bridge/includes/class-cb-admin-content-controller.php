@@ -81,9 +81,11 @@ class CB_Admin_Content_Controller {
 			register_rest_route( $ns, '/api/admin/psych-tests/pending-interpretations', array( 'methods' => 'GET', 'callback' => array( $this, 'pending_interpretations' ), 'permission_callback' => $admin ) );
 			register_rest_route( $ns, '/api/admin/psych-tests/user-tests/(?P<uid>\d+)/interpret', array( 'methods' => 'POST', 'callback' => array( $this, 'interpret' ), 'permission_callback' => $admin ) );
 		}
-		register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
-		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
-		register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
+		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingRestController' ) ) {
+			register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
+			register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/confirm', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
+			register_rest_route( $ns, '/api/admin/therapists/appointments/(?P<id>\d+)/complete', array( 'methods' => 'POST', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
+		}
 		register_rest_route( $ns, '/api/admin/clinic/switch-requests', array( 'methods' => 'GET', 'callback' => array( $this, 'switch_requests' ), 'permission_callback' => $admin ) );
 		register_rest_route( $ns, '/api/admin/clinic/switch-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_switch' ), 'permission_callback' => $admin ) );
 

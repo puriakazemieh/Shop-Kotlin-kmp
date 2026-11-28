@@ -19,7 +19,7 @@
 	var STATUS = { BOOKED: 'رزرو شده', CANCELLED: 'لغو شده', DONE: 'برگزار شده' };
 
 	function load() {
-		api( 'appointments' ).then( function ( items ) {
+		api( 'api/clinic/my-appointments' ).then( function ( items ) {
 			if ( ! items || ! items.length ) {
 				root.innerHTML = '<p class="t-body t-muted">هنوز نوبتی رزرو نکرده‌اید.</p>';
 				return;
@@ -50,7 +50,7 @@
 			if ( cancelBtn ) {
 				cancelBtn.addEventListener( 'click', function () {
 					if ( ! confirm( 'این نوبت لغو شود؟' ) ) { return; }
-					post( 'appointments/' + id + '/cancel', {} ).then( load );
+					post( 'api/clinic/appointments/' + id + '/cancel', {} ).then( load );
 				} );
 			}
 			el.querySelector( '.cb-appt-receipt' ).addEventListener( 'click', function () {
@@ -70,7 +70,7 @@
 	}
 
 	function renderReceipt( panel, id ) {
-		api( 'appointments/' + id + '/receipt' ).then( function ( r ) {
+		api( 'api/clinic/appointments/' + id + '/receipt' ).then( function ( r ) {
 			if ( ! r || r.code ) { panel.innerHTML = '<p class="t-body-sm t-muted">رسید در دسترس نیست.</p>'; return; }
 			panel.innerHTML = '<div class="cb-receipt">' +
 				rrow( 'مشاور', r.therapistName ) +

@@ -567,6 +567,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_therapist' ) ) {
 			add_shortcode( 'carmilla_therapist', [ self::class, 'render_therapist_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_booking' ) ) {
+			add_shortcode( 'carmilla_booking', [ self::class, 'render_booking_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_my_appointments' ) ) {
+			add_shortcode( 'carmilla_my_appointments', [ self::class, 'render_my_appointments_shortcode' ] );
+		}
 	}
 
 	/**
@@ -837,6 +843,55 @@ class ThemeHostAdapter {
 		}
 		$carmilla_therapist_data = $t;
 		$tpl = locate_template( [ 'carmilla/therapist-detail.php', 'carmilla-therapist-detail.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_booking_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) || ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\AppointmentBookingService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$atts   = shortcode_atts( [ 'therapist_id' => 0, 'slug' => '' ], is_array( $atts ) ? $atts : [], 'carmilla_booking' );
+		$lookup = ! empty( $atts['therapist_id'] ) ? (int) $atts['therapist_id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$t = \Carmilla\Core\Clinic\TherapistCatalogService::get_therapist_detail( $lookup );
+		if ( is_wp_error( $t ) ) {
+			return '<div class="card">' . esc_html( $t->get_error_message() ) . '</div>';
+		}
+		$carmilla_therapist_data = $t;
+		$tpl = locate_template( [ 'carmilla/booking-form.php', 'carmilla-booking-form.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_my_appointments_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\AppointmentBookingService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="my-appointments-auth">' . esc_html__( 'برای مشاهده نوبت‌های من وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_appointments_data = \Carmilla\Core\Clinic\AppointmentBookingService::my_appointments( get_current_user_id() );
+		$tpl = locate_template( [ 'carmilla/my-appointments.php', 'carmilla-my-appointments.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;
