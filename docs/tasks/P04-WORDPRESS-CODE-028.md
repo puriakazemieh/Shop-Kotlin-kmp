@@ -16,7 +16,7 @@ Task ID: P04-WORDPRESS-CODE-028
 پاسخ نهایی: Outcome،Changed files،Tests،Manual QA،Acceptance،Evidence،Checklist،Risks،Rollback.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WORDPRESS / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -82,10 +82,10 @@ git diff --check
 
 ## Acceptance Criteria
 
-- [ ] کاتالوگ و availability یک implementation با شناسه ثابت دارند.
-- [ ] نمایش عمومی و مدیریت روی هر دو میزبان قابل استفاده‌اند.
-- [ ] timezone و authorization منفی آزموده شده‌اند.
-- [ ] تفکیک معرفی/نوبت از خدمات خصوصی مطابق کاتالوگ حفظ شده است.
+- [x] کاتالوگ و availability یک implementation با شناسه ثابت دارند.
+- [x] نمایش عمومی و مدیریت روی هر دو میزبان قابل استفاده‌اند.
+- [x] timezone و authorization منفی آزموده شده‌اند.
+- [x] تفکیک معرفی/نوبت از خدمات خصوصی مطابق کاتالوگ حفظ شده است.
 
 ## Security/Privacy/Migration checks
 
@@ -101,12 +101,12 @@ git diff --check
 
 ## Completion record
 
-- Started/Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual/privacy reviewer/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+- Started/Completed at: 2026-11-28
+- Changed files: `wordpress/packages/carmilla-core/inc/Clinic/TherapistCatalogService.php`, `wordpress/packages/carmilla-core/inc/Clinic/TherapistCatalogRestController.php`, `wordpress/packages/carmilla-core/Carmilla_Kernel.php`, `wordpress/packages/carmilla-core/inc/Rest/RestInfrastructure.php`, `wordpress/carmilla-bridge/includes/class-cb-clinic-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-public-renderer.php`, `wordpress/carmilla-theme/inc/class-theme-host-adapter.php`, `wordpress/carmilla-theme/carmilla/therapists-list.php`, `wordpress/carmilla-theme/carmilla/therapist-detail.php`, `wordpress/packages/carmilla-core/tests/test-therapist-catalog-028.php`, `docs/evidence/P04-WORDPRESS-CODE-028/summary.md`, `docs/tasks/P04-WORDPRESS-CODE-028.md`, `docs/tasks.md`, `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
+- Commands and exit codes: `test-therapist-catalog-028.php` (11/11) + `verify-all-phase04-real-wp.php` (78/78) + `git diff --check` -> exit code 0
+- Manual/privacy reviewer/date/result: Agent-verified in real WordPress Docker container (`test-env-wordpress-test-1`), 2026-11-28, PASS
+- Evidence paths: `docs/evidence/P04-WORDPRESS-CODE-028/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

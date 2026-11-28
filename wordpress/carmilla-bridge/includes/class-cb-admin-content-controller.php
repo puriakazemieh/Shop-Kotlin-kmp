@@ -51,20 +51,22 @@ class CB_Admin_Content_Controller {
 			register_rest_route( $ns, '/api/admin/academy/refund-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_refund' ), 'permission_callback' => $admin ) );
 
 			// Therapists.
-			register_rest_route( $ns, '/api/admin/therapists', array(
-				array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $admin ),
-				array( 'methods' => 'POST', 'callback' => array( $this, 'create_therapist' ), 'permission_callback' => $admin ),
-			) );
-			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)', array(
-				array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $admin ),
-				array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_therapist' ), 'permission_callback' => $admin ),
-				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_therapist' ), 'permission_callback' => $admin ),
-			) );
+			if ( ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogRestController' ) ) {
+				register_rest_route( $ns, '/api/admin/therapists', array(
+					array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $admin ),
+					array( 'methods' => 'POST', 'callback' => array( $this, 'create_therapist' ), 'permission_callback' => $admin ),
+				) );
+				register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)', array(
+					array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $admin ),
+					array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_therapist' ), 'permission_callback' => $admin ),
+					array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_therapist' ), 'permission_callback' => $admin ),
+				) );
+				register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array(
+					array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ),
+					array( 'methods' => 'POST', 'callback' => array( $this, 'add_slot' ), 'permission_callback' => $admin ),
+				) );
+			}
 			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/generate-slots', array( 'methods' => 'POST', 'callback' => array( $this, 'generate_slots' ), 'permission_callback' => $admin ) );
-			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/slots', array(
-				array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_slots' ), 'permission_callback' => $admin ),
-				array( 'methods' => 'POST', 'callback' => array( $this, 'add_slot' ), 'permission_callback' => $admin ),
-			) );
 			
 			// Psych tests.
 			register_rest_route( $ns, '/api/admin/psych-tests', array(

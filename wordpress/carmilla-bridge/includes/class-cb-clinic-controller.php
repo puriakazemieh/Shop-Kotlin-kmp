@@ -28,8 +28,10 @@ class CB_Clinic_Controller {
 		$pub   = '__return_true';
 		$login = array( 'CB_Plugin', 'require_login' );
 
-		register_rest_route( $ns, '/api/therapists', array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $pub ) );
-		register_rest_route( $ns, '/api/therapists/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $pub ) );
+		if ( ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogRestController' ) ) {
+			register_rest_route( $ns, '/api/therapists', array( 'methods' => 'GET', 'callback' => array( $this, 'list_therapists' ), 'permission_callback' => $pub ) );
+			register_rest_route( $ns, '/api/therapists/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'therapist_detail' ), 'permission_callback' => $pub ) );
+		}
 
 		register_rest_route( $ns, '/api/clinic/my-appointments', array( 'methods' => 'GET', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/clinic/appointments', array( 'methods' => 'POST', 'callback' => array( $this, 'disabled_feature' ), 'permission_callback' => $login ) );

@@ -132,6 +132,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Academy\CourseQuizRestController' ) ) {
             \Carmilla\Core\Academy\CourseQuizRestController::register_routes();
         }
+
+        // Register shared therapist catalog & availability endpoints (P04-WORDPRESS-CODE-028)
+        if ( class_exists( '\Carmilla\Core\Clinic\TherapistCatalogRestController' ) ) {
+            \Carmilla\Core\Clinic\TherapistCatalogRestController::register_routes();
+        }
     }
 
     /**

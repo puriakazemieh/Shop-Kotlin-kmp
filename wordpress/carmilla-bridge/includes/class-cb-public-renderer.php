@@ -46,6 +46,8 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_course', array( __CLASS__, 'render_course_shortcode' ) );
 		add_shortcode( 'carmilla_my_courses', array( __CLASS__, 'render_my_courses_shortcode' ) );
 		add_shortcode( 'carmilla_certificates', array( __CLASS__, 'render_certificates_shortcode' ) );
+		add_shortcode( 'carmilla_therapists', array( __CLASS__, 'render_therapists_shortcode' ) );
+		add_shortcode( 'carmilla_therapist', array( __CLASS__, 'render_therapist_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -700,6 +702,96 @@ class CB_Public_Renderer {
 				<?php endforeach; ?>
 			</ul>
 		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders therapists catalog via shared TherapistCatalogService.
+	 */
+	public static function render_therapists_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\TherapistCatalogService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$therapists   = \Carmilla\Core\Clinic\TherapistCatalogService::list_therapists( false );
+		$override_tpl = locate_template( array( 'carmilla/therapists-list.php', 'carmilla-therapists-list.php' ) );
+		$override_tpl = apply_filters( 'carmilla_therapists_list_template', $override_tpl, $therapists );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_therapists_data = $therapists;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="therapists">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'متخصصان و مشاوران', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $therapists as $t ) : ?>
+					<li data-therapist-id="<?php echo esc_attr( (string) ( $t['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $t['name'] ?? '' ) ); ?></strong>
+						<span>(<?php echo esc_html( (string) ( $t['availableSlotCount'] ?? 0 ) ); ?> بازه)</span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders single therapist profile & available slots via TherapistCatalogService.
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_therapist_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\TherapistCatalogService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$atts   = shortcode_atts( array( 'id' => 0, 'slug' => '' ), is_array( $atts ) ? $atts : array(), 'carmilla_therapist' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+
+		$t = \Carmilla\Core\Clinic\TherapistCatalogService::get_therapist_detail( $lookup );
+		if ( is_wp_error( $t ) ) {
+			return '<div class="carmilla-public-surface">' . esc_html( $t->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/therapist-detail.php', 'carmilla-therapist-detail.php' ) );
+		$override_tpl = apply_filters( 'carmilla_therapist_detail_template', $override_tpl, $t );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_therapist_data = $t;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir   = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		$slots = isset( $t['slots'] ) && is_array( $t['slots'] ) ? $t['slots'] : array();
+		ob_start();
+		?>
+		<article class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="therapist" data-therapist-id="<?php echo esc_attr( (string) ( $t['id'] ?? 0 ) ); ?>" data-timezone="<?php echo esc_attr( (string) ( $t['timezone'] ?? 'UTC' ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html( (string) ( $t['name'] ?? '' ) ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $slots as $s ) : ?>
+					<li data-slot-id="<?php echo esc_attr( (string) ( $s['id'] ?? 0 ) ); ?>">
+						<?php echo esc_html( (string) ( $s['dayLabel'] ?? '' ) . ' ' . (string) ( $s['timeLabel'] ?? '' ) ); ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</article>
 		<?php
 		return (string) ob_get_clean();
 	}

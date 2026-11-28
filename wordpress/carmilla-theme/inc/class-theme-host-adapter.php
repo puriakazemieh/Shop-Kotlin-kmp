@@ -561,6 +561,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_certificates' ) ) {
 			add_shortcode( 'carmilla_certificates', [ self::class, 'render_certificates_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_therapists' ) ) {
+			add_shortcode( 'carmilla_therapists', [ self::class, 'render_therapists_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_therapist' ) ) {
+			add_shortcode( 'carmilla_therapist', [ self::class, 'render_therapist_shortcode' ] );
+		}
 	}
 
 	/**
@@ -785,6 +791,52 @@ class ThemeHostAdapter {
 		}
 		$carmilla_certs_data = \Carmilla\Core\Academy\CourseQuizService::list_certificates( get_current_user_id() );
 		$tpl = locate_template( [ 'carmilla/certificates.php', 'carmilla-certificates.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_therapists_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\TherapistCatalogService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_therapists_data = \Carmilla\Core\Clinic\TherapistCatalogService::list_therapists( false );
+		$tpl = locate_template( [ 'carmilla/therapists-list.php', 'carmilla-therapists-list.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_therapist_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Clinic\TherapistCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Clinic\TherapistCatalogService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="clinic-disabled">' . esc_html__( 'قابلیت معرفی متخصص و نوبت‌دهی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$atts   = shortcode_atts( [ 'id' => 0, 'slug' => '' ], is_array( $atts ) ? $atts : [], 'carmilla_therapist' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$t = \Carmilla\Core\Clinic\TherapistCatalogService::get_therapist_detail( $lookup );
+		if ( is_wp_error( $t ) ) {
+			return '<div class="card">' . esc_html( $t->get_error_message() ) . '</div>';
+		}
+		$carmilla_therapist_data = $t;
+		$tpl = locate_template( [ 'carmilla/therapist-detail.php', 'carmilla-therapist-detail.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;
