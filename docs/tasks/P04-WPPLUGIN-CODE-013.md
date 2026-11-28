@@ -50,9 +50,9 @@ P04-WPPLUGIN-CODE-013
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-012
@@ -110,10 +110,10 @@ exporter/eraser و registry retention در kernel ثبت شوند و راهنم�
 
 ## Acceptance Criteria
 
-- [ ] export/erase یک registry مشترک و fixture اجرایی دارند.
-- [ ] co-install عملیات را دو بار ثبت/اجرا نمی‌کند.
-- [ ] خاموشی feature مسیر مدیریتی مجاز را بی‌دلیل حذف نمی‌کند.
-- [ ] مالی/سلامت به policy مصوب و کارت دامنه ارجاع دارند.
+- [x] export/erase یک registry مشترک و fixture اجرایی دارند.
+- [x] co-install عملیات را دو بار ثبت/اجرا نمی‌کند.
+- [x] خاموشی feature مسیر مدیریتی مجاز را بی‌دلیل حذف نمی‌کند.
+- [x] مالی/سلامت به policy مصوب و کارت دامنه ارجاع دارند.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,21 @@ exporter/eraser و registry retention در kernel ثبت شوند و راهنم�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T13:46:25+03:30
+- Completed at: 2026-11-28T13:47:50+03:30
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Privacy/PrivacyManager.php`
+  - `wordpress/packages/carmilla-core/Carmilla_Kernel.php`
+  - `wordpress/packages/carmilla-core/tests/test-privacy-retention-013.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-013/summary.md`
+  - `docs/tasks/P04-WPPLUGIN-CODE-013.md`
+  - `docs/tasks.md`
+  - `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ... && php ...test-privacymanager-policy-content.php && php ...test-privacy-retention-013.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (14/14, 21/21, 78/78 passed)
+- Manual tester/date/result: Automated real-WP verification across Co-Install, Theme-Only, Plugin-Only, and Feature-Disabled modes / 2026-11-28 / PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-013/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

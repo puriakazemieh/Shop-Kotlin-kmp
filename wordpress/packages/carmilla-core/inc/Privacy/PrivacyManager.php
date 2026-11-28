@@ -1,7 +1,10 @@
 <?php
 namespace Carmilla\Core\Privacy;
 
+use Carmilla\Core\Capabilities\CapabilityRegistry;
 use Carmilla\Core\Migration\SchemaRunner;
+
+if ( ! class_exists( __NAMESPACE__ . '\PrivacyManager', false ) ) {
 
 /**
  * GDPR and Personal Data Privacy Manager.
@@ -486,6 +489,99 @@ class PrivacyManager {
 	}
 
 	/**
+	 * Returns canonical data retention policy registry across Carmilla domains.
+	 * Statutory financial/clinical rules reference approved policies and domain cards.
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	public static function get_retention_policy_registry(): array {
+		return array(
+			'commerce_orders'     => array(
+				'strategy'        => 'anonymize_retain_ledger',
+				'retention_years' => '5-10',
+				'policy_ref'      => 'statutory_accounting_tax_compliance',
+				'domain_card_ref' => 'P04-WPPLUGIN-CODE-015',
+			),
+			'clinic_appointments' => array(
+				'strategy'        => 'anonymize_strip_phi',
+				'retention_years' => 'per_approved_clinic_policy',
+				'policy_ref'      => 'approved_clinic_retention_policy',
+				'domain_card_ref' => 'P04-CLINIC-DOMAIN',
+			),
+			'psych_tests'         => array(
+				'strategy'        => 'scrub_personal_identifiers',
+				'retention_years' => 'per_approved_clinic_policy',
+				'policy_ref'      => 'approved_clinic_retention_policy',
+				'domain_card_ref' => 'P04-CLINIC-DOMAIN',
+			),
+			'academy_enrollments' => array(
+				'strategy'        => 'erase_user_meta',
+				'retention_years' => '0',
+				'policy_ref'      => 'gdpr_right_to_erasure',
+				'domain_card_ref' => 'P04-ACADEMY-DOMAIN',
+			),
+			'maintenance_policy'  => array(
+				'when_feature_disabled' => 'allow_authorized_maintenance',
+				'host_dependency'       => 'site_owned_host_agnostic',
+			),
+		);
+	}
+
+	/**
+	 * Verifies whether an acting user is authorized to trigger privacy export/erase for a target user.
+	 * Disabling a feature does NOT revoke legitimate privacy maintenance rights.
+	 *
+	 * @param int $acting_user_id Acting WordPress user ID.
+	 * @param int $target_user_id Target subject user ID.
+	 * @return array{allowed: bool, code: string, status: int}
+	 */
+	public static function can_perform_privacy_action( int $acting_user_id, int $target_user_id ): array {
+		if ( $acting_user_id <= 0 ) {
+			return array(
+				'allowed' => false,
+				'code'    => 'UNAUTHENTICATED',
+				'status'  => 401,
+			);
+		}
+
+		// Owner may export/request erasure of their own data
+		if ( $acting_user_id === $target_user_id ) {
+			return array(
+				'allowed' => true,
+				'code'    => 'OK',
+				'status'  => 200,
+			);
+		}
+
+		// Privacy / site administrator override
+		$is_privacy_admin = ( function_exists( 'user_can' ) && ( user_can( $acting_user_id, 'manage_privacy_options' ) || user_can( $acting_user_id, 'manage_options' ) ) )
+			|| ( class_exists( CapabilityRegistry::class ) && CapabilityRegistry::user_can_for_domain( $acting_user_id, 'admin', 'manage' ) );
+
+		if ( $is_privacy_admin ) {
+			return array(
+				'allowed' => true,
+				'code'    => 'OK',
+				'status'  => 200,
+			);
+		}
+
+		return array(
+			'allowed' => false,
+			'code'    => 'FORBIDDEN',
+			'status'  => 403,
+		);
+	}
+
+	/**
+	 * Resets in-memory boot state (for testing).
+	 *
+	 * @return void
+	 */
+	public static function reset_state(): void {
+		self::$booted = false;
+	}
+
+	/**
 	 * Helper: scrubs user psychological test records.
 	 *
 	 * @param int $user_id User ID.
@@ -498,4 +594,6 @@ class PrivacyManager {
 		}
 		return 0;
 	}
+}
+
 }

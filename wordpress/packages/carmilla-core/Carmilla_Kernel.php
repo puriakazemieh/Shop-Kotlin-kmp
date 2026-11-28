@@ -16,6 +16,7 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
     require_once __DIR__ . '/inc/Health/HealthChecker.php';
     require_once __DIR__ . '/inc/Lifecycle/LifecycleManager.php';
+    require_once __DIR__ . '/inc/Privacy/PrivacyManager.php';
     require_once __DIR__ . '/inc/Settings/MessageSettings.php';
     require_once __DIR__ . '/inc/Messaging/MessageSender.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
@@ -74,6 +75,9 @@ class Carmilla_Kernel {
         // Register shared lifecycle handlers (theme switch + explicit cleanup)
         \Carmilla\Core\Lifecycle\LifecycleManager::register_theme_switch_handler();
         \Carmilla\Core\Lifecycle\LifecycleManager::register_admin_cleanup_handler();
+
+        // Boot host-agnostic GDPR/Privacy exporter, eraser, and retention policy
+        \Carmilla\Core\Privacy\PrivacyManager::boot();
     }
 
     public static function resolve_features() {
@@ -191,6 +195,9 @@ class Carmilla_Kernel {
         }
         if (class_exists('\Carmilla\Core\Rest\RestInfrastructure')) {
             \Carmilla\Core\Rest\RestInfrastructure::reset_state();
+        }
+        if (class_exists('\Carmilla\Core\Privacy\PrivacyManager')) {
+            \Carmilla\Core\Privacy\PrivacyManager::reset_state();
         }
     }
 }
