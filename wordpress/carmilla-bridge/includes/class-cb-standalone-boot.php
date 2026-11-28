@@ -469,6 +469,33 @@ class CB_Standalone_Boot {
 			if ( $web_auth !== null ) { $web_auth->register_routes(); }
 		}
 	}
+
+	/**
+	 * Runs independent onboarding preflight for the Bridge Plugin host.
+	 * Functions on any active WordPress theme (e.g. Twenty Twenty-Four, Storefront).
+	 *
+	 * @param array<string>        $skus      Optional purchased SKUs; defaults to ['sku_plugin_base'] or stored claims.
+	 * @param array<string, mixed> $overrides Optional environment overrides for testing.
+	 * @return array<string, mixed>
+	 */
+	public static function get_onboarding_preflight( array $skus = [], array $overrides = [] ): array {
+		if ( class_exists( '\Carmilla\Core\Health\HealthChecker' ) ) {
+			return \Carmilla\Core\Health\HealthChecker::run_preflight( 'plugin', $skus, $overrides );
+		}
+		return array(
+			'ready'           => false,
+			'host_context'    => 'plugin',
+			'blocking_issues' => array(
+				array(
+					'id'          => 'kernel_missing',
+					'name'        => 'Carmilla Shared Kernel',
+					'scope'       => 'shared',
+					'message'     => 'HealthChecker is not loaded.',
+					'remediation' => 'Ensure packages/carmilla-core is bundled with the plugin.',
+				),
+			),
+		);
+	}
 }
 
 /**

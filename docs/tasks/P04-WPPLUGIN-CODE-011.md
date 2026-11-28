@@ -50,9 +50,9 @@ P04-WPPLUGIN-CODE-011
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/MEDIUM / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-010
@@ -110,10 +110,10 @@ P04-WPPLUGIN-CODE-011
 
 ## Acceptance Criteria
 
-- [ ] هر میزبان onboarding مستقل دارد.
-- [ ] پیش‌نیازها مطابق SKU محدودند.
-- [ ] خطا راه رفع مشخص دارد.
-- [ ] گزارش تشخیص secret یا داده مشتری نشان نمی‌دهد.
+- [x] هر میزبان onboarding مستقل دارد.
+- [x] پیش‌نیازها مطابق SKU محدودند.
+- [x] خطا راه رفع مشخص دارد.
+- [x] گزارش تشخیص secret یا داده مشتری نشان نمی‌دهد.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,24 @@ P04-WPPLUGIN-CODE-011
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T13:32:36+03:30
+- Completed at: 2026-11-28T13:35:15+03:30
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Health/HealthChecker.php`
+  - `wordpress/packages/carmilla-core/inc/Rest/RestInfrastructure.php`
+  - `wordpress/packages/carmilla-core/inc/Settings/AdminSettingsPage.php`
+  - `wordpress/carmilla-theme/inc/class-theme-host-adapter.php`
+  - `wordpress/carmilla-bridge/includes/class-cb-standalone-boot.php`
+  - `wordpress/packages/carmilla-core/tests/test-preflight-onboarding-011.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-011/summary.md`
+  - `docs/tasks/P04-WPPLUGIN-CODE-011.md`
+  - `docs/tasks.md`
+  - `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ...HealthChecker.php && php ...test-preflight-onboarding-011.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (40/40 passed in test-preflight-onboarding-011.php; 78/78 passed in verify-all-phase04-real-wp.php)
+- Manual tester/date/result: Automated real-WP verification across Theme-Only, Plugin-Only (TT4), and Co-Install modes / 2026-11-28 / PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-011/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

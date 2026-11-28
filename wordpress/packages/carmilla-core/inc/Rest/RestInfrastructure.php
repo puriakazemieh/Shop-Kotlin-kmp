@@ -87,6 +87,11 @@ class RestInfrastructure {
             'callback'            => [ self::class, 'get_manifest_response' ],
             'permission_callback' => '__return_true',
         ], false );
+
+        // Register SKU-aware preflight diagnostics endpoints
+        if ( class_exists( '\Carmilla\Core\Health\HealthChecker' ) ) {
+            \Carmilla\Core\Health\HealthChecker::register_rest_routes();
+        }
     }
 
     /**
