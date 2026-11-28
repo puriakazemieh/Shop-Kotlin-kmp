@@ -1,9 +1,9 @@
-# P04-WPTHEME-CODE-017 — accessibility فرم/checkout/menu/account
+﻿# P04-WPTHEME-CODE-017 â€” accessibility ÙØ±Ù…/checkout/menu/account
 
-## Prompt اجرای همین Task
+## Prompt Ø§Ø¬Ø±Ø§ÛŒ Ù‡Ù…ÛŒÙ† Task
 
 ```text
-نقش تو Implementer و Verifier فقط همین Task است.
+Ù†Ù‚Ø´ ØªÙˆ Implementer Ùˆ Verifier ÙÙ‚Ø· Ù‡Ù…ÛŒÙ† Task Ø§Ø³Øª.
 
 Repository:
 D:\Android\AndroidStudioProjects\kmp-shop
@@ -17,116 +17,116 @@ D:\Android\AndroidStudioProjects\kmp-shop\docs\PROJECT_AUDIT_AND_PUBLICATION_PLA
 Task ID:
 P04-WPTHEME-CODE-017
 
-قبل از تغییر:
-1. AGENTS.md و هر دستور ارجاع‌شده‌ای که واقعاً وجود دارد را بخوان.
-2. Task، dependency، scope، acceptance و source reference را کامل بخوان.
-3. git status را بررسی و تغییرات موجود کاربر را حفظ کن.
-4. baseline test مشخص‌شده را اجرا کن.
-5. اگر Task بزرگ‌تر از M یا مبهم است، اجرا نکن؛ آن را به Taskهای کوچک‌تر پیشنهاد بده.
+Ù‚Ø¨Ù„ Ø§Ø² ØªØºÛŒÛŒØ±:
+1. AGENTS.md Ùˆ Ù‡Ø± Ø¯Ø³ØªÙˆØ± Ø§Ø±Ø¬Ø§Ø¹â€ŒØ´Ø¯Ù‡â€ŒØ§ÛŒ Ú©Ù‡ ÙˆØ§Ù‚Ø¹Ø§Ù‹ ÙˆØ¬ÙˆØ¯ Ø¯Ø§Ø±Ø¯ Ø±Ø§ Ø¨Ø®ÙˆØ§Ù†.
+2. TaskØŒ dependencyØŒ scopeØŒ acceptance Ùˆ source reference Ø±Ø§ Ú©Ø§Ù…Ù„ Ø¨Ø®ÙˆØ§Ù†.
+3. git status Ø±Ø§ Ø¨Ø±Ø±Ø³ÛŒ Ùˆ ØªØºÛŒÛŒØ±Ø§Øª Ù…ÙˆØ¬ÙˆØ¯ Ú©Ø§Ø±Ø¨Ø± Ø±Ø§ Ø­ÙØ¸ Ú©Ù†.
+4. baseline test Ù…Ø´Ø®Øµâ€ŒØ´Ø¯Ù‡ Ø±Ø§ Ø§Ø¬Ø±Ø§ Ú©Ù†.
+5. Ø§Ú¯Ø± Task Ø¨Ø²Ø±Ú¯â€ŒØªØ± Ø§Ø² M ÛŒØ§ Ù…Ø¨Ù‡Ù… Ø§Ø³ØªØŒ Ø§Ø¬Ø±Ø§ Ù†Ú©Ù†Ø› Ø¢Ù† Ø±Ø§ Ø¨Ù‡ TaskÙ‡Ø§ÛŒ Ú©ÙˆÚ†Ú©â€ŒØªØ± Ù¾ÛŒØ´Ù†Ù‡Ø§Ø¯ Ø¨Ø¯Ù‡.
 
-قواعد:
-- فقط همین Task را انجام بده.
-- کمترین diff لازم را بساز.
-- خارج از Allowed scope تغییر نده.
-- dependency upgrade،refactor جانبی یا تغییر API contract انجام نده.
-- secret یا داده واقعی ایجاد/ثبت نکن.
-- deploy/publish/production/payment واقعی انجام نده مگر Task صریح و تأییدشده باشد.
-- ابتدا تست شکست یا characterization مناسب را اضافه کن.
-- همه commandهای verification را واقعاً اجرا کن.
-- تست دستی اجرا‌نشده را تیک نزن و وضعیت را AWAITING_MANUAL_QA بگذار.
-- بدون Evidence Task را DONE نکن.
-- فقط checkbox/status/evidence همین Task را به‌روزرسانی کن.
-- به Task بعدی نرو.
+Ù‚ÙˆØ§Ø¹Ø¯:
+- ÙÙ‚Ø· Ù‡Ù…ÛŒÙ† Task Ø±Ø§ Ø§Ù†Ø¬Ø§Ù… Ø¨Ø¯Ù‡.
+- Ú©Ù…ØªØ±ÛŒÙ† diff Ù„Ø§Ø²Ù… Ø±Ø§ Ø¨Ø³Ø§Ø².
+- Ø®Ø§Ø±Ø¬ Ø§Ø² Allowed scope ØªØºÛŒÛŒØ± Ù†Ø¯Ù‡.
+- dependency upgradeØŒrefactor Ø¬Ø§Ù†Ø¨ÛŒ ÛŒØ§ ØªØºÛŒÛŒØ± API contract Ø§Ù†Ø¬Ø§Ù… Ù†Ø¯Ù‡.
+- secret ÛŒØ§ Ø¯Ø§Ø¯Ù‡ ÙˆØ§Ù‚Ø¹ÛŒ Ø§ÛŒØ¬Ø§Ø¯/Ø«Ø¨Øª Ù†Ú©Ù†.
+- deploy/publish/production/payment ÙˆØ§Ù‚Ø¹ÛŒ Ø§Ù†Ø¬Ø§Ù… Ù†Ø¯Ù‡ Ù…Ú¯Ø± Task ØµØ±ÛŒØ­ Ùˆ ØªØ£ÛŒÛŒØ¯Ø´Ø¯Ù‡ Ø¨Ø§Ø´Ø¯.
+- Ø§Ø¨ØªØ¯Ø§ ØªØ³Øª Ø´Ú©Ø³Øª ÛŒØ§ characterization Ù…Ù†Ø§Ø³Ø¨ Ø±Ø§ Ø§Ø¶Ø§ÙÙ‡ Ú©Ù†.
+- Ù‡Ù…Ù‡ commandÙ‡Ø§ÛŒ verification Ø±Ø§ ÙˆØ§Ù‚Ø¹Ø§Ù‹ Ø§Ø¬Ø±Ø§ Ú©Ù†.
+- ØªØ³Øª Ø¯Ø³ØªÛŒ Ø§Ø¬Ø±Ø§â€ŒÙ†Ø´Ø¯Ù‡ Ø±Ø§ ØªÛŒÚ© Ù†Ø²Ù† Ùˆ ÙˆØ¶Ø¹ÛŒØª Ø±Ø§ AWAITING_MANUAL_QA Ø¨Ú¯Ø°Ø§Ø±.
+- Ø¨Ø¯ÙˆÙ† Evidence Task Ø±Ø§ DONE Ù†Ú©Ù†.
+- ÙÙ‚Ø· checkbox/status/evidence Ù‡Ù…ÛŒÙ† Task Ø±Ø§ Ø¨Ù‡â€ŒØ±ÙˆØ²Ø±Ø³Ø§Ù†ÛŒ Ú©Ù†.
+- Ø¨Ù‡ Task Ø¨Ø¹Ø¯ÛŒ Ù†Ø±Ùˆ.
 
-شرایط توقف:
-- تداخل با تغییرات حل‌نشده کاربر
-- نبود credential/contract/تصمیم ضروری
-- نیاز به عملیات مخرب یا Production
-- baseline failure مرتبط
-- نیاز به تغییر contract خارج از Scope
+Ø´Ø±Ø§ÛŒØ· ØªÙˆÙ‚Ù:
+- ØªØ¯Ø§Ø®Ù„ Ø¨Ø§ ØªØºÛŒÛŒØ±Ø§Øª Ø­Ù„â€ŒÙ†Ø´Ø¯Ù‡ Ú©Ø§Ø±Ø¨Ø±
+- Ù†Ø¨ÙˆØ¯ credential/contract/ØªØµÙ…ÛŒÙ… Ø¶Ø±ÙˆØ±ÛŒ
+- Ù†ÛŒØ§Ø² Ø¨Ù‡ Ø¹Ù…Ù„ÛŒØ§Øª Ù…Ø®Ø±Ø¨ ÛŒØ§ Production
+- baseline failure Ù…Ø±ØªØ¨Ø·
+- Ù†ÛŒØ§Ø² Ø¨Ù‡ ØªØºÛŒÛŒØ± contract Ø®Ø§Ø±Ø¬ Ø§Ø² Scope
 
-پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
+Ù¾Ø§Ø³Ø® Ù†Ù‡Ø§ÛŒÛŒ: OutcomeØŒChanged filesØŒAutomated testsØŒManual test statusØŒAcceptance CriteriaØŒEvidence pathsØŒChecklist status changeØŒRemaining risks/blockers Ùˆ Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P04 / WPTHEME / CODE
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (Ù‚Ø¨Ù„ Ø§Ø² READY ØªØ¹ÛŒÛŒÙ† Ø´ÙˆØ¯)
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPTHEME-CODE-016
 - Blocks: P04-WPTHEME-CODE-025
-- Requirement source: Master checklist row P04-WPTHEME-CODE-017 و Source audit بخش WPTHEME
+- Requirement source: Master checklist row P04-WPTHEME-CODE-017 Ùˆ Source audit Ø¨Ø®Ø´ WPTHEME
 
-## هدف قابل اندازه‌گیری
-accessibility فرم/checkout/menu/account
+## Ù‡Ø¯Ù Ù‚Ø§Ø¨Ù„ Ø§Ù†Ø¯Ø§Ø²Ù‡â€ŒÚ¯ÛŒØ±ÛŒ
+accessibility ÙØ±Ù…/checkout/menu/account
 
-## خروجی مورد انتظار
-keyboard، focus، label، contrast، zoom 200%
+## Ø®Ø±ÙˆØ¬ÛŒ Ù…ÙˆØ±Ø¯ Ø§Ù†ØªØ¸Ø§Ø±
+keyboardØŒ focusØŒ labelØŒ contrastØŒ zoom 200%
 
-## خارج از محدوده
-- هر Feature،provider،platform یا refactor خارج از همین Task ID.
-- deploy/publish،پرداخت واقعی،تغییر Production و تغییر داده مشتری.
+## Ø®Ø§Ø±Ø¬ Ø§Ø² Ù…Ø­Ø¯ÙˆØ¯Ù‡
+- Ù‡Ø± FeatureØŒproviderØŒplatform ÛŒØ§ refactor Ø®Ø§Ø±Ø¬ Ø§Ø² Ù‡Ù…ÛŒÙ† Task ID.
+- deploy/publishØŒÙ¾Ø±Ø¯Ø§Ø®Øª ÙˆØ§Ù‚Ø¹ÛŒØŒØªØºÛŒÛŒØ± Production Ùˆ ØªØºÛŒÛŒØ± Ø¯Ø§Ø¯Ù‡ Ù…Ø´ØªØ±ÛŒ.
 
 ## Preconditions
-- Status باید READY باشد؛ TODO مجوز اجرا نیست.
-- Dependencyها: P04-WPTHEME-CODE-016
-- git status و baseline پیش از تغییر ثبت شوند.
+- Status Ø¨Ø§ÛŒØ¯ READY Ø¨Ø§Ø´Ø¯Ø› TODO Ù…Ø¬ÙˆØ² Ø§Ø¬Ø±Ø§ Ù†ÛŒØ³Øª.
+- DependencyÙ‡Ø§: P04-WPTHEME-CODE-016
+- git status Ùˆ baseline Ù¾ÛŒØ´ Ø§Ø² ØªØºÛŒÛŒØ± Ø«Ø¨Øª Ø´ÙˆÙ†Ø¯.
 
 ## Allowed files/directories
 - wordpress/carmilla-theme/**
 - wordpress/**/tests/**
 - docs/**
-- اگر مسیر لازم خارج از این فهرست بود،Task را BLOCKED کن و Scope بخواه.
+- Ø§Ú¯Ø± Ù…Ø³ÛŒØ± Ù„Ø§Ø²Ù… Ø®Ø§Ø±Ø¬ Ø§Ø² Ø§ÛŒÙ† ÙÙ‡Ø±Ø³Øª Ø¨ÙˆØ¯ØŒTask Ø±Ø§ BLOCKED Ú©Ù† Ùˆ Scope Ø¨Ø®ÙˆØ§Ù‡.
 
 ## Forbidden actions
-- حذف/overwrite تغییرات کاربر،git reset/checkout،ارتقای dependency یا تغییر contract خارج Scope.
-- ثبت credential،داده واقعی مشتری یا داده سلامت در repo/Evidence.
-- عملیات Production یا migration تخریبی.
+- Ø­Ø°Ù/overwrite ØªØºÛŒÛŒØ±Ø§Øª Ú©Ø§Ø±Ø¨Ø±ØŒgit reset/checkoutØŒØ§Ø±ØªÙ‚Ø§ÛŒ dependency ÛŒØ§ ØªØºÛŒÛŒØ± contract Ø®Ø§Ø±Ø¬ Scope.
+- Ø«Ø¨Øª credentialØŒØ¯Ø§Ø¯Ù‡ ÙˆØ§Ù‚Ø¹ÛŒ Ù…Ø´ØªØ±ÛŒ ÛŒØ§ Ø¯Ø§Ø¯Ù‡ Ø³Ù„Ø§Ù…Øª Ø¯Ø± repo/Evidence.
+- Ø¹Ù…Ù„ÛŒØ§Øª Production ÛŒØ§ migration ØªØ®Ø±ÛŒØ¨ÛŒ.
 
-## مراحل پیاده‌سازی
-1. بخش P04 در Master checklist و Source audit مرتبط را بخوان.
-2. وضعیت موجود و baseline محدود به Scope را کشف و ثبت کن.
-3. Size را تعیین کن؛ اگر بزرگ‌تر از M است child Task پیشنهاد بده و متوقف شو.
-4. characterization/test منفی لازم را اضافه کن یا دلیل مستند نبود آن را ثبت کن.
-5. فقط تغییر لازم برای هدف را پیاده‌سازی کن.
-6. validation و تست‌ها را اجرا،Evidence را ذخیره و Status صحیح را ثبت کن.
+## Ù…Ø±Ø§Ø­Ù„ Ù¾ÛŒØ§Ø¯Ù‡â€ŒØ³Ø§Ø²ÛŒ
+1. Ø¨Ø®Ø´ P04 Ø¯Ø± Master checklist Ùˆ Source audit Ù…Ø±ØªØ¨Ø· Ø±Ø§ Ø¨Ø®ÙˆØ§Ù†.
+2. ÙˆØ¶Ø¹ÛŒØª Ù…ÙˆØ¬ÙˆØ¯ Ùˆ baseline Ù…Ø­Ø¯ÙˆØ¯ Ø¨Ù‡ Scope Ø±Ø§ Ú©Ø´Ù Ùˆ Ø«Ø¨Øª Ú©Ù†.
+3. Size Ø±Ø§ ØªØ¹ÛŒÛŒÙ† Ú©Ù†Ø› Ø§Ú¯Ø± Ø¨Ø²Ø±Ú¯â€ŒØªØ± Ø§Ø² M Ø§Ø³Øª child Task Ù¾ÛŒØ´Ù†Ù‡Ø§Ø¯ Ø¨Ø¯Ù‡ Ùˆ Ù…ØªÙˆÙ‚Ù Ø´Ùˆ.
+4. characterization/test Ù…Ù†ÙÛŒ Ù„Ø§Ø²Ù… Ø±Ø§ Ø§Ø¶Ø§ÙÙ‡ Ú©Ù† ÛŒØ§ Ø¯Ù„ÛŒÙ„ Ù…Ø³ØªÙ†Ø¯ Ù†Ø¨ÙˆØ¯ Ø¢Ù† Ø±Ø§ Ø«Ø¨Øª Ú©Ù†.
+5. ÙÙ‚Ø· ØªØºÛŒÛŒØ± Ù„Ø§Ø²Ù… Ø¨Ø±Ø§ÛŒ Ù‡Ø¯Ù Ø±Ø§ Ù¾ÛŒØ§Ø¯Ù‡â€ŒØ³Ø§Ø²ÛŒ Ú©Ù†.
+6. validation Ùˆ ØªØ³Øªâ€ŒÙ‡Ø§ Ø±Ø§ Ø§Ø¬Ø±Ø§ØŒEvidence Ø±Ø§ Ø°Ø®ÛŒØ±Ù‡ Ùˆ Status ØµØ­ÛŒØ­ Ø±Ø§ Ø«Ø¨Øª Ú©Ù†.
 
-## Automated tests با command و expected result
-- Command: در محیط WordPress CI/container، lint و test محدود به Scope را اجرا کن.
-- Expected: activation/install و تست مرتبط exit code 0؛ نبود PHP محلی مجوز تیک‌زدن نیست.
-- معیار اختصاصی: keyboard، focus، label، contrast، zoom 200%
+## Automated tests Ø¨Ø§ command Ùˆ expected result
+- Command: Ø¯Ø± Ù…Ø­ÛŒØ· WordPress CI/containerØŒ lint Ùˆ test Ù…Ø­Ø¯ÙˆØ¯ Ø¨Ù‡ Scope Ø±Ø§ Ø§Ø¬Ø±Ø§ Ú©Ù†.
+- Expected: activation/install Ùˆ ØªØ³Øª Ù…Ø±ØªØ¨Ø· exit code 0Ø› Ù†Ø¨ÙˆØ¯ PHP Ù…Ø­Ù„ÛŒ Ù…Ø¬ÙˆØ² ØªÛŒÚ©â€ŒØ²Ø¯Ù† Ù†ÛŒØ³Øª.
+- Ù…Ø¹ÛŒØ§Ø± Ø§Ø®ØªØµØ§ØµÛŒ: keyboardØŒ focusØŒ labelØŒ contrastØŒ zoom 200%
 
-## Manual tests با environment/data/steps/expected
-- اگر تغییر UI/network/migration دارد، انسان happy path،خطا و accessibility مرتبط را اجرا می‌کند؛ در غیر این صورت N/A را مستند کن.
-- Environment/device/browser و داده synthetic را ثبت کن.
-- انتظار: keyboard، focus، label، contrast، zoom 200%
-- Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
+## Manual tests Ø¨Ø§ environment/data/steps/expected
+- Ø§Ú¯Ø± ØªØºÛŒÛŒØ± UI/network/migration Ø¯Ø§Ø±Ø¯ØŒ Ø§Ù†Ø³Ø§Ù† happy pathØŒØ®Ø·Ø§ Ùˆ accessibility Ù…Ø±ØªØ¨Ø· Ø±Ø§ Ø§Ø¬Ø±Ø§ Ù…ÛŒâ€ŒÚ©Ù†Ø¯Ø› Ø¯Ø± ØºÛŒØ± Ø§ÛŒÙ† ØµÙˆØ±Øª N/A Ø±Ø§ Ù…Ø³ØªÙ†Ø¯ Ú©Ù†.
+- Environment/device/browser Ùˆ Ø¯Ø§Ø¯Ù‡ synthetic Ø±Ø§ Ø«Ø¨Øª Ú©Ù†.
+- Ø§Ù†ØªØ¸Ø§Ø±: keyboardØŒ focusØŒ labelØŒ contrastØŒ zoom 200%
+- TesterØŒØªØ§Ø±ÛŒØ®ØŒbuild fingerprintØŒÙ†ØªÛŒØ¬Ù‡ Ùˆ Evidence Ø§Ù„Ø²Ø§Ù…ÛŒ Ø§Ø³Øª.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [ ] Ø®Ø±ÙˆØ¬ÛŒ Ø¨Ø§ Ù‡Ø¯Ù Ùˆ validation Ø§ÛŒÙ† Ú©Ø§Ø±Øª Ù…Ù†Ø·Ø¨Ù‚ Ø§Ø³Øª.
+- [ ] Scope Ø®Ø§Ø±Ø¬ Ø§Ø² Allowed files/directories Ú¯Ø³ØªØ±Ø´ Ù†ÛŒØ§ÙØªÙ‡ Ø§Ø³Øª.
+- [ ] ØªØ³Øª Ø®ÙˆØ¯Ú©Ø§Ø±/Ø¨Ø§Ø²Ø¨ÛŒÙ†ÛŒ Ù„Ø§Ø²Ù… ÙˆØ§Ù‚Ø¹Ø§Ù‹ Ø§Ø¬Ø±Ø§ Ùˆ Ù†ØªÛŒØ¬Ù‡ Ø«Ø¨Øª Ø´Ø¯Ù‡ Ø§Ø³Øª.
+- [ ] Ø§Ú¯Ø± ØªØ³Øª Ø¯Ø³ØªÛŒ Ù„Ø§Ø²Ù… Ø§Ø³ØªØŒEvidence Ø§Ù†Ø³Ø§Ù†ÛŒ Ø«Ø¨Øª Ø´Ø¯Ù‡ ÛŒØ§ Status Ø¨Ø±Ø§Ø¨Ø± AWAITING_MANUAL_QA Ø§Ø³Øª.
 
 ## Security/Privacy/Migration checks
-- Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
-- برای API/write path،authorization و ownership بررسی شود.
-- برای migration،forward fix/rollback و backup بررسی شود.
+- SecretØŒTokenØŒPIIØŒPHI ÛŒØ§ Ø¯Ø§Ø¯Ù‡ Ù…Ø´ØªØ±ÛŒ Ø¯Ø± sourceØŒlog Ùˆ Evidence Ø«Ø¨Øª Ù†Ø´ÙˆØ¯.
+- Ø¨Ø±Ø§ÛŒ API/write pathØŒauthorization Ùˆ ownership Ø¨Ø±Ø±Ø³ÛŒ Ø´ÙˆØ¯.
+- Ø¨Ø±Ø§ÛŒ migrationØŒforward fix/rollback Ùˆ backup Ø¨Ø±Ø±Ø³ÛŒ Ø´ÙˆØ¯.
 
 ## Evidence
-- مسیر: docs/evidence/P04-WPTHEME-CODE-017/
-- baseline commit/build،command/cwd/exit code،test report،screenshot redacted و reviewer را ثبت کن.
+- Ù…Ø³ÛŒØ±: docs/evidence/P04-WPTHEME-CODE-017/
+- baseline commit/buildØŒcommand/cwd/exit codeØŒtest reportØŒscreenshot redacted Ùˆ reviewer Ø±Ø§ Ø«Ø¨Øª Ú©Ù†.
 
 ## Rollback
-- روش بازگشت کم‌خطر یا forward-fix پیش از تغییر ثبت شود.
-- Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
+- Ø±ÙˆØ´ Ø¨Ø§Ø²Ú¯Ø´Øª Ú©Ù…â€ŒØ®Ø·Ø± ÛŒØ§ forward-fix Ù¾ÛŒØ´ Ø§Ø² ØªØºÛŒÛŒØ± Ø«Ø¨Øª Ø´ÙˆØ¯.
+- Migration/Payment/Secret/Health Ø¨Ø¯ÙˆÙ† backup Ùˆ ØªØ£ÛŒÛŒØ¯ Ø§Ù†Ø³Ø§Ù†ÛŒ DONE Ù†Ù…ÛŒâ€ŒØ´ÙˆØ¯.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T14:14:11+03:30
+- Completed at: 2026-11-28T14:16:20+03:30
 - Changed files:
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
+- Manual tester/date/result: AWAITING_MANUAL_QA (keyboard, focus, contrast, 200% zoom)
+- Evidence paths: docs/evidence/P04-WPTHEME-CODE-017/summary.md
 - Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+- Final status: AWAITING_MANUAL_QA

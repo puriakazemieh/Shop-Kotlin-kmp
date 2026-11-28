@@ -28,11 +28,11 @@ $can_register = 'yes' === get_option( 'woocommerce_enable_myaccount_registration
 		<div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;">
 			<form class="woocommerce-form woocommerce-form-login login" method="post">
 				<?php do_action( 'woocommerce_login_form_start' ); ?>
-				<div style="font-size:13px;font-weight:700;margin-bottom:8px;">نام کاربری یا ایمیل</div>
-				<input type="text" class="woocommerce-Input input-text" name="username" autocomplete="username" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; // phpcs:ignore ?>" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);outline:none;margin-bottom:14px;">
+				<label for="cb_login_username" style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;">نام کاربری یا ایمیل</label>
+				<input id="cb_login_username" type="text" class="woocommerce-Input input-text" name="username" autocomplete="username" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; // phpcs:ignore ?>" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);margin-bottom:14px;">
 
-				<div style="font-size:13px;font-weight:700;margin-bottom:8px;">گذرواژه</div>
-				<input type="password" class="woocommerce-Input input-text" name="password" autocomplete="current-password" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);outline:none;margin-bottom:14px;">
+				<label for="cb_login_password" style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;">گذرواژه</label>
+				<input id="cb_login_password" type="password" class="woocommerce-Input input-text" name="password" autocomplete="current-password" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);margin-bottom:14px;">
 
 				<?php do_action( 'woocommerce_login_form' ); ?>
 
@@ -52,14 +52,14 @@ $can_register = 'yes' === get_option( 'woocommerce_enable_myaccount_registration
 				<form method="post" class="woocommerce-form woocommerce-form-register register">
 					<?php do_action( 'woocommerce_register_form_start' ); ?>
 					<?php if ( 'no' === get_option( 'woocommerce_registration_generate_username' ) ) : ?>
-						<div style="font-size:13px;font-weight:700;margin-bottom:8px;">نام کاربری</div>
-						<input type="text" class="woocommerce-Input input-text" name="username" autocomplete="username" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; // phpcs:ignore ?>" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);outline:none;margin-bottom:14px;">
+						<label for="cb_reg_username" style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;">نام کاربری</label>
+						<input id="cb_reg_username" type="text" class="woocommerce-Input input-text" name="username" autocomplete="username" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; // phpcs:ignore ?>" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);margin-bottom:14px;">
 					<?php endif; ?>
-					<div style="font-size:13px;font-weight:700;margin-bottom:8px;">ایمیل</div>
-					<input type="email" class="woocommerce-Input input-text" name="email" autocomplete="email" value="<?php echo ( ! empty( $_POST['email'] ) ) ? esc_attr( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore ?>" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);outline:none;margin-bottom:14px;">
+					<label for="cb_reg_email" style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;">ایمیل</label>
+					<input id="cb_reg_email" type="email" class="woocommerce-Input input-text" name="email" autocomplete="email" value="<?php echo ( ! empty( $_POST['email'] ) ) ? esc_attr( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore ?>" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);margin-bottom:14px;">
 					<?php if ( 'no' === get_option( 'woocommerce_registration_generate_password' ) ) : ?>
-						<div style="font-size:13px;font-weight:700;margin-bottom:8px;">گذرواژه</div>
-						<input type="password" class="woocommerce-Input input-text" name="password" autocomplete="new-password" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);outline:none;margin-bottom:14px;">
+						<label for="cb_reg_password" style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;">گذرواژه</label>
+						<input id="cb_reg_password" type="password" class="woocommerce-Input input-text" name="password" autocomplete="new-password" style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);margin-bottom:14px;">
 					<?php endif; ?>
 					<?php do_action( 'woocommerce_register_form' ); ?>
 					<?php wp_nonce_field( 'woocommerce-register', 'woocommerce-register-nonce' ); ?>

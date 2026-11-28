@@ -240,7 +240,7 @@
 .cb-checkout .select2-selection {
   width: 100%; box-sizing: border-box; border: 1px solid var(--line);
   border-radius: 12px; padding: 12px 14px; font-family: var(--font-fa);
-  font-size: 13px; background: var(--surface-2); color: var(--ink); outline: none;
+  font-size: 13px; background: var(--surface-2); color: var(--ink);
 }
 .cb-checkout input.input-text:focus,
 .cb-checkout textarea:focus,

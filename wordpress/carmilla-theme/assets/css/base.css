@@ -33,6 +33,48 @@ a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 img { max-width: 100%; height: auto; display: block; }
 
+/* ---- Accessibility: Skip Link, Screen Reader & Visible Keyboard Focus (P04-WPTHEME-CODE-017) ---- */
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}
+.skip-link:focus {
+  clip: auto !important;
+  clip-path: none;
+  display: block;
+  height: auto;
+  width: auto;
+  position: fixed;
+  top: 12px;
+  inset-inline-start: 12px;
+  z-index: 99999;
+  padding: 10px 16px;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  box-shadow: var(--el-md);
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ---- type scale (Typography.kt) ---- */
 .t-display { font-weight: 800; font-size: 34px; line-height: 42px; letter-spacing: -0.6px; margin: 0; }
 .t-headline{ font-weight: 800; font-size: 28px; line-height: 36px; letter-spacing: -0.4px; margin: 0; }

@@ -46,6 +46,7 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 <?php wp_body_open(); ?>
 
 <div class="dc-root" dir="<?php echo esc_attr( is_rtl() ? 'rtl' : 'ltr' ); ?>" style="min-height:100vh;background:var(--bg);color:var(--ink);transition:background .25s,color .25s;">
+	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'پرش به محتوای اصلی', 'carmilla' ); ?></a>
 
 	<!-- ===== HEADER ===== -->
 	<?php
@@ -72,20 +73,20 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 			</a>
 
 			<div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-				<button type="button" onclick="window.cbToggleTheme&&window.cbToggleTheme()" title="تغییر تم" style="width:42px;height:42px;border-radius:12px;display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);background:none;border:none;">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="<?php echo esc_attr( carmilla_dc_theme_icon() ); ?>"/></svg>
+				<button type="button" onclick="window.cbToggleTheme&&window.cbToggleTheme()" aria-label="<?php esc_attr_e( 'تغییر تم روشن یا تاریک', 'carmilla' ); ?>" title="تغییر تم" style="width:42px;height:42px;border-radius:12px;display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);background:none;border:none;">
+					<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="<?php echo esc_attr( carmilla_dc_theme_icon() ); ?>"/></svg>
 				</button>
 				<div class="top-actions" style="display:flex;align-items:center;gap:4px;">
-					<a href="<?php echo esc_url( home_url( '/?cb_view=wishlist' ) ); ?>" style="position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink-soft);">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.4-9A5 5 0 0112 5a5 5 0 019.4 7C19 16.4 12 21 12 21z"/></svg>
+					<a href="<?php echo esc_url( home_url( '/?cb_view=wishlist' ) ); ?>" aria-label="<?php esc_attr_e( 'علاقه‌مندی‌ها', 'carmilla' ); ?>" style="position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink-soft);">
+						<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.4-9A5 5 0 0112 5a5 5 0 019.4 7C19 16.4 12 21 12 21z"/></svg>
 						<?php if ( $wish_count > 0 ) : ?><div style="position:absolute;top:5px;left:5px;background:var(--sale);color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:9px;display:grid;place-items:center;padding:0 3px;"><?php echo esc_html( carmilla_to_persian_digits( $wish_count ) ); ?></div><?php endif; ?>
 					</a>
-					<a href="<?php echo esc_url( $cart_url ); ?>" style="position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink-soft);">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.6 9H7.5z M6 6L5 3H2 M9 20a1 1 0 100 .1 M18 20a1 1 0 100 .1"/></svg>
+					<a href="<?php echo esc_url( $cart_url ); ?>" aria-label="<?php esc_attr_e( 'سبد خرید', 'carmilla' ); ?>" style="position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink-soft);">
+						<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.6 9H7.5z M6 6L5 3H2 M9 20a1 1 0 100 .1 M18 20a1 1 0 100 .1"/></svg>
 						<?php if ( $cart_count > 0 ) : ?><div style="position:absolute;top:5px;left:5px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:9px;display:grid;place-items:center;padding:0 3px;"><?php echo esc_html( carmilla_to_persian_digits( $cart_count ) ); ?></div><?php endif; ?>
 					</a>
 					<a href="<?php echo esc_url( $account_url ); ?>" style="display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px 14px;color:var(--ink);margin-right:2px;">
-						<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+						<svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
 						<span style="font-size:13px;font-weight:600;white-space:nowrap;"><?php echo esc_html( $account_lbl ); ?></span>
 					</a>
 				</div>
@@ -93,11 +94,11 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 		</div>
 
 		<?php if ( $navcats ) : ?>
-		<div class="noscroll" style="max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 clamp(14px,4vw,28px) 10px;overflow-x:auto;">
+		<nav aria-label="<?php esc_attr_e( 'دسته‌بندی محصولات', 'carmilla' ); ?>" class="noscroll" style="max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 clamp(14px,4vw,28px) 10px;overflow-x:auto;">
 			<?php foreach ( $navcats as $c ) : ?>
 				<a href="<?php echo esc_url( $c['url'] ); ?>" style="font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;padding:3px 0;"><?php echo esc_html( $c['name'] ); ?></a>
 			<?php endforeach; ?>
-		</div>
+		</nav>
 		<?php endif; ?>
 	</div>
 	<?php endif; // end header location fallback. ?>
@@ -110,4 +111,4 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 		? 'padding:0 0 120px;min-height:60vh;'
 		: 'max-width:1240px;margin:0 auto;padding:0 clamp(14px,4vw,28px) 120px;min-height:60vh;';
 	?>
-	<div id="content" class="route-pad" style="<?php echo esc_attr( $cb_content_style ); ?>">
+	<div id="content" tabindex="-1" class="route-pad" style="<?php echo esc_attr( $cb_content_style ); ?>">
