@@ -48,9 +48,9 @@ P04-WPTHEME-CODE-016
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: AWAITING_MANUAL_QA
 - Phase/Area/Type: P04 / WPTHEME / CODE
-- Priority/Risk/Size: P1/MEDIUM / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P1/MEDIUM / M
 - Owner: AI
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-015
@@ -103,10 +103,10 @@ template hierarchy، RTL/LTR، light/dark و responsive تثبیت
 - Tester،تاریخ،build fingerprint،نتیجه و Evidence الزامی است.
 
 ## Acceptance Criteria
-- [ ] خروجی با هدف و validation این کارت منطبق است.
-- [ ] Scope خارج از Allowed files/directories گسترش نیافته است.
-- [ ] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
-- [ ] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
+- [x] خروجی با هدف و validation این کارت منطبق است.
+- [x] Scope خارج از Allowed files/directories گسترش نیافته است.
+- [x] تست خودکار/بازبینی لازم واقعاً اجرا و نتیجه ثبت شده است.
+- [x] اگر تست دستی لازم است،Evidence انسانی ثبت شده یا Status برابر AWAITING_MANUAL_QA است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -122,11 +122,18 @@ template hierarchy، RTL/LTR، light/dark و responsive تثبیت
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T14:07:36+03:30
+- Completed at: 2026-11-28T14:09:20+03:30
 - Changed files:
+  - `wordpress/carmilla-theme/header.php`
+  - `wordpress/carmilla-theme/rtl.css`
+  - `wordpress/carmilla-theme/tests/test-theme-hierarchy-responsive-016.php`
+  - `docs/evidence/P04-WPTHEME-CODE-016/summary.md`
+  - `docs/tasks/P04-WPTHEME-CODE-016.md`
+  - `docs/tasks.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ...header.php && php ...test-theme-metadata-assets.php && php ...test-template-pagination-searchform.php && php ...test-theme-hierarchy-responsive-016.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (33/33, 13/13, 38/38, 78/78 passed)
+- Manual tester/date/result: AWAITING_MANUAL_QA (360/390/600/840/1024/1440 visual inspection)
+- Evidence paths: `docs/evidence/P04-WPTHEME-CODE-016/summary.md`
+- Remaining risks/blockers: Visual screenshot verification at 360/390/600/840/1024/1440 by human reviewer
+- Final status: AWAITING_MANUAL_QA

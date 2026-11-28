@@ -45,7 +45,7 @@ if ( function_exists( 'get_terms' ) && function_exists( 'wc_get_page_permalink' 
 <body <?php body_class( 'has-bottom-nav' ); ?>>
 <?php wp_body_open(); ?>
 
-<div class="dc-root" dir="rtl" style="min-height:100vh;background:var(--bg);color:var(--ink);transition:background .25s,color .25s;">
+<div class="dc-root" dir="<?php echo esc_attr( is_rtl() ? 'rtl' : 'ltr' ); ?>" style="min-height:100vh;background:var(--bg);color:var(--ink);transition:background .25s,color .25s;">
 
 	<!-- ===== HEADER ===== -->
 	<?php
