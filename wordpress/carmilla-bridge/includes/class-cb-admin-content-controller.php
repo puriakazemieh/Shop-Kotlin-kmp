@@ -69,17 +69,19 @@ class CB_Admin_Content_Controller {
 			register_rest_route( $ns, '/api/admin/therapists/(?P<id>\d+)/generate-slots', array( 'methods' => 'POST', 'callback' => array( $this, 'generate_slots' ), 'permission_callback' => $admin ) );
 			
 			// Psych tests.
-			register_rest_route( $ns, '/api/admin/psych-tests', array(
-				array( 'methods' => 'GET', 'callback' => array( $this, 'list_tests' ), 'permission_callback' => $admin ),
-				array( 'methods' => 'POST', 'callback' => array( $this, 'create_test' ), 'permission_callback' => $admin ),
-			) );
-			register_rest_route( $ns, '/api/admin/psych-tests/(?P<id>\d+)', array(
-				array( 'methods' => 'GET', 'callback' => array( $this, 'test_detail' ), 'permission_callback' => $admin ),
-				array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_test' ), 'permission_callback' => $admin ),
-				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_test' ), 'permission_callback' => $admin ),
-			) );
-			register_rest_route( $ns, '/api/admin/psych-tests/pending-interpretations', array( 'methods' => 'GET', 'callback' => array( $this, 'pending_interpretations' ), 'permission_callback' => $admin ) );
-			register_rest_route( $ns, '/api/admin/psych-tests/user-tests/(?P<uid>\d+)/interpret', array( 'methods' => 'POST', 'callback' => array( $this, 'interpret' ), 'permission_callback' => $admin ) );
+			if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestRestController' ) ) {
+				register_rest_route( $ns, '/api/admin/psych-tests', array(
+					array( 'methods' => 'GET', 'callback' => array( $this, 'list_tests' ), 'permission_callback' => $admin ),
+					array( 'methods' => 'POST', 'callback' => array( $this, 'create_test' ), 'permission_callback' => $admin ),
+				) );
+				register_rest_route( $ns, '/api/admin/psych-tests/(?P<id>\d+)', array(
+					array( 'methods' => 'GET', 'callback' => array( $this, 'test_detail' ), 'permission_callback' => $admin ),
+					array( 'methods' => array( 'PUT', 'POST' ), 'callback' => array( $this, 'update_test' ), 'permission_callback' => $admin ),
+					array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_test' ), 'permission_callback' => $admin ),
+				) );
+				register_rest_route( $ns, '/api/admin/psych-tests/pending-interpretations', array( 'methods' => 'GET', 'callback' => array( $this, 'pending_interpretations' ), 'permission_callback' => $admin ) );
+				register_rest_route( $ns, '/api/admin/psych-tests/user-tests/(?P<uid>\d+)/interpret', array( 'methods' => 'POST', 'callback' => array( $this, 'interpret' ), 'permission_callback' => $admin ) );
+			}
 		}
 		if ( ! class_exists( '\Carmilla\Core\Clinic\AppointmentBookingRestController' ) ) {
 			register_rest_route( $ns, '/api/admin/therapists/appointments', array( 'methods' => 'GET', 'callback' => '__return_empty_array', 'permission_callback' => '__return_false' ) );
@@ -90,17 +92,19 @@ class CB_Admin_Content_Controller {
 		register_rest_route( $ns, '/api/admin/clinic/switch-requests/(?P<id>\d+)/review', array( 'methods' => 'POST', 'callback' => array( $this, 'review_switch' ), 'permission_callback' => $admin ) );
 
 		// Psych tests.
-		register_rest_route( $ns, '/api/admin/psych-tests', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'list_tests' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'POST', 'callback' => array( $this, 'create_test' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/psych-tests/(?P<id>\d+)', array(
-			array( 'methods' => 'GET', 'callback' => array( $this, 'test_detail' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_test' ), 'permission_callback' => $admin ),
-			array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_test' ), 'permission_callback' => $admin ),
-		) );
-		register_rest_route( $ns, '/api/admin/psych-tests/pending-interpretations', array( 'methods' => 'GET', 'callback' => array( $this, 'pending_interpretations' ), 'permission_callback' => $admin ) );
-		register_rest_route( $ns, '/api/admin/psych-tests/user-tests/(?P<uid>\d+)/interpret', array( 'methods' => 'POST', 'callback' => array( $this, 'interpret' ), 'permission_callback' => $admin ) );
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestRestController' ) ) {
+			register_rest_route( $ns, '/api/admin/psych-tests', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'list_tests' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'POST', 'callback' => array( $this, 'create_test' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/psych-tests/(?P<id>\d+)', array(
+				array( 'methods' => 'GET', 'callback' => array( $this, 'test_detail' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'PATCH', 'callback' => array( $this, 'update_test' ), 'permission_callback' => $admin ),
+				array( 'methods' => 'DELETE', 'callback' => array( $this, 'delete_test' ), 'permission_callback' => $admin ),
+			) );
+			register_rest_route( $ns, '/api/admin/psych-tests/pending-interpretations', array( 'methods' => 'GET', 'callback' => array( $this, 'pending_interpretations' ), 'permission_callback' => $admin ) );
+			register_rest_route( $ns, '/api/admin/psych-tests/user-tests/(?P<uid>\d+)/interpret', array( 'methods' => 'POST', 'callback' => array( $this, 'interpret' ), 'permission_callback' => $admin ) );
+		}
 
 		// Stories.
 		register_rest_route( $ns, '/api/admin/stories', array(

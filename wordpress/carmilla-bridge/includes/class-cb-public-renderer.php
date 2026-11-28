@@ -50,6 +50,9 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_therapist', array( __CLASS__, 'render_therapist_shortcode' ) );
 		add_shortcode( 'carmilla_booking', array( __CLASS__, 'render_booking_shortcode' ) );
 		add_shortcode( 'carmilla_my_appointments', array( __CLASS__, 'render_my_appointments_shortcode' ) );
+		add_shortcode( 'carmilla_psych_tests', array( __CLASS__, 'render_psych_tests_shortcode' ) );
+		add_shortcode( 'carmilla_psych_test', array( __CLASS__, 'render_psych_test_shortcode' ) );
+		add_shortcode( 'carmilla_my_psych_results', array( __CLASS__, 'render_my_psych_results_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -890,6 +893,137 @@ class CB_Public_Renderer {
 						<strong><?php echo esc_html( (string) ( $a['therapistName'] ?? '' ) ); ?></strong>
 						<span>(<?php echo esc_html( (string) ( $a['dayLabel'] ?? '' ) . ' ' . (string) ( $a['timeLabel'] ?? '' ) ); ?>)</span>
 						<em><?php echo esc_html( (string) ( $a['status'] ?? '' ) ); ?></em>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders psychological tests catalog via PsychTestService.
+	 */
+	public static function render_psych_tests_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Psych\PsychTestService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="psych-disabled">' . esc_html__( 'قابلیت تست روان‌شناسی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		$tests        = \Carmilla\Core\Psych\PsychTestService::list_tests( get_current_user_id(), false );
+		$override_tpl = locate_template( array( 'carmilla/psych-tests-list.php', 'carmilla-psych-tests-list.php' ) );
+		$override_tpl = apply_filters( 'carmilla_psych_tests_list_template', $override_tpl, $tests );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_psych_tests_data = $tests;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="psych-tests">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'تست‌های روان‌شناسی', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $tests as $t ) : ?>
+					<li data-test-id="<?php echo esc_attr( (string) ( $t['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $t['title'] ?? '' ) ); ?></strong>
+						<span>(<?php echo esc_html( (string) ( $t['questionCount'] ?? 0 ) ); ?> سؤال)</span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders single psychological test form (option scores never exposed).
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_psych_test_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Psych\PsychTestService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="psych-disabled">' . esc_html__( 'قابلیت تست روان‌شناسی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		$atts   = shortcode_atts( array( 'id' => 0, 'slug' => '' ), is_array( $atts ) ? $atts : array(), 'carmilla_psych_test' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$t = \Carmilla\Core\Psych\PsychTestService::get_test_detail( $lookup, get_current_user_id() );
+		if ( is_wp_error( $t ) ) {
+			return '<div class="carmilla-public-surface">' . esc_html( $t->get_error_message() ) . '</div>';
+		}
+		$override_tpl = locate_template( array( 'carmilla/psych-test-detail.php', 'carmilla-psych-test-detail.php' ) );
+		$override_tpl = apply_filters( 'carmilla_psych_test_detail_template', $override_tpl, $t );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_psych_test_data = $t;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+		$dir       = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		$questions = isset( $t['questions'] ) && is_array( $t['questions'] ) ? $t['questions'] : array();
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="psych-test-form" data-test-id="<?php echo esc_attr( (string) ( $t['id'] ?? 0 ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html( (string) ( $t['title'] ?? '' ) ); ?></h2>
+			<form class="carmilla-public-surface__form" method="post" action="<?php echo esc_url( rest_url( 'carmilla/v1/api/psych-tests/' . (int) ( $t['id'] ?? 0 ) . '/submit' ) ); ?>">
+				<?php foreach ( $questions as $q ) : ?>
+					<fieldset>
+						<legend><?php echo esc_html( (string) ( $q['text'] ?? '' ) ); ?></legend>
+						<?php foreach ( (array) ( $q['options'] ?? array() ) as $oi => $o ) : ?>
+							<label><input type="radio" name="q<?php echo esc_attr( (string) ( $q['index'] ?? 0 ) ); ?>" value="<?php echo esc_attr( (string) $oi ); ?>" required /> <?php echo esc_html( (string) ( $o['text'] ?? '' ) ); ?></label>
+						<?php endforeach; ?>
+					</fieldset>
+				<?php endforeach; ?>
+				<button type="submit" class="carmilla-public-surface__btn"><?php echo esc_html__( 'ثبت پاسخ و مشاهده نتیجه', 'carmilla-bridge' ); ?></button>
+			</form>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders current user's private psychological test results (owner-only).
+	 */
+	public static function render_my_psych_results_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Psych\PsychTestService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="psych-disabled">' . esc_html__( 'قابلیت تست روان‌شناسی فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="psych-results-auth">' . esc_html__( 'برای مشاهده نتایج تست‌ها وارد شوید.', 'carmilla-bridge' ) . '</div>';
+		}
+		$results      = \Carmilla\Core\Psych\PsychTestService::my_tests( get_current_user_id() );
+		$override_tpl = locate_template( array( 'carmilla/my-psych-results.php', 'carmilla-my-psych-results.php' ) );
+		$override_tpl = apply_filters( 'carmilla_my_psych_results_template', $override_tpl, $results );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_psych_results_data = $results;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="my-psych-results">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'نتایج تست‌های من', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $results as $r ) : ?>
+					<li data-attempt-id="<?php echo esc_attr( (string) ( $r['id'] ?? 0 ) ); ?>" data-status="<?php echo esc_attr( (string) ( $r['status'] ?? '' ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $r['testTitle'] ?? '' ) ); ?></strong>
+						<span><?php echo esc_html( (string) ( $r['status'] ?? '' ) ); ?></span>
+						<?php if ( isset( $r['totalScore'] ) && null !== $r['totalScore'] ) : ?>
+							<em>امتیاز: <?php echo esc_html( (string) $r['totalScore'] ); ?></em>
+						<?php endif; ?>
 					</li>
 				<?php endforeach; ?>
 			</ul>

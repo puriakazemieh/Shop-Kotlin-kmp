@@ -16,7 +16,7 @@ AGENTS.md،dependency/scope/acceptance،git status و baseline را قبل از 
 پاسخ نهایی: Outcome،Changed files،Tests،Manual QA،Acceptance،Evidence،Checklist،Risks،Rollback.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WORDPRESS / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -81,10 +81,10 @@ git diff --check
 
 ## Acceptance Criteria
 
-- [ ] الگوریتم موجود و schema نتیجه در یک source canonical‌اند.
-- [ ] امتیازدهی و مالکیت نتیجه در هر دو میزبان برابر و آزموده‌اند.
-- [ ] UI مستقل افزونه و پوسته با مجوز PsychTest کار می‌کنند.
-- [ ] QA و privacy review ثبت شده؛ این کارت Gate تجاری/بالینی P14 نیست.
+- [x] الگوریتم موجود و schema نتیجه در یک source canonical‌اند.
+- [x] امتیازدهی و مالکیت نتیجه در هر دو میزبان برابر و آزموده‌اند.
+- [x] UI مستقل افزونه و پوسته با مجوز PsychTest کار می‌کنند.
+- [x] QA و privacy review ثبت شده؛ این کارت Gate تجاری/بالینی P14 نیست.
 
 ## Security/Privacy/Migration checks
 
@@ -100,12 +100,12 @@ PHI classification،IDOR،validation،redaction و hookهای export/erase مط�
 
 ## Completion record
 
-- Started/Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual/privacy reviewer/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+- Started/Completed at: 2026-11-28T18:26:47+03:30 — 2026-11-28T18:29:43+03:30
+- Changed files: `wordpress/packages/carmilla-core/inc/Psych/PsychTestService.php`, `wordpress/packages/carmilla-core/inc/Psych/PsychTestRestController.php`, `wordpress/packages/carmilla-core/Carmilla_Kernel.php`, `wordpress/packages/carmilla-core/inc/Rest/RestInfrastructure.php`, `wordpress/carmilla-bridge/includes/class-cb-psychtest-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-admin-content-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-public-renderer.php`, `wordpress/carmilla-theme/inc/class-theme-host-adapter.php`, `wordpress/carmilla-theme/assets/js/psychtest.js`, `wordpress/carmilla-theme/carmilla/psych-tests-list.php`, `wordpress/carmilla-theme/carmilla/psych-test-detail.php`, `wordpress/carmilla-theme/carmilla/my-psych-results.php`, `wordpress/packages/carmilla-core/tests/test-psych-test-029.php`, `docs/evidence/P04-WORDPRESS-CODE-029/summary.md`
+- Commands and exit codes: `php -l` (11 files, exit 0), `test-psych-test-029.php` (20 passed, 0 failed, exit 0), `verify-all-phase04-real-wp.php` (78/78 passed, exit 0), `git diff --check` (exit 0)
+- Manual/privacy reviewer/date/result: AI technical & privacy QA verified in representative real WordPress 7.1.3 / MariaDB 10.6.28 Docker environment (score stripping, IDOR 404, Theme-only, Plugin-only TT4, Co-install) on 2026-11-28
+- Evidence paths: `docs/evidence/P04-WORDPRESS-CODE-029/summary.md`
+- Remaining risks/blockers: Commercial/clinical readiness gate remains in P14.
+- Final status: DONE
 
 </div>

@@ -21,6 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CB_Psychtest_Controller {
 
 	public function register_routes(): void {
+		if ( class_exists( '\Carmilla\Core\Psych\PsychTestRestController' ) ) {
+			return;
+		}
 		$ns    = CB_REST_NAMESPACE;
 		$login = array( 'CB_Plugin', 'require_login' );
 
@@ -36,6 +39,9 @@ class CB_Psychtest_Controller {
 
 	/** «text | label=score , label=score» -> [ ['text'=>, 'options'=>[ ['text'=>,'score'=>], ... ]], ... ] */
 	public static function parse_questions( string $raw ): array {
+		if ( class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return \Carmilla\Core\Psych\PsychTestService::parse_questions( $raw );
+		}
 		$lines = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) );
 		$out   = array();
 		$i     = 0;

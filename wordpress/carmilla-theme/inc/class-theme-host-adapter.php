@@ -573,6 +573,15 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_my_appointments' ) ) {
 			add_shortcode( 'carmilla_my_appointments', [ self::class, 'render_my_appointments_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_psych_tests' ) ) {
+			add_shortcode( 'carmilla_psych_tests', [ self::class, 'render_psych_tests_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_psych_test' ) ) {
+			add_shortcode( 'carmilla_psych_test', [ self::class, 'render_psych_test_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_my_psych_results' ) ) {
+			add_shortcode( 'carmilla_my_psych_results', [ self::class, 'render_my_psych_results_shortcode' ] );
+		}
 	}
 
 	/**
@@ -892,6 +901,72 @@ class ThemeHostAdapter {
 		}
 		$carmilla_appointments_data = \Carmilla\Core\Clinic\AppointmentBookingService::my_appointments( get_current_user_id() );
 		$tpl = locate_template( [ 'carmilla/my-appointments.php', 'carmilla-my-appointments.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_psych_tests_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Psych\PsychTestService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="psych-disabled">' . esc_html__( 'قابلیت تست روان‌شناسی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_psych_tests_data = \Carmilla\Core\Psych\PsychTestService::list_tests( get_current_user_id(), false );
+		$tpl = locate_template( [ 'carmilla/psych-tests-list.php', 'carmilla-psych-tests-list.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_psych_test_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Psych\PsychTestService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="psych-disabled">' . esc_html__( 'قابلیت تست روان‌شناسی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$atts   = shortcode_atts( [ 'id' => 0, 'slug' => '' ], is_array( $atts ) ? $atts : [], 'carmilla_psych_test' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$t = \Carmilla\Core\Psych\PsychTestService::get_test_detail( $lookup, get_current_user_id() );
+		if ( is_wp_error( $t ) ) {
+			return '<div class="card">' . esc_html( $t->get_error_message() ) . '</div>';
+		}
+		$carmilla_psych_test_data = $t;
+		$tpl = locate_template( [ 'carmilla/psych-test-detail.php', 'carmilla-psych-test-detail.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_my_psych_results_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Psych\PsychTestService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Psych\PsychTestService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="psych-disabled">' . esc_html__( 'قابلیت تست روان‌شناسی فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="psych-results-auth">' . esc_html__( 'برای مشاهده نتایج تست‌ها وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_psych_results_data = \Carmilla\Core\Psych\PsychTestService::my_tests( get_current_user_id() );
+		$tpl = locate_template( [ 'carmilla/my-psych-results.php', 'carmilla-my-psych-results.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;

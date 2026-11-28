@@ -38,6 +38,8 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Clinic/TherapistCatalogRestController.php';
     require_once __DIR__ . '/inc/Clinic/AppointmentBookingService.php';
     require_once __DIR__ . '/inc/Clinic/AppointmentBookingRestController.php';
+    require_once __DIR__ . '/inc/Psych/PsychTestService.php';
+    require_once __DIR__ . '/inc/Psych/PsychTestRestController.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**

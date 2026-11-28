@@ -26,7 +26,7 @@
 		}
 		var answers = keys.sort( function ( a, b ) { return a - b; } ).map( function ( k ) { return groups[ k ]; } );
 
-		fetch( cfg.restUrl + 'psych-tests/' + form.getAttribute( 'data-id' ) + '/submit', {
+		fetch( cfg.restUrl + 'api/psych-tests/' + form.getAttribute( 'data-id' ) + '/submit', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.nonce },
 			credentials: 'same-origin',

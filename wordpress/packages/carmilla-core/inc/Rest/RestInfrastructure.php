@@ -142,6 +142,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Clinic\AppointmentBookingRestController' ) ) {
             \Carmilla\Core\Clinic\AppointmentBookingRestController::register_routes();
         }
+
+        // Register shared psychological test endpoints (P04-WORDPRESS-CODE-029)
+        if ( class_exists( '\Carmilla\Core\Psych\PsychTestRestController' ) ) {
+            \Carmilla\Core\Psych\PsychTestRestController::register_routes();
+        }
     }
 
     /**
