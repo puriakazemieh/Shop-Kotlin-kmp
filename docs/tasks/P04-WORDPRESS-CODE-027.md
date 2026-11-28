@@ -16,7 +16,7 @@ AGENTS.md،dependency،scope،acceptance،git status و baseline را قبل ا�
 پاسخ نهایی: Outcome،Changed files،Tests،Manual QA،Acceptance،Evidence،Checklist،Risks،Rollback.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WORDPRESS / CODE
 - Priority/Risk/Size: P0 / HIGH / M
 - Owner: BOTH
@@ -82,10 +82,10 @@ git diff --check
 
 ## Acceptance Criteria
 
-- [ ] Course و lesson/content یک implementation دارند.
-- [ ] صفحات فهرست/جزئیات و مدیریت روی هر دو میزبان کار می‌کنند.
-- [ ] حریم محتوای محافظت‌شده و شناسه/aliasهای قبلی محفوظ‌اند.
-- [ ] این انتقال پایه با Gate فروش LMS در P13 اشتباه نشده است.
+- [x] Course و lesson/content یک implementation دارند.
+- [x] صفحات فهرست/جزئیات و مدیریت روی هر دو میزبان کار می‌کنند.
+- [x] حریم محتوای محافظت‌شده و شناسه/aliasهای قبلی محفوظ‌اند.
+- [x] این انتقال پایه با Gate فروش LMS در P13 اشتباه نشده است.
 
 ## Security/Privacy/Migration checks
 
@@ -101,12 +101,12 @@ adapter قبلی قابل بازگشت باشد؛ رکورد دوره،درس،�
 
 ## Completion record
 
-- Started/Completed at:
-- Changed files:
-- Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | DONE | BLOCKED
+- Started/Completed at: 2026-11-28
+- Changed files: `wordpress/packages/carmilla-core/inc/Academy/CourseCatalogService.php`, `wordpress/packages/carmilla-core/inc/Academy/CourseCatalogRestController.php`, `wordpress/packages/carmilla-core/Carmilla_Kernel.php`, `wordpress/packages/carmilla-core/inc/Rest/RestInfrastructure.php`, `wordpress/carmilla-bridge/includes/class-cb-academy-controller.php`, `wordpress/carmilla-bridge/includes/class-cb-public-renderer.php`, `wordpress/carmilla-theme/inc/class-theme-host-adapter.php`, `wordpress/carmilla-theme/carmilla/courses-list.php`, `wordpress/carmilla-theme/carmilla/course-detail.php`, `wordpress/packages/carmilla-core/tests/test-course-catalog-027.php`, `docs/evidence/P04-WORDPRESS-CODE-027/summary.md`, `docs/tasks/P04-WORDPRESS-CODE-027.md`, `docs/tasks.md`, `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
+- Commands and exit codes: `test-course-catalog-027.php` (16/16) + `verify-all-phase04-real-wp.php` (78/78) + `git diff --check` -> exit code 0
+- Manual tester/date/result: Agent-verified in real WordPress Docker container (`test-env-wordpress-test-1`), 2026-11-28, PASS
+- Evidence paths: `docs/evidence/P04-WORDPRESS-CODE-027/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

@@ -549,6 +549,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_orders' ) ) {
 			add_shortcode( 'carmilla_orders', [ self::class, 'render_orders_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_courses' ) ) {
+			add_shortcode( 'carmilla_courses', [ self::class, 'render_courses_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_course' ) ) {
+			add_shortcode( 'carmilla_course', [ self::class, 'render_course_shortcode' ] );
+		}
 	}
 
 	/**
@@ -683,6 +689,56 @@ class ThemeHostAdapter {
 		}
 		$carmilla_orders_data = $orders;
 		$tpl = locate_template( [ 'carmilla/orders-list.php', 'carmilla-orders-list.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_courses_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Academy\CourseCatalogService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="academy-disabled">' . esc_html__( 'قابلیت آموزش فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$atts = shortcode_atts( [ 'size' => 20 ], is_array( $atts ) ? $atts : [], 'carmilla_courses' );
+		$carmilla_courses_data = \Carmilla\Core\Academy\CourseCatalogService::list_courses( get_current_user_id(), [ 'size' => (int) $atts['size'] ] );
+		$tpl = locate_template( [ 'carmilla/courses-list.php', 'carmilla-courses-list.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_course_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Academy\CourseCatalogService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="academy-disabled">' . esc_html__( 'قابلیت آموزش فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$atts   = shortcode_atts( [ 'id' => 0, 'slug' => '' ], is_array( $atts ) ? $atts : [], 'carmilla_course' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$course = \Carmilla\Core\Academy\CourseCatalogService::get_course_detail( $lookup, get_current_user_id() );
+		if ( is_wp_error( $course ) ) {
+			return '<div class="card">' . esc_html( $course->get_error_message() ) . '</div>';
+		}
+		$carmilla_course_data = $course;
+		$tpl = locate_template( [ 'carmilla/course-detail.php', 'carmilla-course-detail.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;

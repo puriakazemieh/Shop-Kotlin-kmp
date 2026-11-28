@@ -42,6 +42,8 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_product', array( __CLASS__, 'render_product_shortcode' ) );
 		add_shortcode( 'carmilla_cart', array( __CLASS__, 'render_cart_shortcode' ) );
 		add_shortcode( 'carmilla_orders', array( __CLASS__, 'render_orders_shortcode' ) );
+		add_shortcode( 'carmilla_courses', array( __CLASS__, 'render_courses_shortcode' ) );
+		add_shortcode( 'carmilla_course', array( __CLASS__, 'render_course_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -519,6 +521,99 @@ class CB_Public_Renderer {
 				<?php endforeach; ?>
 			</ul>
 		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders courses list via shared CourseCatalogService (or theme override).
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_courses_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Academy\CourseCatalogService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="academy-disabled">' . esc_html__( 'قابلیت آموزش فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$atts    = shortcode_atts( array( 'size' => 20 ), is_array( $atts ) ? $atts : array(), 'carmilla_courses' );
+		$courses = \Carmilla\Core\Academy\CourseCatalogService::list_courses( get_current_user_id(), array( 'size' => (int) $atts['size'] ) );
+
+		$override_tpl = locate_template( array( 'carmilla/courses-list.php', 'carmilla-courses-list.php' ) );
+		$override_tpl = apply_filters( 'carmilla_courses_list_template', $override_tpl, $courses );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_courses_data = $courses;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="courses">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'دوره‌های آموزشی', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $courses as $c ) : ?>
+					<li data-course-id="<?php echo esc_attr( (string) ( $c['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $c['title'] ?? '' ) ); ?></strong>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders single course detail & lesson structure via CourseCatalogService.
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_course_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseCatalogService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Academy\CourseCatalogService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="academy-disabled">' . esc_html__( 'قابلیت آموزش فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$atts   = shortcode_atts( array( 'id' => 0, 'slug' => '' ), is_array( $atts ) ? $atts : array(), 'carmilla_course' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+
+		$course = \Carmilla\Core\Academy\CourseCatalogService::get_course_detail( $lookup, get_current_user_id() );
+		if ( is_wp_error( $course ) ) {
+			return '<div class="carmilla-public-surface">' . esc_html( $course->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/course-detail.php', 'carmilla-course-detail.php' ) );
+		$override_tpl = apply_filters( 'carmilla_course_detail_template', $override_tpl, $course );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_course_data = $course;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir     = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		$lessons = $course['sections'][0]['lessons'] ?? array();
+		ob_start();
+		?>
+		<article class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="course" data-course-id="<?php echo esc_attr( (string) ( $course['id'] ?? 0 ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html( (string) ( $course['title'] ?? '' ) ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $lessons as $l ) : ?>
+					<li data-lesson-id="<?php echo esc_attr( (string) ( $l['id'] ?? 0 ) ); ?>" data-locked="<?php echo empty( $l['videoUrl'] ) && empty( $l['freePreview'] ) ? '1' : '0'; ?>">
+						<?php echo esc_html( (string) ( $l['title'] ?? '' ) ); ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</article>
 		<?php
 		return (string) ob_get_clean();
 	}

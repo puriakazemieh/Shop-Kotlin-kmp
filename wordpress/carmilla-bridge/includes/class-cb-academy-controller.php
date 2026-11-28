@@ -46,9 +46,13 @@ class CB_Academy_Controller {
 		$pub   = '__return_true';
 		$login = array( 'CB_Plugin', 'require_login' );
 
-		register_rest_route( $ns, '/api/courses', array( 'methods' => 'GET', 'callback' => array( $this, 'list_courses' ), 'permission_callback' => $pub ) );
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseCatalogRestController' ) ) {
+			register_rest_route( $ns, '/api/courses', array( 'methods' => 'GET', 'callback' => array( $this, 'list_courses' ), 'permission_callback' => $pub ) );
+		}
 		register_rest_route( $ns, '/api/courses/certificates/verify/(?P<num>[A-Za-z0-9\-]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'verify_certificate' ), 'permission_callback' => $pub ) );
-		register_rest_route( $ns, '/api/courses/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'get_course' ), 'permission_callback' => $pub ) );
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseCatalogRestController' ) ) {
+			register_rest_route( $ns, '/api/courses/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'get_course' ), 'permission_callback' => $pub ) );
+		}
 
 		register_rest_route( $ns, '/api/academy/my-courses', array( 'methods' => 'GET', 'callback' => array( $this, 'my_courses' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/enroll', array( 'methods' => 'POST', 'callback' => array( $this, 'enroll' ), 'permission_callback' => $login ) );
