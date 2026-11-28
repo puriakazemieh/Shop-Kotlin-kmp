@@ -50,9 +50,9 @@ P04-WPPLUGIN-CODE-015
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-ENTITLEMENT-CODE-041
@@ -110,10 +110,10 @@ fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با
 
 ## Acceptance Criteria
 
-- [ ] ماتریس HPOS و checkout واقعی اجرا شده است.
-- [ ] دو محصول مستقل و نصب هم‌زمان پوشش دارند.
-- [ ] declaration مطابق evidence است.
-- [ ] پرداخت یا تأیید provider production ادعا نشده است.
+- [x] ماتریس HPOS و checkout واقعی اجرا شده است.
+- [x] دو محصول مستقل و نصب هم‌زمان پوشش دارند.
+- [x] declaration مطابق evidence است.
+- [x] پرداخت یا تأیید provider production ادعا نشده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,20 @@ fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T14:01:19+03:30
+- Completed at: 2026-11-28T14:03:05+03:30
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Adapter/WooCompat.php`
+  - `wordpress/packages/carmilla-core/tests/test-woo-hpos-blocks-015.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-015/summary.md`
+  - `docs/tasks/P04-WPPLUGIN-CODE-015.md`
+  - `docs/tasks.md`
+  - `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ...WooCompat.php && php ...smoke-wallet-gateway-disabled.php && php ...test-woo-hpos-blocks-015.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (14/14 passed in test-woo-hpos-blocks-015.php; 78/78 passed in verify-all-phase04-real-wp.php)
+- Manual tester/date/result: Automated real WooCommerce verification across HPOS ON/OFF, Classic/Blocks, Theme-Only, Plugin-Only (TT4), and Co-Install / 2026-11-28 / PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-015/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

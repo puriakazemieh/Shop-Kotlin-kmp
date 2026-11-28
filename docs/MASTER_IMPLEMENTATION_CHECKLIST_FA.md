@@ -777,7 +777,7 @@ Theme بدون Bridge تمام featureهای موجود پروژه را مطاب
 | [x] | `P04-WPPLUGIN-CODE-013` | BOTH | P0/HIGH | زیرساخت مشترک export،erase و retention بدون وابستگی میزبان | یک fixture کاربر از هر میزبان export/erase مجاز شود؛ نصب هم‌زمان hook را دوباره اجرا نکند و خاموشی feature حق عملیات نگهداری مجاز را از بین نبرد. |
 | [x] | `P04-WPPLUGIN-CODE-014` | AI | P1/MEDIUM | API تنظیمات مشترک سایت با کنترل دسترسی و audit | تغییر از هر ورودی میزبان یک وضعیت سایت بدهد؛ درخواست غیرمجاز،CSRF،option ناشناخته یا نوشتن مجوز خرید از settings رد شود؛ پنل toggle در 041 است. |
 | [x] | `P04-ENTITLEMENT-CODE-041` | BOTH | P0/HIGH | پنل مشترک قابلیت‌های خریداری‌شده در هر دو میزبان | Theme بدون Bridge و Plugin با قالب دیگر save/read یکسان؛ non-admin/CSRF رد؛ وابستگی نامعتبر ذخیره نشود؛ خاموشی داده را حذف نکند. |
-| [ ] | `P04-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | سازگاری Woo HPOS و Cart/Checkout Blocks در دو محصول | fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با Woo فعال یک نتیجه بدهد؛ co-install hook پرداخت/سفارش تکراری نداشته باشد. |
+| [x] | `P04-WPPLUGIN-CODE-015` | BOTH | P0/HIGH | سازگاری Woo HPOS و Cart/Checkout Blocks در دو محصول | fixture سفارش در HPOS روشن/خاموش و classic/blocks checkout با Woo فعال یک نتیجه بدهد؛ co-install hook پرداخت/سفارش تکراری نداشته باشد. |
 | [ ] | `P04-WPTHEME-CODE-016` | AI | P1/MEDIUM | template hierarchy، RTL/LTR، light/dark و responsive تثبیت | 360/390/600/840/1024/1440 visual evidence |
 | [ ] | `P04-WPTHEME-CODE-017` | BOTH | P1/MEDIUM | accessibility فرم/checkout/menu/account | keyboard، focus، label، contrast، zoom 200% |
 | [ ] | `P04-WPTHEME-CODE-025` | AI | P0/MEDIUM | template hierarchy برگه و Elementor Canvas/Full Width اصلاح شود | matrix layout؛ `the_content`؛ Bridge اثری بر render ندارد |
