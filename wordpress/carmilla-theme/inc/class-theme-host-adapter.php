@@ -588,6 +588,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_support_thread' ) ) {
 			add_shortcode( 'carmilla_support_thread', [ self::class, 'render_support_thread_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_product_reviews' ) ) {
+			add_shortcode( 'carmilla_product_reviews', [ self::class, 'render_product_reviews_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_favorites' ) ) {
+			add_shortcode( 'carmilla_favorites', [ self::class, 'render_favorites_shortcode' ] );
+		}
 	}
 
 	/**
@@ -1025,6 +1031,54 @@ class ThemeHostAdapter {
 		}
 		$carmilla_support_thread_data = $ticket;
 		$tpl = locate_template( [ 'carmilla/support-thread.php', 'carmilla-support-thread.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_product_reviews_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Interactions\InteractionService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Interactions\InteractionService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="interactions-disabled">' . esc_html__( 'قابلیت نظرات و پرسش‌ها فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		$atts       = shortcode_atts( [ 'product_id' => 0 ], is_array( $atts ) ? $atts : [], 'carmilla_product_reviews' );
+		$product_id = (int) $atts['product_id'];
+		if ( $product_id < 1 ) {
+			return '';
+		}
+		$carmilla_reviews_data    = \Carmilla\Core\Interactions\InteractionService::list_reviews( $product_id );
+		$carmilla_questions_data  = \Carmilla\Core\Interactions\InteractionService::list_questions( $product_id );
+		$carmilla_product_id_data = $product_id;
+		$tpl = locate_template( [ 'carmilla/product-reviews.php', 'carmilla-product-reviews.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_favorites_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Interactions\InteractionService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Interactions\InteractionService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="interactions-disabled">' . esc_html__( 'قابلیت علاقه‌مندی‌ها فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="favorites-auth">' . esc_html__( 'برای مشاهده علاقه‌مندی‌ها وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$data                    = \Carmilla\Core\Interactions\InteractionService::list_favorites( get_current_user_id() );
+		$carmilla_favorites_data = isset( $data['content'] ) && is_array( $data['content'] ) ? $data['content'] : [];
+		$tpl = locate_template( [ 'carmilla/favorites.php', 'carmilla-favorites.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;

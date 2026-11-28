@@ -42,6 +42,8 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Psych/PsychTestRestController.php';
     require_once __DIR__ . '/inc/Support/SupportService.php';
     require_once __DIR__ . '/inc/Support/SupportRestController.php';
+    require_once __DIR__ . '/inc/Interactions/InteractionService.php';
+    require_once __DIR__ . '/inc/Interactions/InteractionRestController.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**
@@ -108,6 +110,11 @@ class Carmilla_Kernel {
         // Ensure atomic appointment slot lock table exists in Theme-only & Co-install modes
         if ( class_exists( '\Carmilla\Core\Clinic\AppointmentBookingService' ) ) {
             \Carmilla\Core\Clinic\AppointmentBookingService::ensure_bookings_table();
+        }
+
+        // Isolate Q&A comments from normal WordPress comment feeds
+        if ( class_exists( '\Carmilla\Core\Interactions\InteractionService' ) ) {
+            \Carmilla\Core\Interactions\InteractionService::register_comment_filters();
         }
     }
 

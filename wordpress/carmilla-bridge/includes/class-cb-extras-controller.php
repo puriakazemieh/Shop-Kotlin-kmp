@@ -30,11 +30,13 @@ class CB_Extras_Controller {
 		register_rest_route( $ns, '/api/referrals/mine', array( 'methods' => 'GET', 'callback' => array( $this, 'referral_mine' ), 'permission_callback' => $login ) );
 
 		// Favorites use a host-root path; aliased in CB_Plugin::maybe_root_alias.
-		register_rest_route( $ns, '/api/favorites', array( 'methods' => 'GET', 'callback' => array( $this, 'favorites' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/favorites/(?P<pid>\d+)', array(
-			array( 'methods' => 'POST', 'callback' => array( $this, 'add_favorite' ), 'permission_callback' => $login ),
-			array( 'methods' => 'DELETE', 'callback' => array( $this, 'remove_favorite' ), 'permission_callback' => $login ),
-		) );
+		if ( ! class_exists( '\Carmilla\Core\Interactions\InteractionRestController' ) ) {
+			register_rest_route( $ns, '/api/favorites', array( 'methods' => 'GET', 'callback' => array( $this, 'favorites' ), 'permission_callback' => $login ) );
+			register_rest_route( $ns, '/api/favorites/(?P<pid>\d+)', array(
+				array( 'methods' => 'POST', 'callback' => array( $this, 'add_favorite' ), 'permission_callback' => $login ),
+				array( 'methods' => 'DELETE', 'callback' => array( $this, 'remove_favorite' ), 'permission_callback' => $login ),
+			) );
+		}
 
 		register_rest_route( $ns, '/api/recently-viewed', array( 'methods' => 'GET', 'callback' => array( $this, 'recently_viewed' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/recently-viewed/(?P<pid>\d+)', array( 'methods' => 'POST', 'callback' => array( $this, 'record_view' ), 'permission_callback' => $login ) );

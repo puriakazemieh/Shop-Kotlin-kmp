@@ -55,6 +55,8 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_my_psych_results', array( __CLASS__, 'render_my_psych_results_shortcode' ) );
 		add_shortcode( 'carmilla_support_tickets', array( __CLASS__, 'render_support_tickets_shortcode' ) );
 		add_shortcode( 'carmilla_support_thread', array( __CLASS__, 'render_support_thread_shortcode' ) );
+		add_shortcode( 'carmilla_product_reviews', array( __CLASS__, 'render_product_reviews_shortcode' ) );
+		add_shortcode( 'carmilla_favorites', array( __CLASS__, 'render_favorites_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -1134,6 +1136,106 @@ class CB_Public_Renderer {
 				<textarea name="body" placeholder="<?php echo esc_attr__( 'پاسخ...', 'carmilla-bridge' ); ?>" required></textarea>
 				<button type="submit" class="carmilla-public-surface__btn"><?php echo esc_html__( 'ارسال پاسخ', 'carmilla-bridge' ); ?></button>
 			</form>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders product reviews & Q&A via InteractionService.
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_product_reviews_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Interactions\InteractionService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Interactions\InteractionService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="interactions-disabled">' . esc_html__( 'قابلیت نظرات و پرسش‌ها فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$atts       = shortcode_atts( array( 'product_id' => 0 ), is_array( $atts ) ? $atts : array(), 'carmilla_product_reviews' );
+		$product_id = (int) $atts['product_id'];
+		if ( $product_id < 1 ) {
+			return '';
+		}
+
+		$reviews      = \Carmilla\Core\Interactions\InteractionService::list_reviews( $product_id );
+		$questions    = \Carmilla\Core\Interactions\InteractionService::list_questions( $product_id );
+		$override_tpl = locate_template( array( 'carmilla/product-reviews.php', 'carmilla-product-reviews.php' ) );
+		$override_tpl = apply_filters( 'carmilla_product_reviews_template', $override_tpl, $reviews, $questions, $product_id );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_reviews_data    = $reviews;
+			$carmilla_questions_data  = $questions;
+			$carmilla_product_id_data = $product_id;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="product-reviews" data-product-id="<?php echo esc_attr( (string) $product_id ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'نظرات و پرسش‌ها', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $reviews as $r ) : ?>
+					<li data-review-id="<?php echo esc_attr( (string) ( $r['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $r['userName'] ?? '' ) ); ?></strong>
+						<span><?php echo esc_html( (string) ( $r['comment'] ?? '' ) ); ?></span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $questions as $q ) : ?>
+					<li data-question-id="<?php echo esc_attr( (string) ( $q['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $q['userName'] ?? '' ) ); ?></strong>
+						<span><?php echo esc_html( (string) ( $q['content'] ?? '' ) ); ?></span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders current user's favorites list via InteractionService.
+	 */
+	public static function render_favorites_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Interactions\InteractionService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Interactions\InteractionService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="interactions-disabled">' . esc_html__( 'قابلیت علاقه‌مندی‌ها فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="favorites-auth">' . esc_html__( 'برای مشاهده علاقه‌مندی‌ها وارد شوید.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$data         = \Carmilla\Core\Interactions\InteractionService::list_favorites( get_current_user_id() );
+		$items        = isset( $data['content'] ) && is_array( $data['content'] ) ? $data['content'] : array();
+		$override_tpl = locate_template( array( 'carmilla/favorites.php', 'carmilla-favorites.php' ) );
+		$override_tpl = apply_filters( 'carmilla_favorites_template', $override_tpl, $items );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_favorites_data = $items;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="favorites">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'علاقه‌مندی‌های من', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $items as $item ) : ?>
+					<li data-product-id="<?php echo esc_attr( (string) ( $item['id'] ?? 0 ) ); ?>">
+						<?php echo esc_html( (string) ( $item['name'] ?? '' ) ); ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
 		</section>
 		<?php
 		return (string) ob_get_clean();

@@ -152,6 +152,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Support\SupportRestController' ) ) {
             \Carmilla\Core\Support\SupportRestController::register_routes();
         }
+
+        // Register shared reviews, Q&A & favorites endpoints (P04-WORDPRESS-CODE-029B)
+        if ( class_exists( '\Carmilla\Core\Interactions\InteractionRestController' ) ) {
+            \Carmilla\Core\Interactions\InteractionRestController::register_routes();
+        }
     }
 
     /**
@@ -537,6 +542,7 @@ class RestInfrastructure {
             '/api/payment'           => 'commerce.core',
             '/api/reviews'           => 'commerce.core',
             '/api/questions'         => 'commerce.core',
+            '/api/favorites'         => 'commerce.core',
             '/api/bundles'           => 'commerce.core',
             '/api/wallet'            => 'wallet',
             '/api/admin'             => 'admin.mobile',
