@@ -9,6 +9,7 @@
  * Author:            Carmilla
  * License:           GPL-2.0-or-later
  * Text Domain:       carmilla-bridge
+ * Domain Path:       /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,5 +42,14 @@ add_action('plugins_loaded', 'carmilla_bridge_init');
 function carmilla_bridge_init() {
     if ( class_exists( 'Carmilla_Kernel' ) ) {
         \Carmilla_Kernel::boot('plugin', '1.0.0');
+    }
+}
+
+// 4. Load plugin textdomain (and shared core fallback in Plugin-only mode without duplicating in co-install)
+add_action('init', 'carmilla_bridge_load_textdomains', 5);
+function carmilla_bridge_load_textdomains() {
+    load_plugin_textdomain('carmilla-bridge', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    if ( ! is_textdomain_loaded('carmilla') ) {
+        load_plugin_textdomain('carmilla', false, dirname(plugin_basename(__FILE__)) . '/packages/carmilla-core/languages');
     }
 }
