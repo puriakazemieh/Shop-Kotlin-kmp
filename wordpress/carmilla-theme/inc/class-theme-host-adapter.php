@@ -265,18 +265,20 @@ class ThemeHostAdapter {
 			'permission_callback' => '__return_true',
 		] );
 
-		// Commerce: Products
-		register_rest_route( $ns, '/api/products', [
-			'methods'             => 'GET',
-			'callback'            => [ self::class, 'rest_get_products' ],
-			'permission_callback' => '__return_true',
-		] );
+		// Commerce: Products (registered once by CatalogRestController in Carmilla_Kernel)
+		if ( ! class_exists( '\Carmilla\Core\Catalog\CatalogRestController' ) ) {
+			register_rest_route( $ns, '/api/products', [
+				'methods'             => 'GET',
+				'callback'            => [ self::class, 'rest_get_products' ],
+				'permission_callback' => '__return_true',
+			] );
 
-		register_rest_route( $ns, '/api/products/(?P<id>\d+)', [
-			'methods'             => 'GET',
-			'callback'            => [ self::class, 'rest_get_product' ],
-			'permission_callback' => '__return_true',
-		] );
+			register_rest_route( $ns, '/api/products/(?P<id>\d+)', [
+				'methods'             => 'GET',
+				'callback'            => [ self::class, 'rest_get_product' ],
+				'permission_callback' => '__return_true',
+			] );
+		}
 
 		// Account: Profile (/api/users/me)
 		register_rest_route( $ns, '/api/users/me', [
@@ -535,6 +537,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_page' ) ) {
 			add_shortcode( 'carmilla_page', [ self::class, 'render_page_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_catalog' ) ) {
+			add_shortcode( 'carmilla_catalog', [ self::class, 'render_catalog_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_product' ) ) {
+			add_shortcode( 'carmilla_product', [ self::class, 'render_product_shortcode' ] );
+		}
 	}
 
 	/**
@@ -573,6 +581,58 @@ class ThemeHostAdapter {
 		}
 		$carmilla_page_data = $page;
 		$tpl = locate_template( [ 'carmilla/content-page.php', 'carmilla-content-page.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_catalog_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Catalog\CatalogService' ) ) {
+			return '';
+		}
+		$atts = shortcode_atts( [ 'size' => 12, 'page' => 0, 'query' => '' ], is_array( $atts ) ? $atts : [], 'carmilla_catalog' );
+		$res  = \Carmilla\Core\Catalog\CatalogService::list_products( [
+			'size'  => (int) $atts['size'],
+			'page'  => (int) $atts['page'],
+			'query' => (string) $atts['query'],
+		] );
+		if ( is_wp_error( $res ) ) {
+			return '<div class="card" data-carmilla-surface="catalog-prerequisite">' . esc_html( $res->get_error_message() ) . '</div>';
+		}
+		$carmilla_catalog_data = $res;
+		$tpl = locate_template( [ 'carmilla/catalog-list.php', 'carmilla-catalog-list.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_product_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Catalog\CatalogService' ) ) {
+			return '';
+		}
+		$atts   = shortcode_atts( [ 'id' => 0, 'slug' => '' ], is_array( $atts ) ? $atts : [], 'carmilla_product' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$product = \Carmilla\Core\Catalog\CatalogService::get_product_detail( $lookup );
+		if ( is_wp_error( $product ) ) {
+			return '<div class="card" data-carmilla-surface="catalog-prerequisite">' . esc_html( $product->get_error_message() ) . '</div>';
+		}
+		$carmilla_product_data = $product;
+		$tpl = locate_template( [ 'carmilla/catalog-product.php', 'carmilla-catalog-product.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;

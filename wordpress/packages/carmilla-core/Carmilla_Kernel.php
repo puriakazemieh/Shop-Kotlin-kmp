@@ -24,6 +24,8 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Content/BlockMapper.php';
     require_once __DIR__ . '/inc/Content/ContentService.php';
     require_once __DIR__ . '/inc/Content/ContentRestController.php';
+    require_once __DIR__ . '/inc/Catalog/CatalogService.php';
+    require_once __DIR__ . '/inc/Catalog/CatalogRestController.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**

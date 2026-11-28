@@ -38,6 +38,8 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_posts', array( __CLASS__, 'render_posts_shortcode' ) );
 		add_shortcode( 'carmilla_page', array( __CLASS__, 'render_page_shortcode' ) );
 		add_shortcode( 'carmilla_content_admin', array( __CLASS__, 'render_content_admin_shortcode' ) );
+		add_shortcode( 'carmilla_catalog', array( __CLASS__, 'render_catalog_shortcode' ) );
+		add_shortcode( 'carmilla_product', array( __CLASS__, 'render_product_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -341,6 +343,102 @@ class CB_Public_Renderer {
 				<button type="submit"><?php echo esc_html__( 'ذخیره', 'carmilla-bridge' ); ?></button>
 			</form>
 		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders catalog product list via shared CatalogService (or theme override).
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_catalog_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Catalog\CatalogService' ) ) {
+			return '';
+		}
+		$atts = shortcode_atts(
+			array(
+				'size'  => 12,
+				'page'  => 0,
+				'query' => '',
+			),
+			is_array( $atts ) ? $atts : array(),
+			'carmilla_catalog'
+		);
+
+		$res = \Carmilla\Core\Catalog\CatalogService::list_products( array(
+			'size'  => (int) $atts['size'],
+			'page'  => (int) $atts['page'],
+			'query' => (string) $atts['query'],
+		) );
+
+		if ( is_wp_error( $res ) ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="catalog-prerequisite">' . esc_html( $res->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/catalog-list.php', 'carmilla-catalog-list.php' ) );
+		$override_tpl = apply_filters( 'carmilla_catalog_list_template', $override_tpl, $res );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_catalog_data = $res;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir   = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		$items = isset( $res['content'] ) && is_array( $res['content'] ) ? $res['content'] : array();
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="catalog">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'فروشگاه', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $items as $item ) : ?>
+					<li data-product-id="<?php echo esc_attr( (string) ( $item['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $item['title'] ?? '' ) ); ?></strong>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders single product detail via shared CatalogService (or theme override).
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_product_shortcode( $atts = array() ): string {
+		if ( ! class_exists( '\Carmilla\Core\Catalog\CatalogService' ) ) {
+			return '';
+		}
+		$atts   = shortcode_atts( array( 'id' => 0, 'slug' => '' ), is_array( $atts ) ? $atts : array(), 'carmilla_product' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+
+		$product = \Carmilla\Core\Catalog\CatalogService::get_product_detail( $lookup );
+		if ( is_wp_error( $product ) ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="catalog-prerequisite">' . esc_html( $product->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/catalog-product.php', 'carmilla-catalog-product.php' ) );
+		$override_tpl = apply_filters( 'carmilla_catalog_product_template', $override_tpl, $product );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_product_data = $product;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<article class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="product" data-product-id="<?php echo esc_attr( (string) ( $product['id'] ?? 0 ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html( (string) ( $product['title'] ?? '' ) ); ?></h2>
+			<div class="carmilla-public-surface__body"><?php echo wp_kses_post( (string) ( $product['description'] ?? '' ) ); ?></div>
+		</article>
 		<?php
 		return (string) ob_get_clean();
 	}

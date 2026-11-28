@@ -107,6 +107,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Content\ContentRestController' ) ) {
             \Carmilla\Core\Content\ContentRestController::register_routes();
         }
+
+        // Register shared catalog & product endpoints (P04-WORDPRESS-CODE-026A)
+        if ( class_exists( '\Carmilla\Core\Catalog\CatalogRestController' ) ) {
+            \Carmilla\Core\Catalog\CatalogRestController::register_routes();
+        }
     }
 
     /**

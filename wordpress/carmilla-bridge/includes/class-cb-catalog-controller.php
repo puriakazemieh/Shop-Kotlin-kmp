@@ -22,6 +22,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CB_Catalog_Controller {
 
 	public function register_routes(): void {
+		if ( class_exists( '\Carmilla\Core\Catalog\CatalogRestController' ) ) {
+			\Carmilla\Core\Catalog\CatalogRestController::register_routes();
+			return;
+		}
 		$ns = CB_REST_NAMESPACE;
 
 		register_rest_route( $ns, '/api/categories', array(
