@@ -40,6 +40,8 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_content_admin', array( __CLASS__, 'render_content_admin_shortcode' ) );
 		add_shortcode( 'carmilla_catalog', array( __CLASS__, 'render_catalog_shortcode' ) );
 		add_shortcode( 'carmilla_product', array( __CLASS__, 'render_product_shortcode' ) );
+		add_shortcode( 'carmilla_cart', array( __CLASS__, 'render_cart_shortcode' ) );
+		add_shortcode( 'carmilla_orders', array( __CLASS__, 'render_orders_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -439,6 +441,84 @@ class CB_Public_Renderer {
 			<h2 class="carmilla-public-surface__title"><?php echo esc_html( (string) ( $product['title'] ?? '' ) ); ?></h2>
 			<div class="carmilla-public-surface__body"><?php echo wp_kses_post( (string) ( $product['description'] ?? '' ) ); ?></div>
 		</article>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders cart summary via shared CartOrderService (or theme override).
+	 */
+	public static function render_cart_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Commerce\CartOrderService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Commerce\CartOrderService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="cart-disabled">' . esc_html__( 'قابلیت سبد خرید فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="cart-auth">' . esc_html__( 'برای مشاهده سبد خرید وارد شوید.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$cart = \Carmilla\Core\Commerce\CartOrderService::get_cart( get_current_user_id() );
+		$override_tpl = locate_template( array( 'carmilla/cart-summary.php', 'carmilla-cart-summary.php' ) );
+		$override_tpl = apply_filters( 'carmilla_cart_summary_template', $override_tpl, $cart );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_cart_data = $cart;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="cart" data-cart-total="<?php echo esc_attr( (string) ( $cart['total'] ?? 0 ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'سبد خرید', 'carmilla-bridge' ); ?></h2>
+			<p class="carmilla-public-surface__body"><?php echo esc_html( sprintf( 'تعداد اقلام: %d | جمع کل: %s', (int) ( $cart['totalQty'] ?? 0 ), (string) ( $cart['total'] ?? 0 ) ) ); ?></p>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders user orders list via shared CartOrderService (or theme override).
+	 */
+	public static function render_orders_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Commerce\CartOrderService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Commerce\CartOrderService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="orders-disabled">' . esc_html__( 'قابلیت سفارش‌ها فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="orders-auth">' . esc_html__( 'برای مشاهده سفارش‌ها وارد شوید.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$orders = \Carmilla\Core\Commerce\CartOrderService::list_orders( get_current_user_id() );
+		if ( is_wp_error( $orders ) ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="orders-prerequisite">' . esc_html( $orders->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/orders-list.php', 'carmilla-orders-list.php' ) );
+		$override_tpl = apply_filters( 'carmilla_orders_list_template', $override_tpl, $orders );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_orders_data = $orders;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="orders">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'سفارش‌های من', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $orders as $o ) : ?>
+					<li data-order-id="<?php echo esc_attr( (string) ( $o['id'] ?? 0 ) ); ?>">#<?php echo esc_html( (string) ( $o['id'] ?? 0 ) ); ?> — <?php echo esc_html( (string) ( $o['totalPrice'] ?? 0 ) ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
 		<?php
 		return (string) ob_get_clean();
 	}

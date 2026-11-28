@@ -112,6 +112,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Catalog\CatalogRestController' ) ) {
             \Carmilla\Core\Catalog\CatalogRestController::register_routes();
         }
+
+        // Register shared cart & order endpoints (P04-WORDPRESS-CODE-026B)
+        if ( class_exists( '\Carmilla\Core\Commerce\CartOrderRestController' ) ) {
+            \Carmilla\Core\Commerce\CartOrderRestController::register_routes();
+        }
     }
 
     /**

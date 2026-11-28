@@ -543,6 +543,12 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_product' ) ) {
 			add_shortcode( 'carmilla_product', [ self::class, 'render_product_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_cart' ) ) {
+			add_shortcode( 'carmilla_cart', [ self::class, 'render_cart_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_orders' ) ) {
+			add_shortcode( 'carmilla_orders', [ self::class, 'render_orders_shortcode' ] );
+		}
 	}
 
 	/**
@@ -633,6 +639,50 @@ class ThemeHostAdapter {
 		}
 		$carmilla_product_data = $product;
 		$tpl = locate_template( [ 'carmilla/catalog-product.php', 'carmilla-catalog-product.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_cart_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Commerce\CartOrderService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Commerce\CartOrderService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="cart-disabled">' . esc_html__( 'قابلیت سبد خرید فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="cart-auth">' . esc_html__( 'برای مشاهده سبد خرید وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_cart_data = \Carmilla\Core\Commerce\CartOrderService::get_cart( get_current_user_id() );
+		$tpl = locate_template( [ 'carmilla/cart-summary.php', 'carmilla-cart-summary.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_orders_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Commerce\CartOrderService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Commerce\CartOrderService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="orders-disabled">' . esc_html__( 'قابلیت سفارش‌ها فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="orders-auth">' . esc_html__( 'برای مشاهده سفارش‌ها وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$orders = \Carmilla\Core\Commerce\CartOrderService::list_orders( get_current_user_id() );
+		if ( is_wp_error( $orders ) ) {
+			return '<div class="card" data-carmilla-surface="orders-prerequisite">' . esc_html( $orders->get_error_message() ) . '</div>';
+		}
+		$carmilla_orders_data = $orders;
+		$tpl = locate_template( [ 'carmilla/orders-list.php', 'carmilla-orders-list.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;

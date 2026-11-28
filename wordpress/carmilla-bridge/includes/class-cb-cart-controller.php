@@ -26,6 +26,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CB_Cart_Controller {
 
 	public function register_routes(): void {
+		if ( class_exists( '\Carmilla\Core\Commerce\CartOrderRestController' ) ) {
+			\Carmilla\Core\Commerce\CartOrderRestController::register_routes();
+			return;
+		}
 		$ns    = CB_REST_NAMESPACE;
 		$login = array( 'CB_Plugin', 'require_login' );
 
