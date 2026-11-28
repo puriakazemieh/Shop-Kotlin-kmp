@@ -45,6 +45,7 @@ class CB_Public_Renderer {
 		add_shortcode( 'carmilla_courses', array( __CLASS__, 'render_courses_shortcode' ) );
 		add_shortcode( 'carmilla_course', array( __CLASS__, 'render_course_shortcode' ) );
 		add_shortcode( 'carmilla_my_courses', array( __CLASS__, 'render_my_courses_shortcode' ) );
+		add_shortcode( 'carmilla_certificates', array( __CLASS__, 'render_certificates_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -653,6 +654,48 @@ class CB_Public_Renderer {
 					<li data-course-id="<?php echo esc_attr( (string) ( $c['id'] ?? 0 ) ); ?>" data-progress="<?php echo esc_attr( (string) ( $c['progressPercent'] ?? 0 ) ); ?>">
 						<strong><?php echo esc_html( (string) ( $c['title'] ?? '' ) ); ?></strong>
 						<span>(<?php echo esc_html( (string) ( $c['progressPercent'] ?? 0 ) ); ?>%)</span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders user certificates via shared CourseQuizService.
+	 */
+	public static function render_certificates_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseQuizService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Academy\CourseCatalogService::is_enabled() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="academy-disabled">' . esc_html__( 'قابلیت آموزش فعال نیست.', 'carmilla-bridge' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="carmilla-public-surface" data-carmilla-surface="certificates-auth">' . esc_html__( 'برای مشاهده گواهی‌ها وارد شوید.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$certs        = \Carmilla\Core\Academy\CourseQuizService::list_certificates( get_current_user_id() );
+		$override_tpl = locate_template( array( 'carmilla/certificates.php', 'carmilla-certificates.php' ) );
+		$override_tpl = apply_filters( 'carmilla_certificates_template', $override_tpl, $certs );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_certs_data = $certs;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="certificates">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'گواهی‌های من', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $certs as $c ) : ?>
+					<li data-cert-number="<?php echo esc_attr( (string) ( $c['certNumber'] ?? '' ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $c['courseTitle'] ?? '' ) ); ?></strong>
+						<span>(<?php echo esc_html( (string) ( $c['certNumber'] ?? '' ) ); ?>)</span>
 					</li>
 				<?php endforeach; ?>
 			</ul>
