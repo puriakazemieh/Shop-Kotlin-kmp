@@ -54,8 +54,10 @@ class CB_Academy_Controller {
 			register_rest_route( $ns, '/api/courses/(?P<slug>[a-zA-Z0-9\-_%]+)', array( 'methods' => 'GET', 'callback' => array( $this, 'get_course' ), 'permission_callback' => $pub ) );
 		}
 
-		register_rest_route( $ns, '/api/academy/my-courses', array( 'methods' => 'GET', 'callback' => array( $this, 'my_courses' ), 'permission_callback' => $login ) );
-		register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/enroll', array( 'methods' => 'POST', 'callback' => array( $this, 'enroll' ), 'permission_callback' => $login ) );
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseEnrollmentRestController' ) ) {
+			register_rest_route( $ns, '/api/academy/my-courses', array( 'methods' => 'GET', 'callback' => array( $this, 'my_courses' ), 'permission_callback' => $login ) );
+			register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/enroll', array( 'methods' => 'POST', 'callback' => array( $this, 'enroll' ), 'permission_callback' => $login ) );
+		}
 		register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/waitlist', array( 'methods' => 'POST', 'callback' => array( $this, 'waitlist' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/quiz', array( 'methods' => 'GET', 'callback' => array( $this, 'get_quiz' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/quiz/submit', array( 'methods' => 'POST', 'callback' => array( $this, 'submit_quiz' ), 'permission_callback' => $login ) );
@@ -69,7 +71,9 @@ class CB_Academy_Controller {
 		register_rest_route( $ns, '/api/academy/courses/(?P<id>\d+)/refund-request', array( 'methods' => 'POST', 'callback' => array( $this, 'refund_request' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/academy/refund-requests/mine', array( 'methods' => 'GET', 'callback' => array( $this, 'refund_mine' ), 'permission_callback' => $login ) );
 
-		register_rest_route( $ns, '/api/academy/lessons/(?P<lid>\d+)/progress', array( 'methods' => 'POST', 'callback' => array( $this, 'lesson_progress' ), 'permission_callback' => $login ) );
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseEnrollmentRestController' ) ) {
+			register_rest_route( $ns, '/api/academy/lessons/(?P<lid>\d+)/progress', array( 'methods' => 'POST', 'callback' => array( $this, 'lesson_progress' ), 'permission_callback' => $login ) );
+		}
 		register_rest_route( $ns, '/api/academy/lessons/(?P<lid>\d+)/quiz', array( 'methods' => 'GET', 'callback' => array( $this, 'lesson_quiz' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/academy/lessons/(?P<lid>\d+)/quiz/submit', array( 'methods' => 'POST', 'callback' => array( $this, 'lesson_quiz_submit' ), 'permission_callback' => $login ) );
 		register_rest_route( $ns, '/api/academy/lessons/(?P<lid>\d+)/questions', array(

@@ -30,6 +30,8 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Commerce/CartOrderRestController.php';
     require_once __DIR__ . '/inc/Academy/CourseCatalogService.php';
     require_once __DIR__ . '/inc/Academy/CourseCatalogRestController.php';
+    require_once __DIR__ . '/inc/Academy/CourseEnrollmentService.php';
+    require_once __DIR__ . '/inc/Academy/CourseEnrollmentRestController.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
 
 /**

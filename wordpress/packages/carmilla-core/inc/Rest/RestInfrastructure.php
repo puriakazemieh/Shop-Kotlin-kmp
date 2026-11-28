@@ -122,6 +122,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Academy\CourseCatalogRestController' ) ) {
             \Carmilla\Core\Academy\CourseCatalogRestController::register_routes();
         }
+
+        // Register shared academy enrollment & progress endpoints (P04-WORDPRESS-CODE-027A)
+        if ( class_exists( '\Carmilla\Core\Academy\CourseEnrollmentRestController' ) ) {
+            \Carmilla\Core\Academy\CourseEnrollmentRestController::register_routes();
+        }
     }
 
     /**

@@ -555,6 +555,9 @@ class ThemeHostAdapter {
 		if ( ! shortcode_exists( 'carmilla_course' ) ) {
 			add_shortcode( 'carmilla_course', [ self::class, 'render_course_shortcode' ] );
 		}
+		if ( ! shortcode_exists( 'carmilla_my_courses' ) ) {
+			add_shortcode( 'carmilla_my_courses', [ self::class, 'render_my_courses_shortcode' ] );
+		}
 	}
 
 	/**
@@ -739,6 +742,26 @@ class ThemeHostAdapter {
 		}
 		$carmilla_course_data = $course;
 		$tpl = locate_template( [ 'carmilla/course-detail.php', 'carmilla-course-detail.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	public static function render_my_courses_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Academy\CourseEnrollmentService' ) ) {
+			return '';
+		}
+		if ( ! \Carmilla\Core\Academy\CourseCatalogService::is_enabled() ) {
+			return '<div class="card" data-carmilla-surface="academy-disabled">' . esc_html__( 'قابلیت آموزش فعال نیست.', 'carmilla' ) . '</div>';
+		}
+		if ( ! is_user_logged_in() ) {
+			return '<div class="card" data-carmilla-surface="my-courses-auth">' . esc_html__( 'برای مشاهده دوره‌های من وارد شوید.', 'carmilla' ) . '</div>';
+		}
+		$carmilla_my_courses_data = \Carmilla\Core\Academy\CourseEnrollmentService::my_courses( get_current_user_id() );
+		$tpl = locate_template( [ 'carmilla/my-courses.php', 'carmilla-my-courses.php' ] );
 		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
 			ob_start();
 			include $tpl;
