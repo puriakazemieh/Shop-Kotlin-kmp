@@ -32,6 +32,13 @@ function carmilla_theme_boot_kernel() {
     }
 }
 
+// 2b. Wire theme activation lifecycle to shared kernel
+add_action( 'after_switch_theme', function () {
+    if ( class_exists( '\Carmilla\Core\Lifecycle\LifecycleManager' ) ) {
+        \Carmilla\Core\Lifecycle\LifecycleManager::handle_activation();
+    }
+} );
+
 
 /**
  * Helper to include files safely.

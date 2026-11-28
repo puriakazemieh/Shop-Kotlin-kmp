@@ -15,6 +15,7 @@ if ( ! class_exists( 'Carmilla_Kernel', false ) ) {
     require_once __DIR__ . '/inc/Rest/RestInfrastructure.php';
     require_once __DIR__ . '/inc/Capabilities/CapabilityRegistry.php';
     require_once __DIR__ . '/inc/Health/HealthChecker.php';
+    require_once __DIR__ . '/inc/Lifecycle/LifecycleManager.php';
     require_once __DIR__ . '/inc/Settings/MessageSettings.php';
     require_once __DIR__ . '/inc/Messaging/MessageSender.php';
     require_once __DIR__ . '/inc/Import/Carmilla_Importer.php';
@@ -69,6 +70,10 @@ class Carmilla_Kernel {
 
         // Initialize unified REST infrastructure
         \Carmilla\Core\Rest\RestInfrastructure::init();
+
+        // Register shared lifecycle handlers (theme switch + explicit cleanup)
+        \Carmilla\Core\Lifecycle\LifecycleManager::register_theme_switch_handler();
+        \Carmilla\Core\Lifecycle\LifecycleManager::register_admin_cleanup_handler();
     }
 
     public static function resolve_features() {

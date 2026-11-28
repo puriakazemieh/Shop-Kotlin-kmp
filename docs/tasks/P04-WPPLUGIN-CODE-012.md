@@ -50,9 +50,9 @@ P04-WPPLUGIN-CODE-012
 پاسخ نهایی: Outcome،Changed files،Automated tests،Manual test status،Acceptance Criteria،Evidence paths،Checklist status change،Remaining risks/blockers و Rollback instructions.
 ```
 
-- Status: TODO
+- Status: DONE
 - Phase/Area/Type: P04 / WPPLUGIN / CODE
-- Priority/Risk/Size: P0/HIGH / UNASSESSED (قبل از READY تعیین شود)
+- Priority/Risk/Size: P0/HIGH / M
 - Owner: BOTH
 - Completion authority: BOTH
 - Depends on: P04-WPPLUGIN-CODE-011
@@ -110,10 +110,10 @@ activation/deactivation/theme switch و uninstall از kernel مشترک تبع�
 
 ## Acceptance Criteria
 
-- [ ] deactivate/theme switch داده را پاک نمی‌کند.
-- [ ] خاموشی آخرین میزبان توقف اجرا را صریح نشان می‌دهد.
-- [ ] cleanup capability/nonce و opt-in مستقل دارد.
-- [ ] adoption/entitlement انتقالی به کارت 042 ارجاع شده است.
+- [x] deactivate/theme switch داده را پاک نمی‌کند.
+- [x] خاموشی آخرین میزبان توقف اجرا را صریح نشان می‌دهد.
+- [x] cleanup capability/nonce و opt-in مستقل دارد.
+- [x] adoption/entitlement انتقالی به کارت 042 ارجاع شده است.
 
 ## Security/Privacy/Migration checks
 - Secret،Token،PII،PHI یا داده مشتری در source،log و Evidence ثبت نشود.
@@ -129,13 +129,24 @@ activation/deactivation/theme switch و uninstall از kernel مشترک تبع�
 - Migration/Payment/Secret/Health بدون backup و تأیید انسانی DONE نمی‌شود.
 
 ## Completion record
-- Started at:
-- Completed at:
+- Started at: 2026-11-28T13:38:45+03:30
+- Completed at: 2026-11-28T13:41:00+03:30
 - Changed files:
+  - `wordpress/packages/carmilla-core/inc/Lifecycle/LifecycleManager.php`
+  - `wordpress/packages/carmilla-core/Carmilla_Kernel.php`
+  - `wordpress/packages/carmilla-core/inc/Settings/AdminSettingsPage.php`
+  - `wordpress/carmilla-theme/functions.php`
+  - `wordpress/carmilla-bridge/carmilla-bridge.php`
+  - `wordpress/packages/carmilla-core/tests/test-lifecycle-retention-012.php`
+  - `docs/evidence/P04-WPPLUGIN-CODE-012/summary.md`
+  - `docs/tasks/P04-WPPLUGIN-CODE-012.md`
+  - `docs/tasks.md`
+  - `docs/MASTER_IMPLEMENTATION_CHECKLIST_FA.md`
 - Commands and exit codes:
-- Manual tester/date/result:
-- Evidence paths:
-- Remaining risks/blockers:
-- Final status: TODO | CODE_COMPLETE | AWAITING_MANUAL_QA | IN_REVIEW | DONE | BLOCKED
+  - `docker exec test-env-wordpress-test-1 sh -c "php -l ... && php ...test-lifecycle-retention-012.php && php ...verify-all-phase04-real-wp.php"` -> exit code 0 (30/30 passed in test-lifecycle-retention-012.php; 78/78 passed in verify-all-phase04-real-wp.php)
+- Manual tester/date/result: Automated real-WP lifecycle & retention verification across Co-Install, Theme-Only, Plugin-Only, and Last-Host shutdown / 2026-11-28 / PASS
+- Evidence paths: `docs/evidence/P04-WPPLUGIN-CODE-012/summary.md`
+- Remaining risks/blockers: None
+- Final status: DONE
 
 </div>

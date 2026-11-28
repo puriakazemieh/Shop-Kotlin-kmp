@@ -4,6 +4,7 @@ namespace Carmilla\Core\Settings;
 use Carmilla\Core\Catalog\EntitlementClaims;
 use Carmilla\Core\Catalog\DependencyResolver;
 use Carmilla\Core\Health\HealthChecker;
+use Carmilla\Core\Lifecycle\LifecycleManager;
 
 class AdminSettingsPage {
 
@@ -125,6 +126,32 @@ class AdminSettingsPage {
                         <pre dir="ltr" style="background: #f6f7f7; padding: 12px; border: 1px solid #dcdcde; overflow: auto; max-height: 300px;"><?php echo esc_html(wp_json_encode($diagnostics, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)); ?></pre>
                     </details>
                 <?php endif; ?>
+            <?php endif; ?>
+
+            <hr style="margin: 24px 0;">
+            <h2>چرخه حیات میزبان و پاک‌سازی صریح داده (Lifecycle & Data Retention)</h2>
+            <?php
+                $lifecycle = class_exists(LifecycleManager::class) ? LifecycleManager::get_host_lifecycle_status() : null;
+            ?>
+            <?php if ($lifecycle) : ?>
+                <p>
+                    <strong>وضعیت اجرای خدمات:</strong> <code><?php echo esc_html($lifecycle['execution_status']); ?></code> |
+                    <strong>میزبان‌های فعال:</strong> <code><?php echo esc_html(!empty($lifecycle['active_hosts']) ? implode(', ', $lifecycle['active_hosts']) : 'none'); ?></code> |
+                    <strong>سیاست نگهداری داده:</strong> <span>حفظ پیش‌فرض داده‌ها هنگام غیرفعال‌سازی یا تعویض پوسته</span>
+                </p>
+                <p class="description">
+                    انتقال مالکیت و مجوز بین میزبان‌ها در کارت <code><?php echo esc_html($lifecycle['adoption_task_ref']); ?></code> مدیریت می‌شود.
+                </p>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-top: 12px; padding: 12px; background: #fff; border: 1px solid #dcdcde;">
+                    <?php wp_nonce_field(LifecycleManager::CLEANUP_NONCE_ACTION); ?>
+                    <input type="hidden" name="action" value="carmilla_explicit_cleanup">
+                    <label>
+                        <input type="checkbox" name="carmilla_confirm_cleanup" value="1">
+                        تأیید می‌کنم که می‌خواهم تنظیمات و کش‌های کارمیلا را به‌صورت صریح پاک‌سازی کنم (opt-in).
+                    </label>
+                    <br><br>
+                    <button type="submit" class="button button-secondary">پاک‌سازی صریح تنظیمات کارمیلا</button>
+                </form>
             <?php endif; ?>
         </div>
         <?php

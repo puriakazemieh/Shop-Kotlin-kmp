@@ -29,6 +29,13 @@ if ( ! class_exists( 'Carmilla_Kernel' ) ) {
 // 2. Load standalone bootloader
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-cb-standalone-boot.php';
 
+// 2b. Wire shared kernel lifecycle hooks (activation, deactivation, uninstall)
+if ( class_exists( '\Carmilla\Core\Lifecycle\LifecycleManager' ) ) {
+    \Carmilla\Core\Lifecycle\LifecycleManager::register_activation_hook_handler( __FILE__ );
+    \Carmilla\Core\Lifecycle\LifecycleManager::register_deactivation_hook_handler( __FILE__ );
+    \Carmilla\Core\Lifecycle\LifecycleManager::register_uninstall_handler( __FILE__ );
+}
+
 // 3. Initialize Plugin-specific functionality
 add_action('plugins_loaded', 'carmilla_bridge_init');
 function carmilla_bridge_init() {
