@@ -22,13 +22,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 </head>
 <body <?php body_class( 'carmilla-blank' ); ?>>
 <?php wp_body_open(); ?>
-<div dir="rtl" style="min-height:100vh;background:var(--bg);color:var(--ink);">
+<div dir="<?php echo esc_attr( is_rtl() ? 'rtl' : 'ltr' ); ?>" style="min-height:100vh;background:var(--bg);color:var(--ink);">
+	<main id="content" tabindex="-1">
 	<?php
 	while ( have_posts() ) :
 		the_post();
 		the_content();
 	endwhile;
 	?>
+	</main>
 </div>
 <?php wp_footer(); ?>
 </body>
