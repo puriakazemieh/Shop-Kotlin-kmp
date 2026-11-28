@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CB_Media_Controller {
 
 	public function register_routes(): void {
+		if ( class_exists( '\Carmilla\Core\Content\ContentRestController' ) ) {
+			\Carmilla\Core\Content\ContentRestController::register_routes();
+			return;
+		}
 		register_rest_route( CB_REST_NAMESPACE, '/api/admin/blogs/media/upload', array(
 			'methods'             => 'POST',
 			'callback'            => array( $this, 'upload' ),

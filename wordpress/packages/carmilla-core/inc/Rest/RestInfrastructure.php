@@ -102,6 +102,11 @@ class RestInfrastructure {
         if ( class_exists( '\Carmilla\Core\Entitlement\FeatureToggleService' ) ) {
             \Carmilla\Core\Entitlement\FeatureToggleService::register_rest_routes();
         }
+
+        // Register shared content (posts, pages, media) endpoints (P04-WORDPRESS-CODE-026)
+        if ( class_exists( '\Carmilla\Core\Content\ContentRestController' ) ) {
+            \Carmilla\Core\Content\ContentRestController::register_routes();
+        }
     }
 
     /**
@@ -467,6 +472,9 @@ class RestInfrastructure {
             '/api/course-requests'   => 'academy.core',
             '/api/admin/blogs'       => 'content.blog',
             '/api/blogs'             => 'content.blog',
+            '/api/admin/pages'       => 'content.core',
+            '/api/pages'             => 'content.core',
+            '/api/admin/media'       => 'content.core',
             '/api/stories'           => 'content.stories',
             '/api/support'           => 'content.support',
             '/api/admin/products'    => 'commerce.core',

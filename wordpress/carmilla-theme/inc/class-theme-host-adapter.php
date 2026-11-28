@@ -45,6 +45,7 @@ class ThemeHostAdapter {
 
 		// Register standalone REST routes when Bridge plugin is absent
 		add_action( 'rest_api_init', [ self::class, 'register_standalone_routes' ], 15 );
+		add_action( 'init', [ self::class, 'register_content_shortcodes' ], 20 );
 	}
 
 	/**
@@ -519,6 +520,65 @@ class ThemeHostAdapter {
 			return \Carmilla\Core\Entitlement\FeatureToggleService::save_toggles( $features, $user_id, $nonce, $require_nonce, $builders, $matrix_args );
 		}
 		return [ 'ok' => false, 'code' => 'KERNEL_MISSING', 'status' => 500, 'message' => 'FeatureToggleService not loaded.' ];
+	}
+
+	/**
+	 * Registers shared content shortcodes in Theme-only mode when Bridge is inactive.
+	 */
+	public static function register_content_shortcodes(): void {
+		if ( ! function_exists( 'add_shortcode' ) ) {
+			return;
+		}
+		if ( ! shortcode_exists( 'carmilla_posts' ) ) {
+			add_shortcode( 'carmilla_posts', [ self::class, 'render_posts_shortcode' ] );
+		}
+		if ( ! shortcode_exists( 'carmilla_page' ) ) {
+			add_shortcode( 'carmilla_page', [ self::class, 'render_page_shortcode' ] );
+		}
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_posts_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Content\ContentService' ) ) {
+			return '';
+		}
+		$atts = shortcode_atts( [ 'size' => 10, 'page' => 0 ], is_array( $atts ) ? $atts : [], 'carmilla_posts' );
+		$carmilla_posts_data = \Carmilla\Core\Content\ContentService::list_posts( [ 'size' => (int) $atts['size'], 'page' => (int) $atts['page'] ], [ 'publish' ] );
+		$tpl = locate_template( [ 'carmilla/content-posts.php', 'carmilla-content-posts.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
+	}
+
+	/**
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_page_shortcode( $atts = [] ): string {
+		if ( ! class_exists( '\Carmilla\Core\Content\ContentService' ) ) {
+			return '';
+		}
+		$atts   = shortcode_atts( [ 'slug' => '', 'id' => 0 ], is_array( $atts ) ? $atts : [], 'carmilla_page' );
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+		$page = \Carmilla\Core\Content\ContentService::get_page( $lookup, [ 'publish' ] );
+		if ( is_wp_error( $page ) ) {
+			return '<div class="card">' . esc_html( $page->get_error_message() ) . '</div>';
+		}
+		$carmilla_page_data = $page;
+		$tpl = locate_template( [ 'carmilla/content-page.php', 'carmilla-content-page.php' ] );
+		if ( is_string( $tpl ) && '' !== $tpl && file_exists( $tpl ) ) {
+			ob_start();
+			include $tpl;
+			return (string) ob_get_clean();
+		}
+		return '';
 	}
 
 	/**

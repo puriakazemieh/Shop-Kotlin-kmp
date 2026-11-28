@@ -19,6 +19,9 @@ class CB_Blocks {
 	 * @return array<int,array>
 	 */
 	public static function post_to_blocks( WP_Post $post ): array {
+		if ( class_exists( '\Carmilla\Core\Content\BlockMapper' ) ) {
+			return \Carmilla\Core\Content\BlockMapper::post_to_blocks( $post );
+		}
 		$blocks = parse_blocks( $post->post_content );
 		$out    = array();
 
@@ -90,6 +93,9 @@ class CB_Blocks {
 	 * @param array<int,array> $blocks
 	 */
 	public static function blocks_to_html( array $blocks ): string {
+		if ( class_exists( '\Carmilla\Core\Content\BlockMapper' ) ) {
+			return \Carmilla\Core\Content\BlockMapper::blocks_to_html( $blocks );
+		}
 		$parts = array();
 
 		foreach ( $blocks as $b ) {

@@ -25,6 +25,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CB_Blog_Controller {
 
 	public function register_routes(): void {
+		if ( class_exists( '\Carmilla\Core\Content\ContentRestController' ) ) {
+			\Carmilla\Core\Content\ContentRestController::register_routes();
+			return;
+		}
 		$ns = CB_REST_NAMESPACE;
 
 		register_rest_route( $ns, '/api/blogs', array(

@@ -35,6 +35,9 @@ class CB_Public_Renderer {
 
 	public static function register_shortcodes_and_blocks(): void {
 		add_shortcode( 'carmilla_public_sample', array( __CLASS__, 'render_sample_shortcode' ) );
+		add_shortcode( 'carmilla_posts', array( __CLASS__, 'render_posts_shortcode' ) );
+		add_shortcode( 'carmilla_page', array( __CLASS__, 'render_page_shortcode' ) );
+		add_shortcode( 'carmilla_content_admin', array( __CLASS__, 'render_content_admin_shortcode' ) );
 
 		if ( function_exists( 'register_block_type' ) && ! WP_Block_Type_Registry::get_instance()->is_registered( 'carmilla/public-sample' ) ) {
 			register_block_type(
@@ -193,6 +196,153 @@ class CB_Public_Renderer {
 				'html'      => self::render_sample_shortcode(),
 			)
 		);
+	}
+
+	/**
+	 * Renders public posts list via shared ContentService (or active theme override).
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_posts_shortcode( $atts = array() ): string {
+		$atts = shortcode_atts(
+			array(
+				'size' => 10,
+				'page' => 0,
+			),
+			is_array( $atts ) ? $atts : array(),
+			'carmilla_posts'
+		);
+
+		$data = class_exists( '\Carmilla\Core\Content\ContentService' )
+			? \Carmilla\Core\Content\ContentService::list_posts( array( 'size' => (int) $atts['size'], 'page' => (int) $atts['page'] ), array( 'publish' ) )
+			: array( 'content' => array() );
+
+		$override_tpl = locate_template( array( 'carmilla/content-posts.php', 'carmilla-content-posts.php' ) );
+		$override_tpl = apply_filters( 'carmilla_content_posts_template', $override_tpl, $data );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_posts_data = $data;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir   = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		$items = isset( $data['content'] ) && is_array( $data['content'] ) ? $data['content'] : array();
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="posts">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'نوشته‌ها', 'carmilla-bridge' ); ?></h2>
+			<ul class="carmilla-public-surface__list">
+				<?php foreach ( $items as $item ) : ?>
+					<li data-post-id="<?php echo esc_attr( (string) ( $item['id'] ?? 0 ) ); ?>">
+						<strong><?php echo esc_html( (string) ( $item['title'] ?? '' ) ); ?></strong>
+						<?php if ( ! empty( $item['summary'] ) ) : ?>
+							<p class="carmilla-public-surface__body"><?php echo esc_html( (string) $item['summary'] ); ?></p>
+						<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Renders a single published page via shared ContentService (or active theme override).
+	 *
+	 * @param array<string, mixed> $atts
+	 */
+	public static function render_page_shortcode( $atts = array() ): string {
+		$atts = shortcode_atts(
+			array(
+				'slug' => '',
+				'id'   => 0,
+			),
+			is_array( $atts ) ? $atts : array(),
+			'carmilla_page'
+		);
+
+		$lookup = ! empty( $atts['id'] ) ? (int) $atts['id'] : (string) $atts['slug'];
+		if ( '' === $lookup || 0 === $lookup ) {
+			return '';
+		}
+
+		$page = class_exists( '\Carmilla\Core\Content\ContentService' )
+			? \Carmilla\Core\Content\ContentService::get_page( $lookup, array( 'publish' ) )
+			: new \WP_Error( 'UNAVAILABLE', 'ContentService unavailable.' );
+
+		if ( is_wp_error( $page ) ) {
+			return '<div class="carmilla-public-surface">' . esc_html( $page->get_error_message() ) . '</div>';
+		}
+
+		$override_tpl = locate_template( array( 'carmilla/content-page.php', 'carmilla-content-page.php' ) );
+		$override_tpl = apply_filters( 'carmilla_content_page_template', $override_tpl, $page );
+		if ( is_string( $override_tpl ) && ! empty( $override_tpl ) && file_exists( $override_tpl ) ) {
+			ob_start();
+			$carmilla_page_data = $page;
+			include $override_tpl;
+			return (string) ob_get_clean();
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<article class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="page" data-page-id="<?php echo esc_attr( (string) ( $page['id'] ?? 0 ) ); ?>">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html( (string) ( $page['title'] ?? '' ) ); ?></h2>
+			<div class="carmilla-public-surface__body"><?php echo wp_kses_post( (string) ( $page['rawContent'] ?? '' ) ); ?></div>
+		</article>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Basic admin content management form (requires content management capability + nonce).
+	 */
+	public static function render_content_admin_shortcode(): string {
+		if ( ! class_exists( '\Carmilla\Core\Content\ContentService' ) || ! \Carmilla\Core\Content\ContentService::can_manage_content() ) {
+			return '<div class="carmilla-public-surface">' . esc_html__( 'دسترسی غیرمجاز برای مدیریت محتوا.', 'carmilla-bridge' ) . '</div>';
+		}
+
+		$notice = '';
+		if ( isset( $_POST['carmilla_content_action'], $_POST['carmilla_content_nonce'] )
+			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['carmilla_content_nonce'] ) ), 'carmilla_content_admin_save' ) ) {
+			$kind    = sanitize_key( (string) wp_unslash( $_POST['carmilla_content_kind'] ?? 'post' ) );
+			$title   = sanitize_text_field( (string) wp_unslash( $_POST['carmilla_content_title'] ?? '' ) );
+			$summary = sanitize_textarea_field( (string) wp_unslash( $_POST['carmilla_content_summary'] ?? '' ) );
+
+			$payload = array(
+				'title'   => $title,
+				'summary' => $summary,
+				'status'  => 'PUBLISHED',
+			);
+			$result = ( 'page' === $kind )
+				? \Carmilla\Core\Content\ContentService::create_page( $payload )
+				: \Carmilla\Core\Content\ContentService::create_post( $payload );
+
+			$notice = is_wp_error( $result )
+				? $result->get_error_message()
+				: sprintf( 'ثبت شد (شناسه: %d)', (int) $result['id'] );
+		}
+
+		$dir = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
+		ob_start();
+		?>
+		<section class="carmilla-public-surface" dir="<?php echo esc_attr( $dir ); ?>" data-carmilla-surface="content-admin">
+			<h2 class="carmilla-public-surface__title"><?php echo esc_html__( 'مدیریت نوشته و برگه', 'carmilla-bridge' ); ?></h2>
+			<?php if ( '' !== $notice ) : ?>
+				<p class="carmilla-public-surface__badge"><?php echo esc_html( $notice ); ?></p>
+			<?php endif; ?>
+			<form method="post">
+				<?php wp_nonce_field( 'carmilla_content_admin_save', 'carmilla_content_nonce' ); ?>
+				<input type="hidden" name="carmilla_content_action" value="create" />
+				<p><label><?php echo esc_html__( 'نوع:', 'carmilla-bridge' ); ?> <select name="carmilla_content_kind"><option value="post">نوشته</option><option value="page">برگه</option></select></label></p>
+				<p><label><?php echo esc_html__( 'عنوان:', 'carmilla-bridge' ); ?> <input type="text" name="carmilla_content_title" required /></label></p>
+				<p><label><?php echo esc_html__( 'خلاصه:', 'carmilla-bridge' ); ?> <textarea name="carmilla_content_summary"></textarea></label></p>
+				<button type="submit"><?php echo esc_html__( 'ذخیره', 'carmilla-bridge' ); ?></button>
+			</form>
+		</section>
+		<?php
+		return (string) ob_get_clean();
 	}
 }
 
